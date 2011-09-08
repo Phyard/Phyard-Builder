@@ -55,6 +55,12 @@ package editor.asset {
       }
       
 //=================================================================================
+//   
+//=================================================================================
+
+ 
+      
+//=================================================================================
 //   update
 //=================================================================================
       
@@ -133,6 +139,8 @@ package editor.asset {
       public function ClearSelectedAssets ():void
       {
          mSelectionList.ClearSelectedAssets ();
+         
+         mMainSelectedAsset = null;
       }
       
       public function AddSelectedAssets (assetArray:Array):void
@@ -154,7 +162,7 @@ package editor.asset {
          }
       }
       
-      public function RemoveSelectedAssets (assetArray:Array):void
+      public function RemoveSelectAssets (assetArray:Array):void
       {
          if (assetArray == null)
             return;
@@ -170,6 +178,11 @@ package editor.asset {
          if (asset != null)
          {
             mSelectionList.RemoveSelectedAsset (asset)
+            
+            if (asset == mMainSelectedAsset)
+            {
+               mMainSelectedAsset = null;
+            }
          }
       }
       
@@ -180,16 +193,15 @@ package editor.asset {
          AddSelectedAssets (assetArray);
       }
       
-      public function SetSelectedAsset (asset:Asset):void
+      public function ToggleAssetsSelected (assetArray:Array):void
       {
-         ClearSelectedAssets ();
+         if (assetArray == null)
+            return;
          
-         AddSelectedAsset (asset);
-      }
-      
-      public function IsAssetSelected (asset:Asset):Boolean
-      {
-         return mSelectionList.IsAssetSelected (asset);
+         for (var i:uint = 0; i < assetArray.length; ++ i)
+         {
+            ToggleAssetSelected (assetArray[i] as Asset);
+         }
       }
       
       public function ToggleAssetSelected (asset:Asset):void
@@ -198,6 +210,32 @@ package editor.asset {
             mSelectionList.RemoveSelectedAsset (asset);
          else
             mSelectionList.AddSelectedAsset (asset);
+      }
+      
+      public function SetSelectedAsset (asset:Asset, mainSelection:Boolean = true):void
+      {
+         ClearSelectedAssets ();
+         
+         AddSelectedAsset (asset);
+         
+         SetMainSelectedAsset (mainSelection ? asset : null);
+      }
+      
+      protected var mMainSelectedAsset:Asset = null;
+      
+      public function GetMainSelectedAsset ():Asset
+      {
+         return mMainSelectedAsset;
+      }
+      
+      public function SetMainSelectedAsset (asset:Asset):void
+      {
+         mMainSelectedAsset = asset;
+      }
+      
+      public function IsAssetSelected (asset:Asset):Boolean
+      {
+         return mSelectionList.IsAssetSelected (asset);
       }
       
       public function AreSelectedAssetsContainingPoint (pointX:Number, pointY:Number):Boolean

@@ -35,7 +35,7 @@ package editor.asset {
          var h:int = bottom - top;
          
          var point1:Point = mAssetManagerPanel.ManagerToView (new Point (left, top));
-         var point2:Point = mAssetManagerPanel.ManagerToView (new Point (top, bottom));
+         var point2:Point = mAssetManagerPanel.ManagerToView (new Point (right, bottom));
          
          if (mBoxShape == null)
          {
@@ -43,7 +43,7 @@ package editor.asset {
             mAssetManagerPanel.mForegroundLayer.addChild (mBoxShape);
          }
          
-         GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, w, h);
+         GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, point2.x - point1.x, point2.y - point1.y);
          
          mAssetManagerPanel.RegionSelectAssets (left, top, right, bottom, mOldSelectedAssets);
       }

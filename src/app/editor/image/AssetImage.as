@@ -39,8 +39,8 @@ package editor.image {
    
    public class AssetImage extends Asset
    {
-      public static const AssetSpriteSize:int = 120;
-      public static const ImageIconSize:int = 100;
+      public static const AssetSpriteSize:int = 100;
+      public static const ImageIconSize:int = 80;
       
       protected var mAssetImageManager:AssetImageManager;
       
@@ -94,6 +94,7 @@ package editor.image {
             removeChild (mBitmap);
          }
          
+         //var loader:Loader = new Loader();
          var loader:LocalImageLoader = new LocalImageLoader ();
          loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
          loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
@@ -103,6 +104,7 @@ package editor.image {
       
       private function OnLoadImageComplete (event:Event):void
       {
+         //var newBitmap:Bitmap = event.target.content as Bitmap;
          var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
          mBitmap = new Bitmap (newBitmap.bitmapData);
          addChild (mBitmap);

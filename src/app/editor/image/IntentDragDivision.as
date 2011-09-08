@@ -24,16 +24,16 @@ package editor.image {
 
       override protected function Process (finished:Boolean):void
       {
-         var left:Number   = mStartX < mCurrentX ? mStartX : mCurrentX;
-         var right:Number  = mStartX >= mCurrentX ? mStartX : mCurrentX;
-         var top:Number    = mStartY < mCurrentY ? mStartY : mCurrentY;
-         var bottom:Number = mStartY >= mCurrentY ? mStartY : mCurrentY;
+         var left:int   = mStartX < mCurrentX ? mStartX : mCurrentX;
+         var right:int = mStartX >= mCurrentX ? mStartX : mCurrentX;
+         var top:int    = mStartY < mCurrentY ? mStartY : mCurrentY;
+         var bottom:int = mStartY >= mCurrentY ? mStartY : mCurrentY;
          
          var w:int = right - left;
          var h:int = bottom - top;
          
          var point1:Point = mAssetImageDividingPanel.ManagerToView (new Point (left, top));
-         var point2:Point = mAssetImageDividingPanel.ManagerToView (new Point (top, bottom));
+         var point2:Point = mAssetImageDividingPanel.ManagerToView (new Point (right, bottom));
          
          if (mBoxShape == null)
          {
@@ -42,7 +42,7 @@ package editor.image {
             mBoxShape.alpha = 0.5;
          }
          
-         GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, w, h, 0x00FF00, 0, true, 0xC0C0FF, false);
+         GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, point2.x - point1.x, point2.y - point1.y, 0x0000FF, 0, true, 0xC0C0FF, false);
 
          if (finished)
          {

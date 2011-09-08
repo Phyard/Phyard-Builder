@@ -69,6 +69,8 @@ package editor.image {
                
                mBackgroundLayer.addChild (mBitamp);
             }
+                                    
+            ScaleManager (1.0);
             
             MoveManager (0.5 * (mParentWidth - (mBitamp == null ? 0 : mBitamp.width)) - mAssetImageDivisionManager.x, 
                                      0.5 * (mParentHeight - (mBitamp == null ? 0 : mBitamp.height)) - mAssetImageDivisionManager.y
@@ -92,19 +94,23 @@ package editor.image {
       
       override public function MoveManager (dx:Number, dy:Number):void
       {
-         if (mAssetImageDivisionManager != null)
-         {
-            var intDx:int = int (dx);
-            var intDy:int = int (dy);
-            
-            mAssetImageDivisionManager.x += intDx;
-            mAssetImageDivisionManager.y += intDy;
+         super.MoveManager (dx, dy);
          
-            if (mBitamp != null)
-            {
-               mBitamp.x = mAssetImageDivisionManager.x;
-               mBitamp.y = mAssetImageDivisionManager.y;
-            }
+         if (mBitamp != null)
+         {
+            mBitamp.x = mAssetImageDivisionManager.x;
+            mBitamp.y = mAssetImageDivisionManager.y;
+         }
+      }
+      
+      override public function ScaleManager (scale:Number):void
+      {
+         super.ScaleManager (scale);
+         
+         if (mBitamp != null)
+         {
+            mBitamp.scaleX = mAssetImageDivisionManager.scaleX;
+            mBitamp.scaleY = mAssetImageDivisionManager.scaleY;
          }
       }
 
@@ -130,6 +136,15 @@ package editor.image {
          mAssetImageDivisionManager.DeleteSelectedAssets ();
       }
       
+//============================================================================
+//   
+//============================================================================
+      
+      override protected function OnMouseMoveInternal (managerX:Number, managerY:Number, isHold:Boolean, mIsCtrlDownOnMouseDown:Boolean, mIsShiftDownOnMouseDown:Boolean):void
+      {
+         
+      }
+
 //============================================================================
 //   
 //============================================================================

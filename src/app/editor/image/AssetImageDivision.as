@@ -39,10 +39,11 @@ package editor.image {
    {  
       protected var mAssetImageDivisionManager:AssetImageDivisionManager;
       
-      protected var mLeft:int;
-      protected var mTop:int;
-      protected var mRight:int;
-      protected var mBottom:int;
+      // in painting and saving, this 4 values are integers
+      protected var mLeft:Number;
+      protected var mTop:Number;
+      protected var mRight:Number;
+      protected var mBottom:Number;
       
       public function AssetImageDivision (assetImageDivisionManager:AssetImageDivisionManager)
       {
@@ -74,14 +75,36 @@ package editor.image {
 //   
 //=============================================================
       
+      public function GetLeft ():int
+      {
+         return Math.round (mLeft);
+      }
+      
+      public function GetRight ():int
+      {
+         return Math.round (mRight);
+      }
+      
+      public function GetTop ():int
+      {
+         return Math.round (mTop);
+      }
+      
+      public function GetBottom ():int
+      {
+         return Math.round (mBottom);
+      }
+      
       override public function SetPosition (posX:Number, posY:Number):void
       {
-         var dx:int = int (posX);
-         var dy:int = int (posY);
-         mLeft += dx;
-         mRight += dx;
-         mTop += dy;
-         mBottom += dy;
+         // mPosX and mPosY are always 0.
+      
+         //var dx:int = int (posX);
+         //var dy:int = int (posY);
+         mLeft += posX;
+         mRight += posX;
+         mTop += posY;
+         mBottom += posY;
          
          UpdateAppearance ();
       }
@@ -119,10 +142,19 @@ package editor.image {
 //   
 //=============================================================
       
+      public function UpdatePixels ():void
+      {
+         
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       override public function UpdateAppearance ():void
       {
-         GraphicsUtil.ClearAndDrawRect (this, mLeft, mTop, mRight - mLeft, mBottom - mTop,
-                                       0x00FF00, 0, true, IsSelected () ? 0xC0C0FF : 0xC0FFC0, false);
+         GraphicsUtil.ClearAndDrawRect (this, GetLeft (), GetTop (), GetRight () - GetLeft (), GetBottom () - GetTop (),
+                                       IsSelected () ? 0x0000FF : 0x00FF00, 0, true, IsSelected () ? 0xC0C0FF : 0xC0FFC0, false);
       }
       
       override public function UpdateSelectionProxy ():void

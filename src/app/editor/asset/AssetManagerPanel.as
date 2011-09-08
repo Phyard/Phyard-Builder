@@ -89,6 +89,31 @@ package editor.asset {
          }
       }
       
+      protected function GetMaxAllowedScale ():Number
+      {
+         return 4.0;
+      }
+      
+      protected function GetMinAllowedScale ():Number
+      {
+         return 1.0 / 4.0;
+      }
+      
+      public function ScaleManager (scale:Number):void
+      {
+         if (mAssetManager != null)
+         {
+            var currentScale:Number = mAssetManager.scaleX;
+            currentScale *= scale;
+            if (currentScale < GetMinAllowedScale ())
+               currentScale = GetMinAllowedScale ();
+            if (currentScale > GetMaxAllowedScale ())
+               currentScale = GetMaxAllowedScale ();
+            
+            mAssetManager.scaleX = mAssetManager.scaleY = currentScale;
+         }
+      }
+      
 //=================================================================================
 // coordinates
 //=================================================================================
@@ -277,7 +302,7 @@ package editor.asset {
             return;
          }
          
-         if (mIsShiftDownOnMouseDown && (! mIsCtrlDownOnMouseDown))
+         if (mIsShiftDownOnMouseDown)
          {
             SetCurrentIntent (new IntentPanManager (this));
             mCurrentIntent.OnMouseDown (managerPoint.x, managerPoint.y);
@@ -314,9 +339,6 @@ package editor.asset {
          var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
          if (PointSelectAsset (managerX, managerY))
          {
-            var asset:Asset = assetArray[0] as Asset;
-            mAssetManager.AddSelectedAsset (asset);
-            
             SetCurrentIntent (new IntentMoveSelectedAssets (this));
             mCurrentIntent.OnMouseDown (managerX, managerY);
 
@@ -339,7 +361,7 @@ package editor.asset {
          if (assetArray != null && assetArray.length > 0)
          {
             var asset:Asset = assetArray[0] as Asset;
-            mAssetManager.AddSelectedAsset (asset);
+            mAssetManager.SetSelectedAsset (asset);
             
             return true;
          }
@@ -424,7 +446,18 @@ package editor.asset {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         trace ("delta: " + event.delta);
+         stage.focus = this;
+         
+         if (mAssetManager == null)
+            return;
+         
+         var oldMouseManagerPoint:Point = DisplayObjectUtil.LocalToLocal (this, mAssetManager, new Point (mouseX, mouseY));
+
+         ScaleManager (event.delta > 0 ? 1.1 : 0.9);
+
+         var newMousePoint:Point = DisplayObjectUtil.LocalToLocal (mAssetManager, this, oldMouseManagerPoint);
+         
+         MoveManager (mouseX - newMousePoint.x, mouseY - newMousePoint.y);
       }
       
 //=================================================================================
@@ -442,18 +475,10 @@ package editor.asset {
 
          if (mIsCtrlDownOnMouseDown)
          {
-            if (mIsShiftDownOnMouseDown)
-            {
-               mAssetManager.AddSelectedAssets (oldSelectedAssets);
-               mAssetManager.RemoveSelectedAssets (newSelectedAssets);
-            }
-            else
-            {
-               mAssetManager.AddSelectedAssets (oldSelectedAssets);
-               mAssetManager.AddSelectedAssets (newSelectedAssets);
-            }
+            mAssetManager.AddSelectedAssets (oldSelectedAssets);
+            mAssetManager.ToggleAssetsSelected (newSelectedAssets);
          }
-         else if (! mIsShiftDownOnMouseDown) // sure
+         else
          {
             mAssetManager.AddSelectedAssets (newSelectedAssets);
          }

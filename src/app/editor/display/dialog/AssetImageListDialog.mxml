@@ -12,14 +12,14 @@
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
     creationComplete="InitDialog ();"
-    close="HideAssetImageEditDialog ();"
+    close="HideAssetImageListDialog ();"
     >
 
    <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
       <mx:HBox id="Box_DesignCommands" width="100%" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
-         <mx:Button id="Button_CreateImage" toolTip="New Image" click="panelAssetImageEditing.CreateNewImage ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
+         <mx:Button id="Button_CreateImage" toolTip="New Image" click="panelAssetImageListing.CreateNewImage ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
          <mx:Spacer width="30"/>
-         <mx:Button id="Button_DeleteImage" toolTip="Delete Image" click="panelAssetImageEditing.DeleteImage ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
+         <mx:Button id="Button_DeleteImage" toolTip="Delete Image" click="panelAssetImageListing.DeleteImage ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
          <mx:Spacer width="30"/>
          <mx:Spacer width="100%"/>
          <mx:Label id="Label_ImageInfo" fontSize="8" text="5 images, total bytes: 123k" />
@@ -30,7 +30,7 @@
                   horizontalScrollPolicy="off" verticalScrollPolicy="auto"
                   horizontalGap="0" verticalGap="0" borderThickness="0"
                   >
-            <image:AssetImageEditingPanel id="panelAssetImageEditing" width="100%" height="100%"/>
+            <image:AssetImageListingPanel id="panelAssetImageListing" width="100%" height="100%"/>
          </mx:HBox>
          <mx:VBox id="Box_PureModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
          </mx:VBox>
@@ -42,44 +42,44 @@
       
          import mx.managers.PopUpManager;
          
-         import editor.image.AssetImageEditingPanel;
+         import editor.image.AssetImageListingPanel;
          
          import editor.runtime.Runtime;
          
 
       // static functions
          
-         private static var sAssetImageEditDialog:AssetImageEditDialog = null;
-         public static function ShowAssetImageEditDialog ():void
+         private static var sAssetImageListDialog:AssetImageListDialog = null;
+         public static function ShowAssetImageListDialog ():void
          {
-            if (sAssetImageEditDialog == null)
+            if (sAssetImageListDialog == null)
             {
-               sAssetImageEditDialog = new AssetImageEditDialog ();
+               sAssetImageListDialog = new AssetImageListDialog ();
             }
             
-            if (sAssetImageEditDialog.parent != null)
+            if (sAssetImageListDialog.parent != null)
             {
-               PopUpManager.bringToFront (sAssetImageEditDialog);
+               PopUpManager.bringToFront (sAssetImageListDialog);
             }
             else
             {
-               PopUpManager.addPopUp (sAssetImageEditDialog, Runtime.GetApplication (), false);
-               PopUpManager.centerPopUp (sAssetImageEditDialog);
+               PopUpManager.addPopUp (sAssetImageListDialog, Runtime.GetApplication (), false);
+               PopUpManager.centerPopUp (sAssetImageListDialog);
             }
             
-            sAssetImageEditDialog.GetAssetImageEditingPanel ().SetAssetImageManager (Runtime.GetCurrentWorld ().GetAssetImageManager ());            
+            sAssetImageListDialog.GetAssetImageListingPanel ().SetAssetImageManager (Runtime.GetCurrentWorld ().GetAssetImageManager ());            
          }
          
-         public static function HideAssetImageEditDialog ():void
+         public static function HideAssetImageListDialog ():void
          {
-            PopUpManager.removePopUp(sAssetImageEditDialog);
+            PopUpManager.removePopUp(sAssetImageListDialog);
          }
          
       //=====================================================================
       
-         public function GetAssetImageEditingPanel ():AssetImageEditingPanel
+         public function GetAssetImageListingPanel ():AssetImageListingPanel
          {
-            return panelAssetImageEditing;
+            return panelAssetImageListing;
          }
       
          public function InitDialog ():void

@@ -40,11 +40,11 @@ package editor.image {
    import common.Define;
    import common.Version;
    
-   public class AssetImageEditingPanel extends AssetManagerPanel 
+   public class AssetImageListingPanel extends AssetManagerPanel 
    {
       protected var mAssetImageManager:AssetImageManager;
       
-      public function AssetImageEditingPanel ()
+      public function AssetImageListingPanel ()
       {
       }
       

@@ -157,7 +157,7 @@ package editor {
    import editor.trigger.Filters;
    
    import editor.display.dialog.AssetSoundEditDialog;
-   import editor.display.dialog.AssetImageEditDialog;
+   import editor.display.dialog.AssetImageListDialog;
    import editor.display.dialog.AssetModelEditDialog;
    import editor.display.panel.CollisionManagerView;
    import editor.display.panel.FunctionEditingView;
@@ -3340,9 +3340,12 @@ package editor {
                   AssetSoundEditDialog.ShowAssetSoundEditDialog ();
                   break;
                case Keyboard.F6:
-                  AssetImageEditDialog.ShowAssetImageEditDialog ();
+                  AssetImageListDialog.ShowAssetImageListDialog ();
                   break;
                case Keyboard.F7:
+                  //AssetImageListDialog.ShowAssetImageEditDialog ();
+                  break;
+               case Keyboard.F8:
                   AssetModelEditDialog.ShowAssetModelEditDialog ();
                   break;
                default:

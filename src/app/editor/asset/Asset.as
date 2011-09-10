@@ -3,12 +3,14 @@ package editor.asset {
    
    import flash.display.Sprite;
    
+   import editor.core.EditorObject;
+   
    import editor.selection.SelectionProxy;
    
    import common.Define;
    import common.ValueAdjuster;
    
-   public class Asset extends Sprite
+   public class Asset extends EditorObject
    {
       protected var mAssetManager:AssetManager;
       protected var mAppearanceLayerId:int = -1;

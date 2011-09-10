@@ -35,7 +35,7 @@ package editor.image {
    import common.Define;
    import common.ValueAdjuster;
    
-   public class AssetImageDivision extends Asset
+   public class AssetImageDivision extends AssetImageModule //Asset
    {  
       protected var mAssetImageDivisionManager:AssetImageDivisionManager;
       

@@ -8,8 +8,6 @@ package editor.image {
    
    import editor.asset.AssetManager; 
    
-   import editor.display.dialog.AssetImageDivideDialog;
-   
    import common.CoordinateSystem;
    
    import common.Define;
@@ -19,23 +17,11 @@ package editor.image {
    {
       private var mAssetImage:AssetImage;
       
-      private var mAssetImageDivideDialog:AssetImageDivideDialog;
-      
       public function AssetImageDivisionManager (assetImage:AssetImage)
       {
          super ();
          
          mAssetImage = assetImage;
-      }
-      
-      public function SetAssetImageDivideDialog (assetImageDivideDialog:AssetImageDivideDialog):void
-      {
-         mAssetImageDivideDialog = assetImageDivideDialog;
-      }
-      
-      public function GetAssetImageDivideDialog ():AssetImageDivideDialog
-      {
-         return mAssetImageDivideDialog;
       }
       
       public function GetAssetImage ():AssetImage

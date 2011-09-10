@@ -36,11 +36,13 @@
          
          import editor.image.AssetImageDivisionManager;
          
+         import editor.image.AssetImage;
+         
          import editor.runtime.Runtime;
          
-         public static function ShowAssetImageDivideDialog (assetImageDivisionManager:AssetImageDivisionManager):void
+         public static function ShowAssetImageDivideDialog (assetImage:AssetImage):void
          {
-            var assetImageDivideDialog:AssetImageDivideDialog = assetImageDivisionManager.GetAssetImageDivideDialog ();
+            var assetImageDivideDialog:AssetImageDivideDialog = assetImage.GetAssetImageDivideDialog ();
             
             if (assetImageDivideDialog == null)
             {
@@ -57,21 +59,21 @@
                PopUpManager.centerPopUp (assetImageDivideDialog);
             }
             
-            assetImageDivideDialog.GetAssetImageDividingPanel ().SetAssetImageDivisionManager (assetImageDivisionManager);
-            assetImageDivisionManager.SetAssetImageDivideDialog (assetImageDivideDialog);
+            assetImageDivideDialog.GetAssetImageDividingPanel ().SetAssetImageDivisionManager (assetImage.GetAssetImageDivisionManager ());
+            assetImage.SetAssetImageDivideDialog (assetImageDivideDialog);
          }
          
          public function Hide ():void
          {
             PopUpManager.removePopUp(this);
          }
+      
+      //=====================================================================
          
          public function GetAssetImageDividingPanel ():AssetImageDividingPanel
          {
             return panelAssetImageDividing;
          }
-      
-      //=====================================================================
       
          public function InitDialog ():void
          {

@@ -66,6 +66,7 @@ package editor.world {
    import editor.trigger.PlayerFunctionDefinesForEditing;
    
    import editor.image.AssetImageManager;
+   import editor.image.AssetImageCompositeModuleManager;
    
    import common.Define;
    import common.ValueAdjuster;
@@ -83,6 +84,8 @@ package editor.world {
       public var mFunctionManager:FunctionManager;
 
       protected var mAssetImageManager:AssetImageManager;
+      
+      protected var mAssetImageCompositeModuleManager:AssetImageCompositeModuleManager;
       
       // temp the 2 is not used
       // somewhere need to be modified to use the 2 
@@ -108,6 +111,8 @@ package editor.world {
          mFunctionManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
          
          mAssetImageManager = new AssetImageManager ();
+         
+         mAssetImageCompositeModuleManager = new AssetImageCompositeModuleManager ();
       }
       
       override public function Destroy ():void
@@ -1563,6 +1568,11 @@ package editor.world {
       public function GetAssetImageManager ():AssetImageManager
       {
          return mAssetImageManager;
+      }
+      
+      public function GetAssetImageCompositeModuleManager ():AssetImageCompositeModuleManager
+      {
+         return mAssetImageCompositeModuleManager;
       }
       
 //=================================================================================

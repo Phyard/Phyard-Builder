@@ -35,9 +35,8 @@ package editor.image {
    import editor.display.dialog.AssetImageDivideDialog;
    
    import common.Define;
-   import common.ValueAdjuster;
    
-   public class AssetImage extends Asset
+   public class AssetImage extends AssetImageModule //Asset
    {
       public static const AssetSpriteSize:int = 100;
       public static const ImageIconSize:int = 80;
@@ -160,7 +159,7 @@ package editor.image {
       }
       
 //=============================================================
-//   
+//   context menu
 //=============================================================
       
       private var mMenuItemLoadImage:ContextMenuItem;
@@ -192,11 +191,23 @@ package editor.image {
                OpenLocalImageFileDialog ();
                break;
             case mMenuItemDivideImage:
-               AssetImageDivideDialog.ShowAssetImageDivideDialog (mAssetImageDivisionManager);
+               AssetImageDivideDialog.ShowAssetImageDivideDialog (this);
                break;
             default:
                break;
          }
+      }
+      
+      private var mAssetImageDivideDialog:AssetImageDivideDialog;
+      
+      public function SetAssetImageDivideDialog (assetImageDivideDialog:AssetImageDivideDialog):void
+      {
+         mAssetImageDivideDialog = assetImageDivideDialog;
+      }
+      
+      public function GetAssetImageDivideDialog ():AssetImageDivideDialog
+      {
+         return mAssetImageDivideDialog;
       }
       
       private static const kFileFilter:Array = [new FileFilter("Image File", "*jpg;*.png;*.gif;")];

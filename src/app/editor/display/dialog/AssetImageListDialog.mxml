@@ -8,7 +8,7 @@
     xmlns:image="editor.image.*" 
     xmlns="editor.display.dialog.*"
     title="Image Assets Manager"
-    width="350" height="600"
+    width="600" height="600"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
     creationComplete="InitDialog ();"
@@ -24,8 +24,8 @@
          <mx:Spacer width="100%"/>
          <mx:Label id="Label_ImageInfo" fontSize="8" text="5 images, total bytes: 123k" />
       </mx:HBox>
-      <mx:VDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
-         <mx:HBox backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="239"
+      <mx:HDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
+         <mx:HBox backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="100%"
                   paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                   horizontalScrollPolicy="off" verticalScrollPolicy="auto"
                   horizontalGap="0" verticalGap="0" borderThickness="0"
@@ -33,8 +33,12 @@
             <image:AssetImageListingPanel id="panelAssetImageListing" width="100%" height="100%"/>
          </mx:HBox>
          <mx:VBox id="Box_PureModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+            <image:AssetImageCompositeModuleListingPanel id="panelAssetImagePureModuleListing" width="100%" height="100%"/>
          </mx:VBox>
-      </mx:VDividedBox>
+         <mx:VBox id="Box_CompositeModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+            <image:AssetImageCompositeModuleListingPanel id="panelAssetImageCompositeModuleListing" width="100%" height="100%"/>
+         </mx:VBox>
+      </mx:HDividedBox>
    </mx:VBox>
 
    <mx:Script>
@@ -84,7 +88,7 @@
       
          public function InitDialog ():void
          {
-            theDividedBox.moveDivider(0, 100000);
+            //theDividedBox.moveDivider(0, 100000);
          }
 
      ]]>

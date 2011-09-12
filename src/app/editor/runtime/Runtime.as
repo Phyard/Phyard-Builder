@@ -2,6 +2,9 @@ package editor.runtime {
    
    import flash.display.DisplayObject;
    
+   import flash.ui.ContextMenuItem;
+   import flash.events.ContextMenuEvent;
+   
    import mx.core.Application;
    
    import com.tapirgames.util.UrlUtil;
@@ -16,6 +19,7 @@ package editor.runtime {
    import editor.trigger.FunctionDefinition
    
    import common.Define;
+   import common.Version;
    
    public class Runtime
    {
@@ -70,8 +74,24 @@ package editor.runtime {
 //=====================================================================
 //
 //=====================================================================
+
+      private static var mMenuItemAbout:ContextMenuItem = null;
       
-      public static function OpenAboutLink ():void
+      public static function GetAboutContextMenuItem ():ContextMenuItem
+      {
+         if (mMenuItemAbout == null)
+         {
+            var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
+            var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
+            
+            mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16)); //, true);
+            mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
+         }
+         
+         return mMenuItemAbout;
+      }
+      
+      private static function OnAbout (event:ContextMenuEvent):void
       {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
@@ -221,6 +241,18 @@ package editor.runtime {
       //
       //public static var mShape_DrawBorder:Boolean = true;
       //public static var mShape_BorderColor:uint = Define.ColorObjectBorder;
+      
+//=====================================================================
+//
+//=====================================================================
+
+      // call this before loading a new world
+      public static function Cleanup ():void
+      {
+         // todo: nullify/removeChild dialog references, ..., etc.
+           // ex: AssetImageModuleListDialog.removeChild (3 managers), hideAssetImageModuleListDialog,...
+      }
+
    }
    
 }

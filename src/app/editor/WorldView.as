@@ -156,8 +156,8 @@ package editor {
    
    import editor.trigger.Filters;
    
-   import editor.display.dialog.AssetSoundEditDialog;
-   import editor.display.dialog.AssetImageListDialog;
+   import editor.sound.dialog.AssetSoundListDialog;
+   import editor.image.dialog.AssetImageModuleListDialog;
    import editor.display.panel.CollisionManagerView;
    import editor.display.panel.FunctionEditingView;
    
@@ -1561,12 +1561,6 @@ package editor {
       
    // context menu
       
-      private var mMenuItemAbout:ContextMenuItem;
-      
-      //private var mMenuItemExportSelectedsToSystemMemory:ContextMenuItem;
-      //private var mMenuItemImport:ContextMenuItem;
-      //private var mMenuItemQuickLoad:ContextMenuItem;
-      
       private function BuildContextMenu ():void
       {
          var theContextMenu:ContextMenu = new ContextMenu ();
@@ -1584,43 +1578,7 @@ package editor {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
             
-         
-         //mMenuItemExportSelectedsToSystemMemory = new ContextMenuItem ("Export Selected(s) to System Memory", true);
-         //theContextMenu.customItems.push (mMenuItemExportSelectedsToSystemMemory);
-         //mMenuItemExportSelectedsToSystemMemory.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         
-         //mMenuItemImport = new ContextMenuItem ("Import ...", false);
-         //theContextMenu.customItems.push (mMenuItemImport);
-         //mMenuItemImport.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         
-         //mMenuItemQuickLoad = new ContextMenuItem ("Load Quick Save Data ...", false);
-         //theContextMenu.customItems.push (mMenuItemQuickLoad);
-         //mMenuItemQuickLoad.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         
-         mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + DataFormat3.GetVersionString (Version.VersionNumber)); //, true);
-         theContextMenu.customItems.push (mMenuItemAbout);
-         mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-      }
-      
-      private function OnContextMenuEvent (event:ContextMenuEvent):void
-      {
-         switch (event.target)
-         {
-            //case mMenuItemExportSelectedsToSystemMemory:
-            //   ExportSelectedsToSystemMemory ();
-            //   break;
-            //case mMenuItemImport:
-            //   OpenImportSourceCodeDialog ();
-            //   break;
-            //case mMenuItemQuickLoad:
-            //   QuickLoad ();
-            //   break;
-            case mMenuItemAbout:
-               Runtime.OpenAboutLink ();
-               break;
-            default:
-               break;
-         }
+         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
       }
       
       private function SetEditorWorld (newEditorWorld:editor.world.World, firstTime:Boolean = false):void
@@ -3336,10 +3294,10 @@ package editor {
                   RoundPositionForSelectedEntities ();
                   break;
                case Keyboard.F5:
-                  AssetSoundEditDialog.ShowAssetSoundEditDialog ();
+                  AssetSoundListDialog.ShowAssetSoundListDialog ();
                   break;
                case Keyboard.F6:
-                  AssetImageListDialog.ShowAssetImageListDialog ();
+                  AssetImageModuleListDialog.ShowAssetImageModuleListDialog ();
                   break;
                default:
                   break;

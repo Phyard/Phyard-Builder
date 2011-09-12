@@ -1,6 +1,7 @@
 
 package editor.image {
    
+   import flash.display.DisplayObject;
    import flash.display.Sprite;
    import flash.display.Shape;
    import flash.display.Bitmap;
@@ -35,7 +36,7 @@ package editor.image {
    import common.Define;
    import common.ValueAdjuster;
    
-   public class AssetImageDivision extends AssetImageModule //Asset
+   public class AssetImageDivision extends Asset
    {  
       protected var mAssetImageDivisionManager:AssetImageDivisionManager;
       
@@ -45,6 +46,8 @@ package editor.image {
       protected var mRight:Number;
       protected var mBottom:Number;
       
+      protected var mImagePureModule:AssetImagePureModule;
+      
       public function AssetImageDivision (assetImageDivisionManager:AssetImageDivisionManager)
       {
          super (assetImageDivisionManager);
@@ -52,8 +55,6 @@ package editor.image {
          mAssetImageDivisionManager = assetImageDivisionManager;
          
          alpha = 0.5;
-         
-         //BuildContextMenu ();
       }
       
       public function GetAssetImageDivisionManager ():AssetImageDivisionManager
@@ -61,14 +62,19 @@ package editor.image {
          return mAssetImageDivisionManager;
       }
       
+      internal function SetImagePureModule (assetImagePureModule:AssetImagePureModule):void
+      {
+         mImagePureModule = assetImagePureModule;
+      }
+      
       override public function ToCodeString ():String
       {
-         return "Module#" + mCreationOrderId;
+         return "Pure Module#" + mCreationOrderId;
       }
       
       override public function GetTypeName ():String
       {
-         return "Module";
+         return "Pure Module";
       }
       
 //=============================================================
@@ -133,8 +139,6 @@ package editor.image {
             mBottom = top;
          }
          
-         UpdateAppearance ();
-         
          //if ()
       }
 
@@ -145,6 +149,16 @@ package editor.image {
       public function UpdatePixels ():void
       {
          
+      }
+      
+      public function CreateSpriteForImagePureModule ():DisplayObject
+      {
+         return null;
+      }
+      
+      public function GetBoundingRectangleForImagePureModule ():Array
+      {
+         return null;
       }
       
 //=============================================================
@@ -176,22 +190,15 @@ package editor.image {
 //   
 //=============================================================
       /*
-      private var mContextMenu:ContextMenu;
       private var mMenuItemDelete:ContextMenuItem;
       
-      final private function BuildContextMenu ():void
+      override protected function BuildContextMenuInternal ():void
       {
-         mContextMenu = new ContextMenu ();
-         mContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = mContextMenu.builtInItems;
-         defaultItems.print = true;
-         contextMenu = mContextMenu;
-         
          mMenuItemDelete = new ContextMenuItem("Delete ...");
          
          mMenuItemDelete.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-
-         mContextMenu.customItems.push (mMenuItemDelete);
+         
+         contextMenu.customItems.push (mMenuItemDelete);
       }
       
       private function OnContextMenuEvent (event:ContextMenuEvent):void

@@ -84,8 +84,7 @@ package editor.asset {
       {
          if (mAssetManager != null)
          {
-            mAssetManager.x += dx;
-            mAssetManager.y += dy;
+            mAssetManager.SetPosition (mAssetManager.x + dx, mAssetManager.y + dy);
          }
       }
       
@@ -110,7 +109,7 @@ package editor.asset {
             if (currentScale > GetMaxAllowedScale ())
                currentScale = GetMaxAllowedScale ();
             
-            mAssetManager.scaleX = mAssetManager.scaleY = currentScale;
+            mAssetManager.SetScale (currentScale);
          }
       }
       
@@ -174,6 +173,11 @@ package editor.asset {
             
             GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, mParentContainerWidth - 1, mParentContainerHeight - 1, 0x0, 1, true, 0xFFFFFF);
             GraphicsUtil.ClearAndDrawRect (mContentMaskSprite, 0, 0, mParentContainerWidth - 1, mParentContainerHeight - 1, 0x0, 1, true);
+            
+            if (mAssetManager != null)
+            {
+               mAssetManager.SetViewportSize (mParentContainerWidth, mParentContainerHeight);
+            }
          }
       }
       
@@ -210,8 +214,6 @@ package editor.asset {
 // context menu
 //=====================================================================
       
-      private var mMenuItemAbout:ContextMenuItem;
-      
       final private function BuildContextMenu ():void
       {
          var theContextMenu:ContextMenu = new ContextMenu ();
@@ -229,26 +231,14 @@ package editor.asset {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
          
-         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
+         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
          
-         mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16)); //, true);
-         mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-
-         theContextMenu.customItems.push (mMenuItemAbout);
+         BuildContextMenuInternal ();
       }
       
-      private function OnContextMenuEvent (event:ContextMenuEvent):void
+      protected function BuildContextMenuInternal ():void
       {
-         switch (event.target)
-         {
-            case mMenuItemAbout:
-               Runtime.OpenAboutLink ();
-               break;
-            default:
-               break;
-         }
-      }
+      } 
       
 //==================================================================================
 // edit mode

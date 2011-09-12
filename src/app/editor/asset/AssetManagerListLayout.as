@@ -6,6 +6,8 @@ package editor.asset {
    import flash.geom.Point;
    import flash.geom.Matrix;
    
+   import flash.events.Event;
+   
    import editor.selection.SelectionEngine;
    
    import editor.core.EditorObject;
@@ -34,6 +36,9 @@ package editor.asset {
          mSelectionEngine = new SelectionEngine ();
          
          mSelectionList = new AssetSelectionList ();
+         
+         addEventListener (Event.ADDED_TO_STAGE , OnResize);
+         addEventListener (Event.RESIZE, OnResize);
       }
       
       public function GetSelectionEngine ():SelectionEngine
@@ -62,24 +67,16 @@ package editor.asset {
 //   
 //=================================================================================
       
-      public function SetPosition (px:Number, py:Number):void
-      {
-         x = px;
-         y = py;
-      }
-      
-      public function SetScale (s:Number):void
-      {
-         scaleX = scaleY = s;
-      }
-      
       protected var mViewWidth:Number;
       protected var mViewHeight:Number;
       
-      public function SetViewportSize (parentViewWidth:Number, parentViewHeight:Number):void
+      protected function OnResize (event:Event):void
       {
-         mViewWidth  = parentViewWidth  / this.scaleX;
-         mViewHeight = parentViewHeight / this.scaleY;
+         if (parent == null)
+            return;
+         
+         mViewWidth  = parent.width  / this.scaleX;
+         mViewHeight = parent.height / this.scaleY;
       }
       
 //=================================================================================

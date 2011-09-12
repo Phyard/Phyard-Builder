@@ -39,6 +39,7 @@ package editor.image {
          
          var imageDivision:AssetImageDivision = new AssetImageDivision (this);
          imageDivision.SetRegion (left, top, right, bottom);
+         imageDivision.UpdateAppearance ();
          imageDivision.UpdateSelectionProxy ();
          addChild (imageDivision);
          

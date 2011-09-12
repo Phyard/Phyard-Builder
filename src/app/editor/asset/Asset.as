@@ -3,9 +3,17 @@ package editor.asset {
    
    import flash.display.Sprite;
    
+   import flash.ui.ContextMenu;
+   import flash.ui.ContextMenuItem;
+   import flash.ui.ContextMenuBuiltInItems;
+   //import flash.ui.ContextMenuClipboardItems; // flash 10
+   import flash.events.ContextMenuEvent;
+   
    import editor.core.EditorObject;
    
    import editor.selection.SelectionProxy;
+   
+   import editor.runtime.Runtime;
    
    import common.Define;
    import common.ValueAdjuster;
@@ -25,6 +33,8 @@ package editor.asset {
       
       public function Asset (assetManager:AssetManager)
       {
+         BuildContextMenu ();
+         
          mAssetManager = assetManager;
          
          if (mAssetManager != null) // at some special cases, mAssetManager is null
@@ -94,11 +104,18 @@ package editor.asset {
 //======================================================
       
       public function Destroy ():void
-      {
+      {  
          if (mSelectionProxy != null)
             mSelectionProxy.Destroy ();
          
          mAssetManager.OnAssetDestroyed (this);
+         
+         UnreferAllReferings ();
+         NotifyDestroyedForReferers ();
+         if (Compile::Is_Debugging)
+         {
+            FinalAssertReferPairs ();
+         }
       }
       
       public function Update (escapedTime:Number):void
@@ -296,5 +313,26 @@ package editor.asset {
       public function SetPropertyValue (propertyId:int, value:Object):void
       {
       }
+      
+//=============================================================
+//   context menu
+//=============================================================
+      
+      final private function BuildContextMenu ():void
+      {
+         var theContextMenu:ContextMenu = new ContextMenu ();
+         theContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
+         defaultItems.print = true;
+         contextMenu = theContextMenu;
+         
+         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
+         
+         BuildContextMenuInternal ();
+      }
+      
+      protected function BuildContextMenuInternal ():void
+      {
+      } 
    }
 }

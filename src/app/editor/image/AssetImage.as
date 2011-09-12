@@ -1,6 +1,7 @@
 
 package editor.image {
    
+   import flash.display.DisplayObject;
    import flash.display.Sprite;
    import flash.display.Shape;
    import flash.display.Bitmap;
@@ -32,20 +33,17 @@ package editor.image {
    
    import editor.asset.Asset;
    
-   import editor.display.dialog.AssetImageDivideDialog;
+   import editor.image.dialog.AssetImageDivideDialog;
    
    import common.Define;
    
    public class AssetImage extends AssetImageModule //Asset
    {
-      public static const AssetSpriteSize:int = 100;
-      public static const ImageIconSize:int = 80;
-      
       protected var mAssetImageManager:AssetImageManager;
       
       protected var mAssetImageDivisionManager:AssetImageDivisionManager;
       
-      private var mBitmap:Bitmap = null;
+      private var mBitmapData:BitmapData = null;
       
       public function AssetImage (assetImageManager:AssetImageManager)
       {
@@ -54,8 +52,6 @@ package editor.image {
          mAssetImageManager = assetImageManager;
          
          mAssetImageDivisionManager = new AssetImageDivisionManager (this);
-         
-         BuildContextMenu ();
       }
       
       public function GetAssetImageManager ():AssetImageManager
@@ -88,10 +84,7 @@ package editor.image {
       {
          mFileData = fileData;
          
-         if (mBitmap != null && contains (mBitmap))
-         {
-            removeChild (mBitmap);
-         }
+         mBitmapData = null;
          
          //var loader:Loader = new Loader();
          var loader:LocalImageLoader = new LocalImageLoader ();
@@ -105,8 +98,7 @@ package editor.image {
       {
          //var newBitmap:Bitmap = event.target.content as Bitmap;
          var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
-         mBitmap = new Bitmap (newBitmap.bitmapData);
-         addChild (mBitmap);
+         mBitmapData = newBitmap.bitmapData;
          
          UpdateAppearance ();
       }
@@ -118,44 +110,29 @@ package editor.image {
       
       public function GetBitmapData ():BitmapData
       {
-         return mBitmap == null ? null : mBitmap.bitmapData;
+         return mBitmapData;
       }
       
 //=============================================================
 //   
 //=============================================================
       
-      override public function UpdateAppearance ():void
+      override public function CreateModuleSprite ():DisplayObject
       {
-         var halfSpriteSize:int = AssetSpriteSize * 0.5;
-         GraphicsUtil.ClearAndDrawRect (this, - halfSpriteSize, - halfSpriteSize, AssetSpriteSize, AssetSpriteSize,
-                                       0x0, 0, true, IsSelected () ? 0xC0C0FF : 0xFFFFFF, false);
-         
-         if (mBitmap == null)
-         {
-            GraphicsUtil.DrawLine (this, - halfSpriteSize, - halfSpriteSize, halfSpriteSize, halfSpriteSize); 
-            GraphicsUtil.DrawLine (this, halfSpriteSize, - halfSpriteSize,  -halfSpriteSize, halfSpriteSize); 
-         }
-         else
-         {
-            var bitmapData:BitmapData = mBitmap.bitmapData;
-            var bitmapSize:int = bitmapData.width > bitmapData.height ? bitmapData.width : bitmapData.height;
-            mBitmap.scaleX = mBitmap.scaleY = bitmapSize <= ImageIconSize ? 1.0 : Number (ImageIconSize) / Number (bitmapSize);
-            mBitmap.x = - 0.5 * mBitmap.width;
-            mBitmap.y = - 0.5 * mBitmap.height;
-         }
+         return mBitmapData == null ? null : new Bitmap (mBitmapData);
       }
       
-      override public function UpdateSelectionProxy ():void
+      override public function GetModuleBoundingRectangle ():Array
       {
-         if (mSelectionProxy == null)
-         {
-            mSelectionProxy = mAssetManager.GetSelectionEngine ().CreateProxyRectangle ();
-            mSelectionProxy.SetUserData (this);
-         }
+         if (mBitmapData == null)
+            return null;
          
-         var halfSpriteSize:int = AssetSpriteSize * 0.5;
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, GetPositionX (), GetPositionY (), halfSpriteSize, halfSpriteSize);
+         var rectData:Array = new Array (4);
+         rectData [0] = 0;
+         rectData [1] = 0;
+         rectData [2] = mBitmapData.width;
+         rectData [3] = mBitmapData.height;
+         return rectData;
       }
       
 //=============================================================
@@ -165,22 +142,16 @@ package editor.image {
       private var mMenuItemLoadImage:ContextMenuItem;
       private var mMenuItemDivideImage:ContextMenuItem;
       
-      final private function BuildContextMenu ():void
+      override protected function BuildContextMenuInternal ():void
       {
-         var theContextMenu:ContextMenu = new ContextMenu ();
-         theContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
-         defaultItems.print = true;
-         contextMenu = theContextMenu;
-         
          mMenuItemLoadImage = new ContextMenuItem("(Re)load Local Image ...");
          mMenuItemDivideImage = new ContextMenuItem("Divide ...");
          
          mMenuItemLoadImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          mMenuItemDivideImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
 
-         theContextMenu.customItems.push (mMenuItemLoadImage);
-         theContextMenu.customItems.push (mMenuItemDivideImage);
+         contextMenu.customItems.push (mMenuItemLoadImage);
+         contextMenu.customItems.push (mMenuItemDivideImage);
       }
       
       private function OnContextMenuEvent (event:ContextMenuEvent):void

@@ -922,8 +922,6 @@ package editor.display.panel {
 // context menu
 //=====================================================================
       
-      private var mMenuItemAbout:ContextMenuItem;
-      
       private function BuildContextMenu ():void
       {
          var theContextMenu:ContextMenu = new ContextMenu ();
@@ -941,25 +939,7 @@ package editor.display.panel {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
             
-         
-         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
-         
-         mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16)); //, true);
-         theContextMenu.customItems.push (mMenuItemAbout);
-         mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-      }
-      
-      private function OnContextMenuEvent (event:ContextMenuEvent):void
-      {
-         switch (event.target)
-         {
-            case mMenuItemAbout:
-               Runtime.OpenAboutLink ();
-               break;
-            default:
-               break;
-         }
+         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
       }
       
    }

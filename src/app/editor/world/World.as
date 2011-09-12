@@ -66,6 +66,7 @@ package editor.world {
    import editor.trigger.PlayerFunctionDefinesForEditing;
    
    import editor.image.AssetImageManager;
+   import editor.image.AssetImagePureModuleManager;
    import editor.image.AssetImageCompositeModuleManager;
    
    import common.Define;
@@ -84,7 +85,7 @@ package editor.world {
       public var mFunctionManager:FunctionManager;
 
       protected var mAssetImageManager:AssetImageManager;
-      
+      protected var mAssetImagePureModuleManager:AssetImagePureModuleManager;
       protected var mAssetImageCompositeModuleManager:AssetImageCompositeModuleManager;
       
       // temp the 2 is not used
@@ -111,7 +112,7 @@ package editor.world {
          mFunctionManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
          
          mAssetImageManager = new AssetImageManager ();
-         
+         mAssetImagePureModuleManager = new AssetImagePureModuleManager ();
          mAssetImageCompositeModuleManager = new AssetImageCompositeModuleManager ();
       }
       
@@ -1568,6 +1569,11 @@ package editor.world {
       public function GetAssetImageManager ():AssetImageManager
       {
          return mAssetImageManager;
+      }
+      
+      public function GetAssetImagePureModuleManager ():AssetImagePureModuleManager
+      {
+         return mAssetImagePureModuleManager;
       }
       
       public function GetAssetImageCompositeModuleManager ():AssetImageCompositeModuleManager

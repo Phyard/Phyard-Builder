@@ -5,8 +5,7 @@
 
 <mx:TitleWindow 
     xmlns:mx="http://www.adobe.com/2006/mxml"
-    xmlns:image="editor.image.*" 
-    xmlns="editor.display.dialog.*"
+    xmlns:image="editor.image.dialog.*"
     title="Image Modules Manager"
     width="500" height="530"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
@@ -67,13 +66,13 @@
          {
             PopUpManager.removePopUp(this);
          }
-      
-      //=====================================================================
          
          public function GetAssetImageDividingPanel ():AssetImageDividingPanel
          {
             return panelAssetImageDividing;
          }
+      
+      //=====================================================================
       
          public function InitDialog ():void
          {

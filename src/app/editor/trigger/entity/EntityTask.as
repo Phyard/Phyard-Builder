@@ -130,7 +130,7 @@ package editor.trigger.entity {
          
          var borderThickness:Number = mBorderThickness;
          
-         (mSelectionProxy as SelectionProxyCircle).RebuildCircle( GetRotation (), GetPositionX (), GetPositionY (), kRadius );
+         (mSelectionProxy as SelectionProxyCircle).RebuildCircle(GetPositionX (), GetPositionY (), kRadius, GetRotation ());
       }
       
 //====================================================================

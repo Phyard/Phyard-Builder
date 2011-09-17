@@ -116,6 +116,24 @@ package editor.image {
 //   
 //=============================================================
 
+      private function GetPhysicsBoundingRectangle ():Rectangle
+      {
+         var rectangle:Rectangle = null;
+         if (mAssetImageModule != null)
+         {
+            rectangle = mAssetImageModule.GetModuleBoundingRectangle ();
+         }
+         
+         if (rectangle == null)
+         {
+            var moduleSize:Number = 50;
+            var halfModuleSize:Number = 0.5 * moduleSize;
+            rectangle = new Rectangle (-halfModuleSize, -halfModuleSize, moduleSize, moduleSize);
+         }
+         
+         return rectangle;
+      }
+
       override public function UpdateAppearance ():void
       {
          while (numChildren > 0)
@@ -141,16 +159,13 @@ package editor.image {
             
             if (IsSelected ())
             {
-               var rectangle:Rectangle = mAssetImageModule.getBounds (mAssetImageModule);
-               if (rectangle == null) // should not
-               {
-                  rectangle = moduleSprite.getBounds (moduleSprite);
-               }
-
                var shape:Shape = new Shape ();
                shape.alpha = 0.67;
+
+               var rectangle:Rectangle = GetPhysicsBoundingRectangle ();
                GraphicsUtil.DrawRect (shape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
                                           0x0000FF, -1, true, 0xC0C0FF, false);
+               
                addChild (shape);
             }
          } 
@@ -164,23 +179,9 @@ package editor.image {
             mSelectionProxy.SetUserData (this);
          }
          
-         var rectangle:Rectangle = null;
-         if (mAssetImageModule != null)
-         {
-            rectangle = mAssetImageModule.GetModuleBoundingRectangle ();
-         }
-         
-         if (rectangle == null)
-         {
-            var moduleSize:Number = 50;
-            var halfModuleSize:Number = 0.5 * moduleSize;
-            (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, GetPositionX (), GetPositionY (), halfModuleSize, halfModuleSize);
-         }
-         else
-         {
-            //todo: tranlate the rect
-            (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, GetPositionX () + rectangle.left + 0.5 * rectangle.width, GetPositionY () + rectangle.top + 0.5 * rectangle.height, 0.5 * rectangle.width, 0.5 * rectangle.height);
-         } 
+         var rectangle:Rectangle = GetPhysicsBoundingRectangle ();
+
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle2 (GetPositionX (), GetPositionY (), rectangle.left, rectangle.top, rectangle.width, rectangle.height, GetRotation (), IsFlipped (), GetScale ());
       }
       
 //=============================================================

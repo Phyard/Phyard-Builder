@@ -502,6 +502,30 @@ package editor.asset {
          }
       }
       
+      public function FlipSelectedAssets (updateSelectionProxy:Boolean, flipSelf:Boolean, flipPosition:Boolean = false, planeX:Number = NaN):void
+      {
+         var assetArray:Array = GetSelectedAssets ();
+         
+         var asset:Asset;
+         
+         var updateSelectionProxyWhenScalePosition:Boolean = updateSelectionProxy && (! flipSelf);
+         
+         for (var i:int = 0; i < assetArray.length; ++ i)
+         {
+            asset = assetArray [i] as Asset;
+            
+            if (flipPosition)
+            {
+               asset.FlipPosition (planeX, updateSelectionProxyWhenScalePosition);
+            }
+            
+            if (flipSelf)
+            {
+               asset.FlipSelf (updateSelectionProxy);
+            }
+         }
+      }
+      
       public function MoveSelectedAssetsToTop ():void
       {
          var assetArray:Array = GetSelectedAssets ();

@@ -54,6 +54,11 @@ package editor.asset {
          {
             mAssetManagerPanel.mForegroundLayer.removeChild (mBoxShape);
          }
+         
+         if (passively && mAssetManagerPanel.IsMouseZeroMove ())
+         {
+            mAssetManagerPanel.PointSelectAsset (mCurrentX, mCurrentY); // (mAssetManager.mouseX, mAssetManager.mouseY)
+         }
       }
 
    }

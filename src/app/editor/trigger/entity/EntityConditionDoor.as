@@ -202,7 +202,7 @@ package editor.trigger.entity {
          
          var borderThickness:Number = mBorderThickness;
          
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX () + (- kBandWidth - kBandWidth + kHalfWidth) * 0.5, GetPositionY (), (kBandWidth + kBandWidth + kHalfWidth) * 0.5 + borderThickness * 0.5 , kHalfHeight + borderThickness * 0.5 );
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (GetPositionX () + (- kBandWidth - kBandWidth + kHalfWidth) * 0.5, GetPositionY (), (kBandWidth + kBandWidth + kHalfWidth) * 0.5 + borderThickness * 0.5 , kHalfHeight + borderThickness * 0.5, GetRotation ());
       }
       
 //====================================================================

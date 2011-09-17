@@ -19,14 +19,14 @@ package editor.selection {
          super (selEngine);
       }
       
-      public function RebuildConvexPolygon (rotation:Number, centerX:Number, centerY:Number, localPoints:Array):void
+      public function RebuildConvexPolygon (centerX:Number, centerY:Number, localPoints:Array, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
          Rebuild (rotation, centerX, centerY);
          
          CreateConvexPolygonZone (localPoints);
       }
       
-      public function RebuildConcavePolygon (rotation:Number, centerX:Number, centerY:Number, localPoints:Array):void
+      public function RebuildConcavePolygon (centerX:Number, centerY:Number, localPoints:Array, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
          Rebuild (rotation, centerX, centerY);
          

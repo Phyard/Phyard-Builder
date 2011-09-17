@@ -82,7 +82,7 @@ package editor.selection {
          var oldContactListener:b2ContactListener = _b2World.GetContactListener ();
          
          var selProxyRect:_SelectionProxyRectangleForRegionSelection = new _SelectionProxyRectangleForRegionSelection (this);
-         selProxyRect.RebuildRectangle (0, centerX, centerY, halfWidth, halfHeight);
+         selProxyRect.RebuildRectangle (centerX, centerY, halfWidth, halfHeight);
          var tempContactListener:_ContactListenerForRegionSelection = new _ContactListenerForRegionSelection (selProxyRect._b2Body);
          _b2World.SetContactListener (tempContactListener);
          _b2World.Step (0, 0, 0);

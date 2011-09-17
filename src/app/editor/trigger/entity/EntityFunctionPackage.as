@@ -143,7 +143,7 @@ package editor.trigger.entity {
             mSelectionProxy.SetUserData (this);
          }
          
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX (), GetPositionY (), mHalfWidth, mHalfHeight);
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (GetPositionX (), GetPositionY (), mHalfWidth, mHalfHeight, GetRotation ());
       }
       
  //====================================================================

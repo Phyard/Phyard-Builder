@@ -264,6 +264,11 @@ package editor.asset {
       protected var mIsCtrlDownOnMouseDown:Boolean = false;
       protected var mIsShiftDownOnMouseDown:Boolean = false;
       
+      public function IsMouseZeroMove ():Boolean
+      {
+         return mIsMouseZeroMove;
+      }
+      
       final public function OnMouseDown (event:MouseEvent):void
       {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
@@ -387,11 +392,6 @@ package editor.asset {
             {
                mCurrentIntent.OnMouseUp (mAssetManager.mouseX, mAssetManager.mouseY);
             }
-            
-            if (mIsMouseZeroMove)
-            {
-               PointSelectAsset (mAssetManager.mouseX, mAssetManager.mouseY);
-            }
 
             return;
          }
@@ -431,7 +431,7 @@ package editor.asset {
 //   select
 //=================================================================================
       
-      protected function PointSelectAsset (managerX:Number, managerY:Number):Boolean
+      public function PointSelectAsset (managerX:Number, managerY:Number):Boolean
       {
          mAssetManager.ClearSelectedAssets ();
          var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
@@ -506,8 +506,8 @@ package editor.asset {
             scaleBothHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelecteds);
             scaleSelfHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelectedSelves);
             scalePosHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelectedPositions);
-            flipBothHandler.addEventListener (MouseEvent.CLICK, OnFlipSelecteds);
-            flipOptionsHandler.addEventListener (MouseEvent.CLICK, OnFlipSelectedsOptions);
+            flipBothHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelecteds);
+            flipOptionsHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelectedsOptions);
             
             var halfHandlerSize:Number = 6;
             var handlerSize:Number = halfHandlerSize + halfHandlerSize;
@@ -519,7 +519,9 @@ package editor.asset {
             GraphicsUtil.ClearAndDrawRect (scaleSelfHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x00FF00, false);
             GraphicsUtil.ClearAndDrawRect (scalePosHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF0000, false);
             GraphicsUtil.ClearAndDrawRect (flipBothHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);
-            GraphicsUtil.ClearAndDrawRect (flipOptionsHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x00FF00, false);
+               GraphicsUtil.DrawLine (flipBothHandler, -halfHandlerSize, -halfHandlerSize, halfHandlerSize, halfHandlerSize, 0xFFFFFF, 0);
+            GraphicsUtil.ClearAndDrawRect (flipOptionsHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF9900, false);
+               GraphicsUtil.DrawLine (flipOptionsHandler, -halfHandlerSize, -halfHandlerSize, halfHandlerSize, halfHandlerSize, 0xFFFFFF, 0);
             flipBothHandler.rotation = 45;
             flipOptionsHandler.rotation = 45;
          }
@@ -631,12 +633,13 @@ package editor.asset {
       
       protected function OnFlipSelecteds(event:MouseEvent):void
       {
-trace ("OnFlipSelecteds");
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y + ScaleRotateFlipCircleRadius));
+         SetCurrentIntent (new IntentFlipSelectedAssets (this, managerPoint.x, managerPoint.y, true, true));
+         mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
       protected function OnFlipSelectedsOptions(event:MouseEvent):void
       {
-trace ("OnFlipSelectedsOptions");
       }
       
 //=================================================================================
@@ -673,6 +676,14 @@ trace ("OnFlipSelectedsOptions");
             return;
          
          mAssetManager.ScaleSelectedAssets (updateSelectionProxy, s, scaleSelf, scalePosition, centerX, centerY);
+      }
+      
+      public function FlipSelectedAssets (planeX:Number, flipPosition:Boolean, flipSelf:Boolean, updateSelectionProxy:Boolean):void
+      {
+         if (mAssetManager == null)
+            return;
+         
+         mAssetManager.FlipSelectedAssets (updateSelectionProxy, flipSelf, flipPosition, planeX);
       }
       
       public function CreateOrBreakLink (startLinkable:Linkable, endManagerX:Number, endManagerY:Number):void

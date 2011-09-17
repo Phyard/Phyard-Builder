@@ -16,11 +16,11 @@ package editor.selection {
          super (selEngine);
       }
       
-      public function RebuildCircle (rotation:Number, centerX:Number, centerY:Number, radius:Number):void
+      public function RebuildCircle (centerX:Number, centerY:Number, radius:Number, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
          Rebuild (rotation, centerX, centerY);
          
-         CreateCircleZone (0, 0, radius);
+         CreateCircleZone (0, 0, radius * scale);
       }
    }
 }

@@ -161,7 +161,7 @@ package editor.trigger.entity {
          var halfSize:Number = kRadius;
          halfSize /= mWorld.GetZoomScale ();
          
-         (mSelectionProxy as SelectionProxyCircle).RebuildCircle ( GetWorldRotation (), worldPos.x, worldPos.y, kRadius );
+         (mSelectionProxy as SelectionProxyCircle).RebuildCircle (worldPos.x, worldPos.y, kRadius, GetWorldRotation ());
       }
       
       public function ContainsPoint (pointX:Number, pointY:Number):Boolean

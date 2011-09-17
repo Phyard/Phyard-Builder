@@ -94,7 +94,7 @@ package editor.entity {
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
          }
          
-         (mSelectionProxy as SelectionProxy).Rebuild ( GetRotation (), GetPositionX (), GetPositionY ());
+         (mSelectionProxy as SelectionProxy).Rebuild (GetPositionX (), GetPositionY (), GetRotation ());
          
          var thickness:Number = GetCurveThickness ();
          if (thickness * mWorld.GetZoomScale () < 5)

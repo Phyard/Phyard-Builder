@@ -57,7 +57,7 @@ package editor.entity {
             mSelectionProxy.SetUserData (this);
          }
          
-         (mSelectionProxy as SelectionProxyCircle).RebuildCircle ( GetRotation (), GetPositionX (), GetPositionY (), mRadius );
+         (mSelectionProxy as SelectionProxyCircle).RebuildCircle (GetPositionX (), GetPositionY (), mRadius, GetRotation ());
       }
       
       

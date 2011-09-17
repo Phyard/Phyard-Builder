@@ -18,9 +18,9 @@ package editor.selection {
       }
       
       
-      override public function RebuildRectangle (rotation:Number, centerX:Number, centerY:Number, halfWidth:Number, halfHeight:Number):void
+      override public function RebuildRectangle (centerX:Number, centerY:Number, halfWidth:Number, halfHeight:Number, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
-         super.RebuildRectangle (rotation, centerX, centerY, halfWidth, halfHeight);
+         super.RebuildRectangle (centerX, centerY, halfWidth, halfHeight, rotation);
          
          _b2Body.m_fixtureList.SetDensity (1.0);
          _b2Body.ResetMassData ();

@@ -123,7 +123,7 @@ package editor.entity {
          if ( ! IsDrawBorder () )
             borderThickness = 0;
          
-         (mSelectionProxy as SelectionProxyCircle).RebuildCircle ( GetRotation (), GetPositionX (), GetPositionY (), GetRadius () + borderThickness * 0.5 );
+         (mSelectionProxy as SelectionProxyCircle).RebuildCircle (GetPositionX (), GetPositionY (), GetRadius () + borderThickness * 0.5, GetRotation ());
       }
       
       

@@ -270,7 +270,7 @@ package editor.image {
          var centerY:Number = 0.5 * (mTop + mBottom); 
          var halfW:Number = 0.5 * (mRight - mLeft);
          var halfH:Number = 0.5 * (mBottom - mTop); 
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, centerX, centerY, halfW, halfH);
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (centerX, centerY, halfW, halfH);
       }
       
 //=============================================================

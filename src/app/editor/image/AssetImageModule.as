@@ -122,7 +122,7 @@ package editor.image {
          
          var moduleSize:Number = mAssetImageModuleManager.GetAssetSpriteSize ();
          var halfModuleSize:Number = 0.5 * moduleSize;
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, GetPositionX (), GetPositionY (), halfModuleSize, halfModuleSize);
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (GetPositionX (), GetPositionY (), halfModuleSize, halfModuleSize);
       }
       
 //=============================================================

@@ -126,13 +126,13 @@ package editor.entity {
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
          }
          
-         (mSelectionProxy as SelectionProxyPolygon).RebuildConcavePolygon ( GetRotation (), GetPositionX (), GetPositionY (), mLocalPoints );
+         (mSelectionProxy as SelectionProxyPolygon).RebuildConcavePolygon (GetPositionX (), GetPositionY (), mLocalPoints, GetRotation ());
          
          if ((mSelectionProxy as SelectionProxyPolygon).GetProxyShapesCount () == 0)
          {
             mIsValid = false;
-            (mSelectionProxy as SelectionProxyPolygon).RebuildConvexPolygon ( GetRotation (), GetPositionX (), GetPositionY (), 
-                  [new Point (mMinX, mMinY), new Point (mMaxX, mMinY), new Point (mMaxX, mMaxY), new Point (mMinX, mMaxY)] );
+            (mSelectionProxy as SelectionProxyPolygon).RebuildConvexPolygon (GetPositionX (), GetPositionY (), 
+                  [new Point (mMinX, mMinY), new Point (mMaxX, mMinY), new Point (mMaxX, mMaxY), new Point (mMinX, mMaxY)], GetRotation ());
          }
          else
          {

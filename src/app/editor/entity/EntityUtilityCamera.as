@@ -116,7 +116,7 @@ package editor.entity {
             mSelectionProxy.SetUserData (this);
          }
          
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX (), GetPositionY (), mCameraBitmap.width * 0.5, mCameraBitmap.height * 0.5);
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (GetPositionX (), GetPositionY (), mCameraBitmap.width * 0.5, mCameraBitmap.height * 0.5, GetRotation ());
       }
       
 //====================================================================

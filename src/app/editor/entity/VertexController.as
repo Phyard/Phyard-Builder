@@ -119,7 +119,7 @@ package editor.entity {
          var halfSize:Number = mHalfSize;
          halfSize /= mWorld.GetZoomScale ();
          
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetWorldRotation (), worldPos.x, worldPos.y, halfSize, halfSize );
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (worldPos.x, worldPos.y, halfSize, halfSize, GetWorldRotation ());
       }
       
       public function ContainsPoint (pointX:Number, pointY:Number):Boolean

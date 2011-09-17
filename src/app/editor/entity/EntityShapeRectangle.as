@@ -113,7 +113,7 @@ package editor.entity {
          if ( ! IsDrawBorder () )
             borderThickness = 0;
          
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX (), GetPositionY (), GetHalfWidth () + borderThickness * 0.5 , GetHalfHeight () + borderThickness * 0.5 );
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (GetPositionX (), GetPositionY (), GetHalfWidth () + borderThickness * 0.5 , GetHalfHeight () + borderThickness * 0.5, GetRotation ());
          
          if (Compile::Is_Debugging)// && false)
          {

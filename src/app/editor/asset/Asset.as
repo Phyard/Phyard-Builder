@@ -220,7 +220,7 @@ package editor.asset {
          
          mScale = s;
          
-         UpdateDisplayObjectScaleXY ();
+         UpdateDisplayObjectRotateScaleXY ();
       }
       
       public function GetRotation ():Number
@@ -232,7 +232,7 @@ package editor.asset {
       {
          mRotation = r % Define.kPI_x_2;
          
-         rotation = mRotation * 180.0 / Math.PI;
+         UpdateDisplayObjectRotateScaleXY ();
       }
       
       public function IsFlipped ():Boolean
@@ -244,18 +244,20 @@ package editor.asset {
       {
          mFlipped = flipped;
          
-         UpdateDisplayObjectScaleXY ();
+         UpdateDisplayObjectRotateScaleXY ();
       }
       
-      private function UpdateDisplayObjectScaleXY ():void
+      private function UpdateDisplayObjectRotateScaleXY ():void
       {
          if (mFlipped)
          {
             scaleX = - mScale;
+            rotation = - mRotation * 180.0 / Math.PI;
          }
          else
          {
             scaleX = mScale;
+            rotation = mRotation * 180.0 / Math.PI;;
          }
          
          scaleY = mScale;
@@ -306,6 +308,9 @@ package editor.asset {
       
       public function RotateSelf (deltaRotation:Number, updateSelectionProxy:Boolean = true):void
       {
+         if (IsFlipped ())
+            deltaRotation = - deltaRotation;
+         
          SetRotation (GetRotation () + deltaRotation);
          
          if (updateSelectionProxy)
@@ -314,9 +319,65 @@ package editor.asset {
          }
       }
       
-      public function RotateSelfTo (targetRotation:Number, updateSelectionProxy:Boolean = true):void
+      // generally, don't use this function
+      //public function RotateSelfTo (targetRotation:Number, updateSelectionProxy:Boolean = true):void
+      //{
+      //   SetRotation (targetRotation);
+      //   
+      //   if (updateSelectionProxy)
+      //   {
+      //      UpdateSelectionProxy ();
+      //   }
+      //}
+      
+      public function ScalePosition (centerX:Number, centerY:Number, s:Number, updateSelectionProxy:Boolean = true):void
       {
-         SetRotation (targetRotation);
+         if (s < 0)
+            s = -s;
+         
+         var offsetX:Number = GetPositionX () - centerX;
+         var offsetY:Number = GetPositionY () - centerY;
+         SetPosition (centerX + s * offsetX, centerY + s * offsetY);
+         
+         if (updateSelectionProxy)
+         {
+            UpdateSelectionProxy ();
+         }
+      }
+      
+      public function ScaleSelf (s:Number, updateSelectionProxy:Boolean = true):void
+      {
+         SetScale (GetScale () * s);
+         
+         if (updateSelectionProxy)
+         {
+            UpdateSelectionProxy ();
+         }
+      }
+      
+      public function ScaleSelfTo (targetScale:Number, updateSelectionProxy:Boolean = true):void
+      {
+         SetScale (targetScale);
+         
+         if (updateSelectionProxy)
+         {
+            UpdateSelectionProxy ();
+         }
+      }
+      
+      public function FlipPosition (planeX:Number, updateSelectionProxy:Boolean = true):void
+      {
+         SetPosition (planeX + planeX - GetPositionX (), GetPositionY ());
+         
+         if (updateSelectionProxy)
+         {
+            UpdateSelectionProxy ();
+         }
+      }
+      
+      public function FlipSelf (updateSelectionProxy:Boolean = true):void
+      {
+         SetFlipped (! IsFlipped ());
          
          if (updateSelectionProxy)
          {

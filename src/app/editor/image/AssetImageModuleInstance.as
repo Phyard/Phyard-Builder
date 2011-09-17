@@ -123,20 +123,29 @@ package editor.image {
          
          var moduleSize:Number = 50;
          var halfModuleSize:Number = 0.5 * moduleSize;
+         
+         var moduleSprite:DisplayObject = null;
+         if (mAssetImageModule != null)
+         {
+            moduleSprite = mAssetImageModule.CreateModuleSprite ();
+         }
                                        
-         if (mAssetImageModule == null)
+         if (moduleSprite == null)
          {
             GraphicsUtil.ClearAndDrawRect (this, - halfModuleSize, - halfModuleSize, moduleSize, moduleSize,
                                           0x0000FF, -1, true, IsSelected () ? 0xC0C0FF : 0xD0FFD0, false);
          }
          else
          {
-            var moduleSprite:DisplayObject = mAssetImageModule.CreateModuleSprite ();
             addChild (moduleSprite);
             
             if (IsSelected ())
             {
-               var rectangle:Rectangle = mAssetImageModule.GetModuleBoundingRectangle ();
+               var rectangle:Rectangle = mAssetImageModule.getBounds (mAssetImageModule);
+               if (rectangle == null) // should not
+               {
+                  rectangle = moduleSprite.getBounds (moduleSprite);
+               }
 
                var shape:Shape = new Shape ();
                shape.alpha = 0.67;
@@ -155,7 +164,13 @@ package editor.image {
             mSelectionProxy.SetUserData (this);
          }
          
-         if (mAssetImageModule == null)
+         var rectangle:Rectangle = null;
+         if (mAssetImageModule != null)
+         {
+            rectangle = mAssetImageModule.GetModuleBoundingRectangle ();
+         }
+         
+         if (rectangle == null)
          {
             var moduleSize:Number = 50;
             var halfModuleSize:Number = 0.5 * moduleSize;
@@ -163,8 +178,6 @@ package editor.image {
          }
          else
          {
-            var rectangle:Rectangle = mAssetImageModule.GetModuleBoundingRectangle ();
-            
             //todo: tranlate the rect
             (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, GetPositionX () + rectangle.left + 0.5 * rectangle.width, GetPositionY () + rectangle.top + 0.5 * rectangle.height, 0.5 * rectangle.width, 0.5 * rectangle.height);
          } 

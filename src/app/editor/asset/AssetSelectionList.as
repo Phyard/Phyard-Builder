@@ -9,6 +9,11 @@ package editor.asset {
    {  
       private var mSelectedAssets:Array = new Array ();
       
+      public function GetNumSelectedAssets ():int
+      {
+         return mSelectedAssets.length;
+      }
+      
       public function GetSelectedAssets ():Array
       {
          return mSelectedAssets.concat (); // Clone

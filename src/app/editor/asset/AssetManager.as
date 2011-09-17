@@ -142,6 +142,11 @@ package editor.asset {
 //   selection list
 //=================================================================================
       
+      public function GetNumSelectedAssets ():int
+      {
+         return mSelectionList.GetNumSelectedAssets ();
+      }
+      
       public function GetSelectedAssets ():Array
       {
          return mSelectionList.GetSelectedAssets ();
@@ -413,20 +418,6 @@ package editor.asset {
 //   actions on selected entites
 //=================================================================================
       
-      public function MoveSelectedAssets (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
-      {
-         var assetArray:Array = GetSelectedAssets ();
-         
-         var asset:Asset;
-         
-         for (var i:int = 0; i < assetArray.length; ++ i)
-         {
-            asset = assetArray [i] as Asset;
-            
-            asset.Move (offsetX, offsetY, updateSelectionProxy);
-         }
-      }
-      
       public function DeleteSelectedAssets ():Boolean
       {
          var assetArray:Array = mSelectionList.GetSelectedMainAssets ();
@@ -445,6 +436,70 @@ package editor.asset {
          }
          
          return count > 0;
+      }
+      
+      public function MoveSelectedAssets (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
+      {
+         var assetArray:Array = GetSelectedAssets ();
+         
+         var asset:Asset;
+         
+         for (var i:int = 0; i < assetArray.length; ++ i)
+         {
+            asset = assetArray [i] as Asset;
+            
+            asset.Move (offsetX, offsetY, updateSelectionProxy);
+         }
+      }
+      
+      public function RotateSelectedAssets (updateSelectionProxy:Boolean, deltaRot:Number, rotateSelf:Boolean, rotatePosition:Boolean = false, centerX:Number = NaN, centerY:Number = NaN):void
+      {
+         var assetArray:Array = GetSelectedAssets ();
+         
+         var asset:Asset;
+         
+         var cos:Number = Math.cos (deltaRot);
+         var sin:Number = Math.sin (deltaRot);
+         var updateSelectionProxyWhenRotatePosition:Boolean = updateSelectionProxy && (! rotateSelf);
+         
+         for (var i:int = 0; i < assetArray.length; ++ i)
+         {
+            asset = assetArray [i] as Asset;
+            
+            if (rotatePosition)
+            {
+               asset.RotatePositionByCosSin (centerX, centerY, cos, sin, updateSelectionProxyWhenRotatePosition);
+            }
+            
+            if (rotateSelf)
+            {
+               asset.RotateSelf (deltaRot, updateSelectionProxy);
+            }
+         }
+      }
+      
+      public function ScaleSelectedAssets (updateSelectionProxy:Boolean, s:Number, scaleSelf:Boolean, scalePosition:Boolean = false, centerX:Number = NaN, centerY:Number = NaN):void
+      {
+         var assetArray:Array = GetSelectedAssets ();
+         
+         var asset:Asset;
+         
+         var updateSelectionProxyWhenScalePosition:Boolean = updateSelectionProxy && (! scaleSelf);
+         
+         for (var i:int = 0; i < assetArray.length; ++ i)
+         {
+            asset = assetArray [i] as Asset;
+            
+            if (scalePosition)
+            {
+               asset.ScalePosition (centerX, centerY, s, updateSelectionProxyWhenScalePosition);
+            }
+            
+            if (scaleSelf)
+            {
+               asset.ScaleSelf (s, updateSelectionProxy);
+            }
+         }
       }
       
       public function MoveSelectedAssetsToTop ():void

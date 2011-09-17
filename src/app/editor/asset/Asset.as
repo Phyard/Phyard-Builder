@@ -32,6 +32,10 @@ package editor.asset {
       private var mPosX:Number = 0;
       private var mPosY:Number = 0;
       
+      private var mScale:Number = 1.0;
+      private var mRotation:Number = 0;
+      private var mFlipped:Boolean = false;
+      
       public function Asset (assetManager:AssetManager)
       {
          mAssetManager = assetManager;
@@ -199,46 +203,66 @@ package editor.asset {
       {
          mPosX = posX;
          mPosY = posY;
+         
          x = mPosX;
          y = mPosY;
       }
       
-//======================================================
-// 
-//======================================================
-      
-      protected var mVisibleForEditing:Boolean = true;
-      
-      public function SetVisibleForEditing (visibleForEditing:Boolean):void
+      public function GetScale ():Number
       {
-         mVisibleForEditing = visibleForEditing;
+         return mScale;
+      }
+      
+      public function SetScale (s:Number):void
+      {
+         if (s < 0)
+            s = - s;
          
-         alpha = mVisibleForEditing ? 1.0 : 0.2;
-      }
-      
-      public function IsVisibleForEditing ():Boolean
-      {
-         return mVisibleForEditing;
-      }
-      
-//====================================================================
-//   Selection Proxy
-//====================================================================
-      
-      public function UpdateSelectionProxy ():void
-      {
-      }
-      
-      public function ContainsPoint (pointX:Number, pointY:Number):Boolean
-      {
-         if (mSelectionProxy == null)
-            return false;
+         mScale = s;
          
-         return mSelectionProxy.ContainsPoint (pointX, pointY);
+         UpdateDisplayObjectScaleXY ();
+      }
+      
+      public function GetRotation ():Number
+      {
+         return mRotation;
+      }
+      
+      public function SetRotation (r:Number):void
+      {
+         mRotation = r % Define.kPI_x_2;
+         
+         rotation = mRotation * 180.0 / Math.PI;
+      }
+      
+      public function IsFlipped ():Boolean
+      {
+         return mFlipped;
+      }
+      
+      public function SetFlipped (flipped:Boolean):void
+      {
+         mFlipped = flipped;
+         
+         UpdateDisplayObjectScaleXY ();
+      }
+      
+      private function UpdateDisplayObjectScaleXY ():void
+      {
+         if (mFlipped)
+         {
+            scaleX = - mScale;
+         }
+         else
+         {
+            scaleX = mScale;
+         }
+         
+         scaleY = mScale;
       }
       
 //====================================================================
-//   move
+//   move / rotate / scale / flip
 //====================================================================
       
       public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
@@ -259,6 +283,79 @@ package editor.asset {
          {
             UpdateSelectionProxy ();
          }
+      }
+      
+      public function RotatePosition (centerX:Number, centerY:Number, deltaRotation:Number, updateSelectionProxy:Boolean = true):void
+      {
+         RotatePositionByCosSin (centerX, centerY, Math.cos (deltaRotation), Math.sin (deltaRotation), updateSelectionProxy);
+      }
+      
+      public function RotatePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number, updateSelectionProxy:Boolean = true):void
+      {
+         var offsetX:Number = GetPositionX () - centerX;
+         var offsetY:Number = GetPositionY () - centerY;
+         var newOffsetX:Number = offsetX * cos - offsetY * sin;
+         var newOffsetY:Number = offsetX * sin + offsetY * cos;
+         SetPosition (centerX + newOffsetX, centerY + newOffsetY);
+         
+         if (updateSelectionProxy)
+         {
+            UpdateSelectionProxy ();
+         }
+      }
+      
+      public function RotateSelf (deltaRotation:Number, updateSelectionProxy:Boolean = true):void
+      {
+         SetRotation (GetRotation () + deltaRotation);
+         
+         if (updateSelectionProxy)
+         {
+            UpdateSelectionProxy ();
+         }
+      }
+      
+      public function RotateSelfTo (targetRotation:Number, updateSelectionProxy:Boolean = true):void
+      {
+         SetRotation (targetRotation);
+         
+         if (updateSelectionProxy)
+         {
+            UpdateSelectionProxy ();
+         }
+      }
+      
+//====================================================================
+//   Selection Proxy
+//====================================================================
+      
+      public function UpdateSelectionProxy ():void
+      {
+      }
+      
+      public function ContainsPoint (pointX:Number, pointY:Number):Boolean
+      {
+         if (mSelectionProxy == null)
+            return false;
+         
+         return mSelectionProxy.ContainsPoint (pointX, pointY);
+      }
+      
+//======================================================
+// 
+//======================================================
+      
+      protected var mVisibleForEditing:Boolean = true;
+      
+      public function SetVisibleForEditing (visibleForEditing:Boolean):void
+      {
+         mVisibleForEditing = visibleForEditing;
+         
+         alpha = mVisibleForEditing ? 1.0 : 0.2;
+      }
+      
+      public function IsVisibleForEditing ():Boolean
+      {
+         return mVisibleForEditing;
       }
       
 //====================================================================

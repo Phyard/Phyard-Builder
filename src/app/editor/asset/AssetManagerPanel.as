@@ -278,13 +278,11 @@ package editor.asset {
          mIsCtrlDownOnMouseDown = event.ctrlKey;
          mIsShiftDownOnMouseDown = event.shiftKey;
          
-         var managerPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mAssetManager, new Point (event.localX, event.localY));
-         
          if (mCurrentIntent != null)
          {
             if (! mCurrentIntent.IsTerminated ())
             {
-               mCurrentIntent.OnMouseDown (managerPoint.x, managerPoint.y);
+               mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
             }
 
             return;
@@ -293,12 +291,12 @@ package editor.asset {
          if (mIsShiftDownOnMouseDown)
          {
             SetCurrentIntent (new IntentPanManager (this));
-            mCurrentIntent.OnMouseDown (managerPoint.x, managerPoint.y);
+            mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
             
             return;
          }
          
-         OnMouseDownInternal (managerPoint.x, managerPoint.y, event.ctrlKey, event.shiftKey);
+         OnMouseDownInternal (mAssetManager.mouseX, mAssetManager.mouseY, event.ctrlKey, event.shiftKey);
       }
       
       protected function OnMouseDownInternal (managerX:Number, managerY:Number, mIsCtrlDownOnMouseDown:Boolean, mIsShiftDownOnMouseDown:Boolean):void
@@ -342,21 +340,6 @@ package editor.asset {
          }
       }
       
-      protected function PointSelectAsset (managerX:Number, managerY:Number):Boolean
-      {
-         mAssetManager.ClearSelectedAssets ();
-         var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
-         if (assetArray != null && assetArray.length > 0)
-         {
-            var asset:Asset = assetArray[0] as Asset;
-            mAssetManager.SetSelectedAsset (asset);
-            
-            return true;
-         }
-         
-         return false;
-      }
-      
       public function OnMouseMove (event:MouseEvent):void
       {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
@@ -369,19 +352,17 @@ package editor.asset {
          
          mIsMouseZeroMove = false;
          
-         var managerPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mAssetManager, new Point (event.localX, event.localY));
-         
          if (mCurrentIntent != null)
          {
             if (! mCurrentIntent.IsTerminated ())
             {
-               mCurrentIntent.OnMouseMove (managerPoint.x, managerPoint.y, event.buttonDown);
+               mCurrentIntent.OnMouseMove (mAssetManager.mouseX, mAssetManager.mouseY, event.buttonDown);
             }
 
             return;
          }
          
-         OnMouseMoveInternal (managerPoint.x, managerPoint.y, event.buttonDown, event.ctrlKey, event.shiftKey);
+         OnMouseMoveInternal (mAssetManager.mouseX, mAssetManager.mouseY, event.buttonDown, event.ctrlKey, event.shiftKey);
       }
       
       protected function OnMouseMoveInternal (managerX:Number, managerY:Number, isHold:Boolean, mIsCtrlDownOnMouseDown:Boolean, mIsShiftDownOnMouseDown:Boolean):void
@@ -398,20 +379,18 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         var managerPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mAssetManager, new Point (event.localX, event.localY));
-         
          var toPointSelectAssetIfMouseZeroMove:Boolean = true;
          
          if (mCurrentIntent != null)
          {
             if (! mCurrentIntent.IsTerminated ())
             {
-               mCurrentIntent.OnMouseUp (managerPoint.x, managerPoint.y);
+               mCurrentIntent.OnMouseUp (mAssetManager.mouseX, mAssetManager.mouseY);
             }
             
             if (mIsMouseZeroMove)
             {
-               PointSelectAsset (managerPoint.x, managerPoint.y);
+               PointSelectAsset (mAssetManager.mouseX, mAssetManager.mouseY);
             }
 
             return;
@@ -419,10 +398,10 @@ package editor.asset {
          
          if (mIsMouseZeroMove)
          {
-            PointSelectAsset (managerPoint.x, managerPoint.y);
+            PointSelectAsset (mAssetManager.mouseX, mAssetManager.mouseY);
          }
          
-         OnMouseUpInternal (managerPoint.x, managerPoint.y, event.ctrlKey, event.shiftKey);
+         OnMouseUpInternal (mAssetManager.mouseX, mAssetManager.mouseY, event.ctrlKey, event.shiftKey);
       }
       
       protected function OnMouseUpInternal (managerX:Number, managerY:Number, mIsCtrlDownOnMouseDown:Boolean, mIsShiftDownOnMouseDown:Boolean):void
@@ -439,7 +418,7 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         var oldMouseManagerPoint:Point = DisplayObjectUtil.LocalToLocal (this, mAssetManager, new Point (mouseX, mouseY));
+         var oldMouseManagerPoint:Point = new Point (mAssetManager.mouseX, mAssetManager.mouseY);
 
          ScaleManager (event.delta > 0 ? 1.1 : 0.9);
 
@@ -451,6 +430,21 @@ package editor.asset {
 //=================================================================================
 //   select
 //=================================================================================
+      
+      protected function PointSelectAsset (managerX:Number, managerY:Number):Boolean
+      {
+         mAssetManager.ClearSelectedAssets ();
+         var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
+         if (assetArray != null && assetArray.length > 0)
+         {
+            var asset:Asset = assetArray[0] as Asset;
+            mAssetManager.SetSelectedAsset (asset);
+            
+            return true;
+         }
+         
+         return false;
+      }
       
       public function RegionSelectAssets (left:Number, top:Number, right:Number, bottom:Number, oldSelectedAssets:Array):void
       {
@@ -470,11 +464,192 @@ package editor.asset {
          {
             mAssetManager.AddSelectedAssets (newSelectedAssets);
          }
+         
+         SetScaleRotateFlipHandlersVisible (mAssetManager.GetNumSelectedAssets () > 0);
+      }
+      
+//=================================================================================
+//   scale / rotate / flip handlers
+//=================================================================================
+      
+      protected static const ScaleRotateFlipCircleRadius:Number = 100;
+      protected var mScaleRotateFlipHandlersContainer:Sprite = null;
+      
+      protected function SetScaleRotateFlipHandlersVisible (isVisible:Boolean):void
+      {
+         if (mScaleRotateFlipHandlersContainer == null)
+         {
+            mScaleRotateFlipHandlersContainer = new Sprite ();
+            mForegroundLayer.addChild (mScaleRotateFlipHandlersContainer);
+            
+            var rotateBothHandler:Sprite = new Sprite ();
+            var rotateSelfHandler:Sprite = new Sprite ();
+            var rotatePosHandler:Sprite = new Sprite ();
+            var scaleBothHandler:Sprite = new Sprite ();
+            var scaleSelfHandler:Sprite = new Sprite ();
+            var scalePosHandler:Sprite = new Sprite ();
+            var flipBothHandler:Sprite = new Sprite ();
+            var flipOptionsHandler:Sprite = new Sprite ();
+            
+            mScaleRotateFlipHandlersContainer.addChild (rotateBothHandler);
+            mScaleRotateFlipHandlersContainer.addChild (scaleBothHandler);
+            mScaleRotateFlipHandlersContainer.addChild (flipBothHandler);
+            mScaleRotateFlipHandlersContainer.addChild (rotateSelfHandler);
+            mScaleRotateFlipHandlersContainer.addChild (scaleSelfHandler);
+            mScaleRotateFlipHandlersContainer.addChild (rotatePosHandler);
+            mScaleRotateFlipHandlersContainer.addChild (flipOptionsHandler);
+            mScaleRotateFlipHandlersContainer.addChild (scalePosHandler);
+            
+            rotateBothHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartRotateSelecteds);
+            rotateSelfHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartRotateSelectedSelves);
+            rotatePosHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartRotateSelectedPositions);
+            scaleBothHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelecteds);
+            scaleSelfHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelectedSelves);
+            scalePosHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelectedPositions);
+            flipBothHandler.addEventListener (MouseEvent.CLICK, OnFlipSelecteds);
+            flipOptionsHandler.addEventListener (MouseEvent.CLICK, OnFlipSelectedsOptions);
+            
+            var halfHandlerSize:Number = 6;
+            var handlerSize:Number = halfHandlerSize + halfHandlerSize;
+            
+            GraphicsUtil.ClearAndDrawCircle (rotateBothHandler, 0, 0, halfHandlerSize, 0x0, 0, true, 0x0000FF);
+            GraphicsUtil.ClearAndDrawCircle (rotateSelfHandler, 0, 0, halfHandlerSize, 0x0, 0, true, 0x00FF00);
+            GraphicsUtil.ClearAndDrawCircle (rotatePosHandler, 0, 0, halfHandlerSize, 0x0, 0, true, 0xFF0000);
+            GraphicsUtil.ClearAndDrawRect (scaleBothHandler, -halfHandlerSize, -3, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);
+            GraphicsUtil.ClearAndDrawRect (scaleSelfHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x00FF00, false);
+            GraphicsUtil.ClearAndDrawRect (scalePosHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF0000, false);
+            GraphicsUtil.ClearAndDrawRect (flipBothHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);
+            GraphicsUtil.ClearAndDrawRect (flipOptionsHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x00FF00, false);
+            flipBothHandler.rotation = 45;
+            flipOptionsHandler.rotation = 45;
+         }
+         
+         mScaleRotateFlipHandlersContainer.visible = isVisible;
+         if (! isVisible)
+            return;
+         
+         RepositionScaleRotateFlipHandlersContainer ();
+         RepositionScaleRotateFlipHandlers (ScaleRotateFlipCircleRadius, 0);
+      }
+      
+      protected function RepositionScaleRotateFlipHandlersContainer ():void
+      {
+         var centerX:Number = 0;
+         var centerY:Number = 0;
+         
+         var selectedAssets:Array = mAssetManager.GetSelectedAssets ();
+         var count:uint = selectedAssets.length;
+         if (count == 0)
+         {
+            mScaleRotateFlipHandlersContainer.visible = false;
+            return;
+         }
+         
+         count = 0;
+         for (var i:uint = 0; i < selectedAssets.length; ++ i)
+         {
+            var asset:Asset = selectedAssets[i] as Asset;
+            
+            if (asset != null)
+            {
+               centerX += asset.GetPositionX ();
+               centerY += asset.GetPositionY ();
+               ++ count;
+            }
+         }
+         
+         if (count == 0)
+         {
+            mScaleRotateFlipHandlersContainer.visible = false;
+            return;
+         }
+         
+         centerX /= count;
+         centerY /= count;
+         
+         var panelPoint:Point = DisplayObjectUtil.LocalToLocal (mAssetManager, mForegroundLayer, new Point (centerX, centerY));
+         
+         mScaleRotateFlipHandlersContainer.x = panelPoint.x;
+         mScaleRotateFlipHandlersContainer.y = panelPoint.y;
+      }
+      
+      protected function RepositionScaleRotateFlipHandlers (radius:Number, rotationDegrees:Number):void
+      {
+         GraphicsUtil.ClearAndDrawCircle (mScaleRotateFlipHandlersContainer, 0, 0, radius, 0xC0FFC0, 5, false);
+         var rotationRadians:Number = rotationDegrees * Math.PI / 180.0;
+         var deltaRadians:Number = 0.25 * Math.PI;
+         for (var i:int = 0; i < mScaleRotateFlipHandlersContainer.numChildren; ++ i)
+         {
+            var displayObject:DisplayObject = mScaleRotateFlipHandlersContainer.getChildAt (i);
+            displayObject.x = radius * Math.cos (rotationRadians);
+            displayObject.y = radius * Math.sin (rotationRadians);
+            rotationRadians += deltaRadians;
+         }
+      }
+      
+      protected function OnStartRotateSelecteds(event:MouseEvent):void
+      {
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         SetCurrentIntent (new IntentRotateSelectedAssets (this, managerPoint.x, managerPoint.y, true, true));
+         mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+      }
+      
+      protected function OnStartRotateSelectedSelves(event:MouseEvent):void
+      {  
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         SetCurrentIntent (new IntentRotateSelectedAssets (this, managerPoint.x, managerPoint.y, false, true));
+         mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+      }
+      
+      protected function OnStartRotateSelectedPositions(event:MouseEvent):void
+      {  
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         SetCurrentIntent (new IntentRotateSelectedAssets (this, managerPoint.x, managerPoint.y, true, false));
+         mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+      }
+      
+      protected function OnStartScaleSelecteds(event:MouseEvent):void
+      {  
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         SetCurrentIntent (new IntentScaleSelectedAssets (this, managerPoint.x, managerPoint.y, true, true));
+         mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+      }
+      
+      protected function OnStartScaleSelectedSelves(event:MouseEvent):void
+      {  
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         SetCurrentIntent (new IntentScaleSelectedAssets (this, managerPoint.x, managerPoint.y, false, true));
+         mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+      }
+      
+      protected function OnStartScaleSelectedPositions(event:MouseEvent):void
+      {  
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         SetCurrentIntent (new IntentScaleSelectedAssets (this, managerPoint.x, managerPoint.y, true, false));
+         mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+      }
+      
+      protected function OnFlipSelecteds(event:MouseEvent):void
+      {
+trace ("OnFlipSelecteds");
+      }
+      
+      protected function OnFlipSelectedsOptions(event:MouseEvent):void
+      {
+trace ("OnFlipSelectedsOptions");
       }
       
 //=================================================================================
 //   edit selected assets
 //=================================================================================
+      
+      public function DeleteSelectedAssets ():void
+      {
+         if (mAssetManager == null)
+            return;
+         
+         mAssetManager.DeleteSelectedAssets ();
+      }
       
       public function MoveSelectedAssets (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
       {
@@ -484,12 +659,20 @@ package editor.asset {
          mAssetManager.MoveSelectedAssets (offsetX, offsetY, updateSelectionProxy);
       }
       
-      public function DeleteSelectedAssets ():void
+      public function RotateSelectedAssets (centerX:Number, centerY:Number, r:Number, rotatePosition:Boolean, rotateSelf:Boolean, updateSelectionProxy:Boolean):void
       {
          if (mAssetManager == null)
             return;
          
-         mAssetManager.DeleteSelectedAssets ();
+         mAssetManager.RotateSelectedAssets (updateSelectionProxy, r, rotateSelf, rotatePosition, centerX, centerY);
+      }
+      
+      public function ScaleSelectedAssets (centerX:Number, centerY:Number, s:Number, scalePosition:Boolean, scaleSelf:Boolean, updateSelectionProxy:Boolean):void
+      {
+         if (mAssetManager == null)
+            return;
+         
+         mAssetManager.ScaleSelectedAssets (updateSelectionProxy, s, scaleSelf, scalePosition, centerX, centerY);
       }
       
       public function CreateOrBreakLink (startLinkable:Linkable, endManagerX:Number, endManagerY:Number):void

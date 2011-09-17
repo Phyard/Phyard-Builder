@@ -1,3 +1,4 @@
 .build
 .release.*
 .release_**/*
+.release_editor

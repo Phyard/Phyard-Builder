@@ -24,28 +24,28 @@ package editor.asset {
          mTerminated = true;
       }
       
-      final public function OnMouseDown (managerX:Number, managerY:Number):void
+      final public function OnMouseDown (mouseX:Number, mouseY:Number):void
       {
          if (mTerminated)
             return;
          
-         OnMouseDownInternal (managerX, managerY);
+         OnMouseDownInternal (mouseX, mouseY);
       }
       
-      final public function OnMouseMove (managerX:Number, managerY:Number, isHold:Boolean):void
+      final public function OnMouseMove (mouseX:Number, mouseY:Number, isHold:Boolean):void
       {
          if (mTerminated)
             return;
          
-         OnMouseMoveInternal (managerX, managerY, isHold);
+         OnMouseMoveInternal (mouseX, mouseY, isHold);
       }
       
-      final public function OnMouseUp (managerX:Number, managerY:Number):void
+      final public function OnMouseUp (mouseX:Number, mouseY:Number):void
       {
          if (mTerminated)
             return;
          
-         OnMouseUpInternal (managerX, managerY);
+         OnMouseUpInternal (mouseX, mouseY);
       }
       
    //================================================================
@@ -56,15 +56,15 @@ package editor.asset {
       {
       }
       
-      protected function OnMouseDownInternal (managerX:Number, managerY:Number):void
+      protected function OnMouseDownInternal (mouseX:Number, mouseY:Number):void
       {
       }
       
-      protected function OnMouseMoveInternal (managerX:Number, managerY:Number, isHold:Boolean):void
+      protected function OnMouseMoveInternal (mouseX:Number, mouseY:Number, isHold:Boolean):void
       {
       }
       
-      protected function OnMouseUpInternal (managerX:Number, managerY:Number):void
+      protected function OnMouseUpInternal (mouseX:Number, mouseY:Number):void
       {
       }
    }

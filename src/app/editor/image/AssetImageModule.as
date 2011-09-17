@@ -64,7 +64,7 @@ package editor.image {
          return null; // to override
       }
       
-      public function GetModuleBoundingRectangle ():Array
+      public function GetModuleBoundingRectangle ():Rectangle
       {
          return null; // to override
       }

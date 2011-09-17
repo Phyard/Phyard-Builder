@@ -231,9 +231,9 @@ package editor.asset {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
          
-         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
-         
          BuildContextMenuInternal ();
+         
+         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
       }
       
       protected function BuildContextMenuInternal ():void

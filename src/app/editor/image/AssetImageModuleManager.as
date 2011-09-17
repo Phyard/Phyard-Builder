@@ -14,21 +14,7 @@ package editor.image {
    import common.ValueAdjuster;
    
    public class AssetImageModuleManager extends AssetManagerArrayLayout
-   {
-      override public function GetAssetSpriteSize ():Number
-      {
-         return 100;
-      }
-
-      override public function GetAssetSpriteGap ():Number
-      {
-         return 10;
-      }
-      
-//==========================================================      
-// 
-//==========================================================      
-      
+   {  
       public function GetModuleIconSize ():Number
       {
          return 86;

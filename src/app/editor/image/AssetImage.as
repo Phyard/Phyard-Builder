@@ -9,6 +9,8 @@ package editor.image {
    import flash.display.Loader;
    import flash.display.LoaderInfo;
    
+   import flash.geom.Rectangle;
+   
    import flash.utils.ByteArray;
    
    import flash.events.Event;
@@ -122,17 +124,13 @@ package editor.image {
          return mBitmapData == null ? null : new Bitmap (mBitmapData);
       }
       
-      override public function GetModuleBoundingRectangle ():Array
+      override public function GetModuleBoundingRectangle ():Rectangle
       {
          if (mBitmapData == null)
             return null;
          
-         var rectData:Array = new Array (4);
-         rectData [0] = 0;
-         rectData [1] = 0;
-         rectData [2] = mBitmapData.width;
-         rectData [3] = mBitmapData.height;
-         return rectData;
+         var rectangle:Rectangle = new Rectangle (0, 0, mBitmapData.width, mBitmapData.height);
+         return rectangle;
       }
       
 //=============================================================

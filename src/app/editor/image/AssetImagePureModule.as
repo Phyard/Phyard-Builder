@@ -9,6 +9,8 @@ package editor.image {
    import flash.display.Loader;
    import flash.display.LoaderInfo;
    
+   import flash.geom.Rectangle;
+   
    import flash.utils.ByteArray;
    
    import flash.events.Event;
@@ -33,6 +35,8 @@ package editor.image {
    
    import editor.asset.Asset;
    
+   import editor.image.dialog.AssetImageDivideDialog;
+   
    import common.Define;
    import common.ValueAdjuster;
    
@@ -53,6 +57,11 @@ package editor.image {
       public function GetAssetImagePureModuleManager ():AssetImagePureModuleManager
       {
          return mAssetImagePureModuleManager;
+      }
+      
+      public function GetImageDivision ():AssetImageDivision
+      {
+         return mImageDivision;
       }
       
       override public function ToCodeString ():String
@@ -77,7 +86,7 @@ package editor.image {
          return mImageDivision.CreateSpriteForImagePureModule ();
       }
       
-      override public function GetModuleBoundingRectangle ():Array
+      override public function GetModuleBoundingRectangle ():Rectangle
       {
          if (mImageDivision == null)
             return null;
@@ -105,6 +114,12 @@ package editor.image {
          switch (event.target)
          {
             case mMenuItemEditModule:
+               if (mImageDivision != null)
+               {
+                  AssetImageDivideDialog.ShowAssetImageDivideDialog (mImageDivision.GetAssetImageDivisionManager ().GetAssetImage ());
+                  mImageDivision.GetAssetImageDivisionManager ().SetSelectedAsset (mImageDivision);
+                  mAssetImagePureModuleManager.SetSelectedAsset (this);
+               }
                break;
             default:
                break;

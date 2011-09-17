@@ -9,6 +9,8 @@ package editor.image {
    import flash.display.Loader;
    import flash.display.LoaderInfo;
    
+   import flash.geom.Rectangle;
+   
    import flash.utils.ByteArray;
    
    import flash.events.Event;
@@ -89,9 +91,9 @@ package editor.image {
          return null;
       }
       
-      override public function GetModuleBoundingRectangle ():Array
+      override public function GetModuleBoundingRectangle ():Rectangle
       {
-         return null;
+         return null; // to override
       }
       
 //=============================================================
@@ -99,14 +101,22 @@ package editor.image {
 //=============================================================
       
       private var mMenuItemEditModule:ContextMenuItem;
+      private var mMenuItemSetTimeComposite:ContextMenuItem;
+      private var mMenuItemSetSpaceComposite:ContextMenuItem;
       
       override protected function BuildContextMenuInternal ():void
       {
          mMenuItemEditModule = new ContextMenuItem("Edit ...");
+         mMenuItemSetTimeComposite = new ContextMenuItem("Set As Time Composite Module");
+         mMenuItemSetSpaceComposite = new ContextMenuItem("Set As Space Composite Module");
          
          mMenuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         mMenuItemSetTimeComposite.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         mMenuItemSetSpaceComposite.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
          contextMenu.customItems.push (mMenuItemEditModule);
+         contextMenu.customItems.push (mMenuItemSetTimeComposite);
+         contextMenu.customItems.push (mMenuItemSetSpaceComposite);
       }
       
       private function OnContextMenuEvent (event:ContextMenuEvent):void

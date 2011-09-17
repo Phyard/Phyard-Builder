@@ -84,7 +84,7 @@ package editor.runtime {
             var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
             var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
             
-            mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16)); //, true);
+            mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), true);
             mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
          }
          

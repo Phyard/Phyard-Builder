@@ -326,9 +326,9 @@ package editor.asset {
          defaultItems.print = true;
          contextMenu = theContextMenu;
          
-         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
-         
          BuildContextMenuInternal ();
+         
+         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
       }
       
       protected function BuildContextMenuInternal ():void

@@ -9,6 +9,9 @@ package editor.image {
    import flash.display.Loader;
    import flash.display.LoaderInfo;
    
+   import flash.geom.Point;
+   import flash.geom.Rectangle;
+   
    import flash.utils.ByteArray;
    
    import flash.events.Event;
@@ -45,6 +48,8 @@ package editor.image {
       protected var mTop:Number;
       protected var mRight:Number;
       protected var mBottom:Number;
+      
+      private var mBitmapData:BitmapData = null;
       
       protected var mImagePureModule:AssetImagePureModule;
       
@@ -105,27 +110,25 @@ package editor.image {
       {
          // mPosX and mPosY are always 0.
       
-         //var dx:int = int (posX);
-         //var dy:int = int (posY);
-         mLeft += posX;
-         mRight += posX;
-         mTop += posY;
-         mBottom += posY;
+         var dx:int = int (posX);
+         var dy:int = int (posY);
+         
+         SetRegion (mLeft + dx, mTop + dy, mRight + dx, mBottom + dy);
          
          UpdateAppearance ();
       }
       
       public function SetRegion (left:Number, top:Number, right:Number, bottom:Number):void
       {
-         if (left >= right)
+         if (left <= right)
          {
             mLeft = left;
             mRight = right;
          }
          else
          {
-            mRight = right;
-            mLeft = left;
+            mLeft = right;
+            mRight = left;
          }
          
          if (top <= bottom)
@@ -139,7 +142,14 @@ package editor.image {
             mBottom = top;
          }
          
-         //if ()
+         //
+         UpdatePixels ();
+         
+         //
+         if (mImagePureModule != null)
+         {
+            mImagePureModule.UpdateAppearance ();
+         }
       }
 
 //=============================================================
@@ -148,17 +158,82 @@ package editor.image {
       
       public function UpdatePixels ():void
       {
+         var assetImage:AssetImage = mAssetImageDivisionManager.GetAssetImage ();
+         var imageBitmapData:BitmapData = assetImage.GetBitmapData ();
+         if (imageBitmapData == null)
+         {
+            mBitmapData = null;
+            return;
+         }
          
+         var left:int = GetLeft ();
+         var top:int = GetTop ();
+         var right:int = GetRight ();
+         var bottom:int = GetBottom();
+         
+         if (left < 0)
+            left = 0;
+         if (top < 0)
+            top = 0;
+         if (right > imageBitmapData.width)
+            right = imageBitmapData.width;
+         if (bottom > imageBitmapData.height)
+            bottom = imageBitmapData.height;
+         
+         if (left >= imageBitmapData.width || top >= imageBitmapData.height || right <= 0 || bottom <= 0)
+         {
+            mBitmapData = null;
+            return;
+         }  
+         
+         var w:int = right - left;
+         var h:int = bottom - top;
+         mBitmapData = new BitmapData (w, h, true);
+         mBitmapData.copyPixels (imageBitmapData, new Rectangle (left, top, w, h), new Point (0, 0));
       }
       
       public function CreateSpriteForImagePureModule ():DisplayObject
       {
-         return null;
+         var assetImage:AssetImage = mAssetImageDivisionManager.GetAssetImage ();
+         var imageBitmapData:BitmapData = assetImage.GetBitmapData ();
+         var shape:Shape;
+         if (imageBitmapData == null || mBitmapData == null)
+         {
+            shape = new Shape ();
+            GraphicsUtil.ClearAndDrawRect (shape, 0, 0, GetRight () - GetLeft (), GetBottom () - GetTop (),
+                                       0xC0FFC0, -1, true, 0xC0FFC0, false);
+            
+            return shape;
+         }
+         
+         var bitmap:Bitmap = new Bitmap (mBitmapData);
+
+         var left:int = GetLeft ();
+         var top:int = GetTop ();
+         var right:int = GetRight ();
+         var bottom:int = GetBottom();
+         if (left >= 0 && top >= 0 && right <= imageBitmapData.width && bottom < imageBitmapData.height)
+            return bitmap;
+
+         bitmap.x = left >= 0 ? 0 : - left;
+         bitmap.y = top  >= 0 ? 0 : - top;
+         
+         shape = new Shape ();
+         GraphicsUtil.ClearAndDrawRect (shape, 0, 0, GetRight () - GetLeft (), GetBottom () - GetTop (),
+                                    0xC0FFC0, -1, true, 0xC0FFC0, false);
+         shape.alpha = 0.3;
+         
+         var sprite:Sprite = new Sprite ();
+         sprite.addChild (shape);
+         sprite.addChild (bitmap);
+         
+         return sprite;
       }
       
-      public function GetBoundingRectangleForImagePureModule ():Array
+      public function GetBoundingRectangleForImagePureModule ():Rectangle
       {
-         return null;
+         var rectangle:Rectangle = new Rectangle (0, 0, GetRight () - GetLeft (), GetBottom () - GetTop ());
+         return rectangle;
       }
       
 //=============================================================

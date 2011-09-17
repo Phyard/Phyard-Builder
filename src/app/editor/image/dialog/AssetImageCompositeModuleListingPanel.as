@@ -53,5 +53,36 @@ package editor.image.dialog {
          mAssetImageCompositeModuleManager = assetImageCompositeModuleManager;
       }
       
+//=============================================================
+//   context menu
+//=============================================================
+      
+      private var mMenuItemCreateTimeCompositeModule:ContextMenuItem;
+      private var mMenuItemCreateSpaceCompositeModule:ContextMenuItem;
+      
+      override protected function BuildContextMenuInternal ():void
+      {
+         mMenuItemCreateTimeCompositeModule = new ContextMenuItem("Create New Time Composite Module ...");
+         mMenuItemCreateSpaceCompositeModule = new ContextMenuItem("Create New Space Composite Module ...");
+         
+         mMenuItemCreateTimeCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         mMenuItemCreateSpaceCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+
+         contextMenu.customItems.push (mMenuItemCreateTimeCompositeModule);
+         contextMenu.customItems.push (mMenuItemCreateSpaceCompositeModule);
+      }
+      
+      private function OnContextMenuEvent (event:ContextMenuEvent):void
+      {
+         switch (event.target)
+         {
+            case mMenuItemCreateModule:
+               mAssetImageCompositeModuleManager.CreateImageCompositeModule (true);
+               break;
+            default:
+               break;
+         }
+      }
+      
    }
 }

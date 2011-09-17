@@ -6,7 +6,9 @@ package editor.image {
    import flash.geom.Point;
    import flash.geom.Matrix;
    
-   import editor.asset.AssetManager; 
+   import editor.asset.AssetManager;
+   
+   import editor.runtime.Runtime;
    
    import common.CoordinateSystem;
    
@@ -45,6 +47,8 @@ package editor.image {
          
          if (selectIt)
             SetSelectedAsset (imageDivision);
+         
+         Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (imageDivision, selectIt);
          
          return imageDivision;
       }

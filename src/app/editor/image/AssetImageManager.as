@@ -20,7 +20,34 @@ package editor.image {
    import common.ValueAdjuster;
    
    public class AssetImageManager extends AssetImageModuleManager //AssetManager 
-   {  
+   {
+//==========================================================      
+// 
+//==========================================================      
+      
+      override public function GetAssetSpriteSize ():Number
+      {
+         return 100;
+      }
+
+      override public function GetAssetSpriteGap ():Number
+      {
+         return 10;
+      }
+      
+//==========================================================      
+// 
+//==========================================================      
+      
+      override public function GetModuleIconSize ():Number
+      {
+         return 86;
+      }
+      
+//==========================================================      
+// 
+//==========================================================      
+      
       public function CreateImage (insertBeforeSelectedThenSelectNew:Boolean):AssetImage
       {
          var image:AssetImage = new AssetImage (this);

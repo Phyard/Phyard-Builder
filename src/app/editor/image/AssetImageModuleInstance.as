@@ -147,10 +147,12 @@ package editor.image {
          {
             moduleSprite = mAssetImageModule.CreateModuleSprite ();
          }
-                                       
+
+         var rectangle:Rectangle;
          if (moduleSprite == null)
          {
-            GraphicsUtil.ClearAndDrawRect (this, - halfModuleSize, - halfModuleSize, moduleSize, moduleSize,
+            rectangle = GetPhysicsBoundingRectangle ();
+            GraphicsUtil.ClearAndDrawRect (this, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
                                           0x0000FF, -1, true, IsSelected () ? 0xC0C0FF : 0xD0FFD0, false);
          }
          else
@@ -162,7 +164,7 @@ package editor.image {
                var shape:Shape = new Shape ();
                shape.alpha = 0.67;
 
-               var rectangle:Rectangle = GetPhysicsBoundingRectangle ();
+               rectangle = GetPhysicsBoundingRectangle ();
                GraphicsUtil.DrawRect (shape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
                                           0x0000FF, -1, true, 0xC0C0FF, false);
                

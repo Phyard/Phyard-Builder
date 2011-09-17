@@ -3,6 +3,7 @@ package editor.asset {
    
    import flash.display.Sprite;
    
+   import flash.events.Event;
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
@@ -33,8 +34,6 @@ package editor.asset {
       
       public function Asset (assetManager:AssetManager)
       {
-         BuildContextMenu ();
-         
          mAssetManager = assetManager;
          
          if (mAssetManager != null) // at some special cases, mAssetManager is null
@@ -43,6 +42,8 @@ package editor.asset {
          //SetName (null);
          
          mouseChildren = false;
+         
+         addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
       }
       
       public function GetAssetManager ():AssetManager
@@ -103,8 +104,19 @@ package editor.asset {
 // 
 //======================================================
       
+      private var mIsDestroyed:Boolean = false;
+      
+      public function IsDestroyed ():Boolean
+      {
+         return mIsDestroyed;
+      }
+      
       public function Destroy ():void
-      {  
+      {
+         mAppearanceLayerId = -1;
+         mCreationOrderId = -1;
+         mIsDestroyed = true;
+         
          if (mSelectionProxy != null)
             mSelectionProxy.Destroy ();
          
@@ -318,6 +330,11 @@ package editor.asset {
 //   context menu
 //=============================================================
       
+      private function OnAddedToStage (event:Event):void 
+      {
+         BuildContextMenu ();
+      }
+      
       final private function BuildContextMenu ():void
       {
          var theContextMenu:ContextMenu = new ContextMenu ();
@@ -326,12 +343,12 @@ package editor.asset {
          defaultItems.print = true;
          contextMenu = theContextMenu;
          
-         BuildContextMenuInternal ();
+         BuildContextMenuInternal (theContextMenu.customItems);
          
          theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
       }
       
-      protected function BuildContextMenuInternal ():void
+      protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
       } 
    }

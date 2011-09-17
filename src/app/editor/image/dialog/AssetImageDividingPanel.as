@@ -3,7 +3,6 @@ package editor.image.dialog {
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.display.Shape;
-   import flash.display.Bitmap;
    import flash.display.BitmapData;
    
    import flash.events.Event;
@@ -46,7 +45,7 @@ package editor.image.dialog {
    
    public class AssetImageDividingPanel extends AssetManagerPanel 
    {
-      protected var mBitamp:Bitmap;
+      protected var mImageSprite:Sprite;
       protected var mAssetImageDivisionManager:AssetImageDivisionManager;
       
       public function AssetImageDividingPanel ()
@@ -64,18 +63,13 @@ package editor.image.dialog {
          
          if (mAssetImageDivisionManager != null)
          {
-            var bitmapData:BitmapData = mAssetImageDivisionManager.GetAssetImage ().GetBitmapData ();
-            if (bitmapData != null)
-            {
-               mBitamp = new Bitmap (bitmapData);
-               
-               mBackgroundLayer.addChild (mBitamp);
-            }
+            mImageSprite = mAssetImageDivisionManager.GetAssetImageSprite ();
+            mBackgroundLayer.addChild (mImageSprite);
                                     
             ScaleManager (1.0);
             
-            MoveManager (0.5 * (mParentWidth - (mBitamp == null ? 0 : mBitamp.width)) - mAssetImageDivisionManager.x, 
-                                     0.5 * (mParentHeight - (mBitamp == null ? 0 : mBitamp.height)) - mAssetImageDivisionManager.y
+            MoveManager (0.5 * (mParentWidth - (mImageSprite == null ? 0 : mImageSprite.width)) - mAssetImageDivisionManager.x, 
+                                     0.5 * (mParentHeight - (mImageSprite == null ? 0 : mImageSprite.height)) - mAssetImageDivisionManager.y
                                     );
          }
       }
@@ -98,10 +92,10 @@ package editor.image.dialog {
       {
          super.MoveManager (dx, dy);
          
-         if (mBitamp != null)
+         if (mImageSprite != null)
          {
-            mBitamp.x = mAssetImageDivisionManager.x;
-            mBitamp.y = mAssetImageDivisionManager.y;
+            mImageSprite.x = mAssetImageDivisionManager.x;
+            mImageSprite.y = mAssetImageDivisionManager.y;
          }
       }
       
@@ -109,10 +103,10 @@ package editor.image.dialog {
       {
          super.ScaleManager (scale);
          
-         if (mBitamp != null)
+         if (mImageSprite != null)
          {
-            mBitamp.scaleX = mAssetImageDivisionManager.scaleX;
-            mBitamp.scaleY = mAssetImageDivisionManager.scaleY;
+            mImageSprite.scaleX = mAssetImageDivisionManager.scaleX;
+            mImageSprite.scaleY = mAssetImageDivisionManager.scaleY;
          }
       }
 
@@ -130,7 +124,7 @@ package editor.image.dialog {
          SetCurrentIntent (new IntentDragDivision (this));
       }
       
-      public function DeleteImageDivision ():void
+      public function DeleteImageDivisions ():void
       {
          if (mAssetImageDivisionManager == null)
             return;

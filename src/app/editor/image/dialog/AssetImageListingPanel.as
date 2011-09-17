@@ -53,32 +53,5 @@ package editor.image.dialog {
          mAssetImageManager = assetImageManager;
       }
       
-//=============================================================
-//   context menu
-//=============================================================
-      
-      private var mMenuItemCreateImage:ContextMenuItem;
-      
-      override protected function BuildContextMenuInternal ():void
-      {
-         mMenuItemCreateImage = new ContextMenuItem("Create New Image ...");
-         
-         mMenuItemCreateImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-
-         contextMenu.customItems.push (mMenuItemCreateImage);
-      }
-      
-      private function OnContextMenuEvent (event:ContextMenuEvent):void
-      {
-         switch (event.target)
-         {
-            case mMenuItemCreateImage:
-               mAssetImageManager.CreateImage (true);
-               break;
-            default:
-               break;
-         }
-      }
-      
    }
 }

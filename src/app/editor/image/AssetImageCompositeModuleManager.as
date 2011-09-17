@@ -6,6 +6,12 @@ package editor.image {
    import flash.geom.Point;
    import flash.geom.Matrix;
    
+   import flash.ui.ContextMenu;
+   import flash.ui.ContextMenuItem;
+   import flash.ui.ContextMenuBuiltInItems;
+   //import flash.ui.ContextMenuClipboardItems; // flash 10
+   import flash.events.ContextMenuEvent;
+   
    import editor.asset.AssetManager; 
    
    import common.CoordinateSystem;
@@ -57,6 +63,33 @@ package editor.image {
          return module;
       }
       
+//=============================================================
+//   context menu
+//=============================================================
+      
+      override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+         var menuItemCreateTimeCompositeModule:ContextMenuItem = new ContextMenuItem  ("Create New Time Composite Module", true);
+         var menuItemCreateSpaceCompositeModule:ContextMenuItem = new ContextMenuItem ("Create New Space Composite Module");
+         
+         menuItemCreateTimeCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateTimeCompositeModule);
+         menuItemCreateSpaceCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateSpaceCompositeModule);
+
+         customMenuItemsStack.push (menuItemCreateTimeCompositeModule);
+         customMenuItemsStack.push (menuItemCreateSpaceCompositeModule);
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
+      }
+      
+      private function OnContextMenuEvent_CreateTimeCompositeModule (event:ContextMenuEvent):void
+      {
+         CreateImageCompositeModule (true);
+      }
+      
+      private function OnContextMenuEvent_CreateSpaceCompositeModule(event:ContextMenuEvent):void
+      {
+         CreateImageCompositeModule (true);
+      }
    }
 }
 

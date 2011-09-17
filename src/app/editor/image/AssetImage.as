@@ -76,6 +76,22 @@ package editor.image {
          return "Image";
       }
       
+//======================================================
+// 
+//======================================================
+      
+      override public function Destroy ():void
+      {
+         super.Destroy ();
+         
+         mAssetImageDivisionManager.DestroyAllAssets ();
+         if (mAssetImageDivideDialog != null)
+         {
+            mAssetImageDivideDialog.Hide ();
+            mAssetImageDivideDialog = null;
+         }
+      }
+      
 //=============================================================
 //   
 //=============================================================
@@ -102,17 +118,28 @@ package editor.image {
          var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
          mBitmapData = newBitmap.bitmapData;
          
-         UpdateAppearance ();
+         NotifyPixelsChanged ();
       }
       
       private function OnLoadImageError (event:Object):void
       {
          mFileData = null;
+         
+         NotifyPixelsChanged ();
       }
       
       public function GetBitmapData ():BitmapData
       {
          return mBitmapData;
+      }
+      
+      protected function NotifyPixelsChanged ():void
+      {  
+         UpdateAppearance ();
+         
+         mAssetImageDivisionManager.OnAssetImagePixelsChanged ();
+         
+         NotifyModifiedForReferers ();
       }
       
 //=============================================================
@@ -137,35 +164,33 @@ package editor.image {
 //   context menu
 //=============================================================
       
-      private var mMenuItemLoadImage:ContextMenuItem;
-      private var mMenuItemDivideImage:ContextMenuItem;
-      
-      override protected function BuildContextMenuInternal ():void
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         mMenuItemLoadImage = new ContextMenuItem("(Re)load Local Image ...");
-         mMenuItemDivideImage = new ContextMenuItem("Divide ...");
+         var menuItemLoadImage:ContextMenuItem = new ContextMenuItem("(Re)load Local Image ...");
+         var menuItemDivideImage:ContextMenuItem = new ContextMenuItem("Divide ...");
          
-         mMenuItemLoadImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         mMenuItemDivideImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         menuItemLoadImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_LoadImage);
+         menuItemDivideImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_DivideImage);
 
-         contextMenu.customItems.push (mMenuItemLoadImage);
-         contextMenu.customItems.push (mMenuItemDivideImage);
+         customMenuItemsStack.push (menuItemLoadImage);
+         customMenuItemsStack.push (menuItemDivideImage);
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      private function OnContextMenuEvent (event:ContextMenuEvent):void
+      private function OnContextMenuEvent_LoadImage (event:ContextMenuEvent):void
       {
-         switch (event.target)
-         {
-            case mMenuItemLoadImage:
-               OpenLocalImageFileDialog ();
-               break;
-            case mMenuItemDivideImage:
-               AssetImageDivideDialog.ShowAssetImageDivideDialog (this);
-               break;
-            default:
-               break;
-         }
+         OpenLocalImageFileDialog ();
       }
+      
+      private function OnContextMenuEvent_DivideImage (event:ContextMenuEvent):void
+      {
+         AssetImageDivideDialog.ShowAssetImageDivideDialog (this);
+      }
+      
+//=============================================================
+//   
+//=============================================================
       
       private var mAssetImageDivideDialog:AssetImageDivideDialog;
       

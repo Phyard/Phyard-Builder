@@ -62,6 +62,26 @@ package editor.image {
          
          return image;
       }
+        
+//=====================================================================
+// context menu
+//=====================================================================
+      
+      override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+         var menuItemCreateImage:ContextMenuItem = new ContextMenuItem("Create New Image ...", true);
+         
+         menuItemCreateImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateImage);
+
+         customMenuItemsStack.push (menuItemCreateImage);
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
+      }
+      
+      private function OnContextMenuEvent_CreateImage (event:ContextMenuEvent):void
+      {
+         CreateImage (true);
+      }
       
       
    }

@@ -78,6 +78,17 @@ package editor.image {
 //   
 //=============================================================
       
+      public function OnDivisionChanged ():void
+      {
+         UpdateAppearance ();
+         
+         NotifyModifiedForReferers ();
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       override public function CreateModuleSprite ():DisplayObject
       {
          if (mImageDivision == null)
@@ -98,31 +109,24 @@ package editor.image {
 //   context menu
 //=============================================================
       
-      private var mMenuItemEditModule:ContextMenuItem;
-      
-      override protected function BuildContextMenuInternal ():void
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         mMenuItemEditModule = new ContextMenuItem("Edit ...");
+         var menuItemEditModule:ContextMenuItem = new ContextMenuItem("Edit ...");
          
-         mMenuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         menuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_EditModule);
          
-         contextMenu.customItems.push (mMenuItemEditModule);
+         customMenuItemsStack.push (menuItemEditModule);
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      private function OnContextMenuEvent (event:ContextMenuEvent):void
+      private function OnContextMenuEvent_EditModule (event:ContextMenuEvent):void
       {
-         switch (event.target)
+         if (mImageDivision != null)
          {
-            case mMenuItemEditModule:
-               if (mImageDivision != null)
-               {
-                  AssetImageDivideDialog.ShowAssetImageDivideDialog (mImageDivision.GetAssetImageDivisionManager ().GetAssetImage ());
-                  mImageDivision.GetAssetImageDivisionManager ().SetSelectedAsset (mImageDivision);
-                  mAssetImagePureModuleManager.SetSelectedAsset (this);
-               }
-               break;
-            default:
-               break;
+            AssetImageDivideDialog.ShowAssetImageDivideDialog (mImageDivision.GetAssetImageDivisionManager ().GetAssetImage ());
+            mImageDivision.GetAssetImageDivisionManager ().SetSelectedAsset (mImageDivision);
+            mAssetImagePureModuleManager.SetSelectedAsset (this);
          }
       }
       

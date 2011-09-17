@@ -72,6 +72,11 @@ package editor.image {
          mImagePureModule = assetImagePureModule;
       }
       
+      public function GetImagePureModule ():AssetImagePureModule
+      {
+         return mImagePureModule;
+      }
+      
       override public function ToCodeString ():String
       {
          return "Pure Module#" + mCreationOrderId;
@@ -110,8 +115,10 @@ package editor.image {
       {
          // mPosX and mPosY are always 0.
       
-         var dx:int = int (posX);
-         var dy:int = int (posY);
+         //var dx:int = int (posX);
+         //var dy:int = int (posY);
+         var dx:Number = posX;
+         var dy:Number = posY;
          
          SetRegion (mLeft + dx, mTop + dy, mRight + dx, mBottom + dy);
          
@@ -159,7 +166,7 @@ package editor.image {
       public function UpdatePixels ():void
       {
          var assetImage:AssetImage = mAssetImageDivisionManager.GetAssetImage ();
-         var imageBitmapData:BitmapData = assetImage.GetBitmapData ();
+         var imageBitmapData:BitmapData = assetImage == null ? null : assetImage.GetBitmapData ();
          if (imageBitmapData == null)
          {
             mBitmapData = null;
@@ -190,12 +197,17 @@ package editor.image {
          var h:int = bottom - top;
          mBitmapData = new BitmapData (w, h, true);
          mBitmapData.copyPixels (imageBitmapData, new Rectangle (left, top, w, h), new Point (0, 0));
+         
+         if (mImagePureModule != null)
+         {
+            mImagePureModule.OnDivisionChanged ();
+         }
       }
       
       public function CreateSpriteForImagePureModule ():DisplayObject
       {
          var assetImage:AssetImage = mAssetImageDivisionManager.GetAssetImage ();
-         var imageBitmapData:BitmapData = assetImage.GetBitmapData ();
+         var imageBitmapData:BitmapData = assetImage == null ? null : assetImage.GetBitmapData ();
          var shape:Shape;
          if (imageBitmapData == null || mBitmapData == null)
          {
@@ -264,30 +276,11 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
-      /*
-      private var mMenuItemDelete:ContextMenuItem;
-      
-      override protected function BuildContextMenuInternal ():void
+
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         mMenuItemDelete = new ContextMenuItem("Delete ...");
-         
-         mMenuItemDelete.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         
-         contextMenu.customItems.push (mMenuItemDelete);
+         super.BuildContextMenuInternal (customMenuItemsStack);
       }
-      
-      private function OnContextMenuEvent (event:ContextMenuEvent):void
-      {
-         switch (event.target)
-         {
-            case mMenuItemDelete:
-               mAssetImageDivisionManager.DestroyAsset (this);
-               break;
-            default:
-               break;
-         }
-      }
-      */
       
   }
 }

@@ -9,11 +9,11 @@ package common {
 // general
 //===========================================================================
       
-      public static const AboutUrl:String = "http://www.colorinfection.com";
-      public static const EditingTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/toturials";
-      public static const ShowcasesUrl:String = "http://sites.google.com/site/colorinfectiondocument/showcases";
+      public static const AboutUrl:String = "http://www.phyard.com";
+      public static const EditingTutorialUrl:String = "http://wiki.colorinfection.com";
+      public static const ShowcasesUrl:String = "http://www.phyard.com/hot";
       public static const EmbedTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/publish-your-puzzles";
-      public static const EditorUrl:String = "http://colorinfection.appspot.com/htmls/editor_page_beta.html";
+      public static const EditorUrl:String = "http://www.phyard.com";
       
       public static const kPI_x_2:Number = Math.PI * 2.0;
       public static const kRadians2Degrees:Number = 180.0 / Math.PI;

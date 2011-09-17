@@ -78,6 +78,8 @@ package editor.asset {
             addChildAt (mAssetManager, getChildIndex (mForegroundLayer));
             //mAssetManager.SetAssetLinksChangedCallback (UpdateAssetLinkLines);
          }
+         
+         BuildContextMenu ();
       }
       
       public function MoveManager (dx:Number, dy:Number):void
@@ -148,9 +150,6 @@ package editor.asset {
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
          //stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
-         
-         //
-         BuildContextMenu ();
       }
       
       private var mContentMaskSprite:Shape = null;
@@ -231,14 +230,13 @@ package editor.asset {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
          
-         BuildContextMenuInternal ();
+         if (mAssetManager != null)
+         {
+            mAssetManager.BuildContextMenuInternal (theContextMenu.customItems);
+         }
          
          theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
       }
-      
-      protected function BuildContextMenuInternal ():void
-      {
-      } 
       
 //==================================================================================
 // edit mode

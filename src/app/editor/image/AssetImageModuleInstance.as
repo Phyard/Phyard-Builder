@@ -1,12 +1,15 @@
 
 package editor.image {
    
+   import flash.display.DisplayObject;
    import flash.display.Sprite;
    import flash.display.Shape;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.Loader;
    import flash.display.LoaderInfo;
+   
+   import flash.geom.Rectangle;
    
    import flash.utils.ByteArray;
    
@@ -41,7 +44,8 @@ package editor.image {
    {  
       protected var mAssetImageModuleInstanceManager:AssetImageModuleInstanceManager;
       
-      protected var mAssetImageModule:AssetImageModule;
+      protected var mAssetImageModule:AssetImageModule = null;
+      private var mReferPair:ReferPair = null;
       
       public function AssetImageModuleInstance (assetImageModuleInstanceManager:AssetImageModuleInstanceManager, assetImageModule:AssetImageModule)
       {
@@ -49,8 +53,7 @@ package editor.image {
          
          mAssetImageModuleInstanceManager = assetImageModuleInstanceManager;
          
-         mAssetImageModule = assetImageModule;
-         mReferPair = ReferObject (mAssetImageModule);
+         SetAssetImageModule (assetImageModule);
       }
       
       public function GetAssetImageModuleInstanceManager ():AssetImageModuleInstanceManager
@@ -62,6 +65,21 @@ package editor.image {
       {
          return mAssetImageModule;
       }
+      
+      public function SetAssetImageModule (assetImageModule:AssetImageModule):void
+      {
+         if (mReferPair != null)
+         {
+            mReferPair.Break ();
+            mAssetImageModule = null;
+         }
+         
+         if (assetImageModule != null)
+         {
+            mAssetImageModule = assetImageModule;
+            mReferPair = ReferObject (mAssetImageModule);
+         }
+      } 
       
       override public function ToCodeString ():String
       {
@@ -77,9 +95,7 @@ package editor.image {
 //   
 //=============================================================
       
-      private var mReferPair:ReferPair;
-      
-      override public function OnReferingModified (refering:EditorObject):void
+      override public function OnReferingModified (refering:EditorObject, info:Object = null):void
       {
          if (refering == mAssetImageModule)
          {
@@ -100,13 +116,35 @@ package editor.image {
 //   
 //=============================================================
 
-      /*
       override public function UpdateAppearance ():void
       {
-         var moduleSize:Number = mAssetImageModuleInstanceManager.GetModuleSize ();
+         while (numChildren > 0)
+            removeChildAt (0);
+         
+         var moduleSize:Number = 50;
          var halfModuleSize:Number = 0.5 * moduleSize;
-         GraphicsUtil.ClearAndDrawRect (this, - halfModuleSize, - halfModuleSize, moduleSize, moduleSize,
-                                       IsSelected () ? 0x0000FF : 0x00FF00, 0, true, IsSelected () ? 0xC0C0FF : 0xC0FFC0, false);
+                                       
+         if (mAssetImageModule == null)
+         {
+            GraphicsUtil.ClearAndDrawRect (this, - halfModuleSize, - halfModuleSize, moduleSize, moduleSize,
+                                          0x0000FF, -1, true, IsSelected () ? 0xC0C0FF : 0xD0FFD0, false);
+         }
+         else
+         {
+            var moduleSprite:DisplayObject = mAssetImageModule.CreateModuleSprite ();
+            addChild (moduleSprite);
+            
+            if (IsSelected ())
+            {
+               var rectangle:Rectangle = mAssetImageModule.GetModuleBoundingRectangle ();
+
+               var shape:Shape = new Shape ();
+               shape.alpha = 0.67;
+               GraphicsUtil.DrawRect (shape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
+                                          0x0000FF, -1, true, 0xC0C0FF, false);
+               addChild (shape);
+            }
+         } 
       }
       
       override public function UpdateSelectionProxy ():void
@@ -117,11 +155,47 @@ package editor.image {
             mSelectionProxy.SetUserData (this);
          }
          
-         var moduleSize:Number = mAssetImageModuleInstanceManager.GetModuleSize ();
-         var halfModuleSize:Number = 0.5 * moduleSize;
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, GetPosX (), GetPosY (), halfModuleSize, halfModuleSize);
+         if (mAssetImageModule == null)
+         {
+            var moduleSize:Number = 50;
+            var halfModuleSize:Number = 0.5 * moduleSize;
+            (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, GetPositionX (), GetPositionY (), halfModuleSize, halfModuleSize);
+         }
+         else
+         {
+            var rectangle:Rectangle = mAssetImageModule.GetModuleBoundingRectangle ();
+            
+            //todo: tranlate the rect
+            (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, GetPositionX () + rectangle.left + 0.5 * rectangle.width, GetPositionY () + rectangle.top + 0.5 * rectangle.height, 0.5 * rectangle.width, 0.5 * rectangle.height);
+         } 
       }
-      */
+      
+//=============================================================
+//   context menu
+//=============================================================
+      
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+         var menuItemChangeIntoTimeCompositeModule:ContextMenuItem = new ContextMenuItem("Change Into Time Composite Module", true);
+         var menuItemChangeIntoSpaceCompositeModule:ContextMenuItem = new ContextMenuItem("Change Into Space Composite Module");
+         
+         menuItemChangeIntoTimeCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeIntoTimeCompositeModule);
+         menuItemChangeIntoSpaceCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeIntoSpaceCompositeModule);
+
+         customMenuItemsStack.push (menuItemChangeIntoTimeCompositeModule);
+         customMenuItemsStack.push (menuItemChangeIntoSpaceCompositeModule);
+         
+         mAssetImageModuleInstanceManager.BuildContextMenuInternal (customMenuItemsStack);
+         super.BuildContextMenuInternal (customMenuItemsStack);
+      }
+      
+      private function OnContextMenuEvent_ChangeIntoTimeCompositeModule (event:ContextMenuEvent):void
+      {
+      }
+      
+      private function OnContextMenuEvent_ChangeIntoSpaceCompositeModule (event:ContextMenuEvent):void
+      {
+      }
       
   }
 }

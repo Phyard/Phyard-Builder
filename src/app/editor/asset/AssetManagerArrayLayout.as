@@ -71,7 +71,7 @@ package editor.asset {
       protected var mContentWidth:Number;
       protected var mContentHeight:Number;
       
-      protected function RearrangeAssetPositions (forcely:Boolean = false):void
+      public function RearrangeAssetPositions (forcely:Boolean = false):void
       {
          if (parent == null)
             return;

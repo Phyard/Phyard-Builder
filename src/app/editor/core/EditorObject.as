@@ -94,14 +94,14 @@ package editor.core {
          return iter;
       }
       
-      protected function NotifyModified ():void
+      protected function NotifyModifiedForReferers (info:Object = null):void
       {
          var iter:ReferPairListElement = BuildReferPairListAsReferingForIterating ();
          while (iter != null)
          {
             if (iter..mReferPair.IsActive ())
             {
-               iter.mReferPair.mReferer.OnReferingModified (this);
+               iter.mReferPair.mReferer.OnReferingModified (this, info);
             }
             
             iter = iter.mNextElement;
@@ -140,7 +140,7 @@ package editor.core {
             throw new Error ("mReferPairListHeadAsRefering != null ! " + this);
       }
       
-      public function OnReferingModified (refering:EditorObject):void
+      public function OnReferingModified (refering:EditorObject, info:Object = null):void
       {
          // to override
       }

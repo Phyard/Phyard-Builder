@@ -52,9 +52,17 @@ package editor.image.dialog {
       
       public function SetAssetImageModuleInstanceManager (amim:AssetImageModuleInstanceManager):void
       {
-         super.SetAssetManager (amim)
+         super.SetAssetManager (amim);
          
          mAssetImageModuleInstanceManager = amim;
+      }
+      
+      public function DeleteModuleInstances ():void
+      {
+         if (mAssetImageModuleInstanceManager == null)
+            return;
+         
+         mAssetImageModuleInstanceManager.DeleteSelectedAssets ();
       }
       
    }

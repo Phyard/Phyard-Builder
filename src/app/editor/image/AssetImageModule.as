@@ -41,6 +41,10 @@ package editor.image {
    
    public class AssetImageModule extends Asset
    {
+      public static var mCurrentAssetImageModule:AssetImageModule = null;
+   
+   //=========
+   
       protected var mAssetImageModuleManager:AssetImageModuleManager;
       
       public function AssetImageModule (assetImageModuleManager:AssetImageModuleManager)
@@ -119,6 +123,27 @@ package editor.image {
          var moduleSize:Number = mAssetImageModuleManager.GetAssetSpriteSize ();
          var halfModuleSize:Number = 0.5 * moduleSize;
          (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (0, GetPositionX (), GetPositionY (), halfModuleSize, halfModuleSize);
+      }
+      
+//=============================================================
+//   context menu
+//=============================================================
+      
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+         var menuItemEditModule:ContextMenuItem = new ContextMenuItem("Set As Current Module");
+         
+         menuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_SetAsCurrentModule);
+         
+         customMenuItemsStack.push (menuItemEditModule);
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
+         mAssetImageModuleManager.BuildContextMenuInternal (customMenuItemsStack);
+      }
+      
+      private function OnContextMenuEvent_SetAsCurrentModule (event:ContextMenuEvent):void
+      {
+         mCurrentAssetImageModule = this;
       }
       
   }

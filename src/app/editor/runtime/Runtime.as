@@ -75,20 +75,15 @@ package editor.runtime {
 //
 //=====================================================================
 
-      private static var mMenuItemAbout:ContextMenuItem = null;
-      
       public static function GetAboutContextMenuItem ():ContextMenuItem
       {
-         if (mMenuItemAbout == null)
-         {
-            var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
-            var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
-            
-            mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), true);
-            mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
-         }
+         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
          
-         return mMenuItemAbout;
+         var menuItemAbout:ContextMenuItem = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), true);
+         menuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
+         
+         return menuItemAbout;
       }
       
       private static function OnAbout (event:ContextMenuEvent):void

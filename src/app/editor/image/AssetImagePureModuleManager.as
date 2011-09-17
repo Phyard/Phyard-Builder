@@ -64,6 +64,19 @@ package editor.image {
 //==========================================================      
 // 
 //========================================================== 
+      
+      override public function DestroyAsset (asset:Asset):void
+      {
+         var pureModule:AssetImagePureModule = asset as AssetImagePureModule;
+         var division:AssetImageDivision = pureModule.GetImageDivision ();
+         
+         super.DestroyAsset (asset); // the pureModule
+         
+         if (! division.IsDestroyed ())
+         {
+            division.GetAssetImageDivisionManager ().DestroyAsset (division);
+         }
+      }
 
       public function CreateImagePureModule (imageDivision:AssetImageDivision, insertBeforeSelectedThenSelectNew:Boolean):AssetImagePureModule
       {
@@ -79,7 +92,15 @@ package editor.image {
          
          return module;
       }
+        
+//=====================================================================
+// context menu
+//=====================================================================
       
+      override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {  
+         super.BuildContextMenuInternal (customMenuItemsStack);
+      }
    }
 }
 

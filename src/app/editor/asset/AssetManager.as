@@ -413,7 +413,6 @@ package editor.asset {
 //   actions on selected entites
 //=================================================================================
       
-      
       public function MoveSelectedAssets (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
       {
          var assetArray:Array = GetSelectedAssets ();
@@ -766,6 +765,15 @@ package editor.asset {
       {
          return mAssetLinksChangedCallback;
       }
+        
+//=====================================================================
+// context menu
+//=====================================================================
+      
+      // used in panel and assets
+      public function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+      } 
    }
 }
 

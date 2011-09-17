@@ -45,7 +45,7 @@ package editor.image {
       protected var mAssetImageCompositeModuleManager:AssetImageCompositeModuleManager;
       
       protected var mModuleInstanceManager:AssetImageModuleInstanceManager; // for internal module parts editing
-      protected var mModuleInstanceManagerForListing:AssetImageModuleInstanceManager; // for internal module parts listing
+      protected var mModuleInstanceManagerForListing:AssetImageModuleInstanceManagerForListing; // for internal module parts listing
       
       public function AssetImageCompositeModule (assetImageCompositeModuleManager:AssetImageCompositeModuleManager)
       {
@@ -53,8 +53,10 @@ package editor.image {
          
          mAssetImageCompositeModuleManager = assetImageCompositeModuleManager;
          
-         mModuleInstanceManager           = new AssetImageModuleInstanceManager (false);
-         mModuleInstanceManagerForListing = new AssetImageModuleInstanceManager (true);
+         mModuleInstanceManager           = new AssetImageModuleInstanceManager ();
+         mModuleInstanceManagerForListing = new AssetImageModuleInstanceManagerForListing ();
+         mModuleInstanceManagerForListing.SetAssetImageModuleInstanceManager (mModuleInstanceManager);
+         mModuleInstanceManager.SetAssetImageModuleInstanceManagerForListing (mModuleInstanceManagerForListing);
       }
       
       public function GetAssetImageCompositeModuleManager ():AssetImageCompositeModuleManager
@@ -67,7 +69,7 @@ package editor.image {
          return mModuleInstanceManager;
       }
       
-      public function GetModuleInstanceManagerForListing ():AssetImageModuleInstanceManager
+      public function GetModuleInstanceManagerForListing ():AssetImageModuleInstanceManagerForListing
       {
          return mModuleInstanceManagerForListing;
       }
@@ -100,36 +102,25 @@ package editor.image {
 //   context menu
 //=============================================================
       
-      private var mMenuItemEditModule:ContextMenuItem;
-      private var mMenuItemSetTimeComposite:ContextMenuItem;
-      private var mMenuItemSetSpaceComposite:ContextMenuItem;
-      
-      override protected function BuildContextMenuInternal ():void
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         mMenuItemEditModule = new ContextMenuItem("Edit ...");
-         mMenuItemSetTimeComposite = new ContextMenuItem("Set As Time Composite Module");
-         mMenuItemSetSpaceComposite = new ContextMenuItem("Set As Space Composite Module");
+         var menuItemEditModule:ContextMenuItem = new ContextMenuItem("Edit ...");
          
-         mMenuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         mMenuItemSetTimeComposite.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         mMenuItemSetSpaceComposite.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         menuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_EditModule);
          
-         contextMenu.customItems.push (mMenuItemEditModule);
-         contextMenu.customItems.push (mMenuItemSetTimeComposite);
-         contextMenu.customItems.push (mMenuItemSetSpaceComposite);
+         customMenuItemsStack.push (menuItemEditModule);
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      private function OnContextMenuEvent (event:ContextMenuEvent):void
+      private function OnContextMenuEvent_EditModule (event:ContextMenuEvent):void
       {
-         switch (event.target)
-         {
-            case mMenuItemEditModule:
-               AssetImageCompositeModuleEditDialog.ShowAssetImageCompositeModuleEditDialog (this);
-               break;
-            default:
-               break;
-         }
+         AssetImageCompositeModuleEditDialog.ShowAssetImageCompositeModuleEditDialog (this);
       }
+      
+//=============================================================
+//   
+//=============================================================
       
       private var mAssetImageCompositeModuleEditDialog:AssetImageCompositeModuleEditDialog;
       public function SetAssetImageCompositeModuleEditDialog (assetImageCompositeModuleEditDialog:AssetImageCompositeModuleEditDialog):void

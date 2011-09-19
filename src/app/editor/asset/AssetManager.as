@@ -844,6 +844,11 @@ package editor.asset {
       {
          return mAssetLinksChangedCallback;
       }
+      
+      public function SupportScaleRotateFlipTransforms ():Boolean
+      {
+         return true;
+      }
         
 //=====================================================================
 // context menu

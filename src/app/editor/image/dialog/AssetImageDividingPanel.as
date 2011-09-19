@@ -23,10 +23,8 @@ package editor.image.dialog {
    import flash.geom.Rectangle;
    
    import mx.controls.Button;
-   import mx.controls.CheckBox;
    import mx.controls.Label;
-   import mx.controls.TextInput;
-   import mx.controls.RadioButton;
+   import mx.controls.NumericStepper;
    
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
@@ -36,6 +34,7 @@ package editor.image.dialog {
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
    
+   import editor.image.AssetImageDivision;
    import editor.image.AssetImageDivisionManager;
    
    import editor.runtime.Runtime;
@@ -68,9 +67,11 @@ package editor.image.dialog {
                                     
             ScaleManager (1.0);
             
-            MoveManager (0.5 * (mParentWidth - (mImageSprite == null ? 0 : mImageSprite.width)) - mAssetImageDivisionManager.x, 
-                                     0.5 * (mParentHeight - (mImageSprite == null ? 0 : mImageSprite.height)) - mAssetImageDivisionManager.y
-                                    );
+            MoveManager (0.5 * (mParentWidth - (mImageSprite.width == 0 ? mParentWidth : mImageSprite.width)) - mAssetImageDivisionManager.x, 
+                         0.5 * (mParentHeight - (mImageSprite.height == 0 ? mParentHeight : mImageSprite.height)) - mAssetImageDivisionManager.y
+                        );
+            
+            UpdateInterface ();
          }
       }
       
@@ -114,14 +115,21 @@ package editor.image.dialog {
 //   
 //============================================================================
       
-      public function StartCreateImageDivision ():void
+      public function OnCreateImageDivisionClicked ():void
       {
          if (mAssetImageDivisionManager == null)
             return;
          
-         mAssetImageDivisionManager.ClearSelectedAssets ();
-         
-         SetCurrentIntent (new IntentDragDivision (this));
+         if (mCurrentIntent is IntentDragDivision)
+         {
+            mCurrentIntent.Terminate ();
+         }
+         else
+         {
+            mAssetImageDivisionManager.ClearSelectedAssets ();
+            
+            SetCurrentIntent (new IntentDragDivision (this));
+         }
       }
       
       public function DeleteImageDivisions ():void
@@ -135,20 +143,65 @@ package editor.image.dialog {
 //============================================================================
 //   
 //============================================================================
-      
-      override protected function OnMouseMoveInternal (managerX:Number, managerY:Number, isHold:Boolean, mIsCtrlDownOnMouseDown:Boolean, mIsShiftDownOnMouseDown:Boolean):void
+
+      public function CreateImageDivision (left:Number, top:Number, right:Number, bottom:Number):void
       {
+         mAssetImageDivisionManager.CreateImageDivision (left, top, right, bottom, true);
          
+         OnAssetSelectionsChanged ();
+         mButtonCreateImageDivision.selected = false;
       }
 
 //============================================================================
 //   
 //============================================================================
-
-      public function CreateImageDivision (left:Number, top:Number, right:Number, bottom:Number):void
+      
+      public var mButtonCreateImageDivision:Button;
+      public var mButtonDeleteImageDivision:Button;
+      public var mNumericStepperLeft:NumericStepper;
+      public var mNumericStepperTop:NumericStepper;
+      public var mNumericStepperRight:NumericStepper;
+      public var mNumericStepperBottom:NumericStepper;
+      
+      override public function UpdateInterface ():void
       {
-         mAssetImageDivisionManager.CreateImageDivision (left, top, right, bottom, true);
-      }      
+         if (mAssetImageDivisionManager == null)
+            return;
+         
+         var numSelecteds:int = mAssetImageDivisionManager.GetNumSelectedAssets ();
+         
+         mButtonDeleteImageDivision.enabled = numSelecteds > 0;
+         if (numSelecteds == 1)
+         {
+            var division:AssetImageDivision = mAssetImageDivisionManager.GetSelectedAssets ()[0] as AssetImageDivision;
+
+            mNumericStepperLeft.enabled   = true; mNumericStepperLeft.value   = division.GetLeft ();
+            mNumericStepperTop.enabled    = true; mNumericStepperTop.value    = division.GetTop ();
+            mNumericStepperRight.enabled  = true; mNumericStepperRight.value  = division.GetRight ();
+            mNumericStepperBottom.enabled = true; mNumericStepperBottom.value = division.GetBottom ();
+         }
+         else
+         {
+            mNumericStepperLeft.enabled   = false; mNumericStepperLeft.value   = 0;
+            mNumericStepperTop.enabled    = false; mNumericStepperTop.value    = 0;
+            mNumericStepperRight.enabled  = false; mNumericStepperRight.value  = 0;
+            mNumericStepperBottom.enabled = false; mNumericStepperBottom.value = 0;
+         }
+      }
+      
+      public function SychronizeCurrentDivisionPropertiesFromUI ():void
+      {
+         if (mAssetImageDivisionManager.GetNumSelectedAssets () == 1)
+         {
+            var division:AssetImageDivision = mAssetImageDivisionManager.GetSelectedAssets ()[0] as AssetImageDivision;
+            
+            division.SetRegion (mNumericStepperLeft.value, mNumericStepperTop.value, mNumericStepperRight.value, mNumericStepperBottom.value);
+            division.UpdateAppearance ();
+            division.UpdateSelectionProxy ();
+            
+            UpdateInterface ();
+         }
+      }
 
    }
 }

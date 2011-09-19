@@ -138,6 +138,11 @@ package editor.image {
             mRight = left;
          }
          
+         if (GetRight () - GetLeft () < 1)
+         {
+            mRight = mLeft + 1.0;
+         }
+         
          if (top <= bottom)
          {
             mTop = top;
@@ -147,6 +152,11 @@ package editor.image {
          {
             mTop = bottom;
             mBottom = top;
+         }
+         
+         if (GetBottom () - GetTop () < 1)
+         {
+            mBottom = mTop + 1.0;
          }
          
          //

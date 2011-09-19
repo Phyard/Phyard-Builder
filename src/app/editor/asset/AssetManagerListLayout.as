@@ -21,6 +21,11 @@ package editor.asset {
    
    public class AssetManager extends AssetManager 
    {
+      
+      override public function SupportScaleRotateFlipTransforms ():Boolean
+      {
+         return false;
+      }
    }
 }
 

@@ -428,8 +428,21 @@ package editor.asset {
       }
       
 //=================================================================================
+//   
+//=================================================================================
+      
+      public function UpdateInterface ():void
+      {
+      }
+      
+//=================================================================================
 //   select
 //=================================================================================
+      
+      protected function OnAssetSelectionsChanged ():void
+      {  
+         UpdateInterface ();
+      } 
       
       public function PointSelectAsset (managerX:Number, managerY:Number):Boolean
       {
@@ -440,8 +453,12 @@ package editor.asset {
             var asset:Asset = assetArray[0] as Asset;
             mAssetManager.SetSelectedAsset (asset);
             
+            OnAssetSelectionsChanged ();
+            
             return true;
          }
+         
+         OnAssetSelectionsChanged ();
          
          return false;
       }
@@ -466,17 +483,37 @@ package editor.asset {
          }
          
          SetScaleRotateFlipHandlersVisible (mAssetManager.GetNumSelectedAssets () > 0);
+         
+         OnAssetSelectionsChanged ();
       }
       
 //=================================================================================
 //   scale / rotate / flip handlers
 //=================================================================================
       
+      final protected function SupportScaleRotateFlipTransforms ():Boolean
+      {
+         if (mAssetManager == null)
+            return false;
+         
+         return mAssetManager.SupportScaleRotateFlipTransforms ();
+      }
+      
       protected static const ScaleRotateFlipCircleRadius:Number = 100;
       protected var mScaleRotateFlipHandlersContainer:Sprite = null;
       
       protected function SetScaleRotateFlipHandlersVisible (isVisible:Boolean):void
       {
+         if (! SupportScaleRotateFlipTransforms ())
+         {
+            if (mScaleRotateFlipHandlersContainer != null && mScaleRotateFlipHandlersContainer.visible)
+            {
+               mScaleRotateFlipHandlersContainer.visible = false;
+            }
+            
+            return;
+         }
+         
          if (mScaleRotateFlipHandlersContainer == null)
          {
             mScaleRotateFlipHandlersContainer = new Sprite ();
@@ -652,6 +689,8 @@ package editor.asset {
             return;
          
          mAssetManager.DeleteSelectedAssets ();
+         
+         UpdateInterface ();
       }
       
       public function MoveSelectedAssets (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
@@ -660,6 +699,8 @@ package editor.asset {
             return;
          
          mAssetManager.MoveSelectedAssets (offsetX, offsetY, updateSelectionProxy);
+         
+         UpdateInterface ();
       }
       
       public function RotateSelectedAssets (centerX:Number, centerY:Number, r:Number, rotatePosition:Boolean, rotateSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -668,6 +709,8 @@ package editor.asset {
             return;
          
          mAssetManager.RotateSelectedAssets (updateSelectionProxy, r, rotateSelf, rotatePosition, centerX, centerY);
+         
+         UpdateInterface ();
       }
       
       public function ScaleSelectedAssets (centerX:Number, centerY:Number, s:Number, scalePosition:Boolean, scaleSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -676,6 +719,8 @@ package editor.asset {
             return;
          
          mAssetManager.ScaleSelectedAssets (updateSelectionProxy, s, scaleSelf, scalePosition, centerX, centerY);
+         
+         UpdateInterface ();
       }
       
       public function FlipSelectedAssets (planeX:Number, flipPosition:Boolean, flipSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -684,6 +729,8 @@ package editor.asset {
             return;
          
          mAssetManager.FlipSelectedAssets (updateSelectionProxy, flipSelf, flipPosition, planeX);
+         
+         UpdateInterface ();
       }
       
       public function CreateOrBreakLink (startLinkable:Linkable, endManagerX:Number, endManagerY:Number):void

@@ -104,6 +104,11 @@ package editor.image {
          return imageDivision;
       }
       
+      override public function SupportScaleRotateFlipTransforms ():Boolean
+      {
+         return false;
+      }
+      
    }
 }
 

@@ -37,6 +37,11 @@ package editor.asset {
 // 
 //========================================================
       
+      override public function SupportScaleRotateFlipTransforms ():Boolean
+      {
+         return false;
+      }
+      
       override public function SetPosition (px:Number, py:Number):void
       {
          super.SetPosition (px, py);
@@ -119,7 +124,7 @@ package editor.asset {
             x = 0;
          else
          {
-            var minX:Number = mViewWidth - mContentWidth;
+            var minX:Number = (mViewWidth - mContentWidth) * this.scaleX;
             if (x < minX)
             {
                x = minX;
@@ -132,7 +137,7 @@ package editor.asset {
             y = 0;
          else
          {
-            var minY:Number = mViewHeight - mContentHeight;
+            var minY:Number = (mViewHeight - mContentHeight) * this.scaleY;
             if (y < minY)
             {
                y = minY;

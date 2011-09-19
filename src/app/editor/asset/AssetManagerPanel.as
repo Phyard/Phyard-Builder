@@ -392,6 +392,11 @@ package editor.asset {
             {
                mCurrentIntent.OnMouseUp (mAssetManager.mouseX, mAssetManager.mouseY);
             }
+            
+            if (mIsMouseZeroMove && (mCurrentIntent is IntentMoveSelectedAssets) && mCurrentIntent.IsTerminated ())
+            {
+               PointSelectAsset (mAssetManager.mouseX, mAssetManager.mouseY);
+            } 
 
             return;
          }
@@ -446,12 +451,18 @@ package editor.asset {
       
       public function PointSelectAsset (managerX:Number, managerY:Number):Boolean
       {
-         mAssetManager.ClearSelectedAssets ();
+         if (! mIsCtrlDownOnMouseDown)
+            mAssetManager.ClearSelectedAssets ();
+         
          var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
          if (assetArray != null && assetArray.length > 0)
          {
             var asset:Asset = assetArray[0] as Asset;
-            mAssetManager.SetSelectedAsset (asset);
+            
+            if (mIsCtrlDownOnMouseDown)
+               mAssetManager.ToggleAssetSelected (asset);
+            else
+               mAssetManager.SetSelectedAsset (asset);
             
             OnAssetSelectionsChanged ();
             
@@ -573,38 +584,29 @@ package editor.asset {
       
       protected function RepositionScaleRotateFlipHandlersContainer ():void
       {
-         var centerX:Number = 0;
-         var centerY:Number = 0;
-         
          var selectedAssets:Array = mAssetManager.GetSelectedAssets ();
-         var count:uint = selectedAssets.length;
-         if (count == 0)
+         if (selectedAssets.length == 0)
          {
             mScaleRotateFlipHandlersContainer.visible = false;
             return;
          }
          
-         count = 0;
+         var centerX:Number = 0;
+         var centerY:Number = 0;
+
          for (var i:uint = 0; i < selectedAssets.length; ++ i)
          {
             var asset:Asset = selectedAssets[i] as Asset;
             
-            if (asset != null)
-            {
-               centerX += asset.GetPositionX ();
-               centerY += asset.GetPositionY ();
-               ++ count;
-            }
+            var bounding:Rectangle = asset.getBounds (mAssetManager);
+            //centerX += asset.GetPositionX ();
+            //centerY += asset.GetPositionY ();
+            centerX += 0.5 * (bounding.left + bounding.right);
+            centerY += 0.5 * (bounding.top + bounding.bottom);
          }
-         
-         if (count == 0)
-         {
-            mScaleRotateFlipHandlersContainer.visible = false;
-            return;
-         }
-         
-         centerX /= count;
-         centerY /= count;
+      
+         centerX /= selectedAssets.length;
+         centerY /= selectedAssets.length;
          
          var panelPoint:Point = DisplayObjectUtil.LocalToLocal (mAssetManager, mForegroundLayer, new Point (centerX, centerY));
          

@@ -43,15 +43,15 @@ package editor.image {
    public class AssetImagePureModule extends AssetImageModule
    {
       protected var mAssetImagePureModuleManager:AssetImagePureModuleManager;
-      protected var mImageDivision:AssetImageDivision;
+      protected var mImageDivisionPeer:AssetImageDivision;
       
       public function AssetImagePureModule (assetImagePureModuleManager:AssetImagePureModuleManager, imageDivision:AssetImageDivision)
       {
          super (assetImagePureModuleManager);
          
          mAssetImagePureModuleManager = assetImagePureModuleManager;
-         mImageDivision = imageDivision;
-         mImageDivision.SetImagePureModule (this);
+         mImageDivisionPeer = imageDivision;
+         mImageDivisionPeer.SetImagePureModulePeer (this);
       }
       
       public function GetAssetImagePureModuleManager ():AssetImagePureModuleManager
@@ -59,9 +59,9 @@ package editor.image {
          return mAssetImagePureModuleManager;
       }
       
-      public function GetImageDivision ():AssetImageDivision
+      public function GetImageDivisionPeer ():AssetImageDivision
       {
-         return mImageDivision;
+         return mImageDivisionPeer;
       }
       
       override public function ToCodeString ():String
@@ -91,18 +91,18 @@ package editor.image {
       
       override public function CreateModuleSprite ():DisplayObject
       {
-         if (mImageDivision == null)
+         if (mImageDivisionPeer == null)
             return null;
          
-         return mImageDivision.CreateSpriteForImagePureModule ();
+         return mImageDivisionPeer.CreateSpriteForImagePureModule ();
       }
       
       override public function GetModuleBoundingRectangle ():Rectangle
       {
-         if (mImageDivision == null)
+         if (mImageDivisionPeer == null)
             return null;
          
-         return mImageDivision.GetBoundingRectangleForImagePureModule ();
+         return mImageDivisionPeer.GetBoundingRectangleForImagePureModule ();
       }
       
 //=============================================================
@@ -122,10 +122,10 @@ package editor.image {
       
       private function OnContextMenuEvent_EditModule (event:ContextMenuEvent):void
       {
-         if (mImageDivision != null)
+         if (mImageDivisionPeer != null)
          {
-            AssetImageDivideDialog.ShowAssetImageDivideDialog (mImageDivision.GetAssetImageDivisionManager ().GetAssetImage ());
-            mImageDivision.GetAssetImageDivisionManager ().SetSelectedAsset (mImageDivision);
+            AssetImageDivideDialog.ShowAssetImageDivideDialog (mImageDivisionPeer.GetAssetImageDivisionManager ().GetAssetImage ());
+            mImageDivisionPeer.GetAssetImageDivisionManager ().SetSelectedAsset (mImageDivisionPeer);
             mAssetImagePureModuleManager.SetSelectedAsset (this);
          }
       }

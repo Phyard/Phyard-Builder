@@ -51,7 +51,7 @@ package editor.image {
       
       private var mBitmapData:BitmapData = null;
       
-      protected var mImagePureModule:AssetImagePureModule;
+      protected var mImagePureModulePeer:AssetImagePureModule;
       
       public function AssetImageDivision (assetImageDivisionManager:AssetImageDivisionManager)
       {
@@ -67,14 +67,14 @@ package editor.image {
          return mAssetImageDivisionManager;
       }
       
-      internal function SetImagePureModule (assetImagePureModule:AssetImagePureModule):void
+      internal function SetImagePureModulePeer (assetImagePureModule:AssetImagePureModule):void
       {
-         mImagePureModule = assetImagePureModule;
+         mImagePureModulePeer = assetImagePureModule;
       }
       
       public function GetImagePureModule ():AssetImagePureModule
       {
-         return mImagePureModule;
+         return mImagePureModulePeer;
       }
       
       override public function ToCodeString ():String
@@ -163,9 +163,9 @@ package editor.image {
          UpdatePixels ();
          
          //
-         if (mImagePureModule != null)
+         if (mImagePureModulePeer != null)
          {
-            mImagePureModule.UpdateAppearance ();
+            mImagePureModulePeer.UpdateAppearance ();
          }
       }
 
@@ -208,9 +208,9 @@ package editor.image {
          mBitmapData = new BitmapData (w, h, true);
          mBitmapData.copyPixels (imageBitmapData, new Rectangle (left, top, w, h), new Point (0, 0));
          
-         if (mImagePureModule != null)
+         if (mImagePureModulePeer != null)
          {
-            mImagePureModule.OnDivisionChanged ();
+            mImagePureModulePeer.OnDivisionChanged ();
          }
       }
       

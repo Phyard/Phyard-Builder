@@ -45,7 +45,8 @@ package editor.image {
       protected var mAssetImageModuleInstanceManager:AssetImageModuleInstanceManager;
       
       protected var mAssetImageModule:AssetImageModule = null;
-      private var mReferPair:ReferPair = null;
+      
+      protected var mAssetImageModuleInstanceForListingPeer:AssetImageModuleInstanceForListing;
       
       public function AssetImageModuleInstance (assetImageModuleInstanceManager:AssetImageModuleInstanceManager, assetImageModule:AssetImageModule)
       {
@@ -64,6 +65,11 @@ package editor.image {
       public function GetAssetImageModule ():AssetImageModule
       {
          return mAssetImageModule;
+      }
+      
+      public function SetModuleInstaneForListingPeer (moduleInstacneForListing:AssetImageModuleInstanceForListing):void
+      {
+         mAssetImageModuleInstanceForListingPeer = moduleInstacneForListing;
       }
       
       public function SetAssetImageModule (assetImageModule:AssetImageModule):void
@@ -94,6 +100,8 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
+
+      private var mReferPair:ReferPair = null;
       
       override public function OnReferingModified (refering:EditorObject, info:Object = null):void
       {
@@ -110,6 +118,33 @@ package editor.image {
          {
             mAssetImageModuleInstanceManager.DestroyAsset (this);
          }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+
+      protected var mDuration:int = 2;
+      
+      public function GetDuration ():int
+      {
+         return mDuration;
+      }
+      
+      public function SetDuration (duration:int):void
+      {
+         if (duration < 0)
+            duration = 0;
+         
+         mDuration = duration;
+      }
+
+      public function SetTransformParameters (offsetX:Number, offsetY:Number, scale:Number, flipped:Boolean, angleDegrees:Number):void
+      {
+         SetPosition (offsetX, offsetY);
+         SetScale (scale);
+         SetFlipped (flipped);
+         SetRotation (angleDegrees * Math.PI / 180.0);
       }
       
 //=============================================================
@@ -138,6 +173,7 @@ package editor.image {
       {
          while (numChildren > 0)
             removeChildAt (0);
+         GraphicsUtil.Clear (this);
          
          var moduleSize:Number = 50;
          var halfModuleSize:Number = 0.5 * moduleSize;
@@ -192,26 +228,31 @@ package editor.image {
       
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         var menuItemChangeIntoTimeCompositeModule:ContextMenuItem = new ContextMenuItem("Change Into Time Composite Module", true);
-         var menuItemChangeIntoSpaceCompositeModule:ContextMenuItem = new ContextMenuItem("Change Into Space Composite Module");
+         var menuItemRebuildFromCurrentModule:ContextMenuItem = new ContextMenuItem("Rebuild From Current Module");
          
-         menuItemChangeIntoTimeCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeIntoTimeCompositeModule);
-         menuItemChangeIntoSpaceCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeIntoSpaceCompositeModule);
-
-         customMenuItemsStack.push (menuItemChangeIntoTimeCompositeModule);
-         customMenuItemsStack.push (menuItemChangeIntoSpaceCompositeModule);
+         menuItemRebuildFromCurrentModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_RebuildFromCurrentModule);
+         
+         customMenuItemsStack.push (menuItemRebuildFromCurrentModule);
          
          mAssetImageModuleInstanceManager.BuildContextMenuInternal (customMenuItemsStack);
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      private function OnContextMenuEvent_ChangeIntoTimeCompositeModule (event:ContextMenuEvent):void
+      private function OnContextMenuEvent_RebuildFromCurrentModule (event:ContextMenuEvent):void
       {
+         SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule);
+         
+         UpdateAppearance ();
+         UpdateSelectionProxy ();
+         
+         // update icon in list
+         
+         //if (mAssetImageModuleInstanceForListingPeer != null)
+         //{
+            mAssetImageModuleInstanceForListingPeer.SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule);
+            
+            mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
+         //}
       }
-      
-      private function OnContextMenuEvent_ChangeIntoSpaceCompositeModule (event:ContextMenuEvent):void
-      {
-      }
-      
   }
 }

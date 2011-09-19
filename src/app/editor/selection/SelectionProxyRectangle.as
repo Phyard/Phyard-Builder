@@ -35,13 +35,26 @@ package editor.selection {
       
       public function RebuildRectangle2 (posX:Number, posY:Number, left:Number, top:Number, width:Number, height:Number, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
-         var halfWidth:Number = 0.5 * width;;
-         var halfHeight:Number = 0.5 * height;
+         Rebuild (flipped ? - rotation : rotation, posX, posY);
          
-         var rectCenterX:Number = left + halfWidth;
-         var rectCenterY:Number = top + halfHeight;
+         width *= scale;
+         height *= scale;
+         left *= scale;
+         top *= scale;
+         var right:Number = left + width;
+         var bottom:Number = top + height;
+         if (flipped)
+         {
+            left = - right;
+            right = -left;
+         }
          
-         RebuildRectangle (posX + rectCenterX * (flipped ? - scale : scale), posY + rectCenterY * scale, halfWidth, halfHeight, rotation, flipped, scale);
+         var p1:Point = new Point (left, top);
+         var p2:Point = new Point (right, top);
+         var p3:Point = new Point (right, bottom);
+         var p4:Point = new Point (left, bottom);
+         
+         CreateConvexPolygonZone ([p1, p2, p3, p4]);pped, scale);
       }
       
    }

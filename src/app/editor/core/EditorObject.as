@@ -94,7 +94,7 @@ package editor.core {
          return iter;
       }
       
-      protected function NotifyModifiedForReferers (info:Object = null):void
+      public function NotifyModifiedForReferers (info:Object = null):void
       {
          var iter:ReferPairListElement = BuildReferPairListAsReferingForIterating ();
          while (iter != null)

@@ -15,12 +15,11 @@ package editor.image {
    
    public class AssetImageModuleInstanceManagerForListing extends AssetImageModuleManager
    {
+      protected var mAssetImageCompositeModule:AssetImageCompositeModule;
       
-      protected var mAssetImageModuleInstanceManager:AssetImageModuleInstanceManager;
-      
-      public function SetAssetImageModuleInstanceManager (assetImageModuleInstanceManager:AssetImageModuleInstanceManager):void
+      public function AssetImageModuleInstanceManagerForListing (assetImageCompositeModule:AssetImageCompositeModule):void
       {
-         mAssetImageModuleInstanceManager = assetImageModuleInstanceManager;
+         mAssetImageCompositeModule = assetImageCompositeModule;
       }
       
 //==========================================================      

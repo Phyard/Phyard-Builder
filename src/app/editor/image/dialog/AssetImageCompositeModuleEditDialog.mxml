@@ -7,7 +7,7 @@
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:image="editor.image.dialog.*" 
     title="Composite Image Module Editing"
-    width="620" height="530"
+    width="657" height="537"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
     creationComplete="InitDialog ();"
@@ -15,32 +15,45 @@
     >
 
    <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-      <mx:HBox id="Box_DesignCommands" width="100%" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
-         <mx:Button id="Button_DeleteModuleInstance" toolTip="Delete Selected Module Instance (s)" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
+      <mx:HBox width="100%" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
+         <mx:Button id="ButtonDeleteModuleInstances" toolTip="Delete Selected Module Instance (s)" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
          <mx:Spacer width="100%"/>
-         <mx:Label id="Label_Left" text="X:" textAlign="right"/>
-         <mx:NumericStepper id="NumericStepperLeft" width="50" stepSize="1" minimum="0" value="0" />
+         <mx:ViewStack id="ViewStackPlayStop" borderStyle="none" creationPolicy="all" width="100%">
+            <mx:HBox id="BoxPlay" backgroundColor="0xD0D0D0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+               <mx:Button id="ButtonPlay" click="OnPlay ();" toolTip="Play" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-run.png')" disabledIcon="@Embed('../../../res/play/play-run-disabled.png')" />
+            </mx:HBox>
+            <mx:HBox id="BoxStop" backgroundColor="0xD0D0D0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+               <mx:Button id="ButtonStop" click="OnPause ();" toolTip="Pause" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-stop.png')" disabledIcon="@Embed('../../../res/play/play-stop-disabled.png')" />
+            </mx:HBox>
+         </mx:ViewStack>
+         <mx:Spacer width="100%"/>
+         <mx:Label id="LabelDuration" text="Duration:" textAlign="right"/>
+         <mx:NumericStepper id="NumericStepperDuration" width="77" stepSize="1" value="1" minimum="0" maximum="10000" change="ChangeModuleInstanceProperties ();" />
          <mx:Spacer width="10"/>
-         <mx:Label id="Label_Top" text="Y:" textAlign="right"/>
-         <mx:NumericStepper id="NumericStepperTop" width="50" stepSize="1" minimum="0" value="0" />
+         <mx:Label id="LabelLeft" text="X:" textAlign="right" />
+         <mx:TextInput id="TextInputPosX" width="65" enter="ChangeModuleInstanceProperties ();" />
          <mx:Spacer width="10"/>
-         <mx:Label id="Label_Bottom" text="Angle:" textAlign="right"/>
-         <mx:NumericStepper id="NumericStepperBottom" width="50" stepSize="1" minimum="1" value="100" />
+         <mx:Label id="LabelTop" text="Y:" textAlign="right" />
+         <mx:TextInput id="TextInputPosY" width="65" enter="ChangeModuleInstanceProperties ();" />
          <mx:Spacer width="10"/>
-         <mx:Label id="Label_Right" text="Scale:" textAlign="right"/>
-         <mx:NumericStepper id="NumericStepperRight" width="50" stepSize="1" minimum="1" value="100" />
+         <mx:Label id="LabelRight" text="Scale:" textAlign="right" />
+         <mx:TextInput id="TextInputScale" width="39" enter="ChangeModuleInstanceProperties ();" />
          <mx:Spacer width="10"/>
-         <mx:CheckBox selected="false" id="CheckBox_HideInvisibleEntities" label="Flip" click=";"/>
-         <mx:Spacer width="10"/>
-         <mx:Label id="Label_Duration" text="Duration:" textAlign="right"/>
-         <mx:NumericStepper id="NumericStepperDuration" width="50" stepSize="1" minimum="1" value="100" />
+         <mx:CheckBox selected="false" id="CheckBoxFlipped" label="Flip" click="ChangeModuleInstanceProperties ();"/>
+         <mx:Spacer width="5"/>
+         <mx:Label id="LabelBottom" text="Angle:" textAlign="right"/>
+         <mx:TextInput id="TextInputAngle" width="32" enter="ChangeModuleInstanceProperties ();" />
       </mx:HBox>
       <mx:HDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
          <mx:VBox id="Box_Images" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
             <image:AssetImageCompositeModuleEditingPanel id="panelAssetImageCompositeModuleEditing" width="100%" height="100%"/>
          </mx:VBox>
          <mx:VBox id="Box_PureModules" width="120" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-            <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing" width="100%" height="100%"/>
+            <mx:Label id="LabelModuleInfos" text="5 parts" textAlign="center"/>
+            <mx:CheckBox selected="true" id="CheckBoxLoop" label="Loop" click="ChangeCompositeModuleProperties ();"/>
+            <mx:HBox id="Box_CompositeModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+               <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing" width="100%" height="100%"/>
+            </mx:HBox>
          </mx:VBox>
       </mx:HDividedBox>
    </mx:VBox>
@@ -98,6 +111,40 @@
       
          public function InitDialog ():void
          {
+            panelAssetImageCompositeModuleEditing.mButtonDeleteModuleInstances = ButtonDeleteModuleInstances;
+            panelAssetImageCompositeModuleEditing.mViewStackPlayStop = ViewStackPlayStop;
+            panelAssetImageCompositeModuleEditing.mLabelDuration = LabelDuration;
+            panelAssetImageCompositeModuleEditing.mNumericStepperDuration = NumericStepperDuration;
+            panelAssetImageCompositeModuleEditing.mTextInputPosX = TextInputPosX;
+            panelAssetImageCompositeModuleEditing.mTextInputPosY = TextInputPosY;
+            panelAssetImageCompositeModuleEditing.mTextInputScale = TextInputScale;
+            panelAssetImageCompositeModuleEditing.mCheckBoxFlipped = CheckBoxFlipped;
+            panelAssetImageCompositeModuleEditing.mTextInputAngle = TextInputAngle;
+            
+            panelAssetImageCompositeModuleEditing.mLabelModuleInfos = LabelModuleInfos;
+            panelAssetImageCompositeModuleEditing.mCheckBoxLoop = CheckBoxLoop;
+         }
+         
+         private function OnPlay ():void
+         {
+            panelAssetImageCompositeModuleEditing.Play ();
+            ViewStackPlayStop.selectedChild = BoxStop;
+         }
+         
+         private function OnPause ():void
+         {
+            panelAssetImageCompositeModuleEditing.Pause ();
+            ViewStackPlayStop.selectedChild = BoxPlay;
+         }
+         
+         private function ChangeModuleInstanceProperties ():void
+         {
+            panelAssetImageCompositeModuleEditing.SychronizeCurrentModuleInstacnePropertiesFromUI ();
+         }
+         
+         private function ChangeCompositeModuleProperties ():void
+         {
+            panelAssetImageCompositeModuleEditing.SychronizeCompositeModulePropertiesFromUI ();
          }
 
      ]]>

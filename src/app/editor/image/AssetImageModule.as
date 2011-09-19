@@ -73,6 +73,16 @@ package editor.image {
          return null; // to override
       }
       
+      public function IsAnimated ():Boolean
+      {
+         return false;
+      }
+      
+      public function IsPlayable ():Boolean
+      {
+         return false;
+      }
+      
 //=============================================================
 //   
 //=============================================================

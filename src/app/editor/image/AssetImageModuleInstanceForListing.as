@@ -44,7 +44,9 @@ package editor.image {
    {  
       protected var mAssetImageModuleInstanceManagerForListing:AssetImageModuleInstanceManagerForListing;
       
-      protected var mAssetImageModule:AssetImageModule;
+      protected var mAssetImageModule:AssetImageModule = null;
+      
+      protected var mAssetImageModuleInstanceForEditingPeer:AssetImageModuleInstance;
       
       public function AssetImageModuleInstanceForListing (assetImageModuleInstanceManagerForListing:AssetImageModuleInstanceManagerForListing, assetImageModule:AssetImageModule)
       {
@@ -52,8 +54,7 @@ package editor.image {
          
          mAssetImageModuleInstanceManagerForListing = assetImageModuleInstanceManagerForListing;
          
-         mAssetImageModule = assetImageModule;
-         mReferPair = ReferObject (mAssetImageModule);
+         SetAssetImageModule (assetImageModule);
       }
       
       public function GetAssetImageModuleInstanceManagerForListing ():AssetImageModuleInstanceManagerForListing
@@ -64,6 +65,26 @@ package editor.image {
       public function GetAssetImageModule ():AssetImageModule
       {
          return mAssetImageModule;
+      }
+      
+      public function SetModuleInstaneForEditingPeer (moduleInstacne:AssetImageModuleInstance):void
+      {
+         mAssetImageModuleInstanceForEditingPeer = moduleInstacne;
+      }
+      
+      public function SetAssetImageModule (assetImageModule:AssetImageModule):void
+      {
+         if (mReferPair != null)
+         {
+            mReferPair.Break ();
+            mAssetImageModule = null;
+         }
+         
+         if (assetImageModule != null)
+         {
+            mAssetImageModule = assetImageModule;
+            mReferPair = ReferObject (mAssetImageModule);
+         }
       }
       
       override public function ToCodeString ():String

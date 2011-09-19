@@ -68,7 +68,7 @@ package editor.image {
       override public function DestroyAsset (asset:Asset):void
       {
          var pureModule:AssetImagePureModule = asset as AssetImagePureModule;
-         var division:AssetImageDivision = pureModule.GetImageDivision ();
+         var division:AssetImageDivision = pureModule.GetImageDivisionPeer ();
          
          super.DestroyAsset (asset); // the pureModule
          

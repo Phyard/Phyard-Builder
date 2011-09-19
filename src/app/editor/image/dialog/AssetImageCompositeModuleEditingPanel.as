@@ -21,11 +21,12 @@ package editor.image.dialog {
    import flash.geom.Matrix;
    import flash.geom.Rectangle;
    
+   import mx.containers.ViewStack;
    import mx.controls.Button;
+   import mx.controls.NumericStepper;
    import mx.controls.CheckBox;
    import mx.controls.Label;
    import mx.controls.TextInput;
-   import mx.controls.RadioButton;
    
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
@@ -35,9 +36,14 @@ package editor.image.dialog {
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
    
+   import editor.image.AssetImageCompositeModule;
+   import editor.image.AssetImageModuleInstance;
    import editor.image.AssetImageModuleInstanceManager;
    
    import editor.runtime.Runtime;
+   
+   import editor.core.EditorObject;
+   import editor.core.ReferPair;
    
    import common.Define;
    import common.Version;
@@ -55,7 +61,18 @@ package editor.image.dialog {
          super.SetAssetManager (amim);
          
          mAssetImageModuleInstanceManager = amim;
+         
+         if (mAssetImageModuleInstanceManager != null)
+         {
+            mAssetImageModuleInstanceManager.mCallback_OnChangedForPanel = UpdateInterface;
+            
+            UpdateInterface ();
+         }
       }
+      
+//====================================================================================
+//   
+//====================================================================================
       
       public function DeleteModuleInstances ():void
       {
@@ -63,6 +80,181 @@ package editor.image.dialog {
             return;
          
          mAssetImageModuleInstanceManager.DeleteSelectedAssets ();
+      }
+      
+//====================================================================================
+//   
+//====================================================================================
+      
+      private var mIsPlaying:Boolean = false;
+      
+      public function Play ():void
+      {
+         mIsPlaying = true;
+      }
+      
+      public function Pause ():void
+      {
+         mIsPlaying = false;
+      }
+      
+//====================================================================================
+//   
+//====================================================================================
+      
+      public var mButtonDeleteModuleInstances:Button;
+      public var mViewStackPlayStop:ViewStack;
+      public var mLabelDuration:Label;
+      public var mNumericStepperDuration:NumericStepper;
+      public var mTextInputPosX:TextInput;
+      public var mTextInputPosY:TextInput;
+      public var mTextInputScale:TextInput;
+      public var mCheckBoxFlipped:CheckBox;
+      public var mTextInputAngle:TextInput;
+      
+      public var mLabelModuleInfos:Label;
+      public var mCheckBoxLoop:CheckBox;
+      
+      override public function UpdateInterface ():void
+      {
+         if (mAssetImageModuleInstanceManager == null)
+            return;
+         
+         var numSelecteds:int = mAssetImageModuleInstanceManager.GetNumSelectedAssets ();
+         
+         mButtonDeleteModuleInstances.enabled = numSelecteds > 0;
+         if (numSelecteds == 1)
+         {
+            var moduleinstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.GetSelectedAssets ()[0] as AssetImageModuleInstance;
+            
+            mNumericStepperDuration.enabled = true; mNumericStepperDuration.value = moduleinstance.GetDuration ();
+            
+            mTextInputPosX.enabled   = true; mTextInputPosX.text   = "" + moduleinstance.GetPositionX ();
+            mTextInputPosY.enabled   = true; mTextInputPosY.text   = "" + moduleinstance.GetPositionY ();
+            mTextInputScale.enabled  = true; mTextInputScale.text  = "" + moduleinstance.GetScale ();
+            mCheckBoxFlipped.enabled = true; mCheckBoxFlipped.selected = moduleinstance.IsFlipped ();
+            mTextInputAngle.enabled  = true; mTextInputAngle.text  = "" + moduleinstance.GetRotation () * 180.0 / Math.PI;
+         }
+         else
+         {
+            mNumericStepperDuration.enabled = false; mNumericStepperDuration.value = 0;
+            
+            mTextInputPosX.enabled   = false; mTextInputPosX.text   = "";
+            mTextInputPosY.enabled   = false; mTextInputPosY.text   = "";
+            mTextInputScale.enabled  = false; mTextInputScale.text  = "";
+            mCheckBoxFlipped.enabled = false;
+            mTextInputAngle.enabled  = false; mTextInputAngle.text  = "";
+         }
+         
+         var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
+         
+         if (compositeModule.IsAnimated ())
+         {
+            mLabelDuration.visible = true;
+            mNumericStepperDuration.visible = true;
+            
+            if (mCheckBoxLoop.parent == null)
+            {
+               mLabelModuleInfos.parent.addChildAt (mCheckBoxLoop, mLabelModuleInfos.parent.getChildIndex (mLabelModuleInfos) + 1);
+            }
+            
+            mCheckBoxLoop.selected = compositeModule.IsLooped ();
+         }
+         else
+         {
+            mLabelDuration.visible = false;
+            mNumericStepperDuration.visible = false;
+            
+            if (mCheckBoxLoop.parent != null)
+            {
+               mCheckBoxLoop.parent.removeChild (mCheckBoxLoop);
+            }
+         }
+         
+         if (compositeModule.IsPlayable ())
+         {
+            mViewStackPlayStop.visible = true;
+         }
+         else
+         {
+            mViewStackPlayStop.visible = false;
+         }
+      }
+      
+      public function SychronizeCompositeModulePropertiesFromUI ():void
+      {
+         var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
+         
+         //if (compositeModule.IsAnimated ())
+         //{
+            compositeModule.SetLooped (mCheckBoxLoop.selected);
+         //}
+      }
+      
+      public function SychronizeCurrentModuleInstacnePropertiesFromUI ():void
+      {
+         var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
+         
+         if (mAssetImageModuleInstanceManager.GetNumSelectedAssets () == 1)
+         {
+            var moduleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.GetSelectedAssets ()[0] as AssetImageModuleInstance;
+            
+            var duration:int;
+            
+            var offsetX:Number;
+            var offsetY:Number;
+            var scale:Number;
+            var angleDegrees:Number;
+            
+            try {
+               offsetX = parseFloat (mTextInputPosX.text);
+            } catch (err:Error) {
+               offsetX = NaN;
+            }
+            if (isNaN (offsetX))
+            {
+               offsetX = 0.0;
+            }
+            
+            try {
+               offsetY = parseFloat (mTextInputPosY.text);
+            } catch (err:Error) {
+               offsetY = NaN;
+            }
+            if (isNaN (offsetY))
+            {
+               offsetY = 0.0;
+            }
+            
+            try {
+               scale = parseFloat (mTextInputScale.text);
+            } catch (err:Error) {
+               scale = NaN;
+            }
+            if (isNaN (scale))
+            {
+               scale = 0.0;
+            }
+            
+            try {
+               angleDegrees = parseFloat (mTextInputAngle.text);
+            } catch (err:Error) {
+               angleDegrees = NaN;
+            }
+            if (isNaN (angleDegrees))
+            {
+               angleDegrees = 0.0;
+            }
+            
+            moduleInstance.SetTransformParameters (offsetX, offsetY, scale, mCheckBoxFlipped.selected, angleDegrees);
+            moduleInstance.SetDuration (mNumericStepperDuration.value);
+            
+            moduleInstance.UpdateAppearance ();
+            moduleInstance.UpdateSelectionProxy ();
+            
+            compositeModule.NotifyModifiedForReferers ();
+            //UpdateInterface (); // NotifyModifiedForReferers will call this
+         }
       }
       
    }

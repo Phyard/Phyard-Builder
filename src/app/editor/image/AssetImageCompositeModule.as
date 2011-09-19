@@ -53,10 +53,8 @@ package editor.image {
          
          mAssetImageCompositeModuleManager = assetImageCompositeModuleManager;
          
-         mModuleInstanceManager           = new AssetImageModuleInstanceManager ();
-         mModuleInstanceManagerForListing = new AssetImageModuleInstanceManagerForListing ();
-         mModuleInstanceManagerForListing.SetAssetImageModuleInstanceManager (mModuleInstanceManager);
-         mModuleInstanceManager.SetAssetImageModuleInstanceManagerForListing (mModuleInstanceManagerForListing);
+         mModuleInstanceManager           = new AssetImageModuleInstanceManager (this);
+         mModuleInstanceManagerForListing = new AssetImageModuleInstanceManagerForListing (this);
       }
       
       public function GetAssetImageCompositeModuleManager ():AssetImageCompositeModuleManager
@@ -96,6 +94,52 @@ package editor.image {
       override public function GetModuleBoundingRectangle ():Rectangle
       {
          return null; // to override
+      }
+      
+//=============================================================
+//   
+//=============================================================
+
+      protected var mIsAnimated:Boolean = false;
+      protected var mIsLooped:Boolean = true;
+      
+      override public function IsAnimated ():Boolean
+      {
+         return mIsAnimated;
+      }
+
+      public function SetAnimated (animated:Boolean):void
+      {
+         mIsAnimated = animated;
+      }
+      
+      public function IsLooped ():Boolean
+      {
+         return mIsLooped;
+      }
+      
+      public function SetLooped (looped:Boolean):void
+      {
+         mIsLooped = looped;
+      }
+      
+      override public function IsPlayable():Boolean
+      {
+         var numParts:int = mModuleInstanceManager.GetNumAssets ();
+         if (mIsAnimated && numParts > 1)
+            return true;
+         
+         for (var i:int = 0; i < numParts; ++ i)
+         {
+            var moduleInstance:AssetImageModuleInstance = mModuleInstanceManager.GetAssetByAppearanceId (i) as AssetImageModuleInstance;
+            var module:AssetImageModule = moduleInstance.GetAssetImageModule ();
+            if (module != null && module.IsPlayable ())
+            {
+               return true;
+            }
+         }
+         
+         return false;
       }
       
 //=============================================================

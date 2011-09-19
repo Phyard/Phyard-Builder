@@ -83,12 +83,20 @@ package editor.image {
       
       private function OnContextMenuEvent_CreateTimeCompositeModule (event:ContextMenuEvent):void
       {
-         CreateImageCompositeModule (true);
+         var module:AssetImageCompositeModule = CreateImageCompositeModule (true);
+         if (module != null)
+         {
+            module.SetAnimated (true);
+         }
       }
       
       private function OnContextMenuEvent_CreateSpaceCompositeModule(event:ContextMenuEvent):void
       {
-         CreateImageCompositeModule (true);
+         var module:AssetImageCompositeModule = CreateImageCompositeModule (true);
+         if (module != null)
+         {
+            module.SetAnimated (false);
+         }
       }
    }
 }

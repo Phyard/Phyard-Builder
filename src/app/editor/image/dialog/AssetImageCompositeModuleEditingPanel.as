@@ -22,6 +22,7 @@ package editor.image.dialog {
    import flash.geom.Rectangle;
    
    import mx.containers.ViewStack;
+   import mx.containers.HBox;
    import mx.controls.Button;
    import mx.controls.NumericStepper;
    import mx.controls.CheckBox;
@@ -56,6 +57,11 @@ package editor.image.dialog {
       {
       }
       
+      public function GetAssetImageModuleInstanceManager ():AssetImageModuleInstanceManager
+      {
+         return mAssetImageModuleInstanceManager;
+      }
+      
       public function SetAssetImageModuleInstanceManager (amim:AssetImageModuleInstanceManager):void
       {
          super.SetAssetManager (amim);
@@ -70,6 +76,31 @@ package editor.image.dialog {
          }
       }
       
+      protected var mAssetImageModuleInstanceListingPanel:AssetImageModuleInstanceListingPanel;
+      public function SetAssetImageModuleInstanceListingPanelPeer (assetImageModuleInstanceListingPanel:AssetImageModuleInstanceListingPanel):void
+      {
+         mAssetImageModuleInstanceListingPanel = assetImageModuleInstanceListingPanel;
+      }
+      
+//=====================================================================
+//
+//=====================================================================
+      
+      override public function OnAssetSelectionsChanged (passively:Boolean = false):void
+      {  
+         super.OnAssetSelectionsChanged ();
+         
+         if (passively)
+            return;
+         
+         if (mAssetImageModuleInstanceListingPanel != null)
+         {
+            mAssetImageModuleInstanceListingPanel.GetAssetImageModuleInstanceManagerForListing ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromEdittingToListing ();
+            
+            mAssetImageModuleInstanceListingPanel.OnAssetSelectionsChanged (true);
+         }
+      } 
+      
 //====================================================================================
 //   
 //====================================================================================
@@ -82,20 +113,26 @@ package editor.image.dialog {
          mAssetImageModuleInstanceManager.DeleteSelectedAssets ();
       }
       
+      public function MoveModuleInstanceUp ():void
+      {
+      }
+      
+      public function MoveModuleInstanceDown ():void
+      {
+      }
+      
 //====================================================================================
 //   
 //====================================================================================
       
-      private var mIsPlaying:Boolean = false;
-      
       public function Play ():void
       {
-         mIsPlaying = true;
+         mAssetImageModuleInstanceManager.SetPlaying (true);
       }
       
       public function Pause ():void
       {
-         mIsPlaying = false;
+         mAssetImageModuleInstanceManager.SetPlaying (false);
       }
       
 //====================================================================================
@@ -112,8 +149,10 @@ package editor.image.dialog {
       public var mCheckBoxFlipped:CheckBox;
       public var mTextInputAngle:TextInput;
       
+      public var mBoxModuleProperties:HBox;
       public var mLabelModuleInfos:Label;
       public var mCheckBoxLoop:CheckBox;
+      public var mCheckBoxShowAllParts:CheckBox;
       
       override public function UpdateInterface ():void
       {
@@ -153,21 +192,22 @@ package editor.image.dialog {
             mLabelDuration.visible = true;
             mNumericStepperDuration.visible = true;
             
-            if (mCheckBoxLoop.parent == null)
+            if (mBoxModuleProperties.parent == null)
             {
-               mLabelModuleInfos.parent.addChildAt (mCheckBoxLoop, mLabelModuleInfos.parent.getChildIndex (mLabelModuleInfos) + 1);
+               this.parent.parent.addChildAt (mBoxModuleProperties, 0);
             }
             
             mCheckBoxLoop.selected = compositeModule.IsLooped ();
+            mCheckBoxShowAllParts.selected = mAssetImageModuleInstanceManager.IsShowAllParts ();
          }
          else
          {
             mLabelDuration.visible = false;
             mNumericStepperDuration.visible = false;
             
-            if (mCheckBoxLoop.parent != null)
+            if (mBoxModuleProperties.parent != null)
             {
-               mCheckBoxLoop.parent.removeChild (mCheckBoxLoop);
+               this.parent.parent.removeChild (mBoxModuleProperties);
             }
          }
          
@@ -188,6 +228,7 @@ package editor.image.dialog {
          //if (compositeModule.IsAnimated ())
          //{
             compositeModule.SetLooped (mCheckBoxLoop.selected);
+            mAssetImageModuleInstanceManager.SetShowAllParts (mCheckBoxShowAllParts.selected);
          //}
       }
       

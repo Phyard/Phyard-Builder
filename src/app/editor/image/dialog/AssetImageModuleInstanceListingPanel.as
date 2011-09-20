@@ -50,12 +50,42 @@ package editor.image.dialog {
       {
       }
       
+      public function GetAssetImageModuleInstanceManagerForListing ():AssetImageModuleInstanceManagerForListing
+      {
+         return mAssetImageModuleInstanceManagerForListing;
+      }
+      
       public function SetAssetImageModuleInstanceManagerForListing (assetImageModuleInstanceManagerForListing:AssetImageModuleInstanceManagerForListing):void
       {
          super.SetAssetManager (assetImageModuleInstanceManagerForListing);
           
          mAssetImageModuleInstanceManagerForListing = assetImageModuleInstanceManagerForListing;
       }
+      
+      protected var mAssetImageCompositeModuleEditingPanel:AssetImageCompositeModuleEditingPanel;
+      public function SetAssetImageCompositeModuleEditingPanelPeer (assetImageCompositeModuleEditingPanel:AssetImageCompositeModuleEditingPanel):void
+      {
+         mAssetImageCompositeModuleEditingPanel = assetImageCompositeModuleEditingPanel;
+      }
+      
+//=====================================================================
+//
+//=====================================================================
+      
+      override public function OnAssetSelectionsChanged (passively:Boolean = false):void
+      {  
+         super.OnAssetSelectionsChanged ();
+         
+         if (passively)
+            return;
+         
+         if (mAssetImageCompositeModuleEditingPanel != null)
+         {
+            mAssetImageCompositeModuleEditingPanel.GetAssetImageModuleInstanceManager ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromListingToEditing ();
+            
+            mAssetImageCompositeModuleEditingPanel.OnAssetSelectionsChanged (true);
+         }
+      } 
       
    }
 }

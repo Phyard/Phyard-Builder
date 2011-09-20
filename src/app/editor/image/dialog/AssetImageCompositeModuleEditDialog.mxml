@@ -7,7 +7,7 @@
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:image="editor.image.dialog.*" 
     title="Composite Image Module Editing"
-    width="657" height="537"
+    width="667" height="537"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
     creationComplete="InitDialog ();"
@@ -45,13 +45,27 @@
          <mx:TextInput id="TextInputAngle" width="32" enter="ChangeModuleInstanceProperties ();" />
       </mx:HBox>
       <mx:HDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
-         <mx:VBox id="Box_Images" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-            <image:AssetImageCompositeModuleEditingPanel id="panelAssetImageCompositeModuleEditing" width="100%" height="100%"/>
-         </mx:VBox>
-         <mx:VBox id="Box_PureModules" width="120" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-            <mx:Label id="LabelModuleInfos" text="5 parts" textAlign="center"/>
-            <mx:CheckBox selected="true" id="CheckBoxLoop" label="Loop" click="ChangeCompositeModuleProperties ();"/>
+         <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+            <mx:HBox width="100%" id="BoxModuleProperties" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+               <mx:Label text="" />
+               <mx:CheckBox selected="true" id="CheckBoxLoop" label="Loop" click="ChangeCompositeModuleProperties ();"/>
+               <mx:Spacer width="100%"/>
+               <mx:Label id="LabelModuleInfos" text="5 Parts" textAlign="center"/>
+               <mx:Spacer width="10"/>
+               <mx:CheckBox selected="false" id="CheckBoxShowAllParts" label="Show All Parts" click="ChangeCompositeModuleProperties ();"/>
+               <mx:Spacer width="5"/>
+            </mx:HBox>
             <mx:HBox id="Box_CompositeModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+               <image:AssetImageCompositeModuleEditingPanel id="panelAssetImageCompositeModuleEditing" width="100%" height="100%"/>
+            </mx:HBox>
+         </mx:VBox>
+         <mx:VBox width="120" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+            <mx:HBox borderStyle="solid" borderThickness="1" width="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+               <mx:Spacer width="100%"/>
+               <mx:Button id="ButtonMoveUpModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceUp ()" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
+               <mx:Button id="ButtonMoveDownModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
+            </mx:HBox>
+            <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing" width="100%" height="100%"/>
             </mx:HBox>
          </mx:VBox>
@@ -89,6 +103,9 @@
             assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditingPanel ().SetAssetImageModuleInstanceManager (assetImageCompositeModule.GetModuleInstanceManager ());
             assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ().SetAssetImageModuleInstanceManagerForListing (assetImageCompositeModule.GetModuleInstanceManagerForListing ());
             
+            assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditingPanel ().SetAssetImageModuleInstanceListingPanelPeer (assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ());
+            assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ().SetAssetImageCompositeModuleEditingPanelPeer (assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditingPanel ());
+            
             assetImageCompositeModule.SetAssetImageCompositeModuleEditDialog (assetImageCompositeModuleEditDialog);
          }
          
@@ -121,8 +138,10 @@
             panelAssetImageCompositeModuleEditing.mCheckBoxFlipped = CheckBoxFlipped;
             panelAssetImageCompositeModuleEditing.mTextInputAngle = TextInputAngle;
             
+            panelAssetImageCompositeModuleEditing.mBoxModuleProperties = BoxModuleProperties;
             panelAssetImageCompositeModuleEditing.mLabelModuleInfos = LabelModuleInfos;
             panelAssetImageCompositeModuleEditing.mCheckBoxLoop = CheckBoxLoop;
+            panelAssetImageCompositeModuleEditing.mCheckBoxShowAllParts = CheckBoxShowAllParts;
          }
          
          private function OnPlay ():void

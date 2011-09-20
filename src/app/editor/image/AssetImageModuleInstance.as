@@ -67,6 +67,11 @@ package editor.image {
          return mAssetImageModule;
       }
       
+      public function GetModuleInstaneForListingPeer ():AssetImageModuleInstanceForListing
+      {
+         return mAssetImageModuleInstanceForListingPeer;
+      }
+      
       public function SetModuleInstaneForListingPeer (moduleInstacneForListing:AssetImageModuleInstanceForListing):void
       {
          mAssetImageModuleInstanceForListingPeer = moduleInstacneForListing;
@@ -124,7 +129,7 @@ package editor.image {
 //   
 //=============================================================
 
-      protected var mDuration:int = 2;
+      protected var mDuration:int = 6;
       
       public function GetDuration ():int
       {
@@ -195,7 +200,7 @@ package editor.image {
          {
             addChild (moduleSprite);
             
-            if (IsSelected ())
+            if (IsSelected () && (! mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsAnimated ()))
             {
                var shape:Shape = new Shape ();
                shape.alpha = 0.67;
@@ -229,10 +234,16 @@ package editor.image {
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          var menuItemRebuildFromCurrentModule:ContextMenuItem = new ContextMenuItem("Rebuild From Current Module");
+         var menuItemInsertBeforeFromCurrentModule:ContextMenuItem = new ContextMenuItem("Insert New Module Instance From Current Module Before This One");
+         var menuItemInsertAfterFromCurrentModule:ContextMenuItem = new ContextMenuItem("Insert New Module Instance From Current Module After This One");
          
          menuItemRebuildFromCurrentModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_RebuildFromCurrentModule);
+         menuItemInsertBeforeFromCurrentModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_InsertBeforeFromCurrentModule);
+         menuItemInsertAfterFromCurrentModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_InsertAfterFromCurrentModule);
          
          customMenuItemsStack.push (menuItemRebuildFromCurrentModule);
+         customMenuItemsStack.push (menuItemInsertBeforeFromCurrentModule);
+         customMenuItemsStack.push (menuItemInsertAfterFromCurrentModule);
          
          mAssetImageModuleInstanceManager.BuildContextMenuInternal (customMenuItemsStack);
          super.BuildContextMenuInternal (customMenuItemsStack);
@@ -253,6 +264,14 @@ package editor.image {
             
             mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
          //}
+      }
+      
+      private function OnContextMenuEvent_InsertBeforeFromCurrentModule (event:ContextMenuEvent):void
+      {
+      }
+      
+      private function OnContextMenuEvent_InsertAfterFromCurrentModule (event:ContextMenuEvent):void
+      {
       }
   }
 }

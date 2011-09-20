@@ -67,6 +67,19 @@ package editor.image {
          GetAssetImageSprite (true); // for panel
       }
       
+//================================================================
+//
+//================================================================
+      
+      override public function SupportScaleRotateFlipTransforms ():Boolean
+      {
+         return false;
+      }
+      
+//================================================================
+//
+//================================================================
+      
       override public function DestroyAsset (asset:Asset):void
       {
          var division:AssetImageDivision = asset as AssetImageDivision;
@@ -102,11 +115,6 @@ package editor.image {
          Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (imageDivision, selectIt);
          
          return imageDivision;
-      }
-      
-      override public function SupportScaleRotateFlipTransforms ():Boolean
-      {
-         return false;
       }
       
    }

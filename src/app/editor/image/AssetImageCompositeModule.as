@@ -143,6 +143,42 @@ package editor.image {
       }
       
 //=============================================================
+//   
+//=============================================================
+
+      public function SynchronizeManagerSelectionsFromListingToEditing ():void
+      {
+         var moduleInstanceToSelect:Array = new Array (); 
+         
+         var selectedAssets:Array = mModuleInstanceManagerForListing.GetSelectedAssets ();
+         var count:int = selectedAssets.length;
+         for (var i:int = 0; i < count; ++ i)
+         {
+            var moduleInstanceForListing:AssetImageModuleInstanceForListing = selectedAssets [i] as AssetImageModuleInstanceForListing;
+            
+            moduleInstanceToSelect.push (moduleInstanceForListing.GetModuleInstaneForEditingPeer ());
+         }
+         
+         mModuleInstanceManager.SetSelectedAssets (moduleInstanceToSelect);
+      }
+
+      public function SynchronizeManagerSelectionsFromEdittingToListing ():void
+      {
+         var moduleInstanceForListingToSelect:Array = new Array (); 
+         
+         var selectedAssets:Array = mModuleInstanceManager.GetSelectedAssets ();
+         var count:int = selectedAssets.length;
+         for (var i:int = 0; i < count; ++ i)
+         {
+            var moduleInstance:AssetImageModuleInstance = selectedAssets [i] as AssetImageModuleInstance;
+            
+            moduleInstanceForListingToSelect.push (moduleInstance.GetModuleInstaneForListingPeer ());
+         }
+         
+         mModuleInstanceManagerForListing.SetSelectedAssets (moduleInstanceForListingToSelect);
+      }
+
+//=============================================================
 //   context menu
 //=============================================================
       

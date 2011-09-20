@@ -411,7 +411,7 @@ package editor.asset {
       {
          mVisibleForEditing = visibleForEditing;
          
-         alpha = mVisibleForEditing ? 1.0 : 0.2;
+         alpha = mVisibleForEditing ? 1.0 : 0.33;
       }
       
       public function IsVisibleForEditing ():Boolean

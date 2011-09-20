@@ -45,8 +45,9 @@ package editor.selection {
          var bottom:Number = top + height;
          if (flipped)
          {
+            var temp:Number = left;
             left = - right;
-            right = -left;
+            right = - temp;
          }
          
          var p1:Point = new Point (left, top);
@@ -54,7 +55,7 @@ package editor.selection {
          var p3:Point = new Point (right, bottom);
          var p4:Point = new Point (left, bottom);
          
-         CreateConvexPolygonZone ([p1, p2, p3, p4]);pped, scale);
+         CreateConvexPolygonZone ([p1, p2, p3, p4]);
       }
       
    }

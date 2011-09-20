@@ -126,7 +126,7 @@ package editor.image.dialog {
          }
          else
          {
-            mAssetImageDivisionManager.ClearSelectedAssets ();
+            mAssetImageDivisionManager.ClearAssetSelections ();
             
             SetCurrentIntent (new IntentDragDivision (this));
          }

@@ -83,6 +83,23 @@ package editor.image {
          return false;
       }
       
+      public function GetNumSequences ():int
+      {
+         return 1;
+      }
+      
+      // to replace CreateModuleSprite
+      public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
+      {
+         return null; // to override
+      }
+      
+      // to replace GetModuleBoundingRectangle
+      public function GetSequenceBoundingRectangle ():Rectangle
+      {
+         return null; // to override
+      }
+      
 //=============================================================
 //   
 //=============================================================

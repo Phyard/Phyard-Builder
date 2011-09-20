@@ -67,6 +67,11 @@ package editor.image {
          return mAssetImageModule;
       }
       
+      public function GetModuleInstaneForEditingPeer ():AssetImageModuleInstance
+      {
+         return mAssetImageModuleInstanceForEditingPeer;
+      }
+      
       public function SetModuleInstaneForEditingPeer (moduleInstacne:AssetImageModuleInstance):void
       {
          mAssetImageModuleInstanceForEditingPeer = moduleInstacne;

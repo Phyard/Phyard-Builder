@@ -6,6 +6,7 @@ package editor.image {
    import flash.geom.Point;
    import flash.geom.Matrix;
    
+   import editor.asset.Asset;
    import editor.asset.AssetManager; 
    
    import common.CoordinateSystem;
@@ -20,6 +21,11 @@ package editor.image {
       public function AssetImageModuleInstanceManagerForListing (assetImageCompositeModule:AssetImageCompositeModule):void
       {
          mAssetImageCompositeModule = assetImageCompositeModule;
+      }
+      
+      public function GetAssetImageCompositeModule ():AssetImageCompositeModule
+      {
+         return mAssetImageCompositeModule;
       }
       
 //==========================================================      
@@ -48,6 +54,19 @@ package editor.image {
 //==========================================================      
 // 
 //========================================================== 
+      
+      override public function DestroyAsset (asset:Asset):void
+      {
+         var moduleInstanceForListing:AssetImageModuleInstanceForListing = asset as AssetImageModuleInstanceForListing;
+         var moduleInstance:AssetImageModuleInstance = moduleInstanceForListing.GetModuleInstaneForEditingPeer ();
+         
+         super.DestroyAsset (asset); // the module instance for listing
+         
+         if (! moduleInstance.IsDestroyed ())
+         {
+            moduleInstance.GetAssetImageModuleInstanceManager ().DestroyAsset (moduleInstance);
+         }
+      }
 
       public function CreateImageModuleInstanceForListing (module:AssetImageModule, selectIt:Boolean = false):AssetImageModuleInstanceForListing
       {

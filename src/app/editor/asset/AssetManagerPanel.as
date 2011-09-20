@@ -337,7 +337,7 @@ package editor.asset {
          }
          else
          {
-            mAssetManager.AddSelectedAssets (oldSelectedAssets);
+            mAssetManager.AddAssetSelections (oldSelectedAssets);
             SetCurrentIntent (new IntentRegionSelectAssets (this, oldSelectedAssets));
             mCurrentIntent.OnMouseDown (managerX, managerY);
             
@@ -444,15 +444,17 @@ package editor.asset {
 //   select
 //=================================================================================
       
-      protected function OnAssetSelectionsChanged ():void
+      public function OnAssetSelectionsChanged (passively:Boolean = false):void
       {  
+         SetScaleRotateFlipHandlersVisible (mAssetManager.GetNumSelectedAssets () > 0);
+         
          UpdateInterface ();
       } 
       
       public function PointSelectAsset (managerX:Number, managerY:Number):Boolean
       {
          if (! mIsCtrlDownOnMouseDown)
-            mAssetManager.ClearSelectedAssets ();
+            mAssetManager.ClearAssetSelections ();
          
          var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
          if (assetArray != null && assetArray.length > 0)
@@ -481,19 +483,17 @@ package editor.asset {
          
          var newSelectedAssets:Array = mAssetManager.GetAssetsIntersectWithRegion (left, top, right, bottom);
          
-         mAssetManager.ClearSelectedAssets ();
+         mAssetManager.ClearAssetSelections ();
 
          if (mIsCtrlDownOnMouseDown)
          {
-            mAssetManager.AddSelectedAssets (oldSelectedAssets);
+            mAssetManager.AddAssetSelections (oldSelectedAssets);
             mAssetManager.ToggleAssetsSelected (newSelectedAssets);
          }
          else
          {
-            mAssetManager.AddSelectedAssets (newSelectedAssets);
+            mAssetManager.AddAssetSelections (newSelectedAssets);
          }
-         
-         SetScaleRotateFlipHandlersVisible (mAssetManager.GetNumSelectedAssets () > 0);
          
          OnAssetSelectionsChanged ();
       }

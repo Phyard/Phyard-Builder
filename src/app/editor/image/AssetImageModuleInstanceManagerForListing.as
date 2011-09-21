@@ -68,12 +68,18 @@ package editor.image {
          }
       }
 
-      public function CreateImageModuleInstanceForListing (module:AssetImageModule, selectIt:Boolean = false):AssetImageModuleInstanceForListing
+      public function CreateImageModuleInstanceForListing (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstanceForListing
       {
          var moduleInstane:AssetImageModuleInstanceForListing = new AssetImageModuleInstanceForListing (this, module);
+         
+         if (atIndex < 0 || atIndex > GetNumAssets ())
+            addChild (moduleInstane);
+         else
+            addChildAt (moduleInstane, atIndex);
+         
          moduleInstane.UpdateAppearance ();
          moduleInstane.UpdateSelectionProxy ();
-         addChild (moduleInstane);
+         
          
          if (selectIt)
             SetSelectedAsset (moduleInstane);

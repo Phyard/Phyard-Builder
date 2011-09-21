@@ -51,7 +51,7 @@ package editor.image {
          }
       }
       
-      public function CreateImageModuleInstance (module:AssetImageModule, selectIt:Boolean = false):AssetImageModuleInstance
+      public function CreateImageModuleInstance (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
          var moduleInstane:AssetImageModuleInstance = new AssetImageModuleInstance (this, module);
          
@@ -61,15 +61,19 @@ package editor.image {
             SetSelectedAsset (moduleInstane);
          }
          
+         if (atIndex < 0 || atIndex > GetNumAssets ())
+            addChild (moduleInstane);
+         else
+            addChildAt (moduleInstane, atIndex);
+         
          moduleInstane.UpdateAppearance ();
          moduleInstane.UpdateSelectionProxy ();
-         addChild (moduleInstane);
          
          // create icon in list
          
          //if (mAssetImageModuleInstanceManagerForListing != null)
          //{
-            var moduleInstaneForListing:AssetImageModuleInstanceForListing = mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().CreateImageModuleInstanceForListing (module, selectIt);
+            var moduleInstaneForListing:AssetImageModuleInstanceForListing = mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().CreateImageModuleInstanceForListing (module, selectIt, atIndex);
             moduleInstaneForListing.SetModuleInstaneForEditingPeer (moduleInstane);
             moduleInstane.SetModuleInstaneForListingPeer (moduleInstaneForListing);
          //}
@@ -81,101 +85,17 @@ package editor.image {
 //   
 //=============================================================
       
-      override public function Update (escapedTime:Number):void
-      {
-         super.Update (escapedTime);
-         
-         if (mAssetImageCompositeModule.IsAnimated ())
-         {
-            if (mIsPlaying)
-            {
-               var numParts:int = GetNumAssets ();
-               if (mCurrentPartId < 0 || mCurrentPartId >= numParts)
-               {
-                  mCurrentPartId = 0;
-                  mCurrentPartSteps = 0;
-               }
-               
-               var moduleInstance:AssetImageModuleInstance = GetAssetByAppearanceId (mCurrentPartId) as AssetImageModuleInstance;
-               
-               if (++ mCurrentPartSteps > moduleInstance.GetDuration ())
-               {
-                  mCurrentPartSteps = 0;
-                  
-                  if (++ mCurrentPartId >= numParts)
-                  {
-                     mCurrentPartId = 0;
-                  }
-               }
-            }
-         }
-         else
-         {
-         /*
-            if (mIsPlaying)
-            {
-               moduleInstance.Step ();
-            }
-            else
-            {
-               moduleInstance.SetStep (0);
-            }
-         */
-         }
-         
-         UpdateModuleInstancesAlpha ();
-      }
-      
-      private function UpdateModuleInstancesAlpha ():void
-      {
-         var numParts:int = GetNumAssets ();
-         var i:int;
-         var moudleInstance:AssetImageModuleInstance;
-         
-         for (i = 0; i < numParts; ++ i)
-         {
-            moudleInstance = GetAssetByAppearanceId (i) as AssetImageModuleInstance;
-            
-            if (mIsPlaying && mAssetImageCompositeModule.IsAnimated ())
-            {
-               moudleInstance.SetVisibleForEditing (i == mCurrentPartId);
-            }
-            else
-            {
-               moudleInstance.SetVisibleForEditing (true);
-               if (mAssetImageCompositeModule.IsAnimated () && (! moudleInstance.IsSelected ()))
-               {
-                  moudleInstance.alpha = 0.33;
-               }
-            }
-         }
-      }
-      
       // will not saved in file
-      protected var mShowAllParts:Boolean = false;
+      protected var mShowAllSequences:Boolean = false;
       
-      protected var mIsPlaying:Boolean = false;
-      protected var mCurrentPartId:int;
-      protected var mCurrentPartSteps:int;
-      
-      public function IsPlaying ():Boolean
+      public function IsShowAllSequences ():Boolean
       {
-         return mIsPlaying;
+         return mShowAllSequences;
       }
       
-      public function SetPlaying (playing:Boolean):void
+      public function SetShowAllSequences (showAllSequences:Boolean):void
       {
-         mIsPlaying = playing; 
-      }
-      
-      public function IsShowAllParts ():Boolean
-      {
-         return mShowAllParts;
-      }
-      
-      public function SetShowAllParts (showAllParts:Boolean):void
-      {
-         mShowAllParts = showAllParts;
+         mShowAllSequences = showAllSequences;
       }
       
 //=============================================================
@@ -192,9 +112,80 @@ package editor.image {
          }
       }
       
+      public function UpdateModuleInstancesAlpha ():void
+      {
+         var moduleInstance:AssetImageModuleInstance;
+         var count:int = GetNumAssets ();
+         for (var i:int = 0; i < count; ++ i)
+         {
+            moduleInstance = GetAssetByAppearanceId (i) as AssetImageModuleInstance;
+            if (mAssetImageCompositeModule.IsAnimated ())
+            {
+               if (moduleInstance.IsSelected () || mShowAllSequences)
+                  moduleInstance.alpha = 1.0;
+               else
+                  moduleInstance.alpha = 0.66;
+            }
+            else
+            {
+               moduleInstance.alpha = 1.0;
+            }
+         }
+      }
+      
+      private function UpdateSelectedModuleInstanceAppearances ():void
+      {
+         var moduleInstances:Array = GetSelectedAssets ();
+         var moduleInstance:AssetImageModuleInstance;
+         var count:int = moduleInstances.length;
+         for (var i:int = 0; i < count; ++ i)
+         {
+            moduleInstance = moduleInstances [i] as AssetImageModuleInstance;
+            moduleInstance.UpdateAppearance ();
+         }
+      }
+      
+      public function MoveUpDownTheOnlySelectedModuleInstance (moveUp:Boolean):void
+      {  
+         var selectedMoudleInstances:Array = GetSelectedAssets ();
+         if (selectedMoudleInstances.length != 1)
+            return;
+         
+         var moudleInstance:AssetImageModuleInstance = selectedMoudleInstances [0] as AssetImageModuleInstance;
+         var oldIndex:int = moudleInstance.GetAppearanceLayerId ();
+         var newIndex:int;
+         if (moveUp)
+         {
+            if (oldIndex <= 0)
+               return;
+            
+            newIndex = oldIndex - 1;
+         }
+         else
+         {
+            if (oldIndex >= GetNumAssets () - 1)
+               return;
+            
+            newIndex = oldIndex + 1;
+         }
+         
+         AdjustAssetAppearanceOrder (moudleInstance, newIndex);
+         moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().AdjustAssetAppearanceOrder (moudleInstance.GetModuleInstaneForListingPeer (), newIndex);
+         
+         moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().RearrangeAssetPositions (true);
+         
+         NotifyChangedForPanel ();
+      }
+      
 //=============================================================
 //   context menu
 //=============================================================
+
+      public function OnContextMenuEvent_CreateImageModuleInstanceAtIndex (index:int):void
+      {
+         CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true, index);
+         NotifyChangedForPanel ();
+      }
       
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
@@ -223,10 +214,8 @@ package editor.image {
       {
          mAssetImageCompositeModule.SetAnimated (true);
          
-         // repaint selected assets
-         var moduleInstances:Array = GetSelectedAssets ();
-         ClearAssetSelections ();
-         SetSelectedAssets (moduleInstances);
+         UpdateSelectedModuleInstanceAppearances ();
+         UpdateModuleInstancesAlpha ();
          
          NotifyChangedForPanel ();
       }
@@ -235,10 +224,8 @@ package editor.image {
       {
          mAssetImageCompositeModule.SetAnimated (false);
          
-         // repaint selected assets
-         var moduleInstances:Array = GetSelectedAssets ();
-         ClearAssetSelections ();
-         SetSelectedAssets (moduleInstances);
+         UpdateSelectedModuleInstanceAppearances ();
+         UpdateModuleInstancesAlpha ();
          
          NotifyChangedForPanel ();
       }

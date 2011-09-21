@@ -161,7 +161,7 @@ package editor.image {
          var rectangle:Rectangle = null;
          if (mAssetImageModule != null)
          {
-            rectangle = mAssetImageModule.GetModuleBoundingRectangle ();
+            rectangle = mAssetImageModule.GetSequenceBoundingRectangle (0);
          }
          
          if (rectangle == null)
@@ -186,7 +186,7 @@ package editor.image {
          var moduleSprite:DisplayObject = null;
          if (mAssetImageModule != null)
          {
-            moduleSprite = mAssetImageModule.CreateModuleSprite ();
+            moduleSprite = mAssetImageModule.BuildSequenceSprite (0);
          }
 
          var rectangle:Rectangle;
@@ -268,10 +268,12 @@ package editor.image {
       
       private function OnContextMenuEvent_InsertBeforeFromCurrentModule (event:ContextMenuEvent):void
       {
+         mAssetImageModuleInstanceManager.OnContextMenuEvent_CreateImageModuleInstanceAtIndex (GetAppearanceLayerId ());
       }
       
       private function OnContextMenuEvent_InsertAfterFromCurrentModule (event:ContextMenuEvent):void
       {
+         mAssetImageModuleInstanceManager.OnContextMenuEvent_CreateImageModuleInstanceAtIndex (GetAppearanceLayerId () + 1);
       }
   }
 }

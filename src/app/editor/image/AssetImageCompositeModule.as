@@ -86,12 +86,12 @@ package editor.image {
 //   
 //=============================================================
       
-      override public function CreateModuleSprite ():DisplayObject
+      override public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
       {
          return null;
       }
       
-      override public function GetModuleBoundingRectangle ():Rectangle
+      override public function GetSequenceBoundingRectangle (sqeuenceId:int):Rectangle
       {
          return null; // to override
       }

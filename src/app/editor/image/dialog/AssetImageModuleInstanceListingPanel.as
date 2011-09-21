@@ -62,10 +62,10 @@ package editor.image.dialog {
          mAssetImageModuleInstanceManagerForListing = assetImageModuleInstanceManagerForListing;
       }
       
-      protected var mAssetImageCompositeModuleEditingPanel:AssetImageCompositeModuleEditingPanel;
+      protected var mAssetImageCompositeModuleEditingPanelPeer:AssetImageCompositeModuleEditingPanel;
       public function SetAssetImageCompositeModuleEditingPanelPeer (assetImageCompositeModuleEditingPanel:AssetImageCompositeModuleEditingPanel):void
       {
-         mAssetImageCompositeModuleEditingPanel = assetImageCompositeModuleEditingPanel;
+         mAssetImageCompositeModuleEditingPanelPeer = assetImageCompositeModuleEditingPanel;
       }
       
 //=====================================================================
@@ -79,11 +79,11 @@ package editor.image.dialog {
          if (passively)
             return;
          
-         if (mAssetImageCompositeModuleEditingPanel != null)
+         if (mAssetImageCompositeModuleEditingPanelPeer != null)
          {
-            mAssetImageCompositeModuleEditingPanel.GetAssetImageModuleInstanceManager ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromListingToEditing ();
+            mAssetImageCompositeModuleEditingPanelPeer.GetAssetImageModuleInstanceManager ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromListingToEditing ();
             
-            mAssetImageCompositeModuleEditingPanel.OnAssetSelectionsChanged (true);
+            mAssetImageCompositeModuleEditingPanelPeer.OnAssetSelectionsChanged (true);
          }
       } 
       

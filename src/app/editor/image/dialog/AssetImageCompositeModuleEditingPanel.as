@@ -41,6 +41,8 @@ package editor.image.dialog {
    import editor.image.AssetImageModuleInstance;
    import editor.image.AssetImageModuleInstanceManager;
    
+   import editor.display.sprite.CoordinateSprite;
+   
    import editor.runtime.Runtime;
    
    import editor.core.EditorObject;
@@ -51,10 +53,12 @@ package editor.image.dialog {
    
    public class AssetImageCompositeModuleEditingPanel extends AssetManagerPanel
    {
+      protected var mCoordinateSprite:CoordinateSprite = new CoordinateSprite ();
       protected var mAssetImageModuleInstanceManager:AssetImageModuleInstanceManager;
       
       public function AssetImageCompositeModuleEditingPanel ()
       {
+         mBackgroundLayer.addChild (mCoordinateSprite);
       }
       
       public function GetAssetImageModuleInstanceManager ():AssetImageModuleInstanceManager
@@ -73,34 +77,49 @@ package editor.image.dialog {
             mAssetImageModuleInstanceManager.mCallback_OnChangedForPanel = UpdateInterface;
             
             UpdateInterface ();
+            
+            MoveManager (0.5 * mParentWidth - mAssetImageModuleInstanceManager.x, 0.5 * mParentHeight - mAssetImageModuleInstanceManager.y);
          }
       }
       
-      protected var mAssetImageModuleInstanceListingPanel:AssetImageModuleInstanceListingPanel;
+      protected var mAssetImageModuleInstanceListingPanelPeer:AssetImageModuleInstanceListingPanel;
       public function SetAssetImageModuleInstanceListingPanelPeer (assetImageModuleInstanceListingPanel:AssetImageModuleInstanceListingPanel):void
       {
-         mAssetImageModuleInstanceListingPanel = assetImageModuleInstanceListingPanel;
+         mAssetImageModuleInstanceListingPanelPeer = assetImageModuleInstanceListingPanel;
       }
       
 //=====================================================================
 //
 //=====================================================================
       
+      override protected function UpdateInternal (dt:Number):void
+      {
+         if (mAssetImageModuleInstanceManager != null)
+         {
+            mCoordinateSprite.UpdateAppearance (mParentWidth, mParentHeight, mAssetImageModuleInstanceManager.x, mAssetImageModuleInstanceManager.y, mAssetImageModuleInstanceManager.scaleX);
+         }
+      }
+      
       override public function OnAssetSelectionsChanged (passively:Boolean = false):void
       {  
          super.OnAssetSelectionsChanged ();
          
+         if (mAssetImageModuleInstanceManager != null && mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsAnimated ())
+         {
+            mAssetImageModuleInstanceManager.UpdateModuleInstancesAlpha ();
+         }
+         
          if (passively)
             return;
          
-         if (mAssetImageModuleInstanceListingPanel != null)
+         if (mAssetImageModuleInstanceListingPanelPeer != null)
          {
-            mAssetImageModuleInstanceListingPanel.GetAssetImageModuleInstanceManagerForListing ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromEdittingToListing ();
+            mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromEdittingToListing ();
             
-            mAssetImageModuleInstanceListingPanel.OnAssetSelectionsChanged (true);
+            mAssetImageModuleInstanceListingPanelPeer.OnAssetSelectionsChanged (true);
          }
-      } 
-      
+      }
+
 //====================================================================================
 //   
 //====================================================================================
@@ -115,24 +134,34 @@ package editor.image.dialog {
       
       public function MoveModuleInstanceUp ():void
       {
+         if (mAssetImageModuleInstanceManager == null)
+            return;
+         
+         mAssetImageModuleInstanceManager.MoveUpDownTheOnlySelectedModuleInstance (true);
       }
       
       public function MoveModuleInstanceDown ():void
       {
+         if (mAssetImageModuleInstanceManager == null)
+            return;
+         
+         mAssetImageModuleInstanceManager.MoveUpDownTheOnlySelectedModuleInstance (false);
       }
       
 //====================================================================================
 //   
 //====================================================================================
       
+      protected var mIsPlaying:Boolean = false;
+      
       public function Play ():void
       {
-         mAssetImageModuleInstanceManager.SetPlaying (true);
+         mIsPlaying = true;
       }
       
       public function Pause ():void
       {
-         mAssetImageModuleInstanceManager.SetPlaying (false);
+         mIsPlaying = false;
       }
       
 //====================================================================================
@@ -152,7 +181,10 @@ package editor.image.dialog {
       public var mBoxModuleProperties:HBox;
       public var mLabelModuleInfos:Label;
       public var mCheckBoxLoop:CheckBox;
-      public var mCheckBoxShowAllParts:CheckBox;
+      public var mCheckBoxShowAllSequences:CheckBox;
+      
+      public var mButtonMoveUpModuleInstance:Button;
+      public var mButtonMoveDownModuleInstance:Button;
       
       override public function UpdateInterface ():void
       {
@@ -164,15 +196,18 @@ package editor.image.dialog {
          mButtonDeleteModuleInstances.enabled = numSelecteds > 0;
          if (numSelecteds == 1)
          {
-            var moduleinstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.GetSelectedAssets ()[0] as AssetImageModuleInstance;
+            var moudleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.GetSelectedAssets ()[0] as AssetImageModuleInstance;
             
-            mNumericStepperDuration.enabled = true; mNumericStepperDuration.value = moduleinstance.GetDuration ();
+            mNumericStepperDuration.enabled = true; mNumericStepperDuration.value = moudleInstance.GetDuration ();
             
-            mTextInputPosX.enabled   = true; mTextInputPosX.text   = "" + moduleinstance.GetPositionX ();
-            mTextInputPosY.enabled   = true; mTextInputPosY.text   = "" + moduleinstance.GetPositionY ();
-            mTextInputScale.enabled  = true; mTextInputScale.text  = "" + moduleinstance.GetScale ();
-            mCheckBoxFlipped.enabled = true; mCheckBoxFlipped.selected = moduleinstance.IsFlipped ();
-            mTextInputAngle.enabled  = true; mTextInputAngle.text  = "" + moduleinstance.GetRotation () * 180.0 / Math.PI;
+            mTextInputPosX.enabled   = true; mTextInputPosX.text   = "" + moudleInstance.GetPositionX ();
+            mTextInputPosY.enabled   = true; mTextInputPosY.text   = "" + moudleInstance.GetPositionY ();
+            mTextInputScale.enabled  = true; mTextInputScale.text  = "" + moudleInstance.GetScale ();
+            mCheckBoxFlipped.enabled = true; mCheckBoxFlipped.selected = moudleInstance.IsFlipped ();
+            mTextInputAngle.enabled  = true; mTextInputAngle.text  = "" + moudleInstance.GetRotation () * 180.0 / Math.PI;
+            
+            mButtonMoveUpModuleInstance.enabled = moudleInstance.GetAppearanceLayerId () > 0;
+            mButtonMoveDownModuleInstance.enabled = moudleInstance.GetAppearanceLayerId () < mAssetImageModuleInstanceManager.GetNumAssets () - 1;
          }
          else
          {
@@ -183,6 +218,9 @@ package editor.image.dialog {
             mTextInputScale.enabled  = false; mTextInputScale.text  = "";
             mCheckBoxFlipped.enabled = false;
             mTextInputAngle.enabled  = false; mTextInputAngle.text  = "";
+            
+            mButtonMoveUpModuleInstance.enabled = false;
+            mButtonMoveDownModuleInstance.enabled = false;
          }
          
          var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
@@ -198,7 +236,7 @@ package editor.image.dialog {
             }
             
             mCheckBoxLoop.selected = compositeModule.IsLooped ();
-            mCheckBoxShowAllParts.selected = mAssetImageModuleInstanceManager.IsShowAllParts ();
+            mCheckBoxShowAllSequences.selected = mAssetImageModuleInstanceManager.IsShowAllSequences ();
          }
          else
          {
@@ -228,7 +266,7 @@ package editor.image.dialog {
          //if (compositeModule.IsAnimated ())
          //{
             compositeModule.SetLooped (mCheckBoxLoop.selected);
-            mAssetImageModuleInstanceManager.SetShowAllParts (mCheckBoxShowAllParts.selected);
+            mAssetImageModuleInstanceManager.SetShowAllSequences (mCheckBoxShowAllSequences.selected);
          //}
       }
       

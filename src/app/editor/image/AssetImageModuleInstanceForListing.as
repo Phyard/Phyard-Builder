@@ -128,20 +128,22 @@ package editor.image {
 //   
 //=============================================================
       
-      override public function CreateModuleSprite ():DisplayObject
+      override public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
       {
          if (mAssetImageModule == null)
             return null;
          
-         return mAssetImageModule.CreateModuleSprite ();
+         return mAssetImageModule.BuildSequenceSprite (sqeuenceId);
       }
       
-      override public function GetModuleBoundingRectangle ():Rectangle
+      override public function GetSequenceBoundingRectangle (sqeuenceId:int):Rectangle
       {
-         if (mAssetImageModule == null)
-            return null;
+         //if (mAssetImageModule == null)
+         //   return null;
+         //
+         //return mAssetImageModule.GetSequenceBoundingRectangle (sqeuenceId);
          
-         return mAssetImageModule.GetModuleBoundingRectangle ();
+         return null;
       }
 
   }

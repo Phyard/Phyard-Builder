@@ -89,7 +89,7 @@ package editor.image {
 //   
 //=============================================================
       
-      override public function CreateModuleSprite ():DisplayObject
+      override public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
       {
          if (mImageDivisionPeer == null)
             return null;
@@ -97,7 +97,7 @@ package editor.image {
          return mImageDivisionPeer.CreateSpriteForImagePureModule ();
       }
       
-      override public function GetModuleBoundingRectangle ():Rectangle
+      override public function GetSequenceBoundingRectangle (sqeuenceId:int):Rectangle
       {
          if (mImageDivisionPeer == null)
             return null;

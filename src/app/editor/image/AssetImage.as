@@ -146,12 +146,12 @@ package editor.image {
 //   
 //=============================================================
       
-      override public function CreateModuleSprite ():DisplayObject
+      override public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
       {
          return mBitmapData == null ? null : new Bitmap (mBitmapData);
       }
       
-      override public function GetModuleBoundingRectangle ():Rectangle
+      override public function GetSequenceBoundingRectangle (sqeuenceId:int):Rectangle
       {
          if (mBitmapData == null)
             return null;

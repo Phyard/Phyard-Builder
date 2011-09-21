@@ -156,7 +156,7 @@ package editor.asset {
       private var mParentContainerWidth :Number = -1;
       private var mParentContainerHeight:Number = -1;
       
-      private function UpdateBackgroundAndContentMaskSprites ():void
+      protected function UpdateBackgroundAndContentMaskSprites ():void
       {
          if (mParentWidth != mParentContainerWidth || mParentHeight != mParentContainerHeight)
          {
@@ -207,6 +207,12 @@ package editor.asset {
          {
             mAssetManager.Update (mStepTimeSpan.GetLastSpan ());
          }
+         
+         UpdateInternal (mStepTimeSpan.GetLastSpan ());
+      }
+      
+      protected function UpdateInternal (dt:Number):void
+      {
       }
       
 //=====================================================================

@@ -63,16 +63,6 @@ package editor.image {
 //   
 //=============================================================
       
-      public function CreateModuleSprite ():DisplayObject
-      {
-         return null; // to override
-      }
-      
-      public function GetModuleBoundingRectangle ():Rectangle
-      {
-         return null; // to override
-      }
-      
       public function IsAnimated ():Boolean
       {
          return false;
@@ -95,10 +85,20 @@ package editor.image {
       }
       
       // to replace GetModuleBoundingRectangle
-      public function GetSequenceBoundingRectangle ():Rectangle
+      public function GetSequenceBoundingRectangle (sqeuenceId:int):Rectangle
       {
          return null; // to override
       }
+      
+      //public function CreateModuleSprite ():DisplayObject
+      //{
+      //   return null; // to override
+      //}
+      //
+      //public function GetModuleBoundingRectangle ():Rectangle
+      //{
+      //   return null; // to override
+      //}
       
 //=============================================================
 //   
@@ -117,7 +117,7 @@ package editor.image {
          var iconSize:Number = mAssetImageModuleManager.GetModuleIconSize ();
          var halfIconSize:Number = 0.5 * iconSize;
 
-         var moduleSprite:DisplayObject = CreateModuleSprite ();
+         var moduleSprite:DisplayObject = BuildSequenceSprite (0);
          
          if (moduleSprite == null)
          {

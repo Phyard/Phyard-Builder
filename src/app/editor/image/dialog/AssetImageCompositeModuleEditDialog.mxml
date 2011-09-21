@@ -50,9 +50,9 @@
                <mx:Label text="" />
                <mx:CheckBox selected="true" id="CheckBoxLoop" label="Loop" click="ChangeCompositeModuleProperties ();"/>
                <mx:Spacer width="100%"/>
-               <mx:Label id="LabelModuleInfos" text="5 Parts" textAlign="center"/>
+               <mx:Label id="LabelModuleInfos" text="5 Sequences" textAlign="center"/>
                <mx:Spacer width="10"/>
-               <mx:CheckBox selected="false" id="CheckBoxShowAllParts" label="Show All Parts" click="ChangeCompositeModuleProperties ();"/>
+               <mx:CheckBox selected="false" id="CheckBoxShowAllSequences" label="Show All Sequences" click="ChangeCompositeModuleProperties ();"/>
                <mx:Spacer width="5"/>
             </mx:HBox>
             <mx:HBox id="Box_CompositeModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
@@ -141,7 +141,10 @@
             panelAssetImageCompositeModuleEditing.mBoxModuleProperties = BoxModuleProperties;
             panelAssetImageCompositeModuleEditing.mLabelModuleInfos = LabelModuleInfos;
             panelAssetImageCompositeModuleEditing.mCheckBoxLoop = CheckBoxLoop;
-            panelAssetImageCompositeModuleEditing.mCheckBoxShowAllParts = CheckBoxShowAllParts;
+            panelAssetImageCompositeModuleEditing.mCheckBoxShowAllSequences = CheckBoxShowAllSequences;
+            
+            panelAssetImageCompositeModuleEditing.mButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance;
+            panelAssetImageCompositeModuleEditing.mButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance;
          }
          
          private function OnPlay ():void

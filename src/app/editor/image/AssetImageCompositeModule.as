@@ -86,6 +86,21 @@ package editor.image {
 //   
 //=============================================================
       
+      override public function Destroy ():void
+      {
+         super.Destroy ();
+         
+         if (mAssetImageCompositeModuleEditDialog != null)
+         {
+            mAssetImageCompositeModuleEditDialog.Hide ();
+            mAssetImageCompositeModuleEditDialog = null;
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       override public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
       {
          return null;

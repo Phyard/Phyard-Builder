@@ -108,19 +108,21 @@ package editor.image {
       
       private var mReferPair:ReferPair;
       
-      override public function OnReferingModified (refering:EditorObject, info:Object = null):void
+      override public function OnReferingModified (referPair:ReferPair, info:Object = null):void
       {
-         if (refering == mAssetImageModule)
+         if (referPair == mReferPair)
          {
             UpdateAppearance ();
          }
       }
 
-      override public function OnReferingDestroyed (refering:EditorObject):void
+      override public function OnReferingDestroyed (referPair:ReferPair):void
       {
-         if (refering == mAssetImageModule)
+         if (referPair == mReferPair)
          {
             mAssetImageModuleInstanceManagerForListing.DestroyAsset (this);
+            mReferPair = null;
+            mAssetImageModule = null;
          }
       }
       

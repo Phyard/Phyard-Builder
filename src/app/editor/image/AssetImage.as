@@ -19,7 +19,6 @@ package editor.image {
          
    import flash.net.FileReference;
    import flash.net.FileFilter;
-   import flash.events.IOErrorEvent;
    
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
@@ -206,24 +205,25 @@ package editor.image {
          return mAssetImageDivideDialog;
       }
       
-      private static const kFileFilter:Array = [new FileFilter("Image File", "*jpg;*.png;*.gif;")];
+      public static const kFileFilter:Array = [new FileFilter("Image File", "*jpg;*.png;*.gif;")];
       
-      private var fileReference:FileReference = null; // flash bug: DON'T use this variable as a local variable, otherwise, the complete event will not fire.
+      private var mFileReference:FileReference = null; // flash bug: DON'T use this variable as a local variable, otherwise, the complete event will not fire.
       
       private function OpenLocalImageFileDialog ():void
       {
-         fileReference = new FileReference();
-         fileReference.addEventListener(Event.SELECT, OnSelectFileToLoad);
-         fileReference.browse (kFileFilter);
+         mFileReference = new FileReference();
+         mFileReference.addEventListener(Event.SELECT, OnSelectFileToLoad);
+         mFileReference.browse (kFileFilter);
       }
          
       private function OnSelectFileToLoad (event:Event):void
       {
-         fileReference.addEventListener(Event.COMPLETE, OnFileLoadComplete);
-         fileReference.load();
-      }    
+         mFileReference.addEventListener(Event.COMPLETE, OnFileLoadComplete);
+         mFileReference.load();
+         mFileReference = null;
+      }
       
-      private function OnFileLoadComplete (event:Event):void
+      public function OnFileLoadComplete (event:Event):void
       {
          var fileReference:FileReference = (event.target as FileReference);
          try
@@ -231,20 +231,8 @@ package editor.image {
             var clonedImageData:ByteArray = new ByteArray ();
             clonedImageData.length = fileReference.data.length;
             
-            //fileReference.data.position = 0;
-            //clonedImageData.writeBytes (fileReference.data, 0, fileReference.data.length);
-            
-            var bytesValues:Array = new Array (fileReference.data.length);
-            for (var i:int = 0; i < fileReference.data.length; ++ i)
-            {
-               var byte:int = fileReference.data [i];
-               bytesValues [i] = byte;
-            }
-            
-            for (var j:int = 0; j < fileReference.data.length; ++ j)
-            {
-               clonedImageData [j] = bytesValues [j];
-            }
+            fileReference.data.position = 0;
+            clonedImageData.writeBytes (fileReference.data, 0, fileReference.data.length);
             
             OnLoadLocalImageFinished (clonedImageData, fileReference.name);
          }
@@ -256,7 +244,7 @@ package editor.image {
          fileReference.data.clear ();
       }
       
-      private function OnLoadLocalImageFinished (imageData:ByteArray, imageFileName:String):void
+      public function OnLoadLocalImageFinished (imageData:ByteArray, imageFileName:String):void
       {
          SetBitmapFileData (imageData);
          if (mName == null || mName.length == 0)

@@ -105,23 +105,24 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
-
-      private var mReferPair:ReferPair = null;
       
-      override public function OnReferingModified (refering:EditorObject, info:Object = null):void
+      private var mReferPair:ReferPair;
+      
+      override public function OnReferingModified (referPair:ReferPair, info:Object = null):void
       {
-         if (refering == mAssetImageModule)
+         if (referPair == mReferPair)
          {
             UpdateAppearance ();
-            UpdateSelectionProxy ();
          }
       }
 
-      override public function OnReferingDestroyed (refering:EditorObject):void
+      override public function OnReferingDestroyed (referPair:ReferPair):void
       {
-         if (refering == mAssetImageModule)
+         if (referPair == mReferPair)
          {
             mAssetImageModuleInstanceManager.DestroyAsset (this);
+            mReferPair = null;
+            mAssetImageModule = null;
          }
       }
       

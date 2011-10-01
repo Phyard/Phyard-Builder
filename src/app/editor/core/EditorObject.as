@@ -34,6 +34,8 @@ package editor.core {
          
          referPair.mNextReferPairForReferer = mReferPairListHeadAsReferer;
          referPair.mPrevReferPairForReferer = null;
+         
+         mReferPairListHeadAsReferer = referPair;
       }
       
       internal function RemoveReferPairAsReferer (referPair:ReferPair):void
@@ -41,7 +43,7 @@ package editor.core {
          if (referPair.mReferer != this)
             return;
          
-         if (referPair.mPrevReferPairForReferer != null)
+         if (referPair.mPrevReferPairForReferer != null) // == mReferPairListHeadAsReferer
             referPair.mPrevReferPairForReferer.mNextReferPairForReferer = referPair.mNextReferPairForReferer;
          else
             mReferPairListHeadAsReferer = referPair.mNextReferPairForReferer;
@@ -62,6 +64,8 @@ package editor.core {
          
          referPair.mNextReferPairForRefering = mReferPairListHeadAsRefering;
          referPair.mPrevReferPairForRefering = null;
+         
+         mReferPairListHeadAsRefering = referPair;
       }
       
       internal function RemoveReferPairAsRefering (referPair:ReferPair):void
@@ -69,7 +73,7 @@ package editor.core {
          if (referPair.mRefering != this)
             return;
          
-         if (referPair.mPrevReferPairForRefering != null)
+         if (referPair.mPrevReferPairForRefering != null) // == mReferPairListHeadAsRefering
             referPair.mPrevReferPairForRefering.mNextReferPairForRefering = referPair.mNextReferPairForRefering;
          else
             mReferPairListHeadAsRefering = referPair.mNextReferPairForRefering;
@@ -99,9 +103,9 @@ package editor.core {
          var iter:ReferPairListElement = BuildReferPairListAsReferingForIterating ();
          while (iter != null)
          {
-            if (iter..mReferPair.IsActive ())
+            if (iter.mReferPair.IsActive ())
             {
-               iter.mReferPair.mReferer.OnReferingModified (this, info);
+               iter.mReferPair.mReferer.OnReferingModified (iter.mReferPair, info);
             }
             
             iter = iter.mNextElement;
@@ -115,7 +119,7 @@ package editor.core {
          {
             if (iter.mReferPair.IsActive ())
             {
-               iter.mReferPair.mReferer.OnReferingDestroyed (this);
+               iter.mReferPair.mReferer.OnReferingDestroyed (iter.mReferPair);
             }
             
             iter = iter.mNextElement;
@@ -140,12 +144,12 @@ package editor.core {
             throw new Error ("mReferPairListHeadAsRefering != null ! " + this);
       }
       
-      public function OnReferingModified (refering:EditorObject, info:Object = null):void
+      public function OnReferingModified (referPair:ReferPair, info:Object = null):void
       {
          // to override
       }
       
-      public function OnReferingDestroyed (refering:EditorObject):void
+      public function OnReferingDestroyed (referPair:ReferPair):void
       {
          // to override
       }

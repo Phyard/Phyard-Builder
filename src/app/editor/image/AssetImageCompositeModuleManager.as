@@ -21,6 +21,20 @@ package editor.image {
    
    public class AssetImageCompositeModuleManager extends AssetImageModuleManager
    {
+      protected var mIsSequencedModuleManager:Boolean;
+      
+      public function AssetImageCompositeModuleManager (sequencedModuleManager:Boolean)
+      {
+         super ();
+         
+         mIsSequencedModuleManager = sequencedModuleManager;
+      }
+      
+      public function IsSequencedModuleManager ():Boolean
+      {
+         return mIsSequencedModuleManager;
+      }
+      
 //==========================================================      
 // 
 //==========================================================      
@@ -50,7 +64,7 @@ package editor.image {
 
       public function CreateImageCompositeModule (insertBeforeSelectedThenSelectNew:Boolean):AssetImageCompositeModule
       {
-         var module:AssetImageCompositeModule = new AssetImageCompositeModule (this);
+         var module:AssetImageCompositeModule = new AssetImageCompositeModule (this, IsSequencedModuleManager ());
          module.UpdateAppearance ();
          module.UpdateSelectionProxy ();
          addChild (module);
@@ -69,34 +83,18 @@ package editor.image {
       
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         var menuItemCreateTimeCompositeModule:ContextMenuItem = new ContextMenuItem  ("Create New Time Composite Module", true);
-         var menuItemCreateSpaceCompositeModule:ContextMenuItem = new ContextMenuItem ("Create New Space Composite Module");
-         
-         menuItemCreateTimeCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateTimeCompositeModule);
-         menuItemCreateSpaceCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateSpaceCompositeModule);
+         var menuItemCreateCompositeModule:ContextMenuItem = new ContextMenuItem  (IsSequencedModuleManager () ? "Create New Sequenced Module" : "Create New Assembled Module", true);
 
-         customMenuItemsStack.push (menuItemCreateTimeCompositeModule);
-         customMenuItemsStack.push (menuItemCreateSpaceCompositeModule);
+         menuItemCreateCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateCompositeModule);
+
+         customMenuItemsStack.push (menuItemCreateCompositeModule);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      private function OnContextMenuEvent_CreateTimeCompositeModule (event:ContextMenuEvent):void
+      private function OnContextMenuEvent_CreateCompositeModule (event:ContextMenuEvent):void
       {
          var module:AssetImageCompositeModule = CreateImageCompositeModule (true);
-         if (module != null)
-         {
-            module.SetAnimated (true);
-         }
-      }
-      
-      private function OnContextMenuEvent_CreateSpaceCompositeModule(event:ContextMenuEvent):void
-      {
-         var module:AssetImageCompositeModule = CreateImageCompositeModule (true);
-         if (module != null)
-         {
-            module.SetAnimated (false);
-         }
       }
    }
 }

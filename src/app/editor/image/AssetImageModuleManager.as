@@ -44,8 +44,6 @@ package editor.image {
       private function OnContextMenuEvent_DeleteSelectedAssets (event:ContextMenuEvent):void
       {
          DeleteSelectedAssets ();
-         
-         RearrangeAssetPositions (true);
       }
       
    }

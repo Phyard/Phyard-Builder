@@ -22,8 +22,11 @@
          <mx:VBox id="Box_PureModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
             <image:AssetImagePureModuleListingPanel id="panelPureModuleListing" width="100%" height="100%"/>
          </mx:VBox>
-         <mx:VBox id="Box_CompositeModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-            <image:AssetImageCompositeModuleListingPanel id="panelCompositeModuleListing" width="100%" height="100%"/>
+         <mx:VBox id="Box_AssembledModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+            <image:AssetImageCompositeModuleListingPanel id="panelAssembledModuleListing" width="100%" height="100%"/>
+         </mx:VBox>
+         <mx:VBox id="Box_SequencedModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+            <image:AssetImageCompositeModuleListingPanel id="panelSequencedModuleListing" width="100%" height="100%"/>
          </mx:VBox>
       </mx:HDividedBox>
    </mx:VBox>
@@ -61,7 +64,8 @@
             
             sAssetImageModuleListDialog.GetImageListingPanel ().SetAssetImageManager (Runtime.GetCurrentWorld ().GetAssetImageManager ());            
             sAssetImageModuleListDialog.GetPureModuleListingPanel ().SetAssetImagePureModuleManager (Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ());            
-            sAssetImageModuleListDialog.GetCompositeModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageCompositeModuleManager ());            
+            sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageAssembledModuleManager ());            
+            sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageSequencedModuleManager ());            
          }
          
          public static function HideAssetImageModuleListDialog ():void
@@ -79,9 +83,14 @@
             return panelPureModuleListing;
          }
       
-         public function GetCompositeModuleListingPanel ():AssetImageCompositeModuleListingPanel
+         public function GetAssembledModuleListingPanel ():AssetImageCompositeModuleListingPanel
          {
-            return panelCompositeModuleListing;
+            return panelAssembledModuleListing;
+         }
+      
+         public function GetSequencedModuleListingPanel ():AssetImageCompositeModuleListingPanel
+         {
+            return panelSequencedModuleListing;
          }
          
       //=====================================================================

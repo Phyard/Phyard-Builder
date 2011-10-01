@@ -68,6 +68,15 @@ package editor.asset {
          // temp do nothing
       }
       
+      override public function DeleteSelectedAssets ():Boolean
+      {
+         var result:Boolean = super.DeleteSelectedAssets ();
+         
+         RearrangeAssetPositions (true);
+         
+         return result;
+      }
+      
 //========================================================
 // 
 //========================================================

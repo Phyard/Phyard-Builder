@@ -47,14 +47,20 @@ package editor.image {
       protected var mModuleInstanceManager:AssetImageModuleInstanceManager; // for internal module parts editing
       protected var mModuleInstanceManagerForListing:AssetImageModuleInstanceManagerForListing; // for internal module parts listing
       
-      public function AssetImageCompositeModule (assetImageCompositeModuleManager:AssetImageCompositeModuleManager)
+      public function AssetImageCompositeModule (assetImageCompositeModuleManager:AssetImageCompositeModuleManager, sequenced:Boolean)
       {
          super (assetImageCompositeModuleManager);
          
          mAssetImageCompositeModuleManager = assetImageCompositeModuleManager;
+         SetSequenced (sequenced);
          
          mModuleInstanceManager           = new AssetImageModuleInstanceManager (this);
          mModuleInstanceManagerForListing = new AssetImageModuleInstanceManagerForListing (this);
+         
+         //if (IsSequenced ())
+         //{
+         //   removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage); // added in super class
+         //}
       }
       
       public function GetAssetImageCompositeModuleManager ():AssetImageCompositeModuleManager
@@ -82,6 +88,11 @@ package editor.image {
          return "Composite Module";
       }
       
+      public function GetNumModules ():int
+      {
+         return mModuleInstanceManager.GetNumAssets ();
+      }
+      
 //=============================================================
 //   
 //=============================================================
@@ -101,31 +112,46 @@ package editor.image {
 //   
 //=============================================================
       
-      override public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
+      override public function BuildImageModuleSprite ():DisplayObject
       {
-         return null;
+         if (IsSequenced ())
+         {
+            return null;
+         }
+         else
+         {
+            return null;
+         }
       }
       
-      override public function GetSequenceBoundingRectangle (sqeuenceId:int):Rectangle
+      override public function GetImageModuleBoundingRectangle ():Rectangle
       {
-         return null; // to override
+         // currently, for fast computing, return null means module instance 
+         // will auto create a rectangle from the appearance sprite of sequence 0
+         return null;
       }
       
 //=============================================================
 //   
 //=============================================================
 
-      protected var mIsAnimated:Boolean = false;
-      protected var mIsLooped:Boolean = true;
+      protected var mIsSequenced:Boolean = false;
+      protected var mIsLooped:Boolean = true; // for sequenced module only
       
-      override public function IsAnimated ():Boolean
+      // false for assembled
+      public function IsSequenced ():Boolean
       {
-         return mIsAnimated;
+         return mIsSequenced;
+      }
+      
+      public function IsPlayable():Boolean
+      {
+         return IsSequenced () && GetNumModules () > 1;
       }
 
-      public function SetAnimated (animated:Boolean):void
+      public function SetSequenced (sequenced:Boolean):void
       {
-         mIsAnimated = animated;
+         mIsSequenced = sequenced;
       }
       
       public function IsLooped ():Boolean
@@ -136,25 +162,6 @@ package editor.image {
       public function SetLooped (looped:Boolean):void
       {
          mIsLooped = looped;
-      }
-      
-      override public function IsPlayable():Boolean
-      {
-         var numParts:int = mModuleInstanceManager.GetNumAssets ();
-         if (mIsAnimated && numParts > 1)
-            return true;
-         
-         for (var i:int = 0; i < numParts; ++ i)
-         {
-            var moduleInstance:AssetImageModuleInstance = mModuleInstanceManager.GetAssetByAppearanceId (i) as AssetImageModuleInstance;
-            var module:AssetImageModule = moduleInstance.GetAssetImageModule ();
-            if (module != null && module.IsPlayable ())
-            {
-               return true;
-            }
-         }
-         
-         return false;
       }
       
 //=============================================================

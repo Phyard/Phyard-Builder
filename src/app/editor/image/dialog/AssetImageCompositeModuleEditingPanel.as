@@ -37,6 +37,7 @@ package editor.image.dialog {
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
    
+   import editor.image.AssetImageModule;
    import editor.image.AssetImageCompositeModule;
    import editor.image.AssetImageModuleInstance;
    import editor.image.AssetImageModuleInstanceManager;
@@ -104,7 +105,7 @@ package editor.image.dialog {
       {  
          super.OnAssetSelectionsChanged ();
          
-         if (mAssetImageModuleInstanceManager != null && mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsAnimated ())
+         if (mAssetImageModuleInstanceManager != null && mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsSequenced ())
          {
             mAssetImageModuleInstanceManager.UpdateModuleInstancesAlpha ();
          }
@@ -152,6 +153,34 @@ package editor.image.dialog {
 //   
 //====================================================================================
       
+      protected function OnCreatingFinished ():void
+      {
+         OnAssetSelectionsChanged (true);
+      }
+      
+      protected function OnCreatingCancelled ():void
+      {
+         if (mAssetImageModuleInstanceListingPanelPeer != null && mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing () != null)
+         {
+            mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().RearrangeAssetPositions (true);
+         }
+      }
+      
+      public function OnCreateModuleInstanceClicked ():void
+      {  
+         if (mAssetImageModuleInstanceManager == null)
+            return;
+         
+         mAssetImageModuleInstanceManager.ClearAssetSelections ();
+         
+         var newModuleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true);
+         SetCurrentIntent (new IntentPutAsset (newModuleInstance, OnCreatingFinished, OnCreatingCancelled));
+      }
+      
+//====================================================================================
+//   
+//====================================================================================
+      
       protected var mIsPlaying:Boolean = false;
       
       public function Play ():void
@@ -168,7 +197,6 @@ package editor.image.dialog {
 //   
 //====================================================================================
       
-      public var mButtonDeleteModuleInstances:Button;
       public var mViewStackPlayStop:ViewStack;
       public var mLabelDuration:Label;
       public var mNumericStepperDuration:NumericStepper;
@@ -178,13 +206,14 @@ package editor.image.dialog {
       public var mCheckBoxFlipped:CheckBox;
       public var mTextInputAngle:TextInput;
       
-      public var mBoxModuleProperties:HBox;
-      public var mLabelModuleInfos:Label;
-      public var mCheckBoxLoop:CheckBox;
-      public var mCheckBoxShowAllSequences:CheckBox;
+      //public var mBoxModuleProperties:HBox;
+      //public var mLabelModuleInfos:Label;
+      //public var mCheckBoxLoop:CheckBox;
+      //public var mCheckBoxShowAllSequences:CheckBox;
       
       public var mButtonMoveUpModuleInstance:Button;
       public var mButtonMoveDownModuleInstance:Button;
+      public var mButtonDeleteModuleInstances:Button;
       
       override public function UpdateInterface ():void
       {
@@ -225,28 +254,28 @@ package editor.image.dialog {
          
          var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
          
-         if (compositeModule.IsAnimated ())
+         if (compositeModule.IsSequenced ())
          {
             mLabelDuration.visible = true;
             mNumericStepperDuration.visible = true;
             
-            if (mBoxModuleProperties.parent == null)
-            {
-               this.parent.parent.addChildAt (mBoxModuleProperties, 0);
-            }
-            
-            mCheckBoxLoop.selected = compositeModule.IsLooped ();
-            mCheckBoxShowAllSequences.selected = mAssetImageModuleInstanceManager.IsShowAllSequences ();
+            //if (mBoxModuleProperties.parent == null)
+            //{
+            //   this.parent.parent.addChildAt (mBoxModuleProperties, 0);
+            //}
+            //
+            //mCheckBoxLoop.selected = compositeModule.IsLooped ();
+            //mCheckBoxShowAllSequences.selected = mAssetImageModuleInstanceManager.IsShowAllSequences ();
          }
          else
          {
             mLabelDuration.visible = false;
             mNumericStepperDuration.visible = false;
             
-            if (mBoxModuleProperties.parent != null)
-            {
-               this.parent.parent.removeChild (mBoxModuleProperties);
-            }
+            //if (mBoxModuleProperties.parent != null)
+            //{
+            //   this.parent.parent.removeChild (mBoxModuleProperties);
+            //}
          }
          
          if (compositeModule.IsPlayable ())
@@ -263,10 +292,10 @@ package editor.image.dialog {
       {
          var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
          
-         //if (compositeModule.IsAnimated ())
+         //if (compositeModule.IsSequenced ())
          //{
-            compositeModule.SetLooped (mCheckBoxLoop.selected);
-            mAssetImageModuleInstanceManager.SetShowAllSequences (mCheckBoxShowAllSequences.selected);
+            //compositeModule.SetLooped (mCheckBoxLoop.selected);
+            //mAssetImageModuleInstanceManager.SetShowAllSequences (mCheckBoxShowAllSequences.selected);
          //}
       }
       

@@ -20,7 +20,7 @@ package editor.selection {
       
       public function RebuildRectangle (centerX:Number, centerY:Number, halfWidth:Number, halfHeight:Number, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
-         Rebuild (flipped ? - rotation : rotation, centerX, centerY);
+         Rebuild (centerX, centerY, flipped ? - rotation : rotation);
          
          halfWidth *= scale;
          halfHeight *= scale;
@@ -35,7 +35,7 @@ package editor.selection {
       
       public function RebuildRectangle2 (posX:Number, posY:Number, left:Number, top:Number, width:Number, height:Number, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
-         Rebuild (flipped ? - rotation : rotation, posX, posY);
+         Rebuild (posX, posY, flipped ? - rotation : rotation);
          
          width *= scale;
          height *= scale;

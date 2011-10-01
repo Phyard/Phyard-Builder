@@ -21,14 +21,14 @@ package editor.selection {
       
       public function RebuildConvexPolygon (centerX:Number, centerY:Number, localPoints:Array, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
-         Rebuild (rotation, centerX, centerY);
+         Rebuild (centerX, centerY, rotation);
          
          CreateConvexPolygonZone (localPoints);
       }
       
       public function RebuildConcavePolygon (centerX:Number, centerY:Number, localPoints:Array, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
-         Rebuild (rotation, centerX, centerY);
+         Rebuild (centerX, centerY, rotation);
          
          CreateConcavePolygonZone (localPoints);
       }

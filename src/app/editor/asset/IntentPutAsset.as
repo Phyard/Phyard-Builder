@@ -4,11 +4,25 @@ package editor.asset {
    {
       protected var mAssetToPut:Asset;
       
+      protected var mCallbackOnCancel_IntentPutAsset:Function;
+      
       public function IntentPutAsset (assetToPut:Asset, callbackOnPut:Function = null, callbackOnCancel:Function = null)
       {
-         super (callbackOnPut, callbackOnCancel);
+         super (callbackOnPut, OnCancelled);
+         
+         mCallbackOnCancel_IntentPutAsset = callbackOnCancel;
          
          mAssetToPut = assetToPut;
+      }
+      
+      protected function OnCancelled ():void
+      {
+         mAssetToPut.GetAssetManager ().DestroyAsset (mAssetToPut);
+         
+         if (mCallbackOnCancel_IntentPutAsset != null)
+         {
+            mCallbackOnCancel_IntentPutAsset ();
+         }
       }
       
    //================================================================

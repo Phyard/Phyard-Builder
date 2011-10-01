@@ -97,9 +97,32 @@ package editor.image {
       
       public function CreateImageDivision (left:Number, top:Number, right:Number, bottom:Number, selectIt:Boolean = false):AssetImageDivision
       {
-         if (! selectIt) // loading stage
+         if (left < 0)
+            left = 0;
+         if (right < 0)
+            right = 0;
+         if (top < 0)
+            top = 0;
+         if (bottom < 0)
+            bottom = 0;
+         
+         var temp:Number;
+         if (left > right)
          {
-            if (Math.abs (left - right) == 0 || Math.abs (top - bottom) == 0)
+            temp = left;
+            left = right;
+            right = temp;
+         }
+         if (top > bottom)
+         {
+            temp = top;
+            top = bottom;
+            bottom = temp;
+         }
+         
+         if (selectIt) // editing stage, not loading stage
+         {
+            if (Math.round (left) == Math.round (right)|| Math.abs (top) == Math.round (bottom))
                return null;
          }
          

@@ -13,14 +13,6 @@ package editor.image {
    
    import flash.utils.ByteArray;
    
-   import flash.events.Event;
-   import flash.events.IOErrorEvent;
-   import flash.events.SecurityErrorEvent;
-         
-   import flash.net.FileReference;
-   import flash.net.FileFilter;
-   import flash.events.IOErrorEvent;
-   
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
@@ -89,7 +81,7 @@ package editor.image {
 //   
 //=============================================================
       
-      override public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
+      override public function BuildImageModuleSprite ():DisplayObject
       {
          if (mImageDivisionPeer == null)
             return null;
@@ -97,7 +89,7 @@ package editor.image {
          return mImageDivisionPeer.CreateSpriteForImagePureModule ();
       }
       
-      override public function GetSequenceBoundingRectangle (sqeuenceId:int):Rectangle
+      override public function GetImageModuleBoundingRectangle ():Rectangle
       {
          if (mImageDivisionPeer == null)
             return null;

@@ -6,17 +6,20 @@ package player.image {
    
    import player.physics.PhysicsProxyBody;
 
-   public class ImageModule
+   public class ImageModuleInstance
    {
-      private var mPhysicsGeomData:Object;
+      private var mImageModule:ImageModule;
       
-      public var mParentModule:BitmapModule = null; // null means root
+      public var mParent:ImageModuleInstance = null; // null means root
+      public var nChildList:ImageModuleInstance = null; // null means leaf
       
       private var mNumLoopedCycles:int;int = 0;
       
-      public function ImageModule ()
+      public function ImageModuleInstance ()
       {
       }
+      
+      
       
       public function OnSequenceStart ():void
       {

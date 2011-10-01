@@ -14,6 +14,7 @@ package editor.image {
    import flash.utils.ByteArray;
    
    import flash.events.Event;
+   import flash.events.MouseEvent;
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
          
@@ -42,8 +43,15 @@ package editor.image {
    public class AssetImageModule extends Asset
    {
       public static var mCurrentAssetImageModule:AssetImageModule = null;
-   
-   //=========
+         
+      public static function SetCurrentModule (module:AssetImageModule):void
+      {
+         mCurrentAssetImageModule = module;
+      }
+      
+//=============================================================
+//   
+//=============================================================
    
       protected var mAssetImageModuleManager:AssetImageModuleManager;
       
@@ -52,6 +60,8 @@ package editor.image {
          super (assetImageModuleManager);
          
          mAssetImageModuleManager = assetImageModuleManager;
+         
+         addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
       }
       
       public function GetAssetImageModuleManager ():AssetImageModuleManager
@@ -63,42 +73,40 @@ package editor.image {
 //   
 //=============================================================
       
-      public function IsAnimated ():Boolean
+      protected function OnAddedToStage (event:Event):void 
       {
-         return false;
+         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+         
+         addEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
+         
+         addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
       }
       
-      public function IsPlayable ():Boolean
+      protected function OnRemovedFromStage (event:Event):void 
       {
-         return false;
+         removeEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
+         
+         removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
       }
       
-      public function GetNumSequences ():int
+      public function OnMouseDown (event:MouseEvent):void
       {
-         return 1;
+         SetCurrentModule (this);
       }
       
-      // to replace CreateModuleSprite
-      public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
+//=============================================================
+//   
+//=============================================================
+      
+      public function BuildImageModuleSprite ():DisplayObject
       {
          return null; // to override
       }
       
-      // to replace GetModuleBoundingRectangle
-      public function GetSequenceBoundingRectangle (sqeuenceId:int):Rectangle
+      public function GetImageModuleBoundingRectangle ():Rectangle
       {
          return null; // to override
       }
-      
-      //public function CreateModuleSprite ():DisplayObject
-      //{
-      //   return null; // to override
-      //}
-      //
-      //public function GetModuleBoundingRectangle ():Rectangle
-      //{
-      //   return null; // to override
-      //}
       
 //=============================================================
 //   
@@ -117,7 +125,7 @@ package editor.image {
          var iconSize:Number = mAssetImageModuleManager.GetModuleIconSize ();
          var halfIconSize:Number = 0.5 * iconSize;
 
-         var moduleSprite:DisplayObject = BuildSequenceSprite (0);
+         var moduleSprite:DisplayObject = BuildImageModuleSprite ();
          
          if (moduleSprite == null)
          {
@@ -170,7 +178,7 @@ package editor.image {
       
       private function OnContextMenuEvent_SetAsCurrentModule (event:ContextMenuEvent):void
       {
-         mCurrentAssetImageModule = this;
+         SetCurrentModule (this);
       }
       
   }

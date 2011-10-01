@@ -18,7 +18,7 @@ package editor.selection {
       
       public function RebuildCircle (centerX:Number, centerY:Number, radius:Number, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
-         Rebuild (rotation, centerX, centerY);
+         Rebuild (centerX, centerY, rotation);
          
          CreateCircleZone (0, 0, radius * scale);
       }

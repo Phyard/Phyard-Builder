@@ -6,7 +6,7 @@ package player.image {
    
    import player.physics.PhysicsProxyBody;
 
-   public class ImageModule
+   public class BitmapModule
    {
       private var mPhysicsGeomData:Object;
       
@@ -14,7 +14,7 @@ package player.image {
       
       private var mNumLoopedCycles:int;int = 0;
       
-      public function ImageModule ()
+      public function BitmapModule ()
       {
       }
       

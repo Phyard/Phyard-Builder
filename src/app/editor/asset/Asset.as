@@ -36,6 +36,8 @@ package editor.asset {
       private var mRotation:Number = 0;
       private var mFlipped:Boolean = false;
       
+      private var mAlpha:Number = 1.0;
+      
       public function Asset (assetManager:AssetManager)
       {
          mAssetManager = assetManager;
@@ -261,6 +263,22 @@ package editor.asset {
          }
          
          scaleY = mScale;
+      }
+      
+      public function GetAlpha ():Number
+      {
+         return mAlpha;
+      }
+      
+      public function SetAlpha (a:Number):void
+      {
+         if (a < 0.0)
+            a = 0.0;
+         
+         if (a > 1.0)
+            a = 1.0;
+         
+         mAlpha = a;
       }
       
 //====================================================================
@@ -490,7 +508,15 @@ package editor.asset {
       
       private function OnAddedToStage (event:Event):void 
       {
+         addEventListener (Event.ADDED_TO_STAGE , OnRemovedToStage);
+         
          BuildContextMenu ();
+      }
+      
+      private function OnRemovedToStage (event:Event):void 
+      {
+         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+         removeEventListener (Event.ADDED_TO_STAGE , OnRemovedToStage);
       }
       
       final private function BuildContextMenu ():void

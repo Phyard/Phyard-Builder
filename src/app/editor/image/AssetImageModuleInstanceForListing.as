@@ -52,6 +52,8 @@ package editor.image {
       {
          super (assetImageModuleInstanceManagerForListing);
          
+         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage); // added in super class
+         
          mAssetImageModuleInstanceManagerForListing = assetImageModuleInstanceManagerForListing;
          
          SetAssetImageModule (assetImageModule);
@@ -130,22 +132,27 @@ package editor.image {
 //   
 //=============================================================
       
-      override public function BuildSequenceSprite (sqeuenceId:int):DisplayObject
+      override public function BuildImageModuleSprite ():DisplayObject
       {
          if (mAssetImageModule == null)
             return null;
          
-         return mAssetImageModule.BuildSequenceSprite (sqeuenceId);
+         return mAssetImageModule.BuildImageModuleSprite ();
       }
       
-      override public function GetSequenceBoundingRectangle (sqeuenceId:int):Rectangle
+      // this function is useless for this class
+      override public function GetImageModuleBoundingRectangle ():Rectangle
       {
-         //if (mAssetImageModule == null)
-         //   return null;
-         //
-         //return mAssetImageModule.GetSequenceBoundingRectangle (sqeuenceId);
-         
          return null;
+      }
+      
+//=============================================================
+//   context menu
+//=============================================================
+      
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+         mAssetImageModuleManager.BuildContextMenuInternal (customMenuItemsStack);
       }
 
   }

@@ -59,7 +59,7 @@ package editor.selection {
          return mSelectable;
       }
       
-      protected function Rebuild_b2Body (rotation:Number, pointX:Number, pointY:Number):void
+      protected function Rebuild_b2Body (pointX:Number, pointY:Number, rotation:Number):void
       {
       //
          if (_b2Body != null)
@@ -164,10 +164,10 @@ package editor.selection {
 // append shapes
 //==========================================================================
       
-      public function Rebuild (rotation:Number = 0, centerX:Number = 0, centerY:Number = 0):void
+      public function Rebuild (centerX:Number = 0, centerY:Number = 0, rotation:Number = 0):void
       {
       //
-         Rebuild_b2Body (rotation, centerX, centerY);
+         Rebuild_b2Body (centerX, centerY, rotation);
       }
       
       public function CreateCircleZone (localX:Number, localY:Number, radius:Number):void

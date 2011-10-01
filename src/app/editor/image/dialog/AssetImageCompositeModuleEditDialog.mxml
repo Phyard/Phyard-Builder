@@ -15,61 +15,85 @@
     >
 
    <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-      <mx:HBox width="100%" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
-         <mx:Button id="ButtonDeleteModuleInstances" toolTip="Delete Selected Module Instance (s)" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
-         <mx:Spacer width="100%"/>
-         <mx:ViewStack id="ViewStackPlayStop" borderStyle="none" creationPolicy="all" width="100%">
-            <mx:HBox id="BoxPlay" backgroundColor="0xD0D0D0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
-               <mx:Button id="ButtonPlay" click="OnPlay ();" toolTip="Play" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-run.png')" disabledIcon="@Embed('../../../res/play/play-run-disabled.png')" />
-            </mx:HBox>
-            <mx:HBox id="BoxStop" backgroundColor="0xD0D0D0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
-               <mx:Button id="ButtonStop" click="OnPause ();" toolTip="Pause" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-stop.png')" disabledIcon="@Embed('../../../res/play/play-stop-disabled.png')" />
-            </mx:HBox>
-         </mx:ViewStack>
-         <mx:Spacer width="100%"/>
-         <mx:Label id="LabelDuration" text="Duration:" textAlign="right"/>
-         <mx:NumericStepper id="NumericStepperDuration" width="77" stepSize="1" value="1" minimum="0" maximum="10000" change="ChangeModuleInstanceProperties ();" />
-         <mx:Spacer width="10"/>
-         <mx:Label id="LabelLeft" text="X:" textAlign="right" />
-         <mx:TextInput id="TextInputPosX" width="65" enter="ChangeModuleInstanceProperties ();" />
-         <mx:Spacer width="10"/>
-         <mx:Label id="LabelTop" text="Y:" textAlign="right" />
-         <mx:TextInput id="TextInputPosY" width="65" enter="ChangeModuleInstanceProperties ();" />
-         <mx:Spacer width="10"/>
-         <mx:Label id="LabelRight" text="Scale:" textAlign="right" />
-         <mx:TextInput id="TextInputScale" width="39" enter="ChangeModuleInstanceProperties ();" />
-         <mx:Spacer width="10"/>
-         <mx:CheckBox selected="false" id="CheckBoxFlipped" label="Flip" click="ChangeModuleInstanceProperties ();"/>
-         <mx:Spacer width="5"/>
-         <mx:Label id="LabelBottom" text="Angle:" textAlign="right"/>
-         <mx:TextInput id="TextInputAngle" width="32" enter="ChangeModuleInstanceProperties ();" />
-      </mx:HBox>
-      <mx:HDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
-         <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-            <mx:HBox width="100%" id="BoxModuleProperties" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-               <mx:Label text="" />
-               <mx:CheckBox selected="true" id="CheckBoxLoop" label="Loop" click="ChangeCompositeModuleProperties ();"/>
-               <mx:Spacer width="100%"/>
-               <mx:Label id="LabelModuleInfos" text="5 Sequences" textAlign="center"/>
-               <mx:Spacer width="10"/>
-               <mx:CheckBox selected="false" id="CheckBoxShowAllSequences" label="Show All Sequences" click="ChangeCompositeModuleProperties ();"/>
-               <mx:Spacer width="5"/>
-            </mx:HBox>
-            <mx:HBox id="Box_CompositeModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+      <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+         <mx:HBox height="100%" backgroundColor="0xD0D0D0" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
+            <mx:Spacer width="100%"/>
+            <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+               <mx:Button id="ButtonCreateImageDivision" toolTip="New Division" click="panelAssetImageCompositeModuleEditing.OnCreateModuleInstanceClicked ();" focusEnabled="false" fontSize="8" width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
+               <mx:Button id="Button_CreateBox" click=";" toolTip="Create Rectangle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/box.png')" downIcon="@Embed('../../../res/create/box-sel.png')" overIcon="@Embed('../../../res/create/box.png')" selectedUpIcon="@Embed('../../../res/create/box-sel.png')" selectedOverIcon="@Embed('../../../res/create/box-sel.png')" selectedDownIcon="@Embed('../../../res/create/box.png')"   />
+               <mx:Button id="Button_CreateBall" click=";" toolTip="Create Circle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/ball.png')" downIcon="@Embed('../../../res/create/ball-sel.png')" overIcon="@Embed('../../../res/create/ball.png')" selectedUpIcon="@Embed('../../../res/create/ball-sel.png')" selectedOverIcon="@Embed('../../../res/create/ball-sel.png')" selectedDownIcon="@Embed('../../../res/create/ball.png')"   />
+               <mx:Button id="Button_CreatePolygon" click=";" toolTip="Create Polygon" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polygon.png')" downIcon="@Embed('../../../res/create/polygon-sel.png')" overIcon="@Embed('../../../res/create/polygon.png')" selectedUpIcon="@Embed('../../../res/create/polygon-sel.png')" selectedOverIcon="@Embed('../../../res/create/polygon-sel.png')" selectedDownIcon="@Embed('../../../res/create/polygon.png')"   />
+               <mx:Button id="Button_CreatePolyline" click=";" toolTip="Create Polyline" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polyline.png')" downIcon="@Embed('../../../res/create/polyline-sel.png')" overIcon="@Embed('../../../res/create/polyline.png')" selectedUpIcon="@Embed('../../../res/create/polyline-sel.png')" selectedOverIcon="@Embed('../../../res/create/polyline-sel.png')" selectedDownIcon="@Embed('../../../res/create/polyline.png')"   />
+               <mx:Button id="Button_CreateText" toolTip="Create Text" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/text.png')" downIcon="@Embed('../../../res/create/text-sel.png')" overIcon="@Embed('../../../res/create/text.png')" selectedUpIcon="@Embed('../../../res/create/text-sel.png')" selectedOverIcon="@Embed('../../../res/create/text-sel.png')" selectedDownIcon="@Embed('../../../res/create/text.png')"   />
+            </mx:VBox>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:HDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
+            <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                <image:AssetImageCompositeModuleEditingPanel id="panelAssetImageCompositeModuleEditing" width="100%" height="100%"/>
             </mx:HBox>
-         </mx:VBox>
-         <mx:VBox width="120" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-            <mx:HBox borderStyle="solid" borderThickness="1" width="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
-               <mx:Spacer width="100%"/>
-               <mx:Button id="ButtonMoveUpModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceUp ()" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
-               <mx:Button id="ButtonMoveDownModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
-            </mx:HBox>
-            <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-               <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing" width="100%" height="100%"/>
-            </mx:HBox>
-         </mx:VBox>
-      </mx:HDividedBox>
+            <mx:VBox width="120" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+               <mx:HBox borderStyle="solid" borderThickness="1" width="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+                  <mx:Button id="ButtonMoveUpModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceUp ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
+                  <mx:Button id="ButtonMoveDownModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
+                  <mx:Spacer width="100%"/>
+                  <mx:ViewStack id="ViewStackPlayStop" borderStyle="none" creationPolicy="all" width="100%">
+                     <mx:HBox id="BoxPlay" backgroundColor="0xD0D0D0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+                        <mx:Button id="ButtonPlay" click="OnPlay ();" toolTip="Play" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_play.png')" />
+                     </mx:HBox>
+                     <mx:HBox id="BoxStop" backgroundColor="0xD0D0D0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+                        <mx:Button id="ButtonStop" click="OnPause ();" toolTip="Pause" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_stop.png')" />
+                     </mx:HBox>
+                  </mx:ViewStack>
+                  <mx:Spacer width="100%"/>
+                  <mx:Button id="ButtonDeleteModuleInstances" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" toolTip="Delete" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
+               </mx:HBox>
+               <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+                  <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing" width="100%" height="100%"/>
+               </mx:HBox>
+            </mx:VBox>
+         </mx:HDividedBox>
+      </mx:HBox>
+      <mx:VBox width="100%" backgroundColor="0xD0D0D0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+         <mx:HBox width="100%" verticalAlign="middle" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
+            <mx:Label id="LabelLeft" text="X:" textAlign="right" />
+            <mx:TextInput id="TextInputPosX" width="65" enter="ChangeModuleInstanceProperties ();" />
+            <mx:Spacer width="10"/>
+            <mx:Label id="LabelTop" text="Y:" textAlign="right" />
+            <mx:TextInput id="TextInputPosY" width="65" enter="ChangeModuleInstanceProperties ();" />
+            <mx:Spacer width="10"/>
+            <mx:Label id="LabelRight" text="Scale:" textAlign="right" />
+            <mx:TextInput id="TextInputScale" width="39" enter="ChangeModuleInstanceProperties ();" />
+            <mx:Spacer width="10"/>
+            <mx:CheckBox selected="false" id="CheckBoxFlipped" label="Flip" click="ChangeModuleInstanceProperties ();"/>
+            <mx:Spacer width="5"/>
+            <mx:Label id="LabelBottom" text="Angle:" textAlign="right"/>
+            <mx:TextInput id="TextInputAngle" width="32" enter="ChangeModuleInstanceProperties ();" />
+            <mx:Spacer width="100%"/>
+            <mx:Label id="LabelDuration" text="Duration:" textAlign="right"/>
+            <mx:Spacer width="10"/>
+            <mx:NumericStepper id="NumericStepperDuration" width="77" stepSize="1" value="1" minimum="0" maximum="10000" change="ChangeModuleInstanceProperties ();" />
+            <mx:Spacer width="10"/>
+            <mx:CheckBox selected="false" id="CheckBoxLooped" label="Loop" click="ChangeModuleInstanceProperties ();"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:HBox width="100%" verticalAlign="middle" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
+            <mx:Label id="LabelAlpha" text="Alpha:" textAlign="right" />
+            <mx:TextInput id="TextInputAlpha" width="50" enter="ChangeModuleInstanceProperties ();" />
+            <mx:Spacer width="10"/>
+            <mx:CheckBox selected="false" id="CheckBoxVisible" label="Visible" click="ChangeModuleInstanceProperties ();"/>
+            <mx:Spacer width="10"/>
+            <mx:CheckBox selected="false" id="CheckBoxBuildBody" label="Build Body" click="ChangeModuleInstanceProperties ();"/>
+            <mx:Spacer width="10"/>
+            <mx:CheckBox selected="false" id="CheckBoxBuildBorder" label="Build Border" click="ChangeModuleInstanceProperties ();"/>
+            <mx:Label id="LabelBackgroundColor" text="Body Color:" textAlign="right"/>
+            <mx:ColorPicker id="ColorPickerBodyColor" showTextField="true" selectedColor="0xFFFFFF"/>
+            <mx:Label id="LabelBorderColor" text="Filled Color:" textAlign="right"/>
+            <mx:ColorPicker id="ColorPickerBorderColor" showTextField="true" selectedColor="0xFFFFFF"/>
+            <mx:Spacer width="100%"/>
+            <mx:Button id="ButtonMoreSettings" height="100%" label="More ..." click=";" toolTip="More Settings" focusEnabled="false" fontSize="8"  toggle="false" cornerRadius="0" />
+         </mx:HBox>
+      </mx:VBox>
    </mx:VBox>
 
    <mx:Script>
@@ -128,7 +152,6 @@
       
          public function InitDialog ():void
          {
-            panelAssetImageCompositeModuleEditing.mButtonDeleteModuleInstances = ButtonDeleteModuleInstances;
             panelAssetImageCompositeModuleEditing.mViewStackPlayStop = ViewStackPlayStop;
             panelAssetImageCompositeModuleEditing.mLabelDuration = LabelDuration;
             panelAssetImageCompositeModuleEditing.mNumericStepperDuration = NumericStepperDuration;
@@ -138,13 +161,14 @@
             panelAssetImageCompositeModuleEditing.mCheckBoxFlipped = CheckBoxFlipped;
             panelAssetImageCompositeModuleEditing.mTextInputAngle = TextInputAngle;
             
-            panelAssetImageCompositeModuleEditing.mBoxModuleProperties = BoxModuleProperties;
-            panelAssetImageCompositeModuleEditing.mLabelModuleInfos = LabelModuleInfos;
-            panelAssetImageCompositeModuleEditing.mCheckBoxLoop = CheckBoxLoop;
-            panelAssetImageCompositeModuleEditing.mCheckBoxShowAllSequences = CheckBoxShowAllSequences;
+            //panelAssetImageCompositeModuleEditing.mBoxModuleProperties = BoxModuleProperties;
+            //panelAssetImageCompositeModuleEditing.mLabelModuleInfos = LabelModuleInfos;
+            //panelAssetImageCompositeModuleEditing.mCheckBoxLoop = CheckBoxLoop;
+            //panelAssetImageCompositeModuleEditing.mCheckBoxShowAllSequences = CheckBoxShowAllSequences;
             
             panelAssetImageCompositeModuleEditing.mButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance;
             panelAssetImageCompositeModuleEditing.mButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance;
+            panelAssetImageCompositeModuleEditing.mButtonDeleteModuleInstances = ButtonDeleteModuleInstances;
          }
          
          private function OnPlay ():void

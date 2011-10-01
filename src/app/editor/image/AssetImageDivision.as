@@ -127,6 +127,15 @@ package editor.image {
       
       public function SetRegion (left:Number, top:Number, right:Number, bottom:Number):void
       {
+         if (left < 0)
+            left = 0;
+         if (right < 0)
+            right = 0;
+         if (top < 0)
+            top = 0;
+         if (bottom < 0)
+            bottom = 0;
+         
          if (left <= right)
          {
             mLeft = left;
@@ -188,10 +197,10 @@ package editor.image {
          var right:int = GetRight ();
          var bottom:int = GetBottom();
          
-         if (left < 0)
-            left = 0;
-         if (top < 0)
-            top = 0;
+         //if (left < 0)
+         //   left = 0;
+         //if (top < 0)
+         //   top = 0;
          if (right > imageBitmapData.width)
             right = imageBitmapData.width;
          if (bottom > imageBitmapData.height)

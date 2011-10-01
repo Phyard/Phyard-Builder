@@ -53,7 +53,9 @@ package editor.image {
       
       public function CreateImageModuleInstance (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
-         var moduleInstane:AssetImageModuleInstance = new AssetImageModuleInstance (this, module);
+         //var finalModule:AssetImageModule = module == null ? null : module.GetFinalImageModule ();
+         var finalModule:AssetImageModule = module;
+         var moduleInstane:AssetImageModuleInstance = new AssetImageModuleInstance (this, finalModule);
          
          if (selectIt) // in editing, not loading
          {
@@ -66,6 +68,16 @@ package editor.image {
          else
             addChildAt (moduleInstane, atIndex);
          
+         if (module is AssetImageModuleInstanceForListing)
+         {
+            var fromModuleInstance:AssetImageModuleInstance = (module as AssetImageModuleInstanceForListing).GetModuleInstaneForEditingPeer ();
+            moduleInstane.SetAlpha (fromModuleInstance.GetAlpha ());
+            moduleInstane.SetScale (fromModuleInstance.GetScale ());
+            moduleInstane.SetFlipped (fromModuleInstance.IsFlipped ());
+            moduleInstane.SetRotation (fromModuleInstance.GetRotation ());
+            //moduleInstane.SetPosition (fromModuleInstance.GetPositionX (), fromModuleInstance.GetPositionY ());
+         }
+         
          moduleInstane.UpdateAppearance ();
          moduleInstane.UpdateSelectionProxy ();
          
@@ -73,7 +85,7 @@ package editor.image {
          
          //if (mAssetImageModuleInstanceManagerForListing != null)
          //{
-            var moduleInstaneForListing:AssetImageModuleInstanceForListing = mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().CreateImageModuleInstanceForListing (module, selectIt, atIndex);
+            var moduleInstaneForListing:AssetImageModuleInstanceForListing = mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().CreateImageModuleInstanceForListing (finalModule, selectIt, atIndex);
             moduleInstaneForListing.SetModuleInstaneForEditingPeer (moduleInstane);
             moduleInstane.SetModuleInstaneForListingPeer (moduleInstaneForListing);
          //}
@@ -119,7 +131,7 @@ package editor.image {
          for (var i:int = 0; i < count; ++ i)
          {
             moduleInstance = GetAssetByAppearanceId (i) as AssetImageModuleInstance;
-            if (mAssetImageCompositeModule.IsAnimated ())
+            if (mAssetImageCompositeModule.IsSequenced ())
             {
                if (moduleInstance.IsSelected () || mShowAllSequences)
                   moduleInstance.alpha = 1.0;
@@ -184,22 +196,18 @@ package editor.image {
       public function OnContextMenuEvent_CreateImageModuleInstanceAtIndex (index:int):void
       {
          CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true, index);
+         UpdateModuleInstancesAlpha ();
+         
          NotifyChangedForPanel ();
       }
       
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          var menuItemCreateModuleInstance:ContextMenuItem = new ContextMenuItem("Append New Model Instance From Current Module", true);
-         var menuItemChangeIntoTimeCompositeModule:ContextMenuItem = new ContextMenuItem("Change Into Time Composite Module", true);
-         var menuItemChangeIntoSpaceCompositeModule:ContextMenuItem = new ContextMenuItem("Change Into Space Composite Module");
          
          menuItemCreateModuleInstance.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateImageModuleInstance);
-         menuItemChangeIntoTimeCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeIntoTimeCompositeModule);
-         menuItemChangeIntoSpaceCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeIntoSpaceCompositeModule);
 
          customMenuItemsStack.push (menuItemCreateModuleInstance);
-         customMenuItemsStack.push (menuItemChangeIntoTimeCompositeModule);
-         customMenuItemsStack.push (menuItemChangeIntoSpaceCompositeModule);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
@@ -207,24 +215,6 @@ package editor.image {
       private function OnContextMenuEvent_CreateImageModuleInstance (event:ContextMenuEvent):void
       {
          CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true);
-         NotifyChangedForPanel ();
-      }
-      
-      private function OnContextMenuEvent_ChangeIntoTimeCompositeModule (event:ContextMenuEvent):void
-      {
-         mAssetImageCompositeModule.SetAnimated (true);
-         
-         UpdateSelectedModuleInstanceAppearances ();
-         UpdateModuleInstancesAlpha ();
-         
-         NotifyChangedForPanel ();
-      }
-      
-      private function OnContextMenuEvent_ChangeIntoSpaceCompositeModule (event:ContextMenuEvent):void
-      {
-         mAssetImageCompositeModule.SetAnimated (false);
-         
-         UpdateSelectedModuleInstanceAppearances ();
          UpdateModuleInstancesAlpha ();
          
          NotifyChangedForPanel ();

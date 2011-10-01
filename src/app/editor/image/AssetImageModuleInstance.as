@@ -13,14 +13,6 @@ package editor.image {
    
    import flash.utils.ByteArray;
    
-   import flash.events.Event;
-   import flash.events.IOErrorEvent;
-   import flash.events.SecurityErrorEvent;
-         
-   import flash.net.FileReference;
-   import flash.net.FileFilter;
-   import flash.events.IOErrorEvent;
-   
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
@@ -162,19 +154,29 @@ package editor.image {
          var rectangle:Rectangle = null;
          if (mAssetImageModule != null)
          {
-            rectangle = mAssetImageModule.GetSequenceBoundingRectangle (0);
+            rectangle = mAssetImageModule.GetImageModuleBoundingRectangle ();
          }
          
          if (rectangle == null)
          {
-            var moduleSize:Number = 50;
-            var halfModuleSize:Number = 0.5 * moduleSize;
-            rectangle = new Rectangle (-halfModuleSize, -halfModuleSize, moduleSize, moduleSize);
+            if (mModuleSpriteForEditing != null)
+            {
+               rectangle = mModuleSpriteForEditing.getBounds (mModuleSpriteForEditing);
+            }
+            
+            if (rectangle == null || rectangle.width <= 2 || rectangle.height <= 2)
+            { 
+               var moduleSize:Number = 50;
+               var halfModuleSize:Number = 0.5 * moduleSize;
+               rectangle = new Rectangle (-halfModuleSize, -halfModuleSize, moduleSize, moduleSize);
+            }
          }
          
          return rectangle;
       }
 
+      private var mModuleSpriteForEditing:DisplayObject = null;
+      
       override public function UpdateAppearance ():void
       {
          while (numChildren > 0)
@@ -187,24 +189,33 @@ package editor.image {
          var moduleSprite:DisplayObject = null;
          if (mAssetImageModule != null)
          {
-            moduleSprite = mAssetImageModule.BuildSequenceSprite (0);
+            moduleSprite = mAssetImageModule.BuildImageModuleSprite ();
          }
+         
+         mModuleSpriteForEditing = null;
 
          var rectangle:Rectangle;
          if (moduleSprite == null)
          {
             rectangle = GetPhysicsBoundingRectangle ();
-            GraphicsUtil.ClearAndDrawRect (this, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
+            
+            var rectShape:Shape = new Shape ();
+            addChild (rectShape);
+            GraphicsUtil.DrawRect (rectShape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
                                           0x0000FF, -1, true, IsSelected () ? 0xC0C0FF : 0xD0FFD0, false);
+            
+            mModuleSpriteForEditing = rectShape;
          }
          else
          {
+            mModuleSpriteForEditing = moduleSprite;
+            
             addChild (moduleSprite);
             
-            if (IsSelected () && (! mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsAnimated ()))
+            if (IsSelected ())// && (! mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsSequenced ()))
             {
                var shape:Shape = new Shape ();
-               shape.alpha = 0.67;
+               shape.alpha = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsSequenced () ? 0.50 : 0.67;
 
                rectangle = GetPhysicsBoundingRectangle ();
                GraphicsUtil.DrawRect (shape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
@@ -235,7 +246,7 @@ package editor.image {
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          var menuItemRebuildFromCurrentModule:ContextMenuItem = new ContextMenuItem("Rebuild From Current Module");
-         var menuItemInsertBeforeFromCurrentModule:ContextMenuItem = new ContextMenuItem("Insert New Module Instance From Current Module Before This One");
+         var menuItemInsertBeforeFromCurrentModule:ContextMenuItem = new ContextMenuItem("Insert New Module Instance From Current Module Before This One", true);
          var menuItemInsertAfterFromCurrentModule:ContextMenuItem = new ContextMenuItem("Insert New Module Instance From Current Module After This One");
          
          menuItemRebuildFromCurrentModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_RebuildFromCurrentModule);

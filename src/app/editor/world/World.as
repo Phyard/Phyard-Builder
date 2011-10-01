@@ -86,7 +86,8 @@ package editor.world {
 
       protected var mAssetImageManager:AssetImageManager;
       protected var mAssetImagePureModuleManager:AssetImagePureModuleManager;
-      protected var mAssetImageCompositeModuleManager:AssetImageCompositeModuleManager;
+      protected var mAssetImageAssembledModuleManager:AssetImageCompositeModuleManager;
+      protected var mAssetImageSequencedModuleManager:AssetImageCompositeModuleManager;
       
       // temp the 2 is not used
       // somewhere need to be modified to use the 2 
@@ -113,7 +114,8 @@ package editor.world {
          
          mAssetImageManager = new AssetImageManager ();
          mAssetImagePureModuleManager = new AssetImagePureModuleManager ();
-         mAssetImageCompositeModuleManager = new AssetImageCompositeModuleManager ();
+         mAssetImageAssembledModuleManager = new AssetImageCompositeModuleManager (false);
+         mAssetImageSequencedModuleManager = new AssetImageCompositeModuleManager (true);
       }
       
       override public function Destroy ():void
@@ -1576,9 +1578,14 @@ package editor.world {
          return mAssetImagePureModuleManager;
       }
       
-      public function GetAssetImageCompositeModuleManager ():AssetImageCompositeModuleManager
+      public function GetAssetImageAssembledModuleManager ():AssetImageCompositeModuleManager
       {
-         return mAssetImageCompositeModuleManager;
+         return mAssetImageAssembledModuleManager;
+      }
+      
+      public function GetAssetImageSequencedModuleManager ():AssetImageCompositeModuleManager
+      {
+         return mAssetImageSequencedModuleManager;
       }
       
 //=================================================================================

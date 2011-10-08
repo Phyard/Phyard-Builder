@@ -36,6 +36,8 @@ package editor.image {
    
    import editor.image.dialog.AssetImageDivideDialog;
    
+   import common.Transform2D;
+   
    import common.Define;
    
    public class AssetImage extends AssetImageModule //Asset
@@ -144,19 +146,30 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
-      
-      override public function BuildImageModuleSprite ():DisplayObject
-      {
-         return mBitmapData == null ? null : new Bitmap (mBitmapData);
-      }
-      
-      override public function GetImageModuleBoundingRectangle ():Rectangle
+
+      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
       {
          if (mBitmapData == null)
-            return null;
+            return;
          
-         var rectangle:Rectangle = new Rectangle (0, 0, mBitmapData.width, mBitmapData.height);
-         return rectangle;
+         var bitmap:Bitmap = new Bitmap (mBitmapData);
+         
+         if (transform != null)
+            transform.TransformUntransformedDisplayObject (bitmap);
+         
+         container.addChild (bitmap);
+      }
+      
+      override public function BuildImageModulePhysicsAppearance (container:Sprite, transform:Transform2D = null):void
+      {
+      }
+      
+      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D):void
+      {
+         if (mBitmapData == null)
+            return;
+         
+         selectionProxy.AddRectangleShape (0, 0, mBitmapData.width, mBitmapData.height, transform);
       }
       
 //=============================================================
@@ -166,6 +179,7 @@ package editor.image {
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          var menuItemLoadImage:ContextMenuItem = new ContextMenuItem("(Re)load Local Image ...");
+         var menuItemClearImage:ContextMenuItem = new ContextMenuItem("Clear Image ...");
          var menuItemDivideImage:ContextMenuItem = new ContextMenuItem("Free Divide ...");
          var menuItemDivideImage_TileSet:ContextMenuItem = new ContextMenuItem("Tile Set Divide ...");
          
@@ -173,8 +187,9 @@ package editor.image {
          menuItemDivideImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_DivideImage);
 
          customMenuItemsStack.push (menuItemLoadImage);
+         customMenuItemsStack.push (menuItemClearImage);
          customMenuItemsStack.push (menuItemDivideImage);
-         customMenuItemsStack.push (menuItemDivideImage);
+         customMenuItemsStack.push (menuItemDivideImage_TileSet);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }

@@ -1,10 +1,11 @@
-pacakge editor.image.vector
+package editor.image.vector
 {
-   public class VectorShapePath extends VectorShape
+   // for compatibility, temp extends VectorShapeArea
+   public class VectorShapePath extends VectorShapeArea // VectorShape
    {
       //protected var mAttributeBits:int = 0;
-         public static const Flag_Closed           :int = 1 << 8;
-         public static const Flag_RoundEnds        :int = 1 << 9; // will not support other svg end types
+         public static const Flag_Closed           :int = 1 << 12;
+         public static const Flag_RoundEnds        :int = 1 << 13; // will not support other svg end types
       
       protected var mCurveThickness:int; // 0-255. To change to float. To change name to mThickness
       

@@ -29,6 +29,8 @@ package editor.image {
    
    import editor.image.dialog.AssetImageDivideDialog;
    
+   import common.Transform2D;
+   
    import common.Define;
    import common.ValueAdjuster;
    
@@ -80,21 +82,31 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
-      
-      override public function BuildImageModuleSprite ():DisplayObject
+
+      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
       {
          if (mImageDivisionPeer == null)
-            return null;
+            return;
          
-         return mImageDivisionPeer.CreateSpriteForImagePureModule ();
+         var sprite:DisplayObject = mImageDivisionPeer.CreateSpriteForImagePureModule ();
+         
+         if (transform != null)
+            transform.TransformUntransformedDisplayObject (sprite);
+         
+         container.addChild (sprite);
       }
       
-      override public function GetImageModuleBoundingRectangle ():Rectangle
+      override public function BuildImageModulePhysicsAppearance (container:Sprite, transform:Transform2D = null):void
+      {
+      }
+      
+      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D):void
       {
          if (mImageDivisionPeer == null)
-            return null;
+            return;
          
-         return mImageDivisionPeer.GetBoundingRectangleForImagePureModule ();
+         var rectangle:Rectangle = mImageDivisionPeer.GetBoundingRectangleForImagePureModule ();
+         selectionProxy.AddRectangleShape (rectangle.left, rectangle.top, rectangle.width, rectangle.height, transform);
       }
       
 //=============================================================

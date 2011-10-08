@@ -44,11 +44,15 @@ package editor.asset {
          {
             mAssetManagerPanel.RotateSelectedAssets (mCenterX, mCenterY, currentAngle - lastAngle, mRotatePosition, mRotateSelf, false);
          }
+         
+         super.Process (finished);
       }
       
       override protected function TerminateInternal (passively:Boolean):void
       {
          mAssetManagerPanel.RotateSelectedAssets (mCenterX, mCenterY, 0, mRotatePosition, mRotateSelf, true);
+         
+         super.TerminateInternal (passively);
       }
       
   }

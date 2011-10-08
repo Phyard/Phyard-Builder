@@ -33,11 +33,15 @@ package editor.asset {
          mLastY = mCurrentY;
          
          mAssetManagerPanel.MoveSelectedAssets (dx, dy, finished);
+         
+         super.Process (finished);
       }
       
       override protected function TerminateInternal (passively:Boolean):void
       {
          mAssetManagerPanel.MoveSelectedAssets (0, 0, true);
+         
+         super.TerminateInternal (passively);
       }
       
   }

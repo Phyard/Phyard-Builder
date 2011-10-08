@@ -2,12 +2,12 @@ package editor.asset {
 
    public class IntentPut extends Intent
    {
-      protected var mCallbackOnPut:Function;
+      protected var mCallbackOnPutting:Function;
       protected var mCallbackOnCancel:Function;
       
-      public function IntentPut (callbackOnPut:Function = null, callbackOnCancel:Function = null)
+      public function IntentPut (callbackOnPutting:Function = null, callbackOnCancel:Function = null)
       {  
-         mCallbackOnPut = callbackOnPut;
+         mCallbackOnPutting = callbackOnPutting;
          mCallbackOnCancel = callbackOnCancel;
       }
       
@@ -54,9 +54,9 @@ package editor.asset {
       
       protected function Process (finished:Boolean):void
       {
-         if (finished && mCallbackOnPut != null)
+         if (mCallbackOnPutting != null)
          {
-            mCallbackOnPut ();
+            mCallbackOnPutting (finished);
          }
       }
 

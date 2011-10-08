@@ -1,4 +1,4 @@
-pacakge editor.image.vector
+package editor.image.vector
 {
    public class VectorShapeArea extends VectorShape
    {  

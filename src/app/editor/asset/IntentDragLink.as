@@ -43,6 +43,8 @@ package editor.asset {
             
             GraphicsUtil.ClearAndDrawLine (mLineShape, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
          }
+         
+         super.Process (finished);
       }
       
       override protected function TerminateInternal (passively:Boolean):void
@@ -51,6 +53,8 @@ package editor.asset {
          {
             mAssetManagerPanel.mForegroundLayer.removeChild (mLineShape);
          }
+         
+         super.TerminateInternal (passively);
       }
 
    }

@@ -36,11 +36,14 @@ package editor.image.dialog {
    import editor.asset.AssetManagerPanel;
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
+   import editor.asset.IntentDrag;
+   import editor.asset.IntentTaps;
    
    import editor.image.AssetImageModule;
    import editor.image.AssetImageCompositeModule;
    import editor.image.AssetImageModuleInstance;
    import editor.image.AssetImageModuleInstanceManager;
+   import editor.image.AssetImageShapeModule;
    
    import editor.display.sprite.CoordinateSprite;
    
@@ -127,10 +130,16 @@ package editor.image.dialog {
       
       public function DeleteModuleInstances ():void
       {
-         if (mAssetImageModuleInstanceManager == null)
-            return;
+         //if (mAssetImageModuleInstanceManager == null)
+         //   return;
+         //
+         //mAssetImageModuleInstanceManager.DeleteSelectedAssets ();
          
-         mAssetImageModuleInstanceManager.DeleteSelectedAssets ();
+         // this one will call RearrangeAssetPositions
+         if (mAssetImageModuleInstanceListingPanelPeer != null)
+         {
+            mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().DeleteSelectedAssets ();
+         }
       }
       
       public function MoveModuleInstanceUp ():void
@@ -153,28 +162,152 @@ package editor.image.dialog {
 //   
 //====================================================================================
       
+      public var mButtonCreateGeneralModuleInstance:Button;
+      public var mButtonCreateShapeBoxInstance:Button;
+      public var mButtonCreateShapeCircleInstance:Button;
+      public var mButtonCreateShapePolygonInstance:Button;
+      public var mButtonCreateShapePolylineInstance:Button;
+      public var mButtonCreateShapeTextInstance:Button;
+      
+      private var mCurrentSelectedCreateButton:Button = null;
+      
       protected function OnCreatingFinished ():void
       {
+         if (mCurrentSelectedCreateButton != null)
+            mCurrentSelectedCreateButton.selected = false;
+         
+         mCurrentSelectedCreateButton = null;
+         
          OnAssetSelectionsChanged (true);
       }
       
       protected function OnCreatingCancelled ():void
       {
+         if (mCurrentSelectedCreateButton != null)
+            mCurrentSelectedCreateButton.selected = false;
+         
+         mCurrentSelectedCreateButton = null;
+
          if (mAssetImageModuleInstanceListingPanelPeer != null && mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing () != null)
          {
             mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().RearrangeAssetPositions (true);
          }
       }
       
-      public function OnCreateModuleInstanceClicked ():void
-      {  
-         if (mAssetImageModuleInstanceManager == null)
+      protected function OnPutCreateMouleInstacne (done:Boolean):void
+      {
+         if (done)
+         {
+            OnCreatingFinished ();
+         }
+      }
+      
+      protected function OnDragCreateMouleInstacne (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
+      {
+         var points:Array = new Array (2);
+         points [0] = new Point (startX, startY);
+         points [1] = new Point (endX, endY);
+         
+         OnCreatingMouleInstacne (points, done);
+      }
+      
+      protected function OnTapsCreatingMoving (points:Array, currentX:Number, currentY:Number, done:Boolean):void
+      {
+         points.push (new Point (currentX, currentY));
+         
+         OnCreatingMouleInstacne (points, done);
+      }
+      
+      protected function OnCreatingMouleInstacne (points:Array, done:Boolean):void
+      {
+         var selectedModuleInstacnes:Array = mAssetImageModuleInstanceManager.GetSelectedAssets ();
+         if (selectedModuleInstacnes == null || selectedModuleInstacnes.length != 1)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         var moduleInstance:AssetImageModuleInstance = selectedModuleInstacnes [0] as AssetImageModuleInstance;
+         var imageModule:AssetImageModule = moduleInstance.GetAssetImageModule ();
+         if (imageModule == null)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         var shapeModule:AssetImageShapeModule = imageModule as AssetImageShapeModule;
+         if (shapeModule == null)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         shapeModule.OnCreating (points);
+         moduleInstance.UpdateAppearance ();
+         
+         if (done)
+         {
+            if (shapeModule.IsValid ())
+            {
+               moduleInstance.UpdateSelectionProxy ();
+               
+               OnCreatingFinished ();
+            }
+            else
+            {
+               OnCreatingCancelled ();
+            }
+         }
+      }
+      
+      public function OnClickCreateButton (event:MouseEvent):void
+      {
+         if (! event.target is Button)
             return;
          
-         mAssetImageModuleInstanceManager.ClearAssetSelections ();
+         // cancel old
+         if (mCurrentSelectedCreateButton == event.target)
+         {
+            SetCurrentIntent (null);
+            mCurrentSelectedCreateButton = null;
+            return;
+         }
          
-         var newModuleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true);
-         SetCurrentIntent (new IntentPutAsset (newModuleInstance, OnCreatingFinished, OnCreatingCancelled));
+         mCurrentSelectedCreateButton = event.target as Button;
+         
+         switch (mCurrentSelectedCreateButton)
+         {
+            case mButtonCreateGeneralModuleInstance:
+               SetCurrentIntent (new IntentPutAsset (
+                                 mAssetImageModuleInstanceManager.CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true), 
+                                 OnPutCreateMouleInstacne, OnCreatingCancelled));
+               break;
+            case mButtonCreateShapeBoxInstance:
+               mAssetImageModuleInstanceManager.CreateImageShapeRectangleModuleInstance (true);
+               SetCurrentIntent (new IntentDrag (OnDragCreateMouleInstacne, OnCreatingCancelled));
+               break;
+            case mButtonCreateShapeCircleInstance:
+               mAssetImageModuleInstanceManager.CreateImageShapeCircleModuleInstance (true),
+               SetCurrentIntent (new IntentDrag (OnDragCreateMouleInstacne, OnCreatingCancelled));
+               break;
+            case mButtonCreateShapePolygonInstance:
+               mAssetImageModuleInstanceManager.CreateImageShapePolygonModuleInstance (true)
+               SetCurrentIntent (new IntentTaps (this, OnCreatingMouleInstacne, OnTapsCreatingMoving, OnCreatingCancelled));
+               break;
+            case mButtonCreateShapePolylineInstance:
+               mAssetImageModuleInstanceManager.CreateImageShapePolylineModuleInstance (true);
+               SetCurrentIntent (new IntentTaps (this, OnCreatingMouleInstacne, OnTapsCreatingMoving, OnCreatingCancelled));
+               break;
+            case mButtonCreateShapeTextInstance:
+               SetCurrentIntent (new IntentPutAsset (
+                                 mAssetImageModuleInstanceManager.CreateImageShapeTextModuleInstance (true),
+                                 OnPutCreateMouleInstacne, OnCreatingCancelled));
+               break;
+            default:
+            {
+               break;
+            }
+         }
       }
       
 //====================================================================================

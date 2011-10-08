@@ -1,4 +1,4 @@
-pacakge editor.image.vector
+package editor.image.vector
 {
    import flash.geom.Point;
    

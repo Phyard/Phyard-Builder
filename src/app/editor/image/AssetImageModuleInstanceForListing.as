@@ -38,6 +38,8 @@ package editor.image {
    import editor.core.EditorObject;
    import editor.core.ReferPair;
    
+   import common.Transform2D;
+   
    import common.Define;
    
    public class AssetImageModuleInstanceForListing extends AssetImageModule
@@ -131,19 +133,23 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
-      
-      override public function BuildImageModuleSprite ():DisplayObject
+
+      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
       {
          if (mAssetImageModule == null)
-            return null;
+            return;
          
-         return mAssetImageModule.BuildImageModuleSprite ();
+         return mAssetImageModule.BuildImageModuleAppearance (container, transform);
       }
       
       // this function is useless for this class
-      override public function GetImageModuleBoundingRectangle ():Rectangle
+      override public function BuildImageModulePhysicsAppearance (container:Sprite, transform:Transform2D = null):void
       {
-         return null;
+      }
+      
+      // this function is useless for this class
+      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D):void
+      {
       }
       
 //=============================================================

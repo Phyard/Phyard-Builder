@@ -13,7 +13,14 @@ package editor.image {
    import flash.events.ContextMenuEvent;
    
    import editor.asset.Asset;
-   import editor.asset.AssetManager; 
+   import editor.asset.AssetManager;
+   
+   import editor.image.vector.VectorShape;
+   import editor.image.vector.VectorShapeRectangle;
+   import editor.image.vector.VectorShapeCircle;
+   import editor.image.vector.VectorShapePolygon;
+   import editor.image.vector.VectorShapePolyline;
+   import editor.image.vector.VectorShapeText;
    
    import common.CoordinateSystem;
    
@@ -50,7 +57,7 @@ package editor.image {
             moduleInstanceForListing.GetAssetImageModuleInstanceManagerForListing ().DestroyAsset (moduleInstanceForListing);
          }
       }
-      
+
       public function CreateImageModuleInstance (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
          //var finalModule:AssetImageModule = module == null ? null : module.GetFinalImageModule ();
@@ -68,15 +75,18 @@ package editor.image {
          else
             addChildAt (moduleInstane, atIndex);
          
-         if (module is AssetImageModuleInstanceForListing)
-         {
-            var fromModuleInstance:AssetImageModuleInstance = (module as AssetImageModuleInstanceForListing).GetModuleInstaneForEditingPeer ();
-            moduleInstane.SetAlpha (fromModuleInstance.GetAlpha ());
-            moduleInstane.SetScale (fromModuleInstance.GetScale ());
-            moduleInstane.SetFlipped (fromModuleInstance.IsFlipped ());
-            moduleInstane.SetRotation (fromModuleInstance.GetRotation ());
-            //moduleInstane.SetPosition (fromModuleInstance.GetPositionX (), fromModuleInstance.GetPositionY ());
-         }
+         // impossible now.
+         // todo: AssetImageModuleInstanceForListing should not extend from AssetImageModule
+         //
+         //if (module is AssetImageModuleInstanceForListing)
+         //{
+         //   var fromModuleInstance:AssetImageModuleInstance = (module as AssetImageModuleInstanceForListing).GetModuleInstaneForEditingPeer ();
+         //   moduleInstane.SetAlpha (fromModuleInstance.GetAlpha ());
+         //   moduleInstane.SetScale (fromModuleInstance.GetScale ());
+         //   moduleInstane.SetFlipped (fromModuleInstance.IsFlipped ());
+         //   moduleInstane.SetRotation (fromModuleInstance.GetRotation ());
+         //   //moduleInstane.SetPosition (fromModuleInstance.GetPositionX (), fromModuleInstance.GetPositionY ());
+         //}
          
          moduleInstane.UpdateAppearance ();
          moduleInstane.UpdateSelectionProxy ();
@@ -92,6 +102,37 @@ package editor.image {
 
          return moduleInstane;
       }
+      
+      public function CreateImageShapeRectangleModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
+      {
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapeRectangle ()), selectIt, atIndex);
+      }
+      
+      public function CreateImageShapeCircleModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
+      {
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapeCircle ()), selectIt, atIndex);
+      }
+      
+      public function CreateImageShapePolygonModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
+      {
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapePolygon ()), selectIt, atIndex);
+      }
+      
+      public function CreateImageShapePolylineModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
+      {
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapePolyline ()), selectIt, atIndex);
+      }
+      
+      public function CreateImageShapeTextModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
+      {
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapeRectangle ()), selectIt, atIndex);
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      
       
 //=============================================================
 //   
@@ -203,21 +244,21 @@ package editor.image {
       
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         var menuItemCreateModuleInstance:ContextMenuItem = new ContextMenuItem("Append New Model Instance From Current Module", true);
-         
-         menuItemCreateModuleInstance.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateImageModuleInstance);
-
-         customMenuItemsStack.push (menuItemCreateModuleInstance);
+         //var menuItemCreateModuleInstance:ContextMenuItem = new ContextMenuItem("Append New Model Instance From Current Module", true);
+         //
+         //menuItemCreateModuleInstance.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateImageModuleInstance);
+         //
+         //customMenuItemsStack.push (menuItemCreateModuleInstance);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      private function OnContextMenuEvent_CreateImageModuleInstance (event:ContextMenuEvent):void
-      {
-         CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true);
-         UpdateModuleInstancesAlpha ();
-         
-         NotifyChangedForPanel ();
-      }
+      //private function OnContextMenuEvent_CreateImageModuleInstance (event:ContextMenuEvent):void
+      //{
+      //   CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true);
+      //   UpdateModuleInstancesAlpha ();
+      //   
+      //   NotifyChangedForPanel ();
+      //}
    }
 }

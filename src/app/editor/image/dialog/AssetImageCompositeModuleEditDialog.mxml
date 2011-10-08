@@ -19,12 +19,12 @@
          <mx:HBox height="100%" backgroundColor="0xD0D0D0" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
             <mx:Spacer width="100%"/>
             <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-               <mx:Button id="ButtonCreateImageDivision" toolTip="New Division" click="panelAssetImageCompositeModuleEditing.OnCreateModuleInstanceClicked ();" focusEnabled="false" fontSize="8" width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
-               <mx:Button id="Button_CreateBox" click=";" toolTip="Create Rectangle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/box.png')" downIcon="@Embed('../../../res/create/box-sel.png')" overIcon="@Embed('../../../res/create/box.png')" selectedUpIcon="@Embed('../../../res/create/box-sel.png')" selectedOverIcon="@Embed('../../../res/create/box-sel.png')" selectedDownIcon="@Embed('../../../res/create/box.png')"   />
-               <mx:Button id="Button_CreateBall" click=";" toolTip="Create Circle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/ball.png')" downIcon="@Embed('../../../res/create/ball-sel.png')" overIcon="@Embed('../../../res/create/ball.png')" selectedUpIcon="@Embed('../../../res/create/ball-sel.png')" selectedOverIcon="@Embed('../../../res/create/ball-sel.png')" selectedDownIcon="@Embed('../../../res/create/ball.png')"   />
-               <mx:Button id="Button_CreatePolygon" click=";" toolTip="Create Polygon" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polygon.png')" downIcon="@Embed('../../../res/create/polygon-sel.png')" overIcon="@Embed('../../../res/create/polygon.png')" selectedUpIcon="@Embed('../../../res/create/polygon-sel.png')" selectedOverIcon="@Embed('../../../res/create/polygon-sel.png')" selectedDownIcon="@Embed('../../../res/create/polygon.png')"   />
-               <mx:Button id="Button_CreatePolyline" click=";" toolTip="Create Polyline" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polyline.png')" downIcon="@Embed('../../../res/create/polyline-sel.png')" overIcon="@Embed('../../../res/create/polyline.png')" selectedUpIcon="@Embed('../../../res/create/polyline-sel.png')" selectedOverIcon="@Embed('../../../res/create/polyline-sel.png')" selectedDownIcon="@Embed('../../../res/create/polyline.png')"   />
-               <mx:Button id="Button_CreateText" toolTip="Create Text" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/text.png')" downIcon="@Embed('../../../res/create/text-sel.png')" overIcon="@Embed('../../../res/create/text.png')" selectedUpIcon="@Embed('../../../res/create/text-sel.png')" selectedOverIcon="@Embed('../../../res/create/text-sel.png')" selectedDownIcon="@Embed('../../../res/create/text.png')"   />
+               <mx:Button id="ButtonCreateGeneralModuleInstance" toolTip="Create New Module Instance From Current Module" focusEnabled="false" fontSize="8" width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
+               <mx:Button id="ButtonCreateShapeBoxInstance" click=";" toolTip="Create Rectangle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/box.png')" downIcon="@Embed('../../../res/create/box-sel.png')" overIcon="@Embed('../../../res/create/box.png')" selectedUpIcon="@Embed('../../../res/create/box-sel.png')" selectedOverIcon="@Embed('../../../res/create/box-sel.png')" selectedDownIcon="@Embed('../../../res/create/box.png')"   />
+               <mx:Button id="ButtonCreateShapeCircleInstance" click=";" toolTip="Create Circle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/ball.png')" downIcon="@Embed('../../../res/create/ball-sel.png')" overIcon="@Embed('../../../res/create/ball.png')" selectedUpIcon="@Embed('../../../res/create/ball-sel.png')" selectedOverIcon="@Embed('../../../res/create/ball-sel.png')" selectedDownIcon="@Embed('../../../res/create/ball.png')"   />
+               <mx:Button id="ButtonCreateShapePolygonInstance" click=";" toolTip="Create Polygon" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polygon.png')" downIcon="@Embed('../../../res/create/polygon-sel.png')" overIcon="@Embed('../../../res/create/polygon.png')" selectedUpIcon="@Embed('../../../res/create/polygon-sel.png')" selectedOverIcon="@Embed('../../../res/create/polygon-sel.png')" selectedDownIcon="@Embed('../../../res/create/polygon.png')"   />
+               <mx:Button id="ButtonCreateShapePolylineInstance" click=";" toolTip="Create Polyline" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polyline.png')" downIcon="@Embed('../../../res/create/polyline-sel.png')" overIcon="@Embed('../../../res/create/polyline.png')" selectedUpIcon="@Embed('../../../res/create/polyline-sel.png')" selectedOverIcon="@Embed('../../../res/create/polyline-sel.png')" selectedDownIcon="@Embed('../../../res/create/polyline.png')"   />
+               <mx:Button id="ButtonCreateShapeTextInstance" toolTip="Create Text" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/text.png')" downIcon="@Embed('../../../res/create/text-sel.png')" overIcon="@Embed('../../../res/create/text.png')" selectedUpIcon="@Embed('../../../res/create/text-sel.png')" selectedOverIcon="@Embed('../../../res/create/text-sel.png')" selectedDownIcon="@Embed('../../../res/create/text.png')"   />
             </mx:VBox>
             <mx:Spacer width="100%"/>
          </mx:HBox>
@@ -152,6 +152,24 @@
       
          public function InitDialog ():void
          {
+            panelAssetImageCompositeModuleEditing.mButtonCreateGeneralModuleInstance = ButtonCreateGeneralModuleInstance;
+            panelAssetImageCompositeModuleEditing.mButtonCreateShapeBoxInstance = ButtonCreateShapeBoxInstance;
+            panelAssetImageCompositeModuleEditing.mButtonCreateShapeCircleInstance = ButtonCreateShapeCircleInstance;
+            panelAssetImageCompositeModuleEditing.mButtonCreateShapePolygonInstance = ButtonCreateShapePolygonInstance;
+            panelAssetImageCompositeModuleEditing.mButtonCreateShapePolylineInstance = ButtonCreateShapePolylineInstance;
+            panelAssetImageCompositeModuleEditing.mButtonCreateShapeTextInstance = ButtonCreateShapeTextInstance;
+            
+            ButtonCreateGeneralModuleInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
+            ButtonCreateShapeBoxInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
+            ButtonCreateShapeCircleInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
+            ButtonCreateShapePolygonInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
+            ButtonCreateShapePolylineInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
+            ButtonCreateShapeTextInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
+            
+            panelAssetImageCompositeModuleEditing.mButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance;
+            panelAssetImageCompositeModuleEditing.mButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance;
+            panelAssetImageCompositeModuleEditing.mButtonDeleteModuleInstances = ButtonDeleteModuleInstances;
+         
             panelAssetImageCompositeModuleEditing.mViewStackPlayStop = ViewStackPlayStop;
             panelAssetImageCompositeModuleEditing.mLabelDuration = LabelDuration;
             panelAssetImageCompositeModuleEditing.mNumericStepperDuration = NumericStepperDuration;
@@ -160,15 +178,6 @@
             panelAssetImageCompositeModuleEditing.mTextInputScale = TextInputScale;
             panelAssetImageCompositeModuleEditing.mCheckBoxFlipped = CheckBoxFlipped;
             panelAssetImageCompositeModuleEditing.mTextInputAngle = TextInputAngle;
-            
-            //panelAssetImageCompositeModuleEditing.mBoxModuleProperties = BoxModuleProperties;
-            //panelAssetImageCompositeModuleEditing.mLabelModuleInfos = LabelModuleInfos;
-            //panelAssetImageCompositeModuleEditing.mCheckBoxLoop = CheckBoxLoop;
-            //panelAssetImageCompositeModuleEditing.mCheckBoxShowAllSequences = CheckBoxShowAllSequences;
-            
-            panelAssetImageCompositeModuleEditing.mButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance;
-            panelAssetImageCompositeModuleEditing.mButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance;
-            panelAssetImageCompositeModuleEditing.mButtonDeleteModuleInstances = ButtonDeleteModuleInstances;
          }
          
          private function OnPlay ():void

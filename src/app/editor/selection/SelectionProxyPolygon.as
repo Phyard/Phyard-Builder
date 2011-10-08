@@ -12,6 +12,7 @@ package editor.selection {
    
    import Box2D.Collision.Shapes.b2Polygon;
    
+   // todo: remove this class
    public class SelectionProxyPolygon extends SelectionProxy 
    {
       public function SelectionProxyPolygon (selEngine:SelectionEngine):void
@@ -19,19 +20,20 @@ package editor.selection {
          super (selEngine);
       }
       
-      public function RebuildConvexPolygon (centerX:Number, centerY:Number, localPoints:Array, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
-      {
-         Rebuild (centerX, centerY, rotation);
-         
-         CreateConvexPolygonZone (localPoints);
-      }
-      
-      public function RebuildConcavePolygon (centerX:Number, centerY:Number, localPoints:Array, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
-      {
-         Rebuild (centerX, centerY, rotation);
-         
-         CreateConcavePolygonZone (localPoints);
-      }
+      // moved into SelectionProxy
+      //public function RebuildConvexPolygon (centerX:Number, centerY:Number, localPoints:Array, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
+      //{
+      //   Rebuild (centerX, centerY, rotation);
+      //   
+      //   CreateConvexPolygonZone (localPoints);
+      //}
+      //
+      //public function RebuildConcavePolygon (centerX:Number, centerY:Number, localPoints:Array, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
+      //{
+      //   Rebuild (centerX, centerY, rotation);
+      //   
+      //   CreateConcavePolygonZone (localPoints);
+      //}
       
       
       

@@ -1,12 +1,12 @@
-pacakge editor.image.vector
+package editor.image.vector
 {
    public class VectorShapeRectangle extends VectorShapeArea
    {
       //protected var mAttributeBits:int = 0;
-         public static const Mask_RoundCorners   :int = 1 << 16;
+         public static const Flag_RoundCorners   :int = 1 << 16;
             
-      protected var mHalfWidth:Number;
-      protected var mHalfHeight:Number;
+      protected var mHalfWidth:Number = 1;
+      protected var mHalfHeight:Number = 1;
       
       public function IsRoundCorners ():Boolean
       {
@@ -28,17 +28,17 @@ pacakge editor.image.vector
       
       public function SetHalfWidth (halfWidth:Number):void
       {
-         mHalfWidth = halfWidth;
+         mHalfWidth = Math.abs (halfWidth);
       }
       
       public function GetHalfHeight ():Number
       {
-         return mHeight;
+         return mHalfHeight;
       }
       
       public function SetHalfHeight (halfHeight:Number):void
       {
-         mHalfHeight = halfHeight;
+         mHalfHeight = Math.abs (halfHeight);
       }
    }
 }

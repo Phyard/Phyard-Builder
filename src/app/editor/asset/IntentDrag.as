@@ -1,9 +1,14 @@
 package editor.asset {
 
    public class IntentDrag extends Intent
-   {  
-      public function IntentDrag ()
+   {
+      protected var mCallbackOnDragging:Function;
+      protected var mCallbackOnCancel:Function;
+      
+      public function IntentDrag (callbackOnDragging:Function = null, callbackOnCancel:Function = null)
       {
+         mCallbackOnDragging = callbackOnDragging;
+         mCallbackOnCancel = callbackOnCancel;
       }
       
       protected var mStarted:Boolean = false;
@@ -32,6 +37,9 @@ package editor.asset {
       
       override protected function OnMouseMoveInternal (managerX:Number, managerY:Number, isHold:Boolean):void
       {
+         if (! mStarted)
+            return;
+         
          if (isHold)
          {
             mCurrentX = managerX;
@@ -47,12 +55,23 @@ package editor.asset {
       
       override protected function OnMouseUpInternal (managerX:Number, managerY:Number):void
       {
+         if (! mStarted)
+            return;
+         
          mCurrentX = managerX;
          mCurrentY = managerY;
          
          Process (true);
          
          Terminate (false);
+      }
+      
+      override protected function TerminateInternal (passively:Boolean):void
+      {
+         if (passively && mCallbackOnCancel != null)
+         {
+            mCallbackOnCancel ();
+         }
       }
       
    //================================================================
@@ -66,6 +85,10 @@ package editor.asset {
       
       protected function Process (finished:Boolean):void
       {
+         if (mStarted && mCallbackOnDragging != null)
+         {
+            mCallbackOnDragging (mStartX, mStartY, mCurrentX, mCurrentY, finished);
+         }
       }
 
    }

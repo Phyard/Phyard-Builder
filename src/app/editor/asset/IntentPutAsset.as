@@ -6,9 +6,9 @@ package editor.asset {
       
       protected var mCallbackOnCancel_IntentPutAsset:Function;
       
-      public function IntentPutAsset (assetToPut:Asset, callbackOnPut:Function = null, callbackOnCancel:Function = null)
+      public function IntentPutAsset (assetToPut:Asset, callbackOnPutting:Function = null, callbackOnCancel:Function = null)
       {
-         super (callbackOnPut, OnCancelled);
+         super (callbackOnPutting, OnCancelled);
          
          mCallbackOnCancel_IntentPutAsset = callbackOnCancel;
          

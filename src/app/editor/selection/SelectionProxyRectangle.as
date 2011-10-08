@@ -10,14 +10,16 @@ package editor.selection {
    import Box2D.Collision.Shapes.*;
    import Box2D.Common.*;
    
-   
-   public class SelectionProxyRectangle extends SelectionProxy 
+   // todo: remove this class
+   public class SelectionProxyRectangle extends SelectionProxy
    {
       public function SelectionProxyRectangle (selEngine:SelectionEngine):void
       {
          super (selEngine);
       }
       
+      // moved into SelectionProxy
+      /*
       public function RebuildRectangle (centerX:Number, centerY:Number, halfWidth:Number, halfHeight:Number, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
       {
          Rebuild (centerX, centerY, flipped ? - rotation : rotation);
@@ -57,6 +59,7 @@ package editor.selection {
          
          CreateConvexPolygonZone ([p1, p2, p3, p4]);
       }
+      */
       
    }
 }

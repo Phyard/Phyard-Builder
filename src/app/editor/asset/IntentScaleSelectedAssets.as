@@ -43,11 +43,15 @@ package editor.asset {
             mLastY = mCurrentY;
             mAssetManagerPanel.ScaleSelectedAssets (mCenterX, mCenterY, currentLength / lastLength, mScalePosition, mScaleSelf, false);
          }
+         
+         super.Process (finished);
       }
       
       override protected function TerminateInternal (passively:Boolean):void
       {
          mAssetManagerPanel.ScaleSelectedAssets (mCenterX, mCenterY, 1.0, mScalePosition, mScaleSelf, true);
+         
+         super.TerminateInternal (passively);
       }
       
   }

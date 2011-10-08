@@ -30,6 +30,8 @@ package editor.image {
    import editor.core.EditorObject;
    import editor.core.ReferPair;
    
+   import common.Transform2D;
+   
    import common.Define;
    
    public class AssetImageModuleInstance extends Asset
@@ -149,32 +151,6 @@ package editor.image {
 //   
 //=============================================================
 
-      private function GetPhysicsBoundingRectangle ():Rectangle
-      {
-         var rectangle:Rectangle = null;
-         if (mAssetImageModule != null)
-         {
-            rectangle = mAssetImageModule.GetImageModuleBoundingRectangle ();
-         }
-         
-         if (rectangle == null)
-         {
-            if (mModuleSpriteForEditing != null)
-            {
-               rectangle = mModuleSpriteForEditing.getBounds (mModuleSpriteForEditing);
-            }
-            
-            if (rectangle == null || rectangle.width <= 2 || rectangle.height <= 2)
-            { 
-               var moduleSize:Number = 50;
-               var halfModuleSize:Number = 0.5 * moduleSize;
-               rectangle = new Rectangle (-halfModuleSize, -halfModuleSize, moduleSize, moduleSize);
-            }
-         }
-         
-         return rectangle;
-      }
-
       private var mModuleSpriteForEditing:DisplayObject = null;
       
       override public function UpdateAppearance ():void
@@ -183,61 +159,48 @@ package editor.image {
             removeChildAt (0);
          GraphicsUtil.Clear (this);
          
-         var moduleSize:Number = 50;
-         var halfModuleSize:Number = 0.5 * moduleSize;
+         mAssetImageModule.BuildImageModuleAppearance (this);
+         alpha = 0.70;
          
-         var moduleSprite:DisplayObject = null;
-         if (mAssetImageModule != null)
+         if (IsSelected ())
          {
-            moduleSprite = mAssetImageModule.BuildImageModuleSprite ();
-         }
-         
-         mModuleSpriteForEditing = null;
+            var shape:Shape = new Shape ();
 
-         var rectangle:Rectangle;
-         if (moduleSprite == null)
-         {
-            rectangle = GetPhysicsBoundingRectangle ();
+            var rectangle:Rectangle = this.getBounds (this);
+            GraphicsUtil.DrawRect (shape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
+                                       0x0000FF, -1, true, 0xC0C0FF, false);
             
-            var rectShape:Shape = new Shape ();
-            addChild (rectShape);
-            GraphicsUtil.DrawRect (rectShape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
-                                          0x0000FF, -1, true, IsSelected () ? 0xC0C0FF : 0xD0FFD0, false);
-            
-            mModuleSpriteForEditing = rectShape;
+            addChild (shape);
          }
-         else
-         {
-            mModuleSpriteForEditing = moduleSprite;
-            
-            addChild (moduleSprite);
-            
-            if (IsSelected ())// && (! mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsSequenced ()))
-            {
-               var shape:Shape = new Shape ();
-               shape.alpha = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsSequenced () ? 0.50 : 0.67;
-
-               rectangle = GetPhysicsBoundingRectangle ();
-               GraphicsUtil.DrawRect (shape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
-                                          0x0000FF, -1, true, 0xC0C0FF, false);
-               
-               addChild (shape);
-            }
-         } 
       }
       
       override public function UpdateSelectionProxy ():void
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mAssetManager.GetSelectionEngine ().CreateProxyRectangle ();
+            mSelectionProxy = mAssetManager.GetSelectionEngine ().CreateProxyGeneral ();
             mSelectionProxy.SetUserData (this);
          }
          
-         var rectangle:Rectangle = GetPhysicsBoundingRectangle ();
-
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle2 (GetPositionX (), GetPositionY (), rectangle.left, rectangle.top, rectangle.width, rectangle.height, GetRotation (), IsFlipped (), GetScale ());
+         mSelectionProxy.Rebuild (GetPositionX (), GetPositionY (), 0.0);
+         mAssetImageModule.BuildImageModuleSelectionProxy (mSelectionProxy, new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()));
+         
+         if (Compile::Is_Debugging)// && false)
+         {
+            if (mPhysicsShapesLayer == null)
+            {
+               mPhysicsShapesLayer = new Sprite ();
+               addChild (mPhysicsShapesLayer);
+            }
+            while (mPhysicsShapesLayer.numChildren > 0)
+               mPhysicsShapesLayer.removeChildAt (0);
+            
+            mSelectionProxy.AddPhysicsShapes (mPhysicsShapesLayer);
+         }         
       }
+      
+      // for debug
+      private var mPhysicsShapesLayer:Sprite = null;
       
 //=============================================================
 //   context menu

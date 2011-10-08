@@ -37,6 +37,8 @@ package editor.image {
    
    import editor.image.dialog.AssetImageCompositeModuleEditDialog;
    
+   import common.Transform2D;
+   
    import common.Define;
    import common.ValueAdjuster;
    
@@ -111,24 +113,36 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
-      
-      override public function BuildImageModuleSprite ():DisplayObject
+
+      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
       {
-         if (IsSequenced ())
+         var numModules:int = mModuleInstanceManager.GetNumAssets ();
+         for (var i:int = 0; i < numModules; ++ i)
          {
-            return null;
-         }
-         else
-         {
-            return null;
+            var moduleInstance:AssetImageModuleInstance = mModuleInstanceManager.GetAssetByAppearanceId (i) as AssetImageModuleInstance;
+            var finalTransform:Transform2D = new Transform2D (moduleInstance.GetPositionX (), moduleInstance.GetPositionY (), moduleInstance.GetScale (), moduleInstance.IsFlipped (), moduleInstance.GetRotation ());
+            if (transform != null)
+               finalTransform = Transform2D.CombineTransform2Ds (transform, finalTransform);
+            
+            moduleInstance.GetAssetImageModule ().BuildImageModuleAppearance (container, finalTransform);
          }
       }
       
-      override public function GetImageModuleBoundingRectangle ():Rectangle
+      override public function BuildImageModulePhysicsAppearance (container:Sprite, transform:Transform2D = null):void
       {
-         // currently, for fast computing, return null means module instance 
-         // will auto create a rectangle from the appearance sprite of sequence 0
-         return null;
+      }
+      
+      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D):void
+      {
+         var numModules:int = mModuleInstanceManager.GetNumAssets ();
+         for (var i:int = 0; i < numModules; ++ i)
+         {
+            var moduleInstance:AssetImageModuleInstance = mModuleInstanceManager.GetAssetByAppearanceId (i) as AssetImageModuleInstance;
+            var finalTransform:Transform2D = new Transform2D (moduleInstance.GetPositionX (), moduleInstance.GetPositionY (), moduleInstance.GetScale (), moduleInstance.IsFlipped (), moduleInstance.GetRotation ());
+            finalTransform = Transform2D.CombineTransform2Ds (transform, finalTransform);
+            
+            moduleInstance.GetAssetImageModule ().BuildImageModuleSelectionProxy (selectionProxy, finalTransform);
+         }
       }
       
 //=============================================================

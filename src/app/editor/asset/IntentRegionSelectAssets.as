@@ -24,7 +24,7 @@ package editor.asset {
       
       private var mBoxShape:Shape = null;
 
-      override protected function Process (triggeredByMouseUp:Boolean):void
+      override protected function Process (finished:Boolean):void
       {
          var left:Number   = mStartX < mCurrentX ? mStartX : mCurrentX;
          var right:Number  = mStartX >= mCurrentX ? mStartX : mCurrentX;
@@ -46,6 +46,8 @@ package editor.asset {
          GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, point2.x - point1.x, point2.y - point1.y);
          
          mAssetManagerPanel.RegionSelectAssets (left, top, right, bottom, mOldSelectedAssets);
+         
+         super.Process (finished);
       }
       
       override protected function TerminateInternal (passively:Boolean):void
@@ -59,6 +61,8 @@ package editor.asset {
          {
             mAssetManagerPanel.PointSelectAsset (mCurrentX, mCurrentY); // (mAssetManager.mouseX, mAssetManager.mouseY)
          }
+         
+         super.TerminateInternal (passively);
       }
 
    }

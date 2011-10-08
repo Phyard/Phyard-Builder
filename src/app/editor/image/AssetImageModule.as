@@ -37,6 +37,8 @@ package editor.image {
    import editor.asset.Asset;
    import editor.asset.AssetManager;
    
+   import common.Transform2D;
+   
    import common.Define;
    import common.ValueAdjuster;
    
@@ -95,17 +97,22 @@ package editor.image {
       }
       
 //=============================================================
-//   
+//   for module instance callings
 //=============================================================
       
-      public function BuildImageModuleSprite ():DisplayObject
+      public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
       {
-         return null; // to override
+         // to override
       }
       
-      public function GetImageModuleBoundingRectangle ():Rectangle
+      public function BuildImageModulePhysicsAppearance (container:Sprite, transform:Transform2D = null):void
       {
-         return null; // to override
+         // to override
+      }
+      
+      public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D):void
+      {
+         // to override
       }
       
 //=============================================================
@@ -125,9 +132,10 @@ package editor.image {
          var iconSize:Number = mAssetImageModuleManager.GetModuleIconSize ();
          var halfIconSize:Number = 0.5 * iconSize;
 
-         var moduleSprite:DisplayObject = BuildImageModuleSprite ();
+         var moduleSprite:Sprite = new Sprite ();
+         BuildImageModuleAppearance (moduleSprite);
          
-         if (moduleSprite == null)
+         if (moduleSprite.numChildren == 0)
          {
             GraphicsUtil.DrawLine (this, - halfModuleSize, - halfModuleSize, halfModuleSize, halfModuleSize);
             GraphicsUtil.DrawLine (this, halfModuleSize, - halfModuleSize,  - halfModuleSize, halfModuleSize);

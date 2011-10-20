@@ -12,6 +12,9 @@ package editor.image.vector
    
    import editor.selection.SelectionProxy;
    
+   import common.shape.VectorShapeRectangle;
+   import common.shape.VectorShapeText;
+   
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
    

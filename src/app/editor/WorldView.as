@@ -85,6 +85,7 @@ package editor {
    import editor.mode.ModeCreateEntityLink;
    
    import editor.runtime.Runtime;
+   import editor.runtime.KeyboardListener;
    
    import editor.display.sprite.CursorCrossingLine;
    import editor.display.sprite.EditingEffect
@@ -179,7 +180,7 @@ package editor {
    
    //import misc.Analytics;
    
-   public class WorldView extends UIComponent 
+   public class WorldView extends UIComponent implements KeyboardListener
    {
       public static const DefaultWorldWidth:int = Define.DefaultWorldWidth; 
       public static const DefaultWorldHeight:int = Define.DefaultWorldHeight;
@@ -350,8 +351,8 @@ package editor {
          addEventListener (MouseEvent.ROLL_OVER, OnMouseOut);
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
-         // ...
-         stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+         // now Put in Runtime
+         //stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
          
          // ...
          UpdateUiButtonsEnabledStatus ();
@@ -2872,6 +2873,7 @@ package editor {
             return;
          
          Runtime.SetHasInputFocused (false);
+         Runtime.SetKeyboardListener (this);
          stage.focus = this;
          
          CheckModifierKeys (event);
@@ -3155,15 +3157,6 @@ package editor {
       
       public function OnKeyDown (event:KeyboardEvent):void
       {
-         if (! Runtime.IsActiveView (this))
-            return;
-         
-         if (Runtime.HasSettingDialogOpened ())
-            return;
-         
-         if (Runtime.HasInputFocused ())
-            return;
-         
          //trace ("event.keyCode = " + event.keyCode + ", event.charCode = " + event.charCode);
          
          if (IsPlaying ()) // playing

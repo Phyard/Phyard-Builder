@@ -11,6 +11,8 @@ package editor.image.vector
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
    
+   import common.shape.VectorShapePolygon;
+   
    import common.Transform2D;
    
    public class VectorShapePolygonForEditing extends VectorShapePolygon implements VectorShapeForEditing
@@ -159,7 +161,7 @@ package editor.image.vector
                point1 = vertexPoints [0] as Point;
                offsetTransform.mOffsetX = point1.x;
                offsetTransform.mOffsetY = point1.y;
-               selectionProxy.AddCircleShape (halfThickness, Transform2D.CombineTransform2Ds (transform, offsetTransform, offsetTransform));
+               selectionProxy.AddCircleShape (halfThickness, Transform2D.CombineTransforms (transform, offsetTransform, offsetTransform));
             }
             
             for (var i:int = 1; i < numVertexes; ++ i)
@@ -168,7 +170,7 @@ package editor.image.vector
                selectionProxy.AddLineSegmentShape (point1.x, point1.y, point2.x, point2.y, borderThickness, transform);
                offsetTransform.mOffsetX = point2.x;
                offsetTransform.mOffsetY = point2.y;
-               selectionProxy.AddCircleShape (halfThickness, Transform2D.CombineTransform2Ds (transform, offsetTransform, offsetTransform));
+               selectionProxy.AddCircleShape (halfThickness, Transform2D.CombineTransforms (transform, offsetTransform, offsetTransform));
                point1 = point2;
             }
             

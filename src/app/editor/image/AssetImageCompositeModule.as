@@ -139,7 +139,7 @@ package editor.image {
             var moduleInstance:AssetImageModuleInstance = mModuleInstanceManager.GetAssetByAppearanceId (i) as AssetImageModuleInstance;
             var finalTransform:Transform2D = new Transform2D (moduleInstance.GetPositionX (), moduleInstance.GetPositionY (), moduleInstance.GetScale (), moduleInstance.IsFlipped (), moduleInstance.GetRotation ());
             if (transform != null)
-               finalTransform = Transform2D.CombineTransform2Ds (transform, finalTransform);
+               finalTransform = Transform2D.CombineTransforms (transform, finalTransform);
             
             moduleInstance.GetAssetImageModule ().BuildImageModuleAppearance (container, finalTransform);
          }
@@ -156,7 +156,7 @@ package editor.image {
          {
             var moduleInstance:AssetImageModuleInstance = mModuleInstanceManager.GetAssetByAppearanceId (i) as AssetImageModuleInstance;
             var finalTransform:Transform2D = new Transform2D (moduleInstance.GetPositionX (), moduleInstance.GetPositionY (), moduleInstance.GetScale (), moduleInstance.IsFlipped (), moduleInstance.GetRotation ());
-            finalTransform = Transform2D.CombineTransform2Ds (transform, finalTransform);
+            finalTransform = Transform2D.CombineTransforms (transform, finalTransform);
             
             moduleInstance.GetAssetImageModule ().BuildImageModuleSelectionProxy (selectionProxy, finalTransform, visualScale);
          }
@@ -174,11 +174,6 @@ package editor.image {
       {
          return mIsSequenced;
       }
-      
-      public function IsPlayable():Boolean
-      {
-         return IsSequenced () && GetNumModules () > 1;
-      }
 
       public function SetSequenced (sequenced:Boolean):void
       {
@@ -194,6 +189,15 @@ package editor.image {
       {
          mIsLooped = looped;
       }
+      
+      public function GetNumFrames ():Number
+      {
+         return IsSequenced () ? mModuleInstanceManager.GetNumAssets () : 1;
+      }
+      
+//=============================================================
+//   
+//=============================================================
       
 //=============================================================
 //   

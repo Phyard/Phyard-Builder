@@ -4,6 +4,7 @@ package editor.runtime {
    
    import flash.ui.ContextMenuItem;
    import flash.events.ContextMenuEvent;
+   import flash.events.KeyboardEvent;
    
    import mx.core.Application;
    
@@ -23,6 +24,21 @@ package editor.runtime {
    
    public class Runtime
    {
+      
+//=====================================================================
+//
+//=====================================================================
+
+      // call this before loading a new world
+      public static function Cleanup ():void
+      {
+         // todo: nullify/removeChild dialog references, ..., etc.
+           // ex: AssetImageModuleListDialog.removeChild (3 managers), hideAssetImageModuleListDialog,...
+        
+        
+        
+         SetKeyboardListener (null);
+      }
    
 //=====================================================================
 //
@@ -134,16 +150,35 @@ package editor.runtime {
       public static var mCollisionCategoryView:CollisionManagerView = null;
       public static var mFunctionEditingView:FunctionEditingView = null;
       
-      private static var mActiveView:DisplayObject = null;
       
-      public static function SetActiveView (view:DisplayObject):void
+//=====================================================================
+//   key listener
+//=====================================================================
+      
+      public static function OnKeyDown (event:KeyboardEvent):void
       {
-         mActiveView = view;
+         if (mKeyboardListener != null)
+         {
+            if (HasSettingDialogOpened ())
+               return;
+            
+            if (HasInputFocused ())
+               return;
+            
+            mKeyboardListener.OnKeyDown (event);
+         }
       }
       
-      public static function IsActiveView (view:DisplayObject):Boolean
+      private static var mKeyboardListener:KeyboardListener = null;
+      
+      public static function SetKeyboardListener (keyboardListener:KeyboardListener):void
       {
-         return mActiveView == view;
+         mKeyboardListener = keyboardListener;
+      }
+      
+      public static function GetKeyboardListener ():KeyboardListener
+      {
+         return mKeyboardListener;
       }
       
 //=====================================================================
@@ -236,17 +271,6 @@ package editor.runtime {
       //
       //public static var mShape_DrawBorder:Boolean = true;
       //public static var mShape_BorderColor:uint = Define.ColorObjectBorder;
-      
-//=====================================================================
-//
-//=====================================================================
-
-      // call this before loading a new world
-      public static function Cleanup ():void
-      {
-         // todo: nullify/removeChild dialog references, ..., etc.
-           // ex: AssetImageModuleListDialog.removeChild (3 managers), hideAssetImageModuleListDialog,...
-      }
 
    }
    

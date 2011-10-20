@@ -6,7 +6,7 @@ package common {
    
    public class Transform2D
    {  
-      public static function CombineTransform2Ds (transform1:Transform2D, transform2:Transform2D, combined:Transform2D = null):Transform2D
+      public static function CombineTransforms (transform1:Transform2D, transform2:Transform2D, combined:Transform2D = null):Transform2D
       {
          if (combined == null)
             combined = new Transform2D ();
@@ -162,12 +162,12 @@ package common {
             outVector = new Point ();
          
          // scale
-         outVector.x /= mScale;
-         outVector.y /= mScale;
+         inVector.x /= mScale;
+         inVector.y /= mScale;
          
          // flip
          if (mFlipped)
-            outVector.x = - outVector.x;
+            inVector.x = - inVector.x;
          
          // rotate
          outVector.x =   cos * inVector.x + sin * inVector.y;

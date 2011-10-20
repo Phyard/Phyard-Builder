@@ -174,6 +174,11 @@ package editor.image {
             
             addChild (shape);
          }
+            
+         if (AreControlPointsVisible ())
+         {
+            addChild (mControlPointsContainer);
+         }
       }
       
       override public function UpdateSelectionProxy ():void
@@ -267,11 +272,6 @@ package editor.image {
             SetPosition (GetPositionX () + globalAssetDisplayment.x, GetPositionY () + globalAssetDisplayment.y);
             
             UpdateAppearance ();
-            
-            if (AreControlPointsVisible ())
-            {
-               addChild (mControlPointsContainer);
-            }
 
             if (actionDone)
             {

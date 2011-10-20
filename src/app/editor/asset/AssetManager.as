@@ -73,6 +73,19 @@ package editor.asset {
       public function SetScale (s:Number):void
       {
          scaleX = scaleY = s;
+         
+         
+         var numAssets:int = mAssetsSortedByCreationId.length;
+         
+         for (var i:uint = 0; i < numAssets; ++ i)
+         {
+            var asset:Asset = GetAssetByCreationId (i);
+            
+            if (asset != null)
+            {
+               asset.OnManagerScaleChanged ();
+            }
+         }
       }
       
       public function GetScale ():Number

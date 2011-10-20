@@ -11,6 +11,8 @@ package editor.image.vector
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
    
+   import common.shape.VectorShapeCircle;
+   
    import common.Transform2D;
    import common.Define;
    

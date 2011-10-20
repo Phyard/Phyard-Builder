@@ -11,6 +11,8 @@ package editor.image.vector
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
    
+   import common.shape.VectorShapeRectangle;
+   
    import common.Transform2D;
    
    public class VectorShapeRectangleForEditing extends VectorShapeRectangle implements VectorShapeForEditing

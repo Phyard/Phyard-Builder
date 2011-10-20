@@ -2690,7 +2690,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Vertex Count"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition, shape_geometry_package, "Get Poly Shape Vertexes Local Position", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition, shape_geometry_package, "Get Poly Shape Vertex Local Position", null, null,
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
                              new VariableDefinitionNumber ("Vertex Index"),
@@ -2700,7 +2700,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Local Y"),
                      ]
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition, shape_geometry_package, "Set Poly Shape Vertexes Local Position", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition, shape_geometry_package, "Set Poly Shape Vertex Local Position", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
          //                    new VariableDefinitionNumber ("Vertex Index"),
@@ -2709,7 +2709,7 @@ package editor.trigger {
          //            ],
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition, shape_geometry_package, "Get Poly Shape Vertexes World Position", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition, shape_geometry_package, "Get Poly Shape Vertex World Position", null, null,
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
                              new VariableDefinitionNumber ("Vertex Index"),
@@ -2719,7 +2719,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("World Y"),
                      ]
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition, shape_geometry_package, "Set Poly Shape Vertexes World Position", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition, shape_geometry_package, "Set Poly Shape Vertex World Position", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
          //                    new VariableDefinitionNumber ("Vertex Index"),

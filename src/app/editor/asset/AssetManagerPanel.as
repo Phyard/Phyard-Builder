@@ -28,11 +28,12 @@ package editor.asset {
    import com.tapirgames.util.DisplayObjectUtil;
    
    import editor.runtime.Runtime;
+   import editor.runtime.KeyboardListener;
    
    import common.Define;
    import common.Version;
    
-   public class AssetManagerPanel extends UIComponent 
+   public class AssetManagerPanel extends UIComponent implements KeyboardListener
    {
       public var mBackgroundLayer:Sprite;
       public var mFriendLinksLayer:Sprite;
@@ -280,6 +281,7 @@ package editor.asset {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
+         Runtime.SetKeyboardListener (this);
          stage.focus = this;
          
          if (mAssetManager == null)
@@ -456,6 +458,18 @@ package editor.asset {
          MoveManager (mouseX - newMousePoint.x, mouseY - newMousePoint.y);
       }
       
+      public function OnKeyDown (event:KeyboardEvent):void
+      {
+         switch (event.keyCode)
+         {
+            case Keyboard.ESCAPE:
+               SetCurrentIntent (null);
+               break;
+            default:
+               break;
+         }
+      }
+      
 //=================================================================================
 //   
 //=================================================================================
@@ -581,7 +595,7 @@ package editor.asset {
             var scaleSelfHandler:Sprite = new Sprite ();
             var scalePosHandler:Sprite = new Sprite ();
             var flipBothHandler:Sprite = new Sprite ();
-            var flipOptionsHandler:Sprite = new Sprite ();
+            var flipSelfHandler:Sprite = new Sprite ();
             
             mScaleRotateFlipHandlersContainer.addChild (rotateBothHandler);
             mScaleRotateFlipHandlersContainer.addChild (scaleBothHandler);
@@ -589,7 +603,7 @@ package editor.asset {
             mScaleRotateFlipHandlersContainer.addChild (rotateSelfHandler);
             mScaleRotateFlipHandlersContainer.addChild (scaleSelfHandler);
             mScaleRotateFlipHandlersContainer.addChild (rotatePosHandler);
-            mScaleRotateFlipHandlersContainer.addChild (flipOptionsHandler);
+            mScaleRotateFlipHandlersContainer.addChild (flipSelfHandler);
             mScaleRotateFlipHandlersContainer.addChild (scalePosHandler);
             
             rotateBothHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartRotateSelecteds);
@@ -599,7 +613,7 @@ package editor.asset {
             scaleSelfHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelectedSelves);
             scalePosHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelectedPositions);
             flipBothHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelecteds);
-            flipOptionsHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelectedsOptions);
+            flipSelfHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelectedsSelves);
             
             var halfHandlerSize:Number = 6;
             var handlerSize:Number = halfHandlerSize + halfHandlerSize;
@@ -612,10 +626,10 @@ package editor.asset {
             GraphicsUtil.ClearAndDrawRect (scalePosHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF0000, false);
             GraphicsUtil.ClearAndDrawRect (flipBothHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);
                GraphicsUtil.DrawLine (flipBothHandler, -halfHandlerSize, -halfHandlerSize, halfHandlerSize, halfHandlerSize, 0xFFFFFF, 0);
-            GraphicsUtil.ClearAndDrawRect (flipOptionsHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF9900, false);
-               GraphicsUtil.DrawLine (flipOptionsHandler, -halfHandlerSize, -halfHandlerSize, halfHandlerSize, halfHandlerSize, 0xFFFFFF, 0);
+            GraphicsUtil.ClearAndDrawRect (flipSelfHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF9900, false);
+               GraphicsUtil.DrawLine (flipSelfHandler, -halfHandlerSize, -halfHandlerSize, halfHandlerSize, halfHandlerSize, 0xFFFFFF, 0);
             flipBothHandler.rotation = 45;
-            flipOptionsHandler.rotation = 45;
+            flipSelfHandler.rotation = 45;
          }
          
          mScaleRotateFlipHandlersContainer.visible = isVisible;
@@ -721,8 +735,11 @@ package editor.asset {
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
-      protected function OnFlipSelectedsOptions(event:MouseEvent):void
+      protected function OnFlipSelectedsSelves(event:MouseEvent):void
       {
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y - ScaleRotateFlipCircleRadius));
+         SetCurrentIntent (new IntentFlipSelectedAssets (this, managerPoint.x, managerPoint.y, false, true));
+         mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
 //=================================================================================

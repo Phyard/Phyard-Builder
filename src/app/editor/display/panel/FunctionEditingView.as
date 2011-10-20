@@ -33,6 +33,7 @@ package editor.display.panel {
    import com.tapirgames.util.DisplayObjectUtil;
    
    import editor.runtime.Runtime;
+   import editor.runtime.KeyboardListener;
    
    import editor.entity.Entity;
    
@@ -58,7 +59,7 @@ package editor.display.panel {
    import common.Define;
    import common.Version;
    
-   public class FunctionEditingView extends UIComponent 
+   public class FunctionEditingView extends UIComponent implements KeyboardListener
    {
       public var mBackgroundLayer:Sprite;
       public var mEntityLinksLayer:Sprite;
@@ -137,7 +138,8 @@ package editor.display.panel {
          addEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
-         stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+         // now put in Runtime
+         //stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
       }
       
       private var mContentMaskSprite:Shape = null;
@@ -521,6 +523,7 @@ package editor.display.panel {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
+         Runtime.SetKeyboardListener (this);
          stage.focus = this;
          
          if (mFunctionManager == null)
@@ -777,15 +780,6 @@ package editor.display.panel {
       
       public function OnKeyDown (event:KeyboardEvent):void
       {
-         if (! Runtime.IsActiveView (this))
-            return;
-         
-         if (Runtime.HasSettingDialogOpened ())
-            return;
-         
-         if (Runtime.HasInputFocused ())
-            return;
-         
          switch (event.keyCode)
          {
             case Keyboard.ESCAPE:

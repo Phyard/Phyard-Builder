@@ -314,32 +314,34 @@ package editor.asset {
 //   move / rotate / scale / flip
 //====================================================================
       
-      public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
+      public function Move (offsetX:Number, offsetY:Number, intentionDone:Boolean = true):void
       {
          SetPosition (GetPositionX () + offsetX, GetPositionY () + offsetY);
          
-         if (updateSelectionProxy)
+         if (intentionDone)
          {
             UpdateSelectionProxy ();
+            RebuildControlPointsIfTheyAreVisible ();
          }
       }
       
-      public function MoveTo (targetX:Number, targetY:Number, updateSelectionProxy:Boolean = true):void
+      public function MoveTo (targetX:Number, targetY:Number, intentionDone:Boolean = true):void
       {
          SetPosition (targetX, targetY);
          
-         if (updateSelectionProxy)
+         if (intentionDone)
          {
             UpdateSelectionProxy ();
+            RebuildControlPointsIfTheyAreVisible ();
          }
       }
       
-      public function RotatePosition (centerX:Number, centerY:Number, deltaRotation:Number, updateSelectionProxy:Boolean = true):void
+      public function RotatePosition (centerX:Number, centerY:Number, deltaRotation:Number, intentionDone:Boolean = true):void
       {
-         RotatePositionByCosSin (centerX, centerY, Math.cos (deltaRotation), Math.sin (deltaRotation), updateSelectionProxy);
+         RotatePositionByCosSin (centerX, centerY, Math.cos (deltaRotation), Math.sin (deltaRotation), intentionDone);
       }
       
-      public function RotatePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number, updateSelectionProxy:Boolean = true):void
+      public function RotatePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number, intentionDone:Boolean = true):void
       {
          var offsetX:Number = GetPositionX () - centerX;
          var offsetY:Number = GetPositionY () - centerY;
@@ -347,37 +349,40 @@ package editor.asset {
          var newOffsetY:Number = offsetX * sin + offsetY * cos;
          SetPosition (centerX + newOffsetX, centerY + newOffsetY);
          
-         if (updateSelectionProxy)
+         if (intentionDone)
          {
             UpdateSelectionProxy ();
+            RebuildControlPointsIfTheyAreVisible ();
          }
       }
       
-      public function RotateSelf (deltaRotation:Number, updateSelectionProxy:Boolean = true):void
+      public function RotateSelf (deltaRotation:Number, intentionDone:Boolean = true):void
       {
          if (IsFlipped ())
             deltaRotation = - deltaRotation;
          
          SetRotation (GetRotation () + deltaRotation);
          
-         if (updateSelectionProxy)
+         if (intentionDone)
          {
             UpdateSelectionProxy ();
+            RebuildControlPointsIfTheyAreVisible ();
          }
       }
       
       // generally, don't use this function
-      //public function RotateSelfTo (targetRotation:Number, updateSelectionProxy:Boolean = true):void
+      //public function RotateSelfTo (targetRotation:Number, intentionDone:Boolean = true):void
       //{
       //   SetRotation (targetRotation);
       //   
-      //   if (updateSelectionProxy)
+      //   if (intentionDone)
       //   {
       //      UpdateSelectionProxy ();
+      //      RebuildControlPointsIfTheyAreVisible ();
       //   }
       //}
       
-      public function ScalePosition (centerX:Number, centerY:Number, s:Number, updateSelectionProxy:Boolean = true):void
+      public function ScalePosition (centerX:Number, centerY:Number, s:Number, intentionDone:Boolean = true):void
       {
          if (s < 0)
             s = -s;
@@ -386,49 +391,54 @@ package editor.asset {
          var offsetY:Number = GetPositionY () - centerY;
          SetPosition (centerX + s * offsetX, centerY + s * offsetY);
          
-         if (updateSelectionProxy)
+         if (intentionDone)
          {
             UpdateSelectionProxy ();
+            RebuildControlPointsIfTheyAreVisible ();
          }
       }
       
-      public function ScaleSelf (s:Number, updateSelectionProxy:Boolean = true):void
+      public function ScaleSelf (s:Number, intentionDone:Boolean = true):void
       {
          SetScale (GetScale () * s);
          
-         if (updateSelectionProxy)
+         if (intentionDone)
          {
             UpdateSelectionProxy ();
+            RebuildControlPointsIfTheyAreVisible ();
          }
       }
       
-      public function ScaleSelfTo (targetScale:Number, updateSelectionProxy:Boolean = true):void
+      public function ScaleSelfTo (targetScale:Number, intentionDone:Boolean = true):void
       {
          SetScale (targetScale);
          
-         if (updateSelectionProxy)
+         if (intentionDone)
          {
             UpdateSelectionProxy ();
+            RebuildControlPointsIfTheyAreVisible ();
          }
       }
       
-      public function FlipPosition (planeX:Number, updateSelectionProxy:Boolean = true):void
+      public function FlipPosition (planeX:Number, intentionDone:Boolean = true):void
       {
          SetPosition (planeX + planeX - GetPositionX (), GetPositionY ());
          
-         if (updateSelectionProxy)
+         if (intentionDone)
          {
             UpdateSelectionProxy ();
+            RebuildControlPointsIfTheyAreVisible ();
          }
       }
       
-      public function FlipSelf (updateSelectionProxy:Boolean = true):void
+      public function FlipSelf (intentionDone:Boolean = true):void
       {
          SetFlipped (! IsFlipped ());
          
-         if (updateSelectionProxy)
+         if (intentionDone)
          {
             UpdateSelectionProxy ();
+            RebuildControlPointsIfTheyAreVisible ();
          }
       }
       
@@ -446,6 +456,15 @@ package editor.asset {
             return false;
          
          return mSelectionProxy.ContainsPoint (pointX, pointY);
+      }
+      
+//======================================================
+// 
+//======================================================
+      
+      public function OnManagerScaleChanged ():void
+      {
+         RebuildControlPointsIfTheyAreVisible ();
       }
       
 //======================================================
@@ -526,6 +545,14 @@ package editor.asset {
       final public function UpdateControlPoints ():void
       {
          if (mControlPointsVisible)
+         {
+            RebuildControlPoints ();
+         }
+      }
+      
+      final public function RebuildControlPointsIfTheyAreVisible ():void
+      {
+         if (AreControlPointsVisible ())
          {
             RebuildControlPoints ();
          }

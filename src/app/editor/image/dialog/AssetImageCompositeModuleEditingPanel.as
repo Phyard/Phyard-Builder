@@ -415,14 +415,14 @@ package editor.image.dialog {
             //}
          }
          
-         if (compositeModule.IsPlayable ())
-         {
+         //if (compositeModule.IsPlayable ())
+         //{
             mViewStackPlayStop.visible = true;
-         }
-         else
-         {
-            mViewStackPlayStop.visible = false;
-         }
+         //}
+         //else
+         //{
+         //   mViewStackPlayStop.visible = false;
+         //}
       }
       
       public function SychronizeCompositeModulePropertiesFromUI ():void

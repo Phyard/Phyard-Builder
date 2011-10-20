@@ -484,6 +484,7 @@
             import mx.managers.PopUpManager;
             import mx.events.FlexEvent;
             import mx.events.MenuEvent;
+            import flash.events.KeyboardEvent;
             import mx.events.IndexChangedEvent;
             import mx.controls.Menu;
             import mx.controls.ToolTip;
@@ -515,6 +516,11 @@
                return true;
             }
             
+            private function OnAddedToStage (event:Event):void 
+            {
+               stage.addEventListener (KeyboardEvent.KEY_DOWN, Runtime.OnKeyDown);
+            }
+            
             private function InitApp ():void
             {
             //===================================================================================================
@@ -543,11 +549,12 @@
             //===================================================================================================
                
                Runtime.SetApplication (this)
-               Runtime.SetActiveView (MainView);
                
                Runtime.mEditorWorldView = MainView;
                Runtime.mCollisionCategoryView = CollisionManagerView;
                Runtime.mFunctionEditingView = FunctionEditingView;
+               
+               addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
                
             //===================================================================================================
                
@@ -1227,7 +1234,7 @@
                
                ViewStack_EditView.selectedChild = EntityDesignView;
                
-               Runtime.SetActiveView (MainView);
+               Runtime.SetKeyboardListener (MainView);
                ViewStack_ViewEditCommands.selectedChild = Box_EntityEditViewCommands;
             }
             
@@ -1240,7 +1247,7 @@
                ViewStack_EditView.selectedChild = CCatDesignView;
                ViewStack_ViewEditCommands.selectedChild = Box_CCatEditViewCommands;
                
-               Runtime.SetActiveView (CollisionManagerView);
+               Runtime.SetKeyboardListener (CollisionManagerView);
                CollisionManagerView.SetCollisionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetCollisionManager ());
             }
             
@@ -1252,10 +1259,10 @@
                
                ViewStack_EditView.selectedChild = FunctionDesignView;
                
-               Runtime.SetActiveView (FunctionEditingView);
+               Runtime.SetKeyboardListener (FunctionEditingView);
                ViewStack_ViewEditCommands.selectedChild = Box_FunctionEditViewCommands;
                
-               Runtime.SetActiveView (FunctionEditingView);
+               Runtime.SetKeyboardListener (FunctionEditingView);
                FunctionEditingView.SetFunctionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetFunctionManager ());
             }
             

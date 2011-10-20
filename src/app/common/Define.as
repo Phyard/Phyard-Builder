@@ -191,20 +191,6 @@ package common {
       
       public static const ColorTextBackground:uint = 0xFFFEFEFE; // if set as FFFFFF, no bakcground is painted, why?
       
-      public static const TextAlign_Left:int = 0;
-      public static const TextAlign_Center:int = 1;
-      public static const TextAlign_Right:int = 2;
-      
-      public static function GetTextAlignText (align:int):String
-      {
-         if (align == TextAlign_Right)
-            return "right";
-         else if (align == TextAlign_Center)
-            return "center";
-         else
-            return "left";
-      }
-      
 //===========================================================================
 // text button
 //===========================================================================

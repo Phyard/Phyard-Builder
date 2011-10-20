@@ -35,6 +35,8 @@
      <![CDATA[
 
          import flash.events.Event;
+   
+         import com.tapirgames.util.TextUtil;
 
          import common.Define;
 
@@ -118,9 +120,9 @@
             ColorPicker_TextColor.selectedColor = inputValues.mTextColor;
             CheckBox_AdaptiveBackgroundSize.selected = inputValues.mAdaptiveBackgroundSize;
 
-            if (inputValues.mTextAlign == Define.TextAlign_Right)
+            if (inputValues.mTextAlign == TextUtil.TextAlign_Right)
                Button_AlignRight.selected = true;
-            else if (inputValues.mTextAlign == Define.TextAlign_Center)
+            else if (inputValues.mTextAlign == TextUtil.TextAlign_Center)
                Button_AlignCenter.selected = true;
             else
                Button_AlignLeft.selected = true;
@@ -141,11 +143,11 @@
             returnValues.mIsUnderlined = Button_Underlined.selected;
 
             if (Button_AlignRight.selected)
-               returnValues.mTextAlign = Define.TextAlign_Right;
+               returnValues.mTextAlign = TextUtil.TextAlign_Right;
             else if (Button_AlignCenter.selected)
-               returnValues.mTextAlign = Define.TextAlign_Center;
+               returnValues.mTextAlign = TextUtil.TextAlign_Center;
             else
-               returnValues.mTextAlign = Define.TextAlign_Left;
+               returnValues.mTextAlign = TextUtil.TextAlign_Left;
 
             returnValues.mText = TextArea_Text.text;
          }

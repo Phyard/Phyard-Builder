@@ -15,11 +15,11 @@ package editor.image.vector
    
    public class VectorShapeRectangleForEditing extends VectorShapeRectangle implements VectorShapeForEditing
    {
-      public function OnCreating (points:Array):Point
+      public static function OnCreatingRectangle (rectangle:VectorShapeRectangle, points:Array):Point
       {
          if (points == null || points.length < 2)
          {
-            SetValid (false);
+            rectangle.SetValid (false);
             return null;
          }
          
@@ -30,21 +30,26 @@ package editor.image.vector
          var halfWidth:Number  = 0.5 * Math.abs (point2.x - point1.x);
          var halfHeight:Number = 0.5 * Math.abs (point2.y - point1.y);
          
-         SetHalfWidth (halfWidth);
-         SetHalfHeight (halfHeight);
+         rectangle.SetHalfWidth (halfWidth);
+         rectangle.SetHalfHeight (halfHeight);
          
-         SetValid (true);
+         rectangle.SetValid (true);
          
          return new Point (posX, posY);
       }
       
-      public function CreateSprite ():DisplayObject
+      public function OnCreating (points:Array):Point
       {
-         var filledColor:uint = GetBackgroundColor ();
-         var borderColor:uint = GetBorderColor ();
-         var drawBg:Boolean = IsDrawBackground ();
-         var drawBorder:Boolean = IsDrawBorder ();
-         var borderThickness:Number = GetBorderThickness ();
+         return OnCreatingRectangle (this, points);
+      }
+      
+      public static function CreateRectangleSprite (rectangle:VectorShapeRectangle):DisplayObject
+      {
+         var filledColor:uint = rectangle.GetBackgroundColor ();
+         var borderColor:uint = rectangle.GetBorderColor ();
+         var drawBg:Boolean = rectangle.IsDrawBackground ();
+         var drawBorder:Boolean = rectangle.IsDrawBorder ();
+         var borderThickness:Number = rectangle.GetBorderThickness ();
          
          if ( ! drawBorder)
          {
@@ -52,32 +57,42 @@ package editor.image.vector
             borderThickness = -1;
          }
          
-         var visualHalfWidth:Number = mHalfWidth + 0.5; // be consistent with player
-         var visualHalfHeight:Number = mHalfHeight + 0.5; // be consistent with player
+         var visualHalfWidth:Number = rectangle.GetHalfWidth () + 0.5; // be consistent with player
+         var visualHalfHeight:Number = rectangle.GetHalfHeight () + 0.5; // be consistent with player
          
          var rectSprite:Shape = new Shape ();
-         GraphicsUtil.ClearAndDrawRect (rectSprite, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, borderColor, borderThickness, drawBg, filledColor, IsRoundCorners ());
+         GraphicsUtil.ClearAndDrawRect (rectSprite, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, borderColor, borderThickness, drawBg, filledColor, rectangle.IsRoundCorners ());
          
          return rectSprite;
       }
       
-      public function BuildSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
+      public function CreateSprite ():DisplayObject
       {
-         var borderThickness:Number = GetBorderThickness ();
-         if ( ! IsDrawBorder () )
-            borderThickness = 0;
-         
-         selectionProxy.AddRectangleShapeHalfWH (GetHalfWidth () + borderThickness * 0.5 , GetHalfHeight () + borderThickness * 0.5, transform);
+         return CreateRectangleSprite (this);
       }
       
-      public function CreateControlPointsForAsset (asset:Asset):Array
+      public static function BuildRectangleSelectionProxy (rectangle:VectorShapeRectangle, selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
+      {
+         var borderThickness:Number = rectangle.GetBorderThickness ();
+         if ( ! rectangle.IsDrawBorder () )
+            borderThickness = 0;
+         
+         selectionProxy.AddRectangleShapeHalfWH (rectangle.GetHalfWidth () + borderThickness * 0.5 , rectangle.GetHalfHeight () + borderThickness * 0.5, transform);
+      }
+      
+      public function BuildSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
+      {
+         BuildRectangleSelectionProxy (this, selectionProxy, transform, visualScale);
+      }
+      
+      public static function CreateRectangleControlPointsForAsset (rectangle:VectorShapeRectangle, asset:Asset):Array
       {
          var controlPoints:Array = new Array (4);
          
          for (var i:int = 0; i < 4; ++ i)
          {
             var cp:ControlPoint = new ControlPoint (asset, i);
-            cp.SetPosition ((i == 0 || i == 3) ? - mHalfWidth : mHalfWidth, (i == 0 || i == 1) ? - mHalfHeight : mHalfHeight);
+            cp.SetPosition ((i == 0 || i == 3) ? - rectangle.GetHalfWidth () : rectangle.GetHalfWidth (), (i == 0 || i == 1) ? - rectangle.GetHalfHeight () : rectangle.GetHalfHeight ());
             cp.RebuildAppearance ();
             cp.RebuildSelectionProxy ();
             
@@ -87,12 +102,17 @@ package editor.image.vector
          return controlPoints;
       }
       
+      public function CreateControlPointsForAsset (asset:Asset):Array
+      {
+         return CreateRectangleControlPointsForAsset (this, asset)
+      }
+      
       public function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int
       {
          return -1;
       }
       
-      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      public static function OnMoveRectangleControlPoint (rectangle:VectorShapeRectangle, controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
       {
          if (controlPoints == null || controlPoints.length != 4)
             return null;
@@ -103,13 +123,13 @@ package editor.image.vector
          var halfDw:Number = 0.5 * ((movedControlPointIndex == 0 || movedControlPointIndex == 3) ? - dx : dx);
          var halfDh:Number = 0.5 * ((movedControlPointIndex == 0 || movedControlPointIndex == 1) ? - dy : dy);
          
-         if (halfDw < - mHalfWidth)
-            halfDw = - mHalfWidth;
-         if (halfDh < - mHalfHeight)
-            halfDh = - mHalfHeight;
+         if (halfDw < - rectangle.GetHalfWidth ())
+            halfDw = - rectangle.GetHalfWidth ();
+         if (halfDh < - rectangle.GetHalfHeight ())
+            halfDh = - rectangle.GetHalfHeight ();
          
-         mHalfWidth  += halfDw;
-         mHalfHeight += halfDh;
+         rectangle.SetHalfWidth  (rectangle.GetHalfWidth ()  + halfDw);
+         rectangle.SetHalfHeight (rectangle.GetHalfHeight () + halfDh);
          
          var assetLocalDisplaymentX:Number = (movedControlPointIndex == 0 || movedControlPointIndex == 3) ? - halfDw : halfDw;
          var assetLocalDisplaymentY:Number = (movedControlPointIndex == 0 || movedControlPointIndex == 1) ? - halfDh : halfDh;
@@ -117,10 +137,15 @@ package editor.image.vector
          for (var i:int = 0; i < 4; ++ i)
          {
             var cp:ControlPoint = controlPoints [i] as ControlPoint;
-            cp.SetPosition ((i == 0 || i == 3) ? - mHalfWidth : mHalfWidth, (i == 0 || i == 1) ? - mHalfHeight : mHalfHeight);
+            cp.SetPosition ((i == 0 || i == 3) ? - rectangle.GetHalfWidth () : rectangle.GetHalfWidth (), (i == 0 || i == 1) ? - rectangle.GetHalfHeight () : rectangle.GetHalfHeight ());
          }
          
          return new Array (assetLocalDisplaymentX, assetLocalDisplaymentY, movedControlPointIndex);
+      }
+      
+      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      {
+         return OnMoveRectangleControlPoint (this, controlPoints, movedControlPointIndex, dx, dy);
       }
       
       public function DeleteControlPoint (controlPoint:ControlPoint):int

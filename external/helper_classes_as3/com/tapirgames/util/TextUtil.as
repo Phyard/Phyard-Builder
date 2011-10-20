@@ -1,21 +1,50 @@
 
 package com.tapirgames.util {
    
-   
    import com.tapirgames.util.Logger;
    
-   public class TextUtil {
+   public class TextUtil
+   {
+      public static const TextAlign_Left:int = 0;
+      public static const TextAlign_Center:int = 1;
+      public static const TextAlign_Right:int = 2;
       
-      public static function CreateHtmlText (plainText:String, fontSize:int = 16, fontColor:String = "#000000", fontFace:String = "Verdana", bold:Boolean = false, italic:Boolean = false, underline:Boolean = false):String
+      public static function GetTextAlignText (align:int):String
+      {
+         if (align == TextAlign_Right)
+            return "right";
+         else if (align == TextAlign_Center)
+            return "center";
+         else
+            return "left";
+      }
+      
+      public static function Uint2ColorString (colorValue:uint):String
+      {
+         colorValue = colorValue & 0xFFFFFF;
+         var colorString:String = colorValue.toString (16);
+         while (colorString.length < 6)
+            colorString = "0" + colorString;
+         
+         return "#" + colorString;
+      }
+      
+      public static function GetHtmlWikiText (plainText:String, textAlign:String, fontSize:int = 16, fontColor:String = null, fontFace:String = null, bold:Boolean = false, italic:Boolean = false, underline:Boolean = false):String
+      {
+         var wikiText:String = TextUtil.GetHtmlEscapedText (plainText);
+         wikiText = TextUtil.ParseWikiString (wikiText);
+         wikiText = TextUtil.CreateHtmlText (wikiText, fontSize, fontColor, fontFace, bold, italic, underline);
+         wikiText = "<p align='" + textAlign + "'>" + wikiText + "</p>";
+         
+         return wikiText;
+      }
+
+      //fontFace:String = "Verdana"
+      public static function CreateHtmlText (plainText:String, fontSize:int = 16, fontColor:String = null, fontFace:String = null, bold:Boolean = false, italic:Boolean = false, underline:Boolean = false):String
       {
          plainText = CreateHtmlText_biu (plainText, bold, italic, underline);
          
          return CreateHtmlText_Font (plainText, fontSize, fontColor, fontFace);
-         
-         if (fontColor != null)
-            return "<font face=\"" + fontFace + "\" size=\"" + fontSize + "\" color=\"" + fontColor + "\">" + plainText + "</font>";
-         else
-            return "<font face=\"" + fontFace + "\" size=\"" + fontSize + "\">" + plainText + "</font>";
       }
       
       public static function CreateHtmlText_biu (text:String, bold:Boolean = false, italic:Boolean = false, underline:Boolean = false):String

@@ -89,7 +89,7 @@ package player.entity {
       private var mIsBold:Boolean = false;
       private var mIsItalic:Boolean = false;
       private var mIsUnderlined:Boolean = false;
-      private var mTextAlign:int = Define.TextAlign_Left;
+      private var mTextAlign:int = TextUtil.TextAlign_Left;
       
       public function GetText ():String
       {
@@ -265,7 +265,7 @@ package player.entity {
          //var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
          var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
          
-         var infoText:String = GetDisplayText ();
+         var infoText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
          
          if (infoText == null)
          {
@@ -286,25 +286,26 @@ package player.entity {
          mTextBitmap.y = - 0.5 * mTextBitmap.height;
       }
       
-      protected function GetDisplayText ():String
-      {
-         var infoText:String = mText;
-         
-         if (infoText == null)
-            return "";
-         
-         infoText = TextUtil.GetHtmlEscapedText (infoText);
-         infoText = TextUtil.ParseWikiString (infoText);
-         
-         if (mIsBold)
-            infoText = "<b>" + infoText + "</b>";
-         if (mIsItalic)
-            infoText = "<i>" + infoText + "</i>";
-         if (mIsUnderlined)
-            infoText = "<u>" + infoText + "</u>";
-         
-         return "<p align='" + Define.GetTextAlignText (mTextAlign) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
-      }
+      // use TextUtil.GetHtmlWikiText now
+      //protected function GetDisplayText ():String
+      //{
+      //   var infoText:String = mText;
+      //   
+      //   if (infoText == null)
+      //      return "";
+      //   
+      //   infoText = TextUtil.GetHtmlEscapedText (infoText);
+      //   infoText = TextUtil.ParseWikiString (infoText);
+      //   
+      //   if (mIsBold)
+      //      infoText = "<b>" + infoText + "</b>";
+      //   if (mIsItalic)
+      //      infoText = "<i>" + infoText + "</i>";
+      //   if (mIsUnderlined)
+      //      infoText = "<u>" + infoText + "</u>";
+      //   
+      //   return "<p align='" + Define.GetTextAlignText (mTextAlign) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
+      //}
    }
    
 }

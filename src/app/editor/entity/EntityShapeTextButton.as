@@ -36,7 +36,7 @@ package editor.entity {
          SetFontSize (12);
          SetTextColor (Define.ColorTextButtonText);
          SetAdaptiveBackgroundSize (true);
-         SetTextAlign (Define.TextAlign_Center);
+         SetTextAlign (TextUtil.TextAlign_Center);
          
          SetDrawBorder (true);
          SetDrawBackground (true);

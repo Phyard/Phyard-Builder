@@ -3,6 +3,8 @@ package common {
 
    import flash.utils.ByteArray;
    import flash.geom.Point;
+   
+   import com.tapirgames.util.TextUtil;
 
    import player.design.Global;
    import player.world.World;
@@ -2551,7 +2553,7 @@ package common {
 
                      if (worldDefine.mVersion < 0x0109)
                      {
-                        entityDefine.mTextAlign = entityDefine.mEntityType == Define.EntityType_ShapeTextButton ? Define.TextAlign_Center : Define.TextAlign_Left;
+                        entityDefine.mTextAlign = entityDefine.mEntityType == Define.EntityType_ShapeTextButton ? TextUtil.TextAlign_Center : TextUtil.TextAlign_Left;
                         entityDefine.mIsUnderlined = false;
                      }
 

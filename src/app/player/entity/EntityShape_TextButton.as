@@ -32,7 +32,7 @@ package player.entity {
          SetBorderColor (Define.ColorTextButtonBorder);
          SetBorderThickness (2);
          SetTextColor (Define.ColorTextButtonText);
-         SetTextAlign (Define.TextAlign_Center);
+         SetTextAlign (TextUtil.TextAlign_Center);
          
          mAppearanceObjectsContainer.removeChild (mBackgroundShape); // added in rect
          mAppearanceObjectsContainer.removeChild (mBorderShape); // added in rect

@@ -34,7 +34,7 @@ package editor.entity {
       
       // from v1.09
       private var mIsUnderlined:Boolean = false;
-      private var mTextAlign:int = Define.TextAlign_Left;
+      private var mTextAlign:int = TextUtil.TextAlign_Left;
       
       private var mAdaptiveBackgroundSize:Boolean = false;
       
@@ -91,29 +91,30 @@ package editor.entity {
          }
       }
       
-      protected function GetDisplayText ():String
-      {
-         var infoText:String = mText;
-         
-         if (infoText == null)
-            return "";
-         
-         infoText = TextUtil.GetHtmlEscapedText (infoText);
-         infoText = TextUtil.ParseWikiString (infoText);
-         
-         if (mIsBold)
-            infoText = "<b>" + infoText + "</b>";
-         if (mIsItalic)
-            infoText = "<i>" + infoText + "</i>";
-         if (mIsUnderlined)
-            infoText = "<u>" + infoText + "</u>";
-         
-         return "<p align='" + Define.GetTextAlignText (mTextAlign) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
-      }
+      // use TextUtil.GetHtmlWikiText now
+      //protected function GetDisplayText ():String
+      //{
+      //   var infoText:String = mText;
+      //   
+      //   if (infoText == null)
+      //      return "";
+      //   
+      //   infoText = TextUtil.GetHtmlEscapedText (infoText);
+      //   infoText = TextUtil.ParseWikiString (infoText);
+      //   
+      //   if (mIsBold)
+      //      infoText = "<b>" + infoText + "</b>";
+      //   if (mIsItalic)
+      //      infoText = "<i>" + infoText + "</i>";
+      //   if (mIsUnderlined)
+      //      infoText = "<u>" + infoText + "</u>";
+      //   
+      //   return "<p align='" + Define.GetTextAlignText (mTextAlign) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
+      //}
       
       protected function RebuildTextSprite ():void
       {
-         var displayText:String = GetDisplayText ();
+         var displayText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
          
          var textField:TextFieldEx;
          
@@ -136,7 +137,7 @@ package editor.entity {
       
       public function GetText ():String
       {
-         return mText;
+         return mText == null ? "" : mText;
       }
       
       public function SetText (text:String):void

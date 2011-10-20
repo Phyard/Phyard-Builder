@@ -6,6 +6,8 @@ package editor.asset {
    import flash.geom.Point;
    import flash.geom.Matrix;
    
+   import flash.utils.Dictionary;
+   
    import editor.selection.SelectionEngine;
    
    import editor.core.EditorObject;
@@ -371,20 +373,6 @@ package editor.asset {
          return assetArray;
       }
       
-      public function GetControlPointsAtPoint (displayX:Number, displayY:Number):Array
-      {
-         var objectArray:Array = mSelectionEngine.GetObjectsAtPoint (displayX, displayY);
-         var controlPointArray:Array = new Array ();
-         
-         for (var i:uint = 0; i < objectArray.length; ++ i)
-         {
-            if (objectArray [i] is ControlPoint)
-               controlPointArray.push (objectArray [i]);
-         }
-         
-         return controlPointArray;
-      }
-      
       private function ConvertObjectArrayToAssetArray (objectArray:Array):Array
       {
          var assetArray:Array = new Array ();
@@ -423,8 +411,22 @@ package editor.asset {
          return null;
       }
       
+      public function GetControlPointsAtPoint (displayX:Number, displayY:Number):Array
+      {
+         var objectArray:Array = mSelectionEngine.GetObjectsAtPoint (displayX, displayY);
+         var controlPointArray:Array = new Array ();
+         
+         for (var i:uint = 0; i < objectArray.length; ++ i)
+         {
+            if (objectArray [i] is ControlPoint)
+               controlPointArray.push (objectArray [i]);
+         }
+         
+         return controlPointArray;
+      }
+      
 //=================================================================================
-//   actions on selected entites
+//   actions on selected assets
 //=================================================================================
       
       public function DeleteSelectedAssets ():Boolean
@@ -582,6 +584,139 @@ package editor.asset {
             //   removeChild (asset.GetMainAsset ());
             //   addChildAt (asset.GetMainAsset (), 0);
             //}
+         }
+      }
+      
+//=================================================================================
+//   control points
+//=================================================================================
+
+      protected var mCurrentShownControlPoints:Array = new Array ();
+
+      // assets == null means hide all control points
+      public function SetAssetsWithControlPointsShown (inputAssets:Array):void
+      {
+         var i:int;
+         var count:int;
+         var cp:ControlPoint;
+         
+         // collect current assets with CPs shown 
+         
+         var currentAssetsWithControlPointsShown:Array = new Array ();
+         count = mCurrentShownControlPoints.length;
+         for (i = 0; i < count; ++ i)
+         {
+            cp = mCurrentShownControlPoints [i] as ControlPoint;
+            if (currentAssetsWithControlPointsShown.indexOf (cp.GetOwnerAsset ()) < 0)
+            {
+               currentAssetsWithControlPointsShown.push (cp.GetOwnerAsset ());
+            }
+         }
+         
+         // collect assets to show/hide CPs
+         
+         var assetsToHideControlPoints:Array;
+         var assetsToShowControlPoints:Array;
+         var asset:Asset;
+         
+         if (inputAssets == null || inputAssets.length == 0)
+         {
+            assetsToHideControlPoints = currentAssetsWithControlPointsShown;
+            assetsToShowControlPoints = new Array ();
+         }
+         else
+         {
+            assetsToHideControlPoints = new Array ();
+            assetsToShowControlPoints = new Array ();
+
+            count = currentAssetsWithControlPointsShown.length;
+            for (i = 0; i < count; ++ i)
+            {
+               asset = currentAssetsWithControlPointsShown [i] as Asset;
+               if (inputAssets.indexOf (asset) < 0)
+               {
+                  assetsToHideControlPoints.push (asset);
+               }
+            }
+            
+            count = inputAssets.length;
+            for (i = 0; i < count; ++ i)
+            {
+               asset = inputAssets [i] as Asset;
+               if (currentAssetsWithControlPointsShown.indexOf (asset) < 0)
+               {
+                  assetsToShowControlPoints.push (asset);
+               }
+            }
+         }
+         
+         // hide
+         
+         count = assetsToHideControlPoints.length;
+         for (i = 0; i < count; ++ i)
+         {
+            (assetsToHideControlPoints [i] as Asset).SetControlPointsVisible (false);
+         }
+         
+         // show
+         
+         count = assetsToShowControlPoints.length;
+         for (i = 0; i < count; ++ i)
+         {
+            (assetsToShowControlPoints [i] as Asset).SetControlPointsVisible (true);
+         }
+      }
+
+      // for Assets register selves CPs
+      public function RegisterShownControlPoints (controlPoints:Array):void
+      {
+         if (controlPoints != null)
+         {
+            for (var i:int = controlPoints.length - 1; i >= 0; -- i)
+            {
+               mCurrentShownControlPoints.push (controlPoints [i]);
+            }
+         }
+      }
+      
+      public function UnregisterShownControlPointsOfAsset (asset:Asset):void
+      {
+         var i:int;
+         var cp:ControlPoint;
+         
+         for (i = mCurrentShownControlPoints.length - 1; i >= 0; -- i)
+         {
+            cp = mCurrentShownControlPoints [i] as ControlPoint;
+            if (cp.GetOwnerAsset () == asset)
+            {
+               mCurrentShownControlPoints.splice (i, 1);
+            }
+         }
+      }
+      
+      public function SetSelectedControlPoints (selectedControlPoints:Array):void
+      {
+         var i:int;
+         
+         for (i = mCurrentShownControlPoints.length - 1; i >= 0; -- i)
+         {
+            (mCurrentShownControlPoints [i] as ControlPoint).SetSelectedLevel (ControlPoint.SelectedLevel_None);
+         }
+         
+         if (selectedControlPoints != null && selectedControlPoints.indexOf (cp) >= 0)
+         {
+            if (selectedControlPoints.length == 1)
+            {
+               var cp:ControlPoint = selectedControlPoints [0] as ControlPoint;
+               cp.GetOwnerAsset ().OnSoloControlPointSelected (cp);
+            }
+            else
+            {
+               for (i = selectedControlPoints.length - 1; i >= 0; -- i)
+               {
+                  (selectedControlPoints [i] as ControlPoint).SetSelectedLevel (ControlPoint.SelectedLevel_Primary);
+               }
+            }
          }
       }
       

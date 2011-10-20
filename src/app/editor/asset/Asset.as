@@ -2,6 +2,7 @@
 package editor.asset {
    
    import flash.display.Sprite;
+   import flash.geom.Point;
    
    import flash.events.Event;
    import flash.ui.ContextMenu;
@@ -18,6 +19,7 @@ package editor.asset {
    
    import common.Define;
    import common.ValueAdjuster;
+   import common.Transform2D;
    
    public class Asset extends EditorObject
    {
@@ -29,12 +31,14 @@ package editor.asset {
       
       protected var mName:String = "";
       
-      private var mPosX:Number = 0;
-      private var mPosY:Number = 0;
+      private var mTransform:Transform2D = new Transform2D ();
       
-      private var mScale:Number = 1.0;
-      private var mRotation:Number = 0;
-      private var mFlipped:Boolean = false;
+      //private var mPosX:Number = 0;
+      //private var mPosY:Number = 0;
+      //
+      //private var mScale:Number = 1.0;
+      //private var mRotation:Number = 0;
+      //private var mFlipped:Boolean = false;
       
       private var mAlpha:Number = 1.0;
       
@@ -74,8 +78,8 @@ package editor.asset {
       
       public function GetInfoText ():String
       {
-         return     "x = " + ValueAdjuster.Number2Precision (mAssetManager.GetCoordinateSystem ().D2P_PositionX (mPosX), 6) 
-                + ", y = " + ValueAdjuster.Number2Precision (mAssetManager.GetCoordinateSystem ().D2P_PositionY (mPosY), 6) ;
+         return     "x = " + ValueAdjuster.Number2Precision (mAssetManager.GetCoordinateSystem ().D2P_PositionX (mTransform.mOffsetX), 6) 
+                + ", y = " + ValueAdjuster.Number2Precision (mAssetManager.GetCoordinateSystem ().D2P_PositionY (mTransform.mOffsetY), 6) ;
       }
       
 //======================================================
@@ -174,6 +178,26 @@ package editor.asset {
          return -1;
       }
       
+//=================================================================================
+//   asset space <-> manager space
+//=================================================================================
+      
+      public function AssetToManager (pointOrVector:Point, isPoint:Boolean = true):Point
+      {
+         if (isPoint)
+            return mTransform.TransformPoint (pointOrVector);
+         else
+            return mTransform.TransformVector (pointOrVector);
+      }
+      
+      public function ManagerToAsset (pointOrVector:Point, isPoint:Boolean = true):Point
+      {
+         if (isPoint)
+            return mTransform.InverseTransformPoint (pointOrVector);
+         else
+            return mTransform.InverseTransformVector (pointOrVector);
+      }
+      
 //======================================================
 // name, position
 //======================================================
@@ -191,80 +215,6 @@ package editor.asset {
          return mName;
       }
       
-      public function GetPositionX ():Number
-      {
-         return mPosX;
-      }
-      
-      public function GetPositionY ():Number
-      {
-         return mPosY;
-      }
-      
-      public function SetPosition (posX:Number, posY:Number):void
-      {
-         mPosX = posX;
-         mPosY = posY;
-         
-         x = mPosX;
-         y = mPosY;
-      }
-      
-      public function GetScale ():Number
-      {
-         return mScale;
-      }
-      
-      public function SetScale (s:Number):void
-      {
-         if (s < 0)
-            s = - s;
-         
-         mScale = s;
-         
-         UpdateDisplayObjectRotateScaleXY ();
-      }
-      
-      public function GetRotation ():Number
-      {
-         return mRotation;
-      }
-      
-      public function SetRotation (r:Number):void
-      {
-         mRotation = r % Define.kPI_x_2;
-         
-         UpdateDisplayObjectRotateScaleXY ();
-      }
-      
-      public function IsFlipped ():Boolean
-      {
-         return mFlipped;
-      }
-      
-      public function SetFlipped (flipped:Boolean):void
-      {
-         mFlipped = flipped;
-         
-         UpdateDisplayObjectRotateScaleXY ();
-      }
-      
-      private function UpdateDisplayObjectRotateScaleXY ():void
-      {
-         if (mFlipped)
-         {
-            scaleX = - mScale;
-            rotation = - mRotation * 180.0 / Math.PI;
-         }
-         else
-         {
-            scaleX = mScale;
-            rotation = mRotation * 180.0 / Math.PI;;
-         }
-         
-         scaleY = mScale;
-      }
-      
       public function GetAlpha ():Number
       {
          return mAlpha;
@@ -279,6 +229,85 @@ package editor.asset {
             a = 1.0;
          
          mAlpha = a;
+      }
+      
+      public function CloneTransform ():Transform2D
+      {
+         return mTransform.Clone ();
+      }
+      
+      public function GetPositionX ():Number
+      {
+         return mTransform.mOffsetX;
+      }
+      
+      public function GetPositionY ():Number
+      {
+         return mTransform.mOffsetY;
+      }
+      
+      public function SetPosition (posX:Number, posY:Number):void
+      {
+         mTransform.mOffsetX = posX;
+         mTransform.mOffsetY = posY;
+         
+         x = posX;
+         y = posY;
+      }
+      
+      public function GetScale ():Number
+      {
+         return mTransform.mScale;
+      }
+      
+      public function SetScale (s:Number):void
+      {
+         if (s < 0)
+            s = - s;
+         
+         mTransform.mScale = s;
+         
+         UpdateDisplayObjectRotateScaleXY ();
+      }
+      
+      public function GetRotation ():Number
+      {
+         return mTransform.mRotation;
+      }
+      
+      public function SetRotation (r:Number):void
+      {
+         mTransform.mRotation = r % Define.kPI_x_2;
+         
+         UpdateDisplayObjectRotateScaleXY ();
+      }
+      
+      public function IsFlipped ():Boolean
+      {
+         return mTransform.mFlipped;
+      }
+      
+      public function SetFlipped (flipped:Boolean):void
+      {
+         mTransform.mFlipped = flipped;
+         
+         UpdateDisplayObjectRotateScaleXY ();
+      }
+      
+      private function UpdateDisplayObjectRotateScaleXY ():void
+      {
+         if (mTransform.mFlipped)
+         {
+            scaleX = - mTransform.mScale;
+            rotation = - mTransform.mRotation * 180.0 / Math.PI;
+         }
+         else
+         {
+            scaleX = mTransform.mScale;
+            rotation = mTransform.mRotation * 180.0 / Math.PI;;
+         }
+         
+         scaleY = mTransform.mScale;
       }
       
 //====================================================================
@@ -443,14 +472,12 @@ package editor.asset {
       
       private var mSelected:Boolean = false;
       
-      public function NotifySelectedChanged (selected:Boolean):void
+      public function OnSelectedChanged (selected:Boolean):void
       {
-         var changed:Boolean =  mSelected != selected;
-         
-         mSelected = selected;
-         
-         if (changed)
+         if (mSelected != selected)
          {
+            mSelected = selected;
+            
             UpdateAppearance ();
          }
       }
@@ -458,6 +485,77 @@ package editor.asset {
       public function IsSelected ():Boolean // used internally, for external, use world.IsAssetSelected instead
       {
          return mSelected;
+      }
+      
+//====================================================================
+//   control points
+//====================================================================
+      
+      private var mControlPointsVisible:Boolean = false;
+      
+      final public function AreControlPointsVisible ():Boolean
+      {
+         return mControlPointsVisible;
+      }
+      
+      final public function SetControlPointsVisible (controlPointsVisible:Boolean):void
+      {
+         if (mControlPointsVisible != controlPointsVisible)
+         {
+            mControlPointsVisible = controlPointsVisible;
+            
+            if (mControlPointsVisible)
+            {
+               RebuildControlPoints ();
+            }
+            else
+            {
+               if (mAssetManager != null)
+                  mAssetManager.UnregisterShownControlPointsOfAsset (this);
+               
+               DestroyControlPoints ();
+            }
+         }
+      }
+      
+      public function GetControlPointContainer ():Sprite
+      {
+         return this; // to override
+      }
+      
+      final public function UpdateControlPoints ():void
+      {
+         if (mControlPointsVisible)
+         {
+            RebuildControlPoints ();
+         }
+      }
+      
+      protected function RebuildControlPoints ():void
+      {
+         // to override
+      }
+      
+      protected function DestroyControlPoints ():void
+      {
+         // to override
+      }
+      
+      public function OnSoloControlPointSelected (controlPoint:ControlPoint):void
+      {
+         controlPoint.SetSelectedLevel (ControlPoint.SelectedLevel_Primary);
+      }
+
+      public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
+      {
+      }
+
+      public function DeleteControlPoint (controlPoint:ControlPoint):void
+      {
+      }
+
+      public function InsertControlPointBefore (controlPoint:ControlPoint):void
+      {
       }
 
 //====================================================================
@@ -481,12 +579,12 @@ package editor.asset {
       
       public function GetLinkPointX ():Number
       {
-         return mPosX;
+         return mTransform.mOffsetX;
       }
       
       public function GetLinkPointY ():Number
       {
-         return mPosY;
+         return mTransform.mOffsetY;
       }
       
 //====================================================================

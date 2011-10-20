@@ -48,7 +48,7 @@ package editor.image {
    
    public class AssetImageShapeModule extends AssetImageModule
    {
-      protected var mVectorShape:VectorShapeForEditing; // also is a VectorShape
+      protected var mVectorShape:VectorShapeForEditing; // also is a VectorShape, must not be null
       protected var mIsValid:Boolean;
       
       // vectorShape must not be null
@@ -62,9 +62,14 @@ package editor.image {
          mIsValid = false;
       }
       
+      public function GetVectorShape ():VectorShapeForEditing
+      {
+         return mVectorShape;
+      }
+      
       public function IsValid ():Boolean
       {
-         return mVectorShape == null ? false : (mVectorShape as VectorShape).IsValid ();
+         return (mVectorShape as VectorShape).IsValid ();
       }
        
 //=============================================================
@@ -85,13 +90,10 @@ package editor.image {
       {
          var shapeSprite:DisplayObject = mVectorShape.CreateSprite ();
          
-         if (shapeSprite != null)
-         {
-            if (transform != null )
-               transform.TransformUntransformedDisplayObject (shapeSprite);
-            
-            container.addChild (shapeSprite);
-         }
+         if (transform != null )
+            transform.TransformUntransformedDisplayObject (shapeSprite);
+         
+         container.addChild (shapeSprite);
       }
       
       override public function BuildImageModulePhysicsAppearance (container:Sprite, transform:Transform2D = null):void

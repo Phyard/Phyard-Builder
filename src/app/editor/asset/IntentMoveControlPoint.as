@@ -1,12 +1,12 @@
 package editor.asset {
 
-   public class IntentMoveSelectedAssets extends IntentDrag
+   public class IntentMoveControlPoint extends IntentDrag
    {
-      protected var mAssetManagerPanel:AssetManagerPanel;
+      protected var mControlPoint:ControlPoint;
       
-      public function IntentMoveSelectedAssets (assetManagerPanel:AssetManagerPanel)
+      public function IntentMoveControlPoint (controlPoint:ControlPoint)
       {
-         mAssetManagerPanel = assetManagerPanel;
+         mControlPoint = controlPoint;
       }
       
    //================================================================
@@ -16,7 +16,7 @@ package editor.asset {
       protected var mFirstTime:Boolean = true;
       protected var mLastX:Number;
       protected var mLastY:Number;
-
+      
       override protected function Process (finished:Boolean):void
       {
          if (mFirstTime)
@@ -32,18 +32,17 @@ package editor.asset {
          mLastX = mCurrentX;
          mLastY = mCurrentY;
          
-         mAssetManagerPanel.MoveSelectedAssets (dx, dy, false);
+         mControlPoint.GetOwnerAsset ().MoveControlPoint (mControlPoint, dx, dy, false);
          
          super.Process (finished);
       }
       
       override protected function TerminateInternal (passively:Boolean):void
       {
-         mAssetManagerPanel.MoveSelectedAssets (0, 0, true);
+         mControlPoint.GetOwnerAsset ().MoveControlPoint (mControlPoint, 0, 0, true);
          
          super.TerminateInternal (passively);
       }
-      
   }
    
 }

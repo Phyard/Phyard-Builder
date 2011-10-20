@@ -8,6 +8,9 @@ package editor.image.vector
    
    import editor.selection.SelectionProxy;
    
+   import editor.asset.Asset;
+   import editor.asset.ControlPoint;
+   
    import common.Transform2D;
    
    public class VectorShapePolygonForEditing extends VectorShapePolygon implements VectorShapeForEditing
@@ -175,7 +178,31 @@ package editor.image.vector
                selectionProxy.AddLineSegmentShape (point1.x, point1.y, point2.x, point2.y, borderThickness, transform);
             }
          }
-
+      }
+      
+      public function CreateControlPointsForAsset (asset:Asset):Array
+      {
+         return null;
+      }
+      
+      public function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int
+      {
+         return -1;
+      }
+      
+      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      {
+         return null;
+      }
+      
+      public function DeleteControlPoint (controlPoint:ControlPoint):int
+      {
+         return -1;
+      }
+      
+      public function InsertControlPointBefore (controlPoint:ControlPoint):int
+      {
+         return -1;
       }
    }
 }

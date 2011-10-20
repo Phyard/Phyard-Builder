@@ -10,6 +10,7 @@ package editor.image {
    import flash.display.LoaderInfo;
    
    import flash.geom.Rectangle;
+   import flash.geom.Point;
    
    import flash.utils.ByteArray;
    
@@ -26,6 +27,9 @@ package editor.image {
    import editor.selection.SelectionProxyRectangle;
    
    import editor.asset.Asset;
+   import editor.asset.ControlPoint;
+   
+   import editor.image.vector.VectorShapeForEditing;
    
    import editor.core.EditorObject;
    import editor.core.ReferPair;
@@ -38,7 +42,7 @@ package editor.image {
    {  
       protected var mAssetImageModuleInstanceManager:AssetImageModuleInstanceManager;
       
-      protected var mAssetImageModule:AssetImageModule = null;
+      protected var mAssetImageModule:AssetImageModule = null; // must be null
       
       protected var mAssetImageModuleInstanceForListingPeer:AssetImageModuleInstanceForListing;
       
@@ -151,8 +155,6 @@ package editor.image {
 //   
 //=============================================================
 
-      private var mModuleSpriteForEditing:DisplayObject = null;
-      
       override public function UpdateAppearance ():void
       {
          while (numChildren > 0)
@@ -201,6 +203,132 @@ package editor.image {
       
       // for debug
       private var mPhysicsShapesLayer:Sprite = null;
+      
+//=============================================================
+//   control points
+//=============================================================
+      
+      protected var mControlPointsContainer:Sprite = new Sprite ();
+      protected var mControlPoints:Array = null;
+      
+      override public function GetControlPointContainer ():Sprite
+      {
+         return mControlPointsContainer; // to override
+      }
+      
+      override protected function RebuildControlPoints ():void
+      {
+         if (mControlPoints != null)
+            DestroyControlPoints ();
+         
+         if (mAssetImageModule is AssetImageShapeModule)
+         {
+            addChild (mControlPointsContainer);
+            mControlPoints = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().CreateControlPointsForAsset (this);
+            
+            mAssetManager.RegisterShownControlPoints (mControlPoints);
+         }
+      }
+      
+      override protected function DestroyControlPoints ():void
+      {
+         for (var i:int = mControlPoints.length - 1; i >= 0; -- i)
+         {
+            (mControlPoints [i] as ControlPoint).Destroy ();
+         }
+         
+         mControlPoints = null;
+         if (mControlPointsContainer.parent != null) // should be this
+            mControlPointsContainer.parent.removeChild (mControlPointsContainer);
+            
+         mAssetManager.UnregisterShownControlPointsOfAsset (this);
+      }
+      
+      override public function OnSoloControlPointSelected (controlPoint:ControlPoint):void
+      {
+         super.OnSoloControlPointSelected (controlPoint);
+         
+         if (mAssetImageModule is AssetImageShapeModule)
+         {
+            var secondarySelectedControlPointIndex:int = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().GetSecondarySelectedControlPointId (controlPoint);
+            if (secondarySelectedControlPointIndex >= 0 && mControlPoints != null && secondarySelectedControlPointIndex < mControlPoints.length)
+            {
+               (mControlPoints [secondarySelectedControlPointIndex] as ControlPoint).SetSelectedLevel (ControlPoint.SelectedLevel_Secondary);
+            }
+         }
+      }
+      
+      protected function OnControlPointsModified (infos:Array, actionDone:Boolean):void
+      {
+         if (infos != null)
+         {
+            var localAssetDisplayment:Point = new Point (infos [0], infos[1]);
+            var globalAssetDisplayment:Point = AssetToManager (localAssetDisplayment, false);
+            SetPosition (GetPositionX () + globalAssetDisplayment.x, GetPositionY () + globalAssetDisplayment.y);
+            
+            UpdateAppearance ();
+            
+            if (AreControlPointsVisible ())
+            {
+               addChild (mControlPointsContainer);
+            }
+
+            if (actionDone)
+            {
+               UpdateSelectionProxy ();
+               RebuildControlPoints ();
+               var selectedControlPointIndex:int = infos[2];
+               if (selectedControlPointIndex >= 0 && selectedControlPointIndex < mControlPoints.length)
+               {
+                  OnSoloControlPointSelected (mControlPoints [selectedControlPointIndex] as ControlPoint);
+               }
+            }
+         }
+      }
+
+      override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
+      {
+         if (mAssetImageModule is AssetImageShapeModule)
+         {
+            var localDisplayment:Point = ManagerToAsset (new Point (dx, dy), false); 
+            
+            var returnInfos:Array = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().OnMoveControlPoint (mControlPoints, controlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
+            OnControlPointsModified (returnInfos, done);
+         }
+      }
+
+      override public function DeleteControlPoint (controlPoint:ControlPoint):void
+      {
+         if (mAssetImageModule is AssetImageShapeModule)
+         {
+            var returnIndex:int = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().DeleteControlPoint (controlPoint);
+            if (returnIndex >= 0)
+            {
+               UpdateAppearance ();
+               UpdateSelectionProxy ();
+               
+               RebuildControlPoints ();
+            }
+         }
+      }
+
+      override public function InsertControlPointBefore (controlPoint:ControlPoint):void
+      {
+         if (mAssetImageModule is AssetImageShapeModule)
+         {
+            var returnIndex:int = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().InsertControlPointBefore (controlPoint);
+            if (returnIndex >= 0)
+            {
+               UpdateAppearance ();
+               UpdateSelectionProxy ();
+               
+               RebuildControlPoints ();
+               controlPoint = mControlPoints [returnIndex] as ControlPoint;
+               controlPoint.SetSelectedLevel (ControlPoint.SelectedLevel_Primary);
+               OnSoloControlPointSelected (controlPoint);
+            }
+         }
+      }
       
 //=============================================================
 //   context menu

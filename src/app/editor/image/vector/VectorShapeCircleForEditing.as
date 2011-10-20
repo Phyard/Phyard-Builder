@@ -8,6 +8,9 @@ package editor.image.vector
    
    import editor.selection.SelectionProxy;
    
+   import editor.asset.Asset;
+   import editor.asset.ControlPoint;
+   
    import common.Transform2D;
    import common.Define;
    
@@ -80,6 +83,31 @@ package editor.image.vector
       {
          var borderThickness:Number = GetBorderThickness ();
          selectionProxy.AddCircleShape (GetRadius () + borderThickness * 0.5, transform);
+      }
+      
+      public function CreateControlPointsForAsset (asset:Asset):Array
+      {
+         return null;
+      }
+      
+      public function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int
+      {
+         return -1;
+      }
+      
+      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      {
+         return null;
+      }
+      
+      public function DeleteControlPoint (controlPoint:ControlPoint):int
+      {
+         return -1;
+      }
+      
+      public function InsertControlPointBefore (controlPoint:ControlPoint):int
+      {
+         return -1;
       }
    }
 }

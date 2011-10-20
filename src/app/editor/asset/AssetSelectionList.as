@@ -42,7 +42,7 @@ package editor.asset {
          }
          
          mSelectedAssets.unshift (asset);
-         asset.NotifySelectedChanged (true);
+         asset.OnSelectedChanged (true);
       }
       
       public function RemoveSelectedAsset (asset:Asset):void
@@ -55,7 +55,7 @@ package editor.asset {
             if (mSelectedAssets [i] == asset)
             {
                mSelectedAssets.splice (i, 1);
-               asset.NotifySelectedChanged (false);
+               asset.OnSelectedChanged (false);
                return;
             }
          }

@@ -2,6 +2,8 @@ package common {
 
    import flash.display.DisplayObject;
    
+   import flash.geom.Point;
+   
    public class Transform2D
    {  
       public static function CombineTransform2Ds (transform1:Transform2D, transform2:Transform2D, combined:Transform2D = null):Transform2D
@@ -92,6 +94,17 @@ package common {
          SetValues (ox, oy, s, f, r);
       }
       
+      public function Clone (clonedTransform:Transform2D = null):Transform2D
+      {
+         if (clonedTransform == null)
+            return new Transform2D (mOffsetX, mOffsetY, mScale, mFlipped, mRotation);
+         else
+         {
+            clonedTransform.SetValues (mOffsetX, mOffsetY, mScale, mFlipped, mRotation);
+            return clonedTransform;
+         }
+      }
+      
       public function SetValues (ox:Number, oy:Number, s:Number, f:Boolean, r:Number):void
       {
          mOffsetX = ox;
@@ -101,7 +114,69 @@ package common {
          mRotation = r;
       }
       
-      // transfromed: the displayObject is transfromed or not.
+      public function TransformPoint (inPoint:Point, outPoint:Point = null):Point
+      {
+         outPoint = TransformVector (inPoint, outPoint);
+         
+         // offset
+         outPoint.x += mOffsetX;
+         outPoint.y += mOffsetY;
+         
+         //
+         return outPoint;
+      }
+      
+      public function TransformVector (inVector:Point, outVector:Point = null):Point
+      {
+         if (outVector == null)
+            outVector = new Point ();
+         
+         // rotate
+         outVector.x = cos * inVector.x - sin * inVector.y;
+         outVector.y = sin * inVector.x + cos * inVector.y;
+         
+         // flip
+         if (mFlipped)
+            outVector.x = - outVector.x;
+         
+         // scale
+         outVector.x *= mScale;
+         outVector.y *= mScale;
+         
+         //
+         return outVector;
+      }
+      
+      public function InverseTransformPoint (inPoint:Point, outPoint:Point = null):Point
+      {
+         // offset
+         var newInPoint:Point = new Point (inPoint.x - mOffsetX, inPoint.y - mOffsetY);
+
+         // 
+         return InverseTransformVector (newInPoint, outPoint);
+      }
+      
+      public function InverseTransformVector (inVector:Point, outVector:Point = null):Point
+      {
+         if (outVector == null)
+            outVector = new Point ();
+         
+         // scale
+         outVector.x /= mScale;
+         outVector.y /= mScale;
+         
+         // flip
+         if (mFlipped)
+            outVector.x = - outVector.x;
+         
+         // rotate
+         outVector.x =   cos * inVector.x + sin * inVector.y;
+         outVector.y = - sin * inVector.x + cos * inVector.y;
+         
+         //
+         return outVector;
+      }
+      
       public function TransformUntransformedDisplayObject (displayObject:DisplayObject):DisplayObject
       {
          if (displayObject != null)

@@ -8,6 +8,9 @@ package editor.image.vector
    
    import editor.selection.SelectionProxy;
    
+   import editor.asset.Asset;
+   import editor.asset.ControlPoint;
+   
    import common.Transform2D;
    
    public class VectorShapeRectangleForEditing extends VectorShapeRectangle implements VectorShapeForEditing
@@ -65,6 +68,69 @@ package editor.image.vector
             borderThickness = 0;
          
          selectionProxy.AddRectangleShapeHalfWH (GetHalfWidth () + borderThickness * 0.5 , GetHalfHeight () + borderThickness * 0.5, transform);
+      }
+      
+      public function CreateControlPointsForAsset (asset:Asset):Array
+      {
+         var controlPoints:Array = new Array (4);
+         
+         for (var i:int = 0; i < 4; ++ i)
+         {
+            var cp:ControlPoint = new ControlPoint (asset, i);
+            cp.SetPosition ((i == 0 || i == 3) ? - mHalfWidth : mHalfWidth, (i == 0 || i == 1) ? - mHalfHeight : mHalfHeight);
+            cp.RebuildAppearance ();
+            cp.RebuildSelectionProxy ();
+            
+            controlPoints [i] = cp;
+         }
+         
+         return controlPoints;
+      }
+      
+      public function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int
+      {
+         return -1;
+      }
+      
+      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      {
+         if (controlPoints == null || controlPoints.length != 4)
+            return null;
+         
+         if (movedControlPointIndex < 0 || movedControlPointIndex >= 4)
+            return null;
+         
+         var halfDw:Number = 0.5 * ((movedControlPointIndex == 0 || movedControlPointIndex == 3) ? - dx : dx);
+         var halfDh:Number = 0.5 * ((movedControlPointIndex == 0 || movedControlPointIndex == 1) ? - dy : dy);
+         
+         if (halfDw < - mHalfWidth)
+            halfDw = - mHalfWidth;
+         if (halfDh < - mHalfHeight)
+            halfDh = - mHalfHeight;
+         
+         mHalfWidth  += halfDw;
+         mHalfHeight += halfDh;
+         
+         var assetLocalDisplaymentX:Number = (movedControlPointIndex == 0 || movedControlPointIndex == 3) ? - halfDw : halfDw;
+         var assetLocalDisplaymentY:Number = (movedControlPointIndex == 0 || movedControlPointIndex == 1) ? - halfDh : halfDh;
+
+         for (var i:int = 0; i < 4; ++ i)
+         {
+            var cp:ControlPoint = controlPoints [i] as ControlPoint;
+            cp.SetPosition ((i == 0 || i == 3) ? - mHalfWidth : mHalfWidth, (i == 0 || i == 1) ? - mHalfHeight : mHalfHeight);
+         }
+         
+         return new Array (assetLocalDisplaymentX, assetLocalDisplaymentY, movedControlPointIndex);
+      }
+      
+      public function DeleteControlPoint (controlPoint:ControlPoint):int
+      {
+         return -1;
+      }
+      
+      public function InsertControlPointBefore (controlPoint:ControlPoint):int
+      {
+         return -1;
       }
    }
 }

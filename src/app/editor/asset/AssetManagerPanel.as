@@ -311,7 +311,23 @@ package editor.asset {
       }
       
       protected function OnMouseDownInternal (managerX:Number, managerY:Number, mIsCtrlDownOnMouseDown:Boolean, mIsShiftDownOnMouseDown:Boolean):void
-      {  
+      {
+         // control points
+         
+         var controlPoints:Array = mAssetManager.GetControlPointsAtPoint (managerX, managerY);
+         if (controlPoints.length > 0)
+         {
+            var selectCPs:Array = new Array (1);
+            selectCPs [0] = controlPoints [0] as ControlPoint;
+            mAssetManager.SetSelectedControlPoints (selectCPs);
+            SetCurrentIntent (new IntentMoveControlPoint (controlPoints [0] as ControlPoint));
+            mCurrentIntent.OnMouseDown (managerX, managerY);
+            
+            return;
+         }
+         
+         // linkables
+         
          var linkable:Linkable = mAssetManager.GetFirstLinkablesAtPoint (managerX, managerY);
          if (linkable != null && linkable.CanStartCreatingLink (managerX, managerY))
          {
@@ -320,6 +336,8 @@ package editor.asset {
             
             return;
          }
+         
+         // assets
          
          if (mAssetManager.AreSelectedAssetsContainingPoint (managerX, managerY))
          {
@@ -444,21 +462,39 @@ package editor.asset {
       
       public function UpdateInterface ():void
       {
+         // to override
       }
       
 //=================================================================================
-//   select
+//   asset selection (todo: move SelectionList from AssetManager to here)
 //=================================================================================
       
       public function OnAssetSelectionsChanged (passively:Boolean = false):void
-      {  
+      {
+         if (mAssetManager == null)
+            return;
+         
          SetScaleRotateFlipHandlersVisible (mAssetManager.GetNumSelectedAssets () > 0);
+         
+         if (mAssetManager.GetNumSelectedAssets () == 1)
+         {
+            var assets:Array = new Array (1);
+            assets [0] = mAssetManager.GetTheFirstSelectedAsset ();
+            mAssetManager.SetAssetsWithControlPointsShown (assets);
+         }
+         else
+         {
+            mAssetManager.SetAssetsWithControlPointsShown (null);
+         }
          
          UpdateInterface ();
       } 
       
       public function PointSelectAsset (managerX:Number, managerY:Number):Boolean
       {
+         if (mAssetManager == null)
+            return false;
+         
          if (! mIsCtrlDownOnMouseDown)
             mAssetManager.ClearAssetSelections ();
          
@@ -476,10 +512,12 @@ package editor.asset {
             
             return true;
          }
-         
-         OnAssetSelectionsChanged ();
-         
-         return false;
+         else
+         {
+            OnAssetSelectionsChanged ();
+            
+            return false;
+         }
       }
       
       public function RegionSelectAssets (left:Number, top:Number, right:Number, bottom:Number, oldSelectedAssets:Array):void
@@ -505,7 +543,7 @@ package editor.asset {
       }
       
 //=================================================================================
-//   scale / rotate / flip handlers
+//   asset scale / rotate / flip handlers
 //=================================================================================
       
       final protected function SupportScaleRotateFlipTransforms ():Boolean

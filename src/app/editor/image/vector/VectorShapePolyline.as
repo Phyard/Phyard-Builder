@@ -4,16 +4,21 @@ package editor.image.vector
    
    public class VectorShapePolyline extends VectorShapePath
    {
-      protected var mLocalPoints:Array = new Array (); // should not be null, at lesst 2 points
+      protected var mLocalVertexPoints:Array = new Array (); // should not be null, at lesst 2 points
       
-      public function GetLocalPoints ():Array
+      public function VectorShapePolyline ()
       {
-         return mLocalPoints;
+         SetBackgroundColor (0x000000);
       }
       
-      public function SetLocalPoints (points:Array):void
+      public function GetLocalVertexPoints ():Array
       {
-         mLocalPoints = points;
+         return mLocalVertexPoints;
+      }
+      
+      public function SetLocalVertexPoints (points:Array):void
+      {
+         mLocalVertexPoints = points;
       }
    }
 }

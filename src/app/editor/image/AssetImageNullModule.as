@@ -52,7 +52,7 @@ package editor.image {
    
    public class AssetImageNullModule extends AssetImageModule
    {
-      public function AssetImageNullModule (vectorShape:VectorShape)
+      public function AssetImageNullModule ()
       {
          super (null); // no manager
          
@@ -63,7 +63,7 @@ package editor.image {
 //   
 //=============================================================
 
-      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D):void
+      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
       {
          var moduleSize:Number = 50;
          var halfModuleSize:Number = 0.5 * moduleSize;
@@ -82,7 +82,7 @@ package editor.image {
       {
       }
       
-      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D = null):void
+      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
       {
          var moduleSize:Number = 50;
          var halfModuleSize:Number = 0.5 * moduleSize;

@@ -4,11 +4,17 @@ package editor.image.vector
    {  
       //protected var mAttributeBits:int = 0;
          public static const Flag_BuildBorder      :int = 1 << 8;
-         public static const Flag_ShowBorder       :int = 1 << 9;
+         public static const Flag_DrawBorder       :int = 1 << 9;
             
       protected var mBorderColor:uint = 0x000000;
       protected var mBorderOpacity:int = 100; // 0-100. To changed to float.
-      protected var mBorderThickness:int = 1.0; //0-255. To changed to float.
+      protected var mBorderThickness:int = 1; //0-255. To changed to float.
+      
+      public function VectorShapeArea ()
+      {
+         SetBuildBorder (true);
+         SetDrawBorder (true);
+      }
       
       public function IsBuildBorder ():Boolean
       {
@@ -23,17 +29,17 @@ package editor.image.vector
             mAttributeBits &= ~Flag_BuildBorder;
       }
       
-      public function IsShowBorder ():Boolean
+      public function IsDrawBorder ():Boolean
       {
-         return (mAttributeBits & Flag_ShowBorder) != 0;
+         return (mAttributeBits & Flag_DrawBorder) != 0;
       }
       
-      public function SetShowBorder (showBorder:Boolean):void
+      public function SetDrawBorder (showBorder:Boolean):void
       {
          if (showBorder)
-            mAttributeBits |= Flag_ShowBorder;
+            mAttributeBits |= Flag_DrawBorder;
          else
-            mAttributeBits &= ~Flag_ShowBorder;
+            mAttributeBits &= ~Flag_DrawBorder;
       }
       
       public function GetBorderColor ():uint

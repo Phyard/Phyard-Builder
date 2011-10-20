@@ -37,7 +37,8 @@ package common {
       
       // rotation
       
-         combined.mRotation = ((transform1.mFlipped != combined.mFlipped) ? - transform1.mRotation : transform1.mRotation) + ((transform2.mFlipped != combined.mFlipped) ? - transform2.mRotation : transform2.mRotation);
+         //combined.mRotation = ((combined.mFlipped != transform1.mFlipped) ? - transform1.mRotation : transform1.mRotation) + ((combined.mFlipped != transform2.mFlipped) ? - transform2.mRotation : transform2.mRotation);
+         combined.mRotation = (transform2.mFlipped ? - transform1.mRotation : transform1.mRotation) + transform2.mRotation;
          
       // ...
          

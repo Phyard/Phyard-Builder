@@ -1,6 +1,8 @@
 package editor.asset {
 
    import flash.geom.Point;
+   
+   import com.tapirgames.util.GraphicsUtil;
 
    public class IntentTaps extends Intent
    {
@@ -40,7 +42,7 @@ package editor.asset {
             
             if (mPoints.length > 0)
             {
-               var lastPoint:Point = mPoints [0] as Point;
+               var lastPoint:Point = mPoints [mPoints.length - 1] as Point;
                
                var lastPointInView:Point    = mAssetManagerPanel.ManagerToView (lastPoint);
                var currentPointInView:Point = mAssetManagerPanel.ManagerToView (new Point (managerX, managerY));
@@ -57,7 +59,12 @@ package editor.asset {
             
             if (mCallbackOnTap != null)
             {
-               mCallbackOnTap (mPoints.concat (), finished);
+               mCallbackOnTap (GraphicsUtil.DeepClonePointArray (mPoints), finished);
+            }
+            
+            if (finished)
+            {
+               Terminate (false);
             }
          }
       }
@@ -78,7 +85,7 @@ package editor.asset {
          
          if (mCallbackOnMove != null)
          {
-            mCallbackOnMove (mPoints.concat (), managerX, managerY, isHold);
+            mCallbackOnMove (GraphicsUtil.DeepClonePointArray (mPoints), managerX, managerY, isHold);
          }
       }
       

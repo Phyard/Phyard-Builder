@@ -148,7 +148,7 @@ package editor.image {
       }
       
       // this function is useless for this class
-      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D):void
+      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
       {
       }
       

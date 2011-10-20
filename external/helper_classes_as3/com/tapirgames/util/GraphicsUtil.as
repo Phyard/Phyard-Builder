@@ -33,6 +33,23 @@ package com.tapirgames.util {
       }
       */
       
+      public static function DeepClonePointArray (points:Array):Array
+      {
+         if (points == null)
+            return null;
+         
+         var numPoints:int = points.length;
+         var newPointArray:Array = new Array (numPoints);
+         var point:Point;
+         for (var i:int = 0; i < numPoints; ++ i)
+         {
+            point = points [i] as Point;
+            newPointArray [i] = new Point (point.x, point.y);
+         }
+         
+         return newPointArray;
+      }
+      
       public static function GetInvertColor (color:uint):uint
       {
          var r:int = (color >> 16) & 0xFF;

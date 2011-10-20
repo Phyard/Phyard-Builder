@@ -15,12 +15,12 @@ package editor.image {
    import editor.asset.Asset;
    import editor.asset.AssetManager;
    
-   import editor.image.vector.VectorShape;
-   import editor.image.vector.VectorShapeRectangle;
-   import editor.image.vector.VectorShapeCircle;
-   import editor.image.vector.VectorShapePolygon;
-   import editor.image.vector.VectorShapePolyline;
-   import editor.image.vector.VectorShapeText;
+   import editor.image.vector.VectorShapeForEditing;
+   import editor.image.vector.VectorShapeRectangleForEditing;
+   import editor.image.vector.VectorShapeCircleForEditing;
+   import editor.image.vector.VectorShapePolygonForEditing;
+   import editor.image.vector.VectorShapePolylineForEditing;
+   import editor.image.vector.VectorShapeTextForEditing;
    
    import common.CoordinateSystem;
    
@@ -60,10 +60,19 @@ package editor.image {
 
       public function CreateImageModuleInstance (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
+         if (module == null)
+            module= new AssetImageNullModule ();
+         
          //var finalModule:AssetImageModule = module == null ? null : module.GetFinalImageModule ();
          var finalModule:AssetImageModule = module;
-         var moduleInstane:AssetImageModuleInstance = new AssetImageModuleInstance (this, finalModule);
          
+         if (finalModule == mAssetImageCompositeModule || finalModule.ContainsDescendant (mAssetImageCompositeModule))
+         {
+            return null;
+         }
+            
+         var moduleInstane:AssetImageModuleInstance = new AssetImageModuleInstance (this, finalModule);
+
          if (selectIt) // in editing, not loading
          {
             moduleInstane.SetPosition (mouseX, mouseY);
@@ -105,27 +114,27 @@ package editor.image {
       
       public function CreateImageShapeRectangleModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
-         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapeRectangle ()), selectIt, atIndex);
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapeRectangleForEditing ()), selectIt, atIndex);
       }
       
       public function CreateImageShapeCircleModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
-         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapeCircle ()), selectIt, atIndex);
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapeCircleForEditing ()), selectIt, atIndex);
       }
       
       public function CreateImageShapePolygonModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
-         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapePolygon ()), selectIt, atIndex);
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapePolygonForEditing ()), selectIt, atIndex);
       }
       
       public function CreateImageShapePolylineModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
-         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapePolyline ()), selectIt, atIndex);
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapePolylineForEditing ()), selectIt, atIndex);
       }
       
       public function CreateImageShapeTextModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
-         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapeRectangle ()), selectIt, atIndex);
+         return CreateImageModuleInstance (new AssetImageShapeModule (new VectorShapeTextForEditing ()), selectIt, atIndex);
       }
       
 //=============================================================

@@ -202,23 +202,23 @@ package editor.image.dialog {
          }
       }
       
-      protected function OnDragCreateMouleInstacne (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
+      protected function OnDragCreatingShapeMouleInstacne (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
       {
          var points:Array = new Array (2);
          points [0] = new Point (startX, startY);
          points [1] = new Point (endX, endY);
          
-         OnCreatingMouleInstacne (points, done);
+         OnCreatingShapeMouleInstacne (points, done);
       }
       
-      protected function OnTapsCreatingMoving (points:Array, currentX:Number, currentY:Number, done:Boolean):void
+      protected function OnTapsCreatingShapeMouleInstacne (points:Array, currentX:Number, currentY:Number, done:Boolean):void
       {
          points.push (new Point (currentX, currentY));
          
-         OnCreatingMouleInstacne (points, done);
+         OnCreatingShapeMouleInstacne (points, done);
       }
       
-      protected function OnCreatingMouleInstacne (points:Array, done:Boolean):void
+      protected function OnCreatingShapeMouleInstacne (points:Array, done:Boolean):void
       {
          var selectedModuleInstacnes:Array = mAssetImageModuleInstanceManager.GetSelectedAssets ();
          if (selectedModuleInstacnes == null || selectedModuleInstacnes.length != 1)
@@ -242,7 +242,10 @@ package editor.image.dialog {
             return;
          }
          
-         shapeModule.OnCreating (points);
+         var pos:Point = shapeModule.OnCreating (points);
+         if (pos != null)
+            moduleInstance.SetPosition (pos.x, pos.y);
+         
          moduleInstance.UpdateAppearance ();
          
          if (done)
@@ -265,10 +268,11 @@ package editor.image.dialog {
          if (! event.target is Button)
             return;
          
+         SetCurrentIntent (null);
+         
          // cancel old
          if (mCurrentSelectedCreateButton == event.target)
          {
-            SetCurrentIntent (null);
             mCurrentSelectedCreateButton = null;
             return;
          }
@@ -284,19 +288,19 @@ package editor.image.dialog {
                break;
             case mButtonCreateShapeBoxInstance:
                mAssetImageModuleInstanceManager.CreateImageShapeRectangleModuleInstance (true);
-               SetCurrentIntent (new IntentDrag (OnDragCreateMouleInstacne, OnCreatingCancelled));
+               SetCurrentIntent (new IntentDrag (OnDragCreatingShapeMouleInstacne, OnCreatingCancelled));
                break;
             case mButtonCreateShapeCircleInstance:
                mAssetImageModuleInstanceManager.CreateImageShapeCircleModuleInstance (true),
-               SetCurrentIntent (new IntentDrag (OnDragCreateMouleInstacne, OnCreatingCancelled));
+               SetCurrentIntent (new IntentDrag (OnDragCreatingShapeMouleInstacne, OnCreatingCancelled));
                break;
             case mButtonCreateShapePolygonInstance:
                mAssetImageModuleInstanceManager.CreateImageShapePolygonModuleInstance (true)
-               SetCurrentIntent (new IntentTaps (this, OnCreatingMouleInstacne, OnTapsCreatingMoving, OnCreatingCancelled));
+               SetCurrentIntent (new IntentTaps (this, OnCreatingShapeMouleInstacne, OnTapsCreatingShapeMouleInstacne, OnCreatingCancelled));
                break;
             case mButtonCreateShapePolylineInstance:
                mAssetImageModuleInstanceManager.CreateImageShapePolylineModuleInstance (true);
-               SetCurrentIntent (new IntentTaps (this, OnCreatingMouleInstacne, OnTapsCreatingMoving, OnCreatingCancelled));
+               SetCurrentIntent (new IntentTaps (this, OnCreatingShapeMouleInstacne, OnTapsCreatingShapeMouleInstacne, OnCreatingCancelled));
                break;
             case mButtonCreateShapeTextInstance:
                SetCurrentIntent (new IntentPutAsset (

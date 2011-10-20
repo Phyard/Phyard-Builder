@@ -73,6 +73,11 @@ package editor.asset {
          scaleX = scaleY = s;
       }
       
+      public function GetScale ():Number
+      {
+         return scaleX;
+      }
+      
       protected var mViewWidth:Number;
       protected var mViewHeight:Number;
       

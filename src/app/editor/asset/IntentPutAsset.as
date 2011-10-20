@@ -13,11 +13,19 @@ package editor.asset {
          mCallbackOnCancel_IntentPutAsset = callbackOnCancel;
          
          mAssetToPut = assetToPut;
+         
+         if (mAssetToPut == null)
+         {
+            Terminate (true);
+         }
       }
       
       protected function OnCancelled ():void
       {
-         mAssetToPut.GetAssetManager ().DestroyAsset (mAssetToPut);
+         if (mAssetToPut != null)
+         {
+            mAssetToPut.GetAssetManager ().DestroyAsset (mAssetToPut);
+         }
          
          if (mCallbackOnCancel_IntentPutAsset != null)
          {

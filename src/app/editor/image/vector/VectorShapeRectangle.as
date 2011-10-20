@@ -5,8 +5,8 @@ package editor.image.vector
       //protected var mAttributeBits:int = 0;
          public static const Flag_RoundCorners   :int = 1 << 16;
             
-      protected var mHalfWidth:Number = 1;
-      protected var mHalfHeight:Number = 1;
+      protected var mHalfWidth:Number = 0;
+      protected var mHalfHeight:Number = 0;
       
       public function IsRoundCorners ():Boolean
       {

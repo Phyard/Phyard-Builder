@@ -4,16 +4,16 @@ package editor.image.vector
    
    public class VectorShapePolygon extends VectorShapeArea
    {
-      protected var mLocalPoints:Array = new Array (); // should not be null, at lesst 3 points
+      protected var mLocalVertexPoints:Array = new Array (); // should not be null, at lesst 3 points
       
-      public function GetLocalPoints ():Array
+      public function GetLocalVertexPoints ():Array
       {
-         return mLocalPoints;
+         return mLocalVertexPoints;
       }
       
-      public function SetLocalPoints (points:Array):void
+      public function SetLocalVertexPoints (points:Array):void
       {
-         mLocalPoints = points;
+         mLocalVertexPoints = points;
       }
    }
 }

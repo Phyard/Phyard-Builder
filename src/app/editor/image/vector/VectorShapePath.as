@@ -7,7 +7,12 @@ package editor.image.vector
          public static const Flag_Closed           :int = 1 << 12;
          public static const Flag_RoundEnds        :int = 1 << 13; // will not support other svg end types
       
-      protected var mCurveThickness:int; // 0-255. To change to float. To change name to mThickness
+      protected var mCurveThickness:int = 1; // 0-255. To change to float. To change name to mThickness
+      
+      public function VectorShapePath ():void
+      {
+         SetRoundEnds (true);
+      }
       
       public function IsClosed ():Boolean
       {

@@ -9,10 +9,10 @@ package com.tapirgames.util {
       
       public static function GetClipValue (value:Number, min:Number, max:Number):Number
       {
-         if (value < min)
+         if (value <= min)
             return min;
          
-         if (value > max)
+         if (value >= max)
             return max;
          
          return value;

@@ -100,6 +100,11 @@ package editor.image {
 //   for module instance callings
 //=============================================================
       
+      public function ContainsDescendant (module:AssetImageModule):Boolean
+      {
+         return false;
+      }
+      
       public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
       {
          // to override
@@ -110,7 +115,7 @@ package editor.image {
          // to override
       }
       
-      public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D):void
+      public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
       {
          // to override
       }

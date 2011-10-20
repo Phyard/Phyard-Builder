@@ -100,7 +100,7 @@ package editor.image {
       {
       }
       
-      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D):void
+      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
       {
          if (mImageDivisionPeer == null)
             return;

@@ -113,6 +113,23 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
+      
+      override public function ContainsDescendant (module:AssetImageModule):Boolean
+      {
+         var numModules:int = mModuleInstanceManager.GetNumAssets ();
+         for (var i:int = 0; i < numModules; ++ i)
+         {
+            var moduleInstance:AssetImageModuleInstance = mModuleInstanceManager.GetAssetByAppearanceId (i) as AssetImageModuleInstance;
+            
+            var instanceModule:AssetImageModule = moduleInstance.GetAssetImageModule ();
+            if (instanceModule == module || instanceModule.ContainsDescendant (module))
+            {
+               return true;
+            }
+         }
+         
+         return false;
+      }
 
       override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
       {
@@ -132,7 +149,7 @@ package editor.image {
       {
       }
       
-      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D):void
+      override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
       {
          var numModules:int = mModuleInstanceManager.GetNumAssets ();
          for (var i:int = 0; i < numModules; ++ i)
@@ -141,7 +158,7 @@ package editor.image {
             var finalTransform:Transform2D = new Transform2D (moduleInstance.GetPositionX (), moduleInstance.GetPositionY (), moduleInstance.GetScale (), moduleInstance.IsFlipped (), moduleInstance.GetRotation ());
             finalTransform = Transform2D.CombineTransform2Ds (transform, finalTransform);
             
-            moduleInstance.GetAssetImageModule ().BuildImageModuleSelectionProxy (selectionProxy, finalTransform);
+            moduleInstance.GetAssetImageModule ().BuildImageModuleSelectionProxy (selectionProxy, finalTransform, visualScale);
          }
       }
       

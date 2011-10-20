@@ -703,7 +703,7 @@ package editor.asset {
             (mCurrentShownControlPoints [i] as ControlPoint).SetSelectedLevel (ControlPoint.SelectedLevel_None);
          }
          
-         if (selectedControlPoints != null && selectedControlPoints.indexOf (cp) >= 0)
+         if (selectedControlPoints != null)
          {
             if (selectedControlPoints.length == 1)
             {

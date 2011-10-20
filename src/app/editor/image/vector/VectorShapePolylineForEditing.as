@@ -150,7 +150,7 @@ package editor.image.vector
       
       public function CreateControlPointsForAsset (asset:Asset):Array
       {
-         return null;
+         return VectorShapePolygonForEditing.CreatePolyControlPointsForAsset (mLocalVertexPoints, asset);
       }
       
       public function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int
@@ -160,7 +160,7 @@ package editor.image.vector
       
       public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
       {
-         return null;
+         return VectorShapePolygonForEditing.OnMovePolyControlPoint (mLocalVertexPoints, controlPoints, movedControlPointIndex, dx, dy);;
       }
       
       public function DeleteControlPoint (controlPoint:ControlPoint):int

@@ -32,7 +32,7 @@ package editor.asset {
          mIndex = index;
          
          mOwnerAsset.GetControlPointContainer ().addChild (this);
-         RebuildAppearance ();
+         //RebuildAppearance ();
       }
       
       public function GetOwnerAsset ():Asset
@@ -80,7 +80,7 @@ package editor.asset {
       }
       
       public function RebuildAppearance ():void
-      {  
+      {
          var borderColor:uint;
          var borderSize:Number;
          var filledColor:uint = 0xFFFFFF;

@@ -180,9 +180,32 @@ package editor.image.vector
          }
       }
       
+      public static function CreatePolyControlPointsForAsset (localVertexPoints:Array, asset:Asset):Array
+      {
+         if (localVertexPoints == null || localVertexPoints.length == 0)
+            return null;
+         
+         var vertexCount:int = localVertexPoints.length;
+         var controlPoints:Array = new Array (vertexCount);
+         
+         for (var i:int = 0; i < vertexCount; ++ i)
+         {
+            var vertexPoint:Point = localVertexPoints [i] as Point;
+
+            var cp:ControlPoint = new ControlPoint (asset, i);
+            cp.SetPosition (vertexPoint.x, vertexPoint.y);
+            cp.RebuildAppearance ();
+            cp.RebuildSelectionProxy ();
+            
+            controlPoints [i] = cp;
+         }
+         
+         return controlPoints;
+      }
+      
       public function CreateControlPointsForAsset (asset:Asset):Array
       {
-         return null;
+         return CreatePolyControlPointsForAsset (mLocalVertexPoints, asset);
       }
       
       public function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int
@@ -190,9 +213,42 @@ package editor.image.vector
          return -1;
       }
       
+      public static function OnMovePolyControlPoint (localVertexPoints:Array, controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      {
+         if (localVertexPoints == null || localVertexPoints.length == 0)
+            return null;
+         
+         var vertexCount:int = localVertexPoints.length;
+         
+         if (controlPoints == null || controlPoints.length != vertexCount)
+            return null;
+         
+         if (movedControlPointIndex < 0 || movedControlPointIndex >= vertexCount)
+            return null;
+         
+         var assetLocalDisplaymentX:Number = dx / Number (vertexCount);
+         var assetLocalDisplaymentY:Number = dy / Number (vertexCount);
+         
+         var movedVertexPoint:Point = localVertexPoints [movedControlPointIndex] as Point;
+         movedVertexPoint.x += dx;
+         movedVertexPoint.y += dy;
+
+         for (var i:int = 0; i < vertexCount; ++ i)
+         {
+            var vertexPoint:Point = localVertexPoints [i] as Point;
+            vertexPoint.x -= assetLocalDisplaymentX;
+            vertexPoint.y -= assetLocalDisplaymentY;
+
+            var cp:ControlPoint = controlPoints [i] as ControlPoint;
+            cp.SetPosition (vertexPoint.x, vertexPoint.y);
+         }
+                  
+         return new Array (assetLocalDisplaymentX, assetLocalDisplaymentY, movedControlPointIndex);
+      }
+      
       public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
       {
-         return null;
+         return OnMovePolyControlPoint (mLocalVertexPoints, controlPoints, movedControlPointIndex, dx, dy);
       }
       
       public function DeleteControlPoint (controlPoint:ControlPoint):int

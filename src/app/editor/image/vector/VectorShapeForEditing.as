@@ -19,7 +19,7 @@ package editor.image.vector
       function BuildSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void;
 
       function CreateControlPointsForAsset (asset:Asset):Array;
-      function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int;
+      function GetSecondarySelectedControlPointId (primaryControlPointIndex:int):int;
       
       function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult;
       function DeleteControlPoint (controlPoints:Array, toDeleteControlPointIndex:int):ControlPointModifyResult;

@@ -8,14 +8,14 @@ package common {
    
    import editor.entity.Entity;
    
-   import editor.entity.EntityShape
-   import editor.entity.EntityShapeCircle;
-   import editor.entity.EntityShapeRectangle;
-   import editor.entity.EntityShapePolygon;
-   import editor.entity.EntityShapePolyline;
-   import editor.entity.EntityShapeText;
-   import editor.entity.EntityShapeTextButton;
-   import editor.entity.EntityShapeGravityController;
+   import editor.entity.EntityVectorShape;
+   import editor.entity.EntityVectorShapeCircle;
+   import editor.entity.EntityVectorShapeRectangle;
+   import editor.entity.EntityVectorShapePolygon;
+   import editor.entity.EntityVectorShapePolyline;
+   import editor.entity.EntityVectorShapeText;
+   import editor.entity.EntityVectorShapeTextButton;
+   import editor.entity.EntityVectorShapeGravityController;
    
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointHinge;
@@ -357,9 +357,9 @@ package common {
                }
                //<<
             }
-            else if (editorEntity is EntityShape)
+            else if (editorEntity is EntityVectorShape)
             {
-               var shape:EntityShape = editorEntity as EntityShape;
+               var shape:EntityVectorShape = editorEntity as EntityVectorShape;
                
                //>>from v1.02
                entityDefine.mDrawBorder = shape.IsDrawBorder ();
@@ -421,84 +421,84 @@ package common {
                      //<<
                   }
                   
-                  if (editorEntity is EntityShapeCircle)
+                  if (editorEntity is EntityVectorShapeCircle)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeCircle;
                      
-                     entityDefine.mRadius = (shape as EntityShapeCircle).GetRadius ();
+                     entityDefine.mRadius = (shape as EntityVectorShapeCircle).GetRadius ();
                      
-                     entityDefine.mAppearanceType = (shape as EntityShapeCircle).GetAppearanceType ();
+                     entityDefine.mAppearanceType = (shape as EntityVectorShapeCircle).GetAppearanceType ();
                   }
-                  else if (editorEntity is EntityShapeRectangle)
+                  else if (editorEntity is EntityVectorShapeRectangle)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeRectangle;
                      
-                     entityDefine.mHalfWidth = (shape as EntityShapeRectangle).GetHalfWidth ();
-                     entityDefine.mHalfHeight = (shape as EntityShapeRectangle).GetHalfHeight ();
+                     entityDefine.mHalfWidth = (shape as EntityVectorShapeRectangle).GetHalfWidth ();
+                     entityDefine.mHalfHeight = (shape as EntityVectorShapeRectangle).GetHalfHeight ();
                      
                      //from v1.08
-                     entityDefine.mIsRoundCorners = (shape as EntityShapeRectangle).IsRoundCorners ();
+                     entityDefine.mIsRoundCorners = (shape as EntityVectorShapeRectangle).IsRoundCorners ();
                      //<<
                   }
                   //>>from v1.04
-                  else if (editorEntity is EntityShapePolygon)
+                  else if (editorEntity is EntityVectorShapePolygon)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolygon;
                      
-                     entityDefine.mLocalPoints = (shape as EntityShapePolygon).GetLocalVertexPoints ();
+                     entityDefine.mLocalPoints = (shape as EntityVectorShapePolygon).GetLocalVertexPoints ();
                   }
                   //<<
                   //>>from v1.05
-                  else if (editorEntity is EntityShapePolyline)
+                  else if (editorEntity is EntityVectorShapePolyline)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolyline;
                      
-                     entityDefine.mCurveThickness = (shape as EntityShapePolyline).GetCurveThickness ();
+                     entityDefine.mCurveThickness = (shape as EntityVectorShapePolyline).GetCurveThickness ();
                      
                      //>> from v1.08
-                     entityDefine.mIsRoundEnds = (shape as EntityShapePolyline).IsRoundEnds ();
+                     entityDefine.mIsRoundEnds = (shape as EntityVectorShapePolyline).IsRoundEnds ();
                      //<<
                      //>> from v1.57
-                     entityDefine.mIsClosed = (shape as EntityShapePolyline).IsClosed ();
+                     entityDefine.mIsClosed = (shape as EntityVectorShapePolyline).IsClosed ();
                      //<<
                      
-                     entityDefine.mLocalPoints = (shape as EntityShapePolyline).GetLocalVertexPoints ();
+                     entityDefine.mLocalPoints = (shape as EntityVectorShapePolyline).GetLocalVertexPoints ();
                   }
                   //<<
                }
                else // not physics entity
                {
                   //>>from v1.02
-                  if (editorEntity is EntityShapeText)
+                  if (editorEntity is EntityVectorShapeText)
                   {
-                     entityDefine.mText = (shape as EntityShapeText).GetText ();
+                     entityDefine.mText = (shape as EntityVectorShapeText).GetText ();
                      
-                     entityDefine.mHalfWidth = (shape as EntityShapeRectangle).GetHalfWidth ();
-                     entityDefine.mHalfHeight = (shape as EntityShapeRectangle).GetHalfHeight ();
+                     entityDefine.mHalfWidth = (shape as EntityVectorShapeRectangle).GetHalfWidth ();
+                     entityDefine.mHalfHeight = (shape as EntityVectorShapeRectangle).GetHalfHeight ();
                      
-                     entityDefine.mWordWrap = (shape as EntityShapeText).IsWordWrap ();
+                     entityDefine.mWordWrap = (shape as EntityVectorShapeText).IsWordWrap ();
                      
                      //from v1.08
-                     entityDefine.mAdaptiveBackgroundSize = (shape as EntityShapeText).IsAdaptiveBackgroundSize ();
-                     entityDefine.mTextColor = (shape as EntityShapeText).GetTextColor ();
-                     entityDefine.mFontSize = (shape as EntityShapeText).GetFontSize ();
-                     entityDefine.mIsBold = (shape as EntityShapeText).IsBold ();
-                     entityDefine.mIsItalic = (shape as EntityShapeText).IsItalic ();
+                     entityDefine.mAdaptiveBackgroundSize = (shape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
+                     entityDefine.mTextColor = (shape as EntityVectorShapeText).GetTextColor ();
+                     entityDefine.mFontSize = (shape as EntityVectorShapeText).GetFontSize ();
+                     entityDefine.mIsBold = (shape as EntityVectorShapeText).IsBold ();
+                     entityDefine.mIsItalic = (shape as EntityVectorShapeText).IsItalic ();
                      //<<
                      
                      //from v1.09
-                     entityDefine.mTextAlign = (shape as EntityShapeText).GetTextAlign ();
-                     entityDefine.mIsUnderlined = (shape as EntityShapeText).IsUnderlined ();
+                     entityDefine.mTextAlign = (shape as EntityVectorShapeText).GetTextAlign ();
+                     entityDefine.mIsUnderlined = (shape as EntityVectorShapeText).IsUnderlined ();
                      //<<
                      
                      // from v1.08
-                     if (editorEntity is EntityShapeTextButton) 
+                     if (editorEntity is EntityVectorShapeTextButton) 
                      {
                         entityDefine.mEntityType = Define.EntityType_ShapeTextButton;
                         
-                        entityDefine.mUsingHandCursor = (shape as EntityShapeTextButton).UsingHandCursor ();
+                        entityDefine.mUsingHandCursor = (shape as EntityVectorShapeTextButton).UsingHandCursor ();
                         
-                        var mouseOverShape:EntityShape = (shape as EntityShapeTextButton).GetMouseOverShape ();
+                        var mouseOverShape:EntityVectorShape = (shape as EntityVectorShapeTextButton).GetMouseOverShape ();
                         
                         entityDefine.mDrawBackground_MouseOver = mouseOverShape.IsDrawBackground ();
                         entityDefine.mBackgroundColor_MouseOver = mouseOverShape.GetFilledColor ();
@@ -515,25 +515,25 @@ package common {
                         entityDefine.mEntityType = Define.EntityType_ShapeText;
                      }
                   }
-                  else if (editorEntity is EntityShapeGravityController)
+                  else if (editorEntity is EntityVectorShapeGravityController)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeGravityController;
                      
-                     entityDefine.mRadius = (shape as EntityShapeCircle).GetRadius ();
+                     entityDefine.mRadius = (shape as EntityVectorShapeCircle).GetRadius ();
                      
                      // removed from v1.05
-                     /////entityDefine.mIsInteractive = (shape as EntityShapeGravityController).IsInteractive ();
+                     /////entityDefine.mIsInteractive = (shape as EntityVectorShapeGravityController).IsInteractive ();
                      
                      // added in v1,05
-                     entityDefine.mInteractiveZones = (shape as EntityShapeGravityController).GetInteractiveZones ();
-                     entityDefine.mInteractiveConditions = (shape as EntityShapeGravityController).mInteractiveConditions;
+                     entityDefine.mInteractiveZones = (shape as EntityVectorShapeGravityController).GetInteractiveZones ();
+                     entityDefine.mInteractiveConditions = (shape as EntityVectorShapeGravityController).mInteractiveConditions;
                      
                      // ...
-                     entityDefine.mInitialGravityAcceleration = (shape as EntityShapeGravityController).GetInitialGravityAcceleration ();
-                     entityDefine.mInitialGravityAngle = (shape as EntityShapeGravityController).GetInitialGravityAngle ();
+                     entityDefine.mInitialGravityAcceleration = (shape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ();
+                     entityDefine.mInitialGravityAngle = (shape as EntityVectorShapeGravityController).GetInitialGravityAngle ();
                      
                      //>> from v1,08
-                     entityDefine.mMaximalGravityAcceleration = (shape as EntityShapeGravityController).GetMaximalGravityAcceleration ();
+                     entityDefine.mMaximalGravityAcceleration = (shape as EntityVectorShapeGravityController).GetMaximalGravityAcceleration ();
                      //<<
                   }
                   //<<
@@ -914,7 +914,7 @@ package common {
          var createId:int;
          var entityDefine:Object;
          var entity:Entity;
-         var shape:EntityShape;
+         var shape:EntityVectorShape;
          var anchorDefine:Object;
          var joint:EntityJoint;
          var utility:EntityUtility;
@@ -1054,7 +1054,7 @@ package common {
                {
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
-                     var circle:EntityShapeCircle = editorWorld.CreateEntityShapeCircle ();
+                     var circle:EntityVectorShapeCircle = editorWorld.CreateEntityVectorShapeCircle ();
                      circle.SetAppearanceType (entityDefine.mAppearanceType);
                      circle.SetRadius (entityDefine.mRadius);
                      
@@ -1062,7 +1062,7 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
-                     var rect:EntityShapeRectangle = editorWorld.CreateEntityShapeRectangle ();
+                     var rect:EntityVectorShapeRectangle = editorWorld.CreateEntityVectorShapeRectangle ();
                      rect.SetHalfWidth (entityDefine.mHalfWidth);
                      rect.SetHalfHeight (entityDefine.mHalfHeight);
                      
@@ -1075,7 +1075,7 @@ package common {
                   //>> from v1.04
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
-                     var polygon:EntityShapePolygon = editorWorld.CreateEntityShapePolygon ();
+                     var polygon:EntityVectorShapePolygon = editorWorld.CreateEntityVectorShapePolygon ();
                      
                      // commented off, do it in the 2nd round below
                      //   polygon.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
@@ -1088,7 +1088,7 @@ package common {
                   //>>from v1.05
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
-                     var polyline:EntityShapePolyline = editorWorld.CreateEntityShapePolyline ();
+                     var polyline:EntityVectorShapePolyline = editorWorld.CreateEntityVectorShapePolyline ();
                      
                      polyline.SetCurveThickness (entityDefine.mCurveThickness);
                      
@@ -1156,16 +1156,16 @@ package common {
                   //>> v1.02
                   if (entityDefine.mEntityType == Define.EntityType_ShapeText || entityDefine.mEntityType == Define.EntityType_ShapeTextButton)
                   {
-                     var text:EntityShapeText;
+                     var text:EntityVectorShapeText;
                      
                      // from v1.08
                      if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton)
                      {
-                        var textButton:EntityShapeTextButton = editorWorld.CreateEntityShapeTextButton ();
+                        var textButton:EntityVectorShapeTextButton = editorWorld.CreateEntityVectorShapeTextButton ();
                         
                         textButton.SetUsingHandCursor (entityDefine.mUsingHandCursor);
                         
-                        var mouseOverShape:EntityShape = textButton.GetMouseOverShape ();
+                        var mouseOverShape:EntityVectorShape = textButton.GetMouseOverShape ();
                         
                         mouseOverShape.SetDrawBackground (entityDefine.mDrawBackground_MouseOver);
                         mouseOverShape.SetFilledColor (entityDefine.mBackgroundColor_MouseOver);
@@ -1181,7 +1181,7 @@ package common {
                      //<<
                      else
                      {
-                        text = editorWorld.CreateEntityShapeText ();
+                        text = editorWorld.CreateEntityVectorShapeText ();
                      }
                      
                      text.SetText (entityDefine.mText);
@@ -1207,7 +1207,7 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
                   {
-                     var gController:EntityShapeGravityController = editorWorld.CreateEntityShapeGravityController ();
+                     var gController:EntityVectorShapeGravityController = editorWorld.CreateEntityVectorShapeGravityController ();
                      
                      gController.SetRadius (entityDefine.mRadius)
                      
@@ -1510,14 +1510,14 @@ package common {
                   //>> from v1.04
                   if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
-                     polygon = entityDefine.mEntity as EntityShapePolygon;
+                     polygon = entityDefine.mEntity as EntityVectorShapePolygon;
                      polygon.SetLocalVertexPoints (entityDefine.mLocalPoints);
                   }
                   //<<
                   //>>from v1.05
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
-                     polyline = entityDefine.mEntity as  EntityShapePolyline;
+                     polyline = entityDefine.mEntity as  EntityVectorShapePolyline;
                      polyline.SetLocalVertexPoints (entityDefine.mLocalPoints);
                   }
                   //<<

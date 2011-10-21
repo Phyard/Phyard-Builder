@@ -14,7 +14,7 @@ package editor.trigger {
       
       public static function IsPhysicsShapeEntity (entity:Entity):Boolean
       {
-         var shape:EntityShape =  entity as EntityShape;
+         var shape:EntityVectorShape =  entity as EntityVectorShape;
          
          return shape != null && shape.IsBasicShapeEntity () && shape.IsPhysicsEnabled ();
       }
@@ -31,41 +31,41 @@ package editor.trigger {
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sVisualEntityClasses:Array = [
-                  EntityShape,
+                  EntityVectorShape,
                   EntityJoint,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sMoveableEntityClasses:Array = [
-                  EntityShape,
+                  EntityVectorShape,
                   EntityUtilityCamera,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sShapeEntityClasses:Array = [
-                  EntityShape,
+                  EntityVectorShape,
                   EntityUtilityCamera, // appended from v1.55
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sCircleShapeEntityClasses:Array = [
-                  EntityShapeCircle,
+                  EntityVectorShapeCircle,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sRectangleShapeEntityClasses:Array = [
-                  EntityShapeRectangle,
+                  EntityVectorShapeRectangle,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sPolyShapeEntityClasses:Array = [
-                  EntityShapePolygon,
-                  EntityShapePolyline,
+                  EntityVectorShapePolygon,
+                  EntityVectorShapePolyline,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sTextEntityClasses:Array = [
-                  EntityShapeText,
+                  EntityVectorShapeText,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
@@ -75,7 +75,7 @@ package editor.trigger {
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sGravityControllerEntityClasses:Array = [
-                  EntityShapeGravityController,
+                  EntityVectorShapeGravityController,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance

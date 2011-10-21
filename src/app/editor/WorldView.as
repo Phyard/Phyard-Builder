@@ -93,14 +93,14 @@ package editor {
    import editor.display.sprite.EffectMessagePopup;
    
    import editor.entity.Entity;
-   import editor.entity.EntityShape;
-   import editor.entity.EntityShapeCircle;
-   import editor.entity.EntityShapeRectangle;
-   import editor.entity.EntityShapePolygon;
-   import editor.entity.EntityShapePolyline;
-   import editor.entity.EntityShapeText;
-   import editor.entity.EntityShapeTextButton;
-   import editor.entity.EntityShapeGravityController;
+   import editor.entity.EntityVectorShape;
+   import editor.entity.EntityVectorShapeCircle;
+   import editor.entity.EntityVectorShapeRectangle;
+   import editor.entity.EntityVectorShapePolygon;
+   import editor.entity.EntityVectorShapePolyline;
+   import editor.entity.EntityVectorShapeText;
+   import editor.entity.EntityVectorShapeTextButton;
+   import editor.entity.EntityVectorShapeGravityController;
    
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointDistance;
@@ -1420,15 +1420,15 @@ package editor {
             {
                ++ numEntities;
                
-               if (entity is EntityShape)
+               if (entity is EntityVectorShape)
                {
                   ++ numShapes;
                   
-                  if (entity is EntityShapeCircle)
+                  if (entity is EntityVectorShapeCircle)
                      ++ numCircles;
-                  else if (entity is EntityShapeRectangle)
+                  else if (entity is EntityVectorShapeRectangle)
                      ++ numRectanges;
-                  else if (entity is EntityShapePolyline)
+                  else if (entity is EntityVectorShapePolyline)
                      ++ numPolylines;
                }
                else if (entity is SubEntityJointAnchor)
@@ -2042,7 +2042,7 @@ package editor {
          if (entity == null)
             return false;
          
-         //return entity is EntityShape || entity is SubEntityHingeAnchor || entity is SubEntitySliderAnchor
+         //return entity is EntityVectorShape || entity is SubEntityHingeAnchor || entity is SubEntitySliderAnchor
          //       || entity is SubEntitySpringAnchor // v1.01
          //       || entity is SubEntityDistanceAnchor // v1.02
          //       || entity is EntityBasicCondition // v1.07
@@ -2195,9 +2195,9 @@ package editor {
                ShowEntityPairAssignerSettingDialog (values, ConfirmSettingEntityProperties);
             }
          }
-         else if (entity is EntityShape)
+         else if (entity is EntityVectorShape)
          {
-            var shape:EntityShape = entity as EntityShape;
+            var shape:EntityVectorShape = entity as EntityVectorShape;
             
             values.mDrawBorder = shape.IsDrawBorder ();
             values.mDrawBackground = shape.IsDrawBackground ();
@@ -2237,62 +2237,62 @@ package editor {
                //values.mStaticEditable = true; //shape.GetFilledColor () == Define.ColorBreakableObject
                                            // || shape.GetFilledColor () == Define.ColorBombObject
                                      ;
-               if (entity is EntityShapeCircle)
+               if (entity is EntityVectorShapeCircle)
                {
-                  //values.mRadius = (entity as EntityShapeCircle).GetRadius();
-                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length ((entity as EntityShapeCircle).GetRadius()), 6);
+                  //values.mRadius = (entity as EntityVectorShapeCircle).GetRadius();
+                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length ((entity as EntityVectorShapeCircle).GetRadius()), 6);
                   
-                  values.mAppearanceType = (entity as EntityShapeCircle).GetAppearanceType();
-                  values.mAppearanceTypeListSelectedIndex = (entity as EntityShapeCircle).GetAppearanceType();
+                  values.mAppearanceType = (entity as EntityVectorShapeCircle).GetAppearanceType();
+                  values.mAppearanceTypeListSelectedIndex = (entity as EntityVectorShapeCircle).GetAppearanceType();
                   
                   ShowShapeCircleSettingDialog (values, ConfirmSettingEntityProperties);
                }
-               else if (entity is EntityShapeRectangle)
+               else if (entity is EntityVectorShapeRectangle)
                {
-                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfWidth ()), 6);
-                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfHeight ()), 6);
-                  values.mIsRoundCorners = (shape as EntityShapeRectangle).IsRoundCorners ();
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
+                  values.mIsRoundCorners = (shape as EntityVectorShapeRectangle).IsRoundCorners ();
                   
                   ShowShapeRectangleSettingDialog (values, ConfirmSettingEntityProperties);
                }
-               else if (entity is EntityShapePolygon)
+               else if (entity is EntityVectorShapePolygon)
                {
                   ShowShapePolygonSettingDialog (values, ConfirmSettingEntityProperties);
                }
-               else if (entity is EntityShapePolyline)
+               else if (entity is EntityVectorShapePolyline)
                {
-                  values.mCurveThickness = (shape as EntityShapePolyline).GetCurveThickness ();
-                  values.mIsRoundEnds = (shape as EntityShapePolyline).IsRoundEnds ();
-                  values.mIsClosed = (shape as EntityShapePolyline).IsClosed ();
+                  values.mCurveThickness = (shape as EntityVectorShapePolyline).GetCurveThickness ();
+                  values.mIsRoundEnds = (shape as EntityVectorShapePolyline).IsRoundEnds ();
+                  values.mIsClosed = (shape as EntityVectorShapePolyline).IsClosed ();
                   
                   ShowShapePolylineSettingDialog (values, ConfirmSettingEntityProperties);
                }
             }
             else // no physics entity
             {
-               if (entity is EntityShapeText)
+               if (entity is EntityVectorShapeText)
                {
-                  values.mText = (shape as EntityShapeText).GetText ();
+                  values.mText = (shape as EntityVectorShapeText).GetText ();
                   
-                  values.mTextColor = (shape as EntityShapeText).GetTextColor ();
-                  values.mFontSize = (shape as EntityShapeText).GetFontSize ();
-                  values.mIsBold = (shape as EntityShapeText).IsBold ();
-                  values.mIsItalic = (shape as EntityShapeText).IsItalic ();
+                  values.mTextColor = (shape as EntityVectorShapeText).GetTextColor ();
+                  values.mFontSize = (shape as EntityVectorShapeText).GetFontSize ();
+                  values.mIsBold = (shape as EntityVectorShapeText).IsBold ();
+                  values.mIsItalic = (shape as EntityVectorShapeText).IsItalic ();
                   
-                  values.mIsUnderlined = (shape as EntityShapeText).IsUnderlined ();
-                  values.mTextAlign = (shape as EntityShapeText).GetTextAlign ();
+                  values.mIsUnderlined = (shape as EntityVectorShapeText).IsUnderlined ();
+                  values.mTextAlign = (shape as EntityVectorShapeText).GetTextAlign ();
                   
-                  values.mWordWrap = (shape as EntityShapeText).IsWordWrap ();
-                  values.mAdaptiveBackgroundSize = (shape as EntityShapeText).IsAdaptiveBackgroundSize ();
+                  values.mWordWrap = (shape as EntityVectorShapeText).IsWordWrap ();
+                  values.mAdaptiveBackgroundSize = (shape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
                   
-                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfWidth ()), 6);
-                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfHeight ()), 6);
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
                   
-                  if (entity is EntityShapeTextButton)
+                  if (entity is EntityVectorShapeTextButton)
                   {
-                     values.mUsingHandCursor = (shape as EntityShapeTextButton).UsingHandCursor ();
+                     values.mUsingHandCursor = (shape as EntityVectorShapeTextButton).UsingHandCursor ();
                      
-                     var moveOverShape:EntityShape = (shape as EntityShapeTextButton).GetMouseOverShape ();
+                     var moveOverShape:EntityVectorShape = (shape as EntityVectorShapeTextButton).GetMouseOverShape ();
                      values.mMouseOverValues = new Object ();
                      values.mMouseOverValues.mDrawBorder = moveOverShape.IsDrawBorder ();
                      values.mMouseOverValues.mDrawBackground = moveOverShape.IsDrawBackground ();
@@ -2309,20 +2309,20 @@ package editor {
                      ShowShapeTextSettingDialog (values, ConfirmSettingEntityProperties);
                   }
                }
-               else if (entity is EntityShapeGravityController)
+               else if (entity is EntityVectorShapeGravityController)
                {
-                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length ((entity as EntityShapeCircle).GetRadius()), 6);
+                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length ((entity as EntityVectorShapeCircle).GetRadius()), 6);
                   
                   // removed from v1.05
-                  /////values.mIsInteractive = (shape as EntityShapeGravityController).IsInteractive ();
-                  values.mInteractiveZones = (shape as EntityShapeGravityController).GetInteractiveZones ();
+                  /////values.mIsInteractive = (shape as EntityVectorShapeGravityController).IsInteractive ();
+                  values.mInteractiveZones = (shape as EntityVectorShapeGravityController).GetInteractiveZones ();
                   
-                  values.mInteractiveConditions = (shape as EntityShapeGravityController).mInteractiveConditions;
+                  values.mInteractiveConditions = (shape as EntityVectorShapeGravityController).mInteractiveConditions;
                   
-                  values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityShapeGravityController).GetMaximalGravityAcceleration ()), 6);
+                  values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityVectorShapeGravityController).GetMaximalGravityAcceleration ()), 6);
                   
-                  values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityShapeGravityController).GetInitialGravityAcceleration ()), 6);
-                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees ((shape as EntityShapeGravityController).GetInitialGravityAngle ()), 6);
+                  values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ()), 6);
+                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees ((shape as EntityVectorShapeGravityController).GetInitialGravityAngle ()), 6);
                   
                   ShowShapeGravityControllerSettingDialog (values, ConfirmSettingEntityProperties);
                }
@@ -2685,7 +2685,7 @@ package editor {
          
          if (mLastSelectedEntity != null)
          {
-            //var func:Function = (mLastSelectedEntity as EntityShape).SetDensity;
+            //var func:Function = (mLastSelectedEntity as EntityVectorShape).SetDensity;
             //
             //func.apply (mLastSelectedEntity, [5.0]);
          }
@@ -3313,7 +3313,7 @@ package editor {
          CalSelectedEntitiesCenterPoint ();
       }
       
-      public function SetShapeInitialProperties (shape:EntityShape):void
+      public function SetShapeInitialProperties (shape:EntityVectorShape):void
       {
          //shape.SetPhysicsEnabled (Runtime.mShape_EnablePhysics);
          //shape.SetStatic (Runtime.mShape_IsStatic);
@@ -3324,14 +3324,14 @@ package editor {
          //shape.SetBorderColor (Runtime.mShape_BorderColor);
       }
       
-      public function CreateCircle (centerX:Number, centerY:Number, radius:Number, filledColor:uint, isStatic:Boolean):EntityShapeCircle
+      public function CreateCircle (centerX:Number, centerY:Number, radius:Number, filledColor:uint, isStatic:Boolean):EntityVectorShapeCircle
       {
          var centerPoint:Point = new Point (centerX, centerY);
          var edgePoint  :Point = new Point (centerX + radius, centerY);
          
          radius = Point.distance (centerPoint, edgePoint);
          
-         var circle:EntityShapeCircle = mEditorWorld.CreateEntityShapeCircle ();
+         var circle:EntityVectorShapeCircle = mEditorWorld.CreateEntityVectorShapeCircle ();
          if (circle == null)
             return null;
          
@@ -3350,7 +3350,7 @@ package editor {
          return circle;
       }
       
-      public function CreateRectangle (left:Number, top:Number, right:Number, bottom:Number, filledColor:uint, isStatic:Boolean):EntityShapeRectangle
+      public function CreateRectangle (left:Number, top:Number, right:Number, bottom:Number, filledColor:uint, isStatic:Boolean):EntityVectorShapeRectangle
       {
          var startPoint:Point = new Point (left, top);
          var endPoint  :Point = new Point (right,bottom);
@@ -3361,7 +3361,7 @@ package editor {
          var halfWidth :Number = (startPoint.x - endPoint.x) * 0.5; if (halfWidth  < 0) halfWidth  = - halfWidth;
          var halfHeight:Number = (startPoint.y - endPoint.y) * 0.5; if (halfHeight < 0) halfHeight = - halfHeight;
          
-         var rect:EntityShapeRectangle = mEditorWorld.CreateEntityShapeRectangle ();
+         var rect:EntityVectorShapeRectangle = mEditorWorld.CreateEntityVectorShapeRectangle ();
          if (rect == null)
             return null;
          
@@ -3381,9 +3381,9 @@ package editor {
          return rect;
       }
       
-      public function CreatePolygon (filledColor:uint, isStatic:Boolean):EntityShapePolygon
+      public function CreatePolygon (filledColor:uint, isStatic:Boolean):EntityVectorShapePolygon
       {
-         var polygon:EntityShapePolygon = mEditorWorld.CreateEntityShapePolygon ();
+         var polygon:EntityVectorShapePolygon = mEditorWorld.CreateEntityVectorShapePolygon ();
          if (polygon == null)
             return null;
          
@@ -3400,9 +3400,9 @@ package editor {
          return polygon;
       }
       
-      public function CreatePolyline (filledColor:uint, isStatic:Boolean):EntityShapePolyline
+      public function CreatePolyline (filledColor:uint, isStatic:Boolean):EntityVectorShapePolyline
       {
-         var polyline:EntityShapePolyline = mEditorWorld.CreateEntityShapePolyline ();
+         var polyline:EntityVectorShapePolyline = mEditorWorld.CreateEntityVectorShapePolyline ();
          if (polyline == null)
             return null;
          
@@ -3484,7 +3484,7 @@ package editor {
          return dummy;
       }
       
-      public function CreateText (options:Object = null):EntityShapeText
+      public function CreateText (options:Object = null):EntityVectorShapeText
       {
          if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
@@ -3492,7 +3492,7 @@ package editor {
          }
          else
          {
-            var shapeText:EntityShapeText = mEditorWorld.CreateEntityShapeText ();
+            var shapeText:EntityVectorShapeText = mEditorWorld.CreateEntityVectorShapeText ();
             if (shapeText == null)
                return null;
             
@@ -3513,7 +3513,7 @@ package editor {
          }
       }
       
-      public function CreateEntityTextButton (options:Object = null):EntityShapeTextButton
+      public function CreateEntityTextButton (options:Object = null):EntityVectorShapeTextButton
       {
          if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
@@ -3521,7 +3521,7 @@ package editor {
          }
          else
          {
-            var button:EntityShapeTextButton = mEditorWorld.CreateEntityShapeTextButton ();
+            var button:EntityVectorShapeTextButton = mEditorWorld.CreateEntityVectorShapeTextButton ();
             if (button == null)
                return null;
             
@@ -3535,7 +3535,7 @@ package editor {
          }
       }
       
-      public function CreateGravityController (options:Object = null):EntityShapeGravityController
+      public function CreateGravityController (options:Object = null):EntityVectorShapeGravityController
       {
          if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
@@ -3543,7 +3543,7 @@ package editor {
          }
          else
          {
-            var gController:EntityShapeGravityController = mEditorWorld.CreateEntityShapeGravityController ();
+            var gController:EntityVectorShapeGravityController = mEditorWorld.CreateEntityVectorShapeGravityController ();
             if (gController == null)
                return null;
             
@@ -3996,7 +3996,7 @@ package editor {
          if (count == 1)
          {
             entity = selectedEntities [0];
-            if (entity is EntityShapePolygon)
+            if (entity is EntityVectorShapePolygon)
                showCenter = true;
             else
                showCenter = false;
@@ -4258,10 +4258,10 @@ package editor {
          for (i = 0; i < entities.length; ++ i)
          {
             entity = entities [i] as Entity;
-            if (entity is EntityShapeCircle)
+            if (entity is EntityVectorShapeCircle)
             {
                ++ numShapes;
-               circleRadius = (entity as EntityShapeCircle).GetRadius ();
+               circleRadius = (entity as EntityVectorShapeCircle).GetRadius ();
                area = Math.PI * circleRadius * circleRadius;
                if ( area > maxArea )
                {
@@ -4270,10 +4270,10 @@ package editor {
                   centerY = entity.GetPositionY ();
                }
             }
-            else if (entity is EntityShapeRectangle)
+            else if (entity is EntityVectorShapeRectangle)
             {
                ++ numShapes;
-               area = 4 * (entity as EntityShapeRectangle).GetHalfWidth () * (entity as EntityShapeRectangle).GetHalfHeight ();
+               area = 4 * (entity as EntityVectorShapeRectangle).GetHalfWidth () * (entity as EntityVectorShapeRectangle).GetHalfHeight ();
                if ( area > maxArea )
                {
                   maxArea = area;
@@ -4298,7 +4298,7 @@ package editor {
             for (i = 0; i < entities.length; ++ i)
             {
                entity = entities [i] as Entity;
-               if (entity is EntityShapeCircle || entity is EntityShapeRectangle || entity is SubEntityJointAnchor)
+               if (entity is EntityVectorShapeCircle || entity is EntityVectorShapeRectangle || entity is SubEntityJointAnchor)
                   entity.Move (centerX - entity.GetPositionX (), centerY - entity.GetPositionY (), true);
             }
             
@@ -4556,9 +4556,9 @@ package editor {
             logic.UpdateAppearance ();
             logic.UpdateSelectionProxy ();
          }
-         else if (entity is EntityShape)
+         else if (entity is EntityVectorShape)
          {
-            var shape:EntityShape = entity as EntityShape;
+            var shape:EntityVectorShape = entity as EntityVectorShape;
             
             shape.SetDrawBorder (params.mDrawBorder);
             shape.SetTransparency (params.mTransparency);
@@ -4596,36 +4596,36 @@ package editor {
                shape.SetAllowSleeping (params.mAllowSleeping);
                shape.SetFixRotation (params.mFixRotation);
                
-               if (entity is EntityShapeCircle)
+               if (entity is EntityVectorShapeCircle)
                {
-                  (shape as EntityShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
-                  (shape as EntityShapeCircle).SetAppearanceType (params.mAppearanceType);
+                  (shape as EntityVectorShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
+                  (shape as EntityVectorShapeCircle).SetAppearanceType (params.mAppearanceType);
                }
-               else if (entity is EntityShapeRectangle)
+               else if (entity is EntityVectorShapeRectangle)
                {
-                  (shape as EntityShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
-                  (shape as EntityShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
-                  (shape as EntityShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
+                  (shape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (shape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  (shape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
                }
-               else if (entity is EntityShapePolygon)
+               else if (entity is EntityVectorShapePolygon)
                {
                }
-               else if (entity is EntityShapePolyline)
+               else if (entity is EntityVectorShapePolyline)
                {
-                  (shape as EntityShapePolyline).SetCurveThickness (params.mCurveThickness);
-                  (shape as EntityShapePolyline).SetRoundEnds (params.mIsRoundEnds);
-                  (shape as EntityShapePolyline).SetClosed (params.mIsClosed);
+                  (shape as EntityVectorShapePolyline).SetCurveThickness (params.mCurveThickness);
+                  (shape as EntityVectorShapePolyline).SetRoundEnds (params.mIsRoundEnds);
+                  (shape as EntityVectorShapePolyline).SetClosed (params.mIsClosed);
                }
             }
             else // no physics entity
             {
-               if (entity is EntityShapeText)
+               if (entity is EntityVectorShapeText)
                {
-                  if (entity is EntityShapeTextButton)
+                  if (entity is EntityVectorShapeTextButton)
                   {
-                     (shape as EntityShapeTextButton).SetUsingHandCursor (params.mUsingHandCursor);
+                     (shape as EntityVectorShapeTextButton).SetUsingHandCursor (params.mUsingHandCursor);
                      
-                     var moveOverShape:EntityShape = (shape as EntityShapeTextButton).GetMouseOverShape ();
+                     var moveOverShape:EntityVectorShape = (shape as EntityVectorShapeTextButton).GetMouseOverShape ();
                      moveOverShape.SetDrawBorder (params.mMouseOverValues.mDrawBorder);
                      moveOverShape.SetTransparency (params.mMouseOverValues.mTransparency);
                      moveOverShape.SetDrawBorder (params.mMouseOverValues.mDrawBorder);
@@ -4639,29 +4639,29 @@ package editor {
                   {
                   }
                   
-                  (shape as EntityShapeText).SetWordWrap (params.mWordWrap);
-                  (shape as EntityShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
+                  (shape as EntityVectorShapeText).SetWordWrap (params.mWordWrap);
+                  (shape as EntityVectorShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
                   
-                  (shape as EntityShapeText).SetUnderlined (params.mIsUnderlined);
-                  (shape as EntityShapeText).SetTextAlign (params.mTextAlign);
+                  (shape as EntityVectorShapeText).SetUnderlined (params.mIsUnderlined);
+                  (shape as EntityVectorShapeText).SetTextAlign (params.mTextAlign);
                   
-                  (shape as EntityShapeText).SetText (params.mText);
-                  (shape as EntityShapeText).SetTextColor (params.mTextColor);
-                  (shape as EntityShapeText).SetFontSize (params.mFontSize);
-                  (shape as EntityShapeText).SetBold (params.mIsBold);
-                  (shape as EntityShapeText).SetItalic (params.mIsItalic);
+                  (shape as EntityVectorShapeText).SetText (params.mText);
+                  (shape as EntityVectorShapeText).SetTextColor (params.mTextColor);
+                  (shape as EntityVectorShapeText).SetFontSize (params.mFontSize);
+                  (shape as EntityVectorShapeText).SetBold (params.mIsBold);
+                  (shape as EntityVectorShapeText).SetItalic (params.mIsItalic);
                   
-                  (shape as EntityShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
-                  (shape as EntityShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  (shape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (shape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
                }
-               else if (entity is EntityShapeGravityController)
+               else if (entity is EntityVectorShapeGravityController)
                {
-                  (shape as EntityShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
+                  (shape as EntityVectorShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
                   
-                  //(shape as EntityShapeGravityController).SetInteractive (params.mIsInteractive);
-                  (shape as EntityShapeGravityController).SetInteractiveZones (params.mInteractiveZones);
+                  //(shape as EntityVectorShapeGravityController).SetInteractive (params.mIsInteractive);
+                  (shape as EntityVectorShapeGravityController).SetInteractiveZones (params.mInteractiveZones);
                   
-                  (shape as EntityShapeGravityController).mInteractiveConditions = params.mInteractiveConditions;
+                  (shape as EntityVectorShapeGravityController).mInteractiveConditions = params.mInteractiveConditions;
                   
                   if (params.mInitialGravityAcceleration < 0)
                   {
@@ -4669,18 +4669,18 @@ package editor {
                      params.mInitialGravityAngle = 360.0 - params.mInitialGravityAngle;
                   }
                   
-                  (shape as EntityShapeGravityController).SetMaximalGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mMaximalGravityAcceleration));
-                  (shape as EntityShapeGravityController).SetInitialGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mInitialGravityAcceleration));
-                  (shape as EntityShapeGravityController).SetInitialGravityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mInitialGravityAngle));
+                  (shape as EntityVectorShapeGravityController).SetMaximalGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mMaximalGravityAcceleration));
+                  (shape as EntityVectorShapeGravityController).SetInitialGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mInitialGravityAcceleration));
+                  (shape as EntityVectorShapeGravityController).SetInitialGravityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mInitialGravityAngle));
                }
             }
             
             shape.UpdateAppearance ();
             shape.UpdateSelectionProxy ();
             
-            if (shape is EntityShapeRectangle)
+            if (shape is EntityVectorShapeRectangle)
             {
-               (shape as EntityShapeRectangle).UpdateVertexControllers (true);
+               (shape as EntityVectorShapeRectangle).UpdateVertexControllers (true);
             }
          }
          else if (entity is SubEntityJointAnchor)
@@ -4890,13 +4890,13 @@ package editor {
       public function OnBatchModifyShapeCircleProperties (params:Object):void
       {
          var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var circle:EntityShapeCircle;
+         var circle:EntityVectorShapeCircle;
          
          var numCircles:int = 0;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            circle = selectedEntities [i] as EntityShapeCircle;
+            circle = selectedEntities [i] as EntityVectorShapeCircle;
             
             if (circle != null)
             {
@@ -4919,13 +4919,13 @@ package editor {
       public function OnBatchModifyShapeRectangleProperties (params:Object):void
       {
          var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var rect:EntityShapeRectangle;
+         var rect:EntityVectorShapeRectangle;
          
          var numRectangles:int = 0;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            rect = selectedEntities [i] as EntityShapeRectangle;
+            rect = selectedEntities [i] as EntityVectorShapeRectangle;
             
             if (rect != null)
             {
@@ -4951,13 +4951,13 @@ package editor {
       public function OnBatchModifyShapePolylineProperties (params:Object):void
       {
          var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var polyline:EntityShapePolyline;
+         var polyline:EntityVectorShapePolyline;
          
          var numPolylines:int = 0;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            polyline = selectedEntities [i] as EntityShapePolyline;
+            polyline = selectedEntities [i] as EntityVectorShapePolyline;
             
             if (polyline != null)
             {
@@ -4982,13 +4982,13 @@ package editor {
       public function OnBatchModifyShapeAppearanceProperties (params:Object):void
       {
          var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var shape:EntityShape;
+         var shape:EntityVectorShape;
          
          var numShapes:int = 0;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            shape = selectedEntities [i] as EntityShape;
+            shape = selectedEntities [i] as EntityVectorShape;
             
             if (shape != null)
             {
@@ -5026,13 +5026,13 @@ package editor {
       public function OnBatchModifyShapePhysicsProperties (params:Object):void
       {
          var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var shape:EntityShape;
+         var shape:EntityVectorShape;
          
          var numShapes:int = 0;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            shape = selectedEntities [i] as EntityShape;
+            shape = selectedEntities [i] as EntityVectorShape;
             
             if (shape != null)
             {
@@ -5085,11 +5085,11 @@ package editor {
       //public function OnBatchModifyShapePhysicsFlags (params:Object):void
       //{
       //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-      //   var shape:EntityShape;
+      //   var shape:EntityVectorShape;
       //   
       //   for (var i:int = 0; i < selectedEntities.length; ++ i)
       //   {
-      //      shape = selectedEntities [i] as EntityShape;
+      //      shape = selectedEntities [i] as EntityVectorShape;
       //      
       //      if (shape != null)
       //      {
@@ -5119,11 +5119,11 @@ package editor {
       //public function OnBatchModifyShapePhysicsCollisionCategory (params:Object):void
       //{
       //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-      //   var shape:EntityShape;
+      //   var shape:EntityVectorShape;
       //   
       //   for (var i:int = 0; i < selectedEntities.length; ++ i)
       //   {
-      //      shape = selectedEntities [i] as EntityShape;
+      //      shape = selectedEntities [i] as EntityVectorShape;
       //      
       //      if (shape != null)
       //      {
@@ -5138,11 +5138,11 @@ package editor {
       //public function OnBatchModifyShapePhysicsVelocity (params:Object):void
       //{
       //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-      //   var shape:EntityShape;
+      //   var shape:EntityVectorShape;
       //   
       //   for (var i:int = 0; i < selectedEntities.length; ++ i)
       //   {
-      //      shape = selectedEntities [i] as EntityShape;
+      //      shape = selectedEntities [i] as EntityVectorShape;
       //      
       //      if (shape != null)
       //      {
@@ -5162,11 +5162,11 @@ package editor {
       //public function OnBatchModifyShapePhysicsFixture (params:Object):void
       //{
       //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-      //   var shape:EntityShape;
+      //   var shape:EntityVectorShape;
       //   
       //   for (var i:int = 0; i < selectedEntities.length; ++ i)
       //   {
-      //      shape = selectedEntities [i] as EntityShape;
+      //      shape = selectedEntities [i] as EntityVectorShape;
       //      
       //      if (shape != null)
       //      {
@@ -5614,9 +5614,9 @@ package editor {
             for (i = 0; i < numEntities; ++ i)
             {
                entity = newWorld.GetEntityByCreationId (i);
-               if (entity is EntityShape)
+               if (entity is EntityVectorShape)
                {
-                  ccId = (entity as EntityShape).GetCollisionCategoryIndex ();
+                  ccId = (entity as EntityVectorShape).GetCollisionCategoryIndex ();
                   if (ccId >= 0)
                      cm.SelectEntity (cm.GetCollisionCategoryByIndex (ccId));
                }

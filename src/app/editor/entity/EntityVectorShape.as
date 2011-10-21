@@ -1,125 +1,125 @@
 
 package editor.entity {
-   
+
    import flash.display.Sprite;
-   
-   
+
+
    import editor.world.World;
-   
+
    import editor.selection.SelectionProxy;
-   
-   
-   
+
+
+
    import common.Define;
-   
-   public class EntityShape extends WorldEntity 
+
+   public class EntityVectorShape extends WorldEntity
    {
    // C.I.
-      
+
       protected var mAiType:int = Define.ShapeAiType_Unknown;
-      
+
    // appearance
-   
+
       protected var mDrawBorder:Boolean = true;
       protected var mDrawBackground:Boolean = true;
-      
+
       protected var mBorderColor:uint = Define.BorderColorUnselectedObject;
       protected var mBorderThickness:uint = 1; // from v1.04
       protected var mBorderTransparency:uint = 100; // from v1.05
-      
+
       protected var mFilledColor:uint = 0xFFFFFF;
-      
+
       protected var mTransparency:uint = 100; // from v1.04
-      
+
       //for debug
       protected var mPhysicsShapesLayer:Sprite = null;
-      
+
    // physics
-      
+
       protected var mIsStatic:Boolean = false;
       public var mIsBullet:Boolean = false;
-      
+
       //public var mDensity:Number = 1.0;
       public var mDensity:Number = Define.DefaultShapeDensity; // from v1.08
       public var mFriction:Number = 0.1;
       public var mRestitution:Number = 0.2;
-      
-      
+
+
       // !!! when open these, remember modify SetPropertiesForClonedEntity
       //public var mLinearDamping:Number = 0.0;
       //public var mAngularDamping:Number = 0.0;
       // allow sleep
       // is sleeping
-      
+
       // collision category
       private var mCollisionCategory:EntityCollisionCategory = null;
-      
+
       //>> form v1.04
       protected var mPhysicsEnabled:Boolean = true;
       public var mIsSensor:Boolean = false;
       //<<
-      
+
       //>> form v1.05
       protected var mIsHollow:Boolean = false;
       //<<
-      
+
       //>> v1.08
       protected var mBuildBorder:Boolean = true;
-      
+
       protected var mLinearVelocityMagnitude:Number = 0;
       protected var mLinearVelocityAngle:Number = 0;
       protected var mAngularVelocity:Number = 0;
-      
+
       protected var mLinearDamping:Number = 0;
       protected var mAngularDamping:Number = 0;
-      
+
       protected var mAllowSleeping:Boolean = true;
       protected var mFixRotation:Boolean = false;
       //<<
-      
+
 //====================================================================
-//   
+//
 //====================================================================
-      
-      public function EntityShape (world:World)
+
+      public function EntityVectorShape (world:World)
       {
          super (world);
       }
-      
+
       override public function GetVisibleAlpha ():Number
       {
          return 0.39 + GetTransparency () * 0.01 * 0.40;
       }
-      
+
       override public function GetTypeName ():String
       {
          return "Shape";
       }
-      
+
       public function IsBasicShapeEntity ():Boolean
       {
          return true;
       }
-      
+
 //====================================================================
 //   clone
 //====================================================================
-      
+
       // to override
       override protected function CreateCloneShell ():Entity
       {
          return null;
       }
-      
+
       // to override
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
       {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
-         
-         var shape:EntityShape = entity as EntityShape;
-         
+
+         var shape:EntityVectorShape = entity as EntityVectorShape;
+
          shape.SetAiType (mAiType);
-         
+
          shape.SetFilledColor ( GetFilledColor () );
          shape.SetBorderColor ( GetBorderColor () );
          shape.SetDrawBorder ( IsDrawBorder () );
@@ -127,7 +127,7 @@ package editor.entity {
          shape.SetBorderThickness (mBorderThickness);
          shape.SetTransparency (mTransparency);
          shape.SetBorderTransparency (GetBorderTransparency ());
-         
+
          shape.SetPhysicsEnabled (mPhysicsEnabled);
          shape.SetStatic ( IsStatic () );
          shape.mIsBullet = mIsBullet;
@@ -135,152 +135,152 @@ package editor.entity {
          shape.mFriction = mFriction;
          shape.mRestitution = mRestitution;
          shape.mIsSensor = mIsSensor;
-         
+
          shape.SetCollisionCategoryIndex ( GetCollisionCategoryIndex () );
-         
+
          shape.SetHollow (IsHollow ());
          shape.SetBuildBorder (IsBuildBorder ());
-         
+
          shape.SetLinearVelocityMagnitude (GetLinearVelocityMagnitude ());
          shape.SetLinearVelocityAngle (GetLinearVelocityAngle ());
          shape.SetAngularVelocity (GetAngularVelocity ());
          shape.SetLinearDamping (GetLinearDamping ());
          shape.SetAngularDamping (GetAngularDamping ());
-         
+
          shape.SetAllowSleeping (IsAllowSleeping ());
          shape.SetFixRotation (IsFixRotation ());
       }
-      
+
 //======================================================
 // C.I. special
 //======================================================
-      
+
       public function GetAiType ():int
       {
          return mAiType;
       }
-      
+
       public function SetAiType (aiType:int):void
       {
          mAiType = aiType;
       }
-      
+
 //======================================================
 // appearance
 //======================================================
-      
+
       public function SetDrawBackground (draw:Boolean):void
       {
          mDrawBackground = draw;
       }
-      
+
       public function IsDrawBackground ():Boolean
       {
          return mDrawBackground;
       }
-      
+
       public function SetFilledColor (color:uint):void
       {
          mFilledColor = color;
       }
-      
+
       public function GetFilledColor ():uint
       {
          return mFilledColor;
       }
-      
+
       public function SetDrawBorder (draw:Boolean):void
       {
          var needUpdateArrearance:Boolean = (mDrawBorder != draw);
-         
+
          mDrawBorder = draw;
-         
+
          //if (needUpdateArrearance)
          //   UpdateAppearance ();
       }
-      
+
       public function IsDrawBorder ():Boolean
       {
          return mDrawBorder;
       }
-      
+
       public function SetBorderColor (color:uint):void
       {
          mBorderColor = color;
       }
-      
+
       public function GetBorderColor ():uint
       {
          return mBorderColor;
       }
-      
+
       public function SetBorderThickness (thinkness:uint):void
       {
          mBorderThickness = thinkness;
       }
-      
+
       public function GetBorderThickness ():Number
       {
          if (mBorderThickness < 0)
             return 0;
-         
+
          return mBorderThickness;
       }
-      
+
       public function SetTransparency (transparency:uint):void
       {
          mTransparency = transparency;
       }
-      
+
       public function GetTransparency ():uint
       {
          return mTransparency;
       }
-      
+
       public function SetBorderTransparency (transparency:uint):void
       {
          mBorderTransparency = transparency;
       }
-      
+
       public function GetBorderTransparency ():uint
       {
          return mBorderTransparency;
       }
-      
+
 //======================================================
 // physics
 //======================================================
-      
+
       public function SetPhysicsEnabled (enabled:Boolean):void
       {
          mPhysicsEnabled = enabled;
       }
-      
+
       public function IsPhysicsEnabled ():Boolean
       {
          return mPhysicsEnabled;
       }
-      
+
       public function SetHollow (hollow:Boolean):void
       {
          mIsHollow = hollow;
       }
-      
+
       public function IsHollow ():Boolean
       {
          return mIsHollow;
       }
-      
+
       public function SetBuildBorder (build:Boolean):void
       {
          mBuildBorder = build;
       }
-      
+
       public function IsBuildBorder ():Boolean
       {
          return mBuildBorder;
       }
-      
+
       public function SetStatic (isStatic:Boolean):void
       {
          if (mIsStatic && ! isStatic && mAiType == Define.ShapeAiType_Static)
@@ -290,7 +290,7 @@ package editor.entity {
             SetDrawBorder (true);
             UpdateAppearance ();
          }
-         
+
          if (! mIsStatic && isStatic && mAiType == Define.ShapeAiType_Movable)
          {
             SetAiType (Define.ShapeAiType_Static);
@@ -298,19 +298,19 @@ package editor.entity {
             SetDrawBorder (false);
             UpdateAppearance ();
          }
-         
+
          mIsStatic = isStatic;
       }
-      
+
       public function IsStatic ():Boolean
       {
          return mIsStatic;
       }
-      
+
       //public function SetAsField (field:Boolean):void
       //{
       //   mIsField = field;
-      //   
+      //
       //   if (mIsField)
       //   {
       //      SetPhysicsEnabled (true);
@@ -323,174 +323,174 @@ package editor.entity {
       //{
       //   return mIsField;
       //}
-      
+
       public function SetAsSensor (sensor:Boolean):void
       {
          mIsSensor = sensor;
       }
-      
+
       public function IsSensor ():Boolean
       {
          return mIsSensor;
       }
-      
+
       public function SetAsBullet (bullet:Boolean):void
       {
          mIsBullet = bullet;
       }
-      
+
       public function IsBullet ():Boolean
       {
          return mIsBullet;
       }
-      
+
       public function SetDensity (density:Number):void
       {
          if (density < 0)
             density = 0.0;
-         
+
          mDensity = density;
       }
-      
+
       public function GetDensity ():Number
       {
          return mDensity;
       }
-      
+
       public function SetFriction (friction:Number):void
       {
          if (mFriction < 0)
             mFriction = 0.0;
-         
+
          mFriction = friction;
       }
-      
+
       public function GetFriction ():Number
       {
          return mFriction;
       }
-      
+
       public function SetRestitution (restitution:Number):void
       {
          if (mRestitution < 0)
             mRestitution = 0.0;
-         
+
          mRestitution = restitution;
       }
-      
+
       public function GetRestitution ():Number
       {
          return mRestitution;
       }
-      
+
       public function SetLinearVelocityMagnitude (speed:Number):void
       {
          if (mLinearVelocityMagnitude < 0)
             mLinearVelocityMagnitude = 0.0;
-         
+
          mLinearVelocityMagnitude = speed;
       }
-      
+
       public function GetLinearVelocityMagnitude ():Number
       {
          return mLinearVelocityMagnitude;
       }
-      
+
       public function SetLinearVelocityAngle (angle:Number):void
       {
          mLinearVelocityAngle = angle % 360.0;
       }
-      
+
       public function GetLinearVelocityAngle ():Number
       {
          return mLinearVelocityAngle;
       }
-      
+
       public function SetAngularVelocity (av:Number):void
       {
          mAngularVelocity = av;
       }
-      
+
       public function GetAngularVelocity ():Number
       {
          return mAngularVelocity;
       }
-      
+
       public function SetLinearDamping (damping:Number):void
       {
          if (damping < 0)
             damping = 0;
-         
+
          mLinearDamping = damping;
       }
-      
+
       public function GetLinearDamping ():Number
       {
          return mLinearDamping;
       }
-      
+
       public function SetAngularDamping (damping:Number):void
       {
          if (damping < 0)
             damping = 0;
-         
+
          mAngularDamping = damping;
       }
-      
+
       public function GetAngularDamping ():Number
       {
          return mAngularDamping;
       }
-      
+
       public function SetAllowSleeping (allowSleeping:Boolean):void
       {
          mAllowSleeping = allowSleeping;
       }
-      
+
       public function IsAllowSleeping ():Boolean
       {
          return mAllowSleeping;
       }
-      
+
       public function SetFixRotation (fixRotation:Boolean):void
       {
          mFixRotation = fixRotation;
       }
-      
+
       public function IsFixRotation ():Boolean
       {
          return mFixRotation;
       }
-      
+
 //======================================================
 // collision category
 //======================================================
-      
+
       public function GetCollisionCategoryIndex ():int
       {
          var index:int = mWorld.mCollisionManager.GetCollisionCategoryIndex (mCollisionCategory);
-         
+
          if (index == Define.CCatId_Hidden)
             mCollisionCategory = null;
-         
+
          return index;
       }
-      
+
       public function SetCollisionCategoryIndex (index:int):void
       {
          mCollisionCategory = mWorld.mCollisionManager.GetCollisionCategoryByIndex (index);
       }
-      
+
 //======================================================
 // event actions
 //======================================================
-      
+
       //public function GetNumEventActions ():int
       //{
       //   return mEventActions.length;
       //}
       //
-      //public function GetEventAction 
-      
+      //public function GetEventAction
+
    }
 }

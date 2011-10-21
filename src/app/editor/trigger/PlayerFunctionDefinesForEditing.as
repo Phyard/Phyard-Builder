@@ -1,9 +1,9 @@
 package editor.trigger {
 
    import editor.entity.Entity;
-   import editor.entity.EntityShape;
+   import editor.entity.EntityVectorShape;
+   import editor.entity.EntityVectorShapeText;
    import editor.entity.EntityJoint;
-   import editor.entity.EntityShapeText;
    import editor.trigger.Lists;
 
    import common.trigger.CoreFunctionIds;

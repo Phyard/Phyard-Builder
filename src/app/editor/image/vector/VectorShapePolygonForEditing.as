@@ -210,9 +210,16 @@ package editor.image.vector
          return CreatePolyControlPointsForAsset (mLocalVertexPoints, asset);
       }
       
-      public function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int
+      public function GetSecondarySelectedControlPointId (primaryControlPointIndex:int):int
       {
-         return -1;
+         if (mLocalVertexPoints == null || mLocalVertexPoints.length == 0 || primaryControlPointIndex < 0 || primaryControlPointIndex >= mLocalVertexPoints.length)
+            return -1;
+
+         var index:int = (primaryControlPointIndex - 1) % mLocalVertexPoints.length;
+         if (index < 0)
+            index += mLocalVertexPoints.length;
+         
+         return index;
       }
       
       public static function OnMovePolyControlPoint (localVertexPoints:Array, controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult

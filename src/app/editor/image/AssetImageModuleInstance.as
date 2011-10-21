@@ -191,7 +191,7 @@ package editor.image {
          }
          
          mSelectionProxy.Rebuild (GetPositionX (), GetPositionY (), 0.0);
-         mAssetImageModule.BuildImageModuleSelectionProxy (mSelectionProxy, new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()));
+         mAssetImageModule.BuildImageModuleSelectionProxy (mSelectionProxy, new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mAssetManager.GetScale () * GetScale ());
          
          if (Compile::Is_Debugging)// && false)
          {
@@ -267,7 +267,7 @@ package editor.image {
          
          if (mAssetImageModule is AssetImageShapeModule)
          {
-            var secondarySelectedControlPointIndex:int = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().GetSecondarySelectedControlPointId (controlPoint);
+            var secondarySelectedControlPointIndex:int = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().GetSecondarySelectedControlPointId (controlPoint.GetIndex ());
             if (secondarySelectedControlPointIndex >= 0 && mControlPoints != null && secondarySelectedControlPointIndex < mControlPoints.length)
             {
                (mControlPoints [secondarySelectedControlPointIndex] as ControlPoint).SetSelectedLevel (ControlPoint.SelectedLevel_Secondary);

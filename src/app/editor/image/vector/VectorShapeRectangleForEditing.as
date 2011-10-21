@@ -109,7 +109,7 @@ package editor.image.vector
          return CreateRectangleControlPointsForAsset (this, asset)
       }
       
-      public function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int
+      public function GetSecondarySelectedControlPointId (primaryControlPointIndex:int):int
       {
          return -1;
       }

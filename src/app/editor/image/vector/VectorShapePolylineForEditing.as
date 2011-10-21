@@ -157,9 +157,12 @@ package editor.image.vector
          return VectorShapePolygonForEditing.CreatePolyControlPointsForAsset (mLocalVertexPoints, asset);
       }
       
-      public function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int
+      public function GetSecondarySelectedControlPointId (primaryControlPointIndex:int):int
       {
-         return -1;
+         if (mLocalVertexPoints == null || mLocalVertexPoints.length == 0 || primaryControlPointIndex <= 0 || primaryControlPointIndex >= mLocalVertexPoints.length)
+            return -1;
+         
+         return (primaryControlPointIndex - 1) % mLocalVertexPoints.length;
       }
       
       public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult

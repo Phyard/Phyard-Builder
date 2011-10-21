@@ -21,13 +21,13 @@ package editor.entity {
    
    import common.Define;
    
-   public class EntityShapeTextButton extends EntityShapeText 
+   public class EntityVectorShapeTextButton extends EntityVectorShapeText 
    {
       private var mUsingHandCursor:Boolean = true;
       
-      private var mMouseOverShape:EntityShape; // not a real entity in world, just use it to store some values.
+      private var mMouseOverShape:EntityVectorShape; // not a real entity in world, just use it to store some values.
       
-      public function EntityShapeTextButton (world:World)
+      public function EntityVectorShapeTextButton (world:World)
       {
          super (world);
          
@@ -44,7 +44,7 @@ package editor.entity {
          SetBorderColor (Define.ColorTextButtonBorder);
          SetBorderThickness (2);
          
-         mMouseOverShape = new EntityShape (null);
+         mMouseOverShape = new EntityVectorShape (null);
          
          mMouseOverShape.SetDrawBorder (true);
          mMouseOverShape.SetDrawBackground (true);
@@ -77,7 +77,7 @@ package editor.entity {
          mUsingHandCursor = usingHandCursor;
       }
       
-      public function GetMouseOverShape ():EntityShape
+      public function GetMouseOverShape ():EntityVectorShape
       {
          return mMouseOverShape;
       }
@@ -88,16 +88,16 @@ package editor.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityShapeTextButton (mWorld);
+         return new EntityVectorShapeTextButton (mWorld);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
       {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
-         var text_button:EntityShapeTextButton = entity as EntityShapeTextButton;
+         var text_button:EntityVectorShapeTextButton = entity as EntityVectorShapeTextButton;
          
-         var anotherMouseOverShape:EntityShape = text_button.GetMouseOverShape ();
+         var anotherMouseOverShape:EntityVectorShape = text_button.GetMouseOverShape ();
          
          anotherMouseOverShape.SetDrawBackground (mMouseOverShape.IsDrawBackground ());
          anotherMouseOverShape.SetFilledColor (mMouseOverShape.GetFilledColor ());

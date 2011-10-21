@@ -21,7 +21,7 @@ package editor.entity {
    
    import common.Define;
    
-   public class EntityShapeText extends EntityShapeRectangle 
+   public class EntityVectorShapeText extends EntityVectorShapeRectangle 
    {
       private var mText:String;
       private var mWordWrap:Boolean = true;
@@ -42,7 +42,7 @@ package editor.entity {
       protected var mTextLayer:Sprite = new Sprite ();
       protected var mTextSprite:DisplayObject = null;
       
-      public function EntityShapeText (world:World)
+      public function EntityVectorShapeText (world:World)
       {
          super (world);
          
@@ -242,14 +242,14 @@ package editor.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityShapeText (mWorld);
+         return new EntityVectorShapeText (mWorld);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
       {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
-         var text:EntityShapeText = entity as EntityShapeText;
+         var text:EntityVectorShapeText = entity as EntityVectorShapeText;
          text.SetText ( GetText () );
          text.SetWordWrap (IsWordWrap ());
          text.SetTextColor (GetTextColor ());

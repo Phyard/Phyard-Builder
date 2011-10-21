@@ -733,6 +733,38 @@ package editor.asset {
          }
       }
       
+      public function DeleteSelectedControlPoints ():void
+      {
+         for (var i:int = mCurrentShownControlPoints.length - 1; i >= 0; -- i)
+         {
+            var cp:ControlPoint = mCurrentShownControlPoints [i] as ControlPoint;
+            if (cp.GetSelectedLevel () == ControlPoint.SelectedLevel_Primary)
+            {
+               // todo: currently, onpy support most one control point
+               
+               cp.GetOwnerAsset ().DeleteControlPoint (cp);
+               
+               return;
+            }
+         }
+      }
+      
+      public function InsertVertexController ():void
+      {
+         for (var i:int = mCurrentShownControlPoints.length - 1; i >= 0; -- i)
+         {
+            var cp:ControlPoint = mCurrentShownControlPoints [i] as ControlPoint;
+            if (cp.GetSelectedLevel () == ControlPoint.SelectedLevel_Primary)
+            {
+               // todo: currently, onpy support most one control point
+               
+               cp.GetOwnerAsset ().InsertControlPointBefore (cp);
+               
+               return;
+            }
+         }
+      }
+      
 //=================================================================================
 // appearance and creation order
 //=================================================================================

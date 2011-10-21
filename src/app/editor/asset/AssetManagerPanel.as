@@ -465,6 +465,21 @@ package editor.asset {
             case Keyboard.ESCAPE:
                SetCurrentIntent (null);
                break;
+            //case Keyboard.SPACE:
+            //   OpenEntitySettingDialog ();
+            //   break;
+            case Keyboard.DELETE:
+               if (event.ctrlKey)
+                  DeleteSelectedControlPoints ();
+               //else
+               //   DeleteSelectedEntities ();
+               break;
+            case Keyboard.INSERT:
+               if (event.ctrlKey)
+                  InsertVertexController ();
+               //else
+               //   CloneSelectedEntities ();
+               break;
             default:
                break;
          }
@@ -740,6 +755,31 @@ package editor.asset {
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y - ScaleRotateFlipCircleRadius));
          SetCurrentIntent (new IntentFlipSelectedAssets (this, managerPoint.x, managerPoint.y, false, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+      }
+      
+//=================================================================================
+//   edit selected assets
+//=================================================================================
+      
+      protected function DeleteSelectedControlPoints ():void
+      {  
+         if (mAssetManager == null)
+            return;
+         
+         mAssetManager.DeleteSelectedControlPoints ();
+         
+         UpdateInterface ();
+      }
+      
+      protected function InsertVertexController ():void
+      {
+         if (mAssetManager == null)
+            return;
+         
+         mAssetManager.InsertVertexController ();
+         
+         UpdateInterface ();
+         
       }
       
 //=================================================================================

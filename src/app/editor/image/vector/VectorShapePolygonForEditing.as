@@ -10,6 +10,7 @@ package editor.image.vector
    
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
+   import editor.asset.ControlPointModifyResult;
    
    import common.shape.VectorShapePolygon;
    
@@ -196,8 +197,7 @@ package editor.image.vector
 
             var cp:ControlPoint = new ControlPoint (asset, i);
             cp.SetPosition (vertexPoint.x, vertexPoint.y);
-            cp.RebuildAppearance ();
-            cp.RebuildSelectionProxy ();
+            cp.Refresh ();
             
             controlPoints [i] = cp;
          }
@@ -215,7 +215,7 @@ package editor.image.vector
          return -1;
       }
       
-      public static function OnMovePolyControlPoint (localVertexPoints:Array, controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      public static function OnMovePolyControlPoint (localVertexPoints:Array, controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult
       {
          if (localVertexPoints == null || localVertexPoints.length == 0)
             return null;
@@ -245,22 +245,91 @@ package editor.image.vector
             cp.SetPosition (vertexPoint.x, vertexPoint.y);
          }
                   
-         return new Array (assetLocalDisplaymentX, assetLocalDisplaymentY, movedControlPointIndex);
+         return new ControlPointModifyResult (false, assetLocalDisplaymentX, assetLocalDisplaymentY, movedControlPointIndex);
       }
       
-      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult
       {
          return OnMovePolyControlPoint (mLocalVertexPoints, controlPoints, movedControlPointIndex, dx, dy);
       }
       
-      public function DeleteControlPoint (controlPoint:ControlPoint):int
+      public static function OnDeletePolyControlPoint (controlPoints:Array, localVertexPoints:Array, toDeleteControlPointIndex:int, minNumPoints:int):ControlPointModifyResult
       {
-         return -1;
+         if (localVertexPoints == null || localVertexPoints.length == 0)
+            return null;
+         
+         var vertexCount:int = localVertexPoints.length;
+         
+         if (controlPoints == null || controlPoints.length != vertexCount)
+            return null;
+         
+         if (toDeleteControlPointIndex < 0 || toDeleteControlPointIndex >= vertexCount)
+            return null;
+         
+         if (vertexCount <= minNumPoints)
+            return new ControlPointModifyResult (true);
+         
+         var toDeleteControlPoint:Point = localVertexPoints [toDeleteControlPointIndex] as Point;
+         localVertexPoints.splice (toDeleteControlPointIndex, 1);
+         -- vertexCount;
+
+         var assetLocalDisplaymentX:Number = toDeleteControlPoint.x / Number (vertexCount);
+         var assetLocalDisplaymentY:Number = toDeleteControlPoint.y / Number (vertexCount);
+
+         for (var i:int = 0; i < vertexCount; ++ i)
+         {
+            var vertexPoint:Point = localVertexPoints [i] as Point;
+            vertexPoint.x -= assetLocalDisplaymentX;
+            vertexPoint.y -= assetLocalDisplaymentY;
+         }
+                  
+         return new ControlPointModifyResult (false, assetLocalDisplaymentX, assetLocalDisplaymentY, -1);
       }
       
-      public function InsertControlPointBefore (controlPoint:ControlPoint):int
+      public function DeleteControlPoint (controlPoints:Array, toDeleteControlPointIndex:int):ControlPointModifyResult
       {
-         return -1;
+         return OnDeletePolyControlPoint (controlPoints, mLocalVertexPoints, toDeleteControlPointIndex, 3);
+      }
+      
+      public static function OnInsertPloyControlPointBefore (controlPoints:Array, localVertexPoints:Array, insertBeforeControlPointIndex:int):ControlPointModifyResult
+      {
+         if (localVertexPoints == null || localVertexPoints.length == 0)
+            return null;
+         
+         var vertexCount:int = localVertexPoints.length;
+         
+         if (controlPoints == null || controlPoints.length != vertexCount)
+            return null;
+         
+         if (insertBeforeControlPointIndex < 0 || insertBeforeControlPointIndex >= vertexCount)
+            return null;
+         
+         var insertBeforeControlPoint:Point = localVertexPoints [insertBeforeControlPointIndex] as Point;
+
+         var lastPointIndex:int = insertBeforeControlPointIndex == 0 ? vertexCount - 1 : insertBeforeControlPointIndex - 1;
+         var lastPoint:Point = localVertexPoints [lastPointIndex] as Point;
+         
+         var newPoint:Point = new Point (0.5 * (lastPoint.x + insertBeforeControlPoint.x), 0.5 * (lastPoint.y + insertBeforeControlPoint.y));
+         
+         localVertexPoints.splice (insertBeforeControlPointIndex, 0, newPoint);
+         ++ vertexCount;
+
+         var assetLocalDisplaymentX:Number = newPoint.x / Number (vertexCount);
+         var assetLocalDisplaymentY:Number = newPoint.y / Number (vertexCount);
+
+         for (var i:int = 0; i < vertexCount; ++ i)
+         {
+            var vertexPoint:Point = localVertexPoints [i] as Point;
+            vertexPoint.x -= assetLocalDisplaymentX;
+            vertexPoint.y -= assetLocalDisplaymentY;
+         }
+                  
+         return new ControlPointModifyResult (false, assetLocalDisplaymentX, assetLocalDisplaymentY, insertBeforeControlPointIndex + 1);
+      }
+      
+      public function InsertControlPointBefore (controlPoints:Array, insertBeforeControlPointIndex:int):ControlPointModifyResult
+      {
+         return OnInsertPloyControlPointBefore (controlPoints, mLocalVertexPoints, insertBeforeControlPointIndex);
       }
    }
 }

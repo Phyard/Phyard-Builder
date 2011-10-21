@@ -10,6 +10,7 @@ package editor.image.vector
    
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
+   import editor.asset.ControlPointModifyResult;
    
    import common.shape.VectorShapeRectangle;
    
@@ -95,8 +96,7 @@ package editor.image.vector
          {
             var cp:ControlPoint = new ControlPoint (asset, i);
             cp.SetPosition ((i == 0 || i == 3) ? - rectangle.GetHalfWidth () : rectangle.GetHalfWidth (), (i == 0 || i == 1) ? - rectangle.GetHalfHeight () : rectangle.GetHalfHeight ());
-            cp.RebuildAppearance ();
-            cp.RebuildSelectionProxy ();
+            cp.Refresh ();
             
             controlPoints [i] = cp;
          }
@@ -114,7 +114,7 @@ package editor.image.vector
          return -1;
       }
       
-      public static function OnMoveRectangleControlPoint (rectangle:VectorShapeRectangle, controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      public static function OnMoveRectangleControlPoint (rectangle:VectorShapeRectangle, controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult
       {
          if (controlPoints == null || controlPoints.length != 4)
             return null;
@@ -142,22 +142,22 @@ package editor.image.vector
             cp.SetPosition ((i == 0 || i == 3) ? - rectangle.GetHalfWidth () : rectangle.GetHalfWidth (), (i == 0 || i == 1) ? - rectangle.GetHalfHeight () : rectangle.GetHalfHeight ());
          }
          
-         return new Array (assetLocalDisplaymentX, assetLocalDisplaymentY, movedControlPointIndex);
+         return new ControlPointModifyResult (false, assetLocalDisplaymentX, assetLocalDisplaymentY, movedControlPointIndex);
       }
       
-      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult
       {
          return OnMoveRectangleControlPoint (this, controlPoints, movedControlPointIndex, dx, dy);
       }
       
-      public function DeleteControlPoint (controlPoint:ControlPoint):int
+      public function DeleteControlPoint (controlPoints:Array, toDeleteControlPointIndex:int):ControlPointModifyResult
       {
-         return -1;
+         return null;
       }
       
-      public function InsertControlPointBefore (controlPoint:ControlPoint):int
+      public function InsertControlPointBefore (controlPoints:Array, insertBeforeControlPointIndex:int):ControlPointModifyResult
       {
-         return -1;
+         return null;
       }
    }
 }

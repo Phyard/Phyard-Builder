@@ -131,6 +131,12 @@ package editor.asset {
          
       }
       
+      public function Refresh ():void
+      {
+         RebuildAppearance ();
+         RebuildSelectionProxy ();
+      }
+      
       public function Destroy ():void
       {
          if (parent != null) // mOwnerAsset.GetControlPointContainer ()

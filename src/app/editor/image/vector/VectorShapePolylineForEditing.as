@@ -10,6 +10,7 @@ package editor.image.vector
    
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
+   import editor.asset.ControlPointModifyResult;
    
    import common.shape.VectorShapePolygon;
    import common.shape.VectorShapePolyline;
@@ -161,19 +162,22 @@ package editor.image.vector
          return -1;
       }
       
-      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult
       {
          return VectorShapePolygonForEditing.OnMovePolyControlPoint (mLocalVertexPoints, controlPoints, movedControlPointIndex, dx, dy);;
       }
       
-      public function DeleteControlPoint (controlPoint:ControlPoint):int
+      public function DeleteControlPoint (controlPoints:Array, toDeleteControlPointIndex:int):ControlPointModifyResult
       {
-         return -1;
+         return VectorShapePolygonForEditing.OnDeletePolyControlPoint (controlPoints, mLocalVertexPoints, toDeleteControlPointIndex, 2);
       }
       
-      public function InsertControlPointBefore (controlPoint:ControlPoint):int
+      public function InsertControlPointBefore (controlPoints:Array, insertBeforeControlPointIndex:int):ControlPointModifyResult
       {
-         return -1;
+         if ((! IsClosed ()) && insertBeforeControlPointIndex == 0)
+            return null;
+         
+         return VectorShapePolygonForEditing.OnInsertPloyControlPointBefore (controlPoints, mLocalVertexPoints, insertBeforeControlPointIndex);
       }
    }
 }

@@ -321,7 +321,7 @@ package editor.asset {
          if (intentionDone)
          {
             UpdateSelectionProxy ();
-            RebuildControlPointsIfTheyAreVisible ();
+            UpdateControlPoints ();
          }
       }
       
@@ -332,7 +332,7 @@ package editor.asset {
          if (intentionDone)
          {
             UpdateSelectionProxy ();
-            RebuildControlPointsIfTheyAreVisible ();
+            UpdateControlPoints ();
          }
       }
       
@@ -352,7 +352,7 @@ package editor.asset {
          if (intentionDone)
          {
             UpdateSelectionProxy ();
-            RebuildControlPointsIfTheyAreVisible ();
+            UpdateControlPoints ();
          }
       }
       
@@ -366,7 +366,7 @@ package editor.asset {
          if (intentionDone)
          {
             UpdateSelectionProxy ();
-            RebuildControlPointsIfTheyAreVisible ();
+            UpdateControlPoints ();
          }
       }
       
@@ -378,7 +378,7 @@ package editor.asset {
       //   if (intentionDone)
       //   {
       //      UpdateSelectionProxy ();
-      //      RebuildControlPointsIfTheyAreVisible ();
+      //      UpdateControlPoints ();
       //   }
       //}
       
@@ -394,7 +394,7 @@ package editor.asset {
          if (intentionDone)
          {
             UpdateSelectionProxy ();
-            RebuildControlPointsIfTheyAreVisible ();
+            UpdateControlPoints ();
          }
       }
       
@@ -405,7 +405,7 @@ package editor.asset {
          if (intentionDone)
          {
             UpdateSelectionProxy ();
-            RebuildControlPointsIfTheyAreVisible ();
+            UpdateControlPoints ();
          }
       }
       
@@ -416,7 +416,7 @@ package editor.asset {
          if (intentionDone)
          {
             UpdateSelectionProxy ();
-            RebuildControlPointsIfTheyAreVisible ();
+            UpdateControlPoints ();
          }
       }
       
@@ -427,7 +427,7 @@ package editor.asset {
          if (intentionDone)
          {
             UpdateSelectionProxy ();
-            RebuildControlPointsIfTheyAreVisible ();
+            UpdateControlPoints ();
          }
       }
       
@@ -438,7 +438,7 @@ package editor.asset {
          if (intentionDone)
          {
             UpdateSelectionProxy ();
-            RebuildControlPointsIfTheyAreVisible ();
+            UpdateControlPoints ();
          }
       }
       
@@ -464,7 +464,7 @@ package editor.asset {
       
       public function OnManagerScaleChanged ():void
       {
-         RebuildControlPointsIfTheyAreVisible ();
+         UpdateControlPoints ();
       }
       
 //======================================================
@@ -544,23 +544,20 @@ package editor.asset {
       
       final public function UpdateControlPoints ():void
       {
-         if (mControlPointsVisible)
+         if (AreControlPointsVisible ())
          {
-            RebuildControlPoints ();
+            UpdateControlPoints_Internal ();
          }
       }
       
-      final public function RebuildControlPointsIfTheyAreVisible ():void
+      protected function UpdateControlPoints_Internal ():void
       {
-         if (AreControlPointsVisible ())
-         {
-            RebuildControlPoints ();
-         }
+         // to override. This one should not call DestroyControlPoints.
       }
       
       protected function RebuildControlPoints ():void
       {
-         // to override
+         // to override. This one will call DestroyControlPoints firstly.
       }
       
       protected function DestroyControlPoints ():void

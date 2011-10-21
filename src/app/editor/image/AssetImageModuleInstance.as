@@ -28,6 +28,7 @@ package editor.image {
    
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
+   import editor.asset.ControlPointModifyResult;
    
    import editor.image.vector.VectorShapeForEditing;
    
@@ -221,6 +222,17 @@ package editor.image {
          return mControlPointsContainer; // to override
       }
       
+      override protected function UpdateControlPoints_Internal ():void
+      {
+         if (mControlPoints == null)
+            return;
+         
+         for each (var cp:ControlPoint in mControlPoints)
+         {
+            cp.Refresh ();
+         }
+      }
+      
       override protected function RebuildControlPoints ():void
       {
          if (mControlPoints != null)
@@ -263,11 +275,17 @@ package editor.image {
          }
       }
       
-      protected function OnControlPointsModified (infos:Array, actionDone:Boolean):void
+      protected function OnControlPointsModified (result:ControlPointModifyResult, actionDone:Boolean):void
       {
-         if (infos != null)
+         if (result == null)
+            return;
+         
+         if (result.mToDeleteAsset)
          {
-            var localAssetDisplayment:Point = new Point (infos [0], infos[1]);
+         }
+         else
+         {
+            var localAssetDisplayment:Point = new Point (result.mAssetPosLocalAdjustX, result.mAssetPosLocalAdjustY);
             var globalAssetDisplayment:Point = AssetToManager (localAssetDisplayment, false);
             SetPosition (GetPositionX () + globalAssetDisplayment.x, GetPositionY () + globalAssetDisplayment.y);
             
@@ -277,7 +295,7 @@ package editor.image {
             {
                UpdateSelectionProxy ();
                RebuildControlPoints ();
-               var selectedControlPointIndex:int = infos[2];
+               var selectedControlPointIndex:int = result.mNewSelectedControlPointIndex;
                if (selectedControlPointIndex >= 0 && selectedControlPointIndex < mControlPoints.length)
                {
                   OnSoloControlPointSelected (mControlPoints [selectedControlPointIndex] as ControlPoint);
@@ -292,8 +310,8 @@ package editor.image {
          {
             var localDisplayment:Point = ManagerToAsset (new Point (dx, dy), false); 
             
-            var returnInfos:Array = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().OnMoveControlPoint (mControlPoints, controlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
-            OnControlPointsModified (returnInfos, done);
+            var result:ControlPointModifyResult = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().OnMoveControlPoint (mControlPoints, controlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
+            OnControlPointsModified (result, done);
          }
       }
 
@@ -301,14 +319,8 @@ package editor.image {
       {
          if (mAssetImageModule is AssetImageShapeModule)
          {
-            var returnIndex:int = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().DeleteControlPoint (controlPoint);
-            if (returnIndex >= 0)
-            {
-               UpdateAppearance ();
-               UpdateSelectionProxy ();
-               
-               RebuildControlPoints ();
-            }
+            var result:ControlPointModifyResult = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().DeleteControlPoint (mControlPoints, controlPoint.GetIndex ());
+            OnControlPointsModified (result, true);
          }
       }
 
@@ -316,17 +328,8 @@ package editor.image {
       {
          if (mAssetImageModule is AssetImageShapeModule)
          {
-            var returnIndex:int = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().InsertControlPointBefore (controlPoint);
-            if (returnIndex >= 0)
-            {
-               UpdateAppearance ();
-               UpdateSelectionProxy ();
-               
-               RebuildControlPoints ();
-               controlPoint = mControlPoints [returnIndex] as ControlPoint;
-               controlPoint.SetSelectedLevel (ControlPoint.SelectedLevel_Primary);
-               OnSoloControlPointSelected (controlPoint);
-            }
+            var result:ControlPointModifyResult = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().InsertControlPointBefore (mControlPoints, controlPoint.GetIndex ());
+            OnControlPointsModified (result, true);
          }
       }
       

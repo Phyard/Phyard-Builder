@@ -7,6 +7,7 @@ package editor.image.vector
 
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
+   import editor.asset.ControlPointModifyResult;
 
    import common.Transform2D;
 
@@ -19,9 +20,9 @@ package editor.image.vector
 
       function CreateControlPointsForAsset (asset:Asset):Array;
       function GetSecondarySelectedControlPointId (primaryControlPoint:ControlPoint):int;
-      // return asset displacement caused by the moving, in asset space.
-      function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array;
-      function DeleteControlPoint (controlPoint:ControlPoint):int; // return negative values means fails, otherwise return the old index of the CP deleted.
-      function InsertControlPointBefore (controlPoint:ControlPoint):int; // return negative values means fails, otherwise return the new index of the old selected CP (the CP inserted before).
+      
+      function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult;
+      function DeleteControlPoint (controlPoints:Array, toDeleteControlPointIndex:int):ControlPointModifyResult;
+      function InsertControlPointBefore (controlPoints:Array, insertBeforeControlPointIndex:int):ControlPointModifyResult;
    }
 }

@@ -10,6 +10,7 @@ package editor.image.vector
    
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
+   import editor.asset.ControlPointModifyResult;
    
    import common.shape.VectorShapeCircle;
    
@@ -97,19 +98,19 @@ package editor.image.vector
          return -1;
       }
       
-      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):Array
+      public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult
       {
          return null;
       }
       
-      public function DeleteControlPoint (controlPoint:ControlPoint):int
+      public function DeleteControlPoint (controlPoints:Array, toDeleteControlPointIndex:int):ControlPointModifyResult
       {
-         return -1;
+         return null;
       }
       
-      public function InsertControlPointBefore (controlPoint:ControlPoint):int
+      public function InsertControlPointBefore (controlPoints:Array, insertBeforeControlPointIndex:int):ControlPointModifyResult
       {
-         return -1;
+         return null;
       }
    }
 }

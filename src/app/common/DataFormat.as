@@ -1294,8 +1294,10 @@ package common {
                divisionDefine.mImageIndex += oldNumImageModules;
                var imageDivision:AssetImageDivision = (assetImageManager.GetAssetByAppearanceId (divisionDefine.mImageIndex) as AssetImage)
                                              .GetAssetImageDivisionManager ().CreateImageDivision (
-                                                divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom
+                                                divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom,
+                                                false, pureModuleManager
                                              );
+               
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
             }
@@ -1333,6 +1335,7 @@ package common {
                
                var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId + oldNumSequencedModules) as AssetImageCompositeModule;
                
+trace ("========= sequencedModuleDefine.mIsLooped = " + sequencedModuleDefine.mIsLooped + ", sequencedModuleDefine.mModuleSequenceDefines = " + sequencedModuleDefine.mModuleSequenceDefines);
                sequencedModule.SetLooped (sequencedModuleDefine.mIsLooped);
                ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
             }
@@ -2477,9 +2480,130 @@ package common {
                
                worldDefine.mImageDefines.push (imageDefine);
             }
+            
+            for each (element in worldXml.ImageDivisions.ImageDivision)
+            {
+               var divisionDefine:Object = new Object ();
+               
+               divisionDefine.mImageIndex = parseInt (element.@image_index);
+               divisionDefine.mLeft = parseInt (element.@left);
+               divisionDefine.mTop = parseInt (element.@top);
+               divisionDefine.mRight = parseInt (element.@right);
+               divisionDefine.mBottom = parseInt (element.@bottom);
+               
+               worldDefine.mPureImageModuleDefines.push (divisionDefine);
+            }
+            
+            for each (element in worldXml.AssembledModules.AssembledModule)
+            {
+               var assembledModuleDefine:Object = new Object ();
+               
+               assembledModuleDefine.mModulePartDefines = XmlElements2ModuleInstanceDefines (element.ModulePart, false);
+               
+               worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
+            }
+            
+            for each (element in worldXml.SequencedModules.SequencedModule)
+            {
+               var sequencedModuleDefine:Object = new Object ();
+               
+               sequencedModuleDefine.mIsLooped = parseInt(element.@looped) != 0;
+               sequencedModuleDefine.mModuleSequenceDefines = XmlElements2ModuleInstanceDefines (element.ModuleSequence, true);
+trace (">>>>>>>>> sequencedModuleDefine.mModuleSequenceDefines.length = " + sequencedModuleDefine.mModuleSequenceDefines);
+               
+               worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
+            }
          }
          
          return worldDefine;
+      }
+      
+      public static function XmlElements2ModuleInstanceDefines (xmlElements:XMLList, forSequencedModule:Boolean):Array
+      {
+         var moduleInstanceDefines:Array = new Array ();
+         
+         for each (var element:XML in xmlElements)
+         {
+            var moduleInstanceDefine:Object = new Object ();
+            
+            moduleInstanceDefine.mPosX = parseFloat (element.@x);
+            moduleInstanceDefine.mPosY = parseFloat (element.@y);
+            moduleInstanceDefine.mScale = parseFloat(element.@scale);
+            moduleInstanceDefine.mIsFlipped = parseInt (element.@flipped) != 0;
+            moduleInstanceDefine.mRotation = parseFloat (element.@r);
+            moduleInstanceDefine.mVisible = parseInt (element.@visible) != 0;
+            moduleInstanceDefine.mAlpha = parseFloat (element.@alpha);
+            
+            if (forSequencedModule)
+            {
+               moduleInstanceDefine.mModuleDuration = parseFloat (element.@duration);
+            }
+            
+            XmlElement2ModuleInstanceDefine (moduleInstanceDefine, element);
+            
+            moduleInstanceDefines.push (moduleInstanceDefine);
+         }
+         
+         return moduleInstanceDefines;
+      }
+      
+      public static function XmlElement2ModuleInstanceDefine (moduleInstanceDefine:Object, element:XML):void
+      {
+         moduleInstanceDefine.mModuleType = element.@module_type;
+         
+         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            moduleInstanceDefine.mShapeAttributeBits = parseInt (element.@shape_attributes);
+            moduleInstanceDefine.mShapeBodyOpacityAndColor = parseInt (element.@shape_body_argb);
+            
+            if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               moduleInstanceDefine.mShapePathThickness = parseFloat (element.@shape_path_thickness);
+               
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
+               {
+                  moduleInstanceDefine.mPolyLocalPoints = XmlElement2LocalVertices (element);
+               }
+            }
+            else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
+               {
+                  moduleInstanceDefine.mCircleRadius = parseFloat (element.@circle_radius);
+                  moduleInstanceDefine.mCircleAppearacneType = parseInt (element.@circle_appearance_type);
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
+               {
+                  moduleInstanceDefine.mRectHalfWidth = parseFloat (element.@rect_half_width);
+                  moduleInstanceDefine.mRectHalfHeight = parseFloat (element.@rect_half_height);
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
+               {
+                  moduleInstanceDefine.mPolyLocalPoints = XmlElement2LocalVertices (element);
+               }
+            }
+         }
+         else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule)
+            {
+               moduleInstanceDefine.mModuleIndex = parseInt (element.@module_index);
+            }
+         }
+         else // ...
+         {
+         }
+      }
+      
+      public static function XmlElement2LocalVertices (element:XML):Array
+      {
+         var points:Array = new Array ();
+         for each (var elementLocalVertex:XML in element.LocalVertices.Vertex)
+         {
+            points.push (new Point (parseFloat (elementLocalVertex.@x), parseFloat (elementLocalVertex.@y)));
+         }
+         
+         return points;
       }
       
       public static function IndicesString2IntegerArray (indicesStr:String, idArray:Array = null):Array
@@ -2757,11 +2881,7 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                {
-                  entityDefine.mLocalPoints = new Array ();
-                  for each (elementLocalVertex in element.LocalVertices.Vertex)
-                  {
-                     entityDefine.mLocalPoints.push (new Point (parseFloat (elementLocalVertex.@x), parseFloat (elementLocalVertex.@y)));
-                  }
+                  entityDefine.mLocalPoints = XmlElement2LocalVertices (element);
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                {
@@ -2777,11 +2897,7 @@ package common {
                      entityDefine.mIsClosed = parseInt (element.@closed) != 0;
                   }
                   
-                  entityDefine.mLocalPoints = new Array ();
-                  for each (elementLocalVertex in element.LocalVertices.Vertex)
-                  {
-                     entityDefine.mLocalPoints.push (new Point (parseFloat (elementLocalVertex.@x), parseFloat (elementLocalVertex.@y)));
-                  }
+                  entityDefine.mLocalPoints = XmlElement2LocalVertices (element);
                }
             }
             else

@@ -11,6 +11,8 @@ package editor.image {
    import editor.asset.Asset;
    import editor.asset.AssetManager;
    
+   import editor.world.World;
+   
    import editor.runtime.Runtime;
    
    import common.CoordinateSystem;
@@ -95,7 +97,8 @@ package editor.image {
          }
       }
       
-      public function CreateImageDivision (left:Number, top:Number, right:Number, bottom:Number, selectIt:Boolean = false):AssetImageDivision
+      // pureModuleManager is for loading
+      public function CreateImageDivision (left:Number, top:Number, right:Number, bottom:Number, selectIt:Boolean = false, pureModuleManager:AssetImagePureModuleManager = null):AssetImageDivision
       {
          if (left < 0)
             left = 0;
@@ -135,7 +138,10 @@ package editor.image {
          if (selectIt)
             SetSelectedAsset (imageDivision);
          
-         Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (imageDivision, selectIt);
+         if (pureModuleManager != null) // in loading stage, Runtime.GetCurrentWorld () is null
+            pureModuleManager.CreateImagePureModule (imageDivision, selectIt);
+         else
+            Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (imageDivision, selectIt);
          
          return imageDivision;
       }

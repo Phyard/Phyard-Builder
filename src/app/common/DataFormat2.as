@@ -817,7 +817,7 @@ package common {
                element.@image_index = divisionDefine.mImageIndex;
                element.@left = divisionDefine.mLeft;
                element.@top = divisionDefine.mTop;
-               element.@right = divisionDefine.mTop;
+               element.@right = divisionDefine.mRight;
                element.@bottom = divisionDefine.mBottom;
                
                xml.ImageDivisions.appendChild (element);
@@ -829,7 +829,7 @@ package common {
 
                element = <AssembledModule />;
                
-               ModuleInstances2XmlElements (assembledModuleDefine.mModulePartDefines, element, "ModulePart", false);
+               ModuleInstanceDefines2XmlElements (assembledModuleDefine.mModulePartDefines, element, "ModulePart", false);
                
                xml.AssembledModules.appendChild (element);
             }
@@ -841,7 +841,7 @@ package common {
                element = <SequencedModule />;
                
                element.@looped = sequencedModuleDefine.mIsLooped ? 1 : 0;
-               ModuleInstances2XmlElements (sequencedModuleDefine.mModuleSequenceDefines, element, "ModuleSequence", true);
+               ModuleInstanceDefines2XmlElements (sequencedModuleDefine.mModuleSequenceDefines, element, "ModuleSequence", true);
                
                xml.SequencedModules.appendChild (element);
             }
@@ -850,7 +850,7 @@ package common {
          return xml;
       }
       
-      public static function ModuleInstances2XmlElements (moduleInstanceDefines:Array, parentElement:XML, childElementName:String, forSequencedModule:Boolean):void
+      public static function ModuleInstanceDefines2XmlElements (moduleInstanceDefines:Array, parentElement:XML, childElementName:String, forSequencedModule:Boolean):void
       {
          for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
          {
@@ -865,20 +865,20 @@ package common {
             element.@flipped = moduleInstanceDefine.mIsFlipped ? 1 : 0;
             element.@r = moduleInstanceDefine.mRotation;
             element.@visible = moduleInstanceDefine.mVisible ? 1 : 0;
-            element.@alpha = moduleInstanceDefine.mAlpha ? 1 : 0;
+            element.@alpha = moduleInstanceDefine.mAlpha;
             
             if (forSequencedModule)
             {
                element.@duration = moduleInstanceDefine.mModuleDuration;
             }
             
-            ModuleInstance2XmlElement (moduleInstanceDefine, element);
+            ModuleInstanceDefine2XmlElement (moduleInstanceDefine, element);
             
             parentElement.appendChild (element);
          }
       }
       
-      public static function ModuleInstance2XmlElement (moduleInstanceDefine:Object, element:XML):void
+      public static function ModuleInstanceDefine2XmlElement (moduleInstanceDefine:Object, element:XML):void
       {
          element.@module_type = moduleInstanceDefine.mModuleType;
          

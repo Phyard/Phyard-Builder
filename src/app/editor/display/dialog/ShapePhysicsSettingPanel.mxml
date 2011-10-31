@@ -122,8 +122,10 @@
                CheckBox_AllowSleeping.enabled = true;
                CheckBox_FixRotation.enabled = true;
                
-               CheckBox_Hollow.enabled = mInputValues.mDisableHollowEditing == null || (! mInputValues.mDisableHollowEditing);
-               CheckBox_BuildBorder.enabled = mInputValues.mDisableBuildBorderEditing == null || (! mInputValues.mDisableBuildBorderEditing);
+               //CheckBox_Hollow.enabled = mInputValues.mDisableHollowEditing == null || (! mInputValues.mDisableHollowEditing);
+               //CheckBox_BuildBorder.enabled = mInputValues.mDisableBuildBorderEditing == null || (! mInputValues.mDisableBuildBorderEditing);
+               CheckBox_Hollow.visible = mInputValues.mDisableHollowEditing == null || (! mInputValues.mDisableHollowEditing);
+               CheckBox_BuildBorder.visible = mInputValues.mDisableBuildBorderEditing == null || (! mInputValues.mDisableBuildBorderEditing);
                 
                Box_Bottom.enabled = true;
                Box_CollisionCategory.enabled = true;

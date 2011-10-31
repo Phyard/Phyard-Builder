@@ -113,6 +113,15 @@ package editor.asset {
 //======================================================
 // 
 //======================================================
+
+      public function OnAddedToStage (event:Event):void
+      {
+         BuildContextMenu ();
+      }
+      
+//======================================================
+// 
+//======================================================
       
       private var mIsDestroyed:Boolean = false;
       
@@ -138,6 +147,8 @@ package editor.asset {
          {
             FinalAssertReferPairs ();
          }
+         
+         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
       }
       
       public function Update (escapedTime:Number):void
@@ -627,19 +638,6 @@ package editor.asset {
 //=============================================================
 //   context menu
 //=============================================================
-      
-      private function OnAddedToStage (event:Event):void 
-      {
-         addEventListener (Event.ADDED_TO_STAGE , OnRemovedToStage);
-         
-         BuildContextMenu ();
-      }
-      
-      private function OnRemovedToStage (event:Event):void 
-      {
-         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
-         removeEventListener (Event.ADDED_TO_STAGE , OnRemovedToStage);
-      }
       
       final private function BuildContextMenu ():void
       {

@@ -1051,7 +1051,7 @@ package common {
                   element.@border_transparency = entityDefine.mBorderTransparency;
             }
 
-            if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+            if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
             {
                element.@ai_type = entityDefine.mAiType;
 
@@ -1679,7 +1679,7 @@ package common {
                   entityDefine.mBorderTransparency = byteArray.readByte ();
                }
 
-               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+               if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
                   if (worldDefine.mVersion >= 0x0105)
                   {
@@ -2148,7 +2148,7 @@ package common {
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
-               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+               if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
                   if (entityDefine.mIsPhysicsEnabled)
                   {
@@ -2506,7 +2506,7 @@ package common {
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
-               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+               if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {

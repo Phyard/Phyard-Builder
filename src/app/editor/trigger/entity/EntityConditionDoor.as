@@ -236,11 +236,11 @@ package editor.trigger.entity {
          var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
          defaultItems.print = false;
          
-         mContextMenuItem_ToggleAndOr = new ContextMenuItem (kText_SetAsAnd, false),
+         mContextMenuItem_ToggleAndOr = new ContextMenuItem (kText_SetAsAnd, false);
          contextMenu.customItems.push (mContextMenuItem_ToggleAndOr);
          mContextMenuItem_ToggleAndOr.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
-         mContextMenuItem_ToggleNot = new ContextMenuItem (kText_AddNot, false),
+         mContextMenuItem_ToggleNot = new ContextMenuItem (kText_AddNot, false);
          contextMenu.customItems.push (mContextMenuItem_ToggleNot);
          mContextMenuItem_ToggleNot.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          

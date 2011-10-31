@@ -28,16 +28,6 @@ package editor.entity {
 
       protected var mTransparency:uint = 100; // from v1.04
 
-   // geometry
-
-      //>> form v1.05
-      protected var mIsHollow:Boolean = false;
-      //<<
-
-      //>> v1.08
-      protected var mBuildBorder:Boolean = true;
-      //<<
-
 //====================================================================
 //
 //====================================================================
@@ -55,6 +45,11 @@ package editor.entity {
       override public function GetTypeName ():String
       {
          return "Shape";
+      }
+
+      override public function IsBasicVectorShapeEntity ():Boolean
+      {
+         return true;
       }
 
 //====================================================================
@@ -84,25 +79,8 @@ package editor.entity {
          shape.SetTransparency (mTransparency);
          shape.SetBorderTransparency (GetBorderTransparency ());
 
-         shape.SetPhysicsEnabled (mPhysicsEnabled);
-         shape.mDensity = mDensity;
-         shape.mFriction = mFriction;
-         shape.mRestitution = mRestitution;
-         shape.mIsSensor = mIsSensor;
-
-         shape.SetCollisionCategoryIndex ( GetCollisionCategoryIndex () );
-
-         shape.SetHollow (IsHollow ());
-         shape.SetBuildBorder (IsBuildBorder ());
-
-         shape.SetLinearVelocityMagnitude (GetLinearVelocityMagnitude ());
-         shape.SetLinearVelocityAngle (GetLinearVelocityAngle ());
-         shape.SetAngularVelocity (GetAngularVelocity ());
-         shape.SetLinearDamping (GetLinearDamping ());
-         shape.SetAngularDamping (GetAngularDamping ());
-
-         shape.SetAllowSleeping (IsAllowSleeping ());
-         shape.SetFixRotation (IsFixRotation ());
+         //shape.SetHollow (IsHollow ());
+         //shape.SetBuildBorder (IsBuildBorder ());
       }
 
 //======================================================
@@ -204,26 +182,6 @@ package editor.entity {
 //======================================================
 // physics
 //======================================================
-
-      public function SetHollow (hollow:Boolean):void
-      {
-         mIsHollow = hollow;
-      }
-
-      public function IsHollow ():Boolean
-      {
-         return mIsHollow;
-      }
-
-      public function SetBuildBorder (build:Boolean):void
-      {
-         mBuildBorder = build;
-      }
-
-      public function IsBuildBorder ():Boolean
-      {
-         return mBuildBorder;
-      }
 
       override public function SetStatic (isStatic:Boolean):void
       {

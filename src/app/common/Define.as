@@ -350,6 +350,9 @@ package common {
       public static const EntityType_ShapeGravityController:int = 32; // from v1.02
       public static const EntityType_ShapeTextButton:int = 33; // from v1.08
       
+      // preset shapes
+      public static const EntityType_ShapeImageModule:int = 50; // from v1.58
+
       // basic joints
       public static const EntityType_JointHinge:int = 60;
       public static const EntityType_JointSlider:int = 61;
@@ -375,10 +378,10 @@ package common {
       public static const EntityType_LogicInputEntityFilter:int = 217; // from v1.56
       public static const EntityType_LogicInputEntityPairFilter:int = 218; // from v1.56
       
-      // from v1.07, folloing functions should only be used in packaging./ loading
+      // from v1.07, folloing functions should only be used in packaging / loading
       // they should NOT used in player pacakge, use player.EntityShape.mPhysicsShapePotentially instead
       
-      public static function IsBasicShapeEntity (entityType:int):Boolean
+      public static function IsBasicVectorShapeEntity (entityType:int):Boolean
       {
          return   entityType == EntityType_ShapeCircle
                || entityType == EntityType_ShapeRectangle
@@ -396,6 +399,7 @@ package common {
                || entityType == EntityType_ShapeText
                || entityType == EntityType_ShapeTextButton
                || entityType == EntityType_ShapeGravityController
+               || entityType == EntityType_ShapeImageModule
                ;
       }
       

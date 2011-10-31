@@ -268,7 +268,7 @@
                      </mx:HBox>
                      -->
                      <mx:Spacer height="7"/>
-                     <mx:Button id="Button_CreateImageModuleEntity" label="" width="100%" alpha="0" height="100%" toolTip="Create Image Module Entity" focusEnabled="false" fontSize="8" toggle="true" cornerRadius="0" />
+                     <mx:Button id="Button_CreateImageModuleEntity" label="" width="100%" alpha="0" height="100%" toolTip="" focusEnabled="false" fontSize="8" toggle="true" cornerRadius="0" />
                   </mx:Box>
                   <mx:Box icon="@Embed('res/create/create-panel-trigger.png')" toolTip="Trigger Components" direction="vertical" borderStyle="solid" width="83" height="100%"
                            paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
@@ -812,6 +812,7 @@
                MainView.ShowShapeCircleSettingDialog = ShowShapeCircleSettingDialog;
                MainView.ShowShapePolygonSettingDialog = ShowShapePolygonSettingDialog;
                MainView.ShowShapePolylineSettingDialog = ShowShapePolylineSettingDialog;
+               MainView.ShowShapeImageModuleSettingDialog = ShowShapeImageModuleSettingDialog;
                
                MainView.ShowShapeTextSettingDialog = ShowShapeTextSettingDialog;
                MainView.ShowShapeTextButtonSettingDialog = ShowShapeTextButtonSettingDialog;
@@ -1636,6 +1637,18 @@
                OnOpenDialog ();
                
                var settingDialog:ShapePolylineSettingDialog = new ShapePolylineSettingDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+            
+            private function ShowShapeImageModuleSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               OnOpenDialog ();
+               
+               var settingDialog:ShapeImageModuleSettingDialog = new ShapeImageModuleSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
                settingDialog.SetCloseFunc (OnCloseDialog);

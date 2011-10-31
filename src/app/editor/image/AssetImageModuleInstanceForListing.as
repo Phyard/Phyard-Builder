@@ -14,6 +14,7 @@ package editor.image {
    import flash.utils.ByteArray;
    
    import flash.events.Event;
+   import flash.events.MouseEvent;
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
          
@@ -54,7 +55,7 @@ package editor.image {
       {
          super (assetImageModuleInstanceManagerForListing);
          
-         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage); // added in super class
+         removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown); // added in super class
          
          mAssetImageModuleInstanceManagerForListing = assetImageModuleInstanceManagerForListing;
          

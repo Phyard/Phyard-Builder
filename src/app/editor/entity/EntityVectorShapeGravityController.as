@@ -48,7 +48,12 @@ package editor.entity {
          return 0.70;
       }
 
-      override public function IsBasicShapeEntity ():Boolean
+      override public function IsBasicVectorShapeEntity ():Boolean
+      {
+         return false;
+      }
+
+      override public function IsPhysicsCapableShapeEntity ():Boolean
       {
          return false;
       }

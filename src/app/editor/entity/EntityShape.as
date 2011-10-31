@@ -49,6 +49,20 @@ package editor.entity {
       // allow sleep
       // is sleeping
 
+      // geometry
+         // the 2 temp put here.
+         // when move them into EntityVectorShape, 
+         // OnBatchModifyShapePhysicsProperties needs modification.
+
+      //>> form v1.05
+      protected var mIsHollow:Boolean = false;
+      //<<
+
+      //>> v1.08
+      protected var mBuildBorder:Boolean = true;
+      //<<
+
+
 
 
       //for debug
@@ -73,7 +87,12 @@ package editor.entity {
          return "Shape";
       }
 
-      public function IsBasicShapeEntity ():Boolean
+      public function IsBasicVectorShapeEntity ():Boolean
+      {
+         return false;
+      }
+
+      public function IsPhysicsCapableShapeEntity ():Boolean
       {
          return true;
       }
@@ -102,6 +121,10 @@ package editor.entity {
          shape.mFriction = mFriction;
          shape.mRestitution = mRestitution;
          shape.mIsSensor = mIsSensor;
+
+         // the 2 temp here
+         shape.SetHollow (IsHollow ());
+         shape.SetBuildBorder (IsBuildBorder ());
 
          shape.SetCollisionCategoryIndex ( GetCollisionCategoryIndex () );
 
@@ -292,6 +315,26 @@ package editor.entity {
       public function IsFixRotation ():Boolean
       {
          return mFixRotation;
+      }
+
+      public function SetHollow (hollow:Boolean):void
+      {
+         mIsHollow = hollow;
+      }
+
+      public function IsHollow ():Boolean
+      {
+         return mIsHollow;
+      }
+
+      public function SetBuildBorder (build:Boolean):void
+      {
+         mBuildBorder = build;
+      }
+
+      public function IsBuildBorder ():Boolean
+      {
+         return mBuildBorder;
       }
 
 //======================================================

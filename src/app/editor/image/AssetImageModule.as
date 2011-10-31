@@ -63,7 +63,7 @@ package editor.image {
          
          mAssetImageModuleManager = assetImageModuleManager;
          
-         addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+         addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
       }
       
       public function GetAssetImageModuleManager ():AssetImageModuleManager
@@ -84,22 +84,6 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
-      
-      protected function OnAddedToStage (event:Event):void 
-      {
-         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
-         
-         addEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
-         
-         addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
-      }
-      
-      protected function OnRemovedFromStage (event:Event):void 
-      {
-         removeEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
-         
-         removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
-      }
       
       public function OnMouseDown (event:MouseEvent):void
       {

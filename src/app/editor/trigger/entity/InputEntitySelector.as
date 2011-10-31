@@ -252,7 +252,7 @@ package editor.trigger.entity {
          
          if (clearText != null)
          {
-            mContextMenuItem_Clear = new ContextMenuItem (clearText, false),
+            mContextMenuItem_Clear = new ContextMenuItem (clearText, false);
             
             contextMenu.customItems.push (mContextMenuItem_Clear);
             mContextMenuItem_Clear.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
@@ -262,7 +262,7 @@ package editor.trigger.entity {
          
          if (appendText != null)
          {
-            mContextMenuItem_AppendSelecteds = new ContextMenuItem (appendText, false),
+            mContextMenuItem_AppendSelecteds = new ContextMenuItem (appendText, false);
             
             contextMenu.customItems.push (mContextMenuItem_AppendSelecteds);
             mContextMenuItem_AppendSelecteds.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);

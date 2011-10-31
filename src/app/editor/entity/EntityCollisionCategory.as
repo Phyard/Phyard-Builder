@@ -179,7 +179,7 @@ package editor.entity {
          var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
          defaultItems.print = false;
          
-         mContextMenuItem_BreakAllLinks = new ContextMenuItem ("Break All Friend(s)", false),
+         mContextMenuItem_BreakAllLinks = new ContextMenuItem ("Break All Friend(s)", false);
          contextMenu.customItems.push (mContextMenuItem_BreakAllLinks);
          mContextMenuItem_BreakAllLinks.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
       }

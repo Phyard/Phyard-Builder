@@ -1974,7 +1974,7 @@ package editor.trigger {
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetOriginalCIType, shape_appearance_package, "Get Original C.I. Type", null, null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses}),
                      ],
                      [
                              new VariableDefinitionNumber ("Original CI Type"),
@@ -1982,14 +1982,14 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetOriginalCIType, shape_appearance_package, "Set Original C.I. Type", null, null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses}),
                              new VariableDefinitionNumber ("New Original CI Type", null, {mValueLists: Lists.mAiTypeList}),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType, shape_appearance_package, "Get C.I. Type", null, null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses}),
                      ],
                      [
                              new VariableDefinitionNumber ("CI Type"),
@@ -1997,7 +1997,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType, shape_appearance_package, "Set C.I. Type", null, null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses}),
                              new VariableDefinitionNumber ("CI Type", null, {mValueLists: Lists.mAiTypeList}),
                      ],
                      null
@@ -2005,7 +2005,7 @@ package editor.trigger {
 
           RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Background Color", "@Color (#0) = Get Background Color ($0)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
                      ],
                      [
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
@@ -2013,14 +2013,14 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, shape_appearance_package, "Set Background Color", "@Set Background Color ($0, Color ($1))", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, shape_appearance_package, "Get Background Color RGB", "@RGB (#0, #1, #2) = Get Background Color ($0)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
                      ],
                      [
                              new VariableDefinitionNumber ("Red"),
@@ -2030,7 +2030,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB, shape_appearance_package, "Set Background Color RGB", "@Set Background Color ($0, RGB ($1, $2, $3))", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
                              new VariableDefinitionNumber ("Red"),
                              new VariableDefinitionNumber ("Green"),
                              new VariableDefinitionNumber ("Blue"),
@@ -2039,7 +2039,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledOpacity, shape_appearance_package, "Get Background Opacity", "@Set Background Opacity ($0, $1)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                      ],
                      [
                              new VariableDefinitionNumber ("Background Opacity"),
@@ -2047,14 +2047,14 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledOpacity, shape_appearance_package, "Set Background Opacity", "@Set Background Opacity ($0, $1)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                              new VariableDefinitionNumber ("Background Opacity"),
                      ],
                      null
                   );
           RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColor, shape_appearance_package, "Get Border Color", "@Color (#0) = Get Border Color ($0)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
                      ],
                      [
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
@@ -2069,7 +2069,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColorRGB, shape_appearance_package, "Get Border Color RGB", "@RGB (#0, #1, #2) = Get Border Color ($0)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
                      ],
                      [
                              new VariableDefinitionNumber ("Red"),
@@ -2079,7 +2079,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB, shape_appearance_package, "Set Border Color RGB", "@Set Border Color ($0, RGB ($1, $2, $3))", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
                              new VariableDefinitionNumber ("Red"),
                              new VariableDefinitionNumber ("Green"),
                              new VariableDefinitionNumber ("Blue"),
@@ -2088,7 +2088,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderOpacity, shape_appearance_package, "Get Border Opacity", "@Set Border Opacity ($0, $1)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                      ],
                      [
                              new VariableDefinitionNumber ("Border Opacity"),
@@ -2096,7 +2096,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderOpacity, shape_appearance_package, "Set Border Opacity", "@Set Border Opacity ($0, $1)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                              new VariableDefinitionNumber ("Border Opacity"),
                      ],
                      null
@@ -2104,7 +2104,7 @@ package editor.trigger {
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled, shape_physics_properties_package, "Is Physics Enabled Shape", null, null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses}),
                      ],
                      [
                              new VariableDefinitionBoolean ("Physics Enabled?"),

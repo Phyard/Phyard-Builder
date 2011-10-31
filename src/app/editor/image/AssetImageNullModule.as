@@ -9,6 +9,7 @@ package editor.image {
    import flash.geom.Point;
    
    import flash.events.Event;
+   import flash.events.MouseEvent;
       
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.LocalImageLoader;
@@ -30,7 +31,7 @@ package editor.image {
       {
          super (null); // no manager
          
-         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage); // added in super class
+         removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown); // added in super class
       }
       
 //=============================================================

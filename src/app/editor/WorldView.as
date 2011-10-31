@@ -93,6 +93,10 @@ package editor {
    import editor.display.sprite.EffectMessagePopup;
    
    import editor.entity.Entity;
+   
+   import editor.entity.EntityShape;
+   import editor.entity.EntityImageModuleShape;
+
    import editor.entity.EntityVectorShape;
    import editor.entity.EntityVectorShapeCircle;
    import editor.entity.EntityVectorShapeRectangle;
@@ -101,8 +105,6 @@ package editor {
    import editor.entity.EntityVectorShapeText;
    import editor.entity.EntityVectorShapeTextButton;
    import editor.entity.EntityVectorShapeGravityController;
-   
-   import editor.entity.EntityImageModuleShape;
    
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointDistance;
@@ -2005,6 +2007,7 @@ package editor {
       public var ShowShapeCircleSettingDialog:Function = null;
       public var ShowShapePolygonSettingDialog:Function = null;
       public var ShowShapePolylineSettingDialog:Function = null;
+      public var ShowShapeImageModuleSettingDialog:Function = null;
       
       public var ShowHingeSettingDialog:Function = null;
       public var ShowSliderSettingDialog:Function = null;
@@ -2060,6 +2063,31 @@ package editor {
          //       ;
          
          return true; // v1.08
+      }
+      
+      protected function RetrieveShapePhysicsProperties (shape:EntityShape, values:Object):void
+      {        
+         values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
+         values.mCollisionCategoryListDataProvider =  mEditorWorld.GetCollisionCategoryListDataProvider ();
+         values.mCollisionCategoryListSelectedIndex = editor.world.World.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
+         
+         values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
+         values.mIsSensor = shape.mIsSensor;
+         values.mIsStatic = shape.IsStatic ();
+         values.mIsBullet = shape.mIsBullet;
+         values.mIsHollow = shape.IsHollow ();
+         values.mBuildBorder = shape.IsBuildBorder ();
+         values.mDensity = ValueAdjuster.Number2Precision (shape.mDensity, 6);
+         values.mFriction = ValueAdjuster.Number2Precision (shape.mFriction, 6);
+         values.mRestitution = ValueAdjuster.Number2Precision (shape.mRestitution, 6);
+         
+         values.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (shape.GetLinearVelocityMagnitude ()), 6);
+         values.mLinearVelocityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees (shape.GetLinearVelocityAngle ()), 6);
+         values.mAngularVelocity = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_AngularVelocity (shape.GetAngularVelocity ()), 6);
+         values.mLinearDamping = ValueAdjuster.Number2Precision (shape.GetLinearDamping (), 6);
+         values.mAngularDamping = ValueAdjuster.Number2Precision (shape.GetAngularDamping (), 6);
+         values.mAllowSleeping = shape.IsAllowSleeping ();
+         values.mFixRotation = shape.IsFixRotation ();
       }
       
       public function OpenEntitySettingDialog ():void
@@ -2207,46 +2235,26 @@ package editor {
          }
          else if (entity is EntityVectorShape)
          {
-            var shape:EntityVectorShape = entity as EntityVectorShape;
+            var vectorShape:EntityVectorShape = entity as EntityVectorShape;
             
-            values.mDrawBorder = shape.IsDrawBorder ();
-            values.mDrawBackground = shape.IsDrawBackground ();
-            values.mBorderColor = shape.GetBorderColor ();
-            values.mBorderThickness = shape.GetBorderThickness ();
-            values.mBackgroundColor = shape.GetFilledColor ();
-            values.mTransparency = shape.GetTransparency ();
-            values.mBorderTransparency = shape.GetBorderTransparency ();
+            values.mDrawBorder = vectorShape.IsDrawBorder ();
+            values.mDrawBackground = vectorShape.IsDrawBackground ();
+            values.mBorderColor = vectorShape.GetBorderColor ();
+            values.mBorderThickness = vectorShape.GetBorderThickness ();
+            values.mBackgroundColor = vectorShape.GetFilledColor ();
+            values.mTransparency = vectorShape.GetTransparency ();
+            values.mBorderTransparency = vectorShape.GetBorderTransparency ();
             
-            values.mAiType = shape.GetAiType ();
+            values.mAiType = vectorShape.GetAiType ();
             
-            if (shape.IsBasicShapeEntity ())
+            if (vectorShape.IsBasicVectorShapeEntity ())
             {
-               values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
-               values.mCollisionCategoryListDataProvider =  mEditorWorld.GetCollisionCategoryListDataProvider ();
-               values.mCollisionCategoryListSelectedIndex = editor.world.World.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
+               RetrieveShapePhysicsProperties (vectorShape, values);
                
-               values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
-               values.mIsSensor = shape.mIsSensor;
-               values.mIsStatic = shape.IsStatic ();
-               values.mIsBullet = shape.mIsBullet;
-               values.mIsHollow = shape.IsHollow ();
-               values.mBuildBorder = shape.IsBuildBorder ();
-               values.mDensity = ValueAdjuster.Number2Precision (shape.mDensity, 6);
-               values.mFriction = ValueAdjuster.Number2Precision (shape.mFriction, 6);
-               values.mRestitution = ValueAdjuster.Number2Precision (shape.mRestitution, 6);
-               
-               values.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (shape.GetLinearVelocityMagnitude ()), 6);
-               values.mLinearVelocityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees (shape.GetLinearVelocityAngle ()), 6);
-               values.mAngularVelocity = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_AngularVelocity (shape.GetAngularVelocity ()), 6);
-               values.mLinearDamping = ValueAdjuster.Number2Precision (shape.GetLinearDamping (), 6);
-               values.mAngularDamping = ValueAdjuster.Number2Precision (shape.GetAngularDamping (), 6);
-               values.mAllowSleeping = shape.IsAllowSleeping ();
-               values.mFixRotation = shape.IsFixRotation ();
-               
-               //values.mVisibleEditable = true; //shape.GetFilledColor () == Define.ColorStaticObject;
-               //values.mStaticEditable = true; //shape.GetFilledColor () == Define.ColorBreakableObject
-                                           // || shape.GetFilledColor () == Define.ColorBombObject
-                                     ;
+               //values.mVisibleEditable = true; //vectorShape.GetFilledColor () == Define.ColorStaticObject;
+               //values.mStaticEditable = true; //vectorShape.GetFilledColor () == Define.ColorBreakableObject
+               //                             || vectorShape.GetFilledColor () == Define.ColorBombObject
+               //                      ;
                if (entity is EntityVectorShapeCircle)
                {
                   //values.mRadius = (entity as EntityVectorShapeCircle).GetRadius();
@@ -2259,9 +2267,9 @@ package editor {
                }
                else if (entity is EntityVectorShapeRectangle)
                {
-                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
-                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
-                  values.mIsRoundCorners = (shape as EntityVectorShapeRectangle).IsRoundCorners ();
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
+                  values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
                   
                   ShowShapeRectangleSettingDialog (values, ConfirmSettingEntityProperties);
                }
@@ -2271,9 +2279,9 @@ package editor {
                }
                else if (entity is EntityVectorShapePolyline)
                {
-                  values.mCurveThickness = (shape as EntityVectorShapePolyline).GetCurveThickness ();
-                  values.mIsRoundEnds = (shape as EntityVectorShapePolyline).IsRoundEnds ();
-                  values.mIsClosed = (shape as EntityVectorShapePolyline).IsClosed ();
+                  values.mCurveThickness = (vectorShape as EntityVectorShapePolyline).GetCurveThickness ();
+                  values.mIsRoundEnds = (vectorShape as EntityVectorShapePolyline).IsRoundEnds ();
+                  values.mIsClosed = (vectorShape as EntityVectorShapePolyline).IsClosed ();
                   
                   ShowShapePolylineSettingDialog (values, ConfirmSettingEntityProperties);
                }
@@ -2282,27 +2290,27 @@ package editor {
             {
                if (entity is EntityVectorShapeText)
                {
-                  values.mText = (shape as EntityVectorShapeText).GetText ();
+                  values.mText = (vectorShape as EntityVectorShapeText).GetText ();
                   
-                  values.mTextColor = (shape as EntityVectorShapeText).GetTextColor ();
-                  values.mFontSize = (shape as EntityVectorShapeText).GetFontSize ();
-                  values.mIsBold = (shape as EntityVectorShapeText).IsBold ();
-                  values.mIsItalic = (shape as EntityVectorShapeText).IsItalic ();
+                  values.mTextColor = (vectorShape as EntityVectorShapeText).GetTextColor ();
+                  values.mFontSize = (vectorShape as EntityVectorShapeText).GetFontSize ();
+                  values.mIsBold = (vectorShape as EntityVectorShapeText).IsBold ();
+                  values.mIsItalic = (vectorShape as EntityVectorShapeText).IsItalic ();
                   
-                  values.mIsUnderlined = (shape as EntityVectorShapeText).IsUnderlined ();
-                  values.mTextAlign = (shape as EntityVectorShapeText).GetTextAlign ();
+                  values.mIsUnderlined = (vectorShape as EntityVectorShapeText).IsUnderlined ();
+                  values.mTextAlign = (vectorShape as EntityVectorShapeText).GetTextAlign ();
                   
-                  values.mWordWrap = (shape as EntityVectorShapeText).IsWordWrap ();
-                  values.mAdaptiveBackgroundSize = (shape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
+                  values.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap ();
+                  values.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
                   
-                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
-                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
                   
                   if (entity is EntityVectorShapeTextButton)
                   {
-                     values.mUsingHandCursor = (shape as EntityVectorShapeTextButton).UsingHandCursor ();
+                     values.mUsingHandCursor = (vectorShape as EntityVectorShapeTextButton).UsingHandCursor ();
                      
-                     var moveOverShape:EntityVectorShape = (shape as EntityVectorShapeTextButton).GetMouseOverShape ();
+                     var moveOverShape:EntityVectorShape = (vectorShape as EntityVectorShapeTextButton).GetMouseOverShape ();
                      values.mMouseOverValues = new Object ();
                      values.mMouseOverValues.mDrawBorder = moveOverShape.IsDrawBorder ();
                      values.mMouseOverValues.mDrawBackground = moveOverShape.IsDrawBackground ();
@@ -2324,18 +2332,29 @@ package editor {
                   values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length ((entity as EntityVectorShapeCircle).GetRadius()), 6);
                   
                   // removed from v1.05
-                  /////values.mIsInteractive = (shape as EntityVectorShapeGravityController).IsInteractive ();
-                  values.mInteractiveZones = (shape as EntityVectorShapeGravityController).GetInteractiveZones ();
+                  /////values.mIsInteractive = (vectorShape as EntityVectorShapeGravityController).IsInteractive ();
+                  values.mInteractiveZones = (vectorShape as EntityVectorShapeGravityController).GetInteractiveZones ();
                   
-                  values.mInteractiveConditions = (shape as EntityVectorShapeGravityController).mInteractiveConditions;
+                  values.mInteractiveConditions = (vectorShape as EntityVectorShapeGravityController).mInteractiveConditions;
                   
-                  values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityVectorShapeGravityController).GetMaximalGravityAcceleration ()), 6);
+                  values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetMaximalGravityAcceleration ()), 6);
                   
-                  values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ()), 6);
-                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees ((shape as EntityVectorShapeGravityController).GetInitialGravityAngle ()), 6);
+                  values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ()), 6);
+                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAngle ()), 6);
                   
                   ShowShapeGravityControllerSettingDialog (values, ConfirmSettingEntityProperties);
                }
+            }
+         }
+         else if (entity is EntityShape)
+         {
+            var shape:EntityShape = entity as EntityShape;
+            
+            if (entity is EntityImageModuleShape)
+            {
+               RetrieveShapePhysicsProperties (shape, values);
+               
+               ShowShapeImageModuleSettingDialog (values, ConfirmSettingEntityProperties);
             }
          }
          else if (entity is SubEntityJointAnchor)
@@ -4439,6 +4458,35 @@ package editor {
          }
       }
       
+      
+      protected function UpdateShapePhysicsProperties (shape:EntityShape, params:Object):void
+      {        
+         shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
+         
+         shape.SetPhysicsEnabled (params.mIsPhysicsEnabled);
+         shape.SetAsSensor (params.mIsSensor);
+         shape.SetStatic (params.mIsStatic);
+         shape.SetAsBullet (params.mIsBullet);
+         shape.SetHollow (params.mIsHollow);
+         shape.SetBuildBorder (params.mBuildBorder);
+         shape.SetDensity (params.mDensity);
+         shape.SetFriction (params.mFriction);
+         shape.SetRestitution (params.mRestitution);
+         
+         if (params.mLinearVelocityMagnitude < 0)
+         {
+            params.mLinearVelocityMagnitude = -params.mLinearVelocityMagnitude;
+            params.mLinearVelocityAngle = 360.0 - params.mLinearVelocityAngle;
+         }
+         shape.SetLinearVelocityMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
+         shape.SetLinearVelocityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
+         shape.SetAngularVelocity (mEditorWorld.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
+         shape.SetLinearDamping (params. mLinearDamping);
+         shape.SetAngularDamping (params.mAngularDamping);
+         shape.SetAllowSleeping (params.mAllowSleeping);
+         shape.SetFixRotation (params.mFixRotation);
+      }
+      
       public function ConfirmSettingEntityProperties (params:Object):void
       {
          //var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
@@ -4586,63 +4634,41 @@ package editor {
          }
          else if (entity is EntityVectorShape)
          {
-            var shape:EntityVectorShape = entity as EntityVectorShape;
+            var vectorShape:EntityVectorShape = entity as EntityVectorShape;
             
-            shape.SetDrawBorder (params.mDrawBorder);
-            shape.SetTransparency (params.mTransparency);
-            shape.SetBorderColor (params.mBorderColor);
-            shape.SetBorderThickness (params.mBorderThickness);
-            shape.SetDrawBackground (params.mDrawBackground);
-            shape.SetFilledColor (params.mBackgroundColor);
-            shape.SetBorderTransparency (params.mBorderTransparency);
+            vectorShape.SetDrawBorder (params.mDrawBorder);
+            vectorShape.SetTransparency (params.mTransparency);
+            vectorShape.SetBorderColor (params.mBorderColor);
+            vectorShape.SetBorderThickness (params.mBorderThickness);
+            vectorShape.SetDrawBackground (params.mDrawBackground);
+            vectorShape.SetFilledColor (params.mBackgroundColor);
+            vectorShape.SetBorderTransparency (params.mBorderTransparency);
             
-            if (shape.IsBasicShapeEntity ())
+            vectorShape.SetAiType (params.mAiType);
+
+            if (vectorShape.IsBasicVectorShapeEntity ())
             {
-               shape.SetAiType (params.mAiType);
-               shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
-               
-               shape.SetPhysicsEnabled (params.mIsPhysicsEnabled);
-               shape.SetAsSensor (params.mIsSensor);
-               shape.SetStatic (params.mIsStatic);
-               shape.SetAsBullet (params.mIsBullet);
-               shape.SetHollow (params.mIsHollow);
-               shape.SetBuildBorder (params.mBuildBorder);
-               shape.SetDensity (params.mDensity);
-               shape.SetFriction (params.mFriction);
-               shape.SetRestitution (params.mRestitution);
-               
-               if (params.mLinearVelocityMagnitude < 0)
-               {
-                  params.mLinearVelocityMagnitude = -params.mLinearVelocityMagnitude;
-                  params.mLinearVelocityAngle = 360.0 - params.mLinearVelocityAngle;
-               }
-               shape.SetLinearVelocityMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
-               shape.SetLinearVelocityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
-               shape.SetAngularVelocity (mEditorWorld.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
-               shape.SetLinearDamping (params. mLinearDamping);
-               shape.SetAngularDamping (params.mAngularDamping);
-               shape.SetAllowSleeping (params.mAllowSleeping);
-               shape.SetFixRotation (params.mFixRotation);
+               UpdateShapePhysicsProperties (vectorShape, params);
                
                if (entity is EntityVectorShapeCircle)
                {
-                  (shape as EntityVectorShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
-                  (shape as EntityVectorShapeCircle).SetAppearanceType (params.mAppearanceType);
+                  (vectorShape as EntityVectorShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
+                  (vectorShape as EntityVectorShapeCircle).SetAppearanceType (params.mAppearanceType);
                }
                else if (entity is EntityVectorShapeRectangle)
                {
-                  (shape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
-                  (shape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
-                  (shape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  (vectorShape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
                }
                else if (entity is EntityVectorShapePolygon)
                {
                }
                else if (entity is EntityVectorShapePolyline)
                {
-                  (shape as EntityVectorShapePolyline).SetCurveThickness (params.mCurveThickness);
-                  (shape as EntityVectorShapePolyline).SetRoundEnds (params.mIsRoundEnds);
-                  (shape as EntityVectorShapePolyline).SetClosed (params.mIsClosed);
+                  (vectorShape as EntityVectorShapePolyline).SetCurveThickness (params.mCurveThickness);
+                  (vectorShape as EntityVectorShapePolyline).SetRoundEnds (params.mIsRoundEnds);
+                  (vectorShape as EntityVectorShapePolyline).SetClosed (params.mIsClosed);
                }
             }
             else // no physics entity
@@ -4651,9 +4677,9 @@ package editor {
                {
                   if (entity is EntityVectorShapeTextButton)
                   {
-                     (shape as EntityVectorShapeTextButton).SetUsingHandCursor (params.mUsingHandCursor);
+                     (vectorShape as EntityVectorShapeTextButton).SetUsingHandCursor (params.mUsingHandCursor);
                      
-                     var moveOverShape:EntityVectorShape = (shape as EntityVectorShapeTextButton).GetMouseOverShape ();
+                     var moveOverShape:EntityVectorShape = (vectorShape as EntityVectorShapeTextButton).GetMouseOverShape ();
                      moveOverShape.SetDrawBorder (params.mMouseOverValues.mDrawBorder);
                      moveOverShape.SetTransparency (params.mMouseOverValues.mTransparency);
                      moveOverShape.SetDrawBorder (params.mMouseOverValues.mDrawBorder);
@@ -4667,29 +4693,29 @@ package editor {
                   {
                   }
                   
-                  (shape as EntityVectorShapeText).SetWordWrap (params.mWordWrap);
-                  (shape as EntityVectorShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
+                  (vectorShape as EntityVectorShapeText).SetWordWrap (params.mWordWrap);
+                  (vectorShape as EntityVectorShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
                   
-                  (shape as EntityVectorShapeText).SetUnderlined (params.mIsUnderlined);
-                  (shape as EntityVectorShapeText).SetTextAlign (params.mTextAlign);
+                  (vectorShape as EntityVectorShapeText).SetUnderlined (params.mIsUnderlined);
+                  (vectorShape as EntityVectorShapeText).SetTextAlign (params.mTextAlign);
                   
-                  (shape as EntityVectorShapeText).SetText (params.mText);
-                  (shape as EntityVectorShapeText).SetTextColor (params.mTextColor);
-                  (shape as EntityVectorShapeText).SetFontSize (params.mFontSize);
-                  (shape as EntityVectorShapeText).SetBold (params.mIsBold);
-                  (shape as EntityVectorShapeText).SetItalic (params.mIsItalic);
+                  (vectorShape as EntityVectorShapeText).SetText (params.mText);
+                  (vectorShape as EntityVectorShapeText).SetTextColor (params.mTextColor);
+                  (vectorShape as EntityVectorShapeText).SetFontSize (params.mFontSize);
+                  (vectorShape as EntityVectorShapeText).SetBold (params.mIsBold);
+                  (vectorShape as EntityVectorShapeText).SetItalic (params.mIsItalic);
                   
-                  (shape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
-                  (shape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
                }
                else if (entity is EntityVectorShapeGravityController)
                {
-                  (shape as EntityVectorShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
+                  (vectorShape as EntityVectorShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
                   
-                  //(shape as EntityVectorShapeGravityController).SetInteractive (params.mIsInteractive);
-                  (shape as EntityVectorShapeGravityController).SetInteractiveZones (params.mInteractiveZones);
+                  //(vectorShape as EntityVectorShapeGravityController).SetInteractive (params.mIsInteractive);
+                  (vectorShape as EntityVectorShapeGravityController).SetInteractiveZones (params.mInteractiveZones);
                   
-                  (shape as EntityVectorShapeGravityController).mInteractiveConditions = params.mInteractiveConditions;
+                  (vectorShape as EntityVectorShapeGravityController).mInteractiveConditions = params.mInteractiveConditions;
                   
                   if (params.mInitialGravityAcceleration < 0)
                   {
@@ -4697,18 +4723,27 @@ package editor {
                      params.mInitialGravityAngle = 360.0 - params.mInitialGravityAngle;
                   }
                   
-                  (shape as EntityVectorShapeGravityController).SetMaximalGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mMaximalGravityAcceleration));
-                  (shape as EntityVectorShapeGravityController).SetInitialGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mInitialGravityAcceleration));
-                  (shape as EntityVectorShapeGravityController).SetInitialGravityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mInitialGravityAngle));
+                  (vectorShape as EntityVectorShapeGravityController).SetMaximalGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mMaximalGravityAcceleration));
+                  (vectorShape as EntityVectorShapeGravityController).SetInitialGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mInitialGravityAcceleration));
+                  (vectorShape as EntityVectorShapeGravityController).SetInitialGravityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mInitialGravityAngle));
                }
             }
             
-            shape.UpdateAppearance ();
-            shape.UpdateSelectionProxy ();
+            vectorShape.UpdateAppearance ();
+            vectorShape.UpdateSelectionProxy ();
             
-            if (shape is EntityVectorShapeRectangle)
+            if (vectorShape is EntityVectorShapeRectangle)
             {
-               (shape as EntityVectorShapeRectangle).UpdateVertexControllers (true);
+               (vectorShape as EntityVectorShapeRectangle).UpdateVertexControllers (true);
+            }
+         }
+         else if (entity is EntityShape)
+         {
+            var shape:EntityShape = entity as EntityShape;
+            
+            if (entity is EntityImageModuleShape)
+            {
+               UpdateShapePhysicsProperties (shape, params);
             }
          }
          else if (entity is SubEntityJointAnchor)
@@ -5010,19 +5045,18 @@ package editor {
       public function OnBatchModifyShapeAppearanceProperties (params:Object):void
       {
          var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var shape:EntityVectorShape;
          
          var numShapes:int = 0;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            shape = selectedEntities [i] as EntityVectorShape;
+            var shape:EntityVectorShape = selectedEntities [i] as EntityVectorShape;
             
             if (shape != null)
             {
                ++ numShapes;
                
-               if (shape.IsBasicShapeEntity ())
+               if (shape.IsBasicVectorShapeEntity ())
                {
                   if (params.mToModifyAiType)
                      shape.SetAiType (params.mAiType);
@@ -5054,13 +5088,13 @@ package editor {
       public function OnBatchModifyShapePhysicsProperties (params:Object):void
       {
          var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var shape:EntityVectorShape;
          
          var numShapes:int = 0;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            shape = selectedEntities [i] as EntityVectorShape;
+            //var shape:EntityVectorShape = selectedEntities [i] as EntityVectorShape;
+            var shape:EntityShape = selectedEntities [i] as EntityShape;
             
             if (shape != null)
             {
@@ -5109,107 +5143,6 @@ package editor {
          if (selectedEntities.length > 0)
             CreateUndoPoint ("Modify physics proeprties for " + numShapes + " shapes", null, null);
       }
-      
-      //public function OnBatchModifyShapePhysicsFlags (params:Object):void
-      //{
-      //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-      //   var shape:EntityVectorShape;
-      //   
-      //   for (var i:int = 0; i < selectedEntities.length; ++ i)
-      //   {
-      //      shape = selectedEntities [i] as EntityVectorShape;
-      //      
-      //      if (shape != null)
-      //      {
-      //         if (params.mToModifyEnablePhysics)
-      //            shape.SetPhysicsEnabled (params.mIsPhysicsEnabled);
-      //         if (params.mToModifyStatic)
-      //            shape.SetStatic (params.mIsStatic);
-      //         if (params.mToModifyBullet)
-      //            shape.SetAsBullet (params.mIsBullet);
-      //         if (params.mToModifySensor)
-      //            shape.SetAsSensor (params.mIsSensor);
-      //         if (params.mToModifyHollow)
-      //            shape.SetHollow (params.mIsHollow);
-      //         if (params.mToModifyBuildBorder)
-      //            shape.SetBuildBorder (params.mBuildBorder);
-      //         if (params.mToModifAllowSleeping)
-      //            shape.SetAllowSleeping (params.mAllowSleeping);
-      //         if (params.mToModifyFixRotation)
-      //            shape.SetFixRotation (params.mFixRotation);
-      //      }
-      //   }
-      //   
-      //   if (selectedEntities.length > 0)
-      //      CreateUndoPoint ("Modify physics proeprties for " + selectedEntities.length + " shapes", null, null);
-      //}
-      //
-      //public function OnBatchModifyShapePhysicsCollisionCategory (params:Object):void
-      //{
-      //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-      //   var shape:EntityVectorShape;
-      //   
-      //   for (var i:int = 0; i < selectedEntities.length; ++ i)
-      //   {
-      //      shape = selectedEntities [i] as EntityVectorShape;
-      //      
-      //      if (shape != null)
-      //      {
-      //         shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
-      //      }
-      //   }
-      //   
-      //   if (selectedEntities.length > 0)
-      //      CreateUndoPoint ("Modify collision category for " + selectedEntities.length + " shapes", null, null);
-      //}
-      //
-      //public function OnBatchModifyShapePhysicsVelocity (params:Object):void
-      //{
-      //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-      //   var shape:EntityVectorShape;
-      //   
-      //   for (var i:int = 0; i < selectedEntities.length; ++ i)
-      //   {
-      //      shape = selectedEntities [i] as EntityVectorShape;
-      //      
-      //      if (shape != null)
-      //      {
-      //         if (params.mToModifyLinearVelocityMagnitude)
-      //            shape.SetLinearVelocityMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
-      //         if (params.mToModifyLinearVelocityAngle)
-      //            shape.SetLinearVelocityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
-      //         if (params.mToModifyAngularVelocity)
-      //            shape.SetAngularVelocity (mEditorWorld.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
-      //      }
-      //   }
-      //   
-      //   if (selectedEntities.length > 0)
-      //      CreateUndoPoint ("Modify physics velocities for " + selectedEntities.length + " shapes", null, null);
-      //}
-      //
-      //public function OnBatchModifyShapePhysicsFixture (params:Object):void
-      //{
-      //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-      //   var shape:EntityVectorShape;
-      //   
-      //   for (var i:int = 0; i < selectedEntities.length; ++ i)
-      //   {
-      //      shape = selectedEntities [i] as EntityVectorShape;
-      //      
-      //      if (shape != null)
-      //      {
-      //         if (params.mToModifyDensity)
-      //            shape.SetDensity (params.mDensity);
-      //         if (params.mToModifyFriction)
-      //            shape.SetFriction (params.mFriction);
-      //         if (params.mToModifyRestitution)
-      //            shape.SetRestitution (params.mRestitution);
-      //      }
-      //   }
-      //   
-      //   if (selectedEntities.length > 0)
-      //      CreateUndoPoint ("Modify physics material proeprties for " + selectedEntities.length + " shapes", null, null);
-      //}
       
       public function OnBatchModifyJointCollideConnectedsProperty (params:Object):void
       {

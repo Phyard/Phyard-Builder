@@ -66,6 +66,12 @@ package editor.image {
          //var finalModule:AssetImageModule = module == null ? null : module.GetFinalImageModule ();
          var finalModule:AssetImageModule = module;
          
+         //if ((! mAssetImageCompositeModule.IsSequenced () ) && finalModule.IsSequenced () )
+         if ((finalModule is AssetImageCompositeModule) && (finalModule as AssetImageCompositeModule).IsSequenced ())
+         {
+            return null;
+         }
+         
          if (finalModule == mAssetImageCompositeModule || finalModule.ContainsDescendant (mAssetImageCompositeModule))
          {
             return null;

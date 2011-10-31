@@ -14,6 +14,7 @@ package editor.image {
    import flash.utils.ByteArray;
    
    import flash.events.Event;
+   import flash.events.MouseEvent;
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
          
@@ -61,7 +62,7 @@ package editor.image {
          
          //if (IsSequenced ())
          //{
-         //   removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage); // added in super class
+         //   removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown); // added in super class
          //}
       }
       
@@ -134,6 +135,12 @@ package editor.image {
       override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
       {
          var numModules:int = mModuleInstanceManager.GetNumAssets ();
+         
+         if (IsSequenced ())
+         {
+            if (numModules > 1) numModules = 1;
+         }
+         
          for (var i:int = 0; i < numModules; ++ i)
          {
             var moduleInstance:AssetImageModuleInstance = mModuleInstanceManager.GetAssetByAppearanceId (i) as AssetImageModuleInstance;
@@ -150,8 +157,14 @@ package editor.image {
       }
       
       override public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
-      {
+      {  
          var numModules:int = mModuleInstanceManager.GetNumAssets ();
+
+         if (IsSequenced ())
+         {
+            if (numModules > 1) numModules = 1;
+         }
+         
          for (var i:int = 0; i < numModules; ++ i)
          {
             var moduleInstance:AssetImageModuleInstance = mModuleInstanceManager.GetAssetByAppearanceId (i) as AssetImageModuleInstance;

@@ -377,7 +377,7 @@ package common {
                entityDefine.mBorderTransparency = shape.GetBorderTransparency ();
                //<<
                
-               if (shape.IsBasicShapeEntity ())
+               if (shape.IsBasicVectorShapeEntity ())
                {
                   //>> move up from v1.04
                   entityDefine.mAiType = shape.GetAiType ();
@@ -1050,7 +1050,7 @@ package common {
             {
                shape = null;
                
-               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+               if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
@@ -1505,7 +1505,7 @@ package common {
             
             if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
-               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+               if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
                   //>> from v1.04
                   if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
@@ -2213,7 +2213,7 @@ package common {
                   entityDefine.mBorderTransparency = parseInt (element.@border_transparency);
             }
             
-            if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+            if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
             {
                entityDefine.mAiType = parseInt (element.@ai_type);
                
@@ -2829,7 +2829,7 @@ package common {
                   byteArray.writeByte (entityDefine.mBorderTransparency);
                }
                
-               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+               if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
                   if (worldDefine.mVersion >= 0x0105) 
                   {

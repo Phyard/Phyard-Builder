@@ -168,7 +168,8 @@ package editor.image {
          if (IsSelected ())
          {
             var shape:Shape = new Shape ();
-
+            shape.alpha = 0.7;
+            
             var rectangle:Rectangle = this.getBounds (this);
             GraphicsUtil.DrawRect (shape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
                                        0x0000FF, -1, true, 0xC0C0FF, false);

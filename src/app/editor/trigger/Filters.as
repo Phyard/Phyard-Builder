@@ -16,7 +16,12 @@ package editor.trigger {
       {
          var shape:EntityShape =  entity as EntityShape;
          
-         return shape != null && shape.IsBasicShapeEntity () && shape.IsPhysicsEnabled ();
+         // before v1.58
+         //return shape != null && shape.IsBasicShapeEntity () && shape.IsPhysicsEnabled ();
+         
+         // from v1.58
+         return shape != null && shape.IsPhysicsCapableShapeEntity () && shape.IsPhysicsEnabled ();
+            // maybe shape.IsPhysicsEnabled () is not needed.
       }
       
 //=====================================================
@@ -45,6 +50,11 @@ package editor.trigger {
       public static const sShapeEntityClasses:Array = [
                   EntityShape,
                   EntityUtilityCamera, // appended from v1.55
+            ];
+      
+      // object can be an Entity subclass.prototype or a subclass instance
+      public static const sSimpleVectorShapeEntityClasses:Array = [
+                  EntityVectorShape,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance

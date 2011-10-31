@@ -3576,6 +3576,8 @@ package editor {
             if (imageModule == null)
                return null;
             
+            imageModule.ChangeToCurrentAssetImageModule ();
+            
             SetTheOnlySelectedEntity (imageModule);
             
             return imageModule;

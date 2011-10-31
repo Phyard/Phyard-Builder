@@ -627,21 +627,29 @@ package common {
          xml.BrotherGroups = <BrotherGroups />
 
          if (worldDefine.mVersion >= 0x0102)
-            xml.CollisionCategories = <CollisionCategories />
+            xml.CollisionCategories = <CollisionCategories />;
 
          if (worldDefine.mVersion >= 0x0152)
          {
             if (worldDefine.mVersion >= 0x0157)
             {
-               xml.SessionVariables = <SessionVariables />
+               xml.SessionVariables = <SessionVariables />;
             }
             
-            xml.GlobalVariables = <GlobalVariables />
-            xml.EntityProperties = <EntityProperties />
+            xml.GlobalVariables = <GlobalVariables />;
+            xml.EntityProperties = <EntityProperties />;
          }
 
          if (worldDefine.mVersion >= 0x0153)
-            xml.CustomFunctions = <CustomFunctions />
+            xml.CustomFunctions = <CustomFunctions />;
+
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            xml.Images = <Images />;
+            xml.ImageDivisions = <ImageDivisions />;
+            xml.AssembledModules = <AssembledModules />;
+            xml.SequencedModules = <SequencedModules />;
+         }
 
          //
 
@@ -700,6 +708,7 @@ package common {
             element = <BrotherGroup />;
             element.@num_brothers = brotherIDs.length;
             element.@brother_indices = IntegerArray2IndicesString (brotherIDs);
+            
             xml.BrotherGroups.appendChild (element);
          }
 
@@ -731,6 +740,7 @@ package common {
                element = <CollisionCategoryFriendPair />;
                element.@category1_index = pairDefine.mCollisionCategory1Index;
                element.@category2_index = pairDefine.mCollisionCategory2Index;
+               
                xml.CollisionCategoryFriendPairs.appendChild (element);
             }
          }
@@ -777,8 +787,143 @@ package common {
                TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mEntityPropertyDefines, xml.EntityProperties [0], true);
             }
          }
+         
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            for (var imageId:int = 0; imageId < worldDefine.mImageDefines.length; ++ imageId)
+            {
+               var imageDefine:Object = worldDefine.mImageDefines [imageId];
+               
+               if (imageDefine.mFileData == null || imageDefine.mFileData.length == 0)
+               {
+                  element = <Image/>;
+               }
+               else
+               {
+                  var fileDataBase64:String = DataFormat3.EncodeByteArray2String (imageDefine.mFileData);
+                  element = <Image>{fileDataBase64}</Image>;
+               }
+               element.@name = imageDefine.mName;
+               //element.@file_data = imageDefine.mFileData;
+               
+               xml.Images.appendChild (element);
+            }
+
+            for (var divisionId:int = 0; divisionId < worldDefine.mPureImageModuleDefines.length; ++ divisionId)
+            {
+               var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
+
+               element = <ImageDivision />;
+               element.@image_index = divisionDefine.mImageIndex;
+               element.@left = divisionDefine.mLeft;
+               element.@top = divisionDefine.mTop;
+               element.@right = divisionDefine.mTop;
+               element.@bottom = divisionDefine.mBottom;
+               
+               xml.ImageDivisions.appendChild (element);
+            }
+
+            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
+            {
+               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+
+               element = <AssembledModule />;
+               
+               ModuleInstances2XmlElements (assembledModuleDefine.mModulePartDefines, element, "ModulePart", false);
+               
+               xml.AssembledModules.appendChild (element);
+            }
+
+            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
+            {
+               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+
+               element = <SequencedModule />;
+               
+               element.@looped = sequencedModuleDefine.mIsLooped ? 1 : 0;
+               ModuleInstances2XmlElements (sequencedModuleDefine.mModuleSequenceDefines, element, "ModuleSequence", true);
+               
+               xml.SequencedModules.appendChild (element);
+            }
+         }
 
          return xml;
+      }
+      
+      public static function ModuleInstances2XmlElements (moduleInstanceDefines:Array, parentElement:XML, childElementName:String, forSequencedModule:Boolean):void
+      {
+         for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
+         {
+            var moduleInstanceDefine:Object = moduleInstanceDefines [miId]; 
+            
+            var element:XML = <TempName />; // new XML (); // weird as3
+            element.setName (childElementName);
+            
+            element.@x = moduleInstanceDefine.mPosX;
+            element.@y = moduleInstanceDefine.mPosY;
+            element.@scale = moduleInstanceDefine.mScale;
+            element.@flipped = moduleInstanceDefine.mIsFlipped ? 1 : 0;
+            element.@r = moduleInstanceDefine.mRotation;
+            element.@visible = moduleInstanceDefine.mVisible ? 1 : 0;
+            element.@alpha = moduleInstanceDefine.mAlpha ? 1 : 0;
+            
+            if (forSequencedModule)
+            {
+               element.@duration = moduleInstanceDefine.mModuleDuration;
+            }
+            
+            ModuleInstance2XmlElement (moduleInstanceDefine, element);
+            
+            parentElement.appendChild (element);
+         }
+      }
+      
+      public static function ModuleInstance2XmlElement (moduleInstanceDefine:Object, element:XML):void
+      {
+         element.@module_type = moduleInstanceDefine.mModuleType;
+         
+         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            element.@shape_attributes = moduleInstanceDefine.mShapeAttributeBits;
+            element.@shape_body_argb = moduleInstanceDefine.mShapeBodyOpacityAndColor;
+            
+            if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               element.@shape_path_thickness = moduleInstanceDefine.mShapePathThickness;
+               
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
+               {
+                  LocalVertices2XmlElement (moduleInstanceDefine.mPolyLocalPoints, element);
+               }
+            }
+            else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
+               {
+                  element.@circle_radius = moduleInstanceDefine.mCircleRadius;
+                  element.@circle_appearance_type = moduleInstanceDefine.mCircleAppearacneType;
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
+               {
+                  element.@rect_half_width = moduleInstanceDefine.mRectHalfWidth;
+                  element.@rect_half_height = moduleInstanceDefine.mRectHalfHeight;
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
+               {
+                  LocalVertices2XmlElement (moduleInstanceDefine.mPolyLocalPoints, element);
+               }
+            }
+         }
+         else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule)
+            {
+               element.@module_index = moduleInstanceDefine.mModuleIndex;
+            }
+         }
+         else // ...
+         {
+         }
       }
 
       public static function Int2ColorString (intValue:int):String
@@ -862,8 +1007,6 @@ package common {
          var i:int;
          var num:int;
          var creation_ids:Array;
-
-         var elementLocalVertex:XML;
 
          var element:XML = <Entity />;
          element.@id = createId; // for debug using only
@@ -1023,7 +1166,7 @@ package common {
             }
             //<<
          }
-         else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+         else if ( Define.IsVectorShapeEntity (entityDefine.mEntityType) )
          {
             if (worldDefine.mVersion >= 0x0102)
             {
@@ -1115,16 +1258,7 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                {
-                  element.LocalVertices = <LocalVertices />
-
-                  for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
-                  {
-                     elementLocalVertex = <Vertex />;
-                     elementLocalVertex.@x = entityDefine.mLocalPoints [vertexId].x;
-                     elementLocalVertex.@y = entityDefine.mLocalPoints [vertexId].y;
-
-                     element.LocalVertices.appendChild (elementLocalVertex);
-                  }
+                  LocalVertices2XmlElement (entityDefine.mLocalPoints, element);
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                {
@@ -1140,15 +1274,7 @@ package common {
                      element.@closed = entityDefine.mIsClosed ? 1 : 0
                   }
 
-                  element.LocalVertices = <LocalVertices />
-                  for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
-                  {
-                     elementLocalVertex = <Vertex />;
-                     elementLocalVertex.@x = entityDefine.mLocalPoints [vertexId].x;
-                     elementLocalVertex.@y = entityDefine.mLocalPoints [vertexId].y;
-
-                     element.LocalVertices.appendChild (elementLocalVertex);
-                  }
+                  LocalVertices2XmlElement (entityDefine.mLocalPoints, element);
                }
             }
             else // not physics shape
@@ -1222,6 +1348,15 @@ package common {
                }
             }
          }
+         //>> from v1.58
+         else if (Define.IsShapeEntity (entityDefine.mEntityType))
+         {
+            if (entityDefine.mEntityType == Define.EntityType_ShapeImageModule)
+            {
+               element.@module_index = entityDefine.mModuleIndex;
+            }
+         }
+         //<<
          else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
          {
             element.@collide_connected = entityDefine.mCollideConnected ? 1 : 0;
@@ -1307,6 +1442,25 @@ package common {
          }
 
          return element;
+      }
+      
+      public static function LocalVertices2XmlElement (localPoints:Array, parentElement:XML):void
+      {
+         parentElement.LocalVertices = <LocalVertices />
+         
+         if (localPoints != null)
+         {
+            for (var vertexId:int = 0; vertexId < localPoints.length; ++ vertexId)
+            {
+               var elementLocalVertex:XML = <Vertex />;
+               
+               var point:Point = localPoints [vertexId] as Point;
+               elementLocalVertex.@x = point.x;
+               elementLocalVertex.@y = point.y;
+   
+               parentElement.LocalVertices.appendChild (elementLocalVertex);
+            }
+         }
       }
 
       public static function IntegerArray2IndicesString (ids:Array):String
@@ -1658,7 +1812,7 @@ package common {
                }
                //<<
             }
-            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            else if ( Define.IsVectorShapeEntity (entityDefine.mEntityType) )
             {
                if (worldDefine.mVersion >= 0x0102)
                {
@@ -2146,7 +2300,7 @@ package common {
                }
                //<<
             }
-            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            else if ( Define.IsVectorShapeEntity (entityDefine.mEntityType) )
             {
                if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
@@ -2504,7 +2658,7 @@ package common {
                //   }
                //}
             }
-            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            else if ( Define.IsVectorShapeEntity (entityDefine.mEntityType) )
             {
                if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {

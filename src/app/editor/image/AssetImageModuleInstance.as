@@ -89,6 +89,11 @@ package editor.image {
             mAssetImageModule = assetImageModule;
             mReferPair = ReferObject (mAssetImageModule);
          }
+         
+         if (mAssetImageModuleInstanceForListingPeer != null) // if this function is called in constructor 
+         {
+            mAssetImageModuleInstanceForListingPeer.SetAssetImageModule (assetImageModule);
+         }
       } 
       
       override public function ToCodeString ():String
@@ -364,13 +369,7 @@ package editor.image {
          UpdateSelectionProxy ();
          
          // update icon in list
-         
-         //if (mAssetImageModuleInstanceForListingPeer != null)
-         //{
-            mAssetImageModuleInstanceForListingPeer.SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule);
-            
-            mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
-         //}
+         mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
       }
       
       private function OnContextMenuEvent_InsertBeforeFromCurrentModule (event:ContextMenuEvent):void

@@ -37,6 +37,11 @@ package common {
       public var mEntityPropertyDefines:Array = new Array ();
       
       public var mFunctionDefines:Array = new Array ();
+      
+      public var mImageDefines:Array = new Array ();
+      public var mPureImageModuleDefines:Array = new Array ();
+      public var mAssembledModuleDefines:Array = new Array ();
+      public var mSequencedModuleDefines:Array = new Array ();
    }
 }
 

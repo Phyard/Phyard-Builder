@@ -53,6 +53,11 @@ package editor.image {
          return mAssetImagePureModuleManager;
       }
       
+      override public function GetImageModuleType ():int
+      {  
+         return AssetImageModule.ImageModuleType_PureModule;
+      }
+      
       public function GetImageDivisionPeer ():AssetImageDivision
       {
          return mImageDivisionPeer;

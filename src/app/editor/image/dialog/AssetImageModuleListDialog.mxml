@@ -65,7 +65,12 @@
             sAssetImageModuleListDialog.GetImageListingPanel ().SetAssetImageManager (Runtime.GetCurrentWorld ().GetAssetImageManager ());            
             sAssetImageModuleListDialog.GetPureModuleListingPanel ().SetAssetImagePureModuleManager (Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ());            
             sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageAssembledModuleManager ());            
-            sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageSequencedModuleManager ());            
+            sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageSequencedModuleManager ());
+            
+            Runtime.GetCurrentWorld ().GetAssetImageManager ().RearrangeAssetPositions (true);
+            Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ().RearrangeAssetPositions (true);
+            Runtime.GetCurrentWorld ().GetAssetImageAssembledModuleManager ().RearrangeAssetPositions (true);
+            Runtime.GetCurrentWorld ().GetAssetImageSequencedModuleManager ().RearrangeAssetPositions (true);
          }
          
          public static function HideAssetImageModuleListDialog ():void
@@ -94,6 +99,8 @@
          }
          
       //=====================================================================
+      
+         public var mIsWhownEver:Boolean = false;
       
          public function InitDialog ():void
          {

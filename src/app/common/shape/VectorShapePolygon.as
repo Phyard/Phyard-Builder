@@ -1,6 +1,8 @@
 package common.shape
 {
    import flash.geom.Point;
+   
+   import com.tapirgames.util.GraphicsUtil;
 
    public class VectorShapePolygon extends VectorShapeArea
    {
@@ -8,12 +10,14 @@ package common.shape
 
       public function GetLocalVertexPoints ():Array
       {
-         return mLocalVertexPoints;
+         //return mLocalVertexPoints;
+         return GraphicsUtil.DeepClonePointArray (mLocalVertexPoints);
       }
 
       public function SetLocalVertexPoints (points:Array):void
       {
-         mLocalVertexPoints = points;
+         //mLocalVertexPoints = points;
+         mLocalVertexPoints = GraphicsUtil.DeepClonePointArray (points);
       }
    }
 }

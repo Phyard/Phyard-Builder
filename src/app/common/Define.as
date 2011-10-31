@@ -381,24 +381,39 @@ package common {
       // from v1.07, folloing functions should only be used in packaging / loading
       // they should NOT used in player pacakge, use player.EntityShape.mPhysicsShapePotentially instead
       
-      public static function IsBasicVectorShapeEntity (entityType:int):Boolean
+      public static function IsBasicAreaVectorShapeEntity (entityType:int):Boolean
       {
          return   entityType == EntityType_ShapeCircle
                || entityType == EntityType_ShapeRectangle
                || entityType == EntityType_ShapePolygon
-               || entityType == EntityType_ShapePolyline
+               ;
+      }
+      
+      public static function IsBasicPathVectorShapeEntity (entityType:int):Boolean
+      {
+         return   entityType == EntityType_ShapePolyline
+               ;
+      }
+      
+      public static function IsBasicVectorShapeEntity (entityType:int):Boolean
+      {
+         return   IsBasicAreaVectorShapeEntity (entityType)
+               || IsBasicPathVectorShapeEntity (entityType)
+               ;
+      }
+      
+      public static function IsVectorShapeEntity (entityType:int):Boolean
+      {
+         return   IsBasicVectorShapeEntity (entityType) 
+               || entityType == EntityType_ShapeText
+               || entityType == EntityType_ShapeTextButton
+               || entityType == EntityType_ShapeGravityController
                ;
       }
       
       public static function IsShapeEntity (entityType:int):Boolean
       {
-         return   entityType == EntityType_ShapeCircle 
-               || entityType == EntityType_ShapeRectangle 
-               || entityType == EntityType_ShapePolygon 
-               || entityType == EntityType_ShapePolyline
-               || entityType == EntityType_ShapeText
-               || entityType == EntityType_ShapeTextButton
-               || entityType == EntityType_ShapeGravityController
+         return   IsVectorShapeEntity (entityType)
                || entityType == EntityType_ShapeImageModule
                ;
       }

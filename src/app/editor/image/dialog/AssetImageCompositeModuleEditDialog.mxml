@@ -24,7 +24,9 @@
                <mx:Button id="ButtonCreateShapeCircleInstance" click=";" toolTip="Create Circle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/ball.png')" downIcon="@Embed('../../../res/create/ball-sel.png')" overIcon="@Embed('../../../res/create/ball.png')" selectedUpIcon="@Embed('../../../res/create/ball-sel.png')" selectedOverIcon="@Embed('../../../res/create/ball-sel.png')" selectedDownIcon="@Embed('../../../res/create/ball.png')"   />
                <mx:Button id="ButtonCreateShapePolygonInstance" click=";" toolTip="Create Polygon" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polygon.png')" downIcon="@Embed('../../../res/create/polygon-sel.png')" overIcon="@Embed('../../../res/create/polygon.png')" selectedUpIcon="@Embed('../../../res/create/polygon-sel.png')" selectedOverIcon="@Embed('../../../res/create/polygon-sel.png')" selectedDownIcon="@Embed('../../../res/create/polygon.png')"   />
                <mx:Button id="ButtonCreateShapePolylineInstance" click=";" toolTip="Create Polyline" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polyline.png')" downIcon="@Embed('../../../res/create/polyline-sel.png')" overIcon="@Embed('../../../res/create/polyline.png')" selectedUpIcon="@Embed('../../../res/create/polyline-sel.png')" selectedOverIcon="@Embed('../../../res/create/polyline-sel.png')" selectedDownIcon="@Embed('../../../res/create/polyline.png')"   />
+               <!--
                <mx:Button id="ButtonCreateShapeTextInstance" toolTip="Create Text" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/text.png')" downIcon="@Embed('../../../res/create/text-sel.png')" overIcon="@Embed('../../../res/create/text.png')" selectedUpIcon="@Embed('../../../res/create/text-sel.png')" selectedOverIcon="@Embed('../../../res/create/text-sel.png')" selectedDownIcon="@Embed('../../../res/create/text.png')"   />
+               -->
             </mx:VBox>
             <mx:Spacer width="100%"/>
          </mx:HBox>
@@ -157,14 +159,14 @@
             panelAssetImageCompositeModuleEditing.mButtonCreateShapeCircleInstance = ButtonCreateShapeCircleInstance;
             panelAssetImageCompositeModuleEditing.mButtonCreateShapePolygonInstance = ButtonCreateShapePolygonInstance;
             panelAssetImageCompositeModuleEditing.mButtonCreateShapePolylineInstance = ButtonCreateShapePolylineInstance;
-            panelAssetImageCompositeModuleEditing.mButtonCreateShapeTextInstance = ButtonCreateShapeTextInstance;
+            //panelAssetImageCompositeModuleEditing.mButtonCreateShapeTextInstance = ButtonCreateShapeTextInstance;
             
             ButtonCreateGeneralModuleInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
             ButtonCreateShapeBoxInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
             ButtonCreateShapeCircleInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
             ButtonCreateShapePolygonInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
             ButtonCreateShapePolylineInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
-            ButtonCreateShapeTextInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
+            //ButtonCreateShapeTextInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
             
             panelAssetImageCompositeModuleEditing.mButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance;
             panelAssetImageCompositeModuleEditing.mButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance;

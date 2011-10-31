@@ -67,6 +67,9 @@ package editor.world {
    import editor.trigger.TriggerEngine;
    import editor.trigger.PlayerFunctionDefinesForEditing;
 
+   import editor.image.AssetImageModule;
+   import editor.image.AssetImageNullModule;
+
    import editor.image.AssetImageManager;
    import editor.image.AssetImagePureModuleManager;
    import editor.image.AssetImageCompositeModuleManager;
@@ -1580,7 +1583,7 @@ package editor.world {
       }
 
 //=================================================================================
-//   image asset
+//   image asset. (Will move to Runtime if multiple worlds is supported later)
 //=================================================================================
 
       public function GetAssetImageManager ():AssetImageManager
@@ -1601,6 +1604,63 @@ package editor.world {
       public function GetAssetImageSequencedModuleManager ():AssetImageCompositeModuleManager
       {
          return mAssetImageSequencedModuleManager;
+      }
+      
+      // The global module index
+      public function GetImageModuleIndex (imageModule:AssetImageModule):int
+      {
+         // assert (imageModule != null)
+         
+         var moduleType:int = imageModule.GetImageModuleType ();
+         if (moduleType < 0 )
+            return -1;
+         
+         var index:int = imageModule.GetAppearanceLayerId ();
+         if (index < 0)
+            return -1;
+         
+         if (moduleType > AssetImageModule.ImageModuleType_WholeImage)
+         {
+            index += mAssetImageManager.GetNumAssets ();
+            
+            if (moduleType > AssetImageModule.ImageModuleType_PureModule)
+            {
+               index += mAssetImagePureModuleManager.GetNumAssets ();
+               
+               if (moduleType > AssetImageModule.ImageModuleType_AssembledModule)
+               {
+                  index += mAssetImageSequencedModuleManager.GetNumAssets ();
+               }
+            }
+         }
+         
+         return index;
+      }
+      
+      public function GetImageModuleByIndex (index:int):AssetImageModule
+      {
+         if (index >= 0)
+         {
+            if (index < mAssetImageManager.GetNumAssets ())
+               return mAssetImageManager.GetAssetByAppearanceId (index) as AssetImageModule;
+            
+            index -= mAssetImageManager.GetNumAssets ();
+            
+            if (index < mAssetImagePureModuleManager.GetNumAssets ())
+               return mAssetImagePureModuleManager.GetAssetByAppearanceId (index) as AssetImageModule;
+            
+            index -= mAssetImagePureModuleManager.GetNumAssets ();
+            
+            if (index < mAssetImageAssembledModuleManager.GetNumAssets ())
+               return mAssetImageAssembledModuleManager.GetAssetByAppearanceId (index) as AssetImageModule;
+            
+            index -= mAssetImageAssembledModuleManager.GetNumAssets ();
+            
+            if (index < mAssetImageSequencedModuleManager.GetNumAssets ())
+               return mAssetImageSequencedModuleManager.GetAssetByAppearanceId (index) as AssetImageModule;
+         }
+         
+         return new AssetImageNullModule (); 
       }
 
 //=================================================================================

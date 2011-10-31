@@ -2,14 +2,6 @@ package common.shape
 {
    public class VectorShapeArea extends VectorShape
    {
-      //protected var mAttributeBits:int = 0;
-         public static const Flag_BuildBorder      :int = 1 << 8;
-         public static const Flag_DrawBorder       :int = 1 << 9;
-
-      protected var mBorderColor:uint = 0x000000;
-      protected var mBorderOpacity:int = 100; // 0-100. To changed to float.
-      protected var mBorderThickness:int = 1; //0-255. To changed to float.
-
       public function VectorShapeArea ()
       {
          SetBuildBorder (true);
@@ -28,6 +20,8 @@ package common.shape
          else
             mAttributeBits &= ~Flag_BuildBorder;
       }
+      
+      // border thickness
 
       public function IsDrawBorder ():Boolean
       {
@@ -41,35 +35,45 @@ package common.shape
          else
             mAttributeBits &= ~Flag_DrawBorder;
       }
+      
+      protected var mBorderThickness:Number = 1.0;
 
-      public function GetBorderColor ():uint
-      {
-         return mBorderColor;
-      }
-
-      public function SetBorderColor (color:uint):void
-      {
-         mBorderColor = color;
-      }
-
-      public function GetBorderOpacity ():int
-      {
-         return mBorderOpacity;
-      }
-
-      public function SetBorderOpacity (opacity:int):void
-      {
-         mBorderOpacity = opacity;
-      }
-
-      public function GetBorderThickness ():int
+      public function GetBorderThickness ():Number
       {
          return mBorderThickness;
       }
 
-      public function SetBorderThickness (thickness:int):void
+      public function SetBorderThickness (thickness:Number):void
       {
          mBorderThickness = thickness;
+      }
+            
+      // border color and opacity
+
+      protected var mBorderOpacityAndColor:uint = 0xFF000000;
+         public static const Mask_BorderColor:uint = 0x00FFFFFF;
+         public static const Shift_BorderColor:int = 0;
+         public static const Mask_BorderOpacity:uint = 0xFF000000;
+         public static const Shift_BorderOpacity:int = 24;
+      
+      public function GetBorderOpacityAndColor ():uint
+      {
+         return mBorderOpacityAndColor;
+      }
+
+      public function SetBorderOpacityAndColor (borderOpacityAndColor:uint):void
+      {
+         mBorderOpacityAndColor = borderOpacityAndColor;
+      }
+
+      public function GetBorderColor ():uint
+      {
+         return (mBorderOpacityAndColor & Mask_BorderColor) >>> Shift_BorderColor;
+      }
+
+      public function SetBorderColor (color:uint):void
+      {
+         mBorderOpacityAndColor = (mBorderOpacityAndColor & (~Mask_BorderColor)) | ((color << Shift_BorderColor) & Mask_BorderColor);
       }
    }
 }

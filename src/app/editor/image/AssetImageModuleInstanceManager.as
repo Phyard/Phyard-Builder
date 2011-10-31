@@ -78,6 +78,9 @@ package editor.image {
          }
             
          var moduleInstane:AssetImageModuleInstance = new AssetImageModuleInstance (this, finalModule);
+         var moduleInstaneForListing:AssetImageModuleInstanceForListing = mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().CreateImageModuleInstanceForListing (finalModule, selectIt, atIndex);
+         moduleInstaneForListing.SetModuleInstaneForEditingPeer (moduleInstane);
+         moduleInstane.SetModuleInstaneForListingPeer (moduleInstaneForListing);
 
          if (selectIt) // in editing, not loading
          {
@@ -90,31 +93,9 @@ package editor.image {
          else
             addChildAt (moduleInstane, atIndex);
          
-         // impossible now.
-         // todo: AssetImageModuleInstanceForListing should not extend from AssetImageModule
-         //
-         //if (module is AssetImageModuleInstanceForListing)
-         //{
-         //   var fromModuleInstance:AssetImageModuleInstance = (module as AssetImageModuleInstanceForListing).GetModuleInstaneForEditingPeer ();
-         //   moduleInstane.SetAlpha (fromModuleInstance.GetAlpha ());
-         //   moduleInstane.SetScale (fromModuleInstance.GetScale ());
-         //   moduleInstane.SetFlipped (fromModuleInstance.IsFlipped ());
-         //   moduleInstane.SetRotation (fromModuleInstance.GetRotation ());
-         //   //moduleInstane.SetPosition (fromModuleInstance.GetPositionX (), fromModuleInstance.GetPositionY ());
-         //}
-         
          moduleInstane.UpdateAppearance ();
          moduleInstane.UpdateSelectionProxy ();
          
-         // create icon in list
-         
-         //if (mAssetImageModuleInstanceManagerForListing != null)
-         //{
-            var moduleInstaneForListing:AssetImageModuleInstanceForListing = mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().CreateImageModuleInstanceForListing (finalModule, selectIt, atIndex);
-            moduleInstaneForListing.SetModuleInstaneForEditingPeer (moduleInstane);
-            moduleInstane.SetModuleInstaneForListingPeer (moduleInstaneForListing);
-         //}
-
          return moduleInstane;
       }
       

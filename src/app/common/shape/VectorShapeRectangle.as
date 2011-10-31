@@ -2,12 +2,6 @@ package common.shape
 {
    public class VectorShapeRectangle extends VectorShapeArea
    {
-      //protected var mAttributeBits:int = 0;
-         public static const Flag_RoundCorners   :int = 1 << 16;
-
-      protected var mHalfWidth:Number = 0;
-      protected var mHalfHeight:Number = 0;
-
       public function IsRoundCorners ():Boolean
       {
          return (mAttributeBits & Flag_RoundCorners) != 0;
@@ -20,6 +14,11 @@ package common.shape
          else
             mAttributeBits &= ~Flag_RoundCorners;
       }
+      
+      // half width and height
+      
+      protected var mHalfWidth:Number = 0;
+      protected var mHalfHeight:Number = 0;
 
       public function GetHalfWidth ():Number
       {

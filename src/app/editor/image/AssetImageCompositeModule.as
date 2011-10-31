@@ -71,6 +71,11 @@ package editor.image {
          return mAssetImageCompositeModuleManager;
       }
       
+      override public function GetImageModuleType ():int
+      {  
+         return IsSequenced () ? AssetImageModule.ImageModuleType_SequencedModule : AssetImageModule.ImageModuleType_AssembledModule;
+      }
+      
       public function GetModuleInstanceManager ():AssetImageModuleInstanceManager
       {
          return mModuleInstanceManager;
@@ -79,6 +84,16 @@ package editor.image {
       public function GetModuleInstanceManagerForListing ():AssetImageModuleInstanceManagerForListing
       {
          return mModuleInstanceManagerForListing;
+      }
+      
+      public function GetNumModuleInstances ():int
+      {
+         return mModuleInstanceManager.GetNumAssets ();
+      }
+      
+      public function GetModuleInstanceAt (appearanceId:int):AssetImageModuleInstance
+      {
+         return mModuleInstanceManager.GetAssetByAppearanceId (appearanceId) as AssetImageModuleInstance;
       }
       
       override public function ToCodeString ():String
@@ -180,7 +195,7 @@ package editor.image {
 //=============================================================
 
       protected var mIsSequenced:Boolean = false;
-      protected var mIsLooped:Boolean = true; // for sequenced module only
+      protected var mIsLooped:Boolean = true; // only valid for sequenced modules
       
       // false for assembled
       public function IsSequenced ():Boolean

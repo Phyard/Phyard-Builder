@@ -129,6 +129,9 @@ package common {
         // here the chars (+/=) in standard base64 set has problems in url. So use another set instead.
         // it is possible use other 3 chars set for the last 3 chars with the current set simultaneously later.
       
+      public static const Base64CharsRegExpStr:String = "0-9a-zA-Z=_,\\.\\+\\/";
+      public static const Base64CharsRegExp:RegExp = new RegExp (Base64CharsRegExpStr, "g");
+      
       private static var Base64Char2Index:Array = null;
       private static function GetBase64Char2IndexTable ():Array
       {

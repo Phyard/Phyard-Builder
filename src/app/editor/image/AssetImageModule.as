@@ -44,6 +44,12 @@ package editor.image {
    
    public class AssetImageModule extends Asset
    {
+      public static const ImageModuleType_Unknown:int = -1;
+      public static const ImageModuleType_WholeImage:int = 0;
+      public static const ImageModuleType_PureModule:int = 1;
+      public static const ImageModuleType_AssembledModule:int = 2;
+      public static const ImageModuleType_SequencedModule:int = 3;
+      
       public static var mCurrentAssetImageModule:AssetImageModule = null;
          
       public static function SetCurrentModule (module:AssetImageModule):void
@@ -69,6 +75,11 @@ package editor.image {
       public function GetAssetImageModuleManager ():AssetImageModuleManager
       {
          return mAssetImageModuleManager;
+      }
+      
+      public function GetImageModuleType ():int
+      {  
+         return AssetImageModule.ImageModuleType_Unknown;
       }
       
       override public function Destroy ():void

@@ -1,17 +1,12 @@
 package common.shape
 {
    // for compatibility, temp extends VectorShapeArea
-   public class VectorShapePath extends VectorShapeArea // VectorShape
+   public class VectorShapePath extends VectorShape
    {
-      //protected var mAttributeBits:int = 0;
-         public static const Flag_Closed           :int = 1 << 12;
-         public static const Flag_RoundEnds        :int = 1 << 13; // will not support other svg end types
-
-      protected var mCurveThickness:int = 1; // 0-255. To change to float. To change name to mThickness
-
       public function VectorShapePath ():void
       {
          SetRoundEnds (true);
+         SetClosed (false);
       }
 
       public function IsClosed ():Boolean
@@ -39,15 +34,19 @@ package common.shape
          else
             mAttributeBits &= ~Flag_RoundEnds;
       }
+      
+      // thickness
+      
+      protected var mPathThickness:Number = 1.0;
 
-      public function GetCurveThickness ():int
+      public function GetPathThickness ():Number
       {
-         return mCurveThickness;
+         return mPathThickness;
       }
 
-      public function SetCurveThickness (thickness:int):void
+      public function SetPathThickness (thickness:Number):void
       {
-         mCurveThickness = thickness;
+         mPathThickness = thickness;
       }
    }
 }

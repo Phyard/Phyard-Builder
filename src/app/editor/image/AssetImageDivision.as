@@ -67,12 +67,22 @@ package editor.image {
          return mAssetImageDivisionManager;
       }
       
+      public function GetAssetImage ():AssetImage
+      {
+         return GetAssetImageDivisionManager ().GetAssetImage ();
+      }
+      
+      public function GetAssetImageId ():int
+      {
+         return GetAssetImage ().GetAppearanceLayerId ();
+      }
+      
       internal function SetImagePureModulePeer (assetImagePureModule:AssetImagePureModule):void
       {
          mImagePureModulePeer = assetImagePureModule;
       }
       
-      public function GetImagePureModule ():AssetImagePureModule
+      public function GetImagePureModulePeer ():AssetImagePureModule
       {
          return mImagePureModulePeer;
       }

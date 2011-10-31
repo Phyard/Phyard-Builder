@@ -62,7 +62,7 @@ package editor.image {
 // 
 //========================================================== 
 
-      public function CreateImageCompositeModule (insertBeforeSelectedThenSelectNew:Boolean):AssetImageCompositeModule
+      public function CreateImageCompositeModule (insertBeforeSelectedThenSelectNew:Boolean = false):AssetImageCompositeModule
       {
          var module:AssetImageCompositeModule = new AssetImageCompositeModule (this, IsSequencedModuleManager ());
          module.UpdateAppearance ();

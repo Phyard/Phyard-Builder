@@ -4,26 +4,27 @@ package common.shape
 
    public class VectorShapeCircle extends VectorShapeArea
    {
-      //protected var mAttributeBits:int = 0;
-         public static const Shift_AppearanceType  :int = 16;
-         public static const Mask_AppearanceType   :int = 0x0F0000;
-
-      public var mRadius:Number = 0.0;
-
       public function VectorShapeCircle ()
       {
-         SetAppearanceType (Define.CircleAppearanceType_Ball);
       }
+      
+      // appearance type
+      
+      public var mAppearacneType:int = Define.CircleAppearanceType_Ball;
 
       public function GetAppearanceType ():int
       {
-         return (mAttributeBits & Mask_AppearanceType) >> Shift_AppearanceType;
+         return mAppearacneType;
       }
 
       public function SetAppearanceType (type:int):void
       {
-         mAttributeBits = (mAttributeBits & (~Mask_AppearanceType)) | ((type << Shift_AppearanceType) & Mask_AppearanceType);
+         mAppearacneType = type;
       }
+      
+      // radius
+      
+      public var mRadius:Number = 0.0;
 
       public function GetRadius ():Number
       {

@@ -44,7 +44,7 @@ package editor.entity {
       {
          super (world);
          
-         SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule);
+         SetAssetImageModule (null);
          
          BuildContextMenu ();
       }
@@ -74,6 +74,12 @@ package editor.entity {
             mAssetImageModule = new AssetImageNullModule ();
          else
             mAssetImageModule = imageModule;
+      }
+      
+      // for loading
+      public function SetAssetImageModuleByIndex (index:int):void
+      {
+         SetAssetImageModule (mWorld.GetImageModuleByIndex (index));
       }
       
 //=============================================================
@@ -153,10 +159,15 @@ package editor.entity {
       {
          if (event.target == mContextMenuItem_ChangeModule)
          {
-            SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule);
-            UpdateAppearance ();
-            UpdateSelectionProxy ();
+            ChangeToCurrentAssetImageModule ();
          }
+      }
+      
+      public function ChangeToCurrentAssetImageModule ():void
+      {
+         SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule);
+         UpdateAppearance ();
+         UpdateSelectionProxy ();
       }
    }
 }

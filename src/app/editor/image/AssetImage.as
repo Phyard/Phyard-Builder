@@ -62,6 +62,11 @@ package editor.image {
          return mAssetImageManager;
       }
       
+      override public function GetImageModuleType ():int
+      {  
+         return AssetImageModule.ImageModuleType_WholeImage;
+      }
+      
       public function GetAssetImageDivisionManager ():AssetImageDivisionManager
       {
          return mAssetImageDivisionManager;
@@ -99,18 +104,33 @@ package editor.image {
       
       private var mFileData:ByteArray;
       
+      public function CloneBitmapFileData ():ByteArray
+      {
+         if (mFileData == null)
+            return null;
+         
+         var newByteArray:ByteArray = new ByteArray (); 
+         newByteArray.writeBytes (mFileData, 0, mFileData.length);
+         
+         newByteArray.position = 0;
+         return newByteArray;
+      }
+      
       public function SetBitmapFileData (fileData:ByteArray):void
       {
          mFileData = fileData;
          
          mBitmapData = null;
          
-         //var loader:Loader = new Loader();
-         var loader:LocalImageLoader = new LocalImageLoader ();
-         loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
-         loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
-         loader.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
-         loader.loadBytes (fileData);
+         if (fileData != null)
+         {
+            //var loader:Loader = new Loader();
+            var loader:LocalImageLoader = new LocalImageLoader ();
+            loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
+            loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
+            loader.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
+            loader.loadBytes (fileData);
+         }
       }
       
       private function OnLoadImageComplete (event:Event):void

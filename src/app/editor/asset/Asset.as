@@ -41,6 +41,7 @@ package editor.asset {
       //private var mFlipped:Boolean = false;
       
       private var mAlpha:Number = 1.0;
+      private var mIsVisible:Boolean = true;
       
       public function Asset (assetManager:AssetManager)
       {
@@ -240,6 +241,16 @@ package editor.asset {
             a = 1.0;
          
          mAlpha = a;
+      }
+      
+      public function SetVisible (visible:Boolean):void
+      {
+         mIsVisible = visible;
+      }
+      
+      public function IsVisible ():Boolean
+      {
+         return mIsVisible;
       }
       
       public function CloneTransform ():Transform2D

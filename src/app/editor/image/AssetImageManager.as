@@ -58,7 +58,7 @@ package editor.image {
 // 
 //==========================================================      
       
-      public function CreateImage (insertBeforeSelectedThenSelectNew:Boolean):AssetImage
+      public function CreateImage (insertBeforeSelectedThenSelectNew:Boolean = false):AssetImage
       {
          var image:AssetImage = new AssetImage (this);
          image.UpdateAppearance ();

@@ -8,6 +8,9 @@ package common {
    
    import editor.entity.Entity;
    
+   import editor.entity.EntityShape;
+   import editor.entity.EntityImageModuleShape;
+   
    import editor.entity.EntityVectorShape;
    import editor.entity.EntityVectorShapeCircle;
    import editor.entity.EntityVectorShapeRectangle;
@@ -32,6 +35,35 @@ package common {
    import editor.entity.EntityUtilityPowerSource;
    
    import editor.entity.EntityCollisionCategory;
+   
+   import editor.image.AssetImage;
+   import editor.image.AssetImageManager;
+   import editor.image.AssetImagePureModule;
+   import editor.image.AssetImagePureModuleManager;
+   import editor.image.AssetImageCompositeModule;
+   import editor.image.AssetImageCompositeModuleManager;
+   import editor.image.AssetImageShapeModule;
+   import editor.image.AssetImageNullModule;
+   import editor.image.AssetImageDivision;
+   import editor.image.AssetImageModule;
+   import editor.image.AssetImageModuleInstance;
+   import editor.image.AssetImageModuleInstanceManager;
+   
+   import common.shape.VectorShape;
+   import common.shape.VectorShapePath;
+   import common.shape.VectorShapeArea;
+   import common.shape.VectorShapeCircle;
+   import common.shape.VectorShapeRectangle;
+   import common.shape.VectorShapePolygon;
+   import common.shape.VectorShapePolyline;
+   import common.shape.VectorShapeText;
+   
+   import editor.image.vector.VectorShapeForEditing;
+   import editor.image.vector.VectorShapeCircleForEditing;
+   import editor.image.vector.VectorShapeRectangleForEditing;
+   import editor.image.vector.VectorShapePolygonForEditing;
+   import editor.image.vector.VectorShapePolylineForEditing;
+   import editor.image.vector.VectorShapeTextForEditing;
    
    import editor.trigger.entity.EntityLogic;
    import editor.trigger.entity.EntityTask;
@@ -359,65 +391,65 @@ package common {
             }
             else if (editorEntity is EntityVectorShape)
             {
-               var shape:EntityVectorShape = editorEntity as EntityVectorShape;
+               var vectorShape:EntityVectorShape = editorEntity as EntityVectorShape;
                
                //>>from v1.02
-               entityDefine.mDrawBorder = shape.IsDrawBorder ();
-               entityDefine.mDrawBackground = shape.IsDrawBackground ();
+               entityDefine.mDrawBorder = vectorShape.IsDrawBorder ();
+               entityDefine.mDrawBackground = vectorShape.IsDrawBackground ();
                //<<
                
                //>>from v1.04
-               entityDefine.mBorderColor = shape.GetBorderColor ();
-               entityDefine.mBorderThickness = shape.GetBorderThickness ();
-               entityDefine.mBackgroundColor =shape.GetFilledColor ();
-               entityDefine.mTransparency = shape.GetTransparency ();
+               entityDefine.mBorderColor = vectorShape.GetBorderColor ();
+               entityDefine.mBorderThickness = vectorShape.GetBorderThickness ();
+               entityDefine.mBackgroundColor = vectorShape.GetFilledColor ();
+               entityDefine.mTransparency = vectorShape.GetTransparency ();
                //<<
                
                //>>from v1.05
-               entityDefine.mBorderTransparency = shape.GetBorderTransparency ();
+               entityDefine.mBorderTransparency = vectorShape.GetBorderTransparency ();
                //<<
                
-               if (shape.IsBasicVectorShapeEntity ())
+               if (vectorShape.IsBasicVectorShapeEntity ())
                {
                   //>> move up from v1.04
-                  entityDefine.mAiType = shape.GetAiType ();
+                  entityDefine.mAiType = vectorShape.GetAiType ();
                   //<<
                   
                   //>>from v1.04
-                  entityDefine.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
-                  /////entityDefine.mIsSensor = shape.mIsSensor; // move down from v1.05
+                  entityDefine.mIsPhysicsEnabled = vectorShape.IsPhysicsEnabled ();
+                  /////entityDefine.mIsSensor = vectorShape.mIsSensor; // move down from v1.05
                   //<<
                   
                   //if (entityDefine.mIsPhysicsEnabled)  // always true before v1.04
                   {
                      //>>from v1.02
-                     entityDefine.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
+                     entityDefine.mCollisionCategoryIndex = vectorShape.GetCollisionCategoryIndex ();
                      //<<
                      
                      //>> removed here, move up from v1.04
-                     /////entityDefine.mAiType = Define.GetShapeAiType ( shape.GetFilledColor ()); // move up from v1.04
+                     /////entityDefine.mAiType = Define.GetShapeAiType ( vectorShape.GetFilledColor ()); // move up from v1.04
                      //<<
                      
-                     entityDefine.mIsStatic = shape.IsStatic ();
-                     entityDefine.mIsBullet = shape.mIsBullet;
-                     entityDefine.mDensity = shape.mDensity;
-                     entityDefine.mFriction = shape.mFriction;
-                     entityDefine.mRestitution = shape.mRestitution;
+                     entityDefine.mIsStatic = vectorShape.IsStatic ();
+                     entityDefine.mIsBullet = vectorShape.mIsBullet;
+                     entityDefine.mDensity = vectorShape.mDensity;
+                     entityDefine.mFriction = vectorShape.mFriction;
+                     entityDefine.mRestitution = vectorShape.mRestitution;
                      
                      // add in v1,04, move here from above since v1.05
-                     entityDefine.mIsSensor = shape.mIsSensor;
+                     entityDefine.mIsSensor = vectorShape.mIsSensor;
                      
                      //>>from v1.05
-                     entityDefine.mIsHollow = shape.IsHollow ();
+                     entityDefine.mIsHollow = vectorShape.IsHollow ();
                      //<<
                      
                      //>>from v1.08
-                     entityDefine.mBuildBorder = shape.IsBuildBorder ();
-                     entityDefine.mIsSleepingAllowed = shape.IsAllowSleeping ();
-                     entityDefine.mIsRotationFixed = shape.IsFixRotation ();
-                     entityDefine.mLinearVelocityMagnitude = shape.GetLinearVelocityMagnitude ();
-                     entityDefine.mLinearVelocityAngle = shape.GetLinearVelocityAngle ();
-                     entityDefine.mAngularVelocity = shape.GetAngularVelocity ();
+                     entityDefine.mBuildBorder = vectorShape.IsBuildBorder ();
+                     entityDefine.mIsSleepingAllowed = vectorShape.IsAllowSleeping ();
+                     entityDefine.mIsRotationFixed = vectorShape.IsFixRotation ();
+                     entityDefine.mLinearVelocityMagnitude = vectorShape.GetLinearVelocityMagnitude ();
+                     entityDefine.mLinearVelocityAngle = vectorShape.GetLinearVelocityAngle ();
+                     entityDefine.mAngularVelocity = vectorShape.GetAngularVelocity ();
                      //<<
                   }
                   
@@ -425,19 +457,19 @@ package common {
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeCircle;
                      
-                     entityDefine.mRadius = (shape as EntityVectorShapeCircle).GetRadius ();
+                     entityDefine.mRadius = (vectorShape as EntityVectorShapeCircle).GetRadius ();
                      
-                     entityDefine.mAppearanceType = (shape as EntityVectorShapeCircle).GetAppearanceType ();
+                     entityDefine.mAppearanceType = (vectorShape as EntityVectorShapeCircle).GetAppearanceType ();
                   }
                   else if (editorEntity is EntityVectorShapeRectangle)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeRectangle;
                      
-                     entityDefine.mHalfWidth = (shape as EntityVectorShapeRectangle).GetHalfWidth ();
-                     entityDefine.mHalfHeight = (shape as EntityVectorShapeRectangle).GetHalfHeight ();
+                     entityDefine.mHalfWidth = (vectorShape as EntityVectorShapeRectangle).GetHalfWidth ();
+                     entityDefine.mHalfHeight = (vectorShape as EntityVectorShapeRectangle).GetHalfHeight ();
                      
                      //from v1.08
-                     entityDefine.mIsRoundCorners = (shape as EntityVectorShapeRectangle).IsRoundCorners ();
+                     entityDefine.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
                      //<<
                   }
                   //>>from v1.04
@@ -445,7 +477,7 @@ package common {
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolygon;
                      
-                     entityDefine.mLocalPoints = (shape as EntityVectorShapePolygon).GetLocalVertexPoints ();
+                     entityDefine.mLocalPoints = (vectorShape as EntityVectorShapePolygon).GetLocalVertexPoints ();
                   }
                   //<<
                   //>>from v1.05
@@ -453,16 +485,16 @@ package common {
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolyline;
                      
-                     entityDefine.mCurveThickness = (shape as EntityVectorShapePolyline).GetCurveThickness ();
+                     entityDefine.mCurveThickness = (vectorShape as EntityVectorShapePolyline).GetCurveThickness ();
                      
                      //>> from v1.08
-                     entityDefine.mIsRoundEnds = (shape as EntityVectorShapePolyline).IsRoundEnds ();
+                     entityDefine.mIsRoundEnds = (vectorShape as EntityVectorShapePolyline).IsRoundEnds ();
                      //<<
                      //>> from v1.57
-                     entityDefine.mIsClosed = (shape as EntityVectorShapePolyline).IsClosed ();
+                     entityDefine.mIsClosed = (vectorShape as EntityVectorShapePolyline).IsClosed ();
                      //<<
                      
-                     entityDefine.mLocalPoints = (shape as EntityVectorShapePolyline).GetLocalVertexPoints ();
+                     entityDefine.mLocalPoints = (vectorShape as EntityVectorShapePolyline).GetLocalVertexPoints ();
                   }
                   //<<
                }
@@ -471,24 +503,24 @@ package common {
                   //>>from v1.02
                   if (editorEntity is EntityVectorShapeText)
                   {
-                     entityDefine.mText = (shape as EntityVectorShapeText).GetText ();
+                     entityDefine.mText = (vectorShape as EntityVectorShapeText).GetText ();
                      
-                     entityDefine.mHalfWidth = (shape as EntityVectorShapeRectangle).GetHalfWidth ();
-                     entityDefine.mHalfHeight = (shape as EntityVectorShapeRectangle).GetHalfHeight ();
+                     entityDefine.mHalfWidth = (vectorShape as EntityVectorShapeRectangle).GetHalfWidth ();
+                     entityDefine.mHalfHeight = (vectorShape as EntityVectorShapeRectangle).GetHalfHeight ();
                      
-                     entityDefine.mWordWrap = (shape as EntityVectorShapeText).IsWordWrap ();
+                     entityDefine.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap ();
                      
                      //from v1.08
-                     entityDefine.mAdaptiveBackgroundSize = (shape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
-                     entityDefine.mTextColor = (shape as EntityVectorShapeText).GetTextColor ();
-                     entityDefine.mFontSize = (shape as EntityVectorShapeText).GetFontSize ();
-                     entityDefine.mIsBold = (shape as EntityVectorShapeText).IsBold ();
-                     entityDefine.mIsItalic = (shape as EntityVectorShapeText).IsItalic ();
+                     entityDefine.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
+                     entityDefine.mTextColor = (vectorShape as EntityVectorShapeText).GetTextColor ();
+                     entityDefine.mFontSize = (vectorShape as EntityVectorShapeText).GetFontSize ();
+                     entityDefine.mIsBold = (vectorShape as EntityVectorShapeText).IsBold ();
+                     entityDefine.mIsItalic = (vectorShape as EntityVectorShapeText).IsItalic ();
                      //<<
                      
                      //from v1.09
-                     entityDefine.mTextAlign = (shape as EntityVectorShapeText).GetTextAlign ();
-                     entityDefine.mIsUnderlined = (shape as EntityVectorShapeText).IsUnderlined ();
+                     entityDefine.mTextAlign = (vectorShape as EntityVectorShapeText).GetTextAlign ();
+                     entityDefine.mIsUnderlined = (vectorShape as EntityVectorShapeText).IsUnderlined ();
                      //<<
                      
                      // from v1.08
@@ -496,9 +528,9 @@ package common {
                      {
                         entityDefine.mEntityType = Define.EntityType_ShapeTextButton;
                         
-                        entityDefine.mUsingHandCursor = (shape as EntityVectorShapeTextButton).UsingHandCursor ();
+                        entityDefine.mUsingHandCursor = (vectorShape as EntityVectorShapeTextButton).UsingHandCursor ();
                         
-                        var mouseOverShape:EntityVectorShape = (shape as EntityVectorShapeTextButton).GetMouseOverShape ();
+                        var mouseOverShape:EntityVectorShape = (vectorShape as EntityVectorShapeTextButton).GetMouseOverShape ();
                         
                         entityDefine.mDrawBackground_MouseOver = mouseOverShape.IsDrawBackground ();
                         entityDefine.mBackgroundColor_MouseOver = mouseOverShape.GetFilledColor ();
@@ -519,26 +551,39 @@ package common {
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeGravityController;
                      
-                     entityDefine.mRadius = (shape as EntityVectorShapeCircle).GetRadius ();
+                     entityDefine.mRadius = (vectorShape as EntityVectorShapeCircle).GetRadius ();
                      
                      // removed from v1.05
-                     /////entityDefine.mIsInteractive = (shape as EntityVectorShapeGravityController).IsInteractive ();
+                     /////entityDefine.mIsInteractive = (vectorShape as EntityVectorShapeGravityController).IsInteractive ();
                      
                      // added in v1,05
-                     entityDefine.mInteractiveZones = (shape as EntityVectorShapeGravityController).GetInteractiveZones ();
-                     entityDefine.mInteractiveConditions = (shape as EntityVectorShapeGravityController).mInteractiveConditions;
+                     entityDefine.mInteractiveZones = (vectorShape as EntityVectorShapeGravityController).GetInteractiveZones ();
+                     entityDefine.mInteractiveConditions = (vectorShape as EntityVectorShapeGravityController).mInteractiveConditions;
                      
                      // ...
-                     entityDefine.mInitialGravityAcceleration = (shape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ();
-                     entityDefine.mInitialGravityAngle = (shape as EntityVectorShapeGravityController).GetInitialGravityAngle ();
+                     entityDefine.mInitialGravityAcceleration = (vectorShape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ();
+                     entityDefine.mInitialGravityAngle = (vectorShape as EntityVectorShapeGravityController).GetInitialGravityAngle ();
                      
                      //>> from v1,08
-                     entityDefine.mMaximalGravityAcceleration = (shape as EntityVectorShapeGravityController).GetMaximalGravityAcceleration ();
+                     entityDefine.mMaximalGravityAcceleration = (vectorShape as EntityVectorShapeGravityController).GetMaximalGravityAcceleration ();
                      //<<
                   }
                   //<<
                }
             }
+            //>> from v1.58
+            else if (editorEntity is EntityShape)
+            {
+               var shape:EntityShape = editorEntity as EntityShape;
+               
+               if (editorEntity is EntityImageModuleShape)
+               {
+                  entityDefine.mEntityType = Define.EntityType_ShapeImageModule;
+                  
+                  entityDefine.mModuleIndex = editorWorld.GetImageModuleIndex ((editorEntity as EntityImageModuleShape).GetAssetImageModule ());
+               }
+            }
+            //<<
             else if (editorEntity is EntityJoint)
             {
                var joint:EntityJoint = (editorEntity as EntityJoint);
@@ -781,7 +826,308 @@ package common {
          //}
          //<<
          
+         //>>from v1.58
+         // iamge modules
+         //{
+            var assetImageManager:AssetImageManager = editorWorld.GetAssetImageManager ();
+            var pureModuleManager:AssetImagePureModuleManager = editorWorld.GetAssetImagePureModuleManager ();
+            var assembledModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageAssembledModuleManager ();
+            var sequencedModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageSequencedModuleManager ();
+            
+            var numImages:int = assetImageManager.GetNumAssets ();
+            for (var imageId:int = 0; imageId < numImages; ++ imageId)
+            {
+               var imageAsset:AssetImage = assetImageManager.GetAssetByAppearanceId (imageId) as AssetImage;
+               
+               var imageDefine:Object = new Object ();
+               
+               imageDefine.mName = imageAsset.GetName ();
+               imageDefine.mFileData = imageAsset.CloneBitmapFileData ();
+               
+               worldDefine.mImageDefines.push (imageDefine);
+            }
+            
+            var numDivisions:int = pureModuleManager.GetNumAssets ();
+            for (var divisionId:int = 0; divisionId < numDivisions; ++ divisionId)
+            {
+               var imageDivison:AssetImageDivision = (pureModuleManager.GetAssetByAppearanceId (divisionId) as AssetImagePureModule).GetImageDivisionPeer ();
+               
+               var divisionDefine:Object = new Object ();
+               divisionDefine.mImageIndex = imageDivison.GetAssetImageId ();
+               divisionDefine.mLeft = imageDivison.GetLeft ();
+               divisionDefine.mTop = imageDivison.GetTop ();
+               divisionDefine.mRight = imageDivison.GetRight ();
+               divisionDefine.mBottom = imageDivison.GetBottom ();
+               
+               worldDefine.mPureImageModuleDefines.push (divisionDefine);
+            }
+            
+            var numAssembledModules:int = assembledModuleManager.GetNumAssets ();
+            for (var assembledModuleId:int = 0; assembledModuleId < numAssembledModules; ++ assembledModuleId)
+            {
+               var assembledModule:AssetImageCompositeModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId) as AssetImageCompositeModule;
+               
+               var assembledModuleDefine:Object = new Object ();
+               
+               assembledModuleDefine.mModulePartDefines = ModuleInstances2Define (editorWorld, assembledModule.GetModuleInstanceManager (), false);
+               
+               worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
+            }
+   
+            var numSequencedModules:int = sequencedModuleManager.GetNumAssets ();
+            for (var sequencedModuleId:int = 0; sequencedModuleId < numSequencedModules; ++ sequencedModuleId)
+            {
+               var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId) as AssetImageCompositeModule;
+               
+               var sequencedModuleDefine:Object = new Object ();
+               
+               sequencedModuleDefine.mIsLooped = sequencedModule.IsLooped ();
+               sequencedModuleDefine.mModuleSequenceDefines = ModuleInstances2Define (editorWorld, sequencedModule.GetModuleInstanceManager (), true);
+               
+               worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
+            }
+         //}
+         //<<
+         
          return worldDefine;
+      }
+      
+      public static function ModuleInstances2Define (editorWorld:World, moduleInstanceManager:AssetImageModuleInstanceManager, forSequencedModule:Boolean):Array
+      {
+         var moduleInstanceDefines:Array = new Array ();
+         
+         var numModuleInstances:int = moduleInstanceManager.GetNumAssets ();
+         for (var instanceId:int = 0; instanceId < numModuleInstances; ++ instanceId)
+         {
+            var moduleInstance:AssetImageModuleInstance = moduleInstanceManager.GetAssetByAppearanceId (instanceId) as AssetImageModuleInstance;
+      
+            var moduleInstanceDefine:Object = new Object ();
+            
+            moduleInstanceDefine.mVisible = moduleInstance.IsVisible ();
+            moduleInstanceDefine.mAlpha = moduleInstance.GetAlpha ();
+            moduleInstanceDefine.mPosX = moduleInstance.GetPositionX ();
+            moduleInstanceDefine.mPosY = moduleInstance.GetPositionY ();
+            moduleInstanceDefine.mScale = moduleInstance.GetScale ();
+            moduleInstanceDefine.mIsFlipped = moduleInstance.IsFlipped ();
+            moduleInstanceDefine.mRotation = moduleInstance.GetRotation ();
+            
+            if (forSequencedModule)
+               moduleInstanceDefine.mModuleDuration = moduleInstance.GetDuration ();
+            
+            var imageModule:AssetImageModule = moduleInstance.GetAssetImageModule ();
+            ModuleInstance2Define (moduleInstanceDefine, editorWorld, imageModule);
+            
+            moduleInstanceDefines.push (moduleInstanceDefine);
+         }
+         
+         return moduleInstanceDefines;
+      }
+      
+      public static function ModuleInstance2Define (moduleInstanceDefine:Object, editorWorld:World, imageModule:AssetImageModule):Object
+      {
+         moduleInstanceDefine.mModuleType = Define.EntityType_Unkonwn; // default, may be modified in following branches.
+         
+         if (imageModule is AssetImageShapeModule)
+         {
+            var vectorShape:VectorShape = (imageModule as AssetImageShapeModule).GetVectorShape () as VectorShape;
+            
+            moduleInstanceDefine.mShapeAttributeBits = vectorShape.GetAttributeBits ();
+            moduleInstanceDefine.mShapeBodyOpacityAndColor = vectorShape.GetBodyOpacityAndColor (); // argb
+            
+            if (vectorShape is VectorShapePath)
+            {
+               var pathVectorShape:VectorShapePath = vectorShape as VectorShapePath;
+               
+               moduleInstanceDefine.mShapePathThickness = pathVectorShape.GetPathThickness ();
+               
+               if (vectorShape is VectorShapePolyline)
+               {
+                  var polylineShape:VectorShapePolyline = pathVectorShape as VectorShapePolyline;
+                  
+                  moduleInstanceDefine.mModuleType = Define.EntityType_ShapePolyline;
+                  
+                  moduleInstanceDefine.mPolyLocalPoints = polylineShape.GetLocalVertexPoints ();
+               }
+            }
+            else if (vectorShape is VectorShapeArea)
+            {
+               var areaVectorShape:VectorShapeArea = vectorShape as VectorShapeArea;
+               
+               moduleInstanceDefine.mShapeBorderOpacityAndColor = areaVectorShape.GetBorderOpacityAndColor (); // argb
+               moduleInstanceDefine.mShapeBorderThickness = areaVectorShape.GetBorderThickness ();
+               
+               if (vectorShape is VectorShapeCircle)
+               {
+                  var circleShape:VectorShapeCircle = areaVectorShape as VectorShapeCircle;
+                  
+                  moduleInstanceDefine.mModuleType = Define.EntityType_ShapeCircle;
+                  
+                  moduleInstanceDefine.mCircleRadius = circleShape.GetRadius ();
+                  moduleInstanceDefine.mCircleAppearacneType = circleShape.GetAppearanceType ();
+               }
+               else if (vectorShape is VectorShapePolygon)
+               {
+                  var polygonShape:VectorShapePolygon = areaVectorShape as VectorShapePolygon;
+                  
+                  moduleInstanceDefine.mModuleType = Define.EntityType_ShapePolygon;
+                  
+                  moduleInstanceDefine.mPolyLocalPoints = polygonShape.GetLocalVertexPoints ();
+               }
+               else if (vectorShape is VectorShapeRectangle)
+               {
+                  var rectangleShape:VectorShapeRectangle = areaVectorShape as VectorShapeRectangle;
+                  
+                  moduleInstanceDefine.mModuleType = Define.EntityType_ShapeRectangle;
+                  
+                  moduleInstanceDefine.mRectHalfWidth = rectangleShape.GetHalfWidth ();
+                  moduleInstanceDefine.mRectHalfHeight = rectangleShape.GetHalfHeight ();
+                  
+                  //if (vectorShape is VectorShapeText)
+                  //{
+                  //   moduleInstanceDefine.mModuleType = Define.EntityType_ShapeText;
+                  //   
+                  //   var textShape:VectorShapeText = vectorShape as VectorShapeText;
+                  //}
+                  //
+                  //Text Shape 最好还是不从Rectangle继承下来。以后可以选择多种气泡背景，Rectangle只是其中之一。
+                  //原点可以选在网格9个位置
+               }
+            }
+         }
+         else if (imageModule is AssetImageNullModule)
+         {
+            //moduleInstanceDefine.mModuleType = Define.EntityType_Unkonwn;
+         }
+         else
+         {
+            moduleInstanceDefine.mModuleType = Define.EntityType_ShapeImageModule;
+            
+            moduleInstanceDefine.mModuleIndex = editorWorld.GetImageModuleIndex (imageModule);
+         }
+         
+         return moduleInstanceDefine;
+      }     
+      
+//==============================================================
+//
+//==============================================================
+      
+      public static function ModuleInstanceDefinesToModuleInstances (moduleInstanceDefines:Array, imageModuleRefIndex_CorrectionTable:Array, editorWorld:World, moduleInstanceManager:AssetImageModuleInstanceManager, forSequencedModule:Boolean):void
+      {
+         for each (var moduleInstanceDefine:Object in moduleInstanceDefines)
+         {
+            var moduleInstance:AssetImageModuleInstance = moduleInstanceManager.CreateImageModuleInstance (
+                                                           ModuleInstanceDefineToModuleInstance (moduleInstanceDefine, imageModuleRefIndex_CorrectionTable, editorWorld)
+                                                        );
+             
+            moduleInstance.SetVisible (moduleInstanceDefine.mVisible);
+            moduleInstance.SetAlpha (moduleInstanceDefine.mAlpha);
+            moduleInstance.SetPosition (moduleInstanceDefine.mPosX, moduleInstanceDefine.mPosY);
+            moduleInstance.SetScale (moduleInstanceDefine.mScale);
+            moduleInstance.SetFlipped (moduleInstanceDefine.mIsFlipped);
+            moduleInstance.SetRotation (moduleInstanceDefine.mRotation);
+            
+            if (forSequencedModule)
+            {
+               moduleInstance.SetDuration (moduleInstanceDefine.mModuleDuration);
+            }
+         }
+      }
+      
+      public static function ModuleInstanceDefineToModuleInstance (moduleInstanceDefine:Object, imageModuleRefIndex_CorrectionTable:Array, editorWorld:World):AssetImageModule
+      {
+         var imageModule:AssetImageModule = null;
+         
+         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            var vectorShape:VectorShape = null;
+            
+            if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
+            {
+               var pathVectorShape:VectorShapePath = null;
+               
+               // polyline
+               //{
+                  var polylineShape:VectorShapePolylineForEditing = new VectorShapePolylineForEditing ();
+                  
+                  polylineShape.SetLocalVertexPoints (moduleInstanceDefine.mPolyLocalPoints);
+                  
+                  pathVectorShape = polylineShape as VectorShapePath;
+               //}
+               
+               if (pathVectorShape != null)
+               {
+                  pathVectorShape.SetPathThickness (moduleInstanceDefine.mShapePathThickness);
+               }
+               
+               vectorShape = pathVectorShape;
+            }
+            else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle
+                  || moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon
+                  || moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle
+               )
+            {
+               var areaVectorShape:VectorShapeArea = null;
+               
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
+               {
+                  var circleShape:VectorShapeCircleForEditing = new VectorShapeCircleForEditing ();
+                  
+                  circleShape.SetRadius (moduleInstanceDefine.mCircleRadius);
+                  circleShape.SetAppearanceType (moduleInstanceDefine.mCircleAppearacneType);
+                  
+                  areaVectorShape = circleShape as VectorShapeArea;
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
+               {
+                  var polygonShape:VectorShapePolygonForEditing = new VectorShapePolygonForEditing ();
+                  
+                  polygonShape.SetLocalVertexPoints (moduleInstanceDefine.mPolyLocalPoints);
+                  
+                  areaVectorShape = polygonShape as VectorShapeArea;
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
+               {
+                  var rectangleShape:VectorShapeRectangleForEditing = new VectorShapeRectangleForEditing ();
+                  
+                  rectangleShape.SetHalfWidth (moduleInstanceDefine.mRectHalfWidth);
+                  rectangleShape.SetHalfHeight (moduleInstanceDefine.mRectHalfHeight);
+                  
+                  areaVectorShape = rectangleShape as VectorShapeArea;
+               }
+
+               if (areaVectorShape != null)
+               {
+                  areaVectorShape.SetBorderOpacityAndColor (moduleInstanceDefine.mShapeBorderOpacityAndColor); // argb
+                  areaVectorShape.SetBorderThickness (moduleInstanceDefine.mShapeBorderThickness);
+               }
+               
+               vectorShape = areaVectorShape;
+            }
+
+            
+            if (vectorShape != null)
+            {
+               vectorShape.SetAttributeBits (moduleInstanceDefine.mShapeAttributeBits);
+               vectorShape.SetBodyOpacityAndColor (moduleInstanceDefine.mShapeBodyOpacityAndColor); // argb
+
+               imageModule = new AssetImageShapeModule (vectorShape as VectorShapeForEditing);
+            }
+         }
+         else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule) 
+              // (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            if (moduleInstanceDefine.mModuleIndex >= 0)
+            {
+               moduleInstanceDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [moduleInstanceDefine.mModuleIndex];
+               imageModule = editorWorld.GetImageModuleByIndex (moduleInstanceDefine.mModuleIndex);
+            }
+         }
+         
+         if (imageModule == null)
+            imageModule = new AssetImageNullModule ();
+      
+         return imageModule;
       }
       
       public static function WorldDefine2EditorWorld (worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, editorWorld:editor.world.World = null, mergeVariablesWithSameNames:Boolean = false):editor.world.World
@@ -906,6 +1252,96 @@ package common {
          }
          //<<
          
+         //>> from v1.58
+         // iamge modules
+         //{
+            var assetImageManager:AssetImageManager = editorWorld.GetAssetImageManager ();
+            var pureModuleManager:AssetImagePureModuleManager = editorWorld.GetAssetImagePureModuleManager ();
+            var assembledModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageAssembledModuleManager ();
+            var sequencedModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageSequencedModuleManager ();
+            
+            var oldNumImageModules:int = assetImageManager.GetNumAssets ();
+            var oldNumImageDivisions:int = pureModuleManager.GetNumAssets ();
+            var oldNumAssembledModules:int = assembledModuleManager.GetNumAssets ();
+            var oldNumSequencedModules:int = sequencedModuleManager.GetNumAssets ();
+            
+            var deltaNumImageModules:int = worldDefine.mImageDefines.length;
+            var deltaNumImageDivisions:int = worldDefine.mPureImageModuleDefines.length;
+            var deltaNumAssembledModules:int = worldDefine.mAssembledModuleDefines.length;
+            var deltaNumSequencedModules:int = worldDefine.mSequencedModuleDefines.length;
+
+            //
+            var imageModuleRefIndex_CorrectionTable:Array = new Array (deltaNumImageModules + deltaNumImageDivisions + deltaNumAssembledModules + deltaNumSequencedModules);
+            var moduleId:int = 0;
+            //
+         
+            var correctedModuleId:int = oldNumImageModules;
+            for (var imageId:int = 0; imageId < deltaNumImageModules; ++ imageId)
+            {
+               var imageDefine:Object = worldDefine.mImageDefines [imageId]
+               
+               var imageAsset:AssetImage = assetImageManager.CreateImage ();
+               imageAsset.OnLoadLocalImageFinished (imageDefine.mFileData, imageDefine.mName);
+               
+               imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
+            }
+            
+            correctedModuleId += oldNumImageDivisions;
+            for (var divisionId:int = 0; divisionId < deltaNumImageDivisions; ++ divisionId)
+            { 
+               var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
+               
+               divisionDefine.mImageIndex += oldNumImageModules;
+               var imageDivision:AssetImageDivision = (assetImageManager.GetAssetByAppearanceId (divisionDefine.mImageIndex) as AssetImage)
+                                             .GetAssetImageDivisionManager ().CreateImageDivision (
+                                                divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom
+                                             );
+               
+               imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
+            }
+            
+            correctedModuleId += oldNumAssembledModules;
+            var numNewAssembledModules:int = deltaNumAssembledModules;
+            while (-- numNewAssembledModules >= 0)
+            {
+               assembledModuleManager.CreateImageCompositeModule ();
+               
+               imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
+            }
+   
+            correctedModuleId += oldNumSequencedModules;
+            var numNewSequencedModules:int = deltaNumSequencedModules;
+            while (-- numNewSequencedModules >= 0)
+            {
+               sequencedModuleManager.CreateImageCompositeModule ();
+               
+               imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
+            }
+            
+            for (var assembledModuleId:int = 0; assembledModuleId < deltaNumAssembledModules; ++ assembledModuleId)
+            {
+               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+               
+               var assembledModule:AssetImageCompositeModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId + oldNumAssembledModules) as AssetImageCompositeModule;
+
+               ModuleInstanceDefinesToModuleInstances (assembledModuleDefine.mModulePartDefines, imageModuleRefIndex_CorrectionTable, editorWorld, assembledModule.GetModuleInstanceManager (), false);
+            }
+   
+            for (var sequencedModuleId:int = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
+            {
+               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+               
+               var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId + oldNumSequencedModules) as AssetImageCompositeModule;
+               
+               sequencedModule.SetLooped (sequencedModuleDefine.mIsLooped);
+               ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
+            }
+         //}
+         //<<
+         
+         //>> todo: move function creations here from the below
+         //<<
+         
          // entities
          
          var beginningEntityIndex:int = editorWorld.GetNumEntities ();
@@ -914,7 +1350,8 @@ package common {
          var createId:int;
          var entityDefine:Object;
          var entity:Entity;
-         var shape:EntityVectorShape;
+         var vectorShape:EntityVectorShape;
+         var shape:EntityShape;
          var anchorDefine:Object;
          var joint:EntityJoint;
          var utility:EntityUtility;
@@ -1046,9 +1483,9 @@ package common {
                }
                //<<
             }
-            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            else if ( Define.IsVectorShapeEntity (entityDefine.mEntityType) )
             {
-               shape = null;
+               vectorShape = null;
                
                if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
@@ -1058,7 +1495,7 @@ package common {
                      circle.SetAppearanceType (entityDefine.mAppearanceType);
                      circle.SetRadius (entityDefine.mRadius);
                      
-                     entity = shape = circle;
+                     entity = vectorShape = circle;
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
@@ -1070,7 +1507,7 @@ package common {
                      rect.SetRoundCorners (entityDefine.mIsRoundCorners);
                      //<<
                      
-                     entity = shape = rect;
+                     entity = vectorShape = rect;
                   }
                   //>> from v1.04
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
@@ -1082,7 +1519,7 @@ package common {
                      //   polygon.SetRotation (entityDefine.mRotation);                 // but the SetLocalVertexPoints needs position and rotation set before
                      //polygon.SetLocalVertexPoints (entityDefine.mLocalPoints);
                      
-                     entity = shape = polygon;
+                     entity = vectorShape = polygon;
                   }
                   //<<
                   //>>from v1.05
@@ -1105,53 +1542,53 @@ package common {
                      //   polyline.SetRotation (entityDefine.mRotation);                 // but the SetLocalVertexPoints needs position and rotation set before
                      //polyline.SetLocalVertexPoints (entityDefine.mLocalPoints);
                      
-                     entity = shape = polyline;
+                     entity = vectorShape = polyline;
                   }
                   //<<
                   
-                  if (shape != null)
+                  if (vectorShape != null)
                   {
-                     shape.SetAiType (entityDefine.mAiType);
+                     vectorShape.SetAiType (entityDefine.mAiType);
                      
                      //>>from v1.04
-                     shape.SetPhysicsEnabled (entityDefine.mIsPhysicsEnabled);
-                     /////shape.mIsSensor = entityDefine.mIsSensor; // move down from v1.05
+                     vectorShape.SetPhysicsEnabled (entityDefine.mIsPhysicsEnabled);
+                     /////vectorShape.mIsSensor = entityDefine.mIsSensor; // move down from v1.05
                      //<<
                      
                      if (entityDefine.mIsPhysicsEnabled) // always true before v1.04
                      {
                         //>>from v1.02
                         if (entityDefine.mCollisionCategoryIndex >= 0)
-                           shape.SetCollisionCategoryIndex ( int(entityDefine.mCollisionCategoryIndex) + beginningCollisionCategoryIndex);
+                           vectorShape.SetCollisionCategoryIndex ( int(entityDefine.mCollisionCategoryIndex) + beginningCollisionCategoryIndex);
                         else
-                           shape.SetCollisionCategoryIndex (entityDefine.mCollisionCategoryIndex);
+                           vectorShape.SetCollisionCategoryIndex (entityDefine.mCollisionCategoryIndex);
                         //<<
                         
-                        shape.SetStatic (entityDefine.mIsStatic);
-                        shape.mIsBullet = entityDefine.mIsBullet;
-                        shape.mDensity = entityDefine.mDensity;
-                        shape.mFriction = entityDefine.mFriction;
-                        shape.mRestitution = entityDefine.mRestitution;
+                        vectorShape.SetStatic (entityDefine.mIsStatic);
+                        vectorShape.mIsBullet = entityDefine.mIsBullet;
+                        vectorShape.mDensity = entityDefine.mDensity;
+                        vectorShape.mFriction = entityDefine.mFriction;
+                        vectorShape.mRestitution = entityDefine.mRestitution;
                         
                         // add in v1,04, move here from above from v1.05
-                        shape.mIsSensor = entityDefine.mIsSensor;
+                        vectorShape.mIsSensor = entityDefine.mIsSensor;
                         
                         //>>from v1.05
-                        shape.SetHollow (entityDefine.mIsHollow);
+                        vectorShape.SetHollow (entityDefine.mIsHollow);
                         //<<
                         
                         //>>from v1.08
-                        shape.SetBuildBorder (entityDefine.mBuildBorder);
-                        shape.SetAllowSleeping (entityDefine.mIsSleepingAllowed);
-                        shape.SetFixRotation (entityDefine.mIsRotationFixed);
-                        shape.SetLinearVelocityMagnitude (entityDefine.mLinearVelocityMagnitude);
-                        shape.SetLinearVelocityAngle (entityDefine.mLinearVelocityAngle);
-                        shape.SetAngularVelocity (entityDefine.mAngularVelocity);
+                        vectorShape.SetBuildBorder (entityDefine.mBuildBorder);
+                        vectorShape.SetAllowSleeping (entityDefine.mIsSleepingAllowed);
+                        vectorShape.SetFixRotation (entityDefine.mIsRotationFixed);
+                        vectorShape.SetLinearVelocityMagnitude (entityDefine.mLinearVelocityMagnitude);
+                        vectorShape.SetLinearVelocityAngle (entityDefine.mLinearVelocityAngle);
+                        vectorShape.SetAngularVelocity (entityDefine.mAngularVelocity);
                         //<<
                      }
                   }
                }
-               else // not physics shape
+               else // not physics vectorShape
                {
                   //>> v1.02
                   if (entityDefine.mEntityType == Define.EntityType_ShapeText || entityDefine.mEntityType == Define.EntityType_ShapeTextButton)
@@ -1203,7 +1640,7 @@ package common {
                      text.SetHalfWidth (entityDefine.mHalfWidth);
                      text.SetHalfHeight (entityDefine.mHalfHeight);
                      
-                     entity = shape = text;
+                     entity = vectorShape = text;
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
                   {
@@ -1226,30 +1663,46 @@ package common {
                      gController.SetMaximalGravityAcceleration (entityDefine.mMaximalGravityAcceleration);
                      //<<
                      
-                     entity = shape = gController;
+                     entity = vectorShape = gController;
                   }
                   //<<
                }
                
-               if (shape != null)
+               if (vectorShape != null)
                {
                   //>>v1.02
-                  shape.SetDrawBorder (entityDefine.mDrawBorder);
-                  shape.SetDrawBackground (entityDefine.mDrawBackground);
+                  vectorShape.SetDrawBorder (entityDefine.mDrawBorder);
+                  vectorShape.SetDrawBackground (entityDefine.mDrawBackground);
                   //<<
                   
                   //>>from v1.04
-                  shape.SetBorderColor (entityDefine.mBorderColor);
-                  shape.SetBorderThickness (entityDefine.mBorderThickness);
-                  shape.SetFilledColor (entityDefine.mBackgroundColor);
-                  shape.SetTransparency (entityDefine.mTransparency);
+                  vectorShape.SetBorderColor (entityDefine.mBorderColor);
+                  vectorShape.SetBorderThickness (entityDefine.mBorderThickness);
+                  vectorShape.SetFilledColor (entityDefine.mBackgroundColor);
+                  vectorShape.SetTransparency (entityDefine.mTransparency);
                   //<<
                   
                   //>>from v1.05
-                  shape.SetBorderTransparency (entityDefine.mBorderTransparency);
+                  vectorShape.SetBorderTransparency (entityDefine.mBorderTransparency);
                   //<<
                }
             }
+            //>> from v1.58
+            else if (Define.IsShapeEntity (entityDefine.mEntityType))
+            {
+               shape = null;
+               
+               if (entityDefine.mEntityType == Define.EntityType_ShapeImageModule)
+               {
+                  var imageModuleShape:EntityImageModuleShape = editorWorld.CreateEntityImageModuleShape ();
+                  
+                  if (entityDefine.mModuleIndex >= 0)
+                     entityDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndex];
+                  
+                  imageModuleShape.SetAssetImageModuleByIndex (entityDefine.mModuleIndex);
+               }
+            }
+            //<<
             else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
             {
                joint = null;
@@ -1503,7 +1956,7 @@ package common {
             entityDefine = worldDefine.mEntityDefines [createId];
             entity = entityDefine.mEntity;
             
-            if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            if ( Define.IsVectorShapeEntity (entityDefine.mEntityType) )
             {
                if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
@@ -1874,7 +2327,7 @@ package common {
             }
          }
          
-         // must be loaded before loading codesnippets in entities
+         // must be loaded before loading codesnippets in entities.
          if (worldDefine.mVersion >= 0x0153)
          {
             var functionDefine:FunctionDefine;
@@ -1966,8 +2419,6 @@ package common {
          
          // custom variables
          
-         // custom variables
-         
          if (worldDefine.mVersion >= 0x0152)
          {
             //>> v1.52 only
@@ -2001,6 +2452,30 @@ package common {
                
                TriggerFormatHelper.VariablesXml2Define (worldXml.GlobalVariables [0], worldDefine.mGlobalVariableDefines, true);
                TriggerFormatHelper.VariablesXml2Define (worldXml.EntityProperties [0], worldDefine.mEntityPropertyDefines, true);
+            }
+         }
+         
+         // image modules
+         
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            for each (element in worldXml.Images.Image)
+            {
+               var imageDefine:Object = new Object ();
+               
+               imageDefine.mName = element.@name;
+               var fileDataBase64:String = element.text () [0];
+               if (fileDataBase64 == null)
+               {
+                  imageDefine.mFileData = null;
+               }
+               else
+               {
+                  fileDataBase64 = fileDataBase64.replace (DataFormat3.Base64CharsRegExp, "");
+                  imageDefine.mFileData = DataFormat3.DecodeString2ByteArray (fileDataBase64);
+               }
+               
+               worldDefine.mImageDefines.push (imageDefine);
             }
          }
          
@@ -2185,7 +2660,7 @@ package common {
             }
             //<<     
          }
-         else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+         else if ( Define.IsVectorShapeEntity (entityDefine.mEntityType) )
          {
             if (worldDefine.mVersion >= 0x0102)
             {
@@ -2383,6 +2858,15 @@ package common {
                }
             }
          }
+         //>> from v1.58
+         else if (Define.IsShapeEntity (entityDefine.mEntityType))
+         {
+            if (entityDefine.mEntityType == Define.EntityType_ShapeImageModule)
+            {
+               entityDefine.mModuleIndex = parseInt (element.@module_index);
+            }
+         }
+         //<<
          else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
          {
             // 
@@ -2808,7 +3292,7 @@ package common {
                }
                //<<  
             }
-            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            else if ( Define.IsVectorShapeEntity (entityDefine.mEntityType) )
             {
                if (worldDefine.mVersion >= 0x0102)
                {

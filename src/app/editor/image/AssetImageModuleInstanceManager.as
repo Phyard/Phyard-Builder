@@ -61,7 +61,7 @@ package editor.image {
       public function CreateImageModuleInstance (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
          if (module == null)
-            module= new AssetImageNullModule ();
+            module = new AssetImageNullModule ();
          
          //var finalModule:AssetImageModule = module == null ? null : module.GetFinalImageModule ();
          var finalModule:AssetImageModule = module;

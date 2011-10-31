@@ -102,6 +102,8 @@ package editor {
    import editor.entity.EntityVectorShapeTextButton;
    import editor.entity.EntityVectorShapeGravityController;
    
+   import editor.entity.EntityImageModuleShape;
+   
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointDistance;
    import editor.entity.EntityJointHinge;
@@ -996,6 +998,8 @@ package editor {
       public var mButtonCreatePolylineUninfected:Button;
       public var mButtonCreatePolylineDontinfect:Button;
       
+      public var mButtonCreateImageModuleEntity:Button;
+      
       public var mButtonCreateJointHinge:Button;
       public var mButtonCreateJointSlider:Button;
       public var mButtonCreateJointDistance:Button;
@@ -1173,7 +1177,13 @@ package editor {
             case mButtonCreatePolyline:
                SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Unknown,Define.ColorStaticObject, true ) );
                break;
-               
+         
+         // image module
+         
+            case mButtonCreateImageModuleEntity:
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateImageModuleShape));
+               break;
+         
          // joints
             
             case mButtonCreateJointHinge:
@@ -3535,9 +3545,27 @@ package editor {
          }
       }
       
+      public function CreateImageModuleShape (options:Object = null):EntityImageModuleShape
+      {
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
+         {
+            return null;
+         }
+         else
+         {
+            var imageModule:EntityImageModuleShape = mEditorWorld.CreateEntityImageModuleShape ();
+            if (imageModule == null)
+               return null;
+            
+            SetTheOnlySelectedEntity (imageModule);
+            
+            return imageModule;
+         }
+      }
+      
       public function CreateGravityController (options:Object = null):EntityVectorShapeGravityController
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3561,7 +3589,7 @@ package editor {
       
       public function CreateEntityUtilityCamera (options:Object = null):EntityUtilityCamera
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3579,7 +3607,7 @@ package editor {
       
       public function CreateEntityUtilityPowerSource (options:Object = null):EntityUtilityPowerSource
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3599,7 +3627,7 @@ package editor {
       
       public function CreateEntityCondition (options:Object = null):EntityBasicCondition
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3617,7 +3645,7 @@ package editor {
       
       public function CreateEntityConditionDoor (options:Object = null):EntityConditionDoor
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3635,7 +3663,7 @@ package editor {
       
       public function CreateEntityTask (options:Object = null):EntityTask
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3653,7 +3681,7 @@ package editor {
       
       public function CreateEntityInputEntityAssigner (options:Object = null):EntityInputEntityAssigner
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityAssigner).SetInternalComponentsVisible (true);
@@ -3673,7 +3701,7 @@ package editor {
       
       public function CreateEntityInputEntityPairAssigner (options:Object = null):EntityInputEntityPairAssigner
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityPairAssigner).SetInternalComponentsVisible (true);
@@ -3691,7 +3719,7 @@ package editor {
       
       public function CreateEntityInputEntityRegionSelector (options:Object = null):EntityInputEntityRegionSelector
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityRegionSelector).SetInternalComponentsVisible (true);

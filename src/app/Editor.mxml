@@ -267,7 +267,8 @@
                         <mx:Spacer width="100%"/>
                      </mx:HBox>
                      -->
-                     <mx:Spacer height="100%"/>
+                     <mx:Spacer height="7"/>
+                     <mx:Button id="Button_CreateImageModuleEntity" label="" width="100%" alpha="0" height="100%" toolTip="Create Image Module Entity" focusEnabled="false" fontSize="8" toggle="true" cornerRadius="0" />
                   </mx:Box>
                   <mx:Box icon="@Embed('res/create/create-panel-trigger.png')" toolTip="Trigger Components" direction="vertical" borderStyle="solid" width="83" height="100%"
                            paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
@@ -603,6 +604,8 @@
                MainView.mButtonCreatePolylineUninfected     = Button_CreatePolyline_Uninfected;
                MainView.mButtonCreatePolylineDontinfect     = Button_CreatePolyline_Dontinfect;
                
+               MainView.mButtonCreateImageModuleEntity = Button_CreateImageModuleEntity;
+               
                MainView.mButtonCreateJointHinge  = Button_CreateJoint_Hinge
                MainView.mButtonCreateJointSlider = Button_CreateJoint_Slider;
                MainView.mButtonCreateJointDistance = Button_CreateJoint_Distance;
@@ -685,6 +688,8 @@
                Button_CreatePolyline_Infected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreatePolyline_Uninfected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreatePolyline_Dontinfect.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               
+               Button_CreateImageModuleEntity.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
                Button_CreateJoint_Hinge.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Slider.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);

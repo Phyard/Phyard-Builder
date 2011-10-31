@@ -71,6 +71,16 @@ package editor.image {
          return mAssetImageModuleManager;
       }
       
+      override public function Destroy ():void
+      {
+         super.Destroy ();
+         
+         if (mCurrentAssetImageModule == this)
+         {
+            SetCurrentModule (null);
+         }
+      }
+      
 //=============================================================
 //   
 //=============================================================

@@ -376,7 +376,7 @@ package common {
       public static const EntityType_LogicInputEntityPairFilter:int = 218; // from v1.56
       
       // from v1.07, folloing functions should only be used in packaging./ loading
-      // they should NOT used in player pacakge, use EntityShape.mPhysicsShapePotentially instead
+      // they should NOT used in player pacakge, use player.EntityShape.mPhysicsShapePotentially instead
       
       public static function IsBasicShapeEntity (entityType:int):Boolean
       {

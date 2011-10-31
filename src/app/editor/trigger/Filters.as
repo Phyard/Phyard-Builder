@@ -14,7 +14,7 @@ package editor.trigger {
       
       public static function IsPhysicsShapeEntity (entity:Entity):Boolean
       {
-         var shape:EntityVectorShape =  entity as EntityVectorShape;
+         var shape:EntityShape =  entity as EntityShape;
          
          return shape != null && shape.IsBasicShapeEntity () && shape.IsPhysicsEnabled ();
       }
@@ -31,19 +31,19 @@ package editor.trigger {
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sVisualEntityClasses:Array = [
-                  EntityVectorShape,
+                  EntityShape,
                   EntityJoint,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sMoveableEntityClasses:Array = [
-                  EntityVectorShape,
+                  EntityShape,
                   EntityUtilityCamera,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sShapeEntityClasses:Array = [
-                  EntityVectorShape,
+                  EntityShape,
                   EntityUtilityCamera, // appended from v1.55
             ];
       

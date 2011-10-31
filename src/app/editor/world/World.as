@@ -20,6 +20,8 @@ package editor.world {
    import editor.entity.EntityVectorShapeText;
    import editor.entity.EntityVectorShapeTextButton;
    import editor.entity.EntityVectorShapeGravityController;
+   
+   import editor.entity.EntityImageModuleShape;
 
    import editor.entity.EntityUtility;
    import editor.entity.EntityUtilityCamera;
@@ -906,6 +908,19 @@ package editor.world {
          polyline.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
 
          return polyline;
+      }
+      
+      public function CreateEntityImageModuleShape ():EntityImageModuleShape
+      {  
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+
+         var imageModule:EntityImageModuleShape = new EntityImageModuleShape (this);
+         addChild (imageModule);
+
+         imageModule.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
+
+         return imageModule;
       }
 
       public function CreateEntityJointDistance ():EntityJointDistance

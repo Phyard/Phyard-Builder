@@ -7,6 +7,9 @@ package player.design
    import player.trigger.VariableInstance;
    import player.trigger.FunctionDefinition_Custom;
    
+   import player.module.*;
+   import player.image.*;
+   
    import com.tapirgames.util.RandomNumberGenerator;
    import com.tapirgames.util.MersenneTwisterRNG;
    
@@ -15,6 +18,9 @@ package player.design
    
    import common.TriggerFormatHelper2;
    
+   import common.shape.*;
+   
+   import common.Transform2D;
    import common.Define;
    
    public class Global
@@ -44,7 +50,12 @@ package player.design
       
       public static var mCustomFunctionDefinitions:Array;
       
-   // callbacks
+      public static var mImageBitmaps:Array; //
+      public static var mImageBitmapDivisions:Array; //
+      public static var mAssembledModules:Array;
+      public static var mSequencedModules:Array;
+      
+   // callbacks for viewer
       
       public static var RestartPlay:Function;
       public static var IsPlaying:Function;
@@ -81,6 +92,13 @@ package player.design
          mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null);
          mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null);
          
+         //
+         mImageBitmaps         = null;
+         mImageBitmapDivisions = null;
+         mAssembledModules     = null;
+         mSequencedModules     = null;
+         
+         //
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
          
          //
@@ -224,6 +242,212 @@ package player.design
             return null;
          
          return mCustomFunctionDefinitions [functionId] as FunctionDefinition_Custom;
+      }
+      
+      public static function CreateImageModules (imageDefines:Array, pureImageModuleDefines:Array, assembledModuleDefines:Array, sequencedModuleDefines:Array):void
+      {
+         mImageBitmaps         = new Array (imageDefines.length);
+         mImageBitmapDivisions = new Array (pureImageModuleDefines.length);
+         mAssembledModules     = new Array (assembledModuleDefines.length);
+         mSequencedModules     = new Array (sequencedModuleDefines.length);
+         
+         for (var imageId:int = 0; imageId < imageDefines.length; ++ imageId)
+         {
+            var imageDefine:Object = imageDefines [imageId];
+            
+            //imageDefine.mName
+            var image:ImageBitmap = new ImageBitmap ();
+            image.SetFileData (imageDefine.mFileData, OnLoadImageDone, OnLoadImageError);
+            
+            mImageBitmaps [imageId] = image;
+         }
+
+         for (var divisionId:int = 0; divisionId < pureImageModuleDefines.length; ++ divisionId)
+         {
+            var divisionDefine:Object = pureImageModuleDefines [divisionId];
+            
+            var imageDivision:ImageBitmapDivision = new ImageBitmapDivision (GetImageModuleByGlobalIndex (divisionDefine.mImageIndex) as ImageBitmap, 
+                                                    divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom);
+            
+            mImageBitmapDivisions [divisionId] = imageDivision;
+         }
+
+         var assembledModuleId:int;
+         for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
+         {
+            mAssembledModules [assembledModuleId] = new AssembledModule ();
+         }
+
+         var sequencedModuleId:int;
+         for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
+         {
+            mSequencedModules [sequencedModuleId] = new SequencedModule ();
+         }
+
+         for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
+         {
+            var assembledModuleDefine:Object = assembledModuleDefines [assembledModuleId];
+
+            var moduleParts:Array = CreateModulePartsOrSequences (assembledModuleDefine.mModulePartDefines, false);
+            
+            (mAssembledModules [assembledModuleId] as AssembledModule).SetModuleParts (moduleParts);
+         }
+
+         for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
+         {
+            var sequencedModuleDefine:Object = sequencedModuleDefines [sequencedModuleId];
+
+            var moduleSequences:Array = CreateModulePartsOrSequences (sequencedModuleDefine.mModuleSequenceDefines, true);
+            
+            (mSequencedModules [sequencedModuleId] as SequencedModule).SetModuleSequences (moduleSequences);
+            //sequencedModuleDefine.mIsLooped
+         }
+      }
+      
+      protected static function CreateModulePartsOrSequences (moduleInstanceDefines:Array, forSequencedModule:Boolean):Array
+      {
+         var modulePartsOrSequences:Array = new Array (moduleInstanceDefines.length);
+         
+         for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
+         {
+            var moduleInstanceDefine:Object = moduleInstanceDefines [miId];
+            
+            var module:Module = GetModuleFromDefine (moduleInstanceDefine);
+            var transform:Transform2D = new Transform2D (moduleInstanceDefine.mPosX, moduleInstanceDefine.mPosY, 
+                                                         moduleInstanceDefine.mScale, moduleInstanceDefine.mIsFlipped != 0, moduleInstanceDefine.mRotation);
+            
+            var modulePart:ModulePart;
+            if (forSequencedModule)
+            {
+               modulePartsOrSequences [miId] = new ModuleSequence (module, transform, moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha, 
+                                                                   moduleInstanceDefine.mModuleDuration);
+            }
+            else
+            {
+               modulePartsOrSequences [miId] = new ModulePart (module, transform, moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha);
+            }
+         }
+         
+         return modulePartsOrSequences;
+      }
+      
+      protected static function GetModuleFromDefine (moduleInstanceDefine:Object):Module
+      {
+         var module:Module = null;
+         
+         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            var vectorShape:VectorShape = null;
+            
+            if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               var pathShape:VectorShapePath = null;
+               
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
+               {
+                  var polylineShape:VectorShapePolyline = new VectorShapePolylineForPlaying ();
+                  polylineShape.SetLocalVertexPoints (moduleInstanceDefine.mPolyLocalPoints);
+                  
+                  vectorShape = pathShape = polylineShape;
+               }
+               
+               if (pathShape != null)
+               {
+                  pathShape.SetPathThickness (moduleInstanceDefine.mShapePathThickness);
+               }
+            }
+            else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               var areaShape:VectorShapeArea = null;
+               
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
+               {
+                  var circleShape:VectorShapeCircle = new VectorShapeCircleForPlaying ();
+                  circleShape.SetRadius (moduleInstanceDefine.mCircleRadius);
+                  circleShape.SetAppearanceType (moduleInstanceDefine.mCircleAppearacneType);
+                  
+                  vectorShape = areaShape = circleShape;
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
+               {
+                  var rectShape:VectorShapeRectangle = new VectorShapeRectangleForPlaying ();
+                  rectShape.SetHalfWidth  (moduleInstanceDefine.mRectHalfWidth);
+                  rectShape.SetHalfHeight (moduleInstanceDefine.mRectHalfHeight);
+                  
+                  vectorShape = areaShape = rectShape;
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
+               {
+                  var polygonShape:VectorShapePolygon = new VectorShapePolygonForPlaying ();
+                  polygonShape.SetLocalVertexPoints (moduleInstanceDefine.mPolyLocalPoints);
+                  
+                  vectorShape = areaShape = polygonShape;
+               }
+               
+               if (areaShape != null)
+               {
+                  // ...
+               }
+            }
+            
+            if (vectorShape != null)
+            {
+               vectorShape.SetAttributeBits (moduleInstanceDefine.mShapeAttributeBits);
+               vectorShape.SetBodyOpacityAndColor (moduleInstanceDefine.mShapeBodyOpacityAndColor);
+               
+               return new ImageVector (vectorShape as VectorShapeForPlaying);
+            }
+         }
+         else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            module = GetImageModuleByGlobalIndex (moduleInstanceDefine.mModuleIndex);
+         }
+         else // ...
+         {
+         }
+         
+         if (module == null)
+            module = new Module ();
+         
+         return module;
+      }
+      
+      protected static function OnLoadImageDone (image:ImageBitmap):void
+      {
+         //build correspoding divisions
+         
+         //if all iamges are laoded, send OnLoadDone event to viewer
+      }
+      
+      protected static function OnLoadImageError (image:ImageBitmap):void
+      {
+         //send OnLoadError event to viewer
+      }
+      
+      public static function GetImageModuleByGlobalIndex (moduleId:int):Module
+      {
+         if (moduleId < 0)
+            return null;
+         
+         if (moduleId < mImageBitmaps.length)
+            return mImageBitmaps [moduleId] as Module;
+         
+         moduleId -= mImageBitmaps.length;
+         
+         if (moduleId < mImageBitmapDivisions.length)
+            return mImageBitmapDivisions [moduleId] as Module;
+         
+         moduleId -= mImageBitmapDivisions.length;
+         
+         if (moduleId < mAssembledModules.length)
+            return mAssembledModules [moduleId] as Module;
+         
+         moduleId -= mAssembledModules.length;
+         
+         if (moduleId < mSequencedModules.length)
+            return mSequencedModules [moduleId] as Module;
+         
+         return null;
       }
       
       public static function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void

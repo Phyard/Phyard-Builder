@@ -1,12 +1,14 @@
 package player.module {
+   
+   import common.Transform2D;
 
    public class ModuleSequence extends ModulePart
    {
-      protected var mDuration:int;
+      protected var mDuration:int; // may be changed to Number later
       
-      public function ModuleSequence (module:Module, transform:Transform2D, dutation:int)
+      public function ModuleSequence (module:Module, transform:Transform2D, visible:Boolean, alpha:Number, duration:int)
       {
-         super (module, transform);
+         super (module, transform, visible, alpha);
          
          mDuration = duration;
       }

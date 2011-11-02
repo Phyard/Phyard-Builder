@@ -13,7 +13,7 @@ package player.image
       {
       }
 
-      function BuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      public function BuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
       {
       }
    }

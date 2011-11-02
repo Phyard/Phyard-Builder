@@ -14,12 +14,24 @@ package player.module {
          return new ModuleInstance (this); // some subclasses need to override this
       }
       
-      public function BuildAppearance (container:Sprite, transform:Transform2D):void
+      public function GetNumFrames ():int
+      {
+         return 1; // sequenced module will override it
+      }
+      
+      public function GetFrameDuration (frameIndex:int):int
+      {
+         return 0; // 0 means for ever, sequenced module will override it
+      }
+      
+      // frameIndex should be always 0 for non-sequenced modules
+      public function BuildAppearance (frameIndex:int, container:Sprite, transform:Transform2D):void
       {
          // to override
       }
       
-      public function BuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      // frameIndex should be always 0 for non-sequenced modules
+      public function BuildPhysicsProxy (frameIndex:int, physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
       {
          // to override
       }

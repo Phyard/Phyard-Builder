@@ -10,26 +10,41 @@ package player.module {
    {
       protected var mModule:Module;
          // must NOT be null
+         
+      protected var mFrameIndex:int = 0;
+      protected var mFrameStep:int = 0;
+      protected var mNumLoops:int = 0;
       
       public function ModuleInstance (module:Module)
       {
          mModule = module;
       }
       
-      // return if needs ot not to call BuildAppearance and BuildPhysicsProxy
+      // return needs call BuildCurrentFrame or not
       public function Step ():Boolean
       {
+         var frameDutation:int = mModule.GetFrameDuration (mFrameIndex);
+         
+         ++ mFrameStep;
+         if (frameDutation > 0 && mFrameStep >= frameDutation)
+         {
+            if (mFrameIndex ++ >= mModule.GetNumFrames ())
+               mFrameIndex = 0;
+            
+            return true;
+         }
+         
          return false;
       }
       
-      public function BuildAppearance (container:Sprite, transform:Transform2D):void
+      public function RebuildAppearance (container:Sprite, transform:Transform2D):void
       {
-         mModule.BuildAppearance (container, transform);
+         mModule.BuildAppearance (mFrameIndex, container, transform);
       }
       
-      public function BuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      public function RebuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
       {
-         mModule.BuildPhysicsProxy (physicsBodyProxy, transform);
+         mModule.BuildPhysicsProxy (mFrameIndex, physicsBodyProxy, transform);
       }
    }
 }

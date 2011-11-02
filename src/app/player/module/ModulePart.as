@@ -1,4 +1,6 @@
 package player.module {
+   
+   import common.Transform2D;
 
    public class ModulePart
    {
@@ -7,14 +9,26 @@ package player.module {
          // 2. must NOT be null
          
       protected var mTransform:Transform2D;
+         // for module sequences, must NOT be null
+         // for module parts, can be null
       
-      public function ModulePart (module:Module, transform:Transform2D)
+      protected var mIsVisible:Boolean = true;
+      protected var mAlpha:Number  = 1.0;
+      
+      public function ModulePart (module:Module, transform:Transform2D, visible:Boolean, alpha:Number)
       {
          mModule = module;
          
          mTransform = transform;
+         
+         mIsVisible = visible;
+         mAlpha = alpha;
       }
       
+      public function GetModule ():Module
+      {
+         return mModule;
+      }
       
       public function GetTransform ():Transform2D
       {

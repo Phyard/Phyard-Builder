@@ -17,12 +17,12 @@ package player.image
          mVectorShape = vectorShape;
       }
       
-      override public function BuildAppearance (container:Sprite, transform:Transform2D):void
+      override public function BuildAppearance (frameIndex:int, container:Sprite, transform:Transform2D):void
       {
          mVectorShape.BuildAppearance (container, transform);
       }
       
-      override public function BuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      override public function BuildPhysicsProxy (frameIndex:int, physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
       {
          mVectorShape.BuildPhysicsProxy (physicsBodyProxy, transform);
       }

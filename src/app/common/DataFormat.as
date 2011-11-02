@@ -3083,96 +3083,6 @@ package common {
 //======================================================================================
 // 
 //======================================================================================
-         
-      public static function WriteModuleInstanceDefinesIntoBinFile (byteArray:ByteArray, moduleInstanceDefines:Array, forSequencedModule:Boolean):void
-      {
-         byteArray.writeShort (moduleInstanceDefines.length);
-         for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
-         {
-            var moduleInstanceDefine:Object = moduleInstanceDefines [miId]; 
-            
-            byteArray.writeFloat (moduleInstanceDefine.mPosX);
-            byteArray.writeFloat (moduleInstanceDefine.mPosY);
-            byteArray.writeFloat (moduleInstanceDefine.mScale);
-            byteArray.writeByte (moduleInstanceDefine.mIsFlipped ? 1 : 0);
-            byteArray.writeFloat (moduleInstanceDefine.mRotation);
-            byteArray.writeByte (moduleInstanceDefine.mVisible ? 1 : 0);
-            byteArray.writeFloat (moduleInstanceDefine.mAlpha);
-            
-            if (forSequencedModule)
-            {
-               byteArray.writeFloat (moduleInstanceDefine.mModuleDuration);
-            }
-            
-            WriteModuleInstanceDefineIntoBinFile (byteArray, moduleInstanceDefine);
-         }
-      }
-      
-      public static function WriteModuleInstanceDefineIntoBinFile (byteArray:ByteArray, moduleInstanceDefine:Object):void
-      {
-         byteArray.writeShort (moduleInstanceDefine.mModuleType);
-         
-         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
-         {
-            byteArray.writeUnsignedInt (moduleInstanceDefine.mShapeAttributeBits);
-            byteArray.writeUnsignedInt (moduleInstanceDefine.mShapeBodyOpacityAndColor);
-            
-            if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
-            {
-               byteArray.writeFloat (moduleInstanceDefine.mShapePathThickness);
-               
-               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
-               {
-                  WriteLocalVerticesIntoBinFile (byteArray, moduleInstanceDefine.mPolyLocalPoints);
-               }
-            }
-            else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
-            {
-               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
-               {
-                  byteArray.writeFloat (moduleInstanceDefine.mCircleRadius);
-                  byteArray.writeByte (moduleInstanceDefine.mCircleAppearacneType);
-               }
-               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
-               {
-                  byteArray.writeFloat (moduleInstanceDefine.mRectHalfWidth);
-                  byteArray.writeFloat (moduleInstanceDefine.mRectHalfHeight);
-               }
-               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
-               {
-                  WriteLocalVerticesIntoBinFile (byteArray, moduleInstanceDefine.mPolyLocalPoints);
-               }
-            }
-         }
-         else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
-         {
-            if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule)
-            {
-               byteArray.writeShort (moduleInstanceDefine.mModuleIndex);
-            }
-         }
-         else // ...
-         {
-         }
-      }
-      
-      public static function WriteLocalVerticesIntoBinFile (byteArray:ByteArray, localPoints:Array):void
-      {
-         if (localPoints == null || localPoints.length == 0)
-         {
-            byteArray.writeShort (0);
-         }
-         else
-         {
-            byteArray.writeShort (localPoints.length);
-            for (var vertexId:int = 0; vertexId < localPoints.length; ++ vertexId)
-            {
-               var point:Point = localPoints [vertexId] as Point;
-               byteArray.writeFloat (point.x);
-               byteArray.writeFloat (point.y);
-            }
-         }
-      }
       
       public static function WorldDefine2ByteArray (worldDefine:WorldDefine):ByteArray
       {
@@ -3297,57 +3207,6 @@ package common {
                
                byteArray.writeShort (pairDefine.mCollisionCategory1Index);
                byteArray.writeShort (pairDefine.mCollisionCategory2Index);
-            }
-         }
-         
-         // modules
-         
-         if (worldDefine.mVersion >= 0x0158)
-         {
-            byteArray.writeShort (worldDefine.mImageDefines.length);
-            for (var imageId:int = 0; imageId < worldDefine.mImageDefines.length; ++ imageId)
-            {
-               var imageDefine:Object = worldDefine.mImageDefines [imageId];
-               
-               byteArray.writeUTF (imageDefine.mName == null ? "" : imageDefine.mName);
-               if (imageDefine.mFileData == null || imageDefine.mFileData.length == 0)
-               {
-                  byteArray.writeInt (0);
-               }
-               else
-               {
-                  byteArray.writeInt (imageDefine.mFileData.length);
-                  byteArray.writeBytes (imageDefine.mFileData, 0, imageDefine.mFileData.length);
-               }
-            }
-
-            byteArray.writeShort (worldDefine.mPureImageModuleDefines.length);
-            for (var divisionId:int = 0; divisionId < worldDefine.mPureImageModuleDefines.length; ++ divisionId)
-            {
-               var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
-
-               byteArray.writeShort (divisionDefine.mImageIndex);
-               byteArray.writeShort (divisionDefine.mLeft);
-               byteArray.writeShort (divisionDefine.mTop);
-               byteArray.writeShort (divisionDefine.mRight);
-               byteArray.writeShort (divisionDefine.mBottom);
-            }
-
-            byteArray.writeShort (worldDefine.mAssembledModuleDefines.length);
-            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
-            {
-               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
-
-               WriteModuleInstanceDefinesIntoBinFile (byteArray, assembledModuleDefine.mModulePartDefines, false);
-            }
-
-            byteArray.writeShort (worldDefine.mSequencedModuleDefines.length);
-            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
-            {
-               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
-
-               byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
-               WriteModuleInstanceDefinesIntoBinFile (byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
             }
          }
          
@@ -3888,8 +3747,149 @@ package common {
             TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mEntityPropertyDefines, true);
          }
          
+         // modules
+         
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            byteArray.writeShort (worldDefine.mImageDefines.length);
+            for (var imageId:int = 0; imageId < worldDefine.mImageDefines.length; ++ imageId)
+            {
+               var imageDefine:Object = worldDefine.mImageDefines [imageId];
+               
+               byteArray.writeUTF (imageDefine.mName == null ? "" : imageDefine.mName);
+               if (imageDefine.mFileData == null || imageDefine.mFileData.length == 0)
+               {
+                  byteArray.writeInt (0);
+               }
+               else
+               {
+                  byteArray.writeInt (imageDefine.mFileData.length);
+                  byteArray.writeBytes (imageDefine.mFileData, 0, imageDefine.mFileData.length);
+               }
+            }
+
+            byteArray.writeShort (worldDefine.mPureImageModuleDefines.length);
+            for (var divisionId:int = 0; divisionId < worldDefine.mPureImageModuleDefines.length; ++ divisionId)
+            {
+               var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
+
+               byteArray.writeShort (divisionDefine.mImageIndex);
+               byteArray.writeShort (divisionDefine.mLeft);
+               byteArray.writeShort (divisionDefine.mTop);
+               byteArray.writeShort (divisionDefine.mRight);
+               byteArray.writeShort (divisionDefine.mBottom);
+            }
+
+            byteArray.writeShort (worldDefine.mAssembledModuleDefines.length);
+            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
+            {
+               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+
+               WriteModuleInstanceDefinesIntoBinFile (byteArray, assembledModuleDefine.mModulePartDefines, false);
+            }
+
+            byteArray.writeShort (worldDefine.mSequencedModuleDefines.length);
+            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
+            {
+               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+
+               byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
+               WriteModuleInstanceDefinesIntoBinFile (byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
+            }
+         }
+         
          // ...
          return byteArray;
+      }
+         
+      public static function WriteModuleInstanceDefinesIntoBinFile (byteArray:ByteArray, moduleInstanceDefines:Array, forSequencedModule:Boolean):void
+      {
+         byteArray.writeShort (moduleInstanceDefines.length);
+         for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
+         {
+            var moduleInstanceDefine:Object = moduleInstanceDefines [miId];
+            
+            byteArray.writeFloat (moduleInstanceDefine.mPosX);
+            byteArray.writeFloat (moduleInstanceDefine.mPosY);
+            byteArray.writeFloat (moduleInstanceDefine.mScale);
+            byteArray.writeByte (moduleInstanceDefine.mIsFlipped ? 1 : 0);
+            byteArray.writeFloat (moduleInstanceDefine.mRotation);
+            byteArray.writeByte (moduleInstanceDefine.mVisible ? 1 : 0);
+            byteArray.writeFloat (moduleInstanceDefine.mAlpha);
+            
+            if (forSequencedModule)
+            {
+               byteArray.writeFloat (moduleInstanceDefine.mModuleDuration);
+            }
+            
+            WriteModuleInstanceDefineIntoBinFile (byteArray, moduleInstanceDefine);
+         }
+      }
+      
+      public static function WriteModuleInstanceDefineIntoBinFile (byteArray:ByteArray, moduleInstanceDefine:Object):void
+      {
+         byteArray.writeShort (moduleInstanceDefine.mModuleType);
+         
+         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            byteArray.writeUnsignedInt (moduleInstanceDefine.mShapeAttributeBits);
+            byteArray.writeUnsignedInt (moduleInstanceDefine.mShapeBodyOpacityAndColor);
+            
+            if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               byteArray.writeFloat (moduleInstanceDefine.mShapePathThickness);
+               
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
+               {
+                  WriteLocalVerticesIntoBinFile (byteArray, moduleInstanceDefine.mPolyLocalPoints);
+               }
+            }
+            else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
+               {
+                  byteArray.writeFloat (moduleInstanceDefine.mCircleRadius);
+                  byteArray.writeByte (moduleInstanceDefine.mCircleAppearacneType);
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
+               {
+                  byteArray.writeFloat (moduleInstanceDefine.mRectHalfWidth);
+                  byteArray.writeFloat (moduleInstanceDefine.mRectHalfHeight);
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
+               {
+                  WriteLocalVerticesIntoBinFile (byteArray, moduleInstanceDefine.mPolyLocalPoints);
+               }
+            }
+         }
+         else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule)
+            {
+               byteArray.writeShort (moduleInstanceDefine.mModuleIndex);
+            }
+         }
+         else // ...
+         {
+         }
+      }
+      
+      public static function WriteLocalVerticesIntoBinFile (byteArray:ByteArray, localPoints:Array):void
+      {
+         if (localPoints == null || localPoints.length == 0)
+         {
+            byteArray.writeShort (0);
+         }
+         else
+         {
+            byteArray.writeShort (localPoints.length);
+            for (var vertexId:int = 0; vertexId < localPoints.length; ++ vertexId)
+            {
+               var point:Point = localPoints [vertexId] as Point;
+               byteArray.writeFloat (point.x);
+               byteArray.writeFloat (point.y);
+            }
+         }
       }
       
       public static function WriteShortArrayIntoBinFile (shortArray:Array, binFile:ByteArray):void
@@ -3974,7 +3974,9 @@ package common {
          return enStr;
       }
 
+//====================================================================================================================
 //==================================== new playcode with base64 ======================================================
+//====================================================================================================================
 
       public static function WorldDefine2PlayCode_Base64 (worldDefine:WorldDefine):String
       {

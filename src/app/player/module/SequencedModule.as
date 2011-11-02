@@ -11,22 +11,21 @@ package player.module {
       protected var mModuleSequences:Array;
          // must NOT be null
       
-      public function SequencedModule (moduleSequences:Array)
+      public function SequencedModule ()
+      {
+      }
+      
+      public function SetModuleSequences (moduleSequences:Array):void
       {
          mModuleSequences = moduleSequences;
       }
       
-      override public function CreateInstance ():ModuleInstance
-      {
-         return new SequencedModuleInstance (this);
-      }
-      
-      public function GetNumFrames ():int
+      override public function GetNumFrames ():int
       {
          return mModuleSequences.length;
       }
       
-      public finction GetFrameDuration (frameIndex:int):int
+      override public function GetFrameDuration (frameIndex:int):int
       {
          if (frameIndex < 0 || frameIndex >= mModuleSequences.length)
             return 0;
@@ -34,23 +33,21 @@ package player.module {
          return (mModuleSequences [frameIndex] as ModuleSequence).GetDuration ();
       }
       
-      public function BuildFrameAppearance (frameIndex:int, container:Sprite, transform:Transform2D):void
+      override public function BuildAppearance (frameIndex:int, container:Sprite, transform:Transform2D):void
       {
          if (frameIndex >= 0 && frameIndex < mModuleSequences.length)
          {
-            var moudlePart:ModulePart = mModuleSequences [frameIndex] as ModulePart;
-            var accTranform:Transform2D = transform == null ? transform.Clone () : Transform2D.CombineTransforms (transform, moudlePart.GetTransform ());
-            moudlePart.BuildAppearance (container, transform);
+            var moudlePart:ModuleSequence = mModuleSequences [frameIndex] as ModuleSequence;
+            moudlePart.GetModule ().BuildAppearance (0, container, Transform2D.CombineTransforms (transform, moudlePart.GetTransform ()));
          }
       }
       
-      public function BuildFramePhysicsProxy (frameIndex:int, physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      override public function BuildPhysicsProxy (frameIndex:int, physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
       {
          if (frameIndex >= 0 && frameIndex < mModuleSequences.length)
          {
-            var moudlePart:ModulePart = mModuleSequences [frameIndex] as ModulePart;
-            var accTranform:Transform2D = transform == null ? transform.Clone () : Transform2D.CombineTransforms (transform, moudlePart.GetTransform ());
-            moudlePart..GetModule ().BuildPhysicsProxy (physicsBodyProxy, transform);
+            var moudlePart:ModuleSequence = mModuleSequences [frameIndex] as ModuleSequence;
+            moudlePart..GetModule ().BuildPhysicsProxy (0, physicsBodyProxy, Transform2D.CombineTransforms (transform, moudlePart.GetTransform ()));
          }
       }
    }

@@ -386,6 +386,13 @@ package common {
                }
             }
          }
+         
+      // modules
+         
+         if (isLoaingFromStretch)
+         {
+            
+         }
 
    //*********************************************************************************************************************************
    // create
@@ -1485,107 +1492,6 @@ package common {
 //===================================================================================
 // 
 //===================================================================================
-         
-      public static function ReadModuleInstanceDefinesFromBinFile (byteArray:ByteArray, forSequencedModule:Boolean):Array
-      {
-         var numModuleInstances:int = byteArray.readShort ();
-         var moduleInstanceDefines:Array= new Array (numModuleInstances);
-         
-         for (var miId:int = 0; miId < numModuleInstances; ++ miId)
-         {
-            var moduleInstanceDefine:Object = moduleInstanceDefines [miId]; 
-            
-            moduleInstanceDefine.mPosX = byteArray.readFloat ();
-            moduleInstanceDefine.mPosY = byteArray.readFloat ();
-            moduleInstanceDefine.mScale = byteArray.readFloat ();
-            moduleInstanceDefine.mIsFlipped = byteArray.readByte () != 0;
-            moduleInstanceDefine.mRotation = byteArray.readFloat ();
-            moduleInstanceDefine.mVisible = byteArray.readByte () != 0;
-            moduleInstanceDefine.mAlpha = byteArray.readFloat ();
-            
-            if (forSequencedModule)
-            {
-               moduleInstanceDefine.mModuleDuration = byteArray.readFloat ();
-            }
-            
-            ReadModuleInstanceDefineFromBinFile (byteArray, moduleInstanceDefine);
-            
-            moduleInstanceDefines [miId] = moduleInstanceDefine;
-         }
-         
-         return moduleInstanceDefines;
-      }
-      
-      public static function ReadModuleInstanceDefineFromBinFile (byteArray:ByteArray, moduleInstanceDefine:Object):void
-      {
-         moduleInstanceDefine.mModuleType = byteArray.readShort ();
-         
-         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
-         {
-            moduleInstanceDefine.mShapeAttributeBits = byteArray.readUnsignedInt ();
-            moduleInstanceDefine.mShapeBodyOpacityAndColor = byteArray.readUnsignedInt ();
-            
-            if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
-            {
-               moduleInstanceDefine.mShapePathThickness = byteArray.readFloat ();
-               
-               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
-               {
-                  moduleInstanceDefine.mPolyLocalPoints = ReadLocalVerticesFromBinFile (byteArray);
-               }
-            }
-            else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
-            {
-               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
-               {
-                  moduleInstanceDefine.mCircleRadius = byteArray.readFloat ();
-                  moduleInstanceDefine.mCircleAppearacneType = byteArray.readByte ();
-               }
-               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
-               {
-                  moduleInstanceDefine.mRectHalfWidth = byteArray.readFloat ();
-                  moduleInstanceDefine.mRectHalfHeight = byteArray.readFloat ();
-               }
-               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
-               {
-                  moduleInstanceDefine.mPolyLocalPoints = ReadLocalVerticesFromBinFile (byteArray);
-               }
-            }
-         }
-         else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
-         {
-            if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule)
-            {
-               moduleInstanceDefine.mModuleIndex = byteArray.readShort ();
-            }
-         }
-         else // ...
-         {
-         }
-      }
-      
-      public static function ReadLocalVerticesFromBinFile (byteArray:ByteArray):Array
-      {
-         var numPoints:int = byteArray.readShort ();
-         var localPoints:Array = new Array (numPoints);
-         
-         if (numPoints == 0)
-         {
-         }
-         else
-         {
-            for (var vertexId:int = 0; vertexId < localPoints.length; ++ vertexId)
-            {
-               var point:Point = new Point ();
-               localPoints [vertexId] = point;
-               
-               point.x = byteArray.readFloat ();
-               point.y = byteArray.readFloat ();
-            }
-         }
-         
-         return localPoints;
-      }
 
       public static function ByteArray2WorldDefine (byteArray:ByteArray):WorldDefine
       {
@@ -1714,68 +1620,6 @@ package common {
                pairDefine.mCollisionCategory2Index = byteArray.readShort ();
 
                worldDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
-            }
-         }
-         
-         // modules
-         
-         if (worldDefine.mVersion >= 0x0158)
-         {
-            var numImages:int = byteArray.readShort ();
-            for (var imageId:int = 0; imageId < numImages; ++ imageId)
-            {
-               var imageDefine:Object = new Object ();
-               
-               imageDefine.mName = byteArray.readUTF ();
-               
-               var fileSize:int = byteArray.readInt ();
-               if (fileSize == 0)
-               {
-                  imageDefine.mFileData = null;
-               }
-               else
-               {
-                  imageDefine.mFileData = new ByteArray ();
-                  imageDefine.mFileData.length = fileSize;
-                  byteArray.readBytes (imageDefine.mFileData, 0, imageDefine.mFileData.length);
-               }
-               
-               worldDefine.mImageDefines.push (imageDefine);
-            }
-
-            var numDivisons:int = byteArray.readShort ();
-            for (var divisionId:int = 0; divisionId < numDivisons; ++ divisionId)
-            {
-               var divisionDefine:Object = new Object ();
-
-               divisionDefine.mImageIndex = byteArray.readShort ();
-               divisionDefine.mLeft = byteArray.readShort ();
-               divisionDefine.mTop = byteArray.readShort ();
-               divisionDefine.mRight = byteArray.readShort ();
-               divisionDefine.mBottom = byteArray.readShort ();
-               
-               worldDefine.mPureImageModuleDefines.push (divisionDefine);
-            }
-
-            var numAssembledModules:int = byteArray.readShort ();
-            for (var assembledModuleId:int = 0; assembledModuleId < numAssembledModules; ++ assembledModuleId)
-            {
-               var assembledModuleDefine:Object = new Object ();
-
-               assembledModuleDefine.mModulePartDefines = ReadModuleInstanceDefinesFromBinFile (byteArray, false);
-               
-               worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
-            }
-
-            var numSequencedModules:int = byteArray.readShort ();
-            for (var sequencedModuleId:int = 0; sequencedModuleId < numSequencedModules; ++ sequencedModuleId)
-            {
-               var sequencedModuleDefine:Object = new Object ();
-
-               sequencedModuleDefine.mIsLooped = byteArray.readByte () != 0;
-               sequencedModuleDefine.mModuleSequenceDefines = ReadModuleInstanceDefinesFromBinFile (byteArray, true);
-               
-               worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
             }
          }
          
@@ -2324,9 +2168,172 @@ package common {
             }
             TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mEntityPropertyDefines, true);
          }
+         
+         // modules
+         
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            var numImages:int = byteArray.readShort ();
+            for (var imageId:int = 0; imageId < numImages; ++ imageId)
+            {
+               var imageDefine:Object = new Object ();
+               
+               imageDefine.mName = byteArray.readUTF ();
+               
+               var fileSize:int = byteArray.readInt ();
+               if (fileSize == 0)
+               {
+                  imageDefine.mFileData = null;
+               }
+               else
+               {
+                  imageDefine.mFileData = new ByteArray ();
+                  imageDefine.mFileData.length = fileSize;
+                  byteArray.readBytes (imageDefine.mFileData, 0, imageDefine.mFileData.length);
+               }
+               
+               worldDefine.mImageDefines.push (imageDefine);
+            }
+
+            var numDivisons:int = byteArray.readShort ();
+            for (var divisionId:int = 0; divisionId < numDivisons; ++ divisionId)
+            {
+               var divisionDefine:Object = new Object ();
+
+               divisionDefine.mImageIndex = byteArray.readShort ();
+               divisionDefine.mLeft = byteArray.readShort ();
+               divisionDefine.mTop = byteArray.readShort ();
+               divisionDefine.mRight = byteArray.readShort ();
+               divisionDefine.mBottom = byteArray.readShort ();
+               
+               worldDefine.mPureImageModuleDefines.push (divisionDefine);
+            }
+
+            var numAssembledModules:int = byteArray.readShort ();
+            for (var assembledModuleId:int = 0; assembledModuleId < numAssembledModules; ++ assembledModuleId)
+            {
+               var assembledModuleDefine:Object = new Object ();
+
+               assembledModuleDefine.mModulePartDefines = ReadModuleInstanceDefinesFromBinFile (byteArray, false);
+               
+               worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
+            }
+
+            var numSequencedModules:int = byteArray.readShort ();
+            for (var sequencedModuleId:int = 0; sequencedModuleId < numSequencedModules; ++ sequencedModuleId)
+            {
+               var sequencedModuleDefine:Object = new Object ();
+
+               sequencedModuleDefine.mIsLooped = byteArray.readByte () != 0;
+               sequencedModuleDefine.mModuleSequenceDefines = ReadModuleInstanceDefinesFromBinFile (byteArray, true);
+               
+               worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
+            }
+         }
 
          // ...
          return worldDefine;
+      }
+         
+      public static function ReadModuleInstanceDefinesFromBinFile (byteArray:ByteArray, forSequencedModule:Boolean):Array
+      {
+         var numModuleInstances:int = byteArray.readShort ();
+         var moduleInstanceDefines:Array= new Array (numModuleInstances);
+         
+         for (var miId:int = 0; miId < numModuleInstances; ++ miId)
+         {
+            var moduleInstanceDefine:Object = moduleInstanceDefines [miId]; 
+            
+            moduleInstanceDefine.mPosX = byteArray.readFloat ();
+            moduleInstanceDefine.mPosY = byteArray.readFloat ();
+            moduleInstanceDefine.mScale = byteArray.readFloat ();
+            moduleInstanceDefine.mIsFlipped = byteArray.readByte () != 0;
+            moduleInstanceDefine.mRotation = byteArray.readFloat ();
+            moduleInstanceDefine.mVisible = byteArray.readByte () != 0;
+            moduleInstanceDefine.mAlpha = byteArray.readFloat ();
+            
+            if (forSequencedModule)
+            {
+               moduleInstanceDefine.mModuleDuration = byteArray.readFloat ();
+            }
+            
+            ReadModuleInstanceDefineFromBinFile (byteArray, moduleInstanceDefine);
+            
+            moduleInstanceDefines [miId] = moduleInstanceDefine;
+         }
+         
+         return moduleInstanceDefines;
+      }
+      
+      public static function ReadModuleInstanceDefineFromBinFile (byteArray:ByteArray, moduleInstanceDefine:Object):void
+      {
+         moduleInstanceDefine.mModuleType = byteArray.readShort ();
+         
+         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            moduleInstanceDefine.mShapeAttributeBits = byteArray.readUnsignedInt ();
+            moduleInstanceDefine.mShapeBodyOpacityAndColor = byteArray.readUnsignedInt ();
+            
+            if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               moduleInstanceDefine.mShapePathThickness = byteArray.readFloat ();
+               
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
+               {
+                  moduleInstanceDefine.mPolyLocalPoints = ReadLocalVerticesFromBinFile (byteArray);
+               }
+            }
+            else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
+               {
+                  moduleInstanceDefine.mCircleRadius = byteArray.readFloat ();
+                  moduleInstanceDefine.mCircleAppearacneType = byteArray.readByte ();
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
+               {
+                  moduleInstanceDefine.mRectHalfWidth = byteArray.readFloat ();
+                  moduleInstanceDefine.mRectHalfHeight = byteArray.readFloat ();
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
+               {
+                  moduleInstanceDefine.mPolyLocalPoints = ReadLocalVerticesFromBinFile (byteArray);
+               }
+            }
+         }
+         else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule)
+            {
+               moduleInstanceDefine.mModuleIndex = byteArray.readShort ();
+            }
+         }
+         else // ...
+         {
+         }
+      }
+      
+      public static function ReadLocalVerticesFromBinFile (byteArray:ByteArray):Array
+      {
+         var numPoints:int = byteArray.readShort ();
+         var localPoints:Array = new Array (numPoints);
+         
+         if (numPoints == 0)
+         {
+         }
+         else
+         {
+            for (var vertexId:int = 0; vertexId < localPoints.length; ++ vertexId)
+            {
+               var point:Point = new Point ();
+               localPoints [vertexId] = point;
+               
+               point.x = byteArray.readFloat ();
+               point.y = byteArray.readFloat ();
+            }
+         }
+         
+         return localPoints;
       }
 
       public static function ReadShortArrayFromBinFile (binFile:ByteArray):Array

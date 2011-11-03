@@ -55,6 +55,8 @@ package plugin
                   
                   SetCacheSystemEvent : world.SetCacheSystemEvent, // from v1.50
                   
+                  GetBuildingStatus : world.GetBuildingStatus, // from v1.58
+                  
                   "" : null
                };
             case "SetUiParams":

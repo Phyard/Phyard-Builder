@@ -93,10 +93,14 @@ package player.design
          mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null);
          
          //
-         mImageBitmaps         = null;
-         mImageBitmapDivisions = null;
+         if (! isRestartLevel)
+         {
+            mImageBitmaps         = null;
+            mImageBitmapDivisions = null;
+         }
          mAssembledModules     = null;
          mSequencedModules     = null;
+         
          
          //
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
@@ -246,37 +250,59 @@ package player.design
       
       public static function CreateImageModules (imageDefines:Array, pureImageModuleDefines:Array, assembledModuleDefines:Array, sequencedModuleDefines:Array):void
       {
-         mImageBitmaps         = new Array (imageDefines.length);
-         mImageBitmapDivisions = new Array (pureImageModuleDefines.length);
-         mAssembledModules     = new Array (assembledModuleDefines.length);
-         mSequencedModules     = new Array (sequencedModuleDefines.length);
+         var needLoadImages:Boolean = false;
+         var imageId:int;
          
-         for (var imageId:int = 0; imageId < imageDefines.length; ++ imageId)
+         if (mImageBitmaps == null)
          {
-            var imageDefine:Object = imageDefines [imageId];
+            needLoadImages = true;
             
-            //imageDefine.mName
-            var image:ImageBitmap = new ImageBitmap ();
-            image.SetFileData (imageDefine.mFileData, OnLoadImageDone, OnLoadImageError);
+            mImageBitmaps         = new Array (imageDefines.length);
             
-            mImageBitmaps [imageId] = image;
+            for (imageId = 0; imageId < imageDefines.length; ++ imageId)
+            {
+               mImageBitmaps [imageId] = new ImageBitmap ();
+            }
          }
 
-         for (var divisionId:int = 0; divisionId < pureImageModuleDefines.length; ++ divisionId)
+         if (mImageBitmapDivisions == null)
          {
-            var divisionDefine:Object = pureImageModuleDefines [divisionId];
-            
-            var imageDivision:ImageBitmapDivision = new ImageBitmapDivision (GetImageModuleByGlobalIndex (divisionDefine.mImageIndex) as ImageBitmap, 
-                                                    divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom);
-            
-            mImageBitmapDivisions [divisionId] = imageDivision;
+            mImageBitmapDivisions = new Array (pureImageModuleDefines.length);
+
+            for (var divisionId:int = 0; divisionId < pureImageModuleDefines.length; ++ divisionId)
+            {
+               var divisionDefine:Object = pureImageModuleDefines [divisionId];
+               
+               var imageDivision:ImageBitmapDivision = new ImageBitmapDivision (mImageBitmaps [divisionDefine.mImageIndex] as ImageBitmap, 
+                                                       divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom);
+               
+               mImageBitmapDivisions [divisionId] = imageDivision;
+            }
          }
+         
+         if (needLoadImages)
+         {
+            for (imageId = 0; imageId < imageDefines.length; ++ imageId)
+            {
+               var imageDefine:Object = imageDefines [imageId];
+               
+               var image:ImageBitmap = mImageBitmaps [imageId] as ImageBitmap;
+               //imageDefine.mName
+               image.SetFileData (imageDefine.mFileData, OnLoadImageDone, OnLoadImageError);
+            }
+         }
+         
+         OnLoadImageDone (null);
+
+         mAssembledModules     = new Array (assembledModuleDefines.length);
 
          var assembledModuleId:int;
          for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
          {
             mAssembledModules [assembledModuleId] = new AssembledModule ();
          }
+
+         mSequencedModules     = new Array (sequencedModuleDefines.length);
 
          var sequencedModuleId:int;
          for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
@@ -414,18 +440,46 @@ package player.design
       
       protected static function OnLoadImageDone (image:ImageBitmap):void
       {
-         //build correspoding divisions
+         var pending:Boolean = false;
          
-         //if all iamges are laoded, send OnLoadDone event to viewer
+         for (var imageId:int = 0; imageId < mImageBitmaps.length; ++ imageId)
+         {
+            var image:ImageBitmap = mImageBitmaps [imageId];
+            var status:int = image.GetStatus ();
+            
+            if (status < 0)
+            {
+               GetCurrentWorld ().SetBuildingStatus (-1);
+               break;
+            }
+            
+            if (status == 0)
+            {
+               pending = true;
+            }
+         }
+         
+         if (pending)
+         {
+            GetCurrentWorld ().SetBuildingStatus (0);
+         }
+         else
+         {
+            GetCurrentWorld ().SetBuildingStatus (1);
+            
+            GetCurrentWorld ().UpdateImageModuleAppearances ();
+         }
       }
       
       protected static function OnLoadImageError (image:ImageBitmap):void
       {
-         //send OnLoadError event to viewer
+         GetCurrentWorld ().SetBuildingStatus (-1);
       }
       
       public static function GetImageModuleByGlobalIndex (moduleId:int):Module
       {
+         // todo: create an Array for better performance
+         
          if (moduleId < 0)
             return null;
          

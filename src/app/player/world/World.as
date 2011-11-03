@@ -243,6 +243,31 @@ package player.world {
 
          addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
       }
+      
+//==============================================================================
+//
+//==============================================================================
+
+      protected var mBuildingStatus:int = 0;
+         // from v1.58
+         // =0 - building
+         // >0 - succeeded
+         // <0 - failed
+      
+      public function GetBuildingStatus ():int
+      {
+         return mBuildingStatus;
+      }
+      
+      public function SetBuildingStatus (status:int):void
+      {
+         mBuildingStatus = status; 
+      }
+      
+      public function UpdateImageModuleAppearances ():void
+      {
+         mEntityList.UpdateImageModuleAppearances ();
+      }
 
 //==============================================================================
 //

@@ -40,21 +40,23 @@ package player.image
          mBitmapData = null;
          
          var sourceBitmapData:BitmapData = mSourceImage.GetBitmapData ();
-         if (sourceBitmapData == null)
-            return;
+         if (sourceBitmapData != null)
+         {
+            var left:int = mLeft < 0 ? 0 : mLeft;
+            var top :int = mTop  < 0 ? 0 : mTop;
+            if (left >= sourceBitmapData.width || top >= sourceBitmapData.height)
+               return;
+            
+            var right :int = mRight  <= sourceBitmapData.width  ? mRight  : sourceBitmapData.width;
+            var bottom:int = mBottom <= sourceBitmapData.height ? mBottom : sourceBitmapData.height;
+            
+            var w:int = right - left;
+            var h:int = bottom - top;
+            mBitmapData = new BitmapData (w, h, true);
+            mBitmapData.copyPixels (sourceBitmapData, new Rectangle (left, top, w, h), new Point (0, 0));
+         }
          
-         var left:int = mLeft < 0 ? 0 : mLeft;
-         var top :int = mTop  < 0 ? 0 : mTop;
-         if (left >= sourceBitmapData.width || top >= sourceBitmapData.height)
-            return;
-         
-         var right :int = mRight  <= sourceBitmapData.width  ? mRight  : sourceBitmapData.width;
-         var bottom:int = mBottom <= sourceBitmapData.height ? mBottom : sourceBitmapData.height;
-         
-         var w:int = right - left;
-         var h:int = bottom - top;
-         mBitmapData = new BitmapData (w, h, true);
-         mBitmapData.copyPixels (sourceBitmapData, new Rectangle (left, top, w, h), new Point (0, 0));
+         mStatus = 1;
       }
    }
 }

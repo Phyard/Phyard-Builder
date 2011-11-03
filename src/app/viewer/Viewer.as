@@ -211,15 +211,16 @@ package viewer {
 //
 //======================================================================
 
-      private static const StateId_None:int = -1;
+      private static const StateId_Unknown:int = -1;
       private static const StateId_ParsingError:int = 0;
       private static const StateId_Loading:int = 1;
       private static const StateId_LoadingError:int = 2;
-      private static const StateId_WaitingPlay:int = 3;
-      private static const StateId_Playing:int = 4;
-      private static const StateId_RunningError:int = 5;
+      private static const StateId_Building:int = 3;
+      private static const StateId_BuildingError:int = 4;
+      private static const StateId_Playing:int = 5;
+      private static const StateId_PlayingError:int = 6;
 
-      private var mStateId:int = StateId_None;
+      private var mStateId:int = StateId_Unknown;
 
       public function Update (event:Event):void
       {
@@ -231,17 +232,30 @@ package viewer {
             case StateId_LoadingError:
                // "Copy Error Message" and "Report Error" in Context Menu
                break;
-            case StateId_WaitingPlay:
-               // Play button / Design info / Phyard logo
-               // In playing, press Home to this screen
+            case StateId_Building:
+               // "Build ..." text on screen
+
+               var buildStatus:int = mWorldDesignProperties.GetBuildingStatus (); 
+               if (buildStatus > 0)
+               {
+                  ChangeState (StateId_Playing);
+               }
+               else if (buildStatus < 0)
+               {
+                  ChangeState (StateId_BuildingError);
+               }
+               
+               break;
+            case StateId_BuildingError:
+               // "Copy Error Message" and "Report Error" in Context Menu
                break;
             case StateId_Playing:
                Step (false);
                break;
-            case StateId_RunningError:
+            case StateId_PlayingError:
                // "Copy Error Message" and "Report Error" in Context Menu
                break;
-            case StateId_None:
+            case StateId_Unknown:
             default:
                break;
          }
@@ -257,11 +271,13 @@ package viewer {
                break;
             case StateId_LoadingError:
                break;
-            case StateId_WaitingPlay:
+            case StateId_Building:
+               break;
+            case StateId_BuildingError:
                break;
             case StateId_Playing:
                break;
-            case StateId_RunningError:
+            case StateId_PlayingError:
                break;
          }
       }
@@ -293,14 +309,7 @@ package viewer {
                mStartRightNow = mParamsFromContainer.mStartRightNow == undefined ? true : mParamsFromContainer.mStartRightNow;
                mWorldPluginDomain = mParamsFromContainer.mWorldDomain;
 
-               if (RebuildPlayerWorld ())
-               {
-                  ChangeState (StateId_Playing);
-               }
-               else
-               {
-                  throw new Error ("RebuildPlayerWorld failed");
-               }
+               ReloadPlayerWorld ();
             }
             else if (mParamsFromUniViewer != null)
             {
@@ -535,30 +544,10 @@ package viewer {
 
       private function OnOnlineLoadWorldPluginCompleted (event:Event):void
       {
-         try
-         {
-            mParamsFromUniViewer.SetLoadingText (null);
-            this.alpha = 1.0;
-
-            if (RebuildPlayerWorld ())
-            {
-               //ChangeState (StateId_WaitingPlay);
-               ChangeState (StateId_Playing);
-            }
-            else
-            {
-               throw new Error ("RebuildPlayerWorld failed");
-            }
-         }
-         catch (error:Error)
-         {
-            TraceError (error);
-
-            ChangeState (StateId_LoadingError);
-
-            if (Compile::Is_Debugging)
-               throw error;
-         }
+         mParamsFromUniViewer.SetLoadingText (null);
+         this.alpha = 1.0;
+         
+         ReloadPlayerWorld ();
       }
 
       private function OnLoadWorldPluginProgress (event:ProgressEvent):void
@@ -611,6 +600,7 @@ package viewer {
          if (mWorldDesignProperties.SetPaused == null)                       mWorldDesignProperties.SetPaused = DummyCallback;
          if (mWorldDesignProperties.SetInteractiveEnabledWhenPaused == null) mWorldDesignProperties.SetInteractiveEnabledWhenPaused = DummyCallback;
          if (mWorldDesignProperties.SetCacheSystemEvent == null)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
+         if (mWorldDesignProperties.GetBuildingStatus == null)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_BuildingStatus;
 
          mPlayBarColor = mPlayerWorld == null ? 0x606060 : mWorldDesignProperties.GetPlayBarColor ();
          mShowPlayBar = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
@@ -658,19 +648,28 @@ package viewer {
             return Define.PlayerUiFlag_ShowPlayBar | Define.PlayerUiFlag_ShowSpeedAdjustor | Define.PlayerUiFlag_ShowHelpButton;
          }
       }
+      
+      // from v1.58
+      // =0 - loading
+      // >0 - succeeded
+      // <0 - failed
+      private function DummyCallback_BuildingStatus ():int
+      {
+         return 1;
+      }
 
 //======================================================================
 //
 //======================================================================
 
-      private function RebuildPlayerWorld (restartLevel:Boolean = false):Boolean
+      private function ReloadPlayerWorld (restartLevel:Boolean = false):void
       {
-      //trace ("RebuildPlayerWorld");
+      //trace ("ReloadPlayerWorld");
+
+         var isFirstTime:Boolean = (mPlayerWorld == null);
 
          try
          {
-            var isFirstTime:Boolean = (mPlayerWorld == null);
-
             if (isFirstTime)
             {
                RetrieveWorldPluginProperties ();
@@ -772,6 +771,8 @@ package viewer {
             {
                if (mStartRightNow) mPlayControlBar.OnClickStart ();
             }
+            
+            ChangeState (StateId_Building);
          }
          catch (error:Error)
          {
@@ -780,10 +781,8 @@ package viewer {
             if (Compile::Is_Debugging)
                throw error;
 
-            return false;
+            ChangeState (StateId_LoadingError);
          }
-
-         return true;
       }
 
 //======================================================================
@@ -860,7 +859,7 @@ package viewer {
                   // todo show dialog: "stop" or "continue";
                   // write log of send message to server
 
-                  ChangeState (StateId_RunningError);
+                  ChangeState (StateId_PlayingError);
                }
 
                if (Compile::Is_Debugging)
@@ -1514,7 +1513,7 @@ package viewer {
 
       private function OnRestart (data:Object = null):void
       {
-         RebuildPlayerWorld (true);
+         ReloadPlayerWorld (true);
 
          if (_onPlayStatusChanged != null)
             _onPlayStatusChanged ();

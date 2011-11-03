@@ -94,7 +94,7 @@ package player.entity {
       
       override public function UpdateAppearance ():void
       {
-         mAppearanceObjectsContainer.visible = mVisible
+         mAppearanceObjectsContainer.visible = mVisible;
          mAppearanceObjectsContainer.alpha = mAlpha; 
          
          if (mNeedRebuildAppearanceObjects)

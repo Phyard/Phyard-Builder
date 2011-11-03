@@ -23,6 +23,10 @@ package player.image
    public class ImageBitmap extends Module
    {
       protected var mBitmapData:BitmapData = null;
+      protected var mStatus:int = 0;
+         // 0  : pending
+         // 1  : ok
+         // -1 : error
       
       public function ImageBitmap ()
       {
@@ -33,13 +37,14 @@ package player.image
          return mBitmapData;
       }
       
-      public function IsValid ():Boolean
+      public function GetStatus ():int
       {
-         return mBitmapData != null;
+         return mStatus;
       }
       
       override public function BuildAppearance (frameIndex:int, container:Sprite, transform:Transform2D):void
       {
+      trace ("  BuildAppearance, mBitmapData= " + mBitmapData + "\n" + new Error ().getStackTrace ());
          if (mBitmapData != null)
          {
             var bitmap:Bitmap = new Bitmap (mBitmapData);
@@ -59,7 +64,11 @@ package player.image
       private var mCallbackOnLoadError:Function = null;
       public function SetFileData (fileData:ByteArray, onLoadDone:Function, onLoadError:Function):void
       {
-         if (fileData != null)
+         if (fileData == null)
+         {
+            onLoadDone (this);
+         }
+         else
          {
             mCallbackOnLoadDone  = onLoadDone;
             mCallbackOnLoadError = onLoadError;
@@ -78,6 +87,9 @@ package player.image
          //var newBitmap:Bitmap = event.target.content as Bitmap;
          var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
          mBitmapData = newBitmap.bitmapData;
+trace ("  OnLoadImageComplete, mBitmapData = " + mBitmapData);
+         
+         mStatus = 1;
          
          if (mCallbackOnLoadDone != null)
             mCallbackOnLoadDone (this);
@@ -88,6 +100,8 @@ package player.image
       
       private function OnLoadImageError (event:Object):void
       {
+         mStatus = -1;
+         
          if (mCallbackOnLoadError != null)
             mCallbackOnLoadError (this);
          

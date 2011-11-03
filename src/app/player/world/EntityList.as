@@ -4,6 +4,8 @@ package player.world {
    import player.entity.EntityBody;
    import player.entity.EntityShape;
    import player.entity.EntityJoint;
+   
+   import player.entity.EntityShapeImageModule;
 
    public class EntityList
    {
@@ -281,6 +283,26 @@ package player.world {
          mIsRemovingLocked = false;
 
          DelayUnregisterEntities ();
+      }
+      
+      internal function UpdateImageModuleAppearances ():void
+      {
+         var entity:Entity = mHead;
+         if (entity != null)
+         {
+            var tail:Entity = mTail;
+
+            while (true)
+            {
+               if (entity is EntityShapeImageModule)
+                  (entity as EntityShapeImageModule).OnModuleappearanceChanged ();
+
+               if (entity == tail)
+                  break;
+
+               entity = entity.mNextEntity;
+            }
+         }
       }
 
       internal function BuildShapePhysics (fromLastMarkedTail:Boolean = false):void

@@ -21,6 +21,8 @@ package common {
    import player.entity.EntityShapePolygon;
    import player.entity.EntityShapePolyline;
 
+   import player.entity.EntityShapeImageModule;
+
    import player.entity.EntityJoint;
    import player.entity.EntityJointHinge;
    import player.entity.EntityJointSlider;
@@ -112,6 +114,12 @@ package common {
                break;
             case Define.EntityType_ShapeGravityController:
                entity = new EntityShape_GravityController (playerWorld);
+               break;
+
+         // module shape
+         
+            case Define.EntityType_ShapeImageModule:
+               entity = new EntityShapeImageModule (playerWorld);
                break;
 
          // basic joints
@@ -391,7 +399,7 @@ package common {
          
          if (isLoaingFromStretch)
          {
-            
+            Global.CreateImageModules (worldDefine.mImageDefines, worldDefine.mPureImageModuleDefines, worldDefine.mAssembledModuleDefines, worldDefine.mSequencedModuleDefines);
          }
 
    //*********************************************************************************************************************************

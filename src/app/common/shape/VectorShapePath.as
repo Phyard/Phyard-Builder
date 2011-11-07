@@ -34,9 +34,9 @@ package common.shape
          else
             mAttributeBits &= ~Flag_RoundEnds;
       }
-      
+
       // thickness
-      
+
       protected var mPathThickness:Number = 1.0;
 
       public function GetPathThickness ():Number
@@ -48,5 +48,22 @@ package common.shape
       {
          mPathThickness = thickness;
       }
+
+//==============================================
+// for playing
+//==============================================
+
+      protected var mPathThicknessInPhysics:Number;
+
+      public function GetPathThicknessInPhysics ():Number
+      {
+         return mPathThicknessInPhysics;
+      }
+
+      public function SetPathThicknessInPhysics (thickness:Number):void
+      {
+         mPathThicknessInPhysics = thickness;
+      }
+
    }
 }

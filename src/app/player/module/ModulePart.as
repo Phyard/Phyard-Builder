@@ -34,5 +34,15 @@ package player.module {
       {
          return mTransform;
       }
+      
+      public function IsVisible ():Boolean
+      {
+         return mIsVisible;
+      }
+      
+      public function GetAlpha ():Number
+      {
+         return mAlpha;
+      }
    }
 }

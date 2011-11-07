@@ -1,6 +1,6 @@
 package player.image
 {
-   import flash.display.Sprite;
+   import common.display.ModuleSprite;
 
    import player.physics.PhysicsProxyBody;
 
@@ -8,7 +8,7 @@ package player.image
 
    public interface VectorShapeForPlaying
    {
-      function BuildAppearance (container:Sprite, transform:Transform2D):void;
+      function BuildAppearance (moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void;
 
       function BuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void;
    }

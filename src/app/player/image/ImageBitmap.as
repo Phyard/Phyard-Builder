@@ -1,6 +1,6 @@
 package player.image
 {
-   import flash.display.Sprite;
+   import common.display.ModuleSprite;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.Loader;
@@ -42,16 +42,16 @@ package player.image
          return mStatus;
       }
       
-      override public function BuildAppearance (frameIndex:int, container:Sprite, transform:Transform2D):void
+      override public function BuildAppearance (frameIndex:int, moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void
       {
-      trace ("  BuildAppearance, mBitmapData= " + mBitmapData + "\n" + new Error ().getStackTrace ());
          if (mBitmapData != null)
          {
             var bitmap:Bitmap = new Bitmap (mBitmapData);
             if (transform != null)
                transform.TransformUntransformedDisplayObject (bitmap);
             
-            container.addChild (bitmap);
+            bitmap.alpha = alpha;
+            moduleSprite.addChild (bitmap);
          }
       }
       
@@ -87,7 +87,6 @@ package player.image
          //var newBitmap:Bitmap = event.target.content as Bitmap;
          var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
          mBitmapData = newBitmap.bitmapData;
-trace ("  OnLoadImageComplete, mBitmapData = " + mBitmapData);
          
          mStatus = 1;
          

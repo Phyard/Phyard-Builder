@@ -1,6 +1,6 @@
 package player.image
 {
-   import flash.display.Sprite;
+   import common.display.ModuleSprite;
    
    import player.physics.PhysicsProxyBody;
    
@@ -8,18 +8,18 @@ package player.image
    
    import player.module.Module;
 
-   public class ImageVector extends Module
+   public class ImageVectorShape extends Module
    {
       protected var mVectorShape:VectorShapeForPlaying;
       
-      public function ImageVector (vectorShape:VectorShapeForPlaying)
+      public function ImageVectorShape (vectorShape:VectorShapeForPlaying)
       {
          mVectorShape = vectorShape;
       }
       
-      override public function BuildAppearance (frameIndex:int, container:Sprite, transform:Transform2D):void
+      override public function BuildAppearance (frameIndex:int, moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void
       {
-         mVectorShape.BuildAppearance (container, transform);
+         mVectorShape.BuildAppearance (moduleSprite, transform, alpha);
       }
       
       override public function BuildPhysicsProxy (frameIndex:int, physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void

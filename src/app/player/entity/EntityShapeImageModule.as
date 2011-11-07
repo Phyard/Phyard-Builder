@@ -1,6 +1,6 @@
 package player.entity {
    
-   import flash.display.Sprite;
+   import common.display.ModuleSprite;
    
    import com.tapirgames.util.GraphicsUtil;
    
@@ -81,7 +81,7 @@ package player.entity {
 //   appearance
 //=============================================================
       
-      protected var mModuleSprite:Sprite = new Sprite ();
+      protected var mModuleSprite:ModuleSprite = new ModuleSprite ();
       
       override public function UpdateAppearance ():void
       {
@@ -93,7 +93,6 @@ package player.entity {
             mNeedRebuildAppearanceObjects = false;
             
             // ...
-trace ("mModuleInstance.RebuildAppearance");
             mModuleInstance.RebuildAppearance (mModuleSprite, null);
          }
          

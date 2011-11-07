@@ -1,6 +1,6 @@
 package player.module {
 
-   import flash.display.Sprite;
+   import common.display.ModuleSprite;
    
    import player.physics.PhysicsProxyBody;
    
@@ -25,7 +25,7 @@ package player.module {
       }
       
       // frameIndex should be always 0 for non-sequenced modules
-      public function BuildAppearance (frameIndex:int, container:Sprite, transform:Transform2D):void
+      public function BuildAppearance (frameIndex:int, moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void
       {
          // to override
       }

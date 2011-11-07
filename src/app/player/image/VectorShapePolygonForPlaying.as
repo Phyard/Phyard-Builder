@@ -1,6 +1,8 @@
 package player.image
 {
-   import flash.display.Sprite;
+   import common.display.ModuleSprite;
+   
+   import com.tapirgames.util.GraphicsUtil;
 
    import player.physics.PhysicsProxyBody;
 
@@ -9,7 +11,7 @@ package player.image
 
    public class VectorShapePolygonForPlaying extends VectorShapePolygon implements VectorShapeForPlaying
    {
-      public function BuildAppearance (container:Sprite, transform:Transform2D):void
+      public function BuildAppearance (moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void
       {
       }
 

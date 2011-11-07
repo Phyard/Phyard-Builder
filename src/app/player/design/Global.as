@@ -1,5 +1,7 @@
 package player.design
 {
+   import flash.geom.Point;   
+   
    import player.world.World;
    
    import player.trigger.TriggerEngine;
@@ -19,6 +21,8 @@ package player.design
    import common.TriggerFormatHelper2;
    
    import common.shape.*;
+   
+   import common.CoordinateSystem;
    
    import common.Transform2D;
    import common.Define;
@@ -371,8 +375,9 @@ package player.design
                
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
                {
-                  var polylineShape:VectorShapePolyline = new VectorShapePolylineForPlaying ();
+                  var polylineShape:VectorShapePolylineForPlaying = new VectorShapePolylineForPlaying ();
                   polylineShape.SetLocalVertexPoints (moduleInstanceDefine.mPolyLocalPoints);
+                  polylineShape.SetLocalVertexPointsInPhysics (DisplayPoints2PhysicsPoints (moduleInstanceDefine.mPolyLocalPoints));
                   
                   vectorShape = pathShape = polylineShape;
                }
@@ -380,6 +385,7 @@ package player.design
                if (pathShape != null)
                {
                   pathShape.SetPathThickness (moduleInstanceDefine.mShapePathThickness);
+                  pathShape.SetPathThicknessInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mShapePathThickness));
                }
             }
             else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
@@ -388,31 +394,37 @@ package player.design
                
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
                {
-                  var circleShape:VectorShapeCircle = new VectorShapeCircleForPlaying ();
+                  var circleShape:VectorShapeCircleForPlaying = new VectorShapeCircleForPlaying ();
                   circleShape.SetRadius (moduleInstanceDefine.mCircleRadius);
+                  circleShape.SetRadiusInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mCircleRadius));
                   circleShape.SetAppearanceType (moduleInstanceDefine.mCircleAppearacneType);
                   
                   vectorShape = areaShape = circleShape;
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
                {
-                  var rectShape:VectorShapeRectangle = new VectorShapeRectangleForPlaying ();
+                  var rectShape:VectorShapeRectangleForPlaying = new VectorShapeRectangleForPlaying ();
                   rectShape.SetHalfWidth  (moduleInstanceDefine.mRectHalfWidth);
+                  rectShape.SetHalfWidthInPhysics  (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mRectHalfWidth));
                   rectShape.SetHalfHeight (moduleInstanceDefine.mRectHalfHeight);
+                  rectShape.SetHalfHeightInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mRectHalfHeight));
                   
                   vectorShape = areaShape = rectShape;
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
-                  var polygonShape:VectorShapePolygon = new VectorShapePolygonForPlaying ();
+                  var polygonShape:VectorShapePolygonForPlaying = new VectorShapePolygonForPlaying ();
                   polygonShape.SetLocalVertexPoints (moduleInstanceDefine.mPolyLocalPoints);
+                  polygonShape.SetLocalVertexPointsInPhysics (DisplayPoints2PhysicsPoints (moduleInstanceDefine.mPolyLocalPoints));
                   
                   vectorShape = areaShape = polygonShape;
                }
                
                if (areaShape != null)
                {
-                  // ...
+                  areaShape.SetBorderOpacityAndColor (moduleInstanceDefine.mShapeBorderOpacityAndColor);
+                  areaShape.SetBorderThickness (moduleInstanceDefine.mShapeBorderThickness);
+                  areaShape.SetBorderThicknessInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mShapeBorderThickness));
                }
             }
             
@@ -421,7 +433,7 @@ package player.design
                vectorShape.SetAttributeBits (moduleInstanceDefine.mShapeAttributeBits);
                vectorShape.SetBodyOpacityAndColor (moduleInstanceDefine.mShapeBodyOpacityAndColor);
                
-               return new ImageVector (vectorShape as VectorShapeForPlaying);
+               return new ImageVectorShape (vectorShape as VectorShapeForPlaying);
             }
          }
          else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
@@ -436,6 +448,30 @@ package player.design
             module = new Module ();
          
          return module;
+      }
+      
+      protected static function DisplayPoints2PhysicsPoints (displayPoints:Array):Array
+      {
+         var coorinateSyatem:CoordinateSystem = GetCurrentWorld ().GetCoordinateSystem ();
+         
+         var displayPoint:Point;
+         var physicsPoint:Point;
+
+         var vertexCount:int = displayPoints.length;
+         var physicsPoints:Array = new Array (vertexCount);
+
+         for (var vertexId:int = 0; vertexId < vertexCount; ++ vertexId)
+         {
+            displayPoint = displayPoints [vertexId] as Point;
+
+            var physicsPoint = new Point ();
+            physicsPoint.x = coorinateSyatem.D2P_LinearDeltaX (displayPoint.x);
+            physicsPoint.y = coorinateSyatem.D2P_LinearDeltaY (displayPoint.y);
+            
+            physicsPoints [vertexId] = physicsPoint;
+         }
+         
+         return physicsPoints;
       }
       
       protected static function OnLoadImageDone (image:ImageBitmap):void

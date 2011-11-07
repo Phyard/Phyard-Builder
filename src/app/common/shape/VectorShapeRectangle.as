@@ -14,9 +14,9 @@ package common.shape
          else
             mAttributeBits &= ~Flag_RoundCorners;
       }
-      
+
       // half width and height
-      
+
       protected var mHalfWidth:Number = 0;
       protected var mHalfHeight:Number = 0;
 
@@ -38,6 +38,33 @@ package common.shape
       public function SetHalfHeight (halfHeight:Number):void
       {
          mHalfHeight = Math.abs (halfHeight);
+      }
+
+//==============================================
+// for playing
+//==============================================
+
+      protected var mHalfWidthInPhysics:Number;
+      protected var mHalfHeightInPhysics:Number;
+
+      public function GetHalfWidthInPhysics ():Number
+      {
+         return mHalfWidthInPhysics;
+      }
+
+      public function SetHalfWidthInPhysics (halfWidth:Number):void
+      {
+         mHalfWidthInPhysics = halfWidth;
+      }
+
+      public function GetHalfHeightInPhysics ():Number
+      {
+         return mHalfHeightInPhysics;
+      }
+
+      public function SetHalfHeightInPhysics (halfHeight:Number):void
+      {
+         mHalfHeightInPhysics = halfHeight;
       }
    }
 }

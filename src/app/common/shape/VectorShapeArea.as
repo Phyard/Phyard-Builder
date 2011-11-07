@@ -20,7 +20,7 @@ package common.shape
          else
             mAttributeBits &= ~Flag_BuildBorder;
       }
-      
+
       // border thickness
 
       public function IsDrawBorder ():Boolean
@@ -35,7 +35,7 @@ package common.shape
          else
             mAttributeBits &= ~Flag_DrawBorder;
       }
-      
+
       protected var mBorderThickness:Number = 1.0;
 
       public function GetBorderThickness ():Number
@@ -47,7 +47,7 @@ package common.shape
       {
          mBorderThickness = thickness;
       }
-            
+
       // border color and opacity
 
       protected var mBorderOpacityAndColor:uint = 0xFF000000;
@@ -55,7 +55,7 @@ package common.shape
          public static const Shift_BorderColor:int = 0;
          public static const Mask_BorderOpacity:uint = 0xFF000000;
          public static const Shift_BorderOpacity:int = 24;
-      
+
       public function GetBorderOpacityAndColor ():uint
       {
          return mBorderOpacityAndColor;
@@ -74,6 +74,42 @@ package common.shape
       public function SetBorderColor (color:uint):void
       {
          mBorderOpacityAndColor = (mBorderOpacityAndColor & (~Mask_BorderColor)) | ((color << Shift_BorderColor) & Mask_BorderColor);
+      }
+
+      public function GetBorderAlpha ():Number
+      {
+         return Number (GetBorderOpacity ()) / 255.0;
+      }
+
+      public function GetBorderOpacity ():uint
+      {
+         return (mBorderOpacityAndColor & Mask_BorderOpacity) >>> Shift_BorderOpacity;
+      }
+
+      public function SetBorderOpacity (opacity:uint):void
+      {
+         if (opacity < 0)
+            opacity = 0;
+         if (opacity > 255)
+            opacity = 255;
+
+         mBorderOpacityAndColor = (mBorderOpacityAndColor & (~Mask_BorderOpacity)) | ((opacity << Shift_BorderOpacity) & Mask_BorderOpacity);
+      }
+
+//==============================================
+// for playing
+//==============================================
+
+      protected var mBorderThicknessInPhysics:Number;
+
+      public function GetBorderThicknessInPhysics ():Number
+      {
+         return mBorderThicknessInPhysics;
+      }
+
+      public function SetBorderThicknessInPhysics (thickness:Number):void
+      {
+         mBorderThicknessInPhysics = thickness;
       }
    }
 }

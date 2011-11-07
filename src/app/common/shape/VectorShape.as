@@ -9,7 +9,7 @@ package common.shape
          SetBuildBackground (true);
          SetDrawBackground (true);
       }
-      
+
       protected var mIsValid:Boolean = true;
       public function IsValid ():Boolean
       {
@@ -20,7 +20,7 @@ package common.shape
       {
          mIsValid = valid;
       }
-      
+
       // attibute bits
 
       protected var mAttributeBits:int = 0;
@@ -36,7 +36,7 @@ package common.shape
             public static const Flag_DrawBorder       :int = 1 << 6;
                // rect
                public static const Flag_RoundCorners   :int = 1 << 7;
-      
+
       public function GetAttributeBits ():uint
       {
          return mAttributeBits;
@@ -72,7 +72,7 @@ package common.shape
          else
             mAttributeBits &= ~Flag_DrawBackground;
       }
-      
+
       // body color and opacity
 
       protected var mBodyOpacityAndColor:uint = 0xFFFFFFFF;
@@ -80,7 +80,7 @@ package common.shape
          public static const Shift_BodyColor:int = 0;
          public static const Mask_BodyOpacity:uint = 0xFF000000;
          public static const Shift_BodyOpacity:int = 24;
-      
+
       public function GetBodyOpacityAndColor ():uint
       {
          return mBodyOpacityAndColor;
@@ -99,6 +99,11 @@ package common.shape
       public function SetBodyColor (color:uint):void
       {
          mBodyOpacityAndColor = (mBodyOpacityAndColor & (~Mask_BodyColor)) | ((color << Shift_BodyColor) & Mask_BodyColor);
+      }
+
+      public function GetBodyAlpha ():int
+      {
+         return Number (GetBodyOpacity ()) / 255.0;
       }
 
       public function GetBodyOpacity ():int

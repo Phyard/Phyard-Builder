@@ -900,7 +900,7 @@ package common {
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
             element.@shape_attributes = moduleInstanceDefine.mShapeAttributeBits;
-            element.@shape_body_argb = moduleInstanceDefine.mShapeBodyOpacityAndColor;
+            element.@shape_body_argb = UInt2ColorString (moduleInstanceDefine.mShapeBodyOpacityAndColor);
             
             if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
             {
@@ -913,6 +913,9 @@ package common {
             }
             else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
             {
+               element.@shape_border_argb = UInt2ColorString (moduleInstanceDefine.mShapeBorderOpacityAndColor);
+               element.@shape_border_thickness = moduleInstanceDefine.mShapeBorderThickness;
+               
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
                {
                   element.@circle_radius = moduleInstanceDefine.mCircleRadius;
@@ -941,11 +944,20 @@ package common {
          }
       }
 
-      public static function Int2ColorString (intValue:int):String
+      public static function UInt2ColorString (intValue:uint):String
       {
          var strValue:String;
          strValue = "0x";
          var b:int;
+
+         b = (intValue >> 24) & 0xFF;
+         if (b < 16)
+         {
+            strValue += "0";
+            strValue += (b).toString (16);
+         }
+         else
+            strValue += (b).toString (16);
 
          b = (intValue & 0x00FF0000) >> 16;
          if (b < 16)
@@ -981,7 +993,7 @@ package common {
       {
          var strValue:String;
          if (isColor)
-            strValue = Int2ColorString (settingValue);
+            strValue = UInt2ColorString (settingValue);
          else
             strValue = "" + settingValue;
 
@@ -1191,9 +1203,9 @@ package common {
 
             if (worldDefine.mVersion >= 0x0104)
             {
-               element.@border_color = Int2ColorString (entityDefine.mBorderColor);
+               element.@border_color = UInt2ColorString (entityDefine.mBorderColor);
                element.@border_thickness = entityDefine.mBorderThickness;
-               element.@background_color = Int2ColorString (entityDefine.mBackgroundColor);
+               element.@background_color = UInt2ColorString (entityDefine.mBackgroundColor);
 
                if (worldDefine.mVersion >= 0x0107)
                   element.@background_opacity = entityDefine.mTransparency;
@@ -1307,7 +1319,7 @@ package common {
                   if (worldDefine.mVersion >= 0x0108)
                   {
                      element.@adaptive_background_size = entityDefine.mAdaptiveBackgroundSize ? 1 : 0;
-                     element.@text_color = Int2ColorString (entityDefine.mTextColor);
+                     element.@text_color = UInt2ColorString (entityDefine.mTextColor);
                      element.@font_size = entityDefine.mFontSize;
                      element.@bold = entityDefine.mIsBold ? 1 : 0;
                      element.@italic = entityDefine.mIsItalic ? 1 : 0;
@@ -1326,11 +1338,11 @@ package common {
                         element.@using_hand_cursor = entityDefine.mUsingHandCursor ? 1 : 0;
 
                         element.@draw_background_on_mouse_over = entityDefine.mDrawBackground_MouseOver ? 1 : 0;
-                        element.@background_color_on_mouse_over = Int2ColorString (entityDefine.mBackgroundColor_MouseOver);
+                        element.@background_color_on_mouse_over = UInt2ColorString (entityDefine.mBackgroundColor_MouseOver);
                         element.@background_opacity_on_mouse_over = entityDefine.mBackgroundTransparency_MouseOver;
 
                         element.@draw_border_on_mouse_over = entityDefine.mDrawBorder_MouseOver ? 1 : 0;
-                        element.@border_color_on_mouse_over = Int2ColorString (entityDefine.mBorderColor_MouseOver);
+                        element.@border_color_on_mouse_over = UInt2ColorString (entityDefine.mBorderColor_MouseOver);
                         element.@border_thickness_on_mouse_over = entityDefine.mBorderThickness_MouseOver;
                         element.@border_opacity_on_mouse_over = entityDefine.mBorderTransparency_MouseOver;
                      }
@@ -2250,7 +2262,8 @@ package common {
          
          for (var miId:int = 0; miId < numModuleInstances; ++ miId)
          {
-            var moduleInstanceDefine:Object = moduleInstanceDefines [miId]; 
+            var moduleInstanceDefine:Object = new Object ();
+            moduleInstanceDefines [miId] = moduleInstanceDefine;
             
             moduleInstanceDefine.mPosX = byteArray.readFloat ();
             moduleInstanceDefine.mPosY = byteArray.readFloat ();
@@ -2266,8 +2279,6 @@ package common {
             }
             
             ReadModuleInstanceDefineFromBinFile (byteArray, moduleInstanceDefine);
-            
-            moduleInstanceDefines [miId] = moduleInstanceDefine;
          }
          
          return moduleInstanceDefines;
@@ -2293,6 +2304,9 @@ package common {
             }
             else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
             {
+               moduleInstanceDefine.mShapeBorderOpacityAndColor = byteArray.readUnsignedInt ();
+               moduleInstanceDefine.mShapeBorderThickness = byteArray.readFloat ();
+               
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
                {
                   moduleInstanceDefine.mCircleRadius = byteArray.readFloat ();
@@ -2421,7 +2435,7 @@ package common {
          var numEntities:int = worldDefine.mEntityDefines.length;
 
          var createId:int;
-         var vertexId:int;
+         //var vertexId:int;
 
          var hasGravityControllers:Boolean = false;
 
@@ -2529,11 +2543,12 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
-                     for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
-                     {
-                        entityDefine.mLocalPoints [vertexId].x = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].x, 6);
-                        entityDefine.mLocalPoints [vertexId].y = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].y, 6);
-                     }
+                     //for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
+                     //{
+                     //   entityDefine.mLocalPoints [vertexId].x = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].x, 6);
+                     //   entityDefine.mLocalPoints [vertexId].y = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].y, 6);
+                     //}
+                     AdjustNumberValuesInPointArray (entityDefine.mLocalPoints);
 
                      if (worldDefine.mVersion < 0x0107)
                      {
@@ -2543,11 +2558,12 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
-                     for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
-                     {
-                        entityDefine.mLocalPoints [vertexId].x = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].x, 6);
-                        entityDefine.mLocalPoints [vertexId].y = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].y, 6);
-                     }
+                     //for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
+                     //{
+                     //   entityDefine.mLocalPoints [vertexId].x = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].x, 6);
+                     //   entityDefine.mLocalPoints [vertexId].y = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].y, 6);
+                     //}
+                     AdjustNumberValuesInPointArray (entityDefine.mLocalPoints);
 
                      if (worldDefine.mVersion < 0x0107)
                      {
@@ -2692,7 +2708,105 @@ package common {
                TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (functionDefine);
             }
          //}
+         
+         //modules
+         // from v1.58
+         //{
+            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
+            {
+               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+
+               AdjustNumberValuesInModuleInstanceDefines (assembledModuleDefine.mModulePartDefines, false);
+            }
+            
+            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
+            {
+               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+
+               //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
+               AdjustNumberValuesInModuleInstanceDefines (sequencedModuleDefine.mModuleSequenceDefines, true);
+            }
+         //}
+         //
       }
+      
+      public static function AdjustNumberValuesInModuleInstanceDefines (moduleInstanceDefines:Array, forSequencedModule:Boolean):void
+      {
+         for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
+         {
+            var moduleInstanceDefine:Object = moduleInstanceDefines [miId];
+            
+            moduleInstanceDefine.mAlpha = ValueAdjuster.Number2Precision (moduleInstanceDefine.mAlpha, 6);
+            moduleInstanceDefine.mPosX = ValueAdjuster.Number2Precision (moduleInstanceDefine.mPosX, 6); //12); // here, different with entity
+            moduleInstanceDefine.mPosY = ValueAdjuster.Number2Precision (moduleInstanceDefine.mPosY, 6); //12);
+            moduleInstanceDefine.mScale = ValueAdjuster.Number2Precision (moduleInstanceDefine.mScale, 6);
+            moduleInstanceDefine.mRotation = ValueAdjuster.Number2Precision (moduleInstanceDefine.mRotation, 6);
+            
+            if (forSequencedModule)
+               moduleInstanceDefine.mModuleDuration = ValueAdjuster.Number2Precision (moduleInstanceDefine.mModuleDuration, 6);
+            
+            AdjustNumberValuesInModuleInstanceDefine (moduleInstanceDefine);
+         }
+      }
+      
+      public static function AdjustNumberValuesInModuleInstanceDefine (moduleInstanceDefine:Object):void
+      {
+         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               moduleInstanceDefine.mShapePathThickness = ValueAdjuster.Number2Precision (moduleInstanceDefine.mShapePathThickness, 6);
+               
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolyline)
+               {
+                  AdjustNumberValuesInPointArray (moduleInstanceDefine.mPolyLocalPoints);
+               }
+            }
+            else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
+            {
+               moduleInstanceDefine.mShapeBorderThickness = ValueAdjuster.Number2Precision (moduleInstanceDefine.mShapeBorderThickness, 6);
+               
+               if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
+               {
+                  moduleInstanceDefine.mCircleRadius = ValueAdjuster.Number2Precision (moduleInstanceDefine.mCircleRadius, 6);
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
+               {
+                  moduleInstanceDefine.mRectHalfWidth = ValueAdjuster.Number2Precision (moduleInstanceDefine.mRectHalfWidth, 6);
+                  moduleInstanceDefine.mRectHalfHeight = ValueAdjuster.Number2Precision (moduleInstanceDefine.mRectHalfHeight, 6);
+               }
+               else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
+               {
+                  AdjustNumberValuesInPointArray (moduleInstanceDefine.mPolyLocalPoints);
+               }
+            }
+         }
+         //else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
+         //{
+         //   if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule)
+         //   {
+         //      moduleInstanceDefine.mModuleIndex = parseInt (element.@module_index);
+         //   }
+         //}
+         //else // ...
+         //{
+         //}
+      }
+      
+      public static function AdjustNumberValuesInPointArray (points:Array):void
+      {
+         if (points == null)
+            return;
+         
+         for (var vertexId:int = 0; vertexId < points.length; ++ vertexId)
+         {
+            var point:Point = points [vertexId];
+            point.x = ValueAdjuster.Number2Precision (point.x, 6);
+            point.y = ValueAdjuster.Number2Precision (point.y, 6);
+         }
+      }
+      
+//============================================================
 
       // fill some missed fields in earliser versions
 

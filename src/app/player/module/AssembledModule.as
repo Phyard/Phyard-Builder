@@ -1,6 +1,6 @@
 package player.module {
 
-   import flash.display.Sprite;
+   import common.display.ModuleSprite;
    
    import player.physics.PhysicsProxyBody;
    
@@ -20,12 +20,15 @@ package player.module {
          mModuleParts = moduleParts;
       }
       
-      override public function BuildAppearance (frameIndex:int, container:Sprite, transform:Transform2D):void
+      override public function BuildAppearance (frameIndex:int, moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void
       {
          for each (var moudlePart:ModulePart in mModuleParts)
          {
-            var accTranform:Transform2D = transform == null ? transform.Clone () : Transform2D.CombineTransforms (transform, moudlePart.GetTransform ());
-            moudlePart.GetModule ().BuildAppearance (0, container, accTranform);
+            if (moudlePart.IsVisible ())
+            {
+               var accTranform:Transform2D = transform == null ? moudlePart.GetTransform ().Clone () : Transform2D.CombineTransforms (transform, moudlePart.GetTransform ());
+               moudlePart.GetModule ().BuildAppearance (0, moduleSprite, accTranform, moudlePart.GetAlpha () * alpha);
+            }
          }
       }
       

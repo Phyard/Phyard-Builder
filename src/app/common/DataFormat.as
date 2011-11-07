@@ -1702,6 +1702,8 @@ package common {
                      entityDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndex];
                   
                   imageModuleShape.SetAssetImageModuleByIndex (entityDefine.mModuleIndex);
+                  
+                  entity = shape = imageModuleShape;
                }
             }
             //<<
@@ -2552,7 +2554,7 @@ package common {
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
             moduleInstanceDefine.mShapeAttributeBits = parseInt (element.@shape_attributes);
-            moduleInstanceDefine.mShapeBodyOpacityAndColor = parseInt (element.@shape_body_argb);
+            moduleInstanceDefine.mShapeBodyOpacityAndColor = element.@shape_body_argb == undefined ? 0x0 : uint (parseInt ( (element.@shape_body_argb).substr (2), 16));
             
             if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
             {
@@ -2565,6 +2567,9 @@ package common {
             }
             else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
             {
+               moduleInstanceDefine.mShapeBorderOpacityAndColor = element.@shape_border_argb == undefined ? 0x0 : uint (parseInt ( (element.@shape_border_argb).substr (2), 16));
+               moduleInstanceDefine.mShapeBorderThickness = parseFloat (element.@shape_border_thickness);
+               
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
                {
                   moduleInstanceDefine.mCircleRadius = parseFloat (element.@circle_radius);
@@ -3846,6 +3851,9 @@ package common {
             }
             else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
             {
+               byteArray.writeUnsignedInt (moduleInstanceDefine.mShapeBorderOpacityAndColor);
+               byteArray.writeFloat (moduleInstanceDefine.mShapeBorderThickness);
+               
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
                {
                   byteArray.writeFloat (moduleInstanceDefine.mCircleRadius);

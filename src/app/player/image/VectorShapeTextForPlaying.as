@@ -1,6 +1,6 @@
 package player.image
 {
-   import flash.display.Sprite;
+   import common.display.ModuleSprite;
 
    import player.physics.PhysicsProxyBody;
 
@@ -9,7 +9,7 @@ package player.image
 
    public class VectorShapeTextForPlaying extends VectorShapeText implements VectorShapeForPlaying
    {
-      public function BuildAppearance (container:Sprite, transform:Transform2D):void
+      public function BuildAppearance (moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void
       {
       }
 

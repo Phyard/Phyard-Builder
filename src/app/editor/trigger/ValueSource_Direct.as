@@ -48,7 +48,7 @@ package editor.trigger {
             var vdn:VariableDefinitionNumber = vd as VariableDefinitionNumber;
             if (vdn.mIsColorValue)
             {
-               return DataFormat2.Int2ColorString (uint (mValueObject));
+               return DataFormat2.UInt2ColorString (uint (mValueObject));
             }
          }
          

@@ -1,6 +1,6 @@
 package player.module {
 
-   import flash.display.Sprite;
+   import common.display.ModuleSprite;
    
    import player.physics.PhysicsProxyBody;
    
@@ -37,9 +37,9 @@ package player.module {
          return false;
       }
       
-      public function RebuildAppearance (container:Sprite, transform:Transform2D):void
+      public function RebuildAppearance (moduleSprite:ModuleSprite, transform:Transform2D):void
       {
-         mModule.BuildAppearance (mFrameIndex, container, transform);
+         mModule.BuildAppearance (mFrameIndex, moduleSprite, transform, 1.0);
       }
       
       public function RebuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void

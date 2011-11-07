@@ -20,6 +20,8 @@ package player.physics {
    
    import player.entity.EntityShape;
    
+   import common.Transform2D;
+   
    public class PhysicsProxyShape extends PhysicsProxy
    {
       internal var _b2Fixtures:Array = new Array () // for concave polygon and super shape, there may be mroe than one shapes
@@ -151,10 +153,12 @@ package player.physics {
       
       private static const Half_B2_FLT_EPSILON:Number = b2Settings.b2_epsilon * 0.5;
       
-      public function AddCircle (isStatic:Boolean, shapeLocalCenterX:Number, shapeLocalCenterY:Number, radius:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
+      public function AddCircleByTransform (transform:Transform2D, radius:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
       {
          if ( (! buildBorder) && (! buildInterior))
             return;
+         
+         var isStatic:Boolean = mEntityShape.IsStatic (); // here not use body.IsStatic () is to avoid freezing when calling AttachShape and SetStatic APIs
          
       // ...
          
@@ -216,24 +220,14 @@ package player.physics {
             return;
          }
          
-         // shape local to world
-         
-         var rot:Number = mEntityShape.GetRotation ();
-         
-         var cos:Number = Math.cos (rot);
-         var sin:Number = Math.sin (rot);
+         // transformed to body local
          
          var vec:b2Vec2 = new b2Vec2 ();
-         vec.x = mEntityShape.GetPositionX () + cos * shapeLocalCenterX - sin * shapeLocalCenterY;
-         vec.y = mEntityShape.GetPositionY () + sin * shapeLocalCenterX + cos * shapeLocalCenterY;
-         
-         // world to body local
-         
-         vec = mProxyBody._b2Body.GetLocalPoint (vec);
-         
+         vec.x = transform.mOffsetX;
+         vec.y = transform.mOffsetY;
+         radius *= transform.mScale;
+
          // ...
-         
-         radius *= mEntityShape.GetScale (); // from v1.56
          
          var circle_shape:b2CircleShape = new b2CircleShape ();
          circle_shape.m_radius = radius;
@@ -246,58 +240,6 @@ package player.physics {
          var fixture:b2Fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
          _b2Fixtures.push (fixture);
       }
-      
-      /*
-      public function AddEllipse (isStatic:Boolean, shapeLocalCenterX:Number, shapeLocalCenterY:Number, radius1:Number, radius2:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
-      {
-         if ( (! buildBorder) && (! buildInterior))
-            return;
-         
-      // ...
-         
-         var fixture_def:b2FixtureDef = new b2FixtureDef ();
-         
-         fixture_def.density     = mEntityShape.GetDensity ();
-         fixture_def.friction    = mEntityShape.GetFriction ();
-         fixture_def.restitution = mEntityShape.GetRestitution ();
-         fixture_def.isSensor    = mEntityShape.IsSensor ();
-         
-         fixture_def.userData = this;
-         
-      // ...
-         
-         if (buildBorder)
-         {
-            var halfBorderThickness:Number = borderThickness * 0.5;
-            
-            if (buildInterior)
-            {
-               radius1 += halfBorderThickness;
-               radius2 += halfBorderThickness;
-               
-               // todo: create many bands along the long axis
-            }
-            else
-            {
-               var numSegments:int = 50; // Math.PI * 2.0 * radius / segmentLength;
-               var shapeLocalPoints:Array = new Array (numSegments);
-               var dAngle:Number = Math.PI * 2.0 / numSegments;
-               var angle:Number = 0.0;
-               
-               for (var i:int = 0; i < numSegments; ++ i)
-               {
-                  shapeLocalPoints [i] = new Point (radius1 * Math.cos (angle), radius2 * Math.sin (angle));
-                  
-                  angle += dAngle;
-               }
-               
-               var bodyLocalVertexes:Array = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
-               
-               CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, halfBorderThickness, true, true, true);
-            }
-         }
-      }
-      */
       
       private function ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints:Array):Array
       {
@@ -683,8 +625,38 @@ package player.physics {
          }
       }
       
-      public function AddRectangle (isStatic:Boolean, shapeLocalCenterX:Number, shapeLocalCenterY:Number, shapeLocalRotation:Number, halfWidth:Number, halfHeight:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number, roundCorners:Boolean = false):void
+      private static function TransformPolyPoints2Vertexes (transform:Transform2D, points:Array, assureCW:Boolean):Array
       {
+         if (assureCW && transform.mFlipped)
+         {
+            points = points.reverse (); // to keep CW order
+         }
+         
+         var tempPoint:Point = new Point ();
+         var vertexes:Array = new Array (points.length);
+         
+         for (var i:int = 0; i < points.length; ++ i)
+         {
+            transform.TransformPoint (points [i] as Point, tempPoint);
+            
+            var vertex:b2Vec2 = new b2Vec2 ();
+            vertex.x = tempPoint.x;
+            vertex.y = tempPoint.y;
+            vertexes [i] = vertex;
+         }
+         
+         return vertexes;
+      }
+      
+      public function AddRectangleByTransform (transform:Transform2D, halfWidth:Number, halfHeight:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number, roundCorners:Boolean = false):void
+      {
+         var isStatic:Boolean = mEntityShape.IsStatic (); // here not use body.IsStatic () is to avoid freezing when calling AttachShape and SetStatic APIs
+         var shapeLocalCenterX:Number = transform.mOffsetX;
+         var shapeLocalCenterY:Number = transform.mOffsetY;
+         var shapeLocalRotation:Number = transform.mRotation;
+         
+         // ...
+         
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          
          fixture_def.density     = mEntityShape.GetDensity ();
@@ -703,17 +675,18 @@ package player.physics {
          var p1:Point = new Point ();
          var p2:Point = new Point ();
          var p3:Point = new Point ();
-         var shapeLocalPoints:Array = [p0, p1, p2, p3];
-         var tx:Number, ty:Number, p:Point;
+         var localPoints:Array = [p0, p1, p2, p3];
          var bodyLocalVertexes:Array;
          var polygon_shape:b2PolygonShape = new b2PolygonShape ();
          var halfBorderThickness:Number = 0.5 * borderThickness;
+         
+         fixture_def.shape = polygon_shape;
          
          var fixture:b2Fixture;
          
          if (buildInterior)
          {
-            var extend:Boolean = buildBorder && (! roundCorners || borderThickness < b2Settings.b2_epsilon);
+            var extend:Boolean = buildBorder && ((! roundCorners) || borderThickness < b2Settings.b2_epsilon);
             
             var halfWidth_b :Number = halfWidth;
             var halfHeight_b:Number = halfHeight;
@@ -726,21 +699,15 @@ package player.physics {
             
             if (halfWidth >= Half_B2_FLT_EPSILON && halfHeight >= Half_B2_FLT_EPSILON)
             {
-               tx = - halfWidth_b; ty = - halfHeight_b; p = p0; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-               tx =   halfWidth_b; ty = - halfHeight_b; p = p1; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-               tx =   halfWidth_b; ty =   halfHeight_b; p = p2; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-               tx = - halfWidth_b; ty =   halfHeight_b; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
+               p0.x = - halfWidth_b; p0.y = - halfHeight_b;
+               p1.x =   halfWidth_b; p1.y = - halfHeight_b;
+               p2.x =   halfWidth_b; p2.y =   halfHeight_b;
+               p3.x = - halfWidth_b; p3.y =   halfHeight_b;
                
-               bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
-         
-      //trace ("AddRectangle: shapeLocalPoints = " + shapeLocalPoints);
-      //trace ("AddRectangle: bodyLocalVertexes = " + bodyLocalVertexes);
+               bodyLocalVertexes = TransformPolyPoints2Vertexes (transform, localPoints, true);
          
                // ...
                polygon_shape.Set (bodyLocalVertexes, 4);
-               
-               fixture_def.shape = polygon_shape;
-               
                fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
                _b2Fixtures.push (fixture);
                
@@ -757,89 +724,68 @@ package player.physics {
          
          if (buildBorder)
          {
-            tx = - halfWidth; ty = - halfHeight; p = p0; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-            tx =   halfWidth; ty = - halfHeight; p = p1; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-            tx =   halfWidth; ty =   halfHeight; p = p2; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-            tx = - halfWidth; ty =   halfHeight; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-            
             if ( roundCorners || ( (! buildInterior) &&  borderThickness < b2Settings.b2_epsilon) )
             {
-               bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
+               p0.x = - halfWidth; p0.y = - halfHeight;
+               p1.x =   halfWidth; p1.y = - halfHeight;
+               p2.x =   halfWidth; p2.y =   halfHeight;
+               p3.x = - halfWidth; p3.y =   halfHeight;
+               
+               bodyLocalVertexes = TransformPolyPoints2Vertexes (transform, localPoints, false);
                
                CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, halfBorderThickness, true, roundCorners, roundCorners);
             }
             else
             {
-               p = p0; 
-               var p0a:Point = new Point (p.x - halfBorderThickness, p.y - halfBorderThickness);
-               var p0b:Point = new Point (p.x + halfBorderThickness, p.y - halfBorderThickness);
-               var p0c:Point = new Point (p.x + halfBorderThickness, p.y + halfBorderThickness);
-               var p0d:Point = new Point (p.x - halfBorderThickness, p.y + halfBorderThickness);
-               
-               p = p1; 
-               var p1a:Point = new Point (p.x - halfBorderThickness, p.y - halfBorderThickness);
-               var p1b:Point = new Point (p.x + halfBorderThickness, p.y - halfBorderThickness);
-               var p1c:Point = new Point (p.x + halfBorderThickness, p.y + halfBorderThickness);
-               var p1d:Point = new Point (p.x - halfBorderThickness, p.y + halfBorderThickness);
-               
-               p = p2; 
-               var p2a:Point = new Point (p.x - halfBorderThickness, p.y - halfBorderThickness);
-               var p2b:Point = new Point (p.x + halfBorderThickness, p.y - halfBorderThickness);
-               var p2c:Point = new Point (p.x + halfBorderThickness,p.y + halfBorderThickness);
-               var p2d:Point = new Point (p.x - halfBorderThickness, p.y + halfBorderThickness);
-               
-               p = p3; 
-               var p3a:Point = new Point (p.x - halfBorderThickness, p.y - halfBorderThickness);
-               var p3b:Point = new Point (p.x + halfBorderThickness, p.y - halfBorderThickness);
-               var p3c:Point = new Point (p.x + halfBorderThickness, p.y + halfBorderThickness);
-               var p3d:Point = new Point (p.x - halfBorderThickness, p.y + halfBorderThickness);
-               
-               bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes ([p0a, p0b, p0c, p0d, p1a, p1b, p1c, p1d, p2a, p2b, p2c, p2d, p3a, p3b, p3c, p3d]);
-               
-               var v0a:b2Vec2 = bodyLocalVertexes [0];
-               var v0b:b2Vec2 = bodyLocalVertexes [1];
-               //var v0c:b2Vec2 = bodyLocalVertexes [2];
-               var v0d:b2Vec2 = bodyLocalVertexes [3];
-               var v1a:b2Vec2 = bodyLocalVertexes [4];
-               var v1b:b2Vec2 = bodyLocalVertexes [5];
-               var v1c:b2Vec2 = bodyLocalVertexes [6];
-               //var v1d:b2Vec2 = bodyLocalVertexes [7];
-               //var v2a:b2Vec2 = bodyLocalVertexes [8];
-               var v2b:b2Vec2 = bodyLocalVertexes [9];
-               var v2c:b2Vec2 = bodyLocalVertexes [10];
-               var v2d:b2Vec2 = bodyLocalVertexes [11];
-               var v3a:b2Vec2 = bodyLocalVertexes [12];
-               //var v3b:b2Vec2 = bodyLocalVertexes [13];
-               var v3c:b2Vec2 = bodyLocalVertexes [14];
-               var v3d:b2Vec2 = bodyLocalVertexes [15];
-               
-               fixture_def.shape = polygon_shape;
-               
                // top border
                
-               polygon_shape.Set ([v0a, v1b, v1c, v0d], 4);
+               p0.x = - halfWidth - halfBorderThickness; p0.y = - halfHeight - halfBorderThickness;
+               p1.x =   halfWidth + halfBorderThickness; p1.y = - halfHeight - halfBorderThickness;
+               p2.x =   halfWidth + halfBorderThickness; p2.y = - halfHeight + halfBorderThickness;
+               p3.x = - halfWidth - halfBorderThickness; p3.y = - halfHeight + halfBorderThickness;
                
+               bodyLocalVertexes = TransformPolyPoints2Vertexes (transform, localPoints, true);
+            
+               polygon_shape.Set (bodyLocalVertexes, 4);
                fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
                _b2Fixtures.push (fixture);
-               
+            
                // bottom border
                
-               polygon_shape.Set ([v3a, v2b, v2c, v3d], 4);
+               p0.x = - halfWidth - halfBorderThickness; p0.y = halfHeight - halfBorderThickness;
+               p1.x =   halfWidth + halfBorderThickness; p1.y = halfHeight - halfBorderThickness;
+               p2.x =   halfWidth + halfBorderThickness; p2.y = halfHeight + halfBorderThickness;
+               p3.x = - halfWidth - halfBorderThickness; p3.y = halfHeight + halfBorderThickness;
                
+               bodyLocalVertexes = TransformPolyPoints2Vertexes (transform, localPoints, true);
+            
+               polygon_shape.Set (bodyLocalVertexes, 4);
                fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
                _b2Fixtures.push (fixture);
-               
+            
                // left border
                
-               polygon_shape.Set ([v0a, v0b, v3c, v3d], 4);
+               p0.x = - halfWidth - halfBorderThickness; p0.y = - halfHeight - halfBorderThickness;
+               p1.x = - halfWidth + halfBorderThickness; p1.y = - halfHeight - halfBorderThickness;
+               p2.x = - halfWidth + halfBorderThickness; p2.y =   halfHeight + halfBorderThickness;
+               p3.x = - halfWidth - halfBorderThickness; p3.y =   halfHeight + halfBorderThickness;
                
+               bodyLocalVertexes = TransformPolyPoints2Vertexes (transform, localPoints, true);
+            
+               polygon_shape.Set (bodyLocalVertexes, 4);
                fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
                _b2Fixtures.push (fixture);
-               
+            
                // right border
                
-               polygon_shape.Set ([v1a, v1b, v2c, v2d], 4);
+               p0.x = halfWidth - halfBorderThickness; p0.y = - halfHeight - halfBorderThickness;
+               p1.x = halfWidth + halfBorderThickness; p1.y = - halfHeight - halfBorderThickness;
+               p2.x = halfWidth + halfBorderThickness; p2.y =   halfHeight + halfBorderThickness;
+               p3.x = halfWidth - halfBorderThickness; p3.y =   halfHeight + halfBorderThickness;
                
+               bodyLocalVertexes = TransformPolyPoints2Vertexes (transform, localPoints, true);
+            
+               polygon_shape.Set (bodyLocalVertexes, 4);
                fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
                _b2Fixtures.push (fixture);
             }

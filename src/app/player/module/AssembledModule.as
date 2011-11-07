@@ -2,7 +2,7 @@ package player.module {
 
    import common.display.ModuleSprite;
    
-   import player.physics.PhysicsProxyBody;
+   import player.physics.PhysicsProxyShape;
    
    import common.Transform2D;
 
@@ -32,12 +32,12 @@ package player.module {
          }
       }
       
-      override public function BuildPhysicsProxy (frameIndex:int, physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      override public function BuildPhysicsProxy (frameIndex:int, physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
          for each (var moudlePart:ModulePart in mModuleParts)
          {
-            var accTranform:Transform2D = transform == null ? transform.Clone () : Transform2D.CombineTransforms (transform, moudlePart.GetTransform ());
-            moudlePart.GetModule ().BuildPhysicsProxy (0, physicsBodyProxy, transform);
+            var accTranform:Transform2D = transform == null ? transform.Clone () : Transform2D.CombineTransforms (transform, moudlePart.GetTransformInPhysics ());
+            moudlePart.GetModule ().BuildPhysicsProxy (0, physicsShapeProxy, accTranform);
          }
       }
    }

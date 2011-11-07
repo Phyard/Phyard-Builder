@@ -197,33 +197,22 @@ package editor.selection {
          _b2Body.CreateFixture (fixture_def);
       }
       
-      private static function TransformPolyPoints (transform:Transform2D, points:Array):void
+      private static function TransformPolyPoints (transform:Transform2D, points:Array, assureCW:Boolean):void
       {
          var point:Point;
          var i:int;
 
          // todo: optimize
          
-         var offsetX:Number = transform.mOffsetX;
-         var offsetY:Number = transform.mOffsetY;
-         var cos:Number = transform.cos;
-         var sin:Number = transform.sin;
-         var scaleX:Number = transform.mScale;
-         var scaleY:Number = transform.mScale;
-         
-         if (transform.mFlipped)
+         if (assureCW && transform.mFlipped)
          {
             points = points.reverse (); // to keep CW order
-            scaleX = - scaleX;
          }
          
          for (i = 0; i < points.length; ++ i)
          {
             point = points [i];
-            var oldX:Number = point.x;
-            var oldY:Number = point.y;
-            point.x = offsetX + scaleX * (cos * oldX - sin * oldY);
-            point.y = offsetY + scaleY * (sin * oldX + cos * oldY);
+            transform.TransformPoint (point, point);
          }
       }
       
@@ -239,7 +228,7 @@ package editor.selection {
          
          if (transform != null)
          {
-            TransformPolyPoints (transform, localPoints);
+            TransformPolyPoints (transform, localPoints, true);
          }
 
          var localVertices:Array = new Array (localPoints.length);
@@ -274,7 +263,7 @@ package editor.selection {
          
          if (transform != null)
          {
-            TransformPolyPoints (transform, localPoints);
+            TransformPolyPoints (transform, localPoints, false);
          }
          
          var xPositions:Array = new Array (vertexCount);

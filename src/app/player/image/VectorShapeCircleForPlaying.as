@@ -3,16 +3,13 @@ package player.image
    import common.display.ModuleSprite;
    import flash.display.Shape;
 
-   import player.physics.PhysicsProxyBody;
-   
-   import player.design.Global;
+   import player.physics.PhysicsProxyShape;
    
    import com.tapirgames.util.GraphicsUtil;
 
    import common.Transform2D;
    import common.shape.VectorShapeCircle;
    
-   import common.CoordinateSystem;
    import common.Define;
 
    public class VectorShapeCircleForPlaying extends VectorShapeCircle implements VectorShapeForPlaying
@@ -115,8 +112,9 @@ package player.image
          }
       }
 
-      public function BuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      public function BuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
+         physicsShapeProxy.AddCircleByTransform (transform, GetRadiusInPhysics (), IsBuildBackground (), IsBuildBorder (), GetBorderThicknessInPhysics ());
       }
    }
 }

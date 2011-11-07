@@ -1236,7 +1236,7 @@ package player.entity {
       internal var mPrevPhysicsShapeInBody:EntityShape = null;
       internal var mNextPhysicsShapeInBody:EntityShape = null;
       
-      // relative to mBody
+      // relative to mBody (only valid when mBody is not null)
       protected var mLocalPositionX:Number;
       protected var mLocalPositionY:Number;
       protected var mRelativeRotation:Number;
@@ -1624,8 +1624,6 @@ package player.entity {
          {
             mBody.RebuildBodyPhysics ();
          }
-         
-         var proxyShape:PhysicsProxyShape = mPhysicsProxy as PhysicsProxyShape;
          
          if (mPhysicsShapeProxy == null)
          {

@@ -9,6 +9,7 @@ package player.entity {
    import player.physics.PhysicsProxyShape;
    
    import common.Define;
+   import common.Transform2D;
    
    public class EntityShapeRectangle extends EntityShape
    {
@@ -188,7 +189,12 @@ package player.entity {
       {
          if (mPhysicsShapeProxy != null)
          {
-            mPhysicsShapeProxy.AddRectangle (mIsStatic, 0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
+            //mPhysicsShapeProxy.AddRectangle (mIsStatic, 0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
+            mPhysicsShapeProxy.AddRectangleByTransform (
+                                       //new Transform2D (mLocalPositionX, mLocalPositionY, mScale, mFlipped, mRelativeRotation)
+                                       // if mFlipped is true, mRelativeRotation should be changed to "PI - mRelativeRotation"?
+                                       new Transform2D (mLocalPositionX, mLocalPositionY, mScale, false, mRelativeRotation), 
+                                       mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
          }
       }
       

@@ -2,7 +2,7 @@ package player.image
 {
    import common.display.ModuleSprite;
    
-   import player.physics.PhysicsProxyBody;
+   import player.physics.PhysicsProxyShape;
    
    import common.Transform2D;
    
@@ -22,9 +22,9 @@ package player.image
          mVectorShape.BuildAppearance (moduleSprite, transform, alpha);
       }
       
-      override public function BuildPhysicsProxy (frameIndex:int, physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      override public function BuildPhysicsProxy (frameIndex:int, physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
-         mVectorShape.BuildPhysicsProxy (physicsBodyProxy, transform);
+         mVectorShape.BuildPhysicsProxy (physicsShapeProxy, transform);
       }
    }
 }

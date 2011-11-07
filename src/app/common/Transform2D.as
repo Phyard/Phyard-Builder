@@ -83,6 +83,7 @@ package common {
 // 
 //================================================================
       
+      // todo: change to protected
       public var mOffsetX:Number;
       public var mOffsetY:Number;
       public var mScale:Number;
@@ -113,7 +114,32 @@ package common {
          mFlipped = f;
          mRotation = r;
       }
+      /*
+      public function GetOffsetX ():Number
+      {
+         return mOffsetX;
+      }
       
+      public function GetOffsetY ():Number
+      {
+         return mOffsetY;
+      }
+      
+      public function GetScale ():Number
+      {
+         return mScale;
+      }
+      
+      public function IsFlipped ():Boolean
+      {
+         return mFlipped;
+      }
+      
+      public function GetRotation ():Number
+      {
+         return mRotation;
+      }
+      */
       public function TransformPoint (inPoint:Point, outPoint:Point = null):Point
       {
          outPoint = TransformVector (inPoint, outPoint);
@@ -131,9 +157,12 @@ package common {
          if (outVector == null)
             outVector = new Point ();
          
+         var inX:Number = inVector.x;
+         var inY:Number = inVector.y;
+         
          // rotate
-         outVector.x = cos * inVector.x - sin * inVector.y;
-         outVector.y = sin * inVector.x + cos * inVector.y;
+         outVector.x = cos * inX - sin * inY;
+         outVector.y = sin * inX + cos * inY;
          
          // flip
          if (mFlipped)

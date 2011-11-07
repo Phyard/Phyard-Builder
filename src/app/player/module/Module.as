@@ -2,7 +2,7 @@ package player.module {
 
    import common.display.ModuleSprite;
    
-   import player.physics.PhysicsProxyBody;
+   import player.physics.PhysicsProxyShape;
    
    import common.Transform2D;
 
@@ -31,7 +31,7 @@ package player.module {
       }
       
       // frameIndex should be always 0 for non-sequenced modules
-      public function BuildPhysicsProxy (frameIndex:int, physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      public function BuildPhysicsProxy (frameIndex:int, physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
          // to override
       }

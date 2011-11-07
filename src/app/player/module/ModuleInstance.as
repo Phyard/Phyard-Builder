@@ -2,7 +2,7 @@ package player.module {
 
    import common.display.ModuleSprite;
    
-   import player.physics.PhysicsProxyBody;
+   import player.physics.PhysicsProxyShape;
    
    import common.Transform2D;
 
@@ -42,9 +42,9 @@ package player.module {
          mModule.BuildAppearance (mFrameIndex, moduleSprite, transform, 1.0);
       }
       
-      public function RebuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      public function RebuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
-         mModule.BuildPhysicsProxy (mFrameIndex, physicsBodyProxy, transform);
+         mModule.BuildPhysicsProxy (mFrameIndex, physicsShapeProxy, transform);
       }
    }
 }

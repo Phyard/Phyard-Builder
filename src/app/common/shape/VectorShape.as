@@ -25,7 +25,7 @@ package common.shape
 
       protected var mAttributeBits:int = 0;
          // common
-         public static const Flag_BuildPhysics     :int = 1 << 0;
+         //public static const Flag_BuildPhysics     :int = 1 << 0; //reserved
          public static const Flag_BuildBackground  :int = 1 << 1;
          public static const Flag_DrawBackground   :int = 1 << 2;
             // path shapes

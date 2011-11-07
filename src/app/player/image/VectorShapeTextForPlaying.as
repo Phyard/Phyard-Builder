@@ -2,7 +2,7 @@ package player.image
 {
    import common.display.ModuleSprite;
 
-   import player.physics.PhysicsProxyBody;
+   import player.physics.PhysicsProxyShape;
 
    import common.Transform2D;
    import common.shape.VectorShapeText;
@@ -13,7 +13,7 @@ package player.image
       {
       }
 
-      public function BuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      public function BuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
       }
    }

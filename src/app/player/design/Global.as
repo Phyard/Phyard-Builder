@@ -344,17 +344,25 @@ package player.design
             
             var module:Module = GetModuleFromDefine (moduleInstanceDefine);
             var transform:Transform2D = new Transform2D (moduleInstanceDefine.mPosX, moduleInstanceDefine.mPosY, 
-                                                         moduleInstanceDefine.mScale, moduleInstanceDefine.mIsFlipped != 0, moduleInstanceDefine.mRotation);
+                                                         moduleInstanceDefine.mScale, moduleInstanceDefine.mIsFlipped != 0, 
+                                                         moduleInstanceDefine.mRotation
+                                                      );
+            var transformInPhysics:Transform2D = new Transform2D (
+                                                         GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mPosX), 
+                                                         GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mPosY), 
+                                                         moduleInstanceDefine.mScale, moduleInstanceDefine.mIsFlipped != 0, 
+                                                         GetCurrentWorld ().GetCoordinateSystem ().D2P_RotationRadians (moduleInstanceDefine.mRotation)
+                                                      );
             
             var modulePart:ModulePart;
             if (forSequencedModule)
             {
-               modulePartsOrSequences [miId] = new ModuleSequence (module, transform, moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha, 
+               modulePartsOrSequences [miId] = new ModuleSequence (module, transform, transformInPhysics, moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha, 
                                                                    moduleInstanceDefine.mModuleDuration);
             }
             else
             {
-               modulePartsOrSequences [miId] = new ModulePart (module, transform, moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha);
+               modulePartsOrSequences [miId] = new ModulePart (module, transform, transformInPhysics, moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha);
             }
          }
          

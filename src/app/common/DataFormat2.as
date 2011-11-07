@@ -855,7 +855,7 @@ package common {
 
                element = <SequencedModule />;
                
-               element.@looped = sequencedModuleDefine.mIsLooped ? 1 : 0;
+               //element.@looped = sequencedModuleDefine.mIsLooped ? 1 : 0;
                ModuleInstanceDefines2XmlElements (sequencedModuleDefine.mModuleSequenceDefines, element, "ModuleSequence", true);
                
                xml.SequencedModules.appendChild (element);
@@ -899,7 +899,7 @@ package common {
          
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
-            element.@shape_attributes = moduleInstanceDefine.mShapeAttributeBits;
+            element.@shape_attribute_bits = moduleInstanceDefine.mShapeAttributeBits;
             element.@shape_body_argb = UInt2ColorString (moduleInstanceDefine.mShapeBodyOpacityAndColor);
             
             if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
@@ -941,6 +941,52 @@ package common {
          }
          else // ...
          {
+         }
+      }
+      
+      public static function ShapePhysicsProperties2Xml (element:XML, entityDefine:Object, worldDefine:WorldDefine):void
+      {
+         if (worldDefine.mVersion >= 0x0104)
+         {
+            element.@enable_physics = entityDefine.mIsPhysicsEnabled ? 1 : 0;
+
+            // move down from v1.05
+            /////element.@is_sensor = entityDefine.mIsSensor ? 1 : 0;
+         }
+
+         if (entityDefine.mIsPhysicsEnabled)  // always true before v1.04
+         {
+            if (worldDefine.mVersion >= 0x0102)
+            {
+               element.@collision_category_index = entityDefine.mCollisionCategoryIndex;
+            }
+
+            element.@is_static = entityDefine.mIsStatic ? 1 : 0;
+            element.@is_bullet = entityDefine.mIsBullet ? 1 : 0;
+            element.@density = entityDefine.mDensity;
+            element.@friction = entityDefine.mFriction;
+            element.@restitution = entityDefine.mRestitution;
+
+            if (worldDefine.mVersion >= 0x0104)
+            {
+               // add in v1,04, move here from above from v1.05
+               element.@is_sensor = entityDefine.mIsSensor ? 1 : 0;
+            }
+
+            if (worldDefine.mVersion >= 0x0105)
+            {
+               element.@is_hollow = entityDefine.mIsHollow ? 1 : 0;
+            }
+
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               element.@build_border = entityDefine.mBuildBorder ? 1 : 0;
+               element.@sleeping_allowed = entityDefine.mIsSleepingAllowed ? 1 : 0;
+               element.@rotation_fixed = entityDefine.mIsRotationFixed ? 1 : 0;
+               element.@linear_velocity_magnitude = entityDefine.mLinearVelocityMagnitude;
+               element.@linear_velocity_angle = entityDefine.mLinearVelocityAngle;
+               element.@angular_velocity = entityDefine.mAngularVelocity;
+            }
          }
       }
 
@@ -1224,50 +1270,11 @@ package common {
             if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
             {
                element.@ai_type = entityDefine.mAiType;
-
-               if (worldDefine.mVersion >= 0x0104)
-               {
-                  element.@enable_physics = entityDefine.mIsPhysicsEnabled ? 1 : 0;
-
-                  // move down from v1.05
-                  /////element.@is_sensor = entityDefine.mIsSensor ? 1 : 0;
-               }
-
-               if (entityDefine.mIsPhysicsEnabled)  // always true before v1.04
-               {
-                  if (worldDefine.mVersion >= 0x0102)
-                  {
-                     element.@collision_category_index = entityDefine.mCollisionCategoryIndex;
-                  }
-
-                  element.@is_static = entityDefine.mIsStatic ? 1 : 0;
-                  element.@is_bullet = entityDefine.mIsBullet ? 1 : 0;
-                  element.@density = entityDefine.mDensity;
-                  element.@friction = entityDefine.mFriction;
-                  element.@restitution = entityDefine.mRestitution;
-
-                  if (worldDefine.mVersion >= 0x0104)
-                  {
-                     // add in v1,04, move here from above from v1.05
-                     element.@is_sensor = entityDefine.mIsSensor ? 1 : 0;
-                  }
-
-                  if (worldDefine.mVersion >= 0x0105)
-                  {
-                     element.@is_hollow = entityDefine.mIsHollow ? 1 : 0;
-                  }
-
-                  if (worldDefine.mVersion >= 0x0108)
-                  {
-                     element.@build_border = entityDefine.mBuildBorder ? 1 : 0;
-                     element.@sleeping_allowed = entityDefine.mIsSleepingAllowed ? 1 : 0;
-                     element.@rotation_fixed = entityDefine.mIsRotationFixed ? 1 : 0;
-                     element.@linear_velocity_magnitude = entityDefine.mLinearVelocityMagnitude;
-                     element.@linear_velocity_angle = entityDefine.mLinearVelocityAngle;
-                     element.@angular_velocity = entityDefine.mAngularVelocity;
-                  }
-               }
-
+               
+               // ...
+               ShapePhysicsProperties2Xml (element, entityDefine, worldDefine);
+               
+               // ...
                if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                {
                   element.@radius = entityDefine.mRadius;
@@ -1380,6 +1387,8 @@ package common {
          {
             if (entityDefine.mEntityType == Define.EntityType_ShapeImageModule)
             {
+               ShapePhysicsProperties2Xml (element, entityDefine, worldDefine);
+               
                element.@module_index = entityDefine.mModuleIndex;
             }
          }
@@ -1868,64 +1877,10 @@ package common {
 
                if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
-                  if (worldDefine.mVersion >= 0x0105)
-                  {
-                     entityDefine.mAiType = byteArray.readByte ();
-                     entityDefine.mIsPhysicsEnabled = byteArray.readByte ();
-
-                     // the 2 lines are added in v1,04, and moved down from v1.05
-                     /////entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
-                     /////entityDefine.mIsSensor = byteArray.readByte ();
-                  }
-                  else if (worldDefine.mVersion >= 0x0104)
-                  {
-                     entityDefine.mAiType = byteArray.readByte ();
-                     entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
-                     entityDefine.mIsPhysicsEnabled = byteArray.readByte ();
-                     entityDefine.mIsSensor = byteArray.readByte ();
-                  }
-                  else
-                  {
-                     if (worldDefine.mVersion >= 0x0102)
-                     {
-                        entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
-                     }
-
-                     entityDefine.mAiType = byteArray.readByte ();
-
-                     entityDefine.mIsPhysicsEnabled = true;
-                     // entityDefine.mIsSensor = true; // will be set in FillMissedFieldsInWorldDefine
-                  }
-
-                  if (entityDefine.mIsPhysicsEnabled)
-                  {
-                     entityDefine.mIsStatic = byteArray.readByte ();
-                     entityDefine.mIsBullet = byteArray.readByte ();
-                     entityDefine.mDensity = byteArray.readFloat ();
-                     entityDefine.mFriction = byteArray.readFloat ();
-                     entityDefine.mRestitution = byteArray.readFloat ();
-
-                     if (worldDefine.mVersion >= 0x0105)
-                     {
-                        // the 2 lines are added in v1,04, and moved here from above from v1.05
-                        entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
-                        entityDefine.mIsSensor = byteArray.readByte ();
-
-                        // ...
-                        entityDefine.mIsHollow = byteArray.readByte ();
-                     }
-
-                     if (worldDefine.mVersion >= 0x0108)
-                     {
-                        entityDefine.mBuildBorder = byteArray.readByte () != 0;
-                        entityDefine.mIsSleepingAllowed = byteArray.readByte () != 0;
-                        entityDefine.mIsRotationFixed = byteArray.readByte () != 0;
-                        entityDefine.mLinearVelocityMagnitude = byteArray.readFloat ();
-                        entityDefine.mLinearVelocityAngle = byteArray.readFloat ();
-                        entityDefine.mAngularVelocity = byteArray.readFloat ();
-                     }
-                  }
-
+                  // ...
+                  ReadShapePhysicsPropertiesAndAiType (entityDefine, byteArray, worldDefine, true);
+                  
+                  // ...
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
                      entityDefine.mRadius = byteArray.readFloat ();
@@ -2037,6 +1992,8 @@ package common {
             {
                if (entityDefine.mEntityType == Define.EntityType_ShapeImageModule)
                {
+                  ReadShapePhysicsPropertiesAndAiType (entityDefine, byteArray, worldDefine, false);
+                  
                   entityDefine.mModuleIndex = byteArray.readShort ();
                }
             }
@@ -2244,7 +2201,7 @@ package common {
             {
                var sequencedModuleDefine:Object = new Object ();
 
-               sequencedModuleDefine.mIsLooped = byteArray.readByte () != 0;
+               //sequencedModuleDefine.mIsLooped = byteArray.readByte () != 0;
                sequencedModuleDefine.mModuleSequenceDefines = ReadModuleInstanceDefinesFromBinFile (byteArray, true);
                
                worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
@@ -2253,6 +2210,72 @@ package common {
 
          // ...
          return worldDefine;
+      }
+      
+      public static function ReadShapePhysicsPropertiesAndAiType (entityDefine:Object, byteArray:ByteArray, worldDefine:WorldDefine, readAiType:Boolean):void
+      {
+         if (worldDefine.mVersion >= 0x0105)
+         {
+            if (readAiType)
+               entityDefine.mAiType = byteArray.readByte ();
+            
+            entityDefine.mIsPhysicsEnabled = byteArray.readByte ();
+
+            // the 2 lines are added in v1,04, and moved down from v1.05
+            /////entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
+            /////entityDefine.mIsSensor = byteArray.readByte ();
+         }
+         else if (worldDefine.mVersion >= 0x0104)
+         {
+            if (readAiType)
+               entityDefine.mAiType = byteArray.readByte ();
+            
+            entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
+            entityDefine.mIsPhysicsEnabled = byteArray.readByte ();
+            entityDefine.mIsSensor = byteArray.readByte ();
+         }
+         else
+         {
+            if (worldDefine.mVersion >= 0x0102)
+            {
+               entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
+            }
+
+            if (readAiType)
+               entityDefine.mAiType = byteArray.readByte ();
+
+            entityDefine.mIsPhysicsEnabled = true;
+            // entityDefine.mIsSensor = true; // will be set in FillMissedFieldsInWorldDefine
+         }
+
+         if (entityDefine.mIsPhysicsEnabled)
+         {
+            entityDefine.mIsStatic = byteArray.readByte ();
+            entityDefine.mIsBullet = byteArray.readByte ();
+            entityDefine.mDensity = byteArray.readFloat ();
+            entityDefine.mFriction = byteArray.readFloat ();
+            entityDefine.mRestitution = byteArray.readFloat ();
+
+            if (worldDefine.mVersion >= 0x0105)
+            {
+               // the 2 lines are added in v1,04, and moved here from above from v1.05
+               entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
+               entityDefine.mIsSensor = byteArray.readByte ();
+
+               // ...
+               entityDefine.mIsHollow = byteArray.readByte ();
+            }
+
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               entityDefine.mBuildBorder = byteArray.readByte () != 0;
+               entityDefine.mIsSleepingAllowed = byteArray.readByte () != 0;
+               entityDefine.mIsRotationFixed = byteArray.readByte () != 0;
+               entityDefine.mLinearVelocityMagnitude = byteArray.readFloat ();
+               entityDefine.mLinearVelocityAngle = byteArray.readFloat ();
+               entityDefine.mAngularVelocity = byteArray.readFloat ();
+            }
+         }
       }
          
       public static function ReadModuleInstanceDefinesFromBinFile (byteArray:ByteArray, forSequencedModule:Boolean):Array
@@ -2495,23 +2518,10 @@ package common {
             {
                if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
-                  if (entityDefine.mIsPhysicsEnabled)
-                  {
-                     // from v1.08, a dynamic shape with zero density will not view as a static shape
-                     if (worldDefine.mVersion < 0x0108 && Number (entityDefine.mDensity) <= 0)
-                     {
-                        entityDefine.mIsStatic = true;
-                     }
-
-                     entityDefine.mDensity = ValueAdjuster.Number2Precision (entityDefine.mDensity, 6);
-                     entityDefine.mFriction = ValueAdjuster.Number2Precision (entityDefine.mFriction, 6);
-                     entityDefine.mRestitution = ValueAdjuster.Number2Precision (entityDefine.mRestitution, 6);
-
-                     entityDefine.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (entityDefine.mLinearVelocityMagnitude, 6);
-                     entityDefine.mLinearVelocityAngle = ValueAdjuster.Number2Precision (entityDefine.mLinearVelocityAngle, 6);
-                     entityDefine.mAngularVelocity = ValueAdjuster.Number2Precision (entityDefine.mAngularVelocity, 6);
-                  }
-
+                  // ...
+                  AdjustNumberValuesOfShapePhysicsProperties (entityDefine, worldDefine);
+                  
+                  // ...
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
                      //if (worldDefine.mVersion >= 0x0105 && worldDefine.mVersion < 0x0107) // bug: should be v1,02
@@ -2596,6 +2606,15 @@ package common {
                   }
                }
             }
+            //>> from v1.58
+            else if (Define.IsShapeEntity (entityDefine.mEntityType))
+            {
+               if (entityDefine.mEntityType == Define.EntityType_ShapeImageModule)
+               {
+                  AdjustNumberValuesOfShapePhysicsProperties (entityDefine, worldDefine);
+               }
+            }
+            //<<
             else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
             {
                if (entityDefine.mEntityType == Define.EntityType_JointHinge)
@@ -2729,6 +2748,26 @@ package common {
          //}
          //
       }
+      
+      public static function AdjustNumberValuesOfShapePhysicsProperties (entityDefine:Object, worldDefine:WorldDefine):void
+      {
+         if (entityDefine.mIsPhysicsEnabled)
+         {
+            // from v1.08, a dynamic shape with zero density will not view as a static shape
+            if (worldDefine.mVersion < 0x0108 && Number (entityDefine.mDensity) <= 0)
+            {
+               entityDefine.mIsStatic = true;
+            }
+
+            entityDefine.mDensity = ValueAdjuster.Number2Precision (entityDefine.mDensity, 6);
+            entityDefine.mFriction = ValueAdjuster.Number2Precision (entityDefine.mFriction, 6);
+            entityDefine.mRestitution = ValueAdjuster.Number2Precision (entityDefine.mRestitution, 6);
+
+            entityDefine.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (entityDefine.mLinearVelocityMagnitude, 6);
+            entityDefine.mLinearVelocityAngle = ValueAdjuster.Number2Precision (entityDefine.mLinearVelocityAngle, 6);
+            entityDefine.mAngularVelocity = ValueAdjuster.Number2Precision (entityDefine.mAngularVelocity, 6);
+         }
+      } 
       
       public static function AdjustNumberValuesInModuleInstanceDefines (moduleInstanceDefines:Array, forSequencedModule:Boolean):void
       {

@@ -6,9 +6,9 @@ package player.module {
    {
       protected var mDuration:int; // may be changed to Number later
       
-      public function ModuleSequence (module:Module, transform:Transform2D, visible:Boolean, alpha:Number, duration:int)
+      public function ModuleSequence (module:Module, transform:Transform2D, transformInPhysics:Transform2D, visible:Boolean, alpha:Number, duration:int)
       {
-         super (module, transform, visible, alpha);
+         super (module, transform, transformInPhysics, visible, alpha);
          
          mDuration = duration;
       }

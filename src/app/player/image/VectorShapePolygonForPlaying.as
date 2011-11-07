@@ -4,7 +4,7 @@ package player.image
    
    import com.tapirgames.util.GraphicsUtil;
 
-   import player.physics.PhysicsProxyBody;
+   import player.physics.PhysicsProxyShape;
 
    import common.Transform2D;
    import common.shape.VectorShapePolygon;
@@ -15,7 +15,7 @@ package player.image
       {
       }
 
-      public function BuildPhysicsProxy (physicsBodyProxy:PhysicsProxyBody, transform:Transform2D):void
+      public function BuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
       }
    }

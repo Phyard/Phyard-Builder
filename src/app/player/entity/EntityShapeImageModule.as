@@ -13,6 +13,7 @@ package player.entity {
    import player.module.ModuleInstance;
    
    import common.Define;
+   import common.Transform2D;
    
    public class EntityShapeImageModule extends EntityShape
    {
@@ -108,9 +109,13 @@ package player.entity {
 
       override protected function RebuildShapePhysicsInternal ():void
       {
-         if (mPhysicsShapeProxy != null)
+         if (mPhysicsShapeProxy != null && mModuleInstance != null)
          {
-            //mModuleInstance.RebuildPhysicsProxy (mPhysicsShapeProxy, );
+            mModuleInstance.RebuildPhysicsProxy (mPhysicsShapeProxy, 
+                           //new Transform2D (mLocalPositionX, mLocalPositionY, mScale, mFlipped, mRelativeRotation)
+                           // if mFlipped is true, mRelativeRotation should be changed to "PI - mRelativeRotation"?
+                           new Transform2D (mLocalPositionX, mLocalPositionY, mScale, false, mRelativeRotation)
+                        );
          }
       }
 

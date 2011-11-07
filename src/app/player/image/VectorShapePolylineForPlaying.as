@@ -1,7 +1,7 @@
 package player.image
 {
    import common.display.ModuleSprite;
-   import flash.geom.Point;
+   import flash.display.Shape;
    
    import com.tapirgames.util.GraphicsUtil;
 
@@ -14,10 +14,27 @@ package player.image
    {
       public function BuildAppearance (moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void
       {
+         if (IsDrawBackground ())
+         {
+            var displayVertexPoints:Array = GetLocalVertexPoints ();
+            var displayCurveThickness:Number = GetPathThickness ();
+            
+            var bodyColor:int = GetBodyColor ();
+            
+            var bodyShape:Shape = new Shape ();
+            bodyShape.alpha = GetBodyAlpha () * alpha;
+            if (transform != null)
+               transform.TransformUntransformedDisplayObject (bodyShape);
+            
+            moduleSprite.addChild (bodyShape);
+            
+            GraphicsUtil.ClearAndDrawPolyline (bodyShape, displayVertexPoints, bodyColor, displayCurveThickness, IsRoundEnds (), IsClosed ());
+         }
       }
 
       public function BuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
+         physicsShapeProxy.AddPolyline (transform, GetLocalVertexPointsInPhysics (), IsBuildBackground (), GetPathThicknessInPhysics (), IsRoundEnds (), IsClosed ());
       }
    }
 }

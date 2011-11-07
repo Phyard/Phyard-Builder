@@ -153,7 +153,7 @@ package player.physics {
       
       private static const Half_B2_FLT_EPSILON:Number = b2Settings.b2_epsilon * 0.5;
       
-      public function AddCircleByTransform (transform:Transform2D, radius:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
+      public function AddCircle (transform:Transform2D, radius:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
       {
          if ( (! buildBorder) && (! buildInterior))
             return;
@@ -196,20 +196,20 @@ package player.physics {
                   // use polyline instead
                   
                   var numSegments:int = 50; // Math.PI * 2.0 * radius / segmentLength;
-                  var shapeLocalPoints:Array = new Array (numSegments);
+                  var localPoints:Array = new Array (numSegments);
                   var dAngle:Number = Math.PI * 2.0 / numSegments;
                   var angle:Number = 0.0;
                   
                   for (var i:int = 0; i < numSegments; ++ i)
                   {
-                     shapeLocalPoints [i] = new Point (radius * Math.cos (angle), radius * Math.sin (angle));
+                     localPoints [i] = new Point (radius * Math.cos (angle), radius * Math.sin (angle));
                      
                      angle += dAngle;
                   }
                   
-                  var bodyLocalVertexes:Array = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
+                  var localVertexes:Array = TransformPolyPoints2Vertexes (transform, localPoints, false);
                   
-                  CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, halfBorderThickness, true, true, true);
+                  CreatePolyline (isStatic, fixture_def, localVertexes, halfBorderThickness, true, true, true);
                   
                   return;
                }
@@ -241,43 +241,38 @@ package player.physics {
          _b2Fixtures.push (fixture);
       }
       
-      private function ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints:Array):Array
+      private static function TransformPolyPoints2Vertexes (transform:Transform2D, points:Array, assureCW:Boolean):Array
       {
-         var rot:Number = mEntityShape.GetRotation ();
-         
-         var cos:Number = Math.cos (rot);
-         var sin:Number = Math.sin (rot);
-         
-         var flipped:Boolean = mEntityShape.IsFlipped ();
-         
-         var cosScaleX:Number = cos * (flipped ? - mEntityShape.GetScale () : mEntityShape.GetScale ()); //X (); // from v1.56
-         var cosScaleY:Number = cos * mEntityShape.GetScale (); //Y (); // from v1.56
-         var sinScaleX:Number = sin * (flipped ? - mEntityShape.GetScale () : mEntityShape.GetScale ()); //X (); // from v1.56
-         var sinScaleY:Number = sin * mEntityShape.GetScale (); //Y (); // from v1.56
-         
-         var count:int = shapeLocalPoints.length;
-         var bodyLocalVertexes:Array = new Array (count);
-         
-         var shapePositionX:Number = mEntityShape.GetPositionX ();
-         var shapePositionY:Number = mEntityShape.GetPositionY ();
-         
-         var point:Point;
-         var vec:b2Vec2 = new b2Vec2 ();
-         
-         for (var i:int = 0; i < count; ++ i)
+         if (assureCW && transform.mFlipped)
          {
-            point = shapeLocalPoints [i];
-            vec.x = shapePositionX + cosScaleX * point.x - sinScaleY * point.y;
-            vec.y = shapePositionY + sinScaleX * point.x + cosScaleY * point.y;
-            
-            bodyLocalVertexes [flipped ? count - 1 - i : i] = mProxyBody._b2Body.GetLocalPoint (vec);
+            points = points.reverse (); // to keep CW order
          }
          
-         return bodyLocalVertexes;
+         var tempPoint:Point = new Point ();
+         var vertexes:Array = new Array (points.length);
+         
+         for (var i:int = 0; i < points.length; ++ i)
+         {
+            transform.TransformPoint (points [i] as Point, tempPoint);
+            
+            var vertex:b2Vec2 = new b2Vec2 ();
+            vertex.x = tempPoint.x;
+            vertex.y = tempPoint.y;
+            vertexes [i] = vertex;
+         }
+         
+         return vertexes;
       }
       
-      public function AddPolyline (isStatic:Boolean, shapeLocalPoints:Array, curveThickness:Number, roundEnds:Boolean, closed:Boolean):void
+      public function AddPolyline (transform:Transform2D, localPoints:Array, buildInterior:Boolean, curveThickness:Number, roundEnds:Boolean, closed:Boolean):void
       {
+         if (! buildInterior)
+            return;
+         
+         var isStatic:Boolean = mEntityShape.IsStatic (); // here not use body.IsStatic () is to avoid freezing when calling AttachShape and SetStatic APIs
+         
+         // ...
+         
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          
          fixture_def.density     = mEntityShape.GetDensity ();
@@ -287,13 +282,9 @@ package player.physics {
          
          fixture_def.userData = this;
          
-         var bodyLocalVertexes:Array = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
+         var localVertexes:Array = TransformPolyPoints2Vertexes (transform, localPoints, false);
          
-      //trace ("------------ AddPolyline -----------------");
-      //trace ("AddPolyline: shapeLocalPoints = " + shapeLocalPoints);
-      //trace ("AddPolyline: bodyLocalVertexes = " + bodyLocalVertexes);
-      
-         CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, 0.5 * curveThickness, closed, true, roundEnds);
+         CreatePolyline (isStatic, fixture_def, localVertexes, 0.5 * curveThickness, closed, true, roundEnds);
       }
       
       private function CreatePolyline (isStatic:Boolean, fixture_def:b2FixtureDef, inputBodyLocalVertexes:Array, halfCurveThickness:Number, isClosed:Boolean, isRoundJoints:Boolean, isRoundEnds:Boolean):void
@@ -548,8 +539,15 @@ package player.physics {
          }
       }
       
-      public function AddPolygon (isStatic:Boolean, shapeLocalPoints:Array, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
+      public function AddPolygon (transform:Transform2D, localPoints:Array, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
       {
+         if ( (! buildBorder) && (! buildInterior))
+            return;
+         
+         var isStatic:Boolean = mEntityShape.IsStatic (); // here not use body.IsStatic () is to avoid freezing when calling AttachShape and SetStatic APIs
+         
+         // ...
+         
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          
          fixture_def.density     = mEntityShape.GetDensity ();
@@ -561,13 +559,9 @@ package player.physics {
          
       // ...
          
-         var bodyLocalVertexes:Array = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
+         var localVertexes:Array = TransformPolyPoints2Vertexes (transform, localPoints, false);
          
-      //trace ("------------ AddPolyline -----------------");
-      //trace ("AddPolygon: shapeLocalPoints = " + shapeLocalPoints);
-      //trace ("AddPolygon: bodyLocalVertexes = " + bodyLocalVertexes);
-         
-         var vertexCount:int = bodyLocalVertexes.length;
+         var vertexCount:int = localVertexes.length;
          
          var numDecomposedPolygons:int;
          var decomposedPolygons:Array = new Array ();
@@ -579,7 +573,7 @@ package player.physics {
          
          for (var vertexId:int = 0; vertexId < vertexCount; ++ vertexId) 
          {
-            vertex = bodyLocalVertexes [vertexId];
+            vertex = localVertexes [vertexId];
             xPositions[vertexId] = vertex.x;
             yPositions[vertexId] = vertex.y;
          }
@@ -615,45 +609,22 @@ package player.physics {
             {
                if (borderThickness >= b2Settings.b2_epsilon)
                {
-                  CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, 0.5 * borderThickness, true, true, true);
+                  CreatePolyline (isStatic, fixture_def, localVertexes, 0.5 * borderThickness, true, true, true);
                }
             }
          }
          else if (buildBorder)
          {
-            CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, 0.5 * borderThickness, true, true, true);
+            CreatePolyline (isStatic, fixture_def, localVertexes, 0.5 * borderThickness, true, true, true);
          }
       }
       
-      private static function TransformPolyPoints2Vertexes (transform:Transform2D, points:Array, assureCW:Boolean):Array
+      public function AddRectangle (transform:Transform2D, halfWidth:Number, halfHeight:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number, roundCorners:Boolean = false):void
       {
-         if (assureCW && transform.mFlipped)
-         {
-            points = points.reverse (); // to keep CW order
-         }
+         if ( (! buildBorder) && (! buildInterior))
+            return;
          
-         var tempPoint:Point = new Point ();
-         var vertexes:Array = new Array (points.length);
-         
-         for (var i:int = 0; i < points.length; ++ i)
-         {
-            transform.TransformPoint (points [i] as Point, tempPoint);
-            
-            var vertex:b2Vec2 = new b2Vec2 ();
-            vertex.x = tempPoint.x;
-            vertex.y = tempPoint.y;
-            vertexes [i] = vertex;
-         }
-         
-         return vertexes;
-      }
-      
-      public function AddRectangleByTransform (transform:Transform2D, halfWidth:Number, halfHeight:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number, roundCorners:Boolean = false):void
-      {
          var isStatic:Boolean = mEntityShape.IsStatic (); // here not use body.IsStatic () is to avoid freezing when calling AttachShape and SetStatic APIs
-         var shapeLocalCenterX:Number = transform.mOffsetX;
-         var shapeLocalCenterY:Number = transform.mOffsetY;
-         var shapeLocalRotation:Number = transform.mRotation;
          
          // ...
          
@@ -667,9 +638,6 @@ package player.physics {
          fixture_def.userData = this;
          
       // ...
-         
-         var cos:Number = Math.cos (shapeLocalRotation);
-         var sin:Number = Math.sin (shapeLocalRotation);
          
          var p0:Point = new Point ();
          var p1:Point = new Point ();

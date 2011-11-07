@@ -85,7 +85,7 @@ package player.image
 
       public function BuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
-         physicsShapeProxy.AddRectangleByTransform (transform, GetHalfWidthInPhysics (), GetHalfHeightInPhysics (), IsBuildBackground (), IsBuildBorder (), GetBorderThicknessInPhysics (), IsRoundCorners ());
+         physicsShapeProxy.AddRectangle (transform, GetHalfWidthInPhysics (), GetHalfHeightInPhysics (), IsBuildBackground (), IsBuildBorder (), GetBorderThicknessInPhysics (), IsRoundCorners ());
       }
    }
 }

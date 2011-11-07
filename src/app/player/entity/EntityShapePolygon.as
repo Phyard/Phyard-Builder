@@ -11,6 +11,7 @@ package player.entity {
    import player.physics.PhysicsProxyShape;
    
    import common.Define;
+   import common.Transform2D;
    
    public class EntityShapePolygon extends EntityShapePolyShape
    {
@@ -105,7 +106,12 @@ package player.entity {
       {
          if (mPhysicsShapeProxy != null)
          {
-            mPhysicsShapeProxy.AddPolygon (mIsStatic, mLocalPoints, mBuildInterior, mBuildBorder, mBorderThickness);
+            //mPhysicsShapeProxy.AddPolygon (mIsStatic, mLocalPoints, mBuildInterior, mBuildBorder, mBorderThickness);
+            mPhysicsShapeProxy.AddPolygon (
+                                       //new Transform2D (mLocalPositionX, mLocalPositionY, mScale, mFlipped, mRelativeRotation)
+                                       // if mFlipped is true, mRelativeRotation should be changed to "PI - mRelativeRotation"?
+                                       new Transform2D (mLocalPositionX, mLocalPositionY, mScale, false, mRelativeRotation), 
+                                       mLocalPoints, mBuildInterior, mBuildBorder, mBorderThickness);
          }
       }
       

@@ -11,6 +11,7 @@ package player.entity {
    import player.physics.PhysicsProxyShape;
    
    import common.Define;
+   import common.Transform2D;
    
    public class EntityShapePolyline extends EntityShapePolyShape
    {
@@ -136,7 +137,12 @@ package player.entity {
       {
          if (mPhysicsShapeProxy != null)
          {
-            mPhysicsShapeProxy.AddPolyline (mIsStatic, mLocalPoints, mCurveThickness, IsRoundEnds (), IsClosed ());
+            //mPhysicsShapeProxy.AddPolyline (mIsStatic, mLocalPoints, mCurveThickness, IsRoundEnds (), IsClosed ());
+            mPhysicsShapeProxy.AddPolyline (
+                                       //new Transform2D (mLocalPositionX, mLocalPositionY, mScale, mFlipped, mRelativeRotation)
+                                       // if mFlipped is true, mRelativeRotation should be changed to "PI - mRelativeRotation"?
+                                       new Transform2D (mLocalPositionX, mLocalPositionY, mScale, false, mRelativeRotation), 
+                                       mLocalPoints, mBuildInterior, mCurveThickness, IsRoundEnds (), IsClosed ());
          }
       }
       

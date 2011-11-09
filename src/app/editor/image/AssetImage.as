@@ -199,17 +199,17 @@ package editor.image {
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          var menuItemLoadImage:ContextMenuItem = new ContextMenuItem("(Re)load Local Image ...");
-         var menuItemClearImage:ContextMenuItem = new ContextMenuItem("Clear Image ...");
+         //var menuItemClearImage:ContextMenuItem = new ContextMenuItem("Clear Image ...");
          var menuItemDivideImage:ContextMenuItem = new ContextMenuItem("Free Divide ...");
-         var menuItemDivideImage_TileSet:ContextMenuItem = new ContextMenuItem("Tile Set Divide ...");
+         //var menuItemDivideImage_TileSet:ContextMenuItem = new ContextMenuItem("Tile Set Divide ...");
          
          menuItemLoadImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_LoadImage);
          menuItemDivideImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_DivideImage);
 
          customMenuItemsStack.push (menuItemLoadImage);
-         customMenuItemsStack.push (menuItemClearImage);
+         //customMenuItemsStack.push (menuItemClearImage);
          customMenuItemsStack.push (menuItemDivideImage);
-         customMenuItemsStack.push (menuItemDivideImage_TileSet);
+         //customMenuItemsStack.push (menuItemDivideImage_TileSet);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }

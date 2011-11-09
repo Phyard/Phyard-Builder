@@ -238,6 +238,12 @@ package viewer {
                var buildStatus:int = mWorldDesignProperties.GetBuildingStatus (); 
                if (buildStatus > 0)
                {
+                  if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
+                  {
+                     this.visible = true;
+                     mParamsFromUniViewer.SetLoadingText (null);
+                  }
+                  
                   ChangeState (StateId_Playing);
                }
                else if (buildStatus < 0)
@@ -272,6 +278,11 @@ package viewer {
             case StateId_LoadingError:
                break;
             case StateId_Building:
+               if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
+               {
+                  mParamsFromUniViewer.SetLoadingText ("Building ...");
+                  this.visible = false;
+               }
                break;
             case StateId_BuildingError:
                break;

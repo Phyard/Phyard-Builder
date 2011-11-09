@@ -484,6 +484,17 @@ package player.design
       
       protected static function OnLoadImageDone (image:ImageBitmap):void
       {
+         for (var divisionId:int = 0; divisionId < mImageBitmapDivisions.length; ++ divisionId)
+         {
+            var imageDivision:ImageBitmapDivision = mImageBitmapDivisions [divisionId];
+            if (imageDivision.GetSourceImage () == image && imageDivision.GetStatus () == 0)
+            {
+               imageDivision.OnSourceImageRebuilt ();
+            }
+         }
+         
+         //...
+         
          var pending:Boolean = false;
          
          for (var imageId:int = 0; imageId < mImageBitmaps.length; ++ imageId)

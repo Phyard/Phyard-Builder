@@ -1319,6 +1319,16 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
    }
 }
 
+// for module shape
+public static function OnShapeGeomModified (shape:EntityShape):void
+{
+   if (shape.IsPhysicsShape ())
+      shape.RebuildShapePhysics ();
+   
+   shape.GetBody ().OnShapeListChanged (false);
+   shape.GetBody ().SynchronizeWithPhysicsProxyManually ();
+}
+
 //public function DetachFromBrothers ():void
 //{
 //   DetachShape (this);

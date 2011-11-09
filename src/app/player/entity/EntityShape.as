@@ -1604,7 +1604,7 @@ package player.entity {
          
          mPhysicsShapeProxy = null;
          
-         super.DestroyPhysicsProxy ();
+         super.DestroyPhysicsProxy (); // will set mPhysicsProxy null
       }
       
       final public function RebuildShapePhysics ():void

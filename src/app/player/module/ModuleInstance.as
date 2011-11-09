@@ -20,6 +20,11 @@ package player.module {
          mModule = module;
       }
       
+      public function GetModule ():Module
+      {
+         return mModule;
+      }
+      
       // return needs call BuildCurrentFrame or not
       public function Step ():Boolean
       {
@@ -28,10 +33,14 @@ package player.module {
          ++ mFrameStep;
          if (frameDutation > 0 && mFrameStep >= frameDutation)
          {
-            if (mFrameIndex ++ >= mModule.GetNumFrames ())
+            mFrameStep = 0;
+            
+            var oldFrameIndex:int = mFrameIndex;
+            
+            if (++ mFrameIndex >= mModule.GetNumFrames ())
                mFrameIndex = 0;
             
-            return true;
+            return mFrameIndex != oldFrameIndex;
          }
          
          return false;

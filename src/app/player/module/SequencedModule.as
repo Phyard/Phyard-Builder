@@ -51,7 +51,7 @@ package player.module {
          if (frameIndex >= 0 && frameIndex < mModuleSequences.length)
          {
             var moudlePart:ModuleSequence = mModuleSequences [frameIndex] as ModuleSequence;
-            moudlePart..GetModule ().BuildPhysicsProxy (0, physicsShapeProxy, Transform2D.CombineTransforms (transform, moudlePart.GetTransformInPhysics ()));
+            moudlePart.GetModule ().BuildPhysicsProxy (0, physicsShapeProxy, Transform2D.CombineTransforms (transform, moudlePart.GetTransformInPhysics ()));
          }
       }
    }

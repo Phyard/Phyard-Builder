@@ -295,7 +295,7 @@ package player.world {
             while (true)
             {
                if (entity is EntityShapeImageModule)
-                  (entity as EntityShapeImageModule).OnModuleappearanceChanged ();
+                  (entity as EntityShapeImageModule).OnModuleAppearanceChanged ();
 
                if (entity == tail)
                   break;

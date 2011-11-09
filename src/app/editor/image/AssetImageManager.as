@@ -80,13 +80,13 @@ package editor.image {
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          var menuItemLoadLocalImages:ContextMenuItem = new ContextMenuItem("Load Local Image(s) ...", true);
-         var menuItemCreateImage:ContextMenuItem = new ContextMenuItem("Create Blank Image ...");
+         //var menuItemCreateImage:ContextMenuItem = new ContextMenuItem("Create Blank Image ...");
          
          menuItemLoadLocalImages.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_LoadLocalImages);
-         menuItemCreateImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateImage);
+         //menuItemCreateImage.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateImage);
 
          customMenuItemsStack.push (menuItemLoadLocalImages);
-         customMenuItemsStack.push (menuItemCreateImage);
+         //customMenuItemsStack.push (menuItemCreateImage);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }

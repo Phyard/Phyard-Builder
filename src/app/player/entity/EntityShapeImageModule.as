@@ -72,10 +72,25 @@ package player.entity {
       
       protected var mModuleInstance:ModuleInstance = null;
       
-      public function OnModuleappearanceChanged ():void
+      public function OnModuleAppearanceChanged ():void
       {
          mNeedRebuildAppearanceObjects = true;
          DelayUpdateAppearance ();
+      }
+      
+//=============================================================
+//   update
+//=============================================================
+      
+      override protected function UpdateInternal (dt:Number):void
+      {
+         if (mModuleInstance.Step ())
+         {
+            mNeedRebuildAppearanceObjects = true;
+            DelayUpdateAppearance ();
+            
+            OnShapeGeomModified (this);
+         }
       }
       
 //=============================================================
@@ -94,6 +109,9 @@ package player.entity {
             mNeedRebuildAppearanceObjects = false;
             
             // ...
+            while (mModuleSprite.numChildren > 0)
+               mModuleSprite.removeChildAt (0);
+            
             mModuleInstance.RebuildAppearance (mModuleSprite, null);
          }
          

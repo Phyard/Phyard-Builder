@@ -129,6 +129,21 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
+
+      public function CanRefImageModule (module:AssetImageModule):Boolean
+      {
+         if ((module is AssetImageCompositeModule) && (module as AssetImageCompositeModule).IsSequenced ())
+         {
+            return false;
+         }
+         
+         if (module == this || module.ContainsDescendant (this))
+         {
+            return false;
+         }
+         
+         return true;
+      }
       
       override public function ContainsDescendant (module:AssetImageModule):Boolean
       {

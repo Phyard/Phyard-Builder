@@ -442,7 +442,7 @@ package editor.asset {
 //   actions on selected assets
 //=================================================================================
       
-      public function DeleteSelectedAssets ():Boolean
+      public function DeleteSelectedAssets (passively:Boolean = false):Boolean
       {
          var assetArray:Array = mSelectionList.GetSelectedMainAssets ();
          
@@ -480,7 +480,7 @@ package editor.asset {
             asset.Move (offsetX, offsetY, updateSelectionProxy);
          }
          
-         if (assetArray.length > 0)
+         if (updateSelectionProxy && assetArray.length > 0)
          {
             NotifyModifiedForReferers ();
          }
@@ -511,7 +511,7 @@ package editor.asset {
             }
          }
          
-         if (assetArray.length > 0)
+         if (updateSelectionProxy && assetArray.length > 0)
          {
             NotifyModifiedForReferers ();
          }
@@ -540,7 +540,7 @@ package editor.asset {
             }
          }
          
-         if (assetArray.length > 0)
+         if (updateSelectionProxy && assetArray.length > 0)
          {
             NotifyModifiedForReferers ();
          }

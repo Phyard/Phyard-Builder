@@ -68,7 +68,7 @@ package editor.asset {
          // temp do nothing
       }
       
-      override public function DeleteSelectedAssets ():Boolean
+      override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
       {
          var result:Boolean = super.DeleteSelectedAssets ();
          

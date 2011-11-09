@@ -76,8 +76,11 @@ package editor.image {
          mAssetImageModuleInstanceForListingPeer = moduleInstacneForListing;
       }
       
-      public function SetAssetImageModule (assetImageModule:AssetImageModule):void
+      public function SetAssetImageModule (assetImageModule:AssetImageModule):Boolean
       {
+         if (! mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().CanRefImageModule (assetImageModule))
+            return false;
+         
          if (mReferPair != null)
          {
             mReferPair.Break ();
@@ -94,6 +97,8 @@ package editor.image {
          {
             mAssetImageModuleInstanceForListingPeer.SetAssetImageModule (assetImageModule);
          }
+         
+         return true;
       } 
       
       override public function ToCodeString ():String
@@ -317,6 +322,14 @@ package editor.image {
                }
             }
          }
+         
+         if (actionDone)
+         {
+            // update icon in list
+            mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
+            
+            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+         }
       }
 
       override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
@@ -372,13 +385,16 @@ package editor.image {
       
       private function OnContextMenuEvent_RebuildFromCurrentModule (event:ContextMenuEvent):void
       {
-         SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule);
-         
-         UpdateAppearance ();
-         UpdateSelectionProxy ();
-         
-         // update icon in list
-         mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
+         if (SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule))
+         {
+            UpdateAppearance ();
+            UpdateSelectionProxy ();
+            
+            // update icon in list
+            mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
+            
+            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+         }
       }
       
       private function OnContextMenuEvent_InsertBeforeFromCurrentModule (event:ContextMenuEvent):void

@@ -55,17 +55,21 @@ package editor.image {
 // 
 //========================================================== 
       
-      override public function DestroyAsset (asset:Asset):void
+      override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
       {
-         var moduleInstanceForListing:AssetImageModuleInstanceForListing = asset as AssetImageModuleInstanceForListing;
-         var moduleInstance:AssetImageModuleInstance = moduleInstanceForListing.GetModuleInstaneForEditingPeer ();
-         
-         super.DestroyAsset (asset); // the module instance for listing
-         
-         if (! moduleInstance.IsDestroyed ())
+         if (super.DeleteSelectedAssets ())
          {
-            moduleInstance.GetAssetImageModuleInstanceManager ().DestroyAsset (moduleInstance);
+            if (! passively)
+            {
+               mAssetImageCompositeModule.GetModuleInstanceManager().DeleteSelectedAssets (true);
+            }
+            
+            RearrangeAssetPositions (true);
+            
+            return true;
          }
+         
+         return false;
       }
 
       public function CreateImageModuleInstanceForListing (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstanceForListing

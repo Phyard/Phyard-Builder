@@ -48,24 +48,14 @@ package editor.image {
 //   
 //=============================================================
       
-      override public function DestroyAsset (asset:Asset):void
-      {
-         var moduleInstance:AssetImageModuleInstance = asset as AssetImageModuleInstance;
-         var moduleInstanceForListing:AssetImageModuleInstanceForListing = moduleInstance.GetModuleInstaneForListingPeer ();
-         
-         super.DestroyAsset (asset); // the module instance
-         
-         if (! moduleInstanceForListing.IsDestroyed ())
-         {
-            moduleInstanceForListing.GetAssetImageModuleInstanceManagerForListing ().DestroyAsset (moduleInstanceForListing);
-         }
-      }
-      
-      override public function DeleteSelectedAssets ():Boolean
+      override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
       {
          if (super.DeleteSelectedAssets ())
          {
-            NotifyModifiedForReferers ();
+            if (! passively)
+            {
+               mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().DeleteSelectedAssets (true);
+            }
             
             return true;
          }
@@ -81,37 +71,32 @@ package editor.image {
          //var finalModule:AssetImageModule = module == null ? null : module.GetFinalImageModule ();
          var finalModule:AssetImageModule = module;
          
-         //if ((! mAssetImageCompositeModule.IsSequenced () ) && finalModule.IsSequenced () )
-         if ((finalModule is AssetImageCompositeModule) && (finalModule as AssetImageCompositeModule).IsSequenced ())
-         {
+         if (! mAssetImageCompositeModule.CanRefImageModule (finalModule))
             return null;
-         }
          
-         if (finalModule == mAssetImageCompositeModule || finalModule.ContainsDescendant (mAssetImageCompositeModule))
-         {
-            return null;
-         }
-            
-         var moduleInstane:AssetImageModuleInstance = new AssetImageModuleInstance (this, finalModule);
-         var moduleInstaneForListing:AssetImageModuleInstanceForListing = mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().CreateImageModuleInstanceForListing (finalModule, selectIt, atIndex);
-         moduleInstaneForListing.SetModuleInstaneForEditingPeer (moduleInstane);
-         moduleInstane.SetModuleInstaneForListingPeer (moduleInstaneForListing);
+         var moduleInstance:AssetImageModuleInstance = new AssetImageModuleInstance (this, finalModule);
+         var moduleInstanceForListing:AssetImageModuleInstanceForListing = mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().CreateImageModuleInstanceForListing (finalModule, selectIt, atIndex);
+         moduleInstanceForListing.SetModuleInstaneForEditingPeer (moduleInstance);
+         moduleInstance.SetModuleInstaneForListingPeer (moduleInstanceForListing);
 
          if (selectIt) // in editing, not loading
          {
-            moduleInstane.SetPosition (mouseX, mouseY);
-            SetSelectedAsset (moduleInstane);
+            moduleInstance.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (moduleInstance);
          }
          
          if (atIndex < 0 || atIndex > GetNumAssets ())
-            addChild (moduleInstane);
+            addChild (moduleInstance);
          else
-            addChildAt (moduleInstane, atIndex);
+            addChildAt (moduleInstance, atIndex);
          
-         moduleInstane.UpdateAppearance ();
-         moduleInstane.UpdateSelectionProxy ();
+         if (selectIt) // in editing, not loading. DeatFormat will do this. But it is best to do this when all images are loaded.
+         {
+            moduleInstance.UpdateAppearance ();
+            moduleInstance.UpdateSelectionProxy ();
+         }
          
-         return moduleInstane;
+         return moduleInstance;
       }
       
       public function CreateImageShapeRectangleModuleInstance (selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance

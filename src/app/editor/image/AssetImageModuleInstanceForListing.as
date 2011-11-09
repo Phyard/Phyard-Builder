@@ -115,6 +115,8 @@ package editor.image {
       
       override public function OnReferingModified (referPair:ReferPair, info:Object = null):void
       {
+         super.OnReferingModified (referPair, info);
+         
          if (referPair == mReferPair)
          {
             UpdateAppearance ();
@@ -123,6 +125,8 @@ package editor.image {
 
       override public function OnReferingDestroyed (referPair:ReferPair):void
       {
+         super.OnReferingDestroyed (referPair);
+         
          if (referPair == mReferPair)
          {
             mAssetImageModuleInstanceManagerForListing.DestroyAsset (this);

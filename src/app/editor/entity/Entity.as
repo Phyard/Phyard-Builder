@@ -10,10 +10,13 @@ package editor.entity {
    
    import editor.selection.SelectionProxy;
    
+   import editor.core.EditorObject;
+   
    import common.Define;
    import common.ValueAdjuster;
    
-   public class Entity extends Sprite
+   //todo: extends from Asset (or merge Asset and EditorObject)
+   public class Entity extends EditorObject// Sprite
    {
       protected var mEntityContainer:EntityContainer;
       protected var mAppearanceLayerId:int = -1;

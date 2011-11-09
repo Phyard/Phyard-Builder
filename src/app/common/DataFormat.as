@@ -1039,6 +1039,10 @@ package common {
             {
                moduleInstance.SetDuration (moduleInstanceDefine.mModuleDuration);
             }
+            
+            // ...
+            moduleInstance.UpdateAppearance ();
+            moduleInstance.UpdateSelectionProxy ();
          }
       }
       

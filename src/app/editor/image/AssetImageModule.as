@@ -37,8 +37,6 @@ package editor.image {
    import editor.asset.Asset;
    import editor.asset.AssetManager;
 
-   import editor.runtime.Runtime; // temp, to remove
-   
    import common.Transform2D;
    
    import common.Define;
@@ -125,24 +123,6 @@ package editor.image {
       public function BuildImageModuleSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void
       {
          // to override
-      }
-      
-//=============================================================
-//   the 2 are temp. later Entity will extend Asset, so the 2 will be removed.
-//=============================================================
-
-      override public function NotifyModifiedForReferers (info:Object = null):void
-      {
-         super.NotifyModifiedForReferers (info);
-         
-         Runtime.NotifySomeModulesChanged ();
-      }
-      
-      override protected function NotifyDestroyedForReferers ():void
-      {
-         super.NotifyDestroyedForReferers ();
-         
-         Runtime.NotifySomeModulesChanged ();
       }
       
 //=============================================================

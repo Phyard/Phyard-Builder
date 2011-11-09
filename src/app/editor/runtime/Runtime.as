@@ -35,8 +35,6 @@ package editor.runtime {
          // todo: nullify/removeChild dialog references, ..., etc.
            // ex: AssetImageModuleListDialog.removeChild (3 managers), hideAssetImageModuleListDialog,...
         
-         mHaveModulesChanged = false;
-        
          SetKeyboardListener (null);
       }
    
@@ -149,27 +147,6 @@ package editor.runtime {
       public static var mEditorWorldView:WorldView = null;
       public static var mCollisionCategoryView:CollisionManagerView = null;
       public static var mFunctionEditingView:FunctionEditingView = null;
-      
-//=====================================================================
-//
-//=====================================================================
-      
-      protected static var mHaveModulesChanged:Boolean = false;
-      
-      public static function NotifySomeModulesChanged ():void
-      {
-         mHaveModulesChanged = true;
-      }
-      
-      public static function ResetSomeModulesChanged ():void
-      {
-         mHaveModulesChanged = false;
-      }
-      
-      public static function HaveSomeModulesChanged ():Boolean
-      {
-         return mHaveModulesChanged;
-      }
       
 //=====================================================================
 //   key listener

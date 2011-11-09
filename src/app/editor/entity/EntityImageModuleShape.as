@@ -17,6 +17,9 @@ package editor.entity {
    import editor.world.World;
 
    import editor.selection.SelectionProxy;
+   
+   import editor.core.EditorObject;
+   import editor.core.ReferPair;
 
    import editor.image.AssetImageModule;
    import editor.image.AssetImageNullModule;
@@ -70,16 +73,56 @@ package editor.entity {
 
       public function SetAssetImageModule (imageModule:AssetImageModule):void
       {
+         if (mReferPair != null)
+         {
+            mReferPair.Break ();
+            mAssetImageModule = null;
+         }
+         
          if (imageModule == null)
-            mAssetImageModule = new AssetImageNullModule ();
-         else
+            imageModule = new AssetImageNullModule ();
+         
+         if (imageModule != null)
+         {
             mAssetImageModule = imageModule;
+            mReferPair = ReferObject (mAssetImageModule);
+         }
       }
       
       // for loading
       public function SetAssetImageModuleByIndex (index:int):void
       {
          SetAssetImageModule (mWorld.GetImageModuleByIndex (index));
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      private var mReferPair:ReferPair;
+      
+      override public function OnReferingModified (referPair:ReferPair, info:Object = null):void
+      {
+         super.OnReferingModified (referPair, info);
+         
+         if (referPair == mReferPair)
+         {
+            UpdateAppearance ();
+            UpdateSelectionProxy ();
+         }
+      }
+
+      override public function OnReferingDestroyed (referPair:ReferPair):void
+      {
+         super.OnReferingDestroyed (referPair);
+         
+         if (referPair == mReferPair)
+         {
+            SetAssetImageModule (null);
+            
+            UpdateAppearance ();
+            UpdateSelectionProxy ();
+         }
       }
       
 //=============================================================

@@ -12,6 +12,9 @@ package editor.image {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
+   import editor.core.EditorObject;
+   import editor.core.ReferPair;
+   
    import editor.asset.Asset;
    import editor.asset.AssetManager;
    
@@ -56,6 +59,18 @@ package editor.image {
          {
             moduleInstanceForListing.GetAssetImageModuleInstanceManagerForListing ().DestroyAsset (moduleInstanceForListing);
          }
+      }
+      
+      override public function DeleteSelectedAssets ():Boolean
+      {
+         if (super.DeleteSelectedAssets ())
+         {
+            NotifyModifiedForReferers ();
+            
+            return true;
+         }
+         
+         return false;
       }
 
       public function CreateImageModuleInstance (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
@@ -128,7 +143,13 @@ package editor.image {
 //   
 //=============================================================
       
-      
+      override public function NotifyModifiedForReferers (info:Object = null):void
+      {
+         mAssetImageCompositeModule.UpdateAppearance ();
+         mAssetImageCompositeModule.NotifyModifiedForReferers ();
+        
+         super.NotifyModifiedForReferers (info);
+      }
       
 //=============================================================
 //   

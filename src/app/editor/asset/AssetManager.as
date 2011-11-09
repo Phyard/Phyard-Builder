@@ -459,6 +459,11 @@ package editor.asset {
             ++ count;
          }
          
+         if (assetArray.length > 0)
+         {
+            NotifyModifiedForReferers ();
+         }
+         
          return count > 0;
       }
       
@@ -473,6 +478,11 @@ package editor.asset {
             asset = assetArray [i] as Asset;
             
             asset.Move (offsetX, offsetY, updateSelectionProxy);
+         }
+         
+         if (assetArray.length > 0)
+         {
+            NotifyModifiedForReferers ();
          }
       }
       
@@ -500,6 +510,11 @@ package editor.asset {
                asset.RotateSelf (deltaRot, updateSelectionProxy);
             }
          }
+         
+         if (assetArray.length > 0)
+         {
+            NotifyModifiedForReferers ();
+         }
       }
       
       public function ScaleSelectedAssets (updateSelectionProxy:Boolean, s:Number, scaleSelf:Boolean, scalePosition:Boolean = false, centerX:Number = NaN, centerY:Number = NaN):void
@@ -524,6 +539,11 @@ package editor.asset {
                asset.ScaleSelf (s, updateSelectionProxy);
             }
          }
+         
+         if (assetArray.length > 0)
+         {
+            NotifyModifiedForReferers ();
+         }
       }
       
       public function FlipSelectedAssets (updateSelectionProxy:Boolean, flipSelf:Boolean, flipPosition:Boolean = false, planeX:Number = NaN):void
@@ -547,6 +567,11 @@ package editor.asset {
             {
                asset.FlipSelf (updateSelectionProxy);
             }
+         }
+         
+         if (assetArray.length > 0)
+         {
+            NotifyModifiedForReferers ();
          }
       }
       
@@ -573,6 +598,11 @@ package editor.asset {
                addChild (asset);
             }
          }
+         
+         if (assetArray.length > 0)
+         {
+            NotifyModifiedForReferers ();
+         }
       }
       
       public function MoveSelectedAssetsToBottom ():void
@@ -597,6 +627,11 @@ package editor.asset {
             //   removeChild (asset.GetMainAsset ());
             //   addChildAt (asset.GetMainAsset (), 0);
             //}
+         }
+         
+         if (assetArray.length > 0)
+         {
+            NotifyModifiedForReferers ();
          }
       }
       

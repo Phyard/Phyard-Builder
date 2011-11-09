@@ -26,14 +26,14 @@ package editor.image {
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;
    
+   import editor.core.EditorObject;
+   import editor.core.ReferPair;
+   
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
    import editor.asset.ControlPointModifyResult;
    
    import editor.image.vector.VectorShapeForEditing;
-   
-   import editor.core.EditorObject;
-   import editor.core.ReferPair;
    
    import common.Transform2D;
    
@@ -114,25 +114,28 @@ package editor.image {
       
       override public function OnReferingModified (referPair:ReferPair, info:Object = null):void
       {
+         super.OnReferingModified (referPair, info);
+         
          if (referPair == mReferPair)
          {
             UpdateAppearance ();
+            UpdateSelectionProxy ();
             
-            mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().UpdateAppearance ();
-            mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().NotifyModifiedForReferers ();
+            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
          }
       }
 
       override public function OnReferingDestroyed (referPair:ReferPair):void
       {
+         super.OnReferingDestroyed (referPair);
+         
          if (referPair == mReferPair)
          {
             mAssetImageModuleInstanceManager.DestroyAsset (this);
             mReferPair = null;
             mAssetImageModule = null;
             
-            mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().UpdateAppearance ();
-            mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().NotifyModifiedForReferers ();
+            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
          }
       }
       

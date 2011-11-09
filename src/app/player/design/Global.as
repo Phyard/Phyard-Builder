@@ -535,28 +535,28 @@ package player.design
       {
          // todo: create an Array for better performance
          
-         if (moduleId < 0)
-            return null;
+         if (moduleId >= 0)
+         {
+            if (moduleId < mImageBitmaps.length)
+               return mImageBitmaps [moduleId] as Module;
+            
+            moduleId -= mImageBitmaps.length;
+            
+            if (moduleId < mImageBitmapDivisions.length)
+               return mImageBitmapDivisions [moduleId] as Module;
+            
+            moduleId -= mImageBitmapDivisions.length;
+            
+            if (moduleId < mAssembledModules.length)
+               return mAssembledModules [moduleId] as Module;
+            
+            moduleId -= mAssembledModules.length;
+            
+            if (moduleId < mSequencedModules.length)
+               return mSequencedModules [moduleId] as Module;
+         }
          
-         if (moduleId < mImageBitmaps.length)
-            return mImageBitmaps [moduleId] as Module;
-         
-         moduleId -= mImageBitmaps.length;
-         
-         if (moduleId < mImageBitmapDivisions.length)
-            return mImageBitmapDivisions [moduleId] as Module;
-         
-         moduleId -= mImageBitmapDivisions.length;
-         
-         if (moduleId < mAssembledModules.length)
-            return mAssembledModules [moduleId] as Module;
-         
-         moduleId -= mAssembledModules.length;
-         
-         if (moduleId < mSequencedModules.length)
-            return mSequencedModules [moduleId] as Module;
-         
-         return null;
+         return new Module ();
       }
       
       public static function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void

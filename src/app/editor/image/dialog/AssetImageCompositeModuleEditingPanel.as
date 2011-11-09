@@ -179,6 +179,8 @@ package editor.image.dialog {
          mCurrentSelectedCreateButton = null;
          
          OnAssetSelectionsChanged (true);
+         
+         mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
       }
       
       protected function OnCreatingCancelled ():void

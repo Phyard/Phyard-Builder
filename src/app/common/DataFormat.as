@@ -940,6 +940,7 @@ package common {
             var vectorShape:VectorShape = (imageModule as AssetImageShapeModule).GetVectorShape () as VectorShape;
             
             moduleInstanceDefine.mShapeAttributeBits = vectorShape.GetAttributeBits ();
+            moduleInstanceDefine.mCircleAppearacneType = vectorShape.GetAppearanceType ();
             moduleInstanceDefine.mShapeBodyOpacityAndColor = vectorShape.GetBodyOpacityAndColor (); // argb
             
             if (vectorShape is VectorShapePath)
@@ -971,7 +972,6 @@ package common {
                   moduleInstanceDefine.mModuleType = Define.EntityType_ShapeCircle;
                   
                   moduleInstanceDefine.mCircleRadius = circleShape.GetRadius ();
-                  moduleInstanceDefine.mCircleAppearacneType = circleShape.GetAppearanceType ();
                }
                else if (vectorShape is VectorShapePolygon)
                {
@@ -1082,7 +1082,6 @@ package common {
                   var circleShape:VectorShapeCircleForEditing = new VectorShapeCircleForEditing ();
                   
                   circleShape.SetRadius (moduleInstanceDefine.mCircleRadius);
-                  circleShape.SetAppearanceType (moduleInstanceDefine.mCircleAppearacneType);
                   
                   areaVectorShape = circleShape as VectorShapeArea;
                }
@@ -1117,6 +1116,7 @@ package common {
             if (vectorShape != null)
             {
                vectorShape.SetAttributeBits (moduleInstanceDefine.mShapeAttributeBits);
+               vectorShape.SetAppearanceType (moduleInstanceDefine.mCircleAppearacneType);
                vectorShape.SetBodyOpacityAndColor (moduleInstanceDefine.mShapeBodyOpacityAndColor); // argb
 
                imageModule = new AssetImageShapeModule (vectorShape as VectorShapeForEditing);
@@ -2570,6 +2570,7 @@ package common {
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
             moduleInstanceDefine.mShapeAttributeBits = parseInt (element.@shape_attribute_bits);
+            moduleInstanceDefine.mShapeAppearacneType = parseInt (element.@shape_appearance_type);
             moduleInstanceDefine.mShapeBodyOpacityAndColor = element.@shape_body_argb == undefined ? 0x0 : uint (parseInt ( (element.@shape_body_argb).substr (2), 16));
             
             if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
@@ -2589,7 +2590,6 @@ package common {
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
                {
                   moduleInstanceDefine.mCircleRadius = parseFloat (element.@circle_radius);
-                  moduleInstanceDefine.mCircleAppearacneType = parseInt (element.@circle_appearance_type);
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
                {
@@ -3877,6 +3877,7 @@ package common {
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
             byteArray.writeUnsignedInt (moduleInstanceDefine.mShapeAttributeBits);
+            byteArray.writeByte (moduleInstanceDefine.mShapeAppearacneType);
             byteArray.writeUnsignedInt (moduleInstanceDefine.mShapeBodyOpacityAndColor);
             
             if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
@@ -3896,7 +3897,6 @@ package common {
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
                {
                   byteArray.writeFloat (moduleInstanceDefine.mCircleRadius);
-                  byteArray.writeByte (moduleInstanceDefine.mCircleAppearacneType);
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
                {

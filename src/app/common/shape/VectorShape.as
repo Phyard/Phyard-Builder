@@ -47,6 +47,20 @@ package common.shape
          mAttributeBits = attributeBits;
       }
 
+      // appearance type
+
+      public var mAppearanceType:int = 0;
+
+      public function GetAppearanceType ():int
+      {
+         return mAppearanceType;
+      }
+
+      public function SetAppearanceType (type:int):void
+      {
+         mAppearanceType = type;
+      }
+
       public function IsBuildBackground ():Boolean
       {
          return (mAttributeBits & Flag_BuildBackground) != 0;

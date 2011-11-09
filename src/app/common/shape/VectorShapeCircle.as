@@ -6,20 +6,7 @@ package common.shape
    {
       public function VectorShapeCircle ()
       {
-      }
-
-      // appearance type
-
-      public var mAppearacneType:int = Define.CircleAppearanceType_Circle;
-
-      public function GetAppearanceType ():int
-      {
-         return mAppearacneType;
-      }
-
-      public function SetAppearanceType (type:int):void
-      {
-         mAppearacneType = type;
+         SetAppearanceType (Define.CircleAppearanceType_Circle);
       }
 
       // radius

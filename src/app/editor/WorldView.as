@@ -3315,12 +3315,12 @@ package editor {
                case Keyboard.NUMPAD_SUBTRACT:
                   RoundPositionForSelectedEntities ();
                   break;
-               case Keyboard.F5:
-                  AssetSoundListDialog.ShowAssetSoundListDialog ();
-                  break;
-               case Keyboard.F6:
+               case Keyboard.F3:
                   AssetImageModuleListDialog.ShowAssetImageModuleListDialog ();
                   break;
+               //case Keyboard.F4:
+               //   AssetSoundListDialog.ShowAssetSoundListDialog ();
+               //   break;
                default:
                   break;
             }

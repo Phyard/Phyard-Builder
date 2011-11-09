@@ -900,6 +900,7 @@ package common {
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
             element.@shape_attribute_bits = moduleInstanceDefine.mShapeAttributeBits;
+            element.@shape_appearance_type = moduleInstanceDefine.mShapeAppearacneType;
             element.@shape_body_argb = UInt2ColorString (moduleInstanceDefine.mShapeBodyOpacityAndColor);
             
             if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
@@ -919,7 +920,6 @@ package common {
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
                {
                   element.@circle_radius = moduleInstanceDefine.mCircleRadius;
-                  element.@circle_appearance_type = moduleInstanceDefine.mCircleAppearacneType;
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
                {
@@ -2314,6 +2314,7 @@ package common {
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
             moduleInstanceDefine.mShapeAttributeBits = byteArray.readUnsignedInt ();
+            moduleInstanceDefine.mShapeAppearacneType = byteArray.readByte ();
             moduleInstanceDefine.mShapeBodyOpacityAndColor = byteArray.readUnsignedInt ();
             
             if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
@@ -2333,7 +2334,6 @@ package common {
                if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeCircle)
                {
                   moduleInstanceDefine.mCircleRadius = byteArray.readFloat ();
-                  moduleInstanceDefine.mCircleAppearacneType = byteArray.readByte ();
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
                {

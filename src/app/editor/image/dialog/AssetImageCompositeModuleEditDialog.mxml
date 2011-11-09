@@ -19,7 +19,7 @@
          <mx:HBox height="100%" backgroundColor="0xD0D0D0" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
             <mx:Spacer width="100%"/>
             <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-               <mx:Button id="ButtonCreateGeneralModuleInstance" toolTip="Create New Module Instance From Current Module" focusEnabled="false" fontSize="8" width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
+               <mx:Button id="ButtonCreateGeneralModuleInstance" toolTip="Create New Module Instance From Current Module" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/module/create-bitmap-module.png')" downIcon="@Embed('../../../res/module/create-bitmap-module-sel.png')" overIcon="@Embed('../../../res/module/create-bitmap-module.png')" selectedUpIcon="@Embed('../../../res/module/create-bitmap-module-sel.png')" selectedOverIcon="@Embed('../../../res/module/create-bitmap-module-sel.png')" selectedDownIcon="@Embed('../../../res/module/create-bitmap-module.png')"   />
                <mx:Button id="ButtonCreateShapeBoxInstance" click=";" toolTip="Create Rectangle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/box.png')" downIcon="@Embed('../../../res/create/box-sel.png')" overIcon="@Embed('../../../res/create/box.png')" selectedUpIcon="@Embed('../../../res/create/box-sel.png')" selectedOverIcon="@Embed('../../../res/create/box-sel.png')" selectedDownIcon="@Embed('../../../res/create/box.png')"   />
                <mx:Button id="ButtonCreateShapeCircleInstance" click=";" toolTip="Create Circle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/ball.png')" downIcon="@Embed('../../../res/create/ball-sel.png')" overIcon="@Embed('../../../res/create/ball.png')" selectedUpIcon="@Embed('../../../res/create/ball-sel.png')" selectedOverIcon="@Embed('../../../res/create/ball-sel.png')" selectedDownIcon="@Embed('../../../res/create/ball.png')"   />
                <mx:Button id="ButtonCreateShapePolygonInstance" click=";" toolTip="Create Polygon" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polygon.png')" downIcon="@Embed('../../../res/create/polygon-sel.png')" overIcon="@Embed('../../../res/create/polygon.png')" selectedUpIcon="@Embed('../../../res/create/polygon-sel.png')" selectedOverIcon="@Embed('../../../res/create/polygon-sel.png')" selectedDownIcon="@Embed('../../../res/create/polygon.png')"   />
@@ -56,7 +56,7 @@
             </mx:VBox>
          </mx:HDividedBox>
       </mx:HBox>
-      <mx:VBox width="100%" backgroundColor="0xD0D0D0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+      <mx:VBox id="BoxPropertySettings" width="100%" backgroundColor="0xD0D0D0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
          <mx:HBox width="100%" verticalAlign="middle" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
             <mx:Label id="LabelLeft" text="X:" textAlign="right" />
             <mx:TextInput id="TextInputPosX" width="65" enter="ChangeModuleInstanceProperties ();" />
@@ -133,6 +133,15 @@
             assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ().SetAssetImageCompositeModuleEditingPanelPeer (assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditingPanel ());
             
             assetImageCompositeModule.SetAssetImageCompositeModuleEditDialog (assetImageCompositeModuleEditDialog);
+            
+            if (assetImageCompositeModule.IsSequenced ())
+            {
+               assetImageCompositeModuleEditDialog.SetTitle ("Sequenced Module Editing");
+            }
+            else
+            {
+               assetImageCompositeModuleEditDialog.SetTitle ("Assembled Module Editing");
+            }
          }
          
          public function Hide ():void
@@ -149,11 +158,21 @@
          {
             return panelAssetImageModuleInstanceListing;
          }
+         
+         public function SetTitle (title:String):void
+         {
+            this.title = title;
+         }
       
       //=====================================================================
       
          public function InitDialog ():void
          {
+            // temp for preview version
+            BoxPropertySettings.parent.removeChild (BoxPropertySettings);
+            ViewStackPlayStop.parent.removeChild (ViewStackPlayStop);
+            
+            //...
             panelAssetImageCompositeModuleEditing.mButtonCreateGeneralModuleInstance = ButtonCreateGeneralModuleInstance;
             panelAssetImageCompositeModuleEditing.mButtonCreateShapeBoxInstance = ButtonCreateShapeBoxInstance;
             panelAssetImageCompositeModuleEditing.mButtonCreateShapeCircleInstance = ButtonCreateShapeCircleInstance;

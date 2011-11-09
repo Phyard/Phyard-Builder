@@ -74,6 +74,8 @@ package editor.world {
    import editor.image.AssetImagePureModuleManager;
    import editor.image.AssetImageCompositeModuleManager;
 
+   import editor.runtime.Runtime; // temp, to remove
+
    import common.Define;
    import common.ValueAdjuster;
 
@@ -170,6 +172,38 @@ package editor.world {
          }
 
          return vertexControllerArray;
+      }
+
+//=================================================================================
+//   temp, when Entity extends Asset, remove this
+//=================================================================================
+
+      override public function Update (escapedTime:Number):void
+      {
+         if (Runtime.HaveSomeModulesChanged ())
+         {
+            Runtime.ResetSomeModulesChanged ()
+            
+            var numEntities:int = mEntitiesSortedByCreationId.length;
+            
+            for (var i:uint = 0; i < numEntities; ++ i)
+            {
+               var entity:Entity = GetEntityByCreationId (i);
+               
+               var moduleShape:EntityImageModuleShape = entity as EntityImageModuleShape;
+               if (moduleShape != null)
+               {
+                  var imageModule:AssetImageModule = moduleShape.GetAssetImageModule ();
+                  if (imageModule.GetAppearanceLayerId () < 0)
+                     moduleShape.SetAssetImageModule (new AssetImageNullModule ());
+                  
+                  moduleShape.UpdateAppearance ();
+                  moduleShape.UpdateSelectionProxy ();
+               }
+            }
+         }
+         
+         super.Update (escapedTime);
       }
 
 //=================================================================================

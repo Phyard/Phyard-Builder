@@ -117,6 +117,9 @@ package editor.image {
          if (referPair == mReferPair)
          {
             UpdateAppearance ();
+            
+            mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().UpdateAppearance ();
+            mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().NotifyModifiedForReferers ();
          }
       }
 
@@ -127,6 +130,9 @@ package editor.image {
             mAssetImageModuleInstanceManager.DestroyAsset (this);
             mReferPair = null;
             mAssetImageModule = null;
+            
+            mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().UpdateAppearance ();
+            mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().NotifyModifiedForReferers ();
          }
       }
       
@@ -345,7 +351,7 @@ package editor.image {
       
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         var menuItemRebuildFromCurrentModule:ContextMenuItem = new ContextMenuItem("Rebuild From Current Module");
+         var menuItemRebuildFromCurrentModule:ContextMenuItem = new ContextMenuItem("Use Current Module");
          var menuItemInsertBeforeFromCurrentModule:ContextMenuItem = new ContextMenuItem("Insert New Module Instance From Current Module Before This One", true);
          var menuItemInsertAfterFromCurrentModule:ContextMenuItem = new ContextMenuItem("Insert New Module Instance From Current Module After This One");
          

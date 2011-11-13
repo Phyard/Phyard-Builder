@@ -126,6 +126,7 @@ package editor.image {
             UpdateAppearance ();
             UpdateSelectionProxy ();
             
+            //NotifyModifiedForReferers
             mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
          }
       }
@@ -140,8 +141,20 @@ package editor.image {
             mReferPair = null;
             mAssetImageModule = null;
             
+            //NotifyModifiedForReferers
             mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
          }
+      }
+
+      override public function NotifyModifiedForReferers (info:Object = null):void
+      {
+         super.NotifyModifiedForReferers (info);
+         
+         // update icon in list
+         mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
+         
+         // ...
+         mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
       }
       
 //=============================================================
@@ -170,7 +183,7 @@ package editor.image {
          SetFlipped (flipped);
          SetRotation (angleDegrees * Math.PI / 180.0);
       }
-      
+   
 //=============================================================
 //   
 //=============================================================
@@ -325,10 +338,7 @@ package editor.image {
          
          if (actionDone)
          {
-            // update icon in list
-            mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
-            
-            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+            NotifyModifiedForReferers ();
          }
       }
 
@@ -390,10 +400,7 @@ package editor.image {
             UpdateAppearance ();
             UpdateSelectionProxy ();
             
-            // update icon in list
-            mAssetImageModuleInstanceForListingPeer.UpdateAppearance ();
-            
-            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+            NotifyModifiedForReferers ();
          }
       }
       

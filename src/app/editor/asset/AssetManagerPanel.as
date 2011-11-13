@@ -252,7 +252,7 @@ package editor.asset {
       // edit mode
       protected var mCurrentIntent:Intent = null;
       
-      public function SetCurrentIntent (mode:Intent):void
+      public function SetCurrentIntent (intent:Intent):void
       {
          if (mCurrentIntent != null)
          {
@@ -260,7 +260,12 @@ package editor.asset {
             mCurrentIntent = null;
          }
          
-         mCurrentIntent = mode;
+         mCurrentIntent = intent;
+      }
+      
+      public function GetCurrentIntent ():Intent
+      {
+         return mCurrentIntent;
       }
       
 //==================================================================================

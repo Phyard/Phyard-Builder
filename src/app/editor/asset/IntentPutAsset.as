@@ -4,12 +4,14 @@ package editor.asset {
    {
       protected var mAssetToPut:Asset;
       
+      protected var mCallbackOnPutting_IntentPutAsset:Function;
       protected var mCallbackOnCancel_IntentPutAsset:Function;
       
       public function IntentPutAsset (assetToPut:Asset, callbackOnPutting:Function = null, callbackOnCancel:Function = null)
       {
-         super (callbackOnPutting, OnCancelled);
+         super (OnPut, OnCancelled);
          
+         mCallbackOnPutting_IntentPutAsset = callbackOnPutting;
          mCallbackOnCancel_IntentPutAsset = callbackOnCancel;
          
          mAssetToPut = assetToPut;
@@ -17,6 +19,14 @@ package editor.asset {
          if (mAssetToPut == null)
          {
             Terminate (true);
+         }
+      }
+      
+      protected function OnPut (finished:Boolean):void
+      {
+         if (mCallbackOnPutting_IntentPutAsset != null)
+         {
+            mCallbackOnPutting_IntentPutAsset (mAssetToPut, finished);
          }
       }
       

@@ -143,6 +143,14 @@ package editor.entity {
             mSelectionProxy.Destroy ();
          
          mEntityContainer.OnEntityDestroyed (this);
+         
+         // ...
+         UnreferAllReferings ();
+         NotifyDestroyedForReferers ();
+         if (Compile::Is_Debugging)
+         {
+            FinalAssertReferPairs ();
+         }
       }
       
       public function Update (escapedTime:Number):void

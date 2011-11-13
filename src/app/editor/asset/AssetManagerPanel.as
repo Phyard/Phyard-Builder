@@ -368,7 +368,7 @@ package editor.asset {
          }
          else
          {
-            mAssetManager.AddAssetSelections (oldSelectedAssets);
+            //mAssetManager.AddAssetSelections (oldSelectedAssets);
             SetCurrentIntent (new IntentRegionSelectAssets (this, oldSelectedAssets));
             mCurrentIntent.OnMouseDown (managerX, managerY);
             
@@ -529,26 +529,34 @@ package editor.asset {
          if (mAssetManager == null)
             return false;
          
-         if (! mIsCtrlDownOnMouseDown)
-            mAssetManager.ClearAssetSelections ();
-         
          var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
          if (assetArray != null && assetArray.length > 0)
          {
             var asset:Asset = assetArray[0] as Asset;
             
             if (mIsCtrlDownOnMouseDown)
+            {
                mAssetManager.ToggleAssetSelected (asset);
+               OnAssetSelectionsChanged ();
+            }
             else
-               mAssetManager.SetSelectedAsset (asset);
-            
-            OnAssetSelectionsChanged ();
+            {
+               if (mAssetManager.SetSelectedAsset (asset))
+               {
+                  OnAssetSelectionsChanged ();
+               }
+            }
             
             return true;
          }
          else
          {
-            OnAssetSelectionsChanged ();
+            if (! mIsCtrlDownOnMouseDown)
+            {
+               mAssetManager.ClearAssetSelections ();
+         
+               OnAssetSelectionsChanged ();
+            }
             
             return false;
          }
@@ -561,19 +569,20 @@ package editor.asset {
          
          var newSelectedAssets:Array = mAssetManager.GetAssetsIntersectWithRegion (left, top, right, bottom);
          
-         mAssetManager.ClearAssetSelections ();
-
          if (mIsCtrlDownOnMouseDown)
          {
-            mAssetManager.AddAssetSelections (oldSelectedAssets);
-            mAssetManager.ToggleAssetsSelected (newSelectedAssets);
+            if (mAssetManager.SetSelectedAssetsByToggleTwoAssetArrays (oldSelectedAssets, newSelectedAssets))
+            {
+               OnAssetSelectionsChanged ();
+            }
          }
          else
          {
-            mAssetManager.AddAssetSelections (newSelectedAssets);
+            if (mAssetManager.SetSelectedAssets (newSelectedAssets))
+            {
+               OnAssetSelectionsChanged ();
+            }
          }
-         
-         OnAssetSelectionsChanged ();
       }
       
 //=================================================================================

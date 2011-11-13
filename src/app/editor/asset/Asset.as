@@ -170,6 +170,9 @@ package editor.asset {
 //   main entity
 //====================================================================
       
+      // todo: the main asset should be learned from google bigtable entity group.
+      // no SubEntity class is needed.
+      
       public function GetMainAsset ():Asset
       {
          return this;
@@ -665,6 +668,30 @@ package editor.asset {
       
       protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-      } 
+      }
+      
+//====================================================================
+//   do convenience for some actions 
+//====================================================================
+      
+      // another possible good mehtod: use bit masks to ...
+      
+      private static var mNextActionId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
+      
+      public static function GetNextActionId ():int
+      {
+         return ++ mNextActionId;
+      }
+      
+      private var mActionId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
+      public function SetCurrentActionId (actionId:int):void
+      {
+         mActionId = actionId;
+      }
+      
+      public function GetCurrentActionId ():int
+      {
+         return mActionId;
+      }
    }
 }

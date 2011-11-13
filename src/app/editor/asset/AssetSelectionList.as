@@ -19,29 +19,27 @@ package editor.asset {
          return mSelectedAssets.concat (); // Clone
       }
       
-      public function ClearSelectedAssets ():void
+      public function GetTheFirstSelectedAsset ():Asset
       {
-         while (mSelectedAssets.length > 0)
-         {
-            if (mSelectedAssets [0] is Asset)
-            {
-               RemoveSelectedAsset (mSelectedAssets[0]);
-            }
-         }
+         if (mSelectedAssets.length == 0)
+            return null;
+         
+         return mSelectedAssets [0] as Asset;
       }
       
-      public function AddSelectedAsset (asset:Asset):void
+      public function AddSelectedAsset (asset:Asset, push:Boolean = false):void
       {
          if (asset == null)
             return;
          
-         for (var i:uint = 0; i < mSelectedAssets.length; ++ i)
-         {
-            if (mSelectedAssets [i] == asset)
-               return;
-         }
+         if (mSelectedAssets.indexOf (asset) >= 0)
+            return;
          
-         mSelectedAssets.unshift (asset);
+         if (push)
+            mSelectedAssets.push (asset);
+         else
+            mSelectedAssets.unshift (asset);
+         
          asset.OnSelectedChanged (true);
       }
       
@@ -50,15 +48,87 @@ package editor.asset {
          if (asset == null)
             return;
          
-         for (var i:uint = 0; i < mSelectedAssets.length; ++ i)
+         var index:int = mSelectedAssets.indexOf (asset);
+         if (index >= 0)
          {
-            if (mSelectedAssets [i] == asset)
+            mSelectedAssets.splice (index, 1);
+            asset.OnSelectedChanged (false);
+         }
+      }
+      
+      public function ClearSelectedAssets ():void
+      {
+         var oldSelectedAssets:Array = mSelectedAssets;
+         mSelectedAssets = new Array ();
+         
+         for each (var asset:Asset in oldSelectedAssets)
+         {
+            asset.OnSelectedChanged (false);
+         }
+      }
+      
+      public function SetSelectedAssets (assetArray:Array):Boolean
+      {
+         if (assetArray == null)
+         {
+            if (mSelectedAssets.length > 0)
             {
-               mSelectedAssets.splice (i, 1);
-               asset.OnSelectedChanged (false);
-               return;
+               ClearSelectedAssets ();
+               
+               return true;
+            }
+            
+            return false;
+         }
+         
+         var asset:Asset;
+         var actionId:int = Asset.GetNextActionId ();
+         
+         var assetsToSelect:Array = new Array ();
+         for each (asset in assetArray)
+         {
+            asset.SetCurrentActionId (actionId);
+            if (! asset.IsSelected ())
+            {
+               assetsToSelect.push (asset);
             }
          }
+         
+         var assetsToDeselect:Array = new Array ();
+         var assetsToKeepSelected:Array = new Array ();
+         for each (asset in mSelectedAssets)
+         {
+            if (asset.GetCurrentActionId () < actionId)
+            {
+               assetsToDeselect.push (asset);
+            }
+            else
+            {
+               assetsToKeepSelected.push (asset);
+            }
+         }
+         
+         if (assetsToSelect.length == 0 && assetsToDeselect.length == 0)
+            return false;
+         
+         if (assetsToSelect.length == 0)
+            mSelectedAssets = assetsToKeepSelected;
+         else if (assetsToKeepSelected.length == 0)
+            mSelectedAssets = assetsToSelect;
+         else
+            mSelectedAssets = assetsToSelect.concat (assetsToKeepSelected);
+         
+         for each (asset in assetsToDeselect)
+         {
+            asset.OnSelectedChanged (false);
+         }
+         
+         for each (asset in assetsToSelect)
+         {
+            asset.OnSelectedChanged (true);
+         }
+         
+         return true;
       }
       
       public function IsAssetSelected (asset:Asset):Boolean
@@ -66,15 +136,7 @@ package editor.asset {
          if (asset == null)
             return false;
          
-         for (var i:uint = 0; i < mSelectedAssets.length; ++ i)
-         {
-            if (mSelectedAssets [i] == asset)
-            {
-               return true;
-            }
-         }
-         
-         return false;
+         return mSelectedAssets.indexOf (asset) >= 0;
       }
       
       public function AreSelectedAssetsContainingPoint (pointX:Number, pointY:Number):Boolean

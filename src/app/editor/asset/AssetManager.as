@@ -206,13 +206,7 @@ package editor.asset {
       
       public function GetTheFirstSelectedAsset ():Asset
       {
-         var assets:Array = mSelectionList.GetSelectedAssets ();
-         if (assets != null && assets.length > 0)
-         {
-            return assets[0] as Asset;
-         }
-         
-         return null;
+         return mSelectionList.GetTheFirstSelectedAsset ();
       }
       
       public function AddAssetSelections (assetArray:Array):void
@@ -237,22 +231,87 @@ package editor.asset {
          }
       }
       
-      public function SetSelectedAssets (assetArray:Array):void
+      // return whether selections changed or not
+      public function SetSelectedAssets (assetArray:Array):Boolean
       {
-         ClearAssetSelections ();
-         
-         AddAssetSelections (assetArray);
+         return mSelectionList.SetSelectedAssets (assetArray);
       }
       
-      public function ToggleAssetsSelected (assetArray:Array):void
+      public function SetSelectedAssetsByToggleTwoAssetArrays (oldSelections:Array, newSelections:Array):Boolean
       {
-         if (assetArray == null)
-            return;
-         
-         for (var i:uint = 0; i < assetArray.length; ++ i)
+         if (oldSelections == null && newSelections == null)
          {
-            ToggleAssetSelected (assetArray[i] as Asset);
+            if (mSelectionList.GetNumSelectedAssets () > 0)
+            {
+               ClearAssetSelections ();
+               
+               return true;
+            }
+            
+            return false;
          }
+         
+         if (oldSelections == null)
+         {
+            return SetSelectedAssets (newSelections);
+         }
+         
+         if (newSelections == null)
+         {
+            return SetSelectedAssets (oldSelections);
+         }
+         
+         var assetsToSelect:Array = new Array ();
+         
+         var asset:Asset;
+         var actionId:int;
+
+         actionId = Asset.GetNextActionId ();
+         for each (asset in newSelections)
+         {
+            asset.SetCurrentActionId (actionId);
+         }
+         
+         actionId = Asset.GetNextActionId ();
+         for each (asset in oldSelections)
+         {
+            asset.SetCurrentActionId (actionId);
+         }
+         
+         for each (asset in newSelections)
+         {
+            if (asset.GetCurrentActionId () < actionId)
+            {
+               assetsToSelect.push (asset);
+            }
+         }
+         
+         for each (asset in oldSelections)
+         {
+            if (asset.GetCurrentActionId () < actionId)
+            {
+               assetsToSelect.push (asset);
+            }
+         }
+         
+         return SetSelectedAssets (assetsToSelect);
+      }
+      
+      // return whether selections changed or not
+      public function SetSelectedAsset (asset:Asset, mainSelection:Boolean = true):Boolean
+      {
+         SetMainSelectedAsset (mainSelection ? asset : null);
+         
+         var assets:Array;
+         if (asset == null)
+            assets = new Array ();
+         else
+         {
+            assets = new Array (1);
+            assets [0] = asset;
+         }
+         
+         return SetSelectedAssets (assets);
       }
       
       public function ToggleAssetSelected (asset:Asset):void
@@ -261,15 +320,6 @@ package editor.asset {
             RemoveAssetSelection (asset);
          else
             AddAssetSelection (asset);
-      }
-      
-      public function SetSelectedAsset (asset:Asset, mainSelection:Boolean = true):void
-      {
-         ClearAssetSelections ();
-         
-         AddAssetSelection (asset);
-         
-         SetMainSelectedAsset (mainSelection ? asset : null);
       }
       
       protected var mMainSelectedAsset:Asset = null;

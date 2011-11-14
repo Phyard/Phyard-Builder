@@ -34,6 +34,7 @@ package editor.image.dialog {
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
+   import com.tapirgames.util.MathUtil;
    
    import editor.asset.AssetManagerPanel;
    import editor.asset.Intent;
@@ -111,11 +112,6 @@ package editor.image.dialog {
       override public function OnAssetSelectionsChanged (passively:Boolean = false):void
       {
          UpdatePropertySettingComponents ();
-         
-         if (mAssetImageModuleInstanceManager != null && mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsSequenced ())
-         {
-            mAssetImageModuleInstanceManager.UpdateModuleInstancesAlpha ();
-         }
          
          if (! passively)
          {
@@ -520,37 +516,31 @@ package editor.image.dialog {
             mTextInputAlpha.enabled = true; mTextInputAlpha.text = "" + moudleInstance.GetAlpha ();
             mCheckBoxVisible.enabled = true; mCheckBoxVisible.selected = moudleInstance.IsVisible ();
             
-            mFormOtherPropertySettings.enabled = true;
-            /*
             var imageModule:AssetImageModule = moudleInstance.GetAssetImageModule ();
             if (imageModule is AssetImageNullModule)
             {
             }
             else
-            { 
-               mFormOtherPropertySettings.visible = true;
-               while (mFormOtherPropertySettings.numChildren > 0)
-                  mFormOtherPropertySettings.removeChildAt (0);
-               
-               mFormOtherPropertySettings.addChild (mFormItemBlockTitle);
+            {
+               mFormOtherPropertySettings.enabled = true;
                
                if (imageModule is AssetImageShapeModule)
                {  
                   var shapeImageModule:AssetImageShapeModule = imageModule as AssetImageShapeModule;
                   var vectorShape:VectorShape = shapeImageModule.GetVectorShape () as VectorShape;
                   
-                  mFormOtherPropertySettings.addChild (mCheckBoxBuildBody.parent);
-                  mFormOtherPropertySettings.addChild (mCheckBoxShowBody.parent);
-                  mFormOtherPropertySettings.addChild (mNumericStepperBodyOpacity.parent);
-                  mFormOtherPropertySettings.addChild (mColorPickerBodyColor.parent);
+                  mCheckBoxBuildBody.selected = vectorShape.IsBuildBackground ();
+                  mCheckBoxShowBody.selected = vectorShape.IsDrawBackground ();
+                  mNumericStepperBodyOpacity.value = vectorShape.GetBodyOpacity100 ();
+                  mColorPickerBodyColor.selectedColor = vectorShape.GetBodyColor ();
                   
                   if (vectorShape is VectorShapePath)
                   {
                      var pathVectorShape:VectorShapePath = vectorShape as VectorShapePath;
                      
-                     mFormOtherPropertySettings.addChild (mTextInputPathThickness.parent);
-                     mFormOtherPropertySettings.addChild (mCheckBoxPathClosed.parent);
-                     mFormOtherPropertySettings.addChild (mCheckBoxPathRoundEnds.parent);
+                     mTextInputPathThickness.text = "" + pathVectorShape.GetPathThickness ();
+                     mCheckBoxPathClosed.selected = pathVectorShape.IsClosed ();
+                     mCheckBoxPathRoundEnds.selected = pathVectorShape.IsRoundEnds ();
                      
                      if (vectorShape is VectorShapePolyline)
                      {
@@ -560,18 +550,18 @@ package editor.image.dialog {
                   else if (vectorShape is VectorShapeArea)
                   {
                      var areaVectorShape:VectorShapeArea = vectorShape as VectorShapeArea;
-                  
-                     mFormOtherPropertySettings.addChild (mCheckBoxBuildBorder.parent);
-                     mFormOtherPropertySettings.addChild (mCheckBoxShowBorder.parent);
-                     mFormOtherPropertySettings.addChild (mNumericStepperBorderOpacity.parent);
-                     mFormOtherPropertySettings.addChild (mColorPickerBorderColor.parent);
-                     mFormOtherPropertySettings.addChild (mTextInputBorderThickness.parent);
+                     
+                     mCheckBoxBuildBorder.selected = areaVectorShape.IsBuildBorder ();
+                     mCheckBoxShowBorder.selected = areaVectorShape.IsDrawBorder ();
+                     mNumericStepperBorderOpacity.value = areaVectorShape.GetBorderOpacity100 ();
+                     mColorPickerBorderColor.selectedColor = areaVectorShape.GetBorderColor ();
+                     mTextInputBorderThickness.text = "" + areaVectorShape.GetBorderThickness ();
                      
                      if (vectorShape is VectorShapeCircle)
                      {
                         var circleShape:VectorShapeCircle = areaVectorShape as VectorShapeCircle;
                         
-                        mFormOtherPropertySettings.addChild (mTextInputCircleRadius.parent);
+                        mTextInputCircleRadius.text = "" + circleShape.GetRadius ();
                      }
                      else if (vectorShape is VectorShapePolygon)
                      {
@@ -581,18 +571,17 @@ package editor.image.dialog {
                      {
                         var rectangleShape:VectorShapeRectangle = areaVectorShape as VectorShapeRectangle;
                         
-                        mFormOtherPropertySettings.addChild (mCheckBoxRectRoundCorners.parent);
-                        mFormOtherPropertySettings.addChild (mTextInputRectWidth.parent);
-                        mFormOtherPropertySettings.addChild (mTextInputRectHeight.parent);
+                        mCheckBoxRectRoundCorners.selected = rectangleShape.IsRoundCorners ();
+                        mTextInputRectWidth.text = "" + (2.0 * rectangleShape.GetHalfWidth ());
+                        mTextInputRectHeight.text = "" + (2.0 * rectangleShape.GetHalfHeight ());
                      }
                   }
                }
                else // module ref
                {
-                  mFormOtherPropertySettings.addChild (mButtonPickModule.parent);
+                  mButtonPickModule.label = imageModule.ToCodeString ();
                }
             }
-            */
          }
          else
          {  
@@ -635,66 +624,82 @@ package editor.image.dialog {
             
             var duration:int;
             
-            var offsetX:Number;
-            var offsetY:Number;
-            var scaleValue:Number;
-            var angleDegrees:Number;
-            var alphaValue:Number;
-            
-            try {
-               offsetX = parseFloat (mTextInputPosX.text);
-            } catch (err:Error) {
-               offsetX = NaN;
-            }
-            if (isNaN (offsetX))
-            {
-               offsetX = 0.0;
-            }
-            
-            try {
-               offsetY = parseFloat (mTextInputPosY.text);
-            } catch (err:Error) {
-               offsetY = NaN;
-            }
-            if (isNaN (offsetY))
-            {
-               offsetY = 0.0;
-            }
-            
-            try {
-               scaleValue = parseFloat (mTextInputScale.text);
-            } catch (err:Error) {
-               scaleValue = NaN;
-            }
-            if (isNaN (scaleValue))
-            {
-               scaleValue = 0.0;
-            }
-            
-            try {
-               angleDegrees = parseFloat (mTextInputAngle.text);
-            } catch (err:Error) {
-               angleDegrees = NaN;
-            }
-            if (isNaN (angleDegrees))
-            {
-               angleDegrees = 0.0;
-            }
-            
-            try {
-               alphaValue = parseFloat (mTextInputAlpha.text);
-            } catch (err:Error) {
-               alphaValue = NaN;
-            }
-            if (isNaN (angleDegrees))
-            {
-               alphaValue = 1.0;
-            }
+            var offsetX:Number = MathUtil.ParseNumber (mTextInputPosX.text, 0.0);
+            var offsetY:Number = MathUtil.ParseNumber (mTextInputPosY.text, 0.0);
+            var scaleValue:Number = MathUtil.ParseNumber (mTextInputScale.text, 1.0);
+            var angleDegrees:Number = MathUtil.ParseNumber (mTextInputAngle.text, 0.0);
+            var alphaValue:Number = MathUtil.ParseNumber (mTextInputAlpha.text, 1.0);
             
             moduleInstance.SetTransformParameters (offsetX, offsetY, scaleValue, mCheckBoxFlipped.selected, angleDegrees);
             moduleInstance.SetDuration (mNumericStepperDuration.value);
             moduleInstance.SetAlpha (alphaValue);
             moduleInstance.SetVisible (mCheckBoxVisible.selected);
+            
+            // ...
+            
+            var imageModule:AssetImageModule = moduleInstance.GetAssetImageModule ();
+            if (imageModule is AssetImageNullModule)
+            {
+            }
+            else
+            { 
+               if (imageModule is AssetImageShapeModule)
+               {  
+                  var shapeImageModule:AssetImageShapeModule = imageModule as AssetImageShapeModule;
+                  var vectorShape:VectorShape = shapeImageModule.GetVectorShape () as VectorShape;
+                  
+                  vectorShape.SetBuildBackground (mCheckBoxBuildBody.selected);
+                  vectorShape.SetDrawBackground (mCheckBoxShowBody.selected);
+                  vectorShape.SetBodyOpacity100 (mNumericStepperBodyOpacity.value);
+                  vectorShape.SetBodyColor (mColorPickerBodyColor.selectedColor);
+                  
+                  if (vectorShape is VectorShapePath)
+                  {
+                     var pathVectorShape:VectorShapePath = vectorShape as VectorShapePath;
+                     
+                     pathVectorShape.SetPathThickness (MathUtil.ParseNumber (mTextInputPathThickness.text, 1.0));
+                     pathVectorShape.SetClosed (mCheckBoxPathClosed.selected);
+                     pathVectorShape.SetRoundEnds (mCheckBoxPathRoundEnds.selected);
+                     
+                     if (vectorShape is VectorShapePolyline)
+                     {
+                        var polylineShape:VectorShapePolyline = pathVectorShape as VectorShapePolyline;
+                     }
+                  }
+                  else if (vectorShape is VectorShapeArea)
+                  {
+                     var areaVectorShape:VectorShapeArea = vectorShape as VectorShapeArea;
+                     
+                     areaVectorShape.SetBuildBorder (mCheckBoxBuildBorder.selected);
+                     areaVectorShape.SetDrawBorder (mCheckBoxShowBorder.selected);
+                     areaVectorShape.SetBorderOpacity100 (mNumericStepperBorderOpacity.value);
+                     areaVectorShape.SetBorderColor (mColorPickerBorderColor.selectedColor);
+                     areaVectorShape.SetBorderThickness (MathUtil.ParseNumber (mTextInputBorderThickness.text, 1.0));
+                     
+                     if (vectorShape is VectorShapeCircle)
+                     {
+                        var circleShape:VectorShapeCircle = areaVectorShape as VectorShapeCircle;
+                        
+                        circleShape.SetRadius (MathUtil.ParseNumber (mTextInputCircleRadius.text, 1.0));
+                     }
+                     else if (vectorShape is VectorShapePolygon)
+                     {
+                        var polygonShape:VectorShapePolygon = areaVectorShape as VectorShapePolygon;
+                     }
+                     else if (vectorShape is VectorShapeRectangle)
+                     {
+                        var rectangleShape:VectorShapeRectangle = areaVectorShape as VectorShapeRectangle;
+                        
+                        rectangleShape.SetRoundCorners (mCheckBoxRectRoundCorners.selected);
+                        rectangleShape.SetHalfWidth (0.5 * MathUtil.ParseNumber (mTextInputRectWidth.text, 1.0));
+                        rectangleShape.SetHalfHeight (0.5 * MathUtil.ParseNumber (mTextInputRectHeight.text, 1.0));
+                     }
+                  }
+               }
+               else // module ref
+               {
+               }
+            }
             
             moduleInstance.UpdateAppearance ();
             moduleInstance.UpdateSelectionProxy ();

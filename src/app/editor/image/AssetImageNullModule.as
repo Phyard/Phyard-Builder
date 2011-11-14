@@ -34,6 +34,11 @@ package editor.image {
          removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown); // added in super class
       }
       
+      override public function ToCodeString ():String
+      {
+         return "None";
+      }
+      
 //=============================================================
 //   
 //=============================================================

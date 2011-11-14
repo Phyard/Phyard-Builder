@@ -50,7 +50,7 @@
                <mx:Label fontWeight="bold" text="Other Properties" />
             </mx:HBox>
             <mx:FormItem id="FormItemPickModule" width="100%" label="Module:" horizontalScrollPolicy="off">
-               <mx:Button id="ButtonPickModule" label="Sequenced#16" width="100%" click=";" />
+               <mx:Button id="ButtonPickModule" label="Sequenced#16" width="100%" click="OnPickModule ();" />
             </mx:FormItem>
             <mx:FormItem id="FormItemBuildBody" width="100%" label="Build Body:" horizontalScrollPolicy="off">
                <mx:CheckBox selected="false" id="CheckBoxBuildBody" label="" click="ChangeModuleInstanceProperties ();"/>
@@ -62,7 +62,7 @@
                <mx:NumericStepper id="NumericStepperBodyOpacity" width="100%" stepSize="1" value="1" minimum="0" maximum="100" change="ChangeModuleInstanceProperties ();" />
             </mx:FormItem>
             <mx:FormItem id="FormItemBodyColor" width="100%" label="Body Color:" horizontalScrollPolicy="off">
-               <mx:ColorPicker id="ColorPickerBodyColor" showTextField="true" selectedColor="0xFFFFFF"/>
+               <mx:ColorPicker id="ColorPickerBodyColor" showTextField="true" selectedColor="0xFFFFFF" change="ChangeModuleInstanceProperties ();"/>
             </mx:FormItem>
             <mx:FormItem id="FormItemBuildBorder" width="100%" label="Build Border:" horizontalScrollPolicy="off">
                <mx:CheckBox selected="false" id="CheckBoxBuildBorder" label="" click="ChangeModuleInstanceProperties ();"/>
@@ -74,7 +74,7 @@
                <mx:NumericStepper id="NumericStepperBorderOpacity" width="100%" stepSize="1" value="1" minimum="0" maximum="100" change="ChangeModuleInstanceProperties ();" />
             </mx:FormItem>
             <mx:FormItem id="FormItemBorderColor" width="100%" label="Border Color:" horizontalScrollPolicy="off">
-               <mx:ColorPicker id="ColorPickerBorderColor" showTextField="true" selectedColor="0xFFFFFF"/>
+               <mx:ColorPicker id="ColorPickerBorderColor" showTextField="true" selectedColor="0xFFFFFF" change="ChangeModuleInstanceProperties ();"/>
             </mx:FormItem>
             <mx:FormItem id="FormItemBorderThickness" width="100%" label="Border Thickness:" horizontalScrollPolicy="off">
                <mx:TextInput id="TextInputBorderThickness" width="100%" enter="ChangeModuleInstanceProperties ();" />
@@ -114,7 +114,7 @@
                <mx:Button id="ButtonCreateShapeTextInstance" toolTip="Create Text" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/text.png')" downIcon="@Embed('../../../res/create/text-sel.png')" overIcon="@Embed('../../../res/create/text.png')" selectedUpIcon="@Embed('../../../res/create/text-sel.png')" selectedOverIcon="@Embed('../../../res/create/text-sel.png')" selectedDownIcon="@Embed('../../../res/create/text.png')"   />
                -->
                <mx:Spacer width="100%"/>
-               <mx:HBox paddingTop="5" paddingLeft="0" paddingRight="0" paddingBottom="5" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+               <mx:HBox visible="false" paddingTop="5" paddingLeft="0" paddingRight="0" paddingBottom="5" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                   <mx:Button height="100%" id="ButtonEditMode" label="Edit Mode" toggle="true" click=";" />
                   <mx:Spacer width="5"/>
                   <mx:Button height="100%" id="ButtonViewPhysics" label="View Physics" toggle="true" click=";" />
@@ -128,10 +128,10 @@
                </mx:HBox>
                <mx:VBox width="100" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                   <mx:HBox borderStyle="solid" borderThickness="1" width="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+                     <mx:Button id="ButtonDeleteModuleInstances" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" toolTip="Delete" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
+                     <mx:Spacer width="100%"/>
                      <mx:Button id="ButtonMoveUpModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceUp ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
                      <mx:Button id="ButtonMoveDownModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
-                     <mx:Spacer width="100%"/>
-                     <mx:Button id="ButtonDeleteModuleInstances" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" toolTip="Delete" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
                   </mx:HBox>
                   <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                      <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing" width="100%" height="100%"/>
@@ -290,6 +290,10 @@
             ViewStackPlayStop.selectedChild = BoxPlay;
          }
          */
+         
+         private function OnPickModule ():void
+         {
+         }
          
          private function ChangeModuleInstanceProperties ():void
          {

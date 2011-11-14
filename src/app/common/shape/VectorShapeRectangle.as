@@ -19,8 +19,8 @@ package common.shape
 
       // half width and height
 
-      protected var mHalfWidth:Number = 0;
-      protected var mHalfHeight:Number = 0;
+      protected var mHalfWidth:Number = 1.0;
+      protected var mHalfHeight:Number = 1.0;
 
       public function GetHalfWidth ():Number
       {

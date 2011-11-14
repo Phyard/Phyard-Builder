@@ -98,12 +98,12 @@ package editor.image {
       
       override public function ToCodeString ():String
       {
-         return "Composite Module#" + mCreationOrderId;
+         return (IsSequenced () ? "Sequenced#" : "Assembled#") + mCreationOrderId;
       }
       
       override public function GetTypeName ():String
       {
-         return "Composite Module";
+         return IsSequenced () ? "Sequenced Module" : "Assembled Module";
       }
       
       public function GetNumModules ():int

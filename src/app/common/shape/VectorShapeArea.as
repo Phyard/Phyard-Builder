@@ -96,6 +96,16 @@ package common.shape
          mBorderOpacityAndColor = (mBorderOpacityAndColor & (~Mask_BorderOpacity)) | ((opacity << Shift_BorderOpacity) & Mask_BorderOpacity);
       }
 
+      public function GetBorderOpacity100 ():int
+      {
+         return GetBorderOpacity () * 100 / 255;
+      }
+
+      public function SetBorderOpacity100 (opacity:int):void
+      {
+         SetBorderOpacity (opacity * 255 / 100);
+      }
+
 //==============================================
 // for playing
 //==============================================

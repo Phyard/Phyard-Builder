@@ -65,13 +65,12 @@
          }
 
          private function OnPhysicsSettingPanelCreationComplete ():void
-         {  
+         {
+            mParams.mEnablePhysicsChangeable = true;
             mParams.mDisableHollowEditing = true;
             mParams.mDisableBuildBorderEditing = true;
 
             PhysicsSettingPanel.SetValues (mParams);
-
-            PhysicsSettingPanel.SetMustEnablePhysics ();
          }
 
          private function OnEntityBasicSettingPanelCreationComplete ():void

@@ -118,7 +118,7 @@
                CheckBox_IsStatic.enabled = true;
                CheckBox_IsBullet.enabled = true;
                CheckBox_IsSensor.enabled = true;
-               CheckBox_BuildBorder.enabled = true
+               CheckBox_BuildBorder.enabled = true;
                CheckBox_AllowSleeping.enabled = true;
                CheckBox_FixRotation.enabled = true;
                

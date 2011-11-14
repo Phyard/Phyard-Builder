@@ -52,6 +52,11 @@ package editor.image {
       {
          return (mVectorShape as VectorShape).IsValid ();
       }
+      
+      override public function ToCodeString ():String
+      {
+         return "A Shape";
+      }
        
 //=============================================================
 //   

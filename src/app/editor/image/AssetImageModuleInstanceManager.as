@@ -159,32 +159,11 @@ package editor.image {
       
       public var mCallback_OnChangedForPanel:Function = null;
       
-      protected function NotifyChangedForPanel ():void
+      internal function NotifyChangedForPanel ():void
       {
          if (mCallback_OnChangedForPanel != null)
          {
             mCallback_OnChangedForPanel ();
-         }
-      }
-      
-      public function UpdateModuleInstancesAlpha ():void
-      {
-         var moduleInstance:AssetImageModuleInstance;
-         var count:int = GetNumAssets ();
-         for (var i:int = 0; i < count; ++ i)
-         {
-            moduleInstance = GetAssetByAppearanceId (i) as AssetImageModuleInstance;
-            if (mAssetImageCompositeModule.IsSequenced ())
-            {
-               if (moduleInstance.IsSelected () || mShowAllSequences)
-                  moduleInstance.alpha = 1.0;
-               else
-                  moduleInstance.alpha = 0.66;
-            }
-            else
-            {
-               moduleInstance.alpha = 1.0;
-            }
          }
       }
       
@@ -239,7 +218,6 @@ package editor.image {
       public function OnContextMenuEvent_CreateImageModuleInstanceAtIndex (index:int):void
       {
          CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true, index);
-         UpdateModuleInstancesAlpha ();
          
          NotifyChangedForPanel ();
       }
@@ -258,7 +236,6 @@ package editor.image {
       //private function OnContextMenuEvent_CreateImageModuleInstance (event:ContextMenuEvent):void
       //{
       //   CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true);
-      //   UpdateModuleInstancesAlpha ();
       //   
       //   NotifyChangedForPanel ();
       //}

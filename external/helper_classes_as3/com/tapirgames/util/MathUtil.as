@@ -18,5 +18,22 @@ package com.tapirgames.util {
          return value;
       }
       
+      public static function ParseNumber (valueStr:String, defaultValue:Number):Number
+      {
+         var value:Number;
+         
+         try {
+            value = parseFloat (valueStr);
+         } catch (err:Error) {
+            value = NaN;
+         }
+         if (isNaN (value))
+         {
+            value = defaultValue;
+         }
+         
+         return value;
+      }
+      
    }
 }

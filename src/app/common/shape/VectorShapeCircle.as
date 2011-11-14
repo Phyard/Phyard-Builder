@@ -10,7 +10,7 @@ package common.shape
 
       // radius
 
-      public var mRadius:Number = 0.0;
+      public var mRadius:Number = 1.0;
 
       public function GetRadius ():Number
       {

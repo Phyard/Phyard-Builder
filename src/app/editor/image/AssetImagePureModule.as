@@ -65,7 +65,7 @@ package editor.image {
       
       override public function ToCodeString ():String
       {
-         return "Image Module#" + mCreationOrderId;
+         return "Division#" + mCreationOrderId;
       }
       
       override public function GetTypeName ():String

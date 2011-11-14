@@ -195,12 +195,11 @@ package editor.image {
          GraphicsUtil.Clear (this);
          
          mAssetImageModule.BuildImageModuleAppearance (this);
-         alpha = 0.70;
+         alpha = 0.5;
          
          if (IsSelected ())
          {
             var shape:Shape = new Shape ();
-            shape.alpha = 0.7;
             
             var rectangle:Rectangle = this.getBounds (this);
             GraphicsUtil.DrawRect (shape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
@@ -397,6 +396,8 @@ package editor.image {
       {
          if (SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule))
          {
+            mAssetImageModuleInstanceManager.NotifyChangedForPanel ();
+            
             UpdateAppearance ();
             UpdateSelectionProxy ();
             

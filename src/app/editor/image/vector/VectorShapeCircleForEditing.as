@@ -15,7 +15,6 @@ package editor.image.vector
    import common.shape.VectorShapeCircle;
 
    import common.Transform2D;
-   import common.Define;
 
    public class VectorShapeCircleForEditing extends VectorShapeCircle implements VectorShapeForEditing
    {
@@ -49,7 +48,6 @@ package editor.image.vector
          var drawBg:Boolean = IsDrawBackground ();
          var drawBorder:Boolean = IsDrawBorder ();
          var borderThickness:Number = GetBorderThickness ();
-         var appearanceType:int = GetAppearanceType ();
 
          if ( ! drawBorder)
          {
@@ -62,22 +60,6 @@ package editor.image.vector
          var circleSprite:Shape = new Shape ();
          GraphicsUtil.ClearAndDrawCircle (circleSprite, 0, 0, visualRadius, borderColor,
                                                             borderThickness, drawBg, filledColor);
-
-         if (appearanceType == Define.CircleAppearanceType_Ball)
-         {
-            var pos:Number;
-            pos = (mRadius * 0.66) - 1;// * 0.707 - 1;
-            if (pos < 0) pos = 0;
-
-            var invertFilledColor:uint = GraphicsUtil.GetInvertColor_b (filledColor);
-            GraphicsUtil.DrawEllipse (circleSprite, pos, 0, 1, 1, invertFilledColor, 1, true, invertFilledColor);
-         }
-         else if (appearanceType == Define.CircleAppearanceType_Column)
-         {
-            var radius2:Number = mRadius * 0.5;
-            GraphicsUtil.DrawEllipse (circleSprite, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, filledColor);
-            GraphicsUtil.DrawLine (circleSprite, radius2, 0, visualRadius, 0, borderColor, 1);
-         }
 
          return circleSprite;
       }

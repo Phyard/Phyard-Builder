@@ -6,7 +6,6 @@ package common.shape
    {
       public function VectorShapeCircle ()
       {
-         SetAppearanceType (Define.CircleAppearanceType_Circle);
       }
 
       // radius

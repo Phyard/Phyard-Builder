@@ -9,8 +9,6 @@ package player.image
 
    import common.Transform2D;
    import common.shape.VectorShapeCircle;
-   
-   import common.Define;
 
    public class VectorShapeCircleForPlaying extends VectorShapeCircle implements VectorShapeForPlaying
    {
@@ -73,42 +71,6 @@ package player.image
                      displayBorderThickness, // draw border
                      false // not draw background
                   );
-            
-            var appearanceType:int = GetAppearanceType ();
-            if (appearanceType == Define.CircleAppearanceType_Ball)
-            {
-               GraphicsUtil.DrawCircle (
-                        borderShape,
-                        displayRadius * 0.67,
-                        0,
-                        0.5, // radius
-                        IsDrawBackground () ? GraphicsUtil.GetInvertColor_b (bodyColor) : borderColor, 
-                        1, 
-                        false
-                     );
-            }
-            else if (appearanceType == Define.CircleAppearanceType_Column)
-            {
-               var halfRadius:Number = displayRadius * 0.5;
-               GraphicsUtil.DrawCircle (
-                        borderShape,
-                        0,
-                        0,
-                        halfRadius,
-                        borderColor, 
-                        1, 
-                        false
-                     );
-               GraphicsUtil.DrawLine (
-                        borderShape, 
-                        halfRadius, 
-                        0, 
-                        displayRadius, 
-                        0, 
-                        borderColor, 
-                        1
-                     );
-            }
          }
       }
 

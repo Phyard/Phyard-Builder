@@ -184,7 +184,7 @@ package editor.image.dialog {
          
          mCurrentSelectedCreateButton = null;
          
-         OnAssetSelectionsChanged (true);
+         OnAssetSelectionsChanged (false);
          
          //mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
          moduleInstance.NotifyModifiedForReferers ();
@@ -262,7 +262,6 @@ package editor.image.dialog {
          
          if (done)
          {
-         trace ("shapeModule.IsValid () = " + shapeModule.IsValid ());
             if (shapeModule.IsValid ())
             {
                moduleInstance.UpdateSelectionProxy ();
@@ -329,6 +328,10 @@ package editor.image.dialog {
          if (GetCurrentIntent () != null)
          {
             UpdatePropertySettingComponents ();
+            
+            //OnAssetSelectionsChanged (false); // some problems
+            mFormBasicPropertySettings.enabled = false;
+            mFormOtherPropertySettings.enabled = false;
          }
       }
       
@@ -394,7 +397,20 @@ package editor.image.dialog {
       
       
       private function UpdatePropertySettingComponents ():void
-      {
+      {         
+         var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
+
+         if (! compositeModule.IsSequenced ())
+         {
+            if (mNumericStepperDuration.parent.parent != null) // == mFormBasicPropertySettings
+               mNumericStepperDuration.parent.parent.removeChild (mNumericStepperDuration.parent);
+         }
+         else
+         {
+            if (mNumericStepperDuration.parent.parent == null)
+               mFormBasicPropertySettings.addChild (mNumericStepperDuration.parent);
+         }
+         
          var numSelecteds:int = mAssetImageModuleInstanceManager.GetNumSelectedAssets ();
          
          if (numSelecteds == 1)
@@ -480,17 +496,19 @@ package editor.image.dialog {
          if (mAssetImageModuleInstanceManager == null)
             return;
          
-         if ((! mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsSequenced ()) && mNumericStepperDuration.parent.parent != null)
-            mNumericStepperDuration.parent.parent.removeChild (mNumericStepperDuration.parent);
+         var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
          
          var numSelecteds:int = mAssetImageModuleInstanceManager.GetNumSelectedAssets ();
          
          mButtonDeleteModuleInstances.enabled = numSelecteds > 0;
          if (numSelecteds == 1)
-         {  
-            mFormBasicPropertySettings.enabled = true;
+         {
+            var moudleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.GetTheFirstSelectedAsset () as AssetImageModuleInstance;
             
-            var moudleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.GetSelectedAssets ()[0] as AssetImageModuleInstance;
+            mButtonMoveUpModuleInstance.enabled = moudleInstance.GetAppearanceLayerId () > 0;
+            mButtonMoveDownModuleInstance.enabled = moudleInstance.GetAppearanceLayerId () < mAssetImageModuleInstanceManager.GetNumAssets () - 1;
+            
+            mFormBasicPropertySettings.enabled = true;
             
             mNumericStepperDuration.enabled = true; mNumericStepperDuration.value = moudleInstance.GetDuration ();
             
@@ -502,13 +520,85 @@ package editor.image.dialog {
             mTextInputAlpha.enabled = true; mTextInputAlpha.text = "" + moudleInstance.GetAlpha ();
             mCheckBoxVisible.enabled = true; mCheckBoxVisible.selected = moudleInstance.IsVisible ();
             
-            
-            
-            mButtonMoveUpModuleInstance.enabled = moudleInstance.GetAppearanceLayerId () > 0;
-            mButtonMoveDownModuleInstance.enabled = moudleInstance.GetAppearanceLayerId () < mAssetImageModuleInstanceManager.GetNumAssets () - 1;
+            mFormOtherPropertySettings.enabled = true;
+            /*
+            var imageModule:AssetImageModule = moudleInstance.GetAssetImageModule ();
+            if (imageModule is AssetImageNullModule)
+            {
+            }
+            else
+            { 
+               mFormOtherPropertySettings.visible = true;
+               while (mFormOtherPropertySettings.numChildren > 0)
+                  mFormOtherPropertySettings.removeChildAt (0);
+               
+               mFormOtherPropertySettings.addChild (mFormItemBlockTitle);
+               
+               if (imageModule is AssetImageShapeModule)
+               {  
+                  var shapeImageModule:AssetImageShapeModule = imageModule as AssetImageShapeModule;
+                  var vectorShape:VectorShape = shapeImageModule.GetVectorShape () as VectorShape;
+                  
+                  mFormOtherPropertySettings.addChild (mCheckBoxBuildBody.parent);
+                  mFormOtherPropertySettings.addChild (mCheckBoxShowBody.parent);
+                  mFormOtherPropertySettings.addChild (mNumericStepperBodyOpacity.parent);
+                  mFormOtherPropertySettings.addChild (mColorPickerBodyColor.parent);
+                  
+                  if (vectorShape is VectorShapePath)
+                  {
+                     var pathVectorShape:VectorShapePath = vectorShape as VectorShapePath;
+                     
+                     mFormOtherPropertySettings.addChild (mTextInputPathThickness.parent);
+                     mFormOtherPropertySettings.addChild (mCheckBoxPathClosed.parent);
+                     mFormOtherPropertySettings.addChild (mCheckBoxPathRoundEnds.parent);
+                     
+                     if (vectorShape is VectorShapePolyline)
+                     {
+                        var polylineShape:VectorShapePolyline = pathVectorShape as VectorShapePolyline;
+                     }
+                  }
+                  else if (vectorShape is VectorShapeArea)
+                  {
+                     var areaVectorShape:VectorShapeArea = vectorShape as VectorShapeArea;
+                  
+                     mFormOtherPropertySettings.addChild (mCheckBoxBuildBorder.parent);
+                     mFormOtherPropertySettings.addChild (mCheckBoxShowBorder.parent);
+                     mFormOtherPropertySettings.addChild (mNumericStepperBorderOpacity.parent);
+                     mFormOtherPropertySettings.addChild (mColorPickerBorderColor.parent);
+                     mFormOtherPropertySettings.addChild (mTextInputBorderThickness.parent);
+                     
+                     if (vectorShape is VectorShapeCircle)
+                     {
+                        var circleShape:VectorShapeCircle = areaVectorShape as VectorShapeCircle;
+                        
+                        mFormOtherPropertySettings.addChild (mTextInputCircleRadius.parent);
+                     }
+                     else if (vectorShape is VectorShapePolygon)
+                     {
+                        var polygonShape:VectorShapePolygon = areaVectorShape as VectorShapePolygon;
+                     }
+                     else if (vectorShape is VectorShapeRectangle)
+                     {
+                        var rectangleShape:VectorShapeRectangle = areaVectorShape as VectorShapeRectangle;
+                        
+                        mFormOtherPropertySettings.addChild (mCheckBoxRectRoundCorners.parent);
+                        mFormOtherPropertySettings.addChild (mTextInputRectWidth.parent);
+                        mFormOtherPropertySettings.addChild (mTextInputRectHeight.parent);
+                     }
+                  }
+               }
+               else // module ref
+               {
+                  mFormOtherPropertySettings.addChild (mButtonPickModule.parent);
+               }
+            }
+            */
          }
          else
-         {
+         {  
+            mButtonMoveUpModuleInstance.enabled = false;
+            mButtonMoveDownModuleInstance.enabled = false;
+            
             mFormBasicPropertySettings.enabled = false;
 
             mNumericStepperDuration.value = 0;
@@ -520,34 +610,7 @@ package editor.image.dialog {
             mTextInputAlpha.text = "";
             mCheckBoxVisible.selected = false;
             
-            mFormOtherPropertySettings.visible = false;
-            
-            mButtonMoveUpModuleInstance.enabled = false;
-            mButtonMoveDownModuleInstance.enabled = false;
-         }
-         
-         var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
-         
-         if (compositeModule.IsSequenced ())
-         {
-            mNumericStepperDuration.visible = true;
-            
-            //if (mBoxModuleProperties.parent == null)
-            //{
-            //   this.parent.parent.addChildAt (mBoxModuleProperties, 0);
-            //}
-            //
-            //mCheckBoxLoop.selected = compositeModule.IsLooped ();
-            //mCheckBoxShowAllSequences.selected = mAssetImageModuleInstanceManager.IsShowAllSequences ();
-         }
-         else
-         {
-            mNumericStepperDuration.visible = false;
-            
-            //if (mBoxModuleProperties.parent != null)
-            //{
-            //   this.parent.parent.removeChild (mBoxModuleProperties);
-            //}
+            mFormOtherPropertySettings.enabled = false;
          }
       }
       

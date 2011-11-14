@@ -10,7 +10,6 @@ package common.shape
          SetDrawBackground (true);
          SetJointType (JointType_Round); // rect to override
          SetEndType (EndType_None); // polyline can modify it
-         SetAppearanceType (0); // circle to override
       }
 
       protected var mIsValid:Boolean = true;
@@ -36,13 +35,10 @@ package common.shape
          // joint type (0 - round, 1 - 尖的, 2 - 钝的), useless for circle
          public static const Mask_JointType   :int = (1 << 5) | (1 << 6) | (1 << 7); // 7th bit is reserved
          public static const Shift_JointType  :int = 5;
-         // appearance type, reserved for most shapes. Only used for circle now.
-         public static const Mask_AppearanceType   :int = 0xFF00;
-         public static const Shift_AppearanceType  :int = 8;
             // path shapes
-            public static const Flag_Closed      :int = 1 << 16;
-            public static const Mask_EndType   :int = (1 << 17) | (1 << 18) | (1 << 19); // 17th and 18 bit is reserved
-            public static const Shift_EndType  :int = 17;
+            public static const Flag_Closed      :int = 1 << 8;
+            public static const Mask_EndType   :int = (1 << 9) | (1 << 10) | (1 << 11); // 10th and 11 bit are reserved
+            public static const Shift_EndType  :int = 9;
 
       public static const JointType_Moter:int = 0; // 尖的
       public static const JointType_Round:int = 1; 
@@ -60,18 +56,6 @@ package common.shape
       public function SetAttributeBits (attributeBits:uint):void
       {
          mAttributeBits = attributeBits;
-      }
-
-      // appearance type
-
-      public function GetAppearanceType ():int
-      {
-         return (mAttributeBits & Mask_AppearanceType) >>> Shift_AppearanceType;
-      }
-
-      public function SetAppearanceType (type:int):void
-      {
-         mAttributeBits = (mAttributeBits & (~Mask_AppearanceType)) | ((type << Shift_AppearanceType) & Mask_AppearanceType);
       }
 
       // joint type

@@ -9,6 +9,11 @@ package editor.world {
    {  
       private var mSelectedEntities:Array = new Array ();
       
+      public function GetNumSelectedEntities ():int
+      {
+         return mSelectedEntities.length;
+      }
+      
       public function GetSelectedEntities ():Array
       {
          return mSelectedEntities.concat ();
@@ -16,25 +21,106 @@ package editor.world {
       
       public function ClearSelectedEntities ():void
       {
-         while (mSelectedEntities.length > 0)
+         //while (mSelectedEntities.length > 0)
+         //{
+         //   if (mSelectedEntities [0] is Entity)
+         //   {
+         //      RemoveSelectedEntity (mSelectedEntities[0]);
+         //   }
+         //}
+         
+         var oldSelections:Array = mSelectedEntities;
+         
+         mSelectedEntities = new Array ();
+         
+         for each (var entity:Entity in oldSelections)
          {
-            if (mSelectedEntities [0] is Entity)
-            {
-               RemoveSelectedEntity (mSelectedEntities[0]);
-            }
+            entity.NotifySelectedChanged (false);
          }
       }
+      
+      //>> a temp optimized implementation for bath selections
+      public function SelectEntities (entityArray:Array, clearOldSelections:Boolean):Boolean
+      {
+         if (entityArray == null)
+         {
+            if (clearOldSelections && mSelectedEntities.length > 0)
+            {
+               ClearSelectedEntities ();
+               
+               return true;
+            }
+            
+            return false;
+         }
+         
+         var entity:Entity;
+         var actionId:int = Entity.GetNextActionId ();
+         
+         var entitiesToSelect:Array = new Array ();
+         for each (entity in entityArray)
+         {
+            entity.SetCurrentActionId (actionId);
+            if (! entity.IsSelected ())
+            {
+               entitiesToSelect.push (entity);
+            }
+         }
+         
+         var entitiesToDeselect:Array = new Array ();
+         var entitiesToKeepSelected:Array;
+         if (clearOldSelections)
+         {
+            entitiesToKeepSelected = new Array ();
+            
+            for each (entity in mSelectedEntities)
+            {
+               if (entity.GetCurrentActionId () < actionId)
+               {
+                  entitiesToDeselect.push (entity);
+               }
+               else
+               {
+                  entitiesToKeepSelected.push (entity);
+               }
+            }
+         }
+         else
+         {
+            entitiesToKeepSelected = mSelectedEntities;
+         }
+         
+         if (entitiesToSelect.length == 0 && entitiesToDeselect.length == 0)
+            return false;
+         
+         if (entitiesToSelect.length == 0)
+            mSelectedEntities = entitiesToKeepSelected;
+         else if (entitiesToKeepSelected.length == 0)
+            mSelectedEntities = entitiesToSelect;
+         else
+            mSelectedEntities = entitiesToKeepSelected.concat (entitiesToSelect);
+         
+         for each (entity in entitiesToDeselect)
+         {
+            entity.NotifySelectedChanged (false);
+         }
+         
+         for each (entity in entitiesToSelect)
+         {
+            entity.NotifySelectedChanged (true);
+         }
+         
+         return true;
+      }
+      //<<
       
       public function AddSelectedEntity (entity:Entity):void
       {
          if (entity == null)
             return;
          
-         for (var i:uint = 0; i < mSelectedEntities.length; ++ i)
-         {
-            if (mSelectedEntities [i] == entity)
-               return;
-         }
+         if (mSelectedEntities.indexOf (entity) >= 0)
+            return;
          
          mSelectedEntities.unshift (entity);
          entity.NotifySelectedChanged (true);
@@ -45,14 +131,11 @@ package editor.world {
          if (entity == null)
             return;
          
-         for (var i:uint = 0; i < mSelectedEntities.length; ++ i)
+         var index:int = mSelectedEntities.indexOf (entity);
+         if (index >= 0)
          {
-            if (mSelectedEntities [i] == entity)
-            {
-               mSelectedEntities.splice (i, 1);
-               entity.NotifySelectedChanged (false);
-               return;
-            }
+            mSelectedEntities.splice (index, 1);
+            entity.NotifySelectedChanged (false);
          }
       }
       

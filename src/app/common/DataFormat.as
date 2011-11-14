@@ -940,7 +940,6 @@ package common {
             var vectorShape:VectorShape = (imageModule as AssetImageShapeModule).GetVectorShape () as VectorShape;
             
             moduleInstanceDefine.mShapeAttributeBits = vectorShape.GetAttributeBits ();
-            moduleInstanceDefine.mCircleAppearacneType = vectorShape.GetAppearanceType ();
             moduleInstanceDefine.mShapeBodyOpacityAndColor = vectorShape.GetBodyOpacityAndColor (); // argb
             
             if (vectorShape is VectorShapePath)
@@ -1120,7 +1119,6 @@ package common {
             if (vectorShape != null)
             {
                vectorShape.SetAttributeBits (moduleInstanceDefine.mShapeAttributeBits);
-               vectorShape.SetAppearanceType (moduleInstanceDefine.mCircleAppearacneType);
                vectorShape.SetBodyOpacityAndColor (moduleInstanceDefine.mShapeBodyOpacityAndColor); // argb
 
                imageModule = new AssetImageShapeModule (vectorShape as VectorShapeForEditing);
@@ -2574,7 +2572,6 @@ package common {
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
             moduleInstanceDefine.mShapeAttributeBits = parseInt (element.@shape_attribute_bits);
-            moduleInstanceDefine.mShapeAppearacneType = parseInt (element.@shape_appearance_type);
             moduleInstanceDefine.mShapeBodyOpacityAndColor = element.@shape_body_argb == undefined ? 0x0 : uint (parseInt ( (element.@shape_body_argb).substr (2), 16));
             
             if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))
@@ -3881,7 +3878,6 @@ package common {
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
             byteArray.writeUnsignedInt (moduleInstanceDefine.mShapeAttributeBits);
-            byteArray.writeByte (moduleInstanceDefine.mShapeAppearacneType);
             byteArray.writeUnsignedInt (moduleInstanceDefine.mShapeBodyOpacityAndColor);
             
             if (Define.IsBasicPathVectorShapeEntity (moduleInstanceDefine.mModuleType))

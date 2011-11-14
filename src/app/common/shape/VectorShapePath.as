@@ -21,18 +21,15 @@ package common.shape
          else
             mAttributeBits &= ~Flag_Closed;
       }
-
+      
       public function IsRoundEnds ():Boolean
       {
-         return (mAttributeBits & Flag_RoundEnds) != 0;
+         return GetEndType () == EndType_Round;
       }
 
-      public function SetRoundEnds (buildBorder:Boolean):void
+      public function SetRoundEnds (round:Boolean):void
       {
-         if (buildBorder)
-            mAttributeBits |= Flag_RoundEnds;
-         else
-            mAttributeBits &= ~Flag_RoundEnds;
+         SetEndType (round ? EndType_Round : EndType_None);
       }
 
       // thickness

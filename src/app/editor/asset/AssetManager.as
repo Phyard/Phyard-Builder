@@ -264,34 +264,30 @@ package editor.asset {
          var assetsToSelect:Array = new Array ();
          
          var asset:Asset;
-         var actionId:int;
+         var actionId1:int;
+         var actionId2:int;
 
-         actionId = Asset.GetNextActionId ();
+         actionId1 = Asset.GetNextActionId ();
          for each (asset in newSelections)
          {
-            asset.SetCurrentActionId (actionId);
+            asset.SetCurrentActionId (actionId1);
          }
          
-         actionId = Asset.GetNextActionId ();
+         actionId2 = Asset.GetNextActionId ();
          for each (asset in oldSelections)
          {
-            asset.SetCurrentActionId (actionId);
+            if (asset.GetCurrentActionId () < actionId1)
+               assetsToSelect.push (asset);
+            
+            asset.SetCurrentActionId (actionId2);
          }
          
          for each (asset in newSelections)
          {
-            if (asset.GetCurrentActionId () < actionId)
-            {
+            if (asset.GetCurrentActionId () < actionId2)
                assetsToSelect.push (asset);
-            }
-         }
-         
-         for each (asset in oldSelections)
-         {
-            if (asset.GetCurrentActionId () < actionId)
-            {
-               assetsToSelect.push (asset);
-            }
+            
+            asset.SetCurrentActionId (actionId1);
          }
          
          return SetSelectedAssets (assetsToSelect);

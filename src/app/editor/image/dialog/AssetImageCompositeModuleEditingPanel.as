@@ -192,11 +192,8 @@ package editor.image.dialog {
       
       protected function OnCreatingCancelled (moduleInstance:AssetImageModuleInstance = null):void
       {
-         if (moduleInstance != null)
-         {
-            DeleteSelectedAssets ();
-            OnAssetSelectionsChanged ();
-         }
+         DeleteSelectedAssets ();
+         OnAssetSelectionsChanged ();
                   
          if (mCurrentSelectedCreateButton != null)
             mCurrentSelectedCreateButton.selected = false;

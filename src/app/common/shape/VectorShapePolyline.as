@@ -8,7 +8,8 @@ package common.shape
    {
       public function VectorShapePolyline ()
       {
-         SetBodyColor (0x000000);
+         SetBodyColor (0x000000); // the path color <=> body color
+         SetRoundEnds (false);
       }
 
       protected var mLocalVertexPoints:Array = new Array (); // should not be null, at lesst 2 points

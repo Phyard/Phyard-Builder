@@ -1453,7 +1453,47 @@ package editor.world {
          var brothers:Array = mBrothersManager.GetBrothersOfEntity (entity);
          return brothers == null ? new Array () : brothers;
       }
+      
+      public function GetAllGluedEntities (entities:Array):Array
+      {
+         var allGluedEntities:Array = new Array ();
+         
+         var entity:Entity;
+         var brothers:Array;
+         var actionId:int = Entity.GetNextActionId ();
+         var brotherGroups:Array = new Array ();
+         
+         for each (entity in entities)
+         {
+            if (entity.GetCurrentActionId () < actionId)
+            {
+               entity.SetCurrentActionId (actionId);
+               allGluedEntities.push (entity);
+            }
+            
+            brothers = entity.GetBrothers ();
 
+            if (brothers != null)
+            {
+               if (brotherGroups.indexOf (brothers) < 0)
+                  brotherGroups.push (brothers);
+            }
+         }
+         
+         for each (brothers in brotherGroups)
+         {
+            for each (entity in brothers)
+            {
+               if (entity.GetCurrentActionId () < actionId)
+               {
+                  entity.SetCurrentActionId (actionId);
+                  allGluedEntities.push (entity);
+               }
+            }
+         }
+         
+         return allGluedEntities;
+      }
 
       public function SelectGluedEntitiesOfSelectedEntities ():void
       {

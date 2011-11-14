@@ -3890,6 +3890,7 @@ package editor {
          if (mLastSelectedEntity != null && mEditorWorld != null && mEditorWorld.IsEntitySelected (mLastSelectedEntity))
          {
             mLastSelectedEntity.SetInternalComponentsVisible (true);
+            //mLastSelectedEntity.SetInternalComponentsVisible (mEditorWorld.GetNumSelectedEntities () == 1);
             
             mMainSelectedEntity = mLastSelectedEntity;
          }
@@ -3957,6 +3958,8 @@ package editor {
       
       public function SelectedEntities (entities:Array, clearOlds:Boolean, selectBorthers:Boolean):void
       {
+         // the original implementation is far too slow.
+         /*
          if (clearOlds)
          {
             mEditorWorld.ClearSelectedEntities ();
@@ -3982,6 +3985,29 @@ package editor {
          }
          
          OnSelectedEntitiesChanged ();
+         */
+         
+         // new implementation
+         
+         if (selectBorthers)
+         {
+            entities = mEditorWorld.GetAllGluedEntities (entities);
+         }
+         
+         if ((_mouseEventCtrlDown || mCookieModeEnabled) && (mLastSelectedEntities != null))
+         {
+            if (mEditorWorld.SelectEntitiesByToggleTwoEntityArrays (mLastSelectedEntities, entities))
+            {
+               OnSelectedEntitiesChanged ();
+            }
+         }
+         else
+         {
+            if (mEditorWorld.SetSelectedEntities (entities, clearOlds))
+            {
+               OnSelectedEntitiesChanged ();
+            }
+         }
       }
       
       public function OnSelectedEntitiesChanged ():void
@@ -5513,6 +5539,8 @@ package editor {
          {
             if (Compile::Is_Debugging)
                throw error;
+            
+            //Alert.show ("Error: " + error + "\n " + error.getStackTrace ());
             
             RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             

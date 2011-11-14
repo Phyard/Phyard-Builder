@@ -405,7 +405,6 @@ package player.design
                   var circleShape:VectorShapeCircleForPlaying = new VectorShapeCircleForPlaying ();
                   circleShape.SetRadius (moduleInstanceDefine.mCircleRadius);
                   circleShape.SetRadiusInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mCircleRadius));
-                  circleShape.SetAppearanceType (moduleInstanceDefine.mCircleAppearacneType);
                   
                   vectorShape = areaShape = circleShape;
                }

@@ -115,6 +115,11 @@ package editor.world {
 //   selection list
 //=================================================================================
       
+      public function GetNumSelectedEntities ():int
+      {
+         return mSelectionListManager.GetNumSelectedEntities ();
+      }
+      
       public function GetSelectedEntities ():Array
       {
          return mSelectionListManager.GetSelectedEntities ();
@@ -151,6 +156,7 @@ package editor.world {
       
       public function SelectEntities (entityArray:Array):void
       {
+         /*
          if (entityArray == null)
             return;
          
@@ -161,11 +167,17 @@ package editor.world {
                mSelectionListManager.AddSelectedEntity (entityArray[i]);
             }
          }
+         */
+         
+         SetSelectedEntities (entityArray, false);
       }
       
       public function SelectEntity (entity:Entity):void
       {
-         SelectEntities ([entity]);
+         if (entity != null)
+         {
+            mSelectionListManager.AddSelectedEntity (entity);
+         }
       }
       
       public function UnselectEntities (entityArray:Array):void
@@ -187,11 +199,63 @@ package editor.world {
          UnselectEntities ([entity]);
       }
       
-      public function SetSelectedEntities (entityArray:Array):void
+      public function SetSelectedEntities (entityArray:Array, clearOldSelections:Boolean = true):Boolean
       {
-         ClearSelectedEntities ();
+         return mSelectionListManager.SelectEntities (entityArray, clearOldSelections);
+      }
+      
+      public function SelectEntitiesByToggleTwoEntityArrays (oldSelections:Array, newSelections:Array):Boolean
+      {
+         if (oldSelections == null && newSelections == null)
+         {
+            if (mSelectionListManager.GetNumSelectedEntities () > 0)
+            {
+               mSelectionListManager.ClearSelectedEntities ();
+               
+               return true;
+            }
+            
+            return false;
+         }
          
-         SelectEntities (entityArray);
+         if (oldSelections == null)
+         {
+            return SetSelectedEntities (newSelections);
+         }
+         
+         if (newSelections == null)
+         {
+            return SetSelectedEntities (oldSelections);
+         }
+         
+         var entitiesToSelect:Array = new Array ();
+         
+         var entity:Entity;
+         var actionId1:int;
+         var actionId2:int;
+
+         actionId1 = Entity.GetNextActionId ();
+         for each (entity in newSelections)
+         {
+            entity.SetCurrentActionId (actionId1);
+         }
+         
+         actionId2 = Entity.GetNextActionId ();
+         for each (entity in oldSelections)
+         {
+            if (entity.GetCurrentActionId () < actionId1)
+               entitiesToSelect.push (entity);
+            
+            entity.SetCurrentActionId (actionId2);
+         }
+         
+         for each (entity in newSelections)
+         {
+            if (entity.GetCurrentActionId () < actionId2)
+               entitiesToSelect.push (entity);
+         }
+         
+         return SetSelectedEntities (entitiesToSelect);
       }
       
       public function SetSelectedEntity (entity:Entity):void
@@ -217,6 +281,7 @@ package editor.world {
          return mSelectionListManager.AreSelectedEntitiesContainingPoint (pointX, pointY);
       }
       
+      // ...
       
 //=================================================================================
 //   vertex controller

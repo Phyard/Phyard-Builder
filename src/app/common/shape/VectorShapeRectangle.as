@@ -2,17 +2,19 @@ package common.shape
 {
    public class VectorShapeRectangle extends VectorShapeArea
    {
+      public function VectorShapeRectangle ()
+      {
+         SetRoundCorners (false); // <=> SetJointType (JointType_Moter);
+      }
+      
       public function IsRoundCorners ():Boolean
       {
-         return (mAttributeBits & Flag_RoundCorners) != 0;
+         return GetJointType () == JointType_Round;
       }
 
       public function SetRoundCorners (round:Boolean):void
       {
-         if (round)
-            mAttributeBits |= Flag_RoundCorners;
-         else
-            mAttributeBits &= ~Flag_RoundCorners;
+         SetJointType (round ? JointType_Round : JointType_Moter);
       }
 
       // half width and height

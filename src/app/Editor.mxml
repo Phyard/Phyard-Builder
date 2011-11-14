@@ -14,7 +14,9 @@
          usePreloader="true"
          percentWidth="100"
          percentHeight="100"
-         creationComplete="InitApp ();">
+         creationComplete="InitApp ();"
+         scriptTimeLimit="60"
+         >
    
    <mx:Style source="editor.css"/>
 

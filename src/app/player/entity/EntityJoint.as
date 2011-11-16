@@ -260,16 +260,20 @@ package player.entity {
          {
             var anchorPoint1:Point = proxyJoint.GetAnchorPoint1 ();
             
-            mAnchor1.mPositionX = anchorPoint1.x;
-            mAnchor1.mPositionY = anchorPoint1.y;
+            //mAnchor1.mPositionX = anchorPoint1.x;
+            //mAnchor1.mPositionY = anchorPoint1.y;
+            mAnchor1.SetPositionX (anchorPoint1.x);
+            mAnchor1.SetPositionY (anchorPoint1.y);
             mAnchor1.UpdateDisplayObjectPosition ();
          }
          else if (anchorId == 1)
          {
             var anchorPoint2:Point = proxyJoint.GetAnchorPoint2 ();
             
-            mAnchor2.mPositionX = anchorPoint2.x;
-            mAnchor2.mPositionY = anchorPoint2.y;
+            //mAnchor2.mPositionX = anchorPoint2.x;
+            //mAnchor2.mPositionY = anchorPoint2.y;
+            mAnchor2.SetPositionX (anchorPoint2.x);
+            mAnchor2.SetPositionY (anchorPoint2.y);
             mAnchor2.UpdateDisplayObjectPosition ();
          }
       } 
@@ -320,37 +324,6 @@ package player.entity {
          
       }
       
-//=============================================================
-//   some transform notifications, from v1.56
-//=============================================================
-
-      protected var mScale:Number = 1.0;
-      protected var mFlipped:Boolean = false;
-      
-      /*
-      final public function OnScaled (scaleRatio:Number):void
-      {
-         mScale *= scaleRatio;
-         
-         if (mPhysicsProxy != null)
-         {
-            (mPhysicsProxy as PhysicsProxyJoint).Scale (scaleRatio);
-         }
-      }
-
-      final public function OnFlipped (normalXX2:Number, normalYY2:Number, normalXY2:Number):void
-      {
-         mFlipped = ! mFlipped;
-         
-         if (mPhysicsProxy != null)
-         {
-            (mPhysicsProxy as PhysicsProxyJoint).Flip (normalXX2, normalYY2, normalXY2);
-         }
-      }
-      
-      // move and rotate is not essential to nofify
-      */
-
 //=============================================================
 //   select connected shapes
 //=============================================================

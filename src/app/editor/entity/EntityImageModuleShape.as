@@ -126,6 +126,37 @@ package editor.entity {
       }
       
 //=============================================================
+//   temp. When Entity is extended from Asset, remove these
+//=============================================================
+      
+      override public function RotateSelf (dRadians:Number):void
+      {
+         if (IsFlipped ())
+            dRadians = - dRadians;
+         
+         SetRotation (GetRotation () + dRadians);
+      }
+      
+      override public function ScaleSelf (ratio:Number):void
+      {
+         if (ratio < 0)
+            ratio = - ratio;
+         
+         SetScale (GetScale () * ratio);
+      }
+      
+      override public function FlipSelfHorizontally ():void
+      {
+         SetFlipped (! IsFlipped ());
+      }
+      
+      override public function FlipSelfVertically ():void
+      {
+         FlipSelfHorizontally ();
+         RotateSelf (Math.PI);
+      }
+      
+//=============================================================
 //   
 //=============================================================
       
@@ -160,8 +191,8 @@ package editor.entity {
          
          mSelectionProxy.Rebuild (GetPositionX (), GetPositionY (), 0.0);
          mAssetImageModule.BuildImageModuleSelectionProxy (mSelectionProxy, 
-               new Transform2D (0.0, 0.0, 1.0, false, GetRotation ()), mWorld.GetZoomScale ());
-               //new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mAssetManager.GetScale () * GetScale ());
+               //new Transform2D (0.0, 0.0, 1.0, false, GetRotation ()), mWorld.GetZoomScale ());
+               new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mWorld.GetZoomScale () * GetScale ());
       }
 
 //====================================================================

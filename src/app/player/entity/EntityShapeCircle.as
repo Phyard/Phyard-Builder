@@ -106,11 +106,11 @@ package player.entity {
             var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
             if (mBuildInterior || displayBorderThickness < Number.MIN_VALUE)
             {
-               displayRadius += 0.5 / mScale; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+               displayRadius += 0.5 / GetScale (); // + 0.5 to avoid the visual leaps between contacting shapes sometimes
             }
             else
             {
-               displayBorderThickness += 1.0 / mScale; // + 1.0 to avoid the visual leaps between contacting shapes sometimes
+               displayBorderThickness += 1.0 / GetScale (); // + 1.0 to avoid the visual leaps between contacting shapes sometimes
             }
             
          // background
@@ -194,12 +194,9 @@ package player.entity {
          if (mPhysicsShapeProxy != null)
          {
             //mPhysicsShapeProxy.AddCircle (mIsStatic, 0, 0, mRadius, mBuildInterior, mBuildBorder, mBorderThickness);
-            mPhysicsShapeProxy.AddCircle (
-                                       //new Transform2D (mLocalPositionX, mLocalPositionY, mScale, mFlipped, mRelativeRotation)
-                                       // if mFlipped is true, mRelativeRotation should be changed to "PI - mRelativeRotation"?
-                                       new Transform2D (mLocalPositionX, mLocalPositionY, mScale, false, mRelativeRotation), 
-                                       mRadius, mBuildInterior, mBuildBorder, mBorderThickness
-                                    );
+            mPhysicsShapeProxy.AddCircle (mLocalTransform,
+                                          mRadius, mBuildInterior, mBuildBorder, mBorderThickness
+                                          );
          }
       }
 

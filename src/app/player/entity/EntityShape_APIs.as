@@ -385,7 +385,7 @@ private static function CreateAndPushEntityDefine (entity:Entity, entityDefineAr
 
 public function Teleport (deltaX:Number, deltaY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
-   Rotate (mPositionX, mPositionY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, false);
+   Rotate (GetPositionX (), GetPositionY (), deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, false);
    Translate (deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 }
 
@@ -410,8 +410,10 @@ public function Translate (deltaX:Number, deltaY:Number, bTeleportConnectedMovab
    {
       var body:EntityBody = bodiesToTeleport [i] as EntityBody;
 
-      body.mPositionX += deltaX;
-      body.mPositionY += deltaY;
+      //body.mPositionX += deltaX;
+      //body.mPositionY += deltaY;
+      body.SetPositionX (body.GetPositionX () + deltaX);
+      body.SetPositionY (body.GetPositionY () + deltaY);
 
       if (body.mNumPhysicsShapes > 0)
       {
@@ -458,12 +460,15 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
    {
       var body:EntityBody = bodiesToTeleport [i] as EntityBody;
 
-      var dx:Number = body.mPositionX - fixedPointX;
-      var dy:Number = body.mPositionY - fixedPointY;
+      var dx:Number = body.GetPositionX () - fixedPointX;
+      var dy:Number = body.GetPositionY () - fixedPointY;
 
-      body.mPositionX = fixedPointX + dx * cos - dy * sin;
-      body.mPositionY = fixedPointY + dx * sin + dy * cos;
-      body.SetRotation (body.mPhysicsRotation + deltaRotation);
+      //body.mPositionX = fixedPointX + dx * cos - dy * sin;
+      //body.mPositionY = fixedPointY + dx * sin + dy * cos;
+      //body.SetRotation (body.mPhysicsRotation + deltaRotation);
+      body.SetPositionX (fixedPointX + dx * cos - dy * sin);
+      body.SetPositionY (fixedPointY + dx * sin + dy * cos);
+      body.SetRotation (body.GetRotation () + deltaRotation);
       if (rotateVelocity)
       {
          var vx:Number = body.GetLinearVelocityX ();
@@ -1088,8 +1093,8 @@ public static function DetachShape (aShape:EntityShape):void
    var oldBody:EntityBody = aShape.GetBody ();
 
    //
-   var oldPositionX:Number = oldBody.mPositionX;
-   var oldPositionY:Number = oldBody.mPositionY;
+   var oldPositionX:Number = oldBody.GetPositionX ();
+   var oldPositionY:Number = oldBody.GetPositionY ();
    var oldMass:Number = oldBody.GetMass ();
    var oldInertia:Number = oldBody.GetInertia ();
    var oldMomentumX:Number = oldMass * oldBody.GetLinearVelocityX ();
@@ -1136,8 +1141,8 @@ public static function DetachShape (aShape:EntityShape):void
 // ...
 
    //
-   var newPositionX:Number = newBody.mPositionX;
-   var newPositionY:Number = newBody.mPositionY;
+   var newPositionX:Number = newBody.GetPositionX ();
+   var newPositionY:Number = newBody.GetPositionY ();
    var newMass:Number = newBody.GetMass ();
    var newInertia:Number = newBody.GetInertia ();
    //var newMomentumX:Number = newMass * newBody.GetLinearVelocityX ();
@@ -1165,7 +1170,7 @@ public static function DetachShape (aShape:EntityShape):void
 
    if (oldMass > 0)
    {
-      oldBody.ApplyForceAtPoint (oldForceX * oldBody.GetMass () / oldMass, oldForceY * oldBody.GetMass () / oldMass, oldBody.mPositionX, oldBody.mPositionY);
+      oldBody.ApplyForceAtPoint (oldForceX * oldBody.GetMass () / oldMass, oldForceY * oldBody.GetMass () / oldMass, oldBody.GetPositionX (), oldBody.GetPositionY ());
       newBody.ApplyForceAtPoint (oldForceX * newMass / oldMass, oldForceY * newMass / oldMass, newPositionX, newPositionY);
    }
 
@@ -1219,8 +1224,8 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
    var isKeptPhysicsBody     :Boolean = keptBody.mNumPhysicsShapes > 0; // if isDiscardedPhysicsBody is true, then isKeptPhysicsBody must be true
 
    //discardedBody.SynchronizeVelocityWithPhysicsProxy ();
-   var discardPositionX:Number = discardedBody.mPositionX;
-   var discardPositionY:Number = discardedBody.mPositionY;
+   var discardPositionX:Number = discardedBody.GetPositionX ();
+   var discardPositionY:Number = discardedBody.GetPositionY ();
    var discardMass:Number = discardedBody.GetMass ();
    var discardInertia:Number = discardedBody.GetInertia ();
    var discardMomentumX:Number = discardMass * discardedBody.GetLinearVelocityX ();
@@ -1231,8 +1236,8 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
    var discardTorque:Number = discardedBody.GetAccTorque ();
 
    //keptBody.SynchronizeVelocityWithPhysicsProxy ();
-   var keptOldPositionX:Number = keptBody.mPositionX;
-   var keptOldPositionY:Number = keptBody.mPositionY;
+   var keptOldPositionX:Number = keptBody.GetPositionX ();
+   var keptOldPositionY:Number = keptBody.GetPositionY ();
    var keptOldMass:Number = keptBody.GetMass ();
    var keptOldInertia:Number = keptBody.GetInertia ();
    var keptOldMomentumX:Number = keptOldMass * keptBody.GetLinearVelocityX ();
@@ -1449,8 +1454,8 @@ public function AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity
 
    if (onBodyCenter || IsTheOnlyPhysicsShapeInBody ())
    {
-      worldX = mBody.mPositionX;
-      worldY = mBody.mPositionY;
+      worldX = mBody.GetPositionX ();
+      worldY = mBody.GetPositionY ();
    }
    else
    {

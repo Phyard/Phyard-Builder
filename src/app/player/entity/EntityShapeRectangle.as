@@ -128,12 +128,12 @@ package player.entity {
             var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
             if (mBuildInterior || displayBorderThickness < Number.MIN_VALUE)
             {
-               displayHalfWidth += 0.5 / mScale; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
-               displayHalfHeight += 0.5 / mScale; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+               displayHalfWidth += 0.5 / GetScale (); // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+               displayHalfHeight += 0.5 / GetScale (); // + 0.5 to avoid the visual leaps between contacting shapes sometimes
             }
             else
             {
-               displayBorderThickness += 1.0 / mScale; // + 1.0 to avoid the visual leaps between contacting shapes sometimes
+               displayBorderThickness += 1.0 / GetScale (); // + 1.0 to avoid the visual leaps between contacting shapes sometimes
             }
             
             RebuildBackgroundAndBorder (displayHalfWidth, displayHalfHeight, displayBorderThickness);
@@ -190,10 +190,7 @@ package player.entity {
          if (mPhysicsShapeProxy != null)
          {
             //mPhysicsShapeProxy.AddRectangle (mIsStatic, 0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
-            mPhysicsShapeProxy.AddRectangle (
-                                       //new Transform2D (mLocalPositionX, mLocalPositionY, mScale, mFlipped, mRelativeRotation)
-                                       // if mFlipped is true, mRelativeRotation should be changed to "PI - mRelativeRotation"?
-                                       new Transform2D (mLocalPositionX, mLocalPositionY, mScale, false, mRelativeRotation), 
+            mPhysicsShapeProxy.AddRectangle (mLocalTransform, 
                                        mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
          }
       }

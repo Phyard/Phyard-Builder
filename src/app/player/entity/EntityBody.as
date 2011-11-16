@@ -234,34 +234,38 @@ package player.entity {
             }
             else
             {
-               mPositionX = mPhysicsProxyBody.GetPositionX ();
-               mPositionY = mPhysicsProxyBody.GetPositionY ();
-               SetRotation (mPhysicsProxyBody.GetRotation ()); // for body
+               //mPositionX = mPhysicsProxyBody.GetPositionX ();
+               //mPositionY = mPhysicsProxyBody.GetPositionY ();
+               //SetRotation (mPhysicsProxyBody.GetRotation ()); // for body
+               SetPositionX (mTransform.mOffsetX);
+               SetPositionY (mTransform.mOffsetY);
+               SetRotation (mPhysicsProxyBody.GetRotation ());
                
-               UpdateSinCos ();
+               //UpdateSinCos ();
             }
          }
       }
       
       // before use sin and cos, call this function.
-      internal function UpdateSinCos ():void
-      {
-         if (mPhysicsRotation != mLastRotation)
-         {
-            mLastRotation = mPhysicsRotation;
-            
-            mCosRotation = Math.cos (mPhysicsRotation);
-            mSinRotation = Math.sin (mPhysicsRotation);
-         }
-      }
+      //internal function UpdateSinCos ():void
+      //{
+      //   if (mPhysicsRotation != mLastRotation)
+      //   {
+      //      mLastRotation = mPhysicsRotation;
+      //      
+      //      mCosRotation = Math.cos (mPhysicsRotation);
+      //      mSinRotation = Math.sin (mPhysicsRotation);
+      //   }
+      //}
       
       internal function SynchronizePositionAndRotationToPhysicsProxy ():void
       {
-         UpdateSinCos ();
+         //UpdateSinCos ();
          
          if (mPhysicsProxy != null)
          {
-            mPhysicsProxyBody.SetPositionAndRotation (mPositionX, mPositionY, mPhysicsRotation);
+            //mPhysicsProxyBody.SetPositionAndRotation (mPositionX, mPositionY, mPhysicsRotation);
+            mPhysicsProxyBody.SetPositionAndRotation (GetPositionX (), GetPositionY (), GetRotation ());
          }
       }
       
@@ -503,14 +507,18 @@ package player.entity {
             {
                if (shape.IsVisualShape ())
                {
-                  newX += shape.mPositionX;
-                  newY += shape.mPositionY;
+                  //newX += shape.mPositionX;
+                  //newY += shape.mPositionY;
+                  newX += shape.GetPositionX ();
+                  newY += shape.GetPositionY ();
                   ++ n;
                }
                else
                {
-                  nonVisualX += shape.mPositionX;
-                  nonVisualY += shape.mPositionY;
+                  //nonVisualX += shape.mPositionX;
+                  //nonVisualY += shape.mPositionY;
+                  nonVisualX += shape.GetPositionX ();
+                  nonVisualY += shape.GetPositionY ();
                   ++ numNonVisuals;
                }
                
@@ -544,8 +552,10 @@ package player.entity {
          //var abs_dx:Number = Math.abs (dx);
          //var abs_dy:Number = Math.abs (dy);
          
-         mPositionX = newX;
-         mPositionY = newY;
+         //mPositionX = newX;
+         //mPositionY = newY;
+         SetPositionX (newX);
+         SetPositionY (newY);
          
          shape = mShapeListHead;
          while (shape != null)

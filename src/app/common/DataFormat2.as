@@ -1085,6 +1085,10 @@ package common {
          element.@entity_type = entityDefine.mEntityType;
          element.@x = entityDefine.mPosX;
          element.@y = entityDefine.mPosY;
+         //>>from v1.58
+         element.@scale = entityDefine.mScale;
+         element.@flipped = entityDefine.mIsFlipped ? 1 : 0;
+         //<<
          element.@r = entityDefine.mRotation;
          element.@visible = entityDefine.mIsVisible ? 1 : 0;
 
@@ -1712,6 +1716,11 @@ package common {
             {
                entityDefine.mPosX = byteArray.readFloat ();
                entityDefine.mPosY = byteArray.readFloat ();
+            }
+            if (worldDefine.mVersion >= 0x0158)
+            {
+               entityDefine.mScale = byteArray.readFloat ();
+               entityDefine.mIsFlipped = byteArray.readByte () != 0;
             }
             entityDefine.mRotation = byteArray.readFloat ();
             entityDefine.mIsVisible = byteArray.readByte () != 0;
@@ -2466,6 +2475,7 @@ package common {
 
             entityDefine.mPosX = ValueAdjuster.Number2Precision (entityDefine.mPosX, 12);
             entityDefine.mPosY = ValueAdjuster.Number2Precision (entityDefine.mPosY, 12);
+            entityDefine.mScale = ValueAdjuster.Number2Precision (entityDefine.mScale, 6);
             entityDefine.mRotation = ValueAdjuster.Number2Precision (entityDefine.mRotation, 6);
 
             entityDefine.mAlpha = ValueAdjuster.Number2Precision (entityDefine.mAlpha, 6);
@@ -2939,6 +2949,12 @@ package common {
          for (createId = 0; createId < numEntities; ++ createId)
          {
             var entityDefine:Object = worldDefine.mEntityDefines [createId];
+
+            if (worldDefine.mVersion < 0x0158)
+            {
+               entityDefine.mScale = 1.0;
+               entityDefine.mIsFlipped = false;
+            }
 
             if (worldDefine.mVersion < 0x0108)
             {

@@ -117,7 +117,8 @@ package player.entity {
       
       override public function UpdateAppearance ():void
       {
-         var thinkness:Number = mScale; // v1.56
+         //var thinkness:Number = mScale; // v1.56
+         var thinkness:Number = GetScale (); // v1.58
          
          GraphicsUtil.ClearAndDrawLine (
                   mLineShape, 

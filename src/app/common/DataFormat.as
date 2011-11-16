@@ -201,6 +201,10 @@ package common {
             entityDefine.mPosX = editorEntity.GetPositionX ();
             entityDefine.mPosY = editorEntity.GetPositionY ();
             entityDefine.mRotation = editorEntity.GetRotation ();
+            //>>from v1.58
+            entityDefine.mScale = editorEntity.GetScale ();
+            entityDefine.mIsFlipped = editorEntity.IsFlipped ();
+            //<<
             entityDefine.mIsVisible = editorEntity.IsVisible ();
             
             //>>from v1.08
@@ -1862,6 +1866,10 @@ package common {
                entityDefine.mEntity = entity;
                
                entity.SetPosition (entityDefine.mPosX, entityDefine.mPosY);
+               //>>from v1.58
+               entity.SetScale (entityDefine.mScale)
+               entity.SetFlipped (entityDefine.mIsFlipped)
+               //<<
                entity.SetRotation (entityDefine.mRotation);
                entity.SetVisible (entityDefine.mIsVisible);
                
@@ -2004,6 +2012,10 @@ package common {
                
                entity = entityDefine.mEntity as Entity;
                entity.SetPosition (entityDefine.mPosX, entityDefine.mPosY);
+               //>>from v1.58
+               entity.SetScale (entityDefine.mScale);
+               entity.SetFlipped (entityDefine.mIsFlipped);
+               //<<
                entity.SetRotation (entityDefine.mRotation);
                entity.SetVisible (entityDefine.mIsVisible);
                
@@ -2709,6 +2721,11 @@ package common {
          entityDefine.mEntityType = parseInt (element.@entity_type);
          entityDefine.mPosX = parseFloat (element.@x);
          entityDefine.mPosY = parseFloat (element.@y);
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            entityDefine.mScale = parseFloat (element.@scale);
+            entityDefine.mIsFlipped = parseInt (element.@flipped) != 0;
+         }
          entityDefine.mRotation = parseFloat (element.@r);
          entityDefine.mIsVisible = parseInt (element.@visible) != 0;
          
@@ -3300,6 +3317,11 @@ package common {
             {
                byteArray.writeFloat (entityDefine.mPosX);
                byteArray.writeFloat (entityDefine.mPosY);
+            }
+            if (worldDefine.mVersion >= 0x0158)
+            {
+               byteArray.writeFloat (entityDefine.mScale);
+               byteArray.writeByte (entityDefine.mIsFlipped ? 1 : 0);
             }
             byteArray.writeFloat (entityDefine.mRotation);
             byteArray.writeByte (entityDefine.mIsVisible ? 1 : 0);

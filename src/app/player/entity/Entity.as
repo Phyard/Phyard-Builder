@@ -20,8 +20,9 @@ package player.entity {
 
    import common.trigger.CoreEventIds;
 
-   import common.Define;
    import common.trigger.ValueDefine;
+   import common.Define;
+   import common.Transform2D;
 
    public class Entity
    {
@@ -65,6 +66,10 @@ package player.entity {
                SetPositionX (mWorld.GetCoordinateSystem ().D2P_PositionX (entityDefine.mPosX));
             if (entityDefine.mPosY != undefined)
                SetPositionY (mWorld.GetCoordinateSystem ().D2P_PositionY (entityDefine.mPosY));
+            if (entityDefine.mScale != undefined)
+               SetScale     (entityDefine.mScale);
+            if (entityDefine.mIsFlipped != undefined)
+               SetFlipped    (entityDefine.mIsFlipped);
             if (entityDefine.mRotation != undefined)
                SetRotation  (mWorld.GetCoordinateSystem ().D2P_RotationRadians (entityDefine.mRotation));
             if (entityDefine.mIsVisible != undefined)
@@ -80,6 +85,8 @@ package player.entity {
       {
          entityDefine.mPosX = mWorld.GetCoordinateSystem ().P2D_PositionX (GetPositionX ());
          entityDefine.mPosY = mWorld.GetCoordinateSystem ().P2D_PositionY (GetPositionY ());
+         entityDefine.mScale = GetScale ();
+         entityDefine.mIsFlipped = IsFlipped ();
          entityDefine.mRotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (GetRotation  ());
          entityDefine.mIsVisible = IsVisible   ();
          entityDefine.mAlpha = GetAlpha     ();
@@ -143,14 +150,12 @@ package player.entity {
 //
 //=============================================================
 
-      internal var mPositionX:Number = 0.0;
-      internal var mPositionY:Number = 0.0;
-      internal var mPhysicsRotation:Number = 0.0; // here, use a word "physics" to indicate the value is not limited between 0 and 2 * PI
-      protected var mRotationInTwoPI:Number; // this is the rotation value represent the rotation direction. Value range: [0, 2 * PI)
-                                             // it is not the Sprite.rotation.
-                                             // this value only modified in SetRotation and is related with mPhysicsRotation,
-                                             // so DON'T assign value to mPhysicsRotation directly, please use SetRotation instead.
-                                             // use this variable for efficiency. Maybe it is not very essential and calculate it in GetRotationInTwoPI runtimely.
+      //internal var mPositionX:Number = 0.0;
+      //internal var mPositionY:Number = 0.0;
+      //internal var mScale:Number = 1.0; // uniform scale
+      //internal var mFlipped:Boolean = false;
+      //internal var mPhysicsRotation:Number = 0.0; // here, use a word "physics" to indicate the value is not limited between 0 and 2 * PI
+      internal var mTransform:Transform2D = new Transform2D (); // from v1.58
 
       protected var mVisible:Boolean = true;
       protected var mAlpha:Number = 1.0;
@@ -159,27 +164,60 @@ package player.entity {
       // here, for shapes, the SetPosition will not not change the mass of the body of shape,
       // also not call shape.UpdateLocalPosition.
       // Those functions must be called mannually if needed.
-
-      public function SetPositionX (x:Number):void
+      
+      public function GetTransform ():Transform2D
       {
-         mPositionX = x;
+         return mTransform;
       }
 
-      public function SetPositionY (y:Number):void
+      public function CloneTransform ():Transform2D
       {
-         mPositionY = y;
+         return mTransform.Clone ();
       }
 
       public function GetPositionX ():Number
       {
-         return mPositionX;
+         return mTransform.mOffsetX;
+      }
+
+      public function SetPositionX (x:Number):void
+      {
+         mTransform.mOffsetX = x;
       }
 
       public function GetPositionY ():Number
       {
-         return mPositionY;
+         return mTransform.mOffsetY;
       }
 
+      public function SetPositionY (y:Number):void
+      {
+         mTransform.mOffsetY = y;
+      }
+      
+      public function GetScale ():Number
+      {
+         return mTransform.mScale;
+      }
+      
+      public function SetScale (s:Number):void
+      {
+         if (s < 0)
+            s = - s;
+         
+         mTransform.mScale = s;
+      }
+
+      public function IsFlipped ():Boolean
+      {
+         return mTransform.mFlipped;
+      }
+      
+      public function SetFlipped (flipped:Boolean):void
+      {
+         mTransform.mFlipped = flipped;
+      }
+      
       // the value exposed to API is in range [0, PI * 2).
       // for internal flash display object, Sprite.rotation is in range [-180, 180).
       //
@@ -202,23 +240,14 @@ package player.entity {
       // here use internal, is to avoid be called by APIs
       internal function SetRotation (rot:Number):void
       {
-         mPhysicsRotation = rot;
-
-         mRotationInTwoPI = rot % Define.kPI_x_2;
-         if (mRotationInTwoPI < 0) // should not, just make sure
-         {
-            mRotationInTwoPI += Define.kPI_x_2;
-         }
+         //mPhysicsRotation = rot;
+         mTransform.mRotation = rot;
       }
 
       public function GetRotation ():Number
       {
-         return mPhysicsRotation;
-      }
-
-      public function GetRotationInTwoPI ():Number
-      {
-         return mRotationInTwoPI;
+         //return mPhysicsRotation;
+         return mTransform.mRotation;
       }
 
       // to avoid a large rotation jump
@@ -226,12 +255,49 @@ package player.entity {
       // the targetRotation value just represents a direction.
       public function GetRotationOffset (targetRotation:Number):Number
       {
-         var offset:Number = targetRotation - mPhysicsRotation;
+         //var offset:Number = targetRotation - mPhysicsRotation;
+         var offset:Number = targetRotation - mTransform.mRotation;
          offset = offset % Define.kPI_x_2;
          if (offset > Math.PI)
             offset = offset - Define.kPI_x_2;
 
          return offset;
+      }
+
+      private var mLastRotationForCalculateDirection:Number = 0.0;
+      protected var mRotationInTwoPI:Number = 0.0; // [0, 2 * PI)
+      protected var mRotationInPIs:Number = 0.0; // [-PI, PI)
+
+      public function GetRotationInTwoPI ():Number
+      {
+         RecalculateDirection ();
+         
+         return mRotationInTwoPI;
+      }
+      
+      public function GetRotationInPIs ():Number
+      {
+         RecalculateDirection ();
+         
+         return mRotationInPIs;
+      }
+      
+      private function RecalculateDirection ():void
+      {
+         if (mLastRotationForCalculateDirection != mTransform.mRotation)
+         {
+            mLastRotationForCalculateDirection = mTransform.mRotation;
+            
+            mRotationInTwoPI = mLastRotationForCalculateDirection % Define.kPI_x_2;
+            if (mRotationInTwoPI < 0) // should not, just to assure
+               mRotationInTwoPI += Define.kPI_x_2;
+            
+            mRotationInPIs = mRotationInTwoPI;
+            if (mRotationInPIs >= Math.PI)
+            {
+               mRotationInPIs -= Define.kPI_x_2;
+            }
+         }
       }
 
       public function SetVisible (visible:Boolean):void

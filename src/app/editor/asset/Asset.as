@@ -200,17 +200,17 @@ package editor.asset {
       public function AssetToManager (pointOrVector:Point, isPoint:Boolean = true):Point
       {
          if (isPoint)
-            return mTransform.TransformPoint (pointOrVector);
+            return mTransform.TransformPointXY (pointOrVector.x, pointOrVector.y);
          else
-            return mTransform.TransformVector (pointOrVector);
+            return mTransform.TransformVectorXY (pointOrVector.x, pointOrVector.y);
       }
       
       public function ManagerToAsset (pointOrVector:Point, isPoint:Boolean = true):Point
       {
          if (isPoint)
-            return mTransform.InverseTransformPoint (pointOrVector);
+            return mTransform.InverseTransformPointXY (pointOrVector.x, pointOrVector.y);
          else
-            return mTransform.InverseTransformVector (pointOrVector);
+            return mTransform.InverseTransformVectorXY (pointOrVector.x, pointOrVector.y);
       }
       
 //======================================================
@@ -300,13 +300,6 @@ package editor.asset {
          return mTransform.mRotation;
       }
       
-      public function SetRotation (r:Number):void
-      {
-         mTransform.mRotation = r % Define.kPI_x_2;
-         
-         UpdateDisplayObjectRotateScaleXY ();
-      }
-      
       public function IsFlipped ():Boolean
       {
          return mTransform.mFlipped;
@@ -315,6 +308,15 @@ package editor.asset {
       public function SetFlipped (flipped:Boolean):void
       {
          mTransform.mFlipped = flipped;
+         
+         UpdateDisplayObjectRotateScaleXY ();
+      }
+      
+      public function SetRotation (r:Number):void
+      {
+         mTransform.mRotation = r % Define.kPI_x_2;
+         if (mTransform.mRotation < 0)
+            mTransform.mRotation += Define.kPI_x_2;
          
          UpdateDisplayObjectRotateScaleXY ();
       }
@@ -329,7 +331,7 @@ package editor.asset {
          else
          {
             scaleX = mTransform.mScale;
-            rotation = mTransform.mRotation * 180.0 / Math.PI;;
+            rotation = mTransform.mRotation * 180.0 / Math.PI;
          }
          
          scaleY = mTransform.mScale;
@@ -425,6 +427,9 @@ package editor.asset {
       
       public function ScaleSelf (s:Number, intentionDone:Boolean = true):void
       {
+         if (s < 0)
+            s = -s;
+         
          SetScale (GetScale () * s);
          
          if (intentionDone)

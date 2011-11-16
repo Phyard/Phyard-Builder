@@ -60,7 +60,8 @@ package player.entity {
          {
             if (entityDefine.mCloneFromEntity == null)
             {
-               var currentLength:Number = Point.distance (new Point (mAnchor2.mPositionX, mAnchor2.mPositionY), new Point (mAnchor1.mPositionX, mAnchor1.mPositionY));
+               //var currentLength:Number = Point.distance (new Point (mAnchor2.mPositionX, mAnchor2.mPositionY), new Point (mAnchor1.mPositionX, mAnchor1.mPositionY));
+               var currentLength:Number = Point.distance (new Point (mAnchor2.GetPositionX (), mAnchor2.GetPositionY ()), new Point (mAnchor1.GetPositionX (), mAnchor1.GetPositionY ()));
                var staticPhysicsLength:Number = currentLength * mStaticLengthRatio;
                var params:Object = Setting.GetSpringParamsByType (mSpringType,  mWorld.GetCoordinateSystem ().P2D_Length (staticPhysicsLength));
                
@@ -247,10 +248,14 @@ package player.entity {
       
       override public function UpdateAppearance ():void
       {
-         var x1:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor1.mPositionX);
-         var y1:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor1.mPositionY);
-         var x2:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.mPositionX);
-         var y2:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor2.mPositionY);
+         //var x1:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor1.mPositionX);
+         //var y1:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor1.mPositionY);
+         //var x2:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.mPositionX);
+         //var y2:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor2.mPositionY);
+         var x1:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor1.GetPositionX ());
+         var y1:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor1.GetPositionY ());
+         var x2:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.GetPositionX ());
+         var y2:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor2.GetPositionY ());
          var dx:Number = x2 - x1;
          var dy:Number = y2 - y1;
          
@@ -266,8 +271,10 @@ package player.entity {
          if (numSegments < 1) numSegments = 1;
          var segmentLen:Number = currentDisplayLength / numSegments;
          
-         springWireWidth *= mScale; // v1.56
-         halfSpringWidth *= mScale; // v1.56
+         //springWireWidth *= mScale; // v1.56
+         //halfSpringWidth *= mScale; // v1.56
+         springWireWidth *= GetScale (); // v1.58
+         halfSpringWidth *= GetScale (); // v1.58
          
          mSpringShape.graphics.clear ();
          
@@ -294,7 +301,8 @@ package player.entity {
          mSpringShape.visible = mVisible;
          mSpringShape.alpha = mAlpha;
          
-         mSpringShape.scaleY = mFlipped ? - 1 : 1; // v1.56
+         //mSpringShape.scaleY = mFlipped ? - 1 : 1; // v1.56
+         mSpringShape.scaleY = IsFlipped () ? - 1 : 1; // v1.58
       }
       
 //=============================================================

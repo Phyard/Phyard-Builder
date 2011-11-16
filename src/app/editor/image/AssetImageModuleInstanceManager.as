@@ -65,14 +65,28 @@ package editor.image {
 
       public function CreateImageModuleInstance (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstance
       {
+         var finalModule:AssetImageModule;
+         
          if (module == null)
+         {
             module = new AssetImageNullModule ();
-         
-         //var finalModule:AssetImageModule = module == null ? null : module.GetFinalImageModule ();
-         var finalModule:AssetImageModule = module;
-         
-         if (! mAssetImageCompositeModule.CanRefImageModule (finalModule))
-            return null;
+            finalModule = module;
+         }
+         else
+         {
+            //var finalModule:AssetImageModule = module == null ? null : module.GetFinalImageModule ();
+            finalModule = module;
+            
+            if (mAssetImageCompositeModule.CanRefImageModule (finalModule))
+            {
+               finalModule = module;
+            }
+            else
+            {
+               module = new AssetImageNullModule ();
+               finalModule = module;
+            }
+         }
          
          var moduleInstance:AssetImageModuleInstance = new AssetImageModuleInstance (this, finalModule);
          var moduleInstanceForListing:AssetImageModuleInstanceForListing = mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().CreateImageModuleInstanceForListing (finalModule, selectIt, atIndex);

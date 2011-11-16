@@ -4,8 +4,8 @@ package common {
    
    import flash.geom.Point;
    
-   public class Transform2D
-   {  
+   public class Transform2D extends Point
+   {
       public static function CombineTransforms (transform1:Transform2D, transform2:Transform2D, combined:Transform2D = null):Transform2D
       {
          if (combined == null)
@@ -13,21 +13,7 @@ package common {
          
       // offset
       
-         // rotate
-         combined.mOffsetX = transform1.cos * transform2.mOffsetX - transform1.sin * transform2.mOffsetY;
-         combined.mOffsetY = transform1.sin * transform2.mOffsetX + transform1.cos * transform2.mOffsetY;
-         
-         // flip
-         if (transform1.mFlipped)
-            combined.mOffsetX = - combined.mOffsetX;
-         
-         // scale
-         combined.mOffsetX *= transform1.mScale;
-         combined.mOffsetY *= transform1.mScale;
-         
-         // offset
-         combined.mOffsetX += transform1.mOffsetX;
-         combined.mOffsetY += transform1.mOffsetY;
+         transform1.TransformPoint (transform2, combined); // use transform2 and combined as a Points
          
       // scale
       
@@ -39,8 +25,33 @@ package common {
       
       // rotation
       
-         //combined.mRotation = ((combined.mFlipped != transform1.mFlipped) ? - transform1.mRotation : transform1.mRotation) + ((combined.mFlipped != transform2.mFlipped) ? - transform2.mRotation : transform2.mRotation);
          combined.mRotation = (transform2.mFlipped ? - transform1.mRotation : transform1.mRotation) + transform2.mRotation;
+         
+      // ...
+         
+         return combined;
+      }
+      
+      public static function CombineInverseTransformAndTransform (invTransform1:Transform2D, transform2:Transform2D, combined:Transform2D = null):Transform2D
+      {
+         if (combined == null)
+            combined = new Transform2D ();
+         
+      // offset
+      
+         invTransform1.InverseTransformPoint (transform2, combined); // use transform2 and combined as a Points
+         
+      // scale
+      
+         combined.mScale = (1.0 / invTransform1.mScale) * transform2.mScale;
+      
+      // flipped
+      
+         combined.mFlipped = invTransform1.mFlipped != transform2.mFlipped;
+      
+      // rotation
+      
+         combined.mRotation = (transform2.mFlipped ? invTransform1.mRotation : - invTransform1.mRotation) + transform2.mRotation;
          
       // ...
          
@@ -84,8 +95,12 @@ package common {
 //================================================================
       
       // todo: change to protected
-      public var mOffsetX:Number;
-      public var mOffsetY:Number;
+      //public var mOffsetX:Number;
+      //public var mOffsetY:Number;
+      public function get mOffsetX ():Number {return x;};
+      public function set mOffsetX (ox:Number):void {this.x = ox;};
+      public function get mOffsetY ():Number {return y;};
+      public function set mOffsetY (oy:Number):void {this.y = oy;};
       public var mScale:Number;
       public var mFlipped:Boolean; // maybe can be mergerd in mScale, mScale is negative means flipped
       public var mRotation:Number;
@@ -93,6 +108,15 @@ package common {
       public function Transform2D (ox:Number = 0.0, oy:Number = 0.0, s:Number = 1.0, f:Boolean = false, r:Number = 0.0)
       {
          SetValues (ox, oy, s, f, r);
+      }
+      
+      public function SetValues (ox:Number, oy:Number, s:Number, f:Boolean, r:Number):void
+      {
+         mOffsetX = ox;
+         mOffsetY = oy;
+         mScale = Math.abs (s);
+         mFlipped = f;
+         mRotation = r;
       }
       
       public function Clone (clonedTransform:Transform2D = null):Transform2D
@@ -106,43 +130,35 @@ package common {
          }
       }
       
-      public function SetValues (ox:Number, oy:Number, s:Number, f:Boolean, r:Number):void
+      //<=> CombineInverseTransformAndTransform (this, I);
+      public function GetInverse ():Transform2D
       {
-         mOffsetX = ox;
-         mOffsetY = oy;
-         mScale = Math.abs (s);
-         mFlipped = f;
-         mRotation = r;
-      }
-      /*
-      public function GetOffsetX ():Number
-      {
-         return mOffsetX;
+         var inverse:Transform2D = new Transform2D ();
+         
+      // offset
+      
+         this.InverseTransformPoint (new Point (0, 0), inverse);
+         
+      // scale
+      
+         inverse.mScale = 1.0 / this.mScale;
+      
+      // flipped
+      
+         inverse.mFlipped = this.mFlipped;
+      
+      // rotation
+      
+         inverse.mRotation = - this.mRotation;
+         
+      // ...
+         
+         return inverse;
       }
       
-      public function GetOffsetY ():Number
-      {
-         return mOffsetY;
-      }
-      
-      public function GetScale ():Number
-      {
-         return mScale;
-      }
-      
-      public function IsFlipped ():Boolean
-      {
-         return mFlipped;
-      }
-      
-      public function GetRotation ():Number
-      {
-         return mRotation;
-      }
-      */
       public function TransformPoint (inPoint:Point, outPoint:Point = null):Point
       {
-         outPoint = TransformVector (inPoint, outPoint);
+         outPoint = TransformVectorXY (inPoint.x, inPoint.y, outPoint);
          
          // offset
          outPoint.x += mOffsetX;
@@ -152,17 +168,26 @@ package common {
          return outPoint;
       }
       
-      public function TransformVector (inVector:Point, outVector:Point = null):Point
+      public function TransformPointXY (inPointX:Number, inPointY:Number, outPoint:Point = null):Point
+      {
+         outPoint = TransformVectorXY (inPointX, inPointY, outPoint);
+         
+         // offset
+         outPoint.x += mOffsetX;
+         outPoint.y += mOffsetY;
+         
+         //
+         return outPoint;
+      }
+      
+      public function TransformVectorXY (inVectorX:Number, inVectorY:Number, outVector:Point = null):Point
       {
          if (outVector == null)
             outVector = new Point ();
          
-         var inX:Number = inVector.x;
-         var inY:Number = inVector.y;
-         
          // rotate
-         outVector.x = cos * inX - sin * inY;
-         outVector.y = sin * inX + cos * inY;
+         outVector.x = cos * inVectorX - sin * inVectorY;
+         outVector.y = sin * inVectorX + cos * inVectorY;
          
          // flip
          if (mFlipped)
@@ -178,29 +203,30 @@ package common {
       
       public function InverseTransformPoint (inPoint:Point, outPoint:Point = null):Point
       {
-         // offset
-         var newInPoint:Point = new Point (inPoint.x - mOffsetX, inPoint.y - mOffsetY);
-
-         // 
-         return InverseTransformVector (newInPoint, outPoint);
+         return InverseTransformVectorXY (inPoint.x - mOffsetX, inPoint.y - mOffsetY, outPoint);
       }
       
-      public function InverseTransformVector (inVector:Point, outVector:Point = null):Point
+      public function InverseTransformPointXY (inPointX:Number, inPointY:Number, outPoint:Point = null):Point
+      {
+         return InverseTransformVectorXY (inPointX - mOffsetX, inPointY - mOffsetY, outPoint);
+      }
+      
+      public function InverseTransformVectorXY (inVectorX:Number, inVectorY:Number, outVector:Point = null):Point
       {
          if (outVector == null)
             outVector = new Point ();
          
          // scale
-         inVector.x /= mScale;
-         inVector.y /= mScale;
+         inVectorX /= mScale;
+         inVectorY /= mScale;
          
          // flip
          if (mFlipped)
-            inVector.x = - inVector.x;
+            inVectorX = - inVectorX;
          
          // rotate
-         outVector.x =   cos * inVector.x + sin * inVector.y;
-         outVector.y = - sin * inVector.x + cos * inVector.y;
+         outVector.x =   cos * inVectorX + sin * inVectorY;
+         outVector.y = - sin * inVectorX + cos * inVectorY;
          
          //
          return outVector;

@@ -8,6 +8,7 @@ package player.entity {
    import player.world.World;
    
    import common.Define;
+   import common.Transform2D;
 
    // no initilize and update and destroy event for joint anchors
    public class SubEntityJointAnchor extends SubEntity
@@ -20,10 +21,11 @@ package player.entity {
       // the connected shape, null means ground. It is possible the shape is not a physics shape.
       internal var mShape:EntityShape = null;
       
-      internal var mRelativeRotation:Number = 0.0; // relative to shape
-      internal var mLocalPositionX:Number = 0.0; // in shape space
-      internal var mLocalPositionY:Number = 0.0; // in shape space
-
+      //internal var mRelativeRotation:Number = 0.0; // relative to shape
+      //internal var mLocalPositionX:Number = 0.0; // in shape space
+      //internal var mLocalPositionY:Number = 0.0; // in shape space
+      internal var mLocalTransform:Transform2D = new Transform2D (); // from v1.58
+      
       // anchor list of mShape
       internal var mPrevAnchor:SubEntityJointAnchor = null;
       internal var mNextAnchor:SubEntityJointAnchor = null;
@@ -81,13 +83,14 @@ package player.entity {
       {
          if (mShape != null)
          {
-            mShape.UpdateSinCos ();
-            
-            var point:Point = new Point ();
-            mShape.WorldPoint2LocalPoint (mPositionX, mPositionY, point);
-            mLocalPositionX = point.x;
-            mLocalPositionY = point.y;
-            mRelativeRotation  = mPhysicsRotation  - mShape.GetRotation  ();
+            //mShape.UpdateSinCos ();
+            //
+            //var point:Point = new Point ();
+            //mShape.WorldPoint2LocalPoint (mPositionX, mPositionY, point);
+            //mLocalPositionX = point.x;
+            //mLocalPositionY = point.y;
+            //mRelativeRotation  = mPhysicsRotation  - mShape.GetRotation  ();
+            Transform2D.CombineInverseTransformAndTransform (mShape.GetTransform (), mTransform, mLocalTransform);
          }
       }
 
@@ -95,13 +98,14 @@ package player.entity {
       {
          if (mShape != null)
          {
-            mShape.UpdateSinCos ();
-            
-            var point:Point = new Point ();
-            mShape.LocalPoint2WorldPoint (mLocalPositionX, mLocalPositionY, point);
-            mPositionX = point.x;
-            mPositionY = point.y;
-            SetRotation (mShape.mPhysicsRotation + mRelativeRotation);
+            //mShape.UpdateSinCos ();
+            //
+            //var point:Point = new Point ();
+            //mShape.LocalPoint2WorldPoint (mLocalPositionX, mLocalPositionY, point);
+            //mPositionX = point.x;
+            //mPositionY = point.y;
+            //SetRotation (mShape.mPhysicsRotation + mRelativeRotation);
+            Transform2D.CombineTransforms (mShape.GetTransform (), mLocalTransform, mTransform);
          }
       }
       
@@ -139,12 +143,14 @@ package player.entity {
           
          if (mShape != null)
          {
-            SetRotation (mShape.mPhysicsRotation + mRelativeRotation);
+            //SetRotation (mShape.mPhysicsRotation + mRelativeRotation);
+            SetRotation (mShape.GetRotation () + mLocalTransform.mRotation);
          }
          
          // the parent joint will update the position of this anchor
-         //mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
-         //mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
+         ////mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
+         ////mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
+         //UpdateDisplayObjectPosition ();
          
          mAnchorShape.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotationInTwoPI * Define.kRadians2Degrees);
       }
@@ -171,8 +177,8 @@ package player.entity {
       
       internal function UpdateDisplayObjectPosition ():void
       {
-         mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
-         mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
+         mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (GetPositionX ());
+         mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (GetPositionY ());
          
          mAnchorShape.visible = mVisible;
          mAnchorShape.alpha = mAlpha;

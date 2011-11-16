@@ -83,7 +83,7 @@ package player.entity {
          
          if (mApplyAntiGravity)
          {
-            mBody.ApplyForceAtPoint (- mMass * mWorld.GetLastStepGravityAccelerationX (), - mMass * mWorld.GetLastStepGravityAccelerationY (), mPositionX, mPositionY);
+            mBody.ApplyForceAtPoint (- mMass * mWorld.GetLastStepGravityAccelerationX (), - mMass * mWorld.GetLastStepGravityAccelerationY (), GetPositionX (), GetPositionY ());
          }
       }
    }

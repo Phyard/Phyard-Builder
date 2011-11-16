@@ -14,6 +14,7 @@ package editor.entity {
    
    import common.Define;
    import common.ValueAdjuster;
+   import common.Transform2D;
    
    //todo: extends from Asset (or merge Asset and EditorObject)
    public class Entity extends EditorObject// Sprite
@@ -24,9 +25,10 @@ package editor.entity {
       
       protected var mSelectionProxy:SelectionProxy = null;
       
-      private var mPosX:Number = 0;
-      private var mPosY:Number = 0;
-      private var mRotation:Number = 0;
+      //private var mPosX:Number = 0;
+      //private var mPosY:Number = 0;
+      //private var mRotation:Number = 0;
+      private var mTransform:Transform2D = new Transform2D (); // from v1.58
       
       protected var mIsVisible:Boolean = true;
       
@@ -174,9 +176,9 @@ package editor.entity {
       
       public function GetInfoText ():String
       {
-         return     "x = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (mPosX), 6) 
-                + ", y = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (mPosY), 6) 
-                + ", angle = " + ValueAdjuster.Number2Precision ((mEntityContainer.GetCoordinateSystem ().D2P_RotationRadians (mRotation) * Define.kRadians2Degrees), 6);
+         return     "x = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (GetPositionX ()), 6) 
+                + ", y = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (GetPositionY ()), 6) 
+                + ", angle = " + ValueAdjuster.Number2Precision ((mEntityContainer.GetCoordinateSystem ().D2P_RotationRadians (GetRotation ()) * Define.kRadians2Degrees), 6);
       }
       
       public function GetPhysicsShapesCount ():uint
@@ -234,7 +236,7 @@ package editor.entity {
 //======================================================
 // pos, rotition
 //======================================================
-      
+      /*
       public function GetPositionX ():Number
       {
          return mPosX;
@@ -265,6 +267,90 @@ package editor.entity {
             mRotation += Define.kPI_x_2;
          
          rotation = (mRotation * Define.kRadians2Degrees) % 360.0;
+      }
+      */
+      
+      public function CloneTransform ():Transform2D
+      {
+         return mTransform.Clone ();
+      }
+      
+      public function GetPositionX ():Number
+      {
+         return mTransform.mOffsetX;
+      }
+      
+      public function GetPositionY ():Number
+      {
+         return mTransform.mOffsetY;
+      }
+      
+      public function SetPosition (posX:Number, posY:Number):void
+      {
+         mTransform.mOffsetX = posX;
+         mTransform.mOffsetY = posY;
+         
+         x = posX;
+         y = posY;
+      }
+      
+      public function GetScale ():Number
+      {
+         return mTransform.mScale;
+      }
+      
+      public function SetScale (s:Number):void
+      {
+         if (s < 0)
+            s = - s;
+         
+         mTransform.mScale = s;
+         
+         UpdateDisplayObjectRotateScaleXY ();
+      }
+      
+      public function GetRotation ():Number
+      {
+         return mTransform.mRotation;
+      }
+      
+      public function SetRotation (r:Number):void
+      {
+         r = r % Define.kPI_x_2;
+         if (r < 0)
+            r += Define.kPI_x_2;
+         
+         mTransform.mRotation = r % Define.kPI_x_2;
+         
+         UpdateDisplayObjectRotateScaleXY ();
+      }
+      
+      public function IsFlipped ():Boolean
+      {
+         return mTransform.mFlipped;
+      }
+      
+      public function SetFlipped (flipped:Boolean):void
+      {
+         mTransform.mFlipped = flipped;
+         
+         UpdateDisplayObjectRotateScaleXY ();
+      }
+      
+      private function UpdateDisplayObjectRotateScaleXY ():void
+      {
+         if (mTransform.mFlipped)
+         {
+            scaleX = - mTransform.mScale;
+            rotation = - mTransform.mRotation * 180.0 / Math.PI;
+         }
+         else
+         {
+            scaleX = mTransform.mScale;
+            rotation = mTransform.mRotation * 180.0 / Math.PI;
+         }
+         
+         scaleY = mTransform.mScale;
       }
       
 //====================================================================
@@ -606,12 +692,12 @@ package editor.entity {
       
       public function GetLinkPointX ():Number
       {
-         return mPosX;
+         return GetPositionX ();
       }
       
       public function GetLinkPointY ():Number
       {
-         return mPosY;
+         return GetPositionY ();
       }
       
 //====================================================================

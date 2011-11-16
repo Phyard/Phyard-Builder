@@ -22,6 +22,7 @@ package player.entity {
    
    import common.DataFormat2;
    import common.CoordinateSystem;
+   import common.Transform2D;
    import common.Define;
    import common.WorldDefine;
    import common.trigger.CoreEventIds;
@@ -908,16 +909,17 @@ package player.entity {
             return;
          
          //if (mBody != null) // should no be null
-         {
-            mBody.UpdateSinCos ();
+         //{
+            //mBody.UpdateSinCos ();
             
-            mPositionX = mBody.mPositionX + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
-            mPositionY = mBody.mPositionY + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
-            SetRotation (mBody.mPhysicsRotation + mRelativeRotation);
-         }
+            //mPositionX = mBody.mPositionX + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
+            //mPositionY = mBody.mPositionY + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
+            //SetRotation (mBody.mPhysicsRotation + mRelativeRotation);
+            Transform2D.CombineTransforms (mBody.GetTransform (), mLocalTransform, mTransform);
+         //}
 
-         var newX:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
-         var newY:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
+         var newX:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (GetPositionX ());
+         var newY:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (GetPositionY ());
          var newR:Number = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotationInTwoPI) * Define.kRadians2Degrees;
          
          if (mBody.IsStatic () || mBody.IsSleeping ()) // special optimize for potiential static shapes. Maybe here can be more optimized. (call nothing here but when the shape position are manually changed, this function needs also be called.)
@@ -934,24 +936,30 @@ package player.entity {
                //trace ("   (int(mAppearanceObjectsContainer.y * 20.0)) = " + (int(mAppearanceObjectsContainer.y * 20.0)) + ", (int (newY * 20.0)) = " + (int (newY * 20.0)) );
                mAppearanceObjectsContainer.y = newY;
             }
-            //if (mAppearanceObjectsContainer.rotation != newR) // nonsense
-            //{
-               mAppearanceObjectsContainer.rotation = newR;
-            //}
          }
          else
          {
             mAppearanceObjectsContainer.x = newX;
             mAppearanceObjectsContainer.y = newY;
-            mAppearanceObjectsContainer.rotation = newR;
          }
          
-         mAppearanceObjectsContainer.scaleX = mFlipped ? - mScale : mScale;
-         mAppearanceObjectsContainer.scaleY = mScale;
+         mAppearanceObjectsContainer.rotation = newR;
+         
+         //mAppearanceObjectsContainer.scaleX = mFlipped ? - mScale : mScale;
+         //mAppearanceObjectsContainer.scaleY = mScale;
+         
+         mAppearanceObjectsContainer.scaleX = GetScale ();
+         mAppearanceObjectsContainer.scaleY = GetScale ();
+         
+         if (IsFlipped ())
+         {
+            mAppearanceObjectsContainer.scaleX = - mAppearanceObjectsContainer.scaleX;
+            mAppearanceObjectsContainer.rotation = - mAppearanceObjectsContainer.rotation;
+         }
       }
       
 //=============================================================
-//   mass, interia, centroid
+//   mass, interia, centroid 
 //=============================================================
       
       // Not like the velocity, there is no the FlagMassSynchronized () function.
@@ -1022,8 +1030,10 @@ package player.entity {
          {
             mMass = 0.0;
             mInertia = 0.0;
-            mLocalCentroidX = mLocalPositionX;
-            mLocalCentroidY = mLocalPositionY;
+            //mLocalCentroidX = mLocalPositionX;
+            //mLocalCentroidY = mLocalPositionY;
+            mLocalCentroidX = mLocalTransform.mOffsetX;
+            mLocalCentroidY = mLocalTransform.mOffsetY;
          }
       }
       
@@ -1072,8 +1082,8 @@ package player.entity {
             var worldLocalCentroidX:Number = mLocalCentroidX * mBody.mCosRotation - mLocalCentroidY * mBody.mSinRotation;
             var worldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
             
-            mWorldCentroidX = mBody.mPositionX + worldLocalCentroidX;
-            mWorldCentroidY = mBody.mPositionY + worldLocalCentroidY;
+            mWorldCentroidX = mBody.GetPositionX () + worldLocalCentroidX;
+            mWorldCentroidY = mBody.GetPositionY () + worldLocalCentroidY;
          }
       }
       
@@ -1117,8 +1127,8 @@ package player.entity {
             
             FlagWorldCentroidSynchronized (true);
             
-            mWorldCentroidX = mBody.mPositionX + worldLocalCentroidX;
-            mWorldCentroidY = mBody.mPositionY + worldLocalCentroidY;
+            mWorldCentroidX = mBody.GetPositionX () + worldLocalCentroidX;
+            mWorldCentroidY = mBody.GetPositionY () + worldLocalCentroidY;
          }
       }
       
@@ -1163,68 +1173,6 @@ package player.entity {
       protected var mAppearanceObjectsContainer:Sprite = new Sprite ();
       
 //=============================================================
-//   flipped and scale
-//=============================================================
-      
-      // relative to mBody, but also can be viewed as relative to world for body has no flip and scale
-      //protected var mScaleX:Number = 1.0; // a nagetive value menas flipping
-      //protected var mScaleY:Number = 1.0; // must be positive
-      //
-      //public function GetScaleX ():Number
-      //{
-      //   return mScaleX;
-      //}
-      //
-      //public function SetScaleX (scaleX:Number):void
-      //{
-      //   mScaleX = scaleX;
-      //   
-      //   mNeedRebuildAppearanceObjects = true;
-      //   DelayUpdateAppearance (); 
-      //}
-      //
-      //public function GetScaleY ():Number
-      //{
-      //   return mScaleY;
-      //}
-      //
-      //public function SetScaleY (scaleY:Number):void
-      //{
-      //   mScaleY = scaleY;
-      //   
-      //   mNeedRebuildAppearanceObjects = true;
-      //   DelayUpdateAppearance (); 
-      //}
-      
-      protected var mFlipped:Boolean = false;
-      public function IsFlipped ():Boolean
-      {
-         return mFlipped;
-      }
-      
-      public function SetFlipped (flipped:Boolean):void
-      {
-         mFlipped = flipped;
-         
-         mNeedRebuildAppearanceObjects = true;
-         DelayUpdateAppearance (); 
-      }
-      
-      protected var mScale:Number = 1.0; // uniform scale
-      public function GetScale ():Number
-      {
-         return mScale;
-      }
-      
-      public function SetScale (scaleRatio:Number):void
-      {
-         mScale = scaleRatio;
-         
-         mNeedRebuildAppearanceObjects = true;
-         DelayUpdateAppearance (); 
-      }
-      
-//=============================================================
 //   body
 //=============================================================
       
@@ -1237,9 +1185,10 @@ package player.entity {
       internal var mNextPhysicsShapeInBody:EntityShape = null;
       
       // relative to mBody (only valid when mBody is not null)
-      protected var mLocalPositionX:Number;
-      protected var mLocalPositionY:Number;
-      protected var mRelativeRotation:Number;
+      //protected var mLocalPositionX:Number;
+      //protected var mLocalPositionY:Number;
+      //protected var mRelativeRotation:Number;
+      protected var mLocalTransform:Transform2D = new Transform2D (); // from v1.58
       
       public function GetBody ():EntityBody
       {
@@ -1273,11 +1222,12 @@ package player.entity {
       {
          if (mBody != null)
          {
-            var tempX:Number = (mPositionX - mBody.GetPositionX ());
-            var tempY:Number = (mPositionY - mBody.GetPositionY ());
-            mLocalPositionX =   tempX * mBody.mCosRotation + tempY * mBody.mSinRotation;
-            mLocalPositionY = - tempX * mBody.mSinRotation + tempY * mBody.mCosRotation;
-            mRelativeRotation  = mPhysicsRotation  - mBody.GetRotation  ();
+            //var tempX:Number = (mPositionX - mBody.GetPositionX ());
+            //var tempY:Number = (mPositionY - mBody.GetPositionY ());
+            //mLocalPositionX =   tempX * mBody.mCosRotation + tempY * mBody.mSinRotation;
+            //mLocalPositionY = - tempX * mBody.mSinRotation + tempY * mBody.mCosRotation;
+            //mRelativeRotation  = mPhysicsRotation  - mBody.GetRotation  ();
+            Transform2D.CombineInverseTransformAndTransform (mBody.GetTransform (), mTransform, mLocalTransform);
          }
       }
       
@@ -1366,7 +1316,8 @@ package player.entity {
          while (jointAnchor != null)
          {
             var worldPoint:Point = new Point ();
-            LocalPoint2WorldPoint (jointAnchor.mLocalPositionX, jointAnchor.mLocalPositionY, worldPoint);
+            //LocalPoint2WorldPoint (jointAnchor.mLocalPositionX, jointAnchor.mLocalPositionY, worldPoint);
+            LocalPoint2WorldPoint (jointAnchor.mLocalTransform.mOffsetX, jointAnchor.mLocalTransform.mOffsetY, worldPoint);
             
             jointAnchor.mJoint.GetPhysicsProxyJoint ().ModifyAnchorPosition (worldPoint.x, worldPoint.y, jointAnchor.mAnchorIndex == 0);
             jointAnchor.SynchronizeWithPhysicsProxy ();
@@ -1381,8 +1332,10 @@ package player.entity {
          var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
          while (jointAnchor != null)
          {
-            jointAnchor.mLocalPositionX *= scaleX;
-            jointAnchor.mLocalPositionY *= scaleY;
+            //jointAnchor.mLocalPositionX *= scaleX;
+            //jointAnchor.mLocalPositionY *= scaleY;
+            jointAnchor.mLocalTransform.mOffsetX *= scaleX;
+            jointAnchor.mLocalTransform.mOffsetY *= scaleY;
             
             jointAnchor = jointAnchor.mNextAnchor;
          }
@@ -1495,64 +1448,68 @@ package player.entity {
 //   local <-> world, for SubEntityJointAnchors and other general uses
 //=============================================================
      
-      internal var mCosRotation:Number = 1.0;
-      internal var mSinRotation:Number = 0.0;
-      private  var mLastRotation:Number = 0.0; // last rotation -> sin, cos
-      
-      // before use sin and cos, call this function.
-      internal function UpdateSinCos ():void
-      {
-         if (mPhysicsRotation != mLastRotation)
-         {
-            mLastRotation = mPhysicsRotation;
-            
-            mCosRotation = Math.cos (mPhysicsRotation);
-            mSinRotation = Math.sin (mPhysicsRotation);
-         }
-      }
+      //internal var mCosRotation:Number = 1.0;
+      //internal var mSinRotation:Number = 0.0;
+      //private  var mLastRotation:Number = 0.0; // last rotation -> sin, cos
+      //
+      //// before use sin and cos, call this function.
+      //internal function UpdateSinCos ():void
+      //{
+      //   if (mPhysicsRotation != mLastRotation)
+      //   {
+      //      mLastRotation = mPhysicsRotation;
+      //      
+      //      mCosRotation = Math.cos (mPhysicsRotation);
+      //      mSinRotation = Math.sin (mPhysicsRotation);
+      //   }
+      //}
       
       public function LocalPoint2WorldPoint (localX:Number, localY:Number, worldPoint:Point):void
       {
-         UpdateSinCos ();
-         
-         localX *= (mFlipped ? - mScale : mScale);
-         localY *= mScale;
-         
-         worldPoint.x = mPositionX + localX * mCosRotation - localY * mSinRotation;
-         worldPoint.y = mPositionY + localX * mSinRotation + localY * mCosRotation;
+         //UpdateSinCos ();
+         //
+         //localX *= (mFlipped ? - mScale : mScale);
+         //localY *= mScale;
+         //
+         //worldPoint.x = mPositionX + localX * mCosRotation - localY * mSinRotation;
+         //worldPoint.y = mPositionY + localX * mSinRotation + localY * mCosRotation;
+         mTransform.TransformPointXY (localX, localY, worldPoint);
       }
       
       public function WorldPoint2LocalPoint (worldX:Number, worldY:Number, localPoint:Point):void
       {
-         UpdateSinCos ();
-         
-         worldX -= mPositionX;
-         worldY -= mPositionY;
-         
-         localPoint.x =   worldX * mCosRotation + worldY * mSinRotation;
-         localPoint.y = - worldX * mSinRotation + worldY * mCosRotation;
-         
-         if (mScale != 0)
-         {
-            localPoint.x /= (mFlipped ? - mScale : mScale);
-            localPoint.y /= mScale;
-         }
+         //UpdateSinCos ();
+         //
+         //worldX -= mPositionX;
+         //worldY -= mPositionY;
+         //
+         //localPoint.x =   worldX * mCosRotation + worldY * mSinRotation;
+         //localPoint.y = - worldX * mSinRotation + worldY * mCosRotation;
+         //
+         //if (mScale != 0)
+         //{
+         //   localPoint.x /= (mFlipped ? - mScale : mScale);
+         //   localPoint.y /= mScale;
+         //}
+         mTransform.InverseTransformPointXY (worldX, worldY, localPoint);
       }
       
       public function LocalVector2WorldVector (localVX:Number, localVY:Number, worldVector:Point):void
       {
-         UpdateSinCos ();
-         
-         worldVector.x = localVX * mCosRotation - localVY * mSinRotation;
-         worldVector.y = localVX * mSinRotation + localVY * mCosRotation;
+         //UpdateSinCos ();
+         //
+         //worldVector.x = localVX * mCosRotation - localVY * mSinRotation;
+         //worldVector.y = localVX * mSinRotation + localVY * mCosRotation;
+         mTransform.TransformVectorXY (localVX, localVY, worldVector);
       }
       
       public function WorldVector2LocalVector (worldVX:Number, worldlVY:Number, localVector:Point):void
       {
-         UpdateSinCos ();
-         
-         localVector.x =   worldVX * mCosRotation + worldlVY * mSinRotation;
-         localVector.y = - worldVX * mSinRotation + worldlVY * mCosRotation;
+         //UpdateSinCos ();
+         //
+         //localVector.x =   worldVX * mCosRotation + worldlVY * mSinRotation;
+         //localVector.y = - worldVX * mSinRotation + worldlVY * mCosRotation;
+         mTransform.InverseTransformVectorXY (worldVX, worldlVY, localVector);
       }
       
 //=============================================================

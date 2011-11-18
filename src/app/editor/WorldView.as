@@ -162,7 +162,6 @@ package editor {
    import editor.trigger.Filters;
    
    import editor.sound.dialog.AssetSoundListDialog;
-   import editor.image.dialog.AssetImageModuleListDialog;
    import editor.display.panel.CollisionManagerView;
    import editor.display.panel.FunctionEditingView;
    
@@ -3315,12 +3314,6 @@ package editor {
                case Keyboard.NUMPAD_SUBTRACT:
                   RoundPositionForSelectedEntities ();
                   break;
-               case Keyboard.F3:
-                  AssetImageModuleListDialog.ShowAssetImageModuleListDialog ();
-                  break;
-               //case Keyboard.F4:
-               //   AssetSoundListDialog.ShowAssetSoundListDialog ();
-               //   break;
                default:
                   break;
             }

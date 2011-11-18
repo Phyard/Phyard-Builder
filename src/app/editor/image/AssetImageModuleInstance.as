@@ -394,7 +394,12 @@ package editor.image {
       
       private function OnContextMenuEvent_RebuildFromCurrentModule (event:ContextMenuEvent):void
       {
-         if (SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule))
+         RebuildFromModule (AssetImageModule.mCurrentAssetImageModule);
+      }
+      
+      public function RebuildFromModule (module:AssetImageModule):void
+      {
+         if (SetAssetImageModule (module))
          {
             mAssetImageModuleInstanceManager.NotifyChangedForPanel ();
             

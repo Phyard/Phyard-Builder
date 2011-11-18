@@ -282,13 +282,18 @@ package editor.image {
 //   context menu
 //=============================================================
       
+      public function SetEditable (editable:Boolean):void
+      {
+         mMenuItemEditModule.enabled = editable;
+      }
+      
+      protected var mMenuItemEditModule:ContextMenuItem = new ContextMenuItem("Edit ...");
+      
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         var menuItemEditModule:ContextMenuItem = new ContextMenuItem("Edit ...");
+         mMenuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_EditModule);
          
-         menuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_EditModule);
-         
-         customMenuItemsStack.push (menuItemEditModule);
+         customMenuItemsStack.push (mMenuItemEditModule);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }

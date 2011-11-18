@@ -5,6 +5,7 @@ package editor.runtime {
    import flash.ui.ContextMenuItem;
    import flash.events.ContextMenuEvent;
    import flash.events.KeyboardEvent;
+   import flash.ui.Keyboard;
    
    import mx.core.Application;
    
@@ -15,6 +16,7 @@ package editor.runtime {
    import editor.WorldView;
    import editor.display.panel.CollisionManagerView;
    import editor.display.panel.FunctionEditingView;
+   import editor.image.dialog.AssetImageModuleListDialog;
    
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDefinition
@@ -154,6 +156,16 @@ package editor.runtime {
       
       public static function OnKeyDown (event:KeyboardEvent):void
       {
+         switch (event.keyCode)
+         {
+            case Keyboard.F3:
+               AssetImageModuleListDialog.ShowAssetImageModuleListDialog ();
+               break;
+            //case Keyboard.F4:
+            //   AssetSoundListDialog.ShowAssetSoundListDialog ();
+            //   break;
+         }
+            
          if (mKeyboardListener != null)
          {
             if (HasSettingDialogOpened ())

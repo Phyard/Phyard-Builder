@@ -256,8 +256,10 @@ package editor.asset {
       {
          if (mCurrentIntent != null)
          {
-            mCurrentIntent.Terminate ();
+             // use tempIntent to avoid dead loop sometimes.
+            var tempIntent:Intent = mCurrentIntent;
             mCurrentIntent = null;
+            tempIntent.Terminate ();
          }
          
          mCurrentIntent = intent;

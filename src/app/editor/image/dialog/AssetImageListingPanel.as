@@ -42,15 +42,18 @@ package editor.image.dialog {
    import common.Define;
    import common.Version;
    
-   public class AssetImageListingPanel extends AssetManagerPanel 
+   public class AssetImageListingPanel extends AssetImageModuleListingPanel 
    {
-      protected var mAssetImageManager:AssetImageManager;
+      protected var mAssetImageManager:AssetImageManager = null;
       
       public function SetAssetImageManager (assetImageManager:AssetImageManager):void
       {
-         super.SetAssetManager (assetImageManager);
-          
-         mAssetImageManager = assetImageManager;
+         super.SetAssetImageModuleManager (assetImageManager);
+         
+         if (mAssetImageManager != assetImageManager)
+         {
+            mAssetImageManager = assetImageManager;
+         }
       }
       
    }

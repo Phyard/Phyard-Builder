@@ -45,20 +45,18 @@
       // static functions
          
          private static var sAssetImageModuleListDialog:AssetImageModuleListDialog = null;
-         public static function ShowAssetImageModuleListDialog ():void
+         public static function ShowAssetImageModuleListDialog (OnModulePicked:Function = null):void
          {
             if (sAssetImageModuleListDialog == null)
-            {
                sAssetImageModuleListDialog = new AssetImageModuleListDialog ();
-            }
             
-            if (sAssetImageModuleListDialog.parent != null)
+            if (sAssetImageModuleListDialog.parent != null) // OnModulePicked must be null
             {
                PopUpManager.bringToFront (sAssetImageModuleListDialog);
             }
             else
             {
-               PopUpManager.addPopUp (sAssetImageModuleListDialog, Runtime.GetApplication (), false);
+               PopUpManager.addPopUp (sAssetImageModuleListDialog, Runtime.GetApplication (), OnModulePicked != null);
                PopUpManager.centerPopUp (sAssetImageModuleListDialog);
             }
             
@@ -67,16 +65,40 @@
             sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageAssembledModuleManager ());            
             sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageSequencedModuleManager ());
             
-            Runtime.GetCurrentWorld ().GetAssetImageManager ().RearrangeAssetPositions (true);
-            Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ().RearrangeAssetPositions (true);
-            Runtime.GetCurrentWorld ().GetAssetImageAssembledModuleManager ().RearrangeAssetPositions (true);
-            Runtime.GetCurrentWorld ().GetAssetImageSequencedModuleManager ().RearrangeAssetPositions (true);
+            if (OnModulePicked != null)
+            {
+               sAssetImageModuleListDialog.GetImageListingPanel ().EnterPickModuleIntent (OnModulePicked, EndPickModule);
+               sAssetImageModuleListDialog.GetPureModuleListingPanel ().EnterPickModuleIntent (OnModulePicked, EndPickModule);
+               sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().EnterPickModuleIntent (OnModulePicked, EndPickModule);
+               sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().EnterPickModuleIntent (OnModulePicked, EndPickModule);
+            }
          }
          
          public static function HideAssetImageModuleListDialog ():void
          {
-            PopUpManager.removePopUp(sAssetImageModuleListDialog);
+            if (sAssetImageModuleListDialog != null)
+            {
+               PopUpManager.removePopUp(sAssetImageModuleListDialog);
+            }
          }
+         
+         public static function StartPickModule (OnModulePicked:Function):void
+         {
+            HideAssetImageModuleListDialog ();
+            ShowAssetImageModuleListDialog (OnModulePicked);
+         }
+         
+         public static function EndPickModule ():void
+         {
+            HideAssetImageModuleListDialog ();
+            
+            sAssetImageModuleListDialog.GetImageListingPanel ().ExitPickModuleIntent ();
+            sAssetImageModuleListDialog.GetPureModuleListingPanel ().ExitPickModuleIntent ();
+            sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().ExitPickModuleIntent ();
+            sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().ExitPickModuleIntent ();
+         }
+         
+      //========================================
       
          public function GetImageListingPanel ():AssetImageListingPanel
          {

@@ -50,7 +50,7 @@
                <mx:Label fontWeight="bold" text="Other Properties" />
             </mx:HBox>
             <mx:FormItem id="FormItemPickModule" width="100%" label="Module:" horizontalScrollPolicy="off">
-               <mx:Button id="ButtonPickModule" label="Sequenced#16" width="100%" click="OnPickModule ();" />
+               <mx:Button id="ButtonPickModule" label="Null" width="100%" click="OnClickPickModuleButton ();" />
             </mx:FormItem>
             <mx:FormItem id="FormItemBuildBody" width="100%" label="Build Body:" horizontalScrollPolicy="off">
                <mx:CheckBox selected="false" id="CheckBoxBuildBody" label="" click="ChangeModuleInstanceProperties ();"/>
@@ -291,8 +291,9 @@
          }
          */
          
-         private function OnPickModule ():void
+         private function OnClickPickModuleButton ():void
          {
+            AssetImageModuleListDialog.StartPickModule (panelAssetImageCompositeModuleEditing.ChangeModuleForCurrentModuleInstacne);
          }
          
          private function ChangeModuleInstanceProperties ():void

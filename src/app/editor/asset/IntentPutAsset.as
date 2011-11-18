@@ -9,7 +9,7 @@ package editor.asset {
       
       public function IntentPutAsset (assetToPut:Asset, callbackOnPutting:Function = null, callbackOnCancel:Function = null)
       {
-         super (OnPut, OnCancelled);
+         super (OnPutting, OnCancelled);
          
          mCallbackOnPutting_IntentPutAsset = callbackOnPutting;
          mCallbackOnCancel_IntentPutAsset = callbackOnCancel;
@@ -22,7 +22,7 @@ package editor.asset {
          }
       }
       
-      protected function OnPut (finished:Boolean):void
+      protected function OnPutting (finished:Boolean):void
       {
          if (mCallbackOnPutting_IntentPutAsset != null)
          {

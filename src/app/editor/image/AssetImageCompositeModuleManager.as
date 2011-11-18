@@ -81,13 +81,25 @@ package editor.image {
 //   context menu
 //=============================================================
       
+      override public function NotifyPickingStatusChanged (inPicking:Boolean):void
+      {
+         mMenuItemCreateCompositeModule.enabled = ! inPicking;
+         
+         var numModules:int = GetNumAssets ();
+         for (var i:int = 0; i < numModules; ++ i)
+         {
+            var module:AssetImageCompositeModule = GetAssetByAppearanceId (i) as AssetImageCompositeModule;
+            module.SetEditable (! inPicking);
+         }
+      }
+      
+      protected var mMenuItemCreateCompositeModule:ContextMenuItem = new ContextMenuItem  (IsSequencedModuleManager () ? "Create New Sequenced Module" : "Create New Assembled Module", true);
+
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         var menuItemCreateCompositeModule:ContextMenuItem = new ContextMenuItem  (IsSequencedModuleManager () ? "Create New Sequenced Module" : "Create New Assembled Module", true);
+         mMenuItemCreateCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateCompositeModule);
 
-         menuItemCreateCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateCompositeModule);
-
-         customMenuItemsStack.push (menuItemCreateCompositeModule);
+         customMenuItemsStack.push (mMenuItemCreateCompositeModule);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }

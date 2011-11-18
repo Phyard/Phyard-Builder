@@ -36,7 +36,7 @@ package editor.image {
       
       override public function ToCodeString ():String
       {
-         return "None";
+         return "Null";
       }
       
 //=============================================================

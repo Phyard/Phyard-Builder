@@ -308,8 +308,8 @@ package player.entity {
          if (mPhysicsProxy != null)
             return;
          
-         mAnchor1.UpdatePositionFromLocalPosition ();
-         mAnchor2.UpdatePositionFromLocalPosition ();
+         mAnchor1.UpdateTransformFromLocalTransform ();
+         mAnchor2.UpdateTransformFromLocalTransform ();
          
          RebuildJointPhysicsInternal ();
       }

@@ -1083,7 +1083,7 @@ package player.world {
                   border.SetPositionY  (mCoordinateSystem.D2P_PositionY (info [2]));
                   border.SetHalfWidth  (mCoordinateSystem.D2P_Length (info [3]));
                   border.SetHalfHeight (mCoordinateSystem.D2P_Length (info [4]));
-                  border.UpdatelLocalPosition ();
+                  border.UpdatelLocalTransform ();
 
                   border.SetFilledColor (mBorderColor);
                   border.SetDrawBorder (false);

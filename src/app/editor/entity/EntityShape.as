@@ -112,7 +112,7 @@ package editor.entity {
       {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
 
-         var shape:EntityVectorShape = entity as EntityVectorShape;
+         var shape:EntityShape = entity as EntityShape;
 
          shape.SetPhysicsEnabled (mPhysicsEnabled);
          shape.SetStatic ( IsStatic () );

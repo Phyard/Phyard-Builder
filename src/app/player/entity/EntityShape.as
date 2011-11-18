@@ -167,7 +167,7 @@ package player.entity {
          }
          else if (createStageId == 2)
          {
-            UpdatelLocalPosition ();
+            UpdatelLocalTransform ();
             
             if (mAiType == Define.ShapeAiType_Bomb)
             {
@@ -1213,12 +1213,12 @@ package player.entity {
                // here not rebuild physics automatically.
             }
             
-            UpdatelLocalPosition ();
+            UpdatelLocalTransform ();
          }
       }
       
       // the local position should be always synchronized
-      public function UpdatelLocalPosition ():void
+      public function UpdatelLocalTransform ():void
       {
          if (mBody != null)
          {

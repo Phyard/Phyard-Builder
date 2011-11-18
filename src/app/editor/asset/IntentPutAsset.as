@@ -32,11 +32,6 @@ package editor.asset {
       
       protected function OnCancelled ():void
       {
-         if (mAssetToPut != null)
-         {
-            mAssetToPut.GetAssetManager ().DestroyAsset (mAssetToPut);
-         }
-         
          if (mCallbackOnCancel_IntentPutAsset != null)
          {
             mCallbackOnCancel_IntentPutAsset ();

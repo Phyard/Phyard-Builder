@@ -75,11 +75,11 @@ package player.entity {
                shape.AttachJointAnchor (this);
             }
             
-            UpdatelLocalPosition ();
+            UpdatelLocalTransform ();
          }
       }
 
-      internal function UpdatelLocalPosition ():void
+      internal function UpdatelLocalTransform ():void
       {
          if (mShape != null)
          {
@@ -94,7 +94,7 @@ package player.entity {
          }
       }
 
-      internal function UpdatePositionFromLocalPosition ():void
+      internal function UpdateTransformFromLocalTransform ():void
       {
          if (mShape != null)
          {

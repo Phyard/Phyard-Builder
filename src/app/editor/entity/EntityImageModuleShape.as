@@ -202,7 +202,7 @@ package editor.entity {
       // to override
       override protected function CreateCloneShell ():Entity
       {
-         return null;
+         return new EntityImageModuleShape (mWorld);
       }
 
       // to override
@@ -210,7 +210,8 @@ package editor.entity {
       {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
 
-         var shape:EntityImageModuleShape = entity as EntityImageModuleShape;
+         var imageModuleShape:EntityImageModuleShape = entity as EntityImageModuleShape;
+         imageModuleShape.SetAssetImageModule (GetAssetImageModule ());
       }
       
 //==============================================================================================================

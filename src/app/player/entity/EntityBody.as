@@ -560,7 +560,7 @@ package player.entity {
          shape = mShapeListHead;
          while (shape != null)
          {
-            shape.UpdatelLocalPosition ();
+            shape.UpdatelLocalTransform ();
             shape.UpdateMassAndInertiaAndLocalCentroid ();
             shape.FlagWorldCentroidSynchronized (false);
             

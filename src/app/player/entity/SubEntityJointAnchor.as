@@ -152,7 +152,7 @@ package player.entity {
          ////mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
          //UpdateDisplayObjectPosition ();
          
-         mAnchorShape.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotationInTwoPI * Define.kRadians2Degrees);
+         mAnchorShape.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (GetRotationInTwoPI () * Define.kRadians2Degrees);
       }
       
 //=============================================================

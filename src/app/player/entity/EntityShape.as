@@ -920,7 +920,7 @@ package player.entity {
 
          var newX:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (GetPositionX ());
          var newY:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (GetPositionY ());
-         var newR:Number = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotationInTwoPI) * Define.kRadians2Degrees;
+         var newR:Number = mWorld.GetCoordinateSystem ().P2D_RotationRadians (GetRotationInTwoPI ()) * Define.kRadians2Degrees;
          
          if (mBody.IsStatic () || mBody.IsSleeping ()) // special optimize for potiential static shapes. Maybe here can be more optimized. (call nothing here but when the shape position are manually changed, this function needs also be called.)
          {

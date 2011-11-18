@@ -265,8 +265,8 @@ package player.entity {
       }
 
       private var mLastRotationForCalculateDirection:Number = 0.0;
-      protected var mRotationInTwoPI:Number = 0.0; // [0, 2 * PI)
-      protected var mRotationInPIs:Number = 0.0; // [-PI, PI)
+      private var mRotationInTwoPI:Number = 0.0; // [0, 2 * PI)
+      private var mRotationInPIs:Number = 0.0; // [-PI, PI)
 
       public function GetRotationInTwoPI ():Number
       {

@@ -237,8 +237,8 @@ package player.entity {
                //mPositionX = mPhysicsProxyBody.GetPositionX ();
                //mPositionY = mPhysicsProxyBody.GetPositionY ();
                //SetRotation (mPhysicsProxyBody.GetRotation ()); // for body
-               SetPositionX (mTransform.mOffsetX);
-               SetPositionY (mTransform.mOffsetY);
+               SetPositionX (mPhysicsProxyBody.GetPositionX ());
+               SetPositionY (mPhysicsProxyBody.GetPositionY ());
                SetRotation (mPhysicsProxyBody.GetRotation ());
                
                //UpdateSinCos ();

@@ -119,6 +119,11 @@ package common {
          mRotation = r;
       }
       
+      override public function toString ():String
+      {
+         return ("{x: " + x + ", y: " + y + ", scale: " + mScale + ", flip: " + mFlipped + ", rotation: " + mRotation + "}");
+      }
+      
       public function Clone (clonedTransform:Transform2D = null):Transform2D
       {
          if (clonedTransform == null)

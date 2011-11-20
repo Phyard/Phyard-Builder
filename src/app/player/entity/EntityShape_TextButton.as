@@ -109,6 +109,17 @@ package player.entity {
      }
       
 //=============================================================
+//   initialize
+//=============================================================
+      
+      override protected function InitializeInternal ():void
+      {
+         super.InitializeInternal ();
+         
+         mAppearanceObjectsContainer.mouseChildren = true; // !!! important
+      }
+      
+//=============================================================
 //   
 //=============================================================
       
@@ -119,19 +130,7 @@ package player.entity {
          mSimpleButton.enabled = IsEnabled ();
       }
       
-//=============================================================
-//   
-//=============================================================
-      
       private var mUsingHandCurcor:Boolean = true;
-      
-      private var mDrawBorder_MouseOver:Boolean = true;
-      private var mDrawBackground_MouseOver:Boolean =true;
-      private var mBorderColor_MouseOver:uint = 0x0;
-      private var mBorderThickness_MouseOver:Number = 2;
-      private var mBackgroundColor_MouseOver:uint = Define.ColorTextButtonBackground_MouseOver;
-      private var mTransparency_MouseOver:uint = 100;
-      private var mBorderTransparency_MouseOver:uint = 100;
       
       public function UsingHandCursor ():Boolean
       {
@@ -146,15 +145,16 @@ package player.entity {
       }
       
 //=============================================================
-//   initialize
+//   
 //=============================================================
       
-      override protected function InitializeInternal ():void
-      {
-         super.InitializeInternal ();
-         
-         mAppearanceObjectsContainer.mouseChildren = true; // !!! important
-      }
+      private var mDrawBorder_MouseOver:Boolean = true;
+      private var mDrawBackground_MouseOver:Boolean =true;
+      private var mBorderColor_MouseOver:uint = 0x0;
+      private var mBorderThickness_MouseOver:Number = 2;
+      private var mBackgroundColor_MouseOver:uint = Define.ColorTextButtonBackground_MouseOver;
+      private var mTransparency_MouseOver:uint = 100;
+      private var mBorderTransparency_MouseOver:uint = 100;
       
 //=============================================================
 //   appearance

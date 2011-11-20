@@ -8,6 +8,17 @@ package player.module {
 
    public class Module
    {
+      protected var mId:int = -1; // for debug mainly
+      
+      public function GetId ():int
+      {
+         return mId;
+      }
+      
+      public function SetId (id:int):void
+      {
+         mId = id;
+      }
       
       public function CreateInstance ():ModuleInstance
       {

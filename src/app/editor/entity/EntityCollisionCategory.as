@@ -58,7 +58,7 @@ package editor.entity {
       
       override public function ToCodeString ():String
       {
-         return "CCat#" + mCreationOrderId;
+         return "CCat#" + GetCreationOrderId ();
       }
       
       public function IsDefaultCategory ():Boolean

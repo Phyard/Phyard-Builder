@@ -95,7 +95,8 @@ package editor {
    import editor.entity.Entity;
    
    import editor.entity.EntityShape;
-   import editor.entity.EntityImageModuleShape;
+   import editor.entity.EntityShapeImageModule;
+   import editor.entity.EntityShapeImageModuleButton;
 
    import editor.entity.EntityVectorShape;
    import editor.entity.EntityVectorShapeCircle;
@@ -999,7 +1000,8 @@ package editor {
       public var mButtonCreatePolylineUninfected:Button;
       public var mButtonCreatePolylineDontinfect:Button;
       
-      public var mButtonCreateImageModuleEntity:Button;
+      public var mButtonCreateModuleShape:Button;
+      public var mButtonCreateModuleButtonShape:Button;
       
       public var mButtonCreateJointHinge:Button;
       public var mButtonCreateJointSlider:Button;
@@ -1181,8 +1183,11 @@ package editor {
          
          // image module
          
-            case mButtonCreateImageModuleEntity:
+            case mButtonCreateModuleShape:
                SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateImageModuleShape));
+               break;
+            case mButtonCreateModuleButtonShape:
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateImageModuleButtonShape));
                break;
          
          // joints
@@ -2007,6 +2012,7 @@ package editor {
       public var ShowShapePolygonSettingDialog:Function = null;
       public var ShowShapePolylineSettingDialog:Function = null;
       public var ShowShapeImageModuleSettingDialog:Function = null;
+      public var ShowShapeImageModuleButtonSettingDialog:Function = null;
       
       public var ShowHingeSettingDialog:Function = null;
       public var ShowSliderSettingDialog:Function = null;
@@ -2349,13 +2355,23 @@ package editor {
          {
             var shape:EntityShape = entity as EntityShape;
             
-            if (entity is EntityImageModuleShape)
+            if (entity is EntityShapeImageModule)
             {
                RetrieveShapePhysicsProperties (shape, values);
                
-               values.mModule = (entity as EntityImageModuleShape).GetAssetImageModule ();
+               values.mModule = (entity as EntityShapeImageModule).GetAssetImageModule ();
                
                ShowShapeImageModuleSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityShapeImageModuleButton)
+            {
+               RetrieveShapePhysicsProperties (shape, values);
+               
+               values.mModuleUp = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseUp ();
+               values.mModuleOver = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseOver ();
+               values.mModuleDown = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseDown ();
+               
+               ShowShapeImageModuleButtonSettingDialog (values, ConfirmSettingEntityProperties);
             }
          }
          else if (entity is SubEntityJointAnchor)
@@ -3559,7 +3575,7 @@ package editor {
          }
       }
       
-      public function CreateImageModuleShape (options:Object = null):EntityImageModuleShape
+      public function CreateImageModuleShape (options:Object = null):EntityShapeImageModule
       {
          if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
@@ -3567,7 +3583,7 @@ package editor {
          }
          else
          {
-            var imageModule:EntityImageModuleShape = mEditorWorld.CreateEntityImageModuleShape ();
+            var imageModule:EntityShapeImageModule = mEditorWorld.CreateEntityShapeImageModule ();
             if (imageModule == null)
                return null;
             
@@ -3576,6 +3592,26 @@ package editor {
             SetTheOnlySelectedEntity (imageModule);
             
             return imageModule;
+         }
+      }
+      
+      public function CreateImageModuleButtonShape (options:Object = null):EntityShapeImageModuleButton
+      {
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
+         {
+            return null;
+         }
+         else
+         {
+            var imageModuleButton:EntityShapeImageModuleButton = mEditorWorld.CreateEntityShapeImageModuleButton ();
+            if (imageModuleButton == null)
+               return null;
+            
+            imageModuleButton.ChangeToCurrentAssetImageModule ();
+            
+            SetTheOnlySelectedEntity (imageModuleButton);
+            
+            return imageModuleButton;
          }
       }
       
@@ -4764,9 +4800,9 @@ package editor {
          {
             var shape:EntityShape = entity as EntityShape;
             
-            if (entity is EntityImageModuleShape)
+            if (entity is EntityShapeImageModule)
             {
-               var moduleShape:EntityImageModuleShape = entity as EntityImageModuleShape;
+               var moduleShape:EntityShapeImageModule = entity as EntityShapeImageModule;
                
                UpdateShapePhysicsProperties (moduleShape, params);
                
@@ -4774,6 +4810,19 @@ package editor {
                
                moduleShape.UpdateAppearance ();
                moduleShape.UpdateSelectionProxy ();
+            }
+            else if (entity is EntityShapeImageModuleButton)
+            {
+               var moduleShapeButton:EntityShapeImageModuleButton = entity as EntityShapeImageModuleButton;
+               
+               UpdateShapePhysicsProperties (moduleShapeButton, params);
+               
+               moduleShapeButton.SetAssetImageModuleForMouseUp (params.mModuleUp);
+               moduleShapeButton.SetAssetImageModuleForMouseOver (params.mModuleOver);
+               moduleShapeButton.SetAssetImageModuleForMouseDown (params.mModuleDown);
+               
+               moduleShapeButton.UpdateAppearance ();
+               moduleShapeButton.UpdateSelectionProxy ();
             }
          }
          else if (entity is SubEntityJointAnchor)

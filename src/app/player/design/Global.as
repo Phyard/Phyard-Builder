@@ -256,6 +256,7 @@ package player.design
       {
          var needLoadImages:Boolean = false;
          var imageId:int;
+         var image:ImageBitmap;
          
          if (mImageBitmaps == null)
          {
@@ -265,7 +266,9 @@ package player.design
             
             for (imageId = 0; imageId < imageDefines.length; ++ imageId)
             {
-               mImageBitmaps [imageId] = new ImageBitmap ();
+               image = new ImageBitmap ();;
+               image.SetId (imageId);
+               mImageBitmaps [imageId] = image;
             }
          }
 
@@ -279,7 +282,7 @@ package player.design
                
                var imageDivision:ImageBitmapDivision = new ImageBitmapDivision (mImageBitmaps [divisionDefine.mImageIndex] as ImageBitmap, 
                                                        divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom);
-               
+               imageDivision.SetId (imageDefines.length + divisionId);
                mImageBitmapDivisions [divisionId] = imageDivision;
             }
          }
@@ -290,7 +293,7 @@ package player.design
             {
                var imageDefine:Object = imageDefines [imageId];
                
-               var image:ImageBitmap = mImageBitmaps [imageId] as ImageBitmap;
+               image = mImageBitmaps [imageId] as ImageBitmap;
                //imageDefine.mName
                image.SetFileData (imageDefine.mFileData, OnLoadImageDone, OnLoadImageError);
             }
@@ -304,6 +307,7 @@ package player.design
          for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
          {
             mAssembledModules [assembledModuleId] = new AssembledModule ();
+            (mAssembledModules [assembledModuleId] as AssembledModule).SetId (imageDefines.length + pureImageModuleDefines.length + assembledModuleId);
          }
 
          mSequencedModules     = new Array (sequencedModuleDefines.length);
@@ -312,6 +316,7 @@ package player.design
          for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
          {
             mSequencedModules [sequencedModuleId] = new SequencedModule ();
+            (mSequencedModules [sequencedModuleId] as SequencedModule) .SetId (imageDefines.length + pureImageModuleDefines.length + assembledModuleDefines.length + sequencedModuleId);
          }
 
          for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
@@ -555,7 +560,7 @@ package player.design
                return mSequencedModules [moduleId] as Module;
          }
          
-         return new Module ();
+         return new Module (); // a dummy module
       }
       
       public static function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void

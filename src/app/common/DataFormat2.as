@@ -22,6 +22,7 @@ package common {
    import player.entity.EntityShapePolyline;
 
    import player.entity.EntityShapeImageModule;
+   import player.entity.EntityShapeImageModuleButton;
 
    import player.entity.EntityJoint;
    import player.entity.EntityJointHinge;
@@ -120,6 +121,9 @@ package common {
          
             case Define.EntityType_ShapeImageModule:
                entity = new EntityShapeImageModule (playerWorld);
+               break;
+            case Define.EntityType_ShapeImageModuleButton:
+               entity = new EntityShapeImageModuleButton (playerWorld);
                break;
 
          // basic joints
@@ -1394,6 +1398,14 @@ package common {
                
                element.@module_index = entityDefine.mModuleIndex;
             }
+            else if (entityDefine.mEntityType == Define.EntityType_ShapeImageModuleButton)
+            {
+               ShapePhysicsProperties2Xml (element, entityDefine, worldDefine);
+               
+               element.@module_index_up = entityDefine.mModuleIndexUp;
+               element.@module_index_over = entityDefine.mModuleIndexOver;
+               element.@module_index_down = entityDefine.mModuleIndexDown;
+            }
          }
          //<<
          else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
@@ -2003,6 +2015,14 @@ package common {
                   ReadShapePhysicsPropertiesAndAiType (entityDefine, byteArray, worldDefine, false);
                   
                   entityDefine.mModuleIndex = byteArray.readShort ();
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_ShapeImageModuleButton)
+               {
+                  ReadShapePhysicsPropertiesAndAiType (entityDefine, byteArray, worldDefine, false);
+                  
+                  entityDefine.mModuleIndexUp = byteArray.readShort ();
+                  entityDefine.mModuleIndexOver = byteArray.readShort ();
+                  entityDefine.mModuleIndexDown = byteArray.readShort ();
                }
             }
             //<<
@@ -2618,6 +2638,10 @@ package common {
             else if (Define.IsShapeEntity (entityDefine.mEntityType))
             {
                if (entityDefine.mEntityType == Define.EntityType_ShapeImageModule)
+               {
+                  AdjustNumberValuesOfShapePhysicsProperties (entityDefine, worldDefine);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_ShapeImageModuleButton)
                {
                   AdjustNumberValuesOfShapePhysicsProperties (entityDefine, worldDefine);
                }

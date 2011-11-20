@@ -69,7 +69,7 @@ package editor.trigger.entity {
       
       override public function ToCodeString ():String
       {
-         return "Package#" + mCreationOrderId;
+         return "Package#" + GetCreationOrderId ();
       }
       
       override public function GetTypeName ():String

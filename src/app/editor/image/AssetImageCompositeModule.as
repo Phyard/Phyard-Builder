@@ -98,7 +98,7 @@ package editor.image {
       
       override public function ToCodeString ():String
       {
-         return (IsSequenced () ? "Sequenced#" : "Assembled#") + mCreationOrderId;
+         return (IsSequenced () ? "Sequenced#" : "Assembled#") + GetAppearanceLayerId ();
       }
       
       override public function GetTypeName ():String

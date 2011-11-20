@@ -91,7 +91,7 @@ package editor.image.dialog {
          if (mAssetImageModuleManager != null)
          {
             var assetArray:Array = mAssetImageModuleManager.GetAssetsAtPoint (managerX, managerY);
-            if (assetArray != null && assetArray.length == 1)
+            if (assetArray != null && assetArray.length >= 1)
             {
                return assetArray [0] as AssetImageModule;
             }

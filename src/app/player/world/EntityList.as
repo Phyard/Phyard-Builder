@@ -6,6 +6,7 @@ package player.world {
    import player.entity.EntityJoint;
    
    import player.entity.EntityShapeImageModule;
+   import player.entity.EntityShapeImageModuleButton;
 
    public class EntityList
    {
@@ -294,8 +295,11 @@ package player.world {
 
             while (true)
             {
+               // to optimize
                if (entity is EntityShapeImageModule)
                   (entity as EntityShapeImageModule).OnModuleAppearanceChanged ();
+               else if (entity is EntityShapeImageModuleButton)
+                  (entity as EntityShapeImageModuleButton).OnModuleAppearanceChanged ();
 
                if (entity == tail)
                   break;

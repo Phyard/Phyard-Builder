@@ -37,7 +37,7 @@ package editor.image {
          {
             var module:AssetImageModule = mAssetImageModuleListingPanel.PickModuleAtPosition (mCurrentX, mCurrentY); 
             
-            if (module != null)
+            //if (module != null) // it is ok to set null
                mCallbackOnPick (module);
             
             OnEnd ();

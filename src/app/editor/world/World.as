@@ -21,7 +21,8 @@ package editor.world {
    import editor.entity.EntityVectorShapeTextButton;
    import editor.entity.EntityVectorShapeGravityController;
    
-   import editor.entity.EntityImageModuleShape;
+   import editor.entity.EntityShapeImageModule;
+   import editor.entity.EntityShapeImageModuleButton;
 
    import editor.entity.EntityUtility;
    import editor.entity.EntityUtilityCamera;
@@ -915,17 +916,30 @@ package editor.world {
          return polyline;
       }
       
-      public function CreateEntityImageModuleShape ():EntityImageModuleShape
+      public function CreateEntityShapeImageModule ():EntityShapeImageModule
       {  
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
-         var imageModule:EntityImageModuleShape = new EntityImageModuleShape (this);
+         var imageModule:EntityShapeImageModule = new EntityShapeImageModule (this);
          addChild (imageModule);
 
          imageModule.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
 
          return imageModule;
+      }
+      
+      public function CreateEntityShapeImageModuleButton ():EntityShapeImageModuleButton
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+
+         var imageModuleButton:EntityShapeImageModuleButton = new EntityShapeImageModuleButton (this);
+         addChild (imageModuleButton);
+
+         imageModuleButton.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
+
+         return imageModuleButton;
       }
 
       public function CreateEntityJointDistance ():EntityJointDistance
@@ -1671,7 +1685,7 @@ package editor.world {
                
                if (moduleType > AssetImageModule.ImageModuleType_AssembledModule)
                {
-                  index += mAssetImageSequencedModuleManager.GetNumAssets ();
+                  index += mAssetImageAssembledModuleManager.GetNumAssets ();
                }
             }
          }

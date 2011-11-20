@@ -57,6 +57,8 @@ package player.entity {
       
       protected var mModuleIndex:int = -1;
 
+      protected var mModuleInstance:ModuleInstance = null;
+      
       public function SetModuleIndex (moduleIndex:int):void
       {
          mModuleIndex = moduleIndex;
@@ -69,8 +71,6 @@ package player.entity {
 //=============================================================
 //   
 //=============================================================
-      
-      protected var mModuleInstance:ModuleInstance = null;
       
       public function OnModuleAppearanceChanged ():void
       {

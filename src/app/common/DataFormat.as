@@ -9,7 +9,8 @@ package common {
    import editor.entity.Entity;
    
    import editor.entity.EntityShape;
-   import editor.entity.EntityImageModuleShape;
+   import editor.entity.EntityShapeImageModule;
+   import editor.entity.EntityShapeImageModuleButton;
    
    import editor.entity.EntityVectorShape;
    import editor.entity.EntityVectorShapeCircle;
@@ -545,13 +546,23 @@ package common {
             {
                var shape:EntityShape = editorEntity as EntityShape;
                
-               if (editorEntity is EntityImageModuleShape)
+               if (editorEntity is EntityShapeImageModule)
                {
                   entityDefine.mEntityType = Define.EntityType_ShapeImageModule;
                   
-                  RetrieveShapePhysicsProperties (entityDefine, editorEntity as EntityImageModuleShape);
+                  RetrieveShapePhysicsProperties (entityDefine, editorEntity as EntityShapeImageModule);
                   
-                  entityDefine.mModuleIndex = editorWorld.GetImageModuleIndex ((editorEntity as EntityImageModuleShape).GetAssetImageModule ());
+                  entityDefine.mModuleIndex = editorWorld.GetImageModuleIndex ((editorEntity as EntityShapeImageModule).GetAssetImageModule ());
+               }
+               else if (editorEntity is EntityShapeImageModuleButton)
+               {
+                  entityDefine.mEntityType = Define.EntityType_ShapeImageModuleButton;
+                  
+                  RetrieveShapePhysicsProperties (entityDefine, editorEntity as EntityShapeImageModuleButton);
+                  
+                  entityDefine.mModuleIndexUp = editorWorld.GetImageModuleIndex ((editorEntity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseUp ());
+                  entityDefine.mModuleIndexOver = editorWorld.GetImageModuleIndex ((editorEntity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseOver ());
+                  entityDefine.mModuleIndexDown = editorWorld.GetImageModuleIndex ((editorEntity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseDown ());
                }
             }
             //<<
@@ -1128,8 +1139,7 @@ package common {
                imageModule = new AssetImageShapeModule (vectorShape as VectorShapeForEditing);
             }
          }
-         else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule) 
-              // (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
+         else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeImageModule)
          {
             if (moduleInstanceDefine.mModuleIndex >= 0)
             {
@@ -1716,7 +1726,7 @@ package common {
                
                if (entityDefine.mEntityType == Define.EntityType_ShapeImageModule)
                {
-                  var imageModuleShape:EntityImageModuleShape = editorWorld.CreateEntityImageModuleShape ();
+                  var imageModuleShape:EntityShapeImageModule = editorWorld.CreateEntityShapeImageModule ();
                   
                   if (entityDefine.mModuleIndex >= 0)
                      entityDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndex];
@@ -1726,6 +1736,25 @@ package common {
                   SetShapePhysicsProperties (imageModuleShape, entityDefine, beginningCollisionCategoryIndex);
                   
                   entity = shape = imageModuleShape;
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_ShapeImageModuleButton)
+               {
+                  var imageModuleShapeButton:EntityShapeImageModuleButton = editorWorld.CreateEntityShapeImageModuleButton ();
+                  
+                  if (entityDefine.mModuleIndexUp >= 0)
+                     entityDefine.mModuleIndexUp = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndexUp];
+                  if (entityDefine.mModuleIndexOver >= 0)
+                     entityDefine.mModuleIndexOver = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndexOver];
+                  if (entityDefine.mModuleIndexDown >= 0)
+                     entityDefine.mModuleIndexDown = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndexDown];
+                  
+                  imageModuleShapeButton.SetAssetImageModuleForMouseUpByIndex (entityDefine.mModuleIndexUp);
+                  imageModuleShapeButton.SetAssetImageModuleForMouseOverByIndex (entityDefine.mModuleIndexOver);
+                  imageModuleShapeButton.SetAssetImageModuleForMouseDownByIndex (entityDefine.mModuleIndexDown);
+                  
+                  SetShapePhysicsProperties (imageModuleShapeButton, entityDefine, beginningCollisionCategoryIndex);
+                  
+                  entity = shape = imageModuleShapeButton;
                }
             }
             //<<
@@ -3027,6 +3056,14 @@ package common {
                
                entityDefine.mModuleIndex = parseInt (element.@module_index);
             }
+            else if (entityDefine.mEntityType == Define.EntityType_ShapeImageModuleButton)
+            {
+               Xml2ShapePhysicsProperties (entityDefine, element, worldDefine);
+               
+               entityDefine.mModuleIndexUp = parseInt (element.@module_index_up);
+               entityDefine.mModuleIndexOver = parseInt (element.@module_index_over);
+               entityDefine.mModuleIndexDown = parseInt (element.@module_index_down);
+            }
          }
          //<<
          else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
@@ -3604,6 +3641,14 @@ package common {
                   WriteShapePhysicsPropertiesAndAiType (byteArray, entityDefine, worldDefine, false);
                   
                   byteArray.writeShort (entityDefine.mModuleIndex);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_ShapeImageModuleButton)
+               {
+                  WriteShapePhysicsPropertiesAndAiType (byteArray, entityDefine, worldDefine, false);
+                  
+                  byteArray.writeShort (entityDefine.mModuleIndexUp);
+                  byteArray.writeShort (entityDefine.mModuleIndexOver);
+                  byteArray.writeShort (entityDefine.mModuleIndexDown);
                }
             }
             //<<

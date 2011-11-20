@@ -72,7 +72,7 @@ package editor.entity {
       
       public function ToCodeString ():String
       {
-         return "Entity#" + mCreationOrderId;
+         return "Entity#" + GetCreationOrderId ();
       }
       
 //======================================================
@@ -712,11 +712,12 @@ package editor.entity {
          if (canvasSprite == null)
             return;
          
-         if (mLasteId != mCreationOrderId)// || mIdText == null)
+         var creationOrderId:int = GetCreationOrderId ();
+         if (mLasteId != creationOrderId)// || mIdText == null)
          {
             RemoveIdText ();
             
-            mLasteId = mCreationOrderId;
+            mLasteId = creationOrderId;
             mIdText = TextFieldEx.CreateTextField (mLasteId.toString (), true, 0xFFFFFF, 0x0, false, 0, false, true, 0x0);
          }
          

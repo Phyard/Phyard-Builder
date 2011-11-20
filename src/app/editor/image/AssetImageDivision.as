@@ -89,7 +89,7 @@ package editor.image {
       
       override public function ToCodeString ():String
       {
-         return "Pure Module#" + mCreationOrderId;
+         return "Pure Module#" + GetAppearanceLayerId ();
       }
       
       override public function GetTypeName ():String

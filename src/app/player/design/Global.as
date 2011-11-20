@@ -8,6 +8,8 @@ package player.design
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
    import player.trigger.FunctionDefinition_Custom;
+
+   import player.entity.Entity;
    
    import player.module.*;
    import player.image.*;

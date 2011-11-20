@@ -175,8 +175,10 @@
             
             assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditingPanel ().SetAssetImageModuleInstanceListingPanelPeer (assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ());
             assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ().SetAssetImageCompositeModuleEditingPanelPeer (assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditingPanel ());
+
+            // ...
             
-            assetImageCompositeModule.SetAssetImageCompositeModuleEditDialog (assetImageCompositeModuleEditDialog);
+            assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ().RearrangeModuleInstancePositions ();
             
             if (assetImageCompositeModule.IsSequenced ())
             {
@@ -186,6 +188,10 @@
             {
                assetImageCompositeModuleEditDialog.SetTitle ("Assembled Module Editing");
             }
+            
+            // ...
+            
+            assetImageCompositeModule.SetAssetImageCompositeModuleEditDialog (assetImageCompositeModuleEditDialog);
          }
          
          public function Hide ():void
@@ -215,7 +221,7 @@
             // temp for preview version
             //BoxPropertySettings.parent.removeChild (BoxPropertySettings);
             //ViewStackPlayStop.parent.removeChild (ViewStackPlayStop);
-            
+
             //...
             panelAssetImageCompositeModuleEditing.mButtonCreateGeneralModuleInstance = ButtonCreateGeneralModuleInstance;
             panelAssetImageCompositeModuleEditing.mButtonCreateShapeBoxInstance = ButtonCreateShapeBoxInstance;

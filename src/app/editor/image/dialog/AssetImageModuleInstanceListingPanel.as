@@ -72,6 +72,14 @@ package editor.image.dialog {
 //
 //=====================================================================
       
+      public function RearrangeModuleInstancePositions ():void
+      {
+         if (mAssetImageModuleInstanceManagerForListing != null)
+         {
+            mAssetImageModuleInstanceManagerForListing.RearrangeAssetPositions (true);
+         }
+      }
+      
       override public function OnAssetSelectionsChanged (passively:Boolean = false):void
       {  
          super.OnAssetSelectionsChanged ();

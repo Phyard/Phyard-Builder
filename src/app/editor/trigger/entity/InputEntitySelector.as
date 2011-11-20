@@ -27,7 +27,7 @@ package editor.trigger.entity {
    
    public class InputEntitySelector extends Sprite implements Linkable
    {
-      public static var kRadius:Number = 5.0;
+      public static const kRadius:Number = 5.0;
       
       public static var sNotifyEntityLinksModified:Function = null;
       

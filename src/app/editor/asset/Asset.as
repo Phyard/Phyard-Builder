@@ -681,7 +681,7 @@ package editor.asset {
       
       // another possible good mehtod: use bit masks to ...
       
-      private static var mNextActionId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
+      public static var mNextActionId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
       
       public static function GetNextActionId ():int
       {

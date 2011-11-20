@@ -1608,6 +1608,8 @@ package editor {
          DestroyEditorWorld ();
          ClearAccumulatedModificationsByArrowKeys ();
          
+         Runtime.Cleanup ();
+         
          mEditorWorld = newEditorWorld;
          mEditorWorld.GetCollisionManager ().SetChanged (false);
          if (mEditorWorld.GetFunctionManager ().IsChanged ())

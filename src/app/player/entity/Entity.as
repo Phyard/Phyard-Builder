@@ -734,7 +734,7 @@ package player.entity {
    // for some API convinience
 
       internal var mSpecialId:int = 0;
-      internal static var sLastSpecialId:int = 0;
+      public static var sLastSpecialId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
 
       internal function IncreaseLastSpecialId ():void
       {

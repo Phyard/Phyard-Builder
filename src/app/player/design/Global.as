@@ -117,6 +117,9 @@ package player.design
          SetSpeedX = null;
          GetScale = null;
          SetScale = null;
+         
+         //
+         Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
       }
       
       public static function SetCurrentWorld (world:World):void

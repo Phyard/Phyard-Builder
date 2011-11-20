@@ -30,9 +30,9 @@ package editor.trigger.entity {
    
    public class EntityInputEntityAssigner extends EntityLogic implements IEntityLimiter 
    {
-      public static var kRadius:Number = 6;
-      public static var kRadius2:Number = 12;
-      public static var kOffsetY:Number = 26;
+      public static const kRadius:Number = 6;
+      public static const kRadius2:Number = 12;
+      public static const kOffsetY:Number = 26;
       
       public var mBorderThickness:Number = 1;
       

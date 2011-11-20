@@ -30,7 +30,7 @@
 
       // static functions
          
-         private static var sAssetSoundListDialog:AssetSoundListDialog = null;
+         public static var sAssetSoundListDialog:AssetSoundListDialog = null;
          public static function ShowAssetSoundListDialog ():void
          {
             if (sAssetSoundListDialog == null)

@@ -16,10 +16,19 @@ package editor.runtime {
    import editor.WorldView;
    import editor.display.panel.CollisionManagerView;
    import editor.display.panel.FunctionEditingView;
+   
+   import editor.entity.Entity;
+   
+   import editor.asset.Asset;
+   
    import editor.image.dialog.AssetImageModuleListDialog;
+   import editor.image.AssetImageModule;
+   import editor.sound.dialog.AssetSoundListDialog;
    
    import editor.trigger.CodeSnippet;
-   import editor.trigger.FunctionDefinition
+   import editor.trigger.FunctionDefinition;
+   
+   import editor.trigger.entity.InputEntitySelector;
    
    import common.Define;
    import common.Version;
@@ -34,10 +43,27 @@ package editor.runtime {
       // call this before loading a new world
       public static function Cleanup ():void
       {
-         // todo: nullify/removeChild dialog references, ..., etc.
-           // ex: AssetImageModuleListDialog.removeChild (3 managers), hideAssetImageModuleListDialog,...
-        
          SetKeyboardListener (null);
+         
+         Asset.mNextActionId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
+         Entity.mNextActionId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
+         AssetImageModuleListDialog.sAssetImageModuleListDialog = null;
+         AssetSoundListDialog.sAssetSoundListDialog = null;
+         AssetImageModule.mCurrentAssetImageModule = null;
+         InputEntitySelector.sNotifyEntityLinksModified = null;
+         
+         mHasSettingDialogOpened = false;
+         mHasInputFocused = false;
+         //mEditorWorldView = null;
+         //mCollisionCategoryView = null;
+         //mFunctionEditingView = null;
+         
+         mSessionVariablesEditingDialogClosedCallBack = null;
+         mGlobalVariablesEditingDialogClosedCallBack = null;
+         mEntityVariablesEditingDialogClosedCallBack = null;
+         mLocalVariablesEditingDialogClosedCallBack = null;
+         mInputVariablesEditingDialogClosedCallBack = null;
+         mOutputVariablesEditingDialogClosedCallBack = null;
       }
    
 //=====================================================================

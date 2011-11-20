@@ -27,17 +27,17 @@ package editor.trigger.entity {
    
    public class EntityTask extends EntityLogic implements ICondition 
    {
-      public static var kRadius:Number = 16;
-      public static var kRadius1:Number = 6;
-      public static var kRadius2:Number = 5;
-      public static var kRadius3:Number = kRadius1 + kRadius2;
+      public static const kRadius:Number = 16;
+      public static const kRadius1:Number = 6;
+      public static const kRadius2:Number = 5;
+      public static const kRadius3:Number = kRadius1 + kRadius2;
       
-      private static var mStatusCirclePositionX:Array = [kRadius3 * Math.cos (0), kRadius3 * Math.cos (Math.PI * 2.0 / 3.0), kRadius3 * Math.cos (Math.PI * 4.0 / 3.0)];
-      private static var mStatusCirclePositionY:Array = [kRadius3 * Math.sin (0), kRadius3 * Math.sin (Math.PI * 2.0 / 3.0), kRadius3 * Math.sin (Math.PI * 4.0 / 3.0)];
-      private static var mStatusCircleColor:Array = [0xFFA0A0, 0xA0FFA0, 0xFFFFFF];
+      private static const mStatusCirclePositionX:Array = [kRadius3 * Math.cos (0), kRadius3 * Math.cos (Math.PI * 2.0 / 3.0), kRadius3 * Math.cos (Math.PI * 4.0 / 3.0)];
+      private static const mStatusCirclePositionY:Array = [kRadius3 * Math.sin (0), kRadius3 * Math.sin (Math.PI * 2.0 / 3.0), kRadius3 * Math.sin (Math.PI * 4.0 / 3.0)];
+      private static const mStatusCircleColor:Array = [0xFFA0A0, 0xA0FFA0, 0xFFFFFF];
       
-      private static var mStatusCirclePositionXb:Array = [kRadius * Math.cos (0), kRadius * Math.cos (Math.PI * 2.0 / 3.0), kRadius * Math.cos (Math.PI * 4.0 / 3.0)];
-      private static var mStatusCirclePositionYb:Array = [kRadius * Math.sin (0), kRadius * Math.sin (Math.PI * 2.0 / 3.0), kRadius * Math.sin (Math.PI * 4.0 / 3.0)];
+      private static const mStatusCirclePositionXb:Array = [kRadius * Math.cos (0), kRadius * Math.cos (Math.PI * 2.0 / 3.0), kRadius * Math.cos (Math.PI * 4.0 / 3.0)];
+      private static const mStatusCirclePositionYb:Array = [kRadius * Math.sin (0), kRadius * Math.sin (Math.PI * 2.0 / 3.0), kRadius * Math.sin (Math.PI * 4.0 / 3.0)];
       
       protected var mBorderThickness:Number = 1;
       

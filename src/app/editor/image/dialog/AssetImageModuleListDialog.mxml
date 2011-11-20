@@ -44,7 +44,7 @@
 
       // static functions
          
-         private static var sAssetImageModuleListDialog:AssetImageModuleListDialog = null;
+         public static var sAssetImageModuleListDialog:AssetImageModuleListDialog = null;
          public static function ShowAssetImageModuleListDialog (OnModulePicked:Function = null):void
          {
             if (sAssetImageModuleListDialog == null)

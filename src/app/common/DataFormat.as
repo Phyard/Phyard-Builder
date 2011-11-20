@@ -1391,6 +1391,8 @@ package common {
                var assembledModule:AssetImageCompositeModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId + oldNumAssembledModules) as AssetImageCompositeModule;
 
                ModuleInstanceDefinesToModuleInstances (assembledModuleDefine.mModulePartDefines, imageModuleRefIndex_CorrectionTable, editorWorld, assembledModule.GetModuleInstanceManager (), false);
+               
+               assembledModule.UpdateAppearance ();
             }
    
             for (var sequencedModuleId:int = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
@@ -1401,6 +1403,8 @@ package common {
                
                //sequencedModule.SetLooped (sequencedModuleDefine.mIsLooped);
                ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
+               
+               sequencedModule.UpdateAppearance ();
             }
          //}
          //<<

@@ -18,7 +18,7 @@ package com.tapirgames.util {
          return value;
       }
       
-      public static function ParseNumber (valueStr:String, defaultValue:Number):Number
+      public static function ParseNumber (valueStr:String, defaultValue:Number, minValue:Number = Number.NEGATIVE_INFINITY, maxValue:Number = Number.POSITIVE_INFINITY):Number
       {
          var value:Number;
          
@@ -27,10 +27,15 @@ package com.tapirgames.util {
          } catch (err:Error) {
             value = NaN;
          }
+         
          if (isNaN (value))
-         {
             value = defaultValue;
-         }
+         
+         if (value < minValue)
+            value = minValue;
+         
+         if (value > maxValue)
+            value = maxValue;
          
          return value;
       }

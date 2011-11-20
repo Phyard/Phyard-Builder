@@ -2353,6 +2353,8 @@ package editor {
             {
                RetrieveShapePhysicsProperties (shape, values);
                
+               values.mModule = (entity as EntityImageModuleShape).GetAssetImageModule ();
+               
                ShowShapeImageModuleSettingDialog (values, ConfirmSettingEntityProperties);
             }
          }
@@ -4764,7 +4766,14 @@ package editor {
             
             if (entity is EntityImageModuleShape)
             {
-               UpdateShapePhysicsProperties (shape, params);
+               var moduleShape:EntityImageModuleShape = entity as EntityImageModuleShape;
+               
+               UpdateShapePhysicsProperties (moduleShape, params);
+               
+               moduleShape.SetAssetImageModule (params.mModule);
+               
+               moduleShape.UpdateAppearance ();
+               moduleShape.UpdateSelectionProxy ();
             }
          }
          else if (entity is SubEntityJointAnchor)

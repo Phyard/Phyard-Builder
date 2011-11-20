@@ -22,6 +22,14 @@
          <mx:HBox width="100%">
             <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
          </mx:HBox>
+         <mx:Spacer height="100%"/>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label text="Module:" textAlign="right" />
+            <mx:Button id="ButtonPickModule" label="Null" width="128" click="OnClickPickModuleButton ();" />
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="100%" />
          <mx:Spacer height="100%" />
       </mx:Box>
    </mx:TabNavigator>
@@ -47,6 +55,9 @@
          import mx.events.MenuEvent;
          import mx.managers.PopUpManager;
          import mx.controls.Menu;
+         
+         import editor.image.dialog.AssetImageModuleListDialog;
+         import editor.image.AssetImageModule;
 
          import common.Define;
 
@@ -77,6 +88,31 @@
          {
             mParams.mEnabledNonsense = true;
             BasicSettingPanel.SetValues (mParams);
+            
+            UpdatePickModuleButtonLabel ();
+         }
+         
+         private function UpdatePickModuleButtonLabel ():void
+         {
+            if (mParams.mModule != null)
+            {
+               ButtonPickModule.label = mParams.mModule.ToCodeString ();
+            }
+            else
+            {
+               ButtonPickModule.label = "Null";
+            }
+         }
+         
+         private function OnClickPickModuleButton ():void
+         {
+            AssetImageModuleListDialog.StartPickModule (OnModulePicked);
+         }
+         
+         private function OnModulePicked (module:AssetImageModule):void
+         {
+            mParams.mModule = module;
+            UpdatePickModuleButtonLabel ();
          }
 
          public function SetConfirmFunc (onConfirm:Function):void

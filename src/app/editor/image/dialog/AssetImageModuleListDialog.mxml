@@ -76,7 +76,11 @@
          
          public static function HideAssetImageModuleListDialog ():void
          {
-            if (sAssetImageModuleListDialog != null)
+            if (sAssetImageModuleListDialog.mInPickingModule)
+            {
+               EndPickModule ();
+            }
+            else if (sAssetImageModuleListDialog != null)
             {
                PopUpManager.removePopUp(sAssetImageModuleListDialog);
             }
@@ -84,18 +88,29 @@
          
          public static function StartPickModule (OnModulePicked:Function):void
          {
-            HideAssetImageModuleListDialog ();
+            if (sAssetImageModuleListDialog != null)
+            {
+               sAssetImageModuleListDialog.mInPickingModule = true;
+               
+               PopUpManager.removePopUp(sAssetImageModuleListDialog);
+            }
+            
             ShowAssetImageModuleListDialog (OnModulePicked);
          }
          
          public static function EndPickModule ():void
          {
-            HideAssetImageModuleListDialog ();
+            if (sAssetImageModuleListDialog != null)
+            {
+               sAssetImageModuleListDialog.mInPickingModule = false;
+               
+               PopUpManager.removePopUp(sAssetImageModuleListDialog);
             
-            sAssetImageModuleListDialog.GetImageListingPanel ().ExitPickModuleIntent ();
-            sAssetImageModuleListDialog.GetPureModuleListingPanel ().ExitPickModuleIntent ();
-            sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().ExitPickModuleIntent ();
-            sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().ExitPickModuleIntent ();
+               sAssetImageModuleListDialog.GetImageListingPanel ().ExitPickModuleIntent ();
+               sAssetImageModuleListDialog.GetPureModuleListingPanel ().ExitPickModuleIntent ();
+               sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().ExitPickModuleIntent ();
+               sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().ExitPickModuleIntent ();
+            }
          }
          
       //========================================
@@ -122,7 +137,7 @@
          
       //=====================================================================
       
-         public var mIsWhownEver:Boolean = false;
+         internal var mInPickingModule:Boolean = false;
       
          public function InitDialog ():void
          {

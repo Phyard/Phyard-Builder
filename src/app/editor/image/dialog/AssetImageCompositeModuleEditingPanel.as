@@ -627,9 +627,9 @@ package editor.image.dialog {
             
             var offsetX:Number = MathUtil.ParseNumber (mTextInputPosX.text, 0.0);
             var offsetY:Number = MathUtil.ParseNumber (mTextInputPosY.text, 0.0);
-            var scaleValue:Number = MathUtil.ParseNumber (mTextInputScale.text, 1.0);
+            var scaleValue:Number = MathUtil.ParseNumber (mTextInputScale.text, 1.0, Define.kFloatEpsilon, Number.MAX_VALUE);
             var angleDegrees:Number = MathUtil.ParseNumber (mTextInputAngle.text, 0.0);
-            var alphaValue:Number = MathUtil.ParseNumber (mTextInputAlpha.text, 1.0);
+            var alphaValue:Number = MathUtil.ParseNumber (mTextInputAlpha.text, 1.0, 0.1, 1.0);
             
             moduleInstance.SetTransformParameters (offsetX, offsetY, scaleValue, mCheckBoxFlipped.selected, angleDegrees);
             moduleInstance.SetDuration (mNumericStepperDuration.value);
@@ -654,7 +654,7 @@ package editor.image.dialog {
                {
                   var pathVectorShape:VectorShapePath = vectorShape as VectorShapePath;
                   
-                  pathVectorShape.SetPathThickness (MathUtil.ParseNumber (mTextInputPathThickness.text, 1.0));
+                  pathVectorShape.SetPathThickness (MathUtil.ParseNumber (mTextInputPathThickness.text, 1.0, 0.0, Number.MAX_VALUE));
                   pathVectorShape.SetClosed (mCheckBoxPathClosed.selected);
                   pathVectorShape.SetRoundEnds (mCheckBoxPathRoundEnds.selected);
                   
@@ -671,13 +671,13 @@ package editor.image.dialog {
                   areaVectorShape.SetDrawBorder (mCheckBoxShowBorder.selected);
                   areaVectorShape.SetBorderOpacity100 (mNumericStepperBorderOpacity.value);
                   areaVectorShape.SetBorderColor (mColorPickerBorderColor.selectedColor);
-                  areaVectorShape.SetBorderThickness (MathUtil.ParseNumber (mTextInputBorderThickness.text, 1.0));
+                  areaVectorShape.SetBorderThickness (MathUtil.ParseNumber (mTextInputBorderThickness.text, 1.0, 0.0, Number.MAX_VALUE));
                   
                   if (vectorShape is VectorShapeCircle)
                   {
                      var circleShape:VectorShapeCircle = areaVectorShape as VectorShapeCircle;
                      
-                     circleShape.SetRadius (MathUtil.ParseNumber (mTextInputCircleRadius.text, 1.0));
+                     circleShape.SetRadius (MathUtil.ParseNumber (mTextInputCircleRadius.text, 1.0, Define.kFloatEpsilon, Number.MAX_VALUE));
                   }
                   else if (vectorShape is VectorShapePolygon)
                   {
@@ -688,8 +688,8 @@ package editor.image.dialog {
                      var rectangleShape:VectorShapeRectangle = areaVectorShape as VectorShapeRectangle;
                      
                      rectangleShape.SetRoundCorners (mCheckBoxRectRoundCorners.selected);
-                     rectangleShape.SetHalfWidth (0.5 * MathUtil.ParseNumber (mTextInputRectWidth.text, 1.0));
-                     rectangleShape.SetHalfHeight (0.5 * MathUtil.ParseNumber (mTextInputRectHeight.text, 1.0));
+                     rectangleShape.SetHalfWidth (0.5 * MathUtil.ParseNumber (mTextInputRectWidth.text, 1.0, Define.kFloatEpsilon, Number.MAX_VALUE));
+                     rectangleShape.SetHalfHeight (0.5 * MathUtil.ParseNumber (mTextInputRectHeight.text, 1.0, Define.kFloatEpsilon, Number.MAX_VALUE));
                   }
                }
             }

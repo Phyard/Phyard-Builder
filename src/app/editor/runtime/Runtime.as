@@ -192,14 +192,18 @@ package editor.runtime {
             //   break;
          }
             
-         if (mKeyboardListener != null)
+         if (HasSettingDialogOpened ())
+            return;
+         
+         if (HasInputFocused ())
+            return;
+         
+         if (mKeyboardListener == null)
          {
-            if (HasSettingDialogOpened ())
-               return;
-            
-            if (HasInputFocused ())
-               return;
-            
+            mEditorWorldView.OnKeyDown (event);
+         }
+         else
+         {
             mKeyboardListener.OnKeyDown (event);
          }
       }

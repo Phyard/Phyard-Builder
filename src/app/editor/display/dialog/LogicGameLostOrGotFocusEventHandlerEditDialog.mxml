@@ -23,8 +23,8 @@
          <mx:HBox width="100%" id="HanlderBasicSettingPanel" creationComplete="OnHanlderBasicSettingPanelCreationComplete()">
             <mx:Spacer width="100%"/>
             <mx:VBox>
-               <mx:RadioButton groupName="EventType" id="RadioButton_LowerLimit" value="LowerLimit" label="Reach Lower Limit" />
-               <mx:RadioButton groupName="EventType" id="RadioButton_UpperLimit" value="UpperLimit" label="Reach Upper Limit" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_OnActivated" value="LowerLimit" label="Game Activated (Get Focus)" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_OnDeactivated" value="UpperLimit" label="Game Deactivated (Lose Focus)" />
             </mx:VBox>
             <mx:Spacer width="100%"/>
          </mx:HBox>
@@ -92,12 +92,12 @@
          {
             switch (mParams.mEventId)
             {
-               case CoreEventIds.ID_OnJointReachLowerLimit:
-                  RadioButton_LowerLimit.selected = true;
+               case CoreEventIds.ID_OnGameActivated:
+                  RadioButton_OnActivated.selected = true;
                   break;
-               case CoreEventIds.ID_OnJointReachUpperLimit:
+               case CoreEventIds.ID_OnGameDeactivated:
                default:
-                  RadioButton_UpperLimit.selected = true;
+                  RadioButton_OnDeactivated.selected = true;
                   break;
             }
          }
@@ -123,10 +123,10 @@
 
             if (HanlderBasicSettingPanel != null)
             {
-               if (RadioButton_LowerLimit.selected)
-                  mParams.mEventId = CoreEventIds.ID_OnJointReachLowerLimit;
-               else //if (RadioButton_UpperLimit.selected)
-                  mParams.mEventId = CoreEventIds.ID_OnJointReachUpperLimit;
+               if (RadioButton_OnActivated.selected)
+                  mParams.mEventId = CoreEventIds.ID_OnGameActivated;
+               else //if (RadioButton_OnDeactivated.selected)
+                  mParams.mEventId = CoreEventIds.ID_OnGameDeactivated;
             }
 
             PopUpManager.removePopUp(this);

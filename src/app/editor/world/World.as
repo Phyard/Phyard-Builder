@@ -55,6 +55,7 @@ package editor.world {
    import editor.trigger.entity.EntityEventHandler_Contact;
    import editor.trigger.entity.EntityEventHandler_JointReachLimit;
    import editor.trigger.entity.EntityEventHandler_ModuleLoopToEnd;
+   import editor.trigger.entity.EntityEventHandler_GameLostOrGotFocus;
    import editor.trigger.entity.EntityAction;
 
    import editor.trigger.entity.EntityFunctionPackage;
@@ -1239,7 +1240,18 @@ package editor.world {
 
          return handler;
       }
+      
+      public function CreateEntityEventHandler_GameLostOrGotFocus (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_GameLostOrGotFocus
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
 
+         var handler:EntityEventHandler_GameLostOrGotFocus = new EntityEventHandler_GameLostOrGotFocus (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+
+         return handler;
+      }
+      
       public function CreateEntityAction ():EntityAction
       {
          if (numChildren >= Define.MaxEntitiesCount)
@@ -1677,7 +1689,8 @@ package editor.world {
       // The global module index
       public function GetImageModuleIndex (imageModule:AssetImageModule):int
       {
-         // assert (imageModule != null)
+         if (imageModule == null)
+            return -1;
          
          var moduleType:int = imageModule.GetImageModuleType ();
          if (moduleType < 0 )
@@ -1691,36 +1704,40 @@ package editor.world {
          {
             if (imageModule.GetAssetImageModuleManager () != mAssetImageManager)
                return -1;
-         }
-         else
-         {
-            index += mAssetImageManager.GetNumAssets ();
-            
-            if (moduleType == AssetImageModule.ImageModuleType_PureModule)
-            {
-               if (imageModule.GetAssetImageModuleManager () != mAssetImagePureModuleManager)
-                  return -1;
-            }
             else
+               return index;
+         }
+
+         index += mAssetImageManager.GetNumAssets ();
+         
+         if (moduleType == AssetImageModule.ImageModuleType_PureModule)
+         {
+            if (imageModule.GetAssetImageModuleManager () != mAssetImagePureModuleManager)
+               return -1;
+            else
+               return index;
+         }
+         
+         index += mAssetImagePureModuleManager.GetNumAssets ();
+         
+         if (moduleType == AssetImageModule.ImageModuleType_AssembledModule)
+         {
+            if (imageModule.GetAssetImageModuleManager () != mAssetImageAssembledModuleManager)
+               return -1;
+            else
+               return index;
+         }
+         
+         if (moduleType == AssetImageModule.ImageModuleType_SequencedModule)
+         {
+            if (imageModule.GetAssetImageModuleManager () == mAssetImageSequencedModuleManager)
             {
-               index += mAssetImagePureModuleManager.GetNumAssets ();
-               
-               if (moduleType == AssetImageModule.ImageModuleType_AssembledModule)
-               {
-                  if (imageModule.GetAssetImageModuleManager () != mAssetImageAssembledModuleManager)
-                     return -1;
-               }
-               else if (moduleType == AssetImageModule.ImageModuleType_SequencedModule)
-               {
-                  if (imageModule.GetAssetImageModuleManager () != mAssetImageSequencedModuleManager)
-                     return -1;
-                  
-                  index += mAssetImageAssembledModuleManager.GetNumAssets ();
-               }
+               index += mAssetImageAssembledModuleManager.GetNumAssets ();
+               return index;
             }
          }
          
-         return index;
+         return -1;
       }
       
       public function GetImageModuleByIndex (index:int):AssetImageModule
@@ -1759,4 +1776,5 @@ package editor.world {
       }
    }
 }
+
 

@@ -48,6 +48,13 @@ package editor.runtime {
       
    // event icons
       
+      //
+      
+      [Embed("../../res/create/event_on_game_activated.png")]
+      public static var IconOnGameActivatedEvent:Class;
+      [Embed("../../res/create/event_on_game_deactivated.png")]
+      public static var IconOnGameDeactivatedEvent:Class;
+      
       // entity init / update / destroy
       
       [Embed("../../res/create/event_on_entity_created.png")]
@@ -85,6 +92,11 @@ package editor.runtime {
       public static var IconOnShapeKeepContactingEvent:Class;
       [Embed("../../res/create/event_on_shape_stop_contacting.png")]
       public static var IconOnShapeStopContactingEvent:Class;
+      
+      // module loop to end
+      
+      [Embed("../../res/create/event_on_module_loop_to_end.png")]
+      public static var IconOnShapeModuleLoopToEndEvent:Class;
       
       // keyboard
       
@@ -145,6 +157,9 @@ package editor.runtime {
          {
             sEventId2IconClass = new Dictionary ();
             
+            sEventId2IconClass [CoreEventIds.ID_OnGameActivated  ] = IconOnGameActivatedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnGameDeactivated] = IconOnGameDeactivatedEvent;
+            
             sEventId2IconClass [CoreEventIds.ID_OnEntityCreated] = IconOnEntityCteatedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityInitialized] = IconOnEntityInitilizedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityUpdated    ] = IconOnEntityUpdatedEvent;
@@ -179,6 +194,8 @@ package editor.runtime {
             sEventId2IconClass [CoreEventIds.ID_OnEntityMouseMove      ] = IconOnEntityMouseMoveEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityMouseEnter     ] = IconOnEntityMouseEnterEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityMouseOut       ] = IconOnEntityMouseOutEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnSequencedModuleLoopToEnd] = IconOnShapeModuleLoopToEndEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnEntityTimer    ] = IconOnEntityTimerEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityPairTimer] = IconOnEntityPairTimerEvent;

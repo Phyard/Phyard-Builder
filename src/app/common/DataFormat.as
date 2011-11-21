@@ -82,6 +82,8 @@ package common {
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
    import editor.trigger.entity.EntityEventHandler_JointReachLimit;
+   import editor.trigger.entity.EntityEventHandler_ModuleLoopToEnd;
+   import editor.trigger.entity.EntityEventHandler_GameLostOrGotFocus;
    
    import editor.trigger.entity.EntityFunction;
    
@@ -358,6 +360,14 @@ package common {
                   else if (editorEntity is EntityEventHandler_JointReachLimit)
                   {
                      var jointReachLimitEventHandler:EntityEventHandler_JointReachLimit = eventHandler as EntityEventHandler_JointReachLimit;
+                  }
+                  else if (editorEntity is EntityEventHandler_ModuleLoopToEnd)
+                  {
+                     var moduleLoopToEndEventHandler:EntityEventHandler_ModuleLoopToEnd = eventHandler as EntityEventHandler_ModuleLoopToEnd;
+                  }
+                  else if (editorEntity is EntityEventHandler_GameLostOrGotFocus)
+                  {
+                     var gameLostOrGotFocusEventHandler:EntityEventHandler_GameLostOrGotFocus = eventHandler as EntityEventHandler_GameLostOrGotFocus;
                   }
                   //<<
                   
@@ -1533,6 +1543,13 @@ package common {
                      case CoreEventIds.ID_OnJointReachUpperLimit:
                         entity = logic = editorWorld.CreateEntityEventHandler_JointReachLimit (entityDefine.mEventId);
                         break;
+                     case CoreEventIds.ID_OnSequencedModuleLoopToEnd:
+                        entity = logic = editorWorld.CreateEntityEventHandler_ModuleLoopToEnd (entityDefine.mEventId);
+                        break;
+                     case CoreEventIds.ID_OnGameActivated:
+                     case CoreEventIds.ID_OnGameDeactivated:
+                        entity = logic = editorWorld.CreateEntityEventHandler_GameLostOrGotFocus (entityDefine.mEventId);
+                        break;
                      default:
                         entity = logic = editorWorld.CreateEntityEventHandler (entityDefine.mEventId);
                         break;
@@ -2165,6 +2182,14 @@ package common {
                      else if (eventHandler is EntityEventHandler_JointReachLimit)
                      {
                         var jointReachLimitEventHandler:EntityEventHandler_JointReachLimit = eventHandler as EntityEventHandler_JointReachLimit;
+                     }
+                     else if (eventHandler is EntityEventHandler_ModuleLoopToEnd)
+                     {
+                        var moduleLoopToEndEventHandler:EntityEventHandler_ModuleLoopToEnd = eventHandler as EntityEventHandler_ModuleLoopToEnd;
+                     }
+                     else if (eventHandler is EntityEventHandler_GameLostOrGotFocus)
+                     {
+                        var gameLostOrGotFocusEventHandler:EntityEventHandler_GameLostOrGotFocus = eventHandler as EntityEventHandler_GameLostOrGotFocus;
                      }
                   }
                   //<<

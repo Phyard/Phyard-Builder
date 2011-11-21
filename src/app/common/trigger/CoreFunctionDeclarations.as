@@ -2738,6 +2738,17 @@ package common.trigger {
                      null
                   );
 
+      // game / entity / shape / module
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeModule_ChangeModule,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     null
+                  );
+
       // game / entity / joint
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,

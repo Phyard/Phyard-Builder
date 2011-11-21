@@ -78,6 +78,7 @@ package editor.trigger {
              var entity_shape_connections_package:FunctionMenuGroup = new FunctionMenuGroup ("Connections", entity_shape_package);
              var entity_shape_contaction_package:FunctionMenuGroup = new FunctionMenuGroup ("Contacts", entity_shape_package);
              var shape_text_package:FunctionMenuGroup  = new FunctionMenuGroup ("Text", entity_shape_package);
+             var shape_module_package:FunctionMenuGroup  = new FunctionMenuGroup ("Module", entity_shape_package);
          var entity_joint_package:FunctionMenuGroup  = new FunctionMenuGroup ("Joint", sEntityMenuGroup);
          var entity_trigger_package:FunctionMenuGroup  = new FunctionMenuGroup ("Trigger", sEntityMenuGroup);
 
@@ -2781,6 +2782,17 @@ package editor.trigger {
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
                              new VariableDefinitionArray ("World Vertexes"),
+                     ],
+                     null
+                  );
+
+      // game / entity / shape / module
+
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeModule_ChangeModule, shape_module_package, "Change Shape Module", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Module Shape", null, {mValidClasses: Filters.sModuleShapeEntityClasses}),
+                        new VariableDefinitionModule ("The New Module"),
+                        new VariableDefinitionEntity ("Loop To End Handler", null, {mValidClasses: Filters.sOnModuleLoopToEndHandlerEntityClasses}),
                      ],
                      null
                   );

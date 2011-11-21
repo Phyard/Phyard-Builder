@@ -143,6 +143,7 @@ package editor {
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
    import editor.trigger.entity.EntityEventHandler_JointReachLimit;
+   import editor.trigger.entity.EntityEventHandler_ModuleLoopToEnd;
    import editor.trigger.entity.EntityAction;
    
    import editor.trigger.entity.InputEntitySelector;
@@ -1054,6 +1055,8 @@ package editor {
       public var mButtonCreateEventHandler56:Button;
       public var mButtonCreateEventHandler57:Button;
       public var mButtonCreateEventHandler58:Button;
+      public var mButtonCreateEventHandler66:Button;
+      public var mButtonCreateEventHandler67:Button;
       
       public function OnCreateButtonClick (event:MouseEvent):void
       {
@@ -1330,6 +1333,12 @@ package editor {
                break;
             case mButtonCreateEventHandler58:
                SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityMouseClick, mPotientialEventIds:null}) );
+               break;
+            case mButtonCreateEventHandler66:
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnGameActivated, mPotientialEventIds:null}) );
+               break;
+            case mButtonCreateEventHandler67:
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnSequencedModuleLoopToEnd, mPotientialEventIds:null}) );
                break;
             
          // ...
@@ -2176,6 +2185,7 @@ package editor {
                {
                   ShowJointReachLimitEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
                }
+               //else if (entity is EntityEventHandler_ModuleLoopToEnd)
                else
                {
                   ShowEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
@@ -3872,6 +3882,9 @@ package editor {
                      case CoreEventIds.ID_OnJointReachUpperLimit:
                   handler = mEditorWorld.CreateEntityEventHandler_JointReachLimit (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
+               case CoreEventIds.ID_OnSequencedModuleLoopToEnd:
+                  handler = mEditorWorld.CreateEntityEventHandler_ModuleLoopToEnd (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  break;
                default:
                   handler = mEditorWorld.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
@@ -4630,6 +4643,10 @@ package editor {
                else if (entity is EntityEventHandler_JointReachLimit)
                {
                    var jointReachLimit_event_handler:EntityEventHandler_JointReachLimit = entity as EntityEventHandler_JointReachLimit;
+               }
+               else if (entity is EntityEventHandler_ModuleLoopToEnd)
+               {
+                  //
                }
                
                if (params.mEventId != event_handler.GetEventId ())

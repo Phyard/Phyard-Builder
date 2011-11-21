@@ -643,6 +643,12 @@ package common {
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
                return playerWorld.GetCollisionCategoryById (valueObject as int);
+            case ValueTypeDefine.ValueType_Module:
+            {
+               var moduleIndex:int = valueObject as int;
+               //return Global.GetImageModuleByGlobalIndex (moduleIndex);
+               return moduleIndex;
+            }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
                //{
@@ -858,7 +864,9 @@ package common {
             case ValueTypeDefine.ValueType_Entity:
                return binFile.readInt ();
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return binFile.readInt ();
+               return binFile.readInt (); // in fact, short is ok
+            case ValueTypeDefine.ValueType_Module:
+               return binFile.readInt (); // in fact, short is ok
             case ValueTypeDefine.ValueType_Array:
                var nullArray:Boolean = binFile.readByte () == 0;
                //if (nullArray == null) 
@@ -1117,6 +1125,8 @@ package common {
             case ValueTypeDefine.ValueType_Entity:
                return valueObject as int;
             case ValueTypeDefine.ValueType_CollisionCategory:
+               return valueObject as int;
+            case ValueTypeDefine.ValueType_Module:
                return valueObject as int;
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null) 

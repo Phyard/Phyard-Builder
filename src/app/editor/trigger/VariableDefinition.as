@@ -9,6 +9,8 @@ package editor.trigger {
    import editor.entity.WorldEntity;
    import editor.entity.EntityCollisionCategory;
    
+   import editor.image.AssetImageModule;
+   
    import editor.runtime.Runtime;
    
    import common.trigger.ValueTypeDefine;
@@ -40,6 +42,8 @@ package editor.trigger {
                return ValidateValueObject_Entity (value);
             case ValueTypeDefine.ValueType_CollisionCategory:
                return ValidateValueObject_CollisiontCategory (value);
+            case ValueTypeDefine.ValueType_Module:
+               return ValidateValueObject_Module (value);
             case ValueTypeDefine.ValueType_Array:
                return ValidateValueObject_Array (value);
             default:
@@ -61,6 +65,8 @@ package editor.trigger {
                return "Entity";
             case ValueTypeDefine.ValueType_CollisionCategory:
                return "CCat";
+            case ValueTypeDefine.ValueType_Module:
+               return "Module";
             case ValueTypeDefine.ValueType_Array:
                return "Array";
             default:
@@ -81,6 +87,8 @@ package editor.trigger {
             case ValueTypeDefine.ValueType_Entity:
                return null;
             case ValueTypeDefine.ValueType_CollisionCategory:
+               return null;
+            case ValueTypeDefine.ValueType_Module:
                return null;
             case ValueTypeDefine.ValueType_Array:
                return null;
@@ -103,6 +111,8 @@ package editor.trigger {
                return new VariableDefinitionEntity (variableName);
             case ValueTypeDefine.ValueType_CollisionCategory:
                return new VariableDefinitionCollisionCategory (variableName);
+            case ValueTypeDefine.ValueType_Module:
+               return new VariableDefinitionModule (variableName);
             case ValueTypeDefine.ValueType_Array:
                return new VariableDefinitionArray (variableName);
             default:
@@ -130,6 +140,17 @@ package editor.trigger {
             category = null;
          
          return category;
+      }
+      
+      public static function ValidateValueObject_Module (valueObject:Object):Object
+      {
+         var world:World = Runtime.GetCurrentWorld ();
+         
+         var module:AssetImageModule = valueObject as AssetImageModule;
+         if (module != null && world.GetImageModuleIndex (module) < 0)
+            module = null;
+         
+         return module;
       }
       
       public static function ValidateValueObject_Array (valueObject:Object):Object
@@ -519,6 +540,9 @@ package editor.trigger {
                   break;
                case ValueTypeDefine.ValueType_Entity:
                   mPropertyVariableDefinition = new VariableDefinitionEntity ("Entity Property");
+                  break;
+               case ValueTypeDefine.ValueType_Module:
+                  mPropertyVariableDefinition = new VariableDefinitionEntity ("Module Property");
                   break;
                case ValueTypeDefine.ValueType_CollisionCategory:
                   mPropertyVariableDefinition = new VariableDefinitionCollisionCategory ("CCat Property");

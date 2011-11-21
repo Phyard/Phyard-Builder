@@ -21,6 +21,13 @@ package editor.trigger {
 
       // ...
 
+         RegisterEventDeclatation (CoreEventIds.ID_OnGameActivated, "OnGameActivated", "",
+                    null
+                    );
+         RegisterEventDeclatation (CoreEventIds.ID_OnGameDeactivated, "OnGameDeactivated", "",
+                    null
+                    );
+
       // ...
 
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeInitializing, "OnLevelBeginInitialize", "",
@@ -195,6 +202,14 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+
+      // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnSequencedModuleLoopToEnd, "OnSequencedModuleLoopToEnd", "",
+                    [
+                        new VariableDefinitionEntity ("The Mobule Shape", null, {mValidClasses: Filters.sModuleShapeEntityClasses}),
+                        new VariableDefinitionModule ("The Mobule"),
                     ]);
 
       // ...

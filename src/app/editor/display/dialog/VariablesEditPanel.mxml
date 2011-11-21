@@ -108,6 +108,7 @@
          <menuitem label="New String Variable" data="String"/>
          <menuitem label="New Collision Category Variable" data="CCat"/>
          <menuitem label="New Entity Variable" data="Entity"/>
+         <menuitem label="New Module Variable" data="Module"/>
          <menuitem label="New Array Variable" data="Array"/>
       </root>
    </mx:XML>
@@ -254,6 +255,10 @@
                else if (event.item.@data == "Entity")
                {
                   variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Entity, "anEntity");
+               }
+               else if (event.item.@data == "Module")
+               {
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Module, "aModule");
                }
                else if (event.item.@data == "Array")
                {

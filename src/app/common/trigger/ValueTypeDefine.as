@@ -18,6 +18,8 @@ package common.trigger {
                return "CCat";
             case ValueType_Entity:
                return "Entity";
+            case ValueType_Module:
+               return "Module";
             case ValueType_Array:
                return "Array";
             case ValueType_Void:
@@ -41,6 +43,8 @@ package common.trigger {
                return -1;
             case ValueType_Entity:
                return Define.EntityId_None;
+            case ValueType_Module:
+               return -1;
             case ValueType_Array:
                return null;
             case ValueType_Void:
@@ -51,7 +55,10 @@ package common.trigger {
       
       public static function IsLevelRelatedDirectValue (valueType:int):Boolean
       {
-         return valueType == ValueType_Entity || valueType == ValueType_CollisionCategory;
+         return valueType == ValueType_Entity 
+             || valueType == ValueType_CollisionCategory
+             || valueType == ValueType_Module
+             ;
       }
       
 //=============================================================================
@@ -92,6 +99,8 @@ package common.trigger {
       public static const ValueType_Entity:int            = 60;
       public static const ValueType_CollisionCategory:int = 61;
       
+      public static const ValueType_Module:int            = 70;
+
 //=============================================================================
 // number value type hints, generally, the hints are only useful for saving input parameters
 //=============================================================================

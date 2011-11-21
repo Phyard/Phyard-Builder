@@ -3,7 +3,7 @@ package player.trigger {
    import flash.utils.getTimer;
    import flash.geom.Point;
    import flash.ui.Mouse;
-   
+
    import flash.utils.Dictionary;
 
    import player.design.Global;
@@ -30,6 +30,7 @@ package player.trigger {
 
    import common.trigger.ValueDefine;
    import common.trigger.IdPool;
+   import common.trigger.CoreEventIds;
 
    import common.TriggerFormatHelper2;
 
@@ -333,7 +334,7 @@ package player.trigger {
       // game / entity / shape
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
-         
+
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsCircleShapeEntity,              IsCircleShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity,           IsRectangleShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity,             IsPolygonShapeEntity);
@@ -458,6 +459,10 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPositions,            SetVertexLocalPositions);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPositions,            GetVertexWorldPositions);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPositions,            SetVertexWorldPositions);
+
+      // game / entity / joint
+
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModule_ChangeModule,            ChangeShapeModule);
 
       // game / entity / joint
 
@@ -596,7 +601,7 @@ package player.trigger {
 
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsKeyHold (keyCode));
       }
-      
+
       public static function IsMouseButtonHold (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsMouseButtonDown ());
@@ -745,11 +750,11 @@ package player.trigger {
 
          valueTarget.AssignValueObject (text.indexOf (substring, fromIndex));
       }
-      
+
       public static function SplitString (valueSource:Parameter, valueTarget:Parameter):void
       {
          var substrings:Array = null;
-         
+
          var text:String = valueSource.EvaluateValueObject () as String;
          if (text != null)
          {
@@ -758,14 +763,14 @@ package player.trigger {
             if (delimiter != null)
             {
                var texts:Array = text.split (delimiter);
-               
+
                if (texts != null)
                {
                   substrings = texts.concat ();
                }
             }
          }
-         
+
          if (substrings == null)
          {
             substrings = new Array ();
@@ -1045,21 +1050,21 @@ package player.trigger {
 
          valueTarget.AssignValueObject (value1 == value2);
       }
-      
+
       public static function ArrayToString (valueSource:Parameter, valueTarget:Parameter):void
       {
          var values:Array = valueSource.EvaluateValueObject () as Array;
-         
+
          valueTarget.AssignValueObject (ConvertArrayToString (values));
       }
-      
+
       private static function ConvertArrayToString (values:Array, convertedArrays:Dictionary = null):String
       {
          if (values == null)
             return "null";
 
          var returnText:String = "[";
-         
+
          var numElements:int = values.length;
          var value:Object;
          if (numElements > 0)
@@ -1074,7 +1079,7 @@ package player.trigger {
             {
                valuesString = convertedArrays [values];
             }
-            
+
             if (valuesString != null)
             {
                return valuesString;
@@ -1085,19 +1090,19 @@ package player.trigger {
 
                value = values [0];
                returnText = returnText + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
-               
+
                for (var i:int = 1; i < numElements; ++ i)
                {
                   value = values [i];
                   returnText = returnText + "," + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
                }
-               
+
                convertedArrays [values] = returnText; // correct the value. Avoid dead loop.
             }
          }
-         
+
          returnText = returnText + "]";
-         
+
          return returnText;
       }
 
@@ -1244,12 +1249,12 @@ package player.trigger {
       {
          SpliceArrayElements (valueSource, valueTarget, true);
       }
-      
+
       public static function InsertArrayElements (valueSource:Parameter, valueTarget:Parameter):void
       {
          SpliceArrayElements (valueSource, valueTarget, false);
       }
-      
+
       private static function SpliceArrayElements (valueSource:Parameter, valueTarget:Parameter, toRemove:Boolean):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
@@ -1259,13 +1264,13 @@ package player.trigger {
             valueSource = valueSource.mNextParameter;
             //var index:int = valueSource.EvaluateValueObject () as int;
             var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
-            
+
             valueSource = valueSource.mNextParameter;
             var num:int = int (valueSource.EvaluateValueObject ()); // from v1.56
-            
+
             if (num <= 0)
                return;
-            
+
             if (toRemove)
             {
                if (index >= 0 && index < array.length)
@@ -1279,7 +1284,7 @@ package player.trigger {
                   index = 0;
                if (index > array.length)
                   index = array.length;
-               
+
                while (-- num >= 0)
                {
                   array.splice (index, 0, undefined);
@@ -1287,14 +1292,14 @@ package player.trigger {
             }
          }
       }
-      
+
       private static function ConcatArrays (valueSource:Parameter, valueTarget:Parameter):void
       {
          var array1:Array = valueSource.EvaluateValueObject () as Array;
-         
+
          valueSource = valueSource.mNextParameter;
          var array2:Array = valueSource.EvaluateValueObject () as Array;
-         
+
          var resultArray:Array;
          if (array1 == null)
          {
@@ -1310,7 +1315,7 @@ package player.trigger {
             else
                resultArray = array1.concat (array2);
          }
-         
+
          valueTarget.AssignValueObject (resultArray);
       }
 
@@ -2089,7 +2094,7 @@ package player.trigger {
 
          Global.GetCurrentWorld ().SetCurrentGravityAcceleration (gaX, gaY);
       }
-      
+
       public static function GetWorldGravityAcceleration_Vector (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentGravityAccelerationX ());
@@ -2097,13 +2102,13 @@ package player.trigger {
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentGravityAccelerationY ());
       }
-      
+
       public static function SetCurrentCamera (valueSource:Parameter, valueTarget:Parameter):void
       {
          var camera:EntityShape_Camera = valueSource.EvaluateValueObject () as EntityShape_Camera;
          if (camera == null)
             return;
-         
+
          camera.SetAsCurrent ();
       }
 
@@ -2451,7 +2456,7 @@ package player.trigger {
          {
             valueSource = valueSource.mNextParameter;
             var idOffset:int = int (valueSource.EvaluateValueObject ());
-            
+
             valueSource = valueSource.mNextParameter;
             var supportRuntimeEntity:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
@@ -2570,7 +2575,7 @@ package player.trigger {
 
          entity.SetAlpha (alpha);
       }
-      
+
       public static function AdjustEntityAppearanceOrder (valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
@@ -2897,7 +2902,7 @@ package player.trigger {
             valueTarget.AssignValueObject (null);
             return;
          }
-         
+
          valueSource = valueSource.mNextParameter;
          var targetX:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2915,7 +2920,7 @@ package player.trigger {
 
          valueTarget.AssignValueObject (EntityShape.CloneShape (shape, targetX, targetY, bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics));
       }
-      
+
       public static function IsCircleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;
@@ -3357,7 +3362,7 @@ package player.trigger {
 
          shape.GetBody ().SetSleeping (sleeping);
       }
-      
+
       public static function GetLocalCentroid (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3383,20 +3388,20 @@ package player.trigger {
          {
             valueSource = valueSource.mNextParameter;
             var isBodyValue:Boolean = valueSource.EvaluateValueObject () as Boolean;
-            
+
             if (isBodyValue)
             {
                var body:EntityBody = shape.GetBody ();
-               
+
                valueTarget.AssignValueObject (body.GetPositionX ());
-   
+
                valueTarget = valueTarget.mNextParameter;
                valueTarget.AssignValueObject (body.GetPositionY ());
             }
             else
             {
                valueTarget.AssignValueObject (shape.GetWorldCentroidX ());
-   
+
                valueTarget = valueTarget.mNextParameter;
                valueTarget.AssignValueObject (shape.GetWorldCentroidY ());
             }
@@ -3424,7 +3429,7 @@ package player.trigger {
             }
          }
       }
-      
+
       //public static function SetShapeMass (valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3459,7 +3464,7 @@ package player.trigger {
             }
          }
       }
-      
+
       //public static function SetShapeInertia (valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3484,17 +3489,17 @@ package player.trigger {
             valueTarget.AssignValueObject (shape.GetDensity ());
          }
       }
-      
+
       public static function SetShapeDensity (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
          if (shape == null || shape.IsDestroyedAlready ())
            return;
-         
+
          valueSource = valueSource.mNextParameter;
          var newDensity:Number = valueSource.EvaluateValueObject () as Number;
-         
+
          shape.ChangeDensity (newDensity); // don't call SetDensity
       }
 
@@ -3882,7 +3887,7 @@ package player.trigger {
 
          shape.Teleport (deltaX, deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
-      
+
       public static function TranslateShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3909,7 +3914,7 @@ package player.trigger {
 
          shape.Translate (deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
-      
+
       public static function TranslateShapeTo (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3936,7 +3941,7 @@ package player.trigger {
 
          shape.Translate (targetX - shape.GetPositionX (), targetY - shape.GetPositionY (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
-      
+
       public static function RotateShapeAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3969,7 +3974,7 @@ package player.trigger {
 
          shape.Rotate (fixedPointX, fixedPointY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
       }
-      
+
       public static function RotateShapeToAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -4002,7 +4007,7 @@ package player.trigger {
 
          shape.Rotate (fixedPointX, fixedPointY, shape.GetRotationOffset (targetRotation), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
       }
-      
+
       /*
       public static function FlipShapeByWorldLinePoint (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -4036,7 +4041,7 @@ package player.trigger {
 
          shape.Flip (pointX, pointY, normalX, normalY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
-      
+
       public static function ScaleShapeWithFixedPoint (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -4067,11 +4072,11 @@ package player.trigger {
          shape.Scale (fixedPointX, fixedPointY, scaleRatio, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       */
-      
+
       public static function GetBrothers (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shapes:Array = new Array ();
-         
+
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape != null && (! shape.IsDestroyedAlready ()))
          {
@@ -4135,9 +4140,9 @@ package player.trigger {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
             return;
-         
+
          EntityShape.DetachShape (shape1);
-         
+
          valueSource = valueSource.mNextParameter;
          var shape2:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4180,20 +4185,20 @@ package player.trigger {
 
          shape.BreakAllJoints ();
      }
-     
+
      public static function GetAllSisters (valueSource:Parameter, valueTarget:Parameter):void
      {
          var shapes:Array = new Array ();
-         
+
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape != null && (! shape.IsDestroyedAlready ()))
-         {  
+         {
             shape.PutConnectedShapesInArray (shapes);
          }
 
          valueTarget.AssignValueObject (shapes);
      }
-     
+
      public static function IsConnectedWith (valueSource:Parameter, valueTarget:Parameter):void
      {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -4225,20 +4230,20 @@ package player.trigger {
 
          valueTarget.AssignValueObject (shape1.IsConnectedWith (null));
      }
-          
+
      public static function GetAllContactedShapes (valueSource:Parameter, valueTarget:Parameter):void
      {
          var shapes:Array = new Array ();
-         
+
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape != null && (! shape.IsDestroyedAlready ()))
-         {  
+         {
             shape.PutContactedShapesInArray (shapes);
          }
 
          valueTarget.AssignValueObject (shapes);
      }
-      
+
      public static function IsContactedWith (valueSource:Parameter, valueTarget:Parameter):void
      {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -4303,7 +4308,7 @@ package player.trigger {
 
          entity_text.SetText (entity_text.GetText () + "\n");
       }
-      
+
       public static function SetTextDefaultSize (valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
@@ -4312,10 +4317,10 @@ package player.trigger {
 
          valueSource = valueSource.mNextParameter;
          var size:Number = Number (valueSource.EvaluateValueObject ());
-         
+
          entity_text.SetFontSize (size);
       }
-      
+
       public static function SetTextDefaultColor (valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
@@ -4324,10 +4329,10 @@ package player.trigger {
 
          valueSource = valueSource.mNextParameter;
          var color:uint = uint (valueSource.EvaluateValueObject ());
-         
+
          entity_text.SetTextColor (color);
       }
-      
+
       public static function SetTextDefaultColorByRGB (valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
@@ -4342,7 +4347,7 @@ package player.trigger {
 
          valueSource = valueSource.mNextParameter;
          var blue:int =  valueSource.EvaluateValueObject () as Number;
-         
+
          entity_text.SetTextColor ((red << 16) | (green << 8) | (blue));
       }
 
@@ -4362,16 +4367,16 @@ package player.trigger {
             valueTarget.AssignValueObject (circle.GetRadius ());
          }
       }
-      
+
       public static function SetShapeCircleRadius (valueSource:Parameter, valueTarget:Parameter):void
       {
          var circle:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;
          if (circle == null || circle.IsDestroyedAlready ())
             return;
-         
+
          valueSource = valueSource.mNextParameter;
          var radius:Number = valueSource.EvaluateValueObject () as Number;
-         
+
          EntityShape.ChangeCircleRadius (circle, radius);
       }
 
@@ -4397,19 +4402,19 @@ package player.trigger {
             valueTarget.AssignValueObject (2.0 * rect.GetHalfHeight ());
          }
       }
-      
+
       public static function SetShapeRectangleSize (valueSource:Parameter, valueTarget:Parameter):void
       {
          var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
          if (rect == null || rect.IsDestroyedAlready ())
             return;
-         
+
          valueSource = valueSource.mNextParameter;
          var width:Number = valueSource.EvaluateValueObject () as Number;
-         
+
          valueSource = valueSource.mNextParameter;
          var height:Number = valueSource.EvaluateValueObject () as Number;
-         
+
          EntityShape.ChangeRectangleSize (rect, width, height);
       }
 
@@ -4476,7 +4481,7 @@ package player.trigger {
             valueTarget.AssignValueObject (point.y);
          }
       }
-      
+
       //public static function SetVertexLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetVertexPosition (valueSource, valueTarget, false, false);
@@ -4536,59 +4541,84 @@ package player.trigger {
       //
       //   EntityShape.DeletePolyShapeVertex (polyShape, vertexIndex);
       //}
-      
+
       public static function GetVertexLocalPositions (valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
-      
+
          if (polyShape == null || polyShape.IsDestroyedAlready ())
          {
             valueTarget.AssignValueObject (null);
             return;
          }
-         
+
          valueTarget.AssignValueObject (polyShape.GetVertexPositions (false));
       }
-      
+
       public static function SetVertexLocalPositions (valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
-      
+
          if (polyShape == null || polyShape.IsDestroyedAlready ())
             return;
-         
+
          valueSource = valueSource.mNextParameter;
          var positions:Array = valueSource.EvaluateValueObject () as Array;
-         
+
          EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, false);
       }
-      
+
       public static function GetVertexWorldPositions (valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
-      
+
          if (polyShape == null || polyShape.IsDestroyedAlready ())
          {
             valueTarget.AssignValueObject (null);
             return;
          }
-         
+
          valueTarget.AssignValueObject (polyShape.GetVertexPositions (true));
       }
-      
+
       public static function SetVertexWorldPositions (valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
-      
+
          if (polyShape == null || polyShape.IsDestroyedAlready ())
             return;
-         
+
          valueSource = valueSource.mNextParameter;
          var positions:Array = valueSource.EvaluateValueObject () as Array;
-         
+
          EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, true);
       }
-      
+
+   //*******************************************************************
+   // entity / joint
+   //*******************************************************************
+
+      public static function ChangeShapeModule (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var moduleShape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
+
+         if (moduleShape == null || moduleShape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         //var module:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex:int = valueSource.EvaluateValueObject () as int;
+         if (isNaN (moduleIndex))
+            moduleIndex = -1;
+
+         valueSource = valueSource.mNextParameter;
+         var loopToEndHandler:EntityEventHandler = valueSource.EvaluateValueObject () as EntityEventHandler;
+         if (loopToEndHandler != null && loopToEndHandler.GetEventId () != CoreEventIds.ID_OnSequencedModuleLoopToEnd) // generally, impossible
+            loopToEndHandler = null;
+
+         moduleShape.SetModuleIndex (moduleIndex, loopToEndHandler);
+      }
+
    //*******************************************************************
    // entity / joint
    //*******************************************************************

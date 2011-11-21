@@ -7,6 +7,8 @@ package common {
    import editor.entity.Entity;
    import editor.entity.EntityCollisionCategory;
    
+   import editor.image.AssetImageModule;
+   
    import editor.trigger.entity.ConditionAndTargetValue;
    import editor.trigger.entity.EntityFunction;
    
@@ -39,6 +41,7 @@ package common {
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.VariableDefinitionCollisionCategory;
    import editor.trigger.VariableDefinitionArray;
+   import editor.trigger.VariableDefinitionModule;
    
    import common.trigger.FunctionTypeDefine;
    import common.trigger.ValueSourceTypeDefine;
@@ -273,6 +276,12 @@ package common {
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
                return editorWorld.GetCollisionManager ().GetCollisionCategoryIndex (valueObject as EntityCollisionCategory);
+            case ValueTypeDefine.ValueType_Module:
+            {
+               var module:AssetImageModule = valueObject as AssetImageModule;
+               
+               return editorWorld.GetImageModuleIndex (module);
+            }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
                //{
@@ -624,6 +633,11 @@ package common {
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
                return editorWorld.GetCollisionManager ().GetCollisionCategoryByIndex (valueObject as int);
+            case ValueTypeDefine.ValueType_Module:
+            {
+               var moduleIndex:int = valueObject as int;
+               return editorWorld.GetImageModuleByIndex (moduleIndex);
+            }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
                //{
@@ -678,6 +692,9 @@ package common {
                   break;
                case ValueTypeDefine.ValueType_CollisionCategory:
                   variableDefinition = new VariableDefinitionCollisionCategory (variableInstanceDefine.mName);
+                  break;
+               case ValueTypeDefine.ValueType_Module:
+                  variableDefinition = new VariableDefinitionModule (variableInstanceDefine.mName);
                   break;
                case ValueTypeDefine.ValueType_Array:
                   variableDefinition = new VariableDefinitionArray (variableInstanceDefine.mName);
@@ -859,7 +876,10 @@ package common {
                binFile.writeInt (valueObject as int);
                break;
             case ValueTypeDefine.ValueType_CollisionCategory:
-               binFile.writeInt (valueObject as int);
+               binFile.writeInt (valueObject as int); // short is ok, in fact
+               break;
+            case ValueTypeDefine.ValueType_Module:
+               binFile.writeInt (valueObject as int); // short is ok, in fact
                break;
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null) 
@@ -1115,6 +1135,8 @@ package common {
                return parseInt (String (direct_value));
             case ValueTypeDefine.ValueType_CollisionCategory:
                return parseInt (String (direct_value));
+            case ValueTypeDefine.ValueType_Module:
+               return parseInt (String (direct_value));
             case ValueTypeDefine.ValueType_Array:
                //if (direct_value == null) 
                //{
@@ -1169,8 +1191,9 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftReferenceIndexesInCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int, sessionVariableShiftIndex:int):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array):void
       {
+
          var funcCallingDefine:FunctionCallingDefine;
          var i:int;
          var j:int;
@@ -1205,13 +1228,13 @@ package common {
                   var numInputs:int = funcCallingDefine.mNumInputs;
                   for (j = 0; j < numInputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex);
+                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable);
                   }
                   
                   var numOutputs:int = funcCallingDefine.mNumOutputs;
                   for (j = 0; j < numOutputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex);
+                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable);
                   }
                //}
                //else
@@ -1221,7 +1244,7 @@ package common {
          }
       }
       
-      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int):void
+      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array):void
       {
          var valueSourceType:int = sourceDefine.GetValueSourceType ();
          
@@ -1242,6 +1265,13 @@ package common {
                
                if (ccatIndex >= 0)
                   directSourceDefine.mValueObject = ccatIndex + ccatIdShiftedValue;
+            }
+            else if (valueType == ValueTypeDefine.ValueType_Module)
+            {
+               var moduleIndex:int = int (directSourceDefine.mValueObject);
+               
+               if (ccatIndex >= 0 && ccatIndex < imageModuleRefIndex_CorrectionTable.length)
+                  directSourceDefine.mValueObject = imageModuleRefIndex_CorrectionTable [moduleIndex];
             }
          }
          else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Variable)
@@ -1274,11 +1304,11 @@ package common {
             if (propertyId >= 0)
                propertySourceDefine.mPropertyId = propertyId + entityVariableShiftIndex;
             
-            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex);
+            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable);
          }
       }
       
-      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int):void
+      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array):void
       {
          var valueTargetType:int = targetDefine.GetValueTargetType ();
          
@@ -1312,7 +1342,7 @@ package common {
             if (propertyId >= 0)
                propertyTargetDefine.mPropertyId = propertyId + entityVariableShiftIndex;
             
-            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex);
+            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable);
          }
       }
    }

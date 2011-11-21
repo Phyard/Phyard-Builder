@@ -54,6 +54,7 @@ package editor.world {
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
    import editor.trigger.entity.EntityEventHandler_JointReachLimit;
+   import editor.trigger.entity.EntityEventHandler_ModuleLoopToEnd;
    import editor.trigger.entity.EntityAction;
 
    import editor.trigger.entity.EntityFunctionPackage;
@@ -1227,6 +1228,17 @@ package editor.world {
 
          return handler;
       }
+      
+      public function CreateEntityEventHandler_ModuleLoopToEnd (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_ModuleLoopToEnd
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+
+         var handler:EntityEventHandler_ModuleLoopToEnd = new EntityEventHandler_ModuleLoopToEnd (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+
+         return handler;
+      }
 
       public function CreateEntityAction ():EntityAction
       {
@@ -1675,16 +1687,34 @@ package editor.world {
          if (index < 0)
             return -1;
          
-         if (moduleType > AssetImageModule.ImageModuleType_WholeImage)
+         if (moduleType == AssetImageModule.ImageModuleType_WholeImage)
+         {
+            if (imageModule.GetAssetImageModuleManager () != mAssetImageManager)
+               return -1;
+         }
+         else
          {
             index += mAssetImageManager.GetNumAssets ();
             
-            if (moduleType > AssetImageModule.ImageModuleType_PureModule)
+            if (moduleType == AssetImageModule.ImageModuleType_PureModule)
+            {
+               if (imageModule.GetAssetImageModuleManager () != mAssetImagePureModuleManager)
+                  return -1;
+            }
+            else
             {
                index += mAssetImagePureModuleManager.GetNumAssets ();
                
-               if (moduleType > AssetImageModule.ImageModuleType_AssembledModule)
+               if (moduleType == AssetImageModule.ImageModuleType_AssembledModule)
                {
+                  if (imageModule.GetAssetImageModuleManager () != mAssetImageAssembledModuleManager)
+                     return -1;
+               }
+               else if (moduleType == AssetImageModule.ImageModuleType_SequencedModule)
+               {
+                  if (imageModule.GetAssetImageModuleManager () != mAssetImageSequencedModuleManager)
+                     return -1;
+                  
                   index += mAssetImageAssembledModuleManager.GetNumAssets ();
                }
             }

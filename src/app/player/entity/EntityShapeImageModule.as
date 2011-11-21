@@ -12,6 +12,8 @@ package player.entity {
    import player.module.Module;
    import player.module.ModuleInstance;
    
+   import player.trigger.entity.EntityEventHandler;
+   
    import common.Define;
    import common.Transform2D;
    
@@ -57,12 +59,20 @@ package player.entity {
       
       protected var mModuleIndex:int = -1;
 
-      protected var mModuleInstance:ModuleInstance = null;
+//=============================================================
+//   
+//=============================================================
+
+      protected var mModuleInstance:ModuleInstance; // should not be null
+            
+      protected var mLoopToEndEventHandler:EntityEventHandler = null;
       
-      public function SetModuleIndex (moduleIndex:int):void
+      public function SetModuleIndex (moduleIndex:int, loopToEndEventHandler:EntityEventHandler = null):void
       {
          mModuleIndex = moduleIndex;
          mModuleInstance = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndex));
+         
+         mLoopToEndEventHandler = loopToEndEventHandler;
          
          mNeedRebuildAppearanceObjects = true;
          DelayUpdateAppearance (); 

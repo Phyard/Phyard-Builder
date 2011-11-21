@@ -293,7 +293,7 @@
                            <mx:Button id="Button_CreateInputEntityPairScriptFilter" toolTip="Create Input Entity Pair Script Filter" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_pair_filter.png')" downIcon="@Embed('res/create/input_entity_pair_filter-sel.png')" overIcon="@Embed('res/create/input_entity_pair_filter.png')" selectedUpIcon="@Embed('res/create/input_entity_pair_filter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_pair_filter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_pair_filter.png')"   />
                         </mx:Tile>
                         <mx:Spacer height="7"/>
-                        <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="332" 
+                        <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="369" 
                                horizontalGap="1" verticalGap="1" 
                                paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
                            <mx:Button id="Button_CreateEventHandler0" toolTip="Event - Before Level Initializing" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_level_before_initilizing.png')" downIcon="@Embed('res/create/event_on_level_before_initilizing-sel.png')" overIcon="@Embed('res/create/event_on_level_before_initilizing.png')" selectedUpIcon="@Embed('res/create/event_on_level_before_initilizing-sel.png')" selectedOverIcon="@Embed('res/create/event_on_level_before_initilizing-sel.png')" selectedDownIcon="@Embed('res/create/event_on_level_before_initilizing.png')"   />
@@ -313,6 +313,8 @@
                            <mx:Button id="Button_CreateEventHandler6" toolTip="Event - Timer (World)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_world_timer.png')" downIcon="@Embed('res/create/event_on_world_timer-sel.png')" overIcon="@Embed('res/create/event_on_world_timer.png')" selectedUpIcon="@Embed('res/create/event_on_world_timer-sel.png')" selectedOverIcon="@Embed('res/create/event_on_world_timer-sel.png')" selectedDownIcon="@Embed('res/create/event_on_world_timer.png')"   />
                            <mx:Button id="Button_CreateEventHandler57" toolTip="Event - Timer (Entity)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_entity_timer.png')" downIcon="@Embed('res/create/event_on_entity_timer-sel.png')" overIcon="@Embed('res/create/event_on_entity_timer.png')" selectedUpIcon="@Embed('res/create/event_on_entity_timer-sel.png')" selectedOverIcon="@Embed('res/create/event_on_entity_timer-sel.png')" selectedDownIcon="@Embed('res/create/event_on_entity_timer.png')"   />
                            <mx:Button id="Button_CreateEventHandler56" toolTip="Event - Timer (Entity Pair)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_entity_pair_timer.png')" downIcon="@Embed('res/create/event_on_entity_pair_timer-sel.png')" overIcon="@Embed('res/create/event_on_entity_pair_timer.png')" selectedUpIcon="@Embed('res/create/event_on_entity_pair_timer-sel.png')" selectedOverIcon="@Embed('res/create/event_on_entity_pair_timer-sel.png')" selectedDownIcon="@Embed('res/create/event_on_entity_pair_timer.png')"   />
+                           <mx:Button id="Button_CreateEventHandler67" toolTip="Event - Animation Loops To End" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_module_loop_to_end.png')" downIcon="@Embed('res/create/event_on_module_loop_to_end-sel.png')" overIcon="@Embed('res/create/event_on_module_loop_to_end.png')" selectedUpIcon="@Embed('res/create/event_on_module_loop_to_end-sel.png')" selectedOverIcon="@Embed('res/create/event_on_module_loop_to_end-sel.png')" selectedDownIcon="@Embed('res/create/event_on_module_loop_to_end.png')"   />
+                           <mx:Button id="Button_CreateEventHandler66" toolTip="Event - Game Loses/Gets Focus" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_game_activated.png')" downIcon="@Embed('res/create/event_on_game_activated-sel.png')" overIcon="@Embed('res/create/event_on_game_activated.png')" selectedUpIcon="@Embed('res/create/event_on_game_activated-sel.png')" selectedOverIcon="@Embed('res/create/event_on_game_activated-sel.png')" selectedDownIcon="@Embed('res/create/event_on_game_activated.png')"   />
 
                         </mx:Tile>
                         <mx:Spacer height="10"/>
@@ -662,6 +664,8 @@
                MainView.mButtonCreateEventHandler56 = Button_CreateEventHandler56;
                MainView.mButtonCreateEventHandler57 = Button_CreateEventHandler57;
                MainView.mButtonCreateEventHandler58 = Button_CreateEventHandler58;
+               MainView.mButtonCreateEventHandler66 = Button_CreateEventHandler66;
+               MainView.mButtonCreateEventHandler67 = Button_CreateEventHandler67;
                
                Button_CreateBox_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBox_Movable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -747,6 +751,8 @@
                Button_CreateEventHandler56.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler57.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler58.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateEventHandler66.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateEventHandler67.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
                MainView.mButtonClone = Button_Clone;
                MainView.mButtonDelete = Button_Delete;

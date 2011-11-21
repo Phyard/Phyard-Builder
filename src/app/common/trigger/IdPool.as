@@ -12,6 +12,9 @@ package common.trigger {
       public static const EventId_2:int = 2;
       public static const EventId_3:int = 3;
 
+      public static const EventId_6:int = 6;
+      public static const EventId_7:int = 7;
+
       public static const EventId_10:int = 10;
 
       public static const EventId_30:int = 30;
@@ -32,6 +35,8 @@ package common.trigger {
 
       public static const EventId_90:int = 90;
       public static const EventId_91:int = 91;
+
+      public static const EventId_100:int = 100;
 
       public static const EventId_111:int = 111;
       public static const EventId_112:int = 112;
@@ -476,6 +481,9 @@ package common.trigger {
       public static const CoreApiId_1570:int = 1570; // entity.shape.text
       public static const CoreApiId_1571:int = 1571; // entity.shape.text
       public static const CoreApiId_1572:int = 1572; // entity.shape.text
+
+      //public static const CoreApiId_1580:int = 1580; // entity.shape.text
+      public static const CoreApiId_1581:int = 1581; // entity.shape.text
 
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint

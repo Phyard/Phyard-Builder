@@ -20,6 +20,13 @@ package common.trigger {
 
       // ...
 
+         RegisterEventDeclatation (CoreEventIds.ID_OnGameActivated,
+                    null
+                    );
+         RegisterEventDeclatation (CoreEventIds.ID_OnGameDeactivated,
+                    null
+                    );
+
       // ...
 
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeInitializing,
@@ -197,6 +204,12 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,      false],
                         [ValueTypeDefine.ValueType_Boolean,      false],
                         [ValueTypeDefine.ValueType_Boolean,      false],
+                    ]);
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnSequencedModuleLoopToEnd,
+                    [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Module,       -1],
                     ]);
 
      // ...

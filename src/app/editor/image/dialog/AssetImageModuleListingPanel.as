@@ -97,7 +97,7 @@ package editor.image.dialog {
             }
          }
          
-         return null;
+         return null; //new AssetImageNullModule ();
       }
         
       

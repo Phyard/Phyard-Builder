@@ -31,43 +31,20 @@ package player.world {
 
    import player.design.Global;
 
-   import player.entity.EntityBody;
-
    import player.entity.Entity;
    import player.entity.EntityVoid;
-
+   import player.entity.EntityBody;
    import player.entity.EntityShape;
-   import player.entity.EntityShapeCircle;
-   import player.entity.EntityShapeRectangle;
-   import player.entity.EntityShapePolygon;
-   import player.entity.EntityShapePolyline;
-
-   import player.entity.EntityShape_Text;
-   import player.entity.EntityShape_GravityController;
-   import player.entity.EntityShape_Camera;
    import player.entity.EntityShape_Particle;
    import player.entity.EntityShape_CircleBomb;
    import player.entity.EntityShape_RectangleBomb;
-
    import player.entity.EntityShape_WorldBorder;
 
-   import player.entity.EntityJoint;
-   import player.entity.EntityJointHinge;
-   import player.entity.EntityJointSlider;
-   import player.entity.EntityJointDistance;
-   import player.entity.EntityJointSpring;
-
    import player.trigger.entity.ScriptHolder;
-   import player.trigger.entity.EntityBasicCondition;
-   import player.trigger.entity.EntityTask;
-   import player.trigger.entity.EntityAction;
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.entity.EntityEventHandler_Timer;
    import player.trigger.entity.EntityEventHandler_Keyboard;
-   import player.trigger.entity.EntityConditionDoor;
    import player.trigger.entity.EntitySelector;
-   import player.trigger.entity.EntityInputEntityAssigner;
-   import player.trigger.entity.EntityInputEntityFilter;
 
    import player.trigger.data.ShapeContactInfo;
    import player.trigger.data.ListElement_EntityShape;

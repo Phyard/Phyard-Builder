@@ -472,6 +472,10 @@ package common.trigger {
       public static const ID_EntityShapePoly_GetVertexWorldPositions:int                     = IdPool.CoreApiId_1568;
       public static const ID_EntityShapePoly_SetVertexWorldPositions:int                     = IdPool.CoreApiId_1569;
 
+   // game /entity / shape / module
+
+      public static const ID_EntityShapeModule_ChangeModule:int                          = IdPool.CoreApiId_1581;
+
    // game / entity / joint
 
       // from 2000

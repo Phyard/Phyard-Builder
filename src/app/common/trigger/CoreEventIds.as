@@ -8,12 +8,10 @@ package common.trigger {
 
       public static const ID_OnVoid:int = IdPool.EventId_10;
 
-   // level
+   // game
 
-      //public static const ID_OnLevelBeginInitialize:int = IdPool.EventId_30;
-      //public static const ID_OnLevelEndInitialize:int = IdPool.EventId_31;
-      //public static const ID_OnLevelBeginUpdate:int = IdPool.EventId_32;
-      //public static const ID_OnLevelEndUpdate:int = IdPool.EventId_33;
+      public static const ID_OnGameActivated:int = IdPool.EventId_6;
+      public static const ID_OnGameDeactivated:int = IdPool.EventId_7;
 
    // world (maybe in later versions)
 
@@ -26,6 +24,13 @@ package common.trigger {
       public static const ID_OnWorldPreTimer:int = IdPool.EventId_51;
       public static const ID_OnWorldPostTimer:int = IdPool.EventId_52;
 
+   // level
+
+      //public static const ID_OnLevelBeginInitialize:int = IdPool.EventId_30;
+      //public static const ID_OnLevelEndInitialize:int = IdPool.EventId_31;
+      //public static const ID_OnLevelBeginUpdate:int = IdPool.EventId_32;
+      //public static const ID_OnLevelEndUpdate:int = IdPool.EventId_33;
+
    // entity
 
       public static const ID_OnEntityCreated:int = IdPool.EventId_69;
@@ -37,6 +42,10 @@ package common.trigger {
 
       public static const ID_OnShapeMouseDown:int = IdPool.EventId_90;
       public static const ID_OnShapeMouseUp:int = IdPool.EventId_91;
+
+   // entity / shape / module
+
+      public static const ID_OnSequencedModuleLoopToEnd:int = IdPool.EventId_100;
 
    // entity / joint
 

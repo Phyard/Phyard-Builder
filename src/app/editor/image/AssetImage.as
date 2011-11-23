@@ -27,7 +27,8 @@ package editor.image {
    import flash.events.ContextMenuEvent;
    
    import com.tapirgames.util.GraphicsUtil;
-   import com.tapirgames.util.LocalImageLoader;
+   import com.tapirgames.util.ResourceLoader;
+   import com.tapirgames.util.ResourceLoadEvent;
    
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;
@@ -125,10 +126,11 @@ package editor.image {
          if (fileData != null)
          {
             //var loader:Loader = new Loader();
-            var loader:LocalImageLoader = new LocalImageLoader ();
-            loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
+            var loader:ResourceLoader = new ResourceLoader ();
             loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
             loader.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
+            //loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
+            loader.addEventListener (ResourceLoadEvent.IMAGE_LOADED, OnLoadImageComplete);
             loader.loadBytes (fileData);
          }
       }
@@ -136,7 +138,8 @@ package editor.image {
       private function OnLoadImageComplete (event:Event):void
       {
          //var newBitmap:Bitmap = event.target.content as Bitmap;
-         var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
+         //var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
+         var newBitmap:Bitmap = ((event as ResourceLoadEvent).bitmap) as Bitmap;
          mBitmapData = newBitmap.bitmapData;
          
          NotifyPixelsChanged ();

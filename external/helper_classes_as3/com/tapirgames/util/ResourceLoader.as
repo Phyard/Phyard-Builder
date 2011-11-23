@@ -1,5 +1,7 @@
 package com.tapirgames.util
 {
+   import flash.display.Bitmap;
+   import flash.media.Sound;
    import flash.utils.ByteArray;
    import flash.utils.Endian;
    import flash.display.Loader;
@@ -9,11 +11,11 @@ package com.tapirgames.util
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
    
-   public class LocalImageLoader extends Loader
-   {
+   public class ResourceLoader extends Loader
+   {  
    // template swf file
    
-      [Embed(source="template.swf", mimeType="application/octet-stream")]
+      [Embed(source="resource.swf", mimeType="application/octet-stream")]
       private static var SwfFile:Class;
       
    // original data
@@ -119,7 +121,20 @@ package com.tapirgames.util
          
       // load, now, no secure errors. Why adobe makes some troubles for developers?
       
+         this.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
+      
          super.loadBytes (newSwfFile, context);
+      }
+      
+      private function OnLoadImageComplete (event:Event):void
+      {
+         var bitmap:Bitmap = event.target.content as Bitmap;
+         if (bitmap == null)
+            bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
+         
+         var resEvent:ResourceLoadEvent = new ResourceLoadEvent (bitmap);
+      
+         dispatchEvent(resEvent);
       }
    }
 }

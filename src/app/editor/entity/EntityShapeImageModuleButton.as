@@ -56,7 +56,7 @@ package editor.entity {
 
       override public function GetTypeName ():String
       {
-         return "Module Shape";
+         return "Module Button";
       }
 
       override public function IsBasicVectorShapeEntity ():Boolean

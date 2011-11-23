@@ -198,7 +198,7 @@ private function OnAddedToStage (event:Event):void
    
    //
    stage.addEventListener (Event.ACTIVATE, OnActivated);
-   stage.addEventListener (Event.ACTIVATE, OnDeactivated);
+   stage.addEventListener (Event.DEACTIVATE, OnDeactivated);
    
    //
    MoveWorldScene_DisplayOffset (0, 0);
@@ -232,7 +232,7 @@ private function OnRemovedFromStage (event:Event):void
    
    //
    stage.removeEventListener (Event.ACTIVATE, OnActivated);
-   stage.removeEventListener (Event.ACTIVATE, OnDeactivated);
+   stage.removeEventListener (Event.DEACTIVATE, OnDeactivated);
 }
 
 //=============================================================

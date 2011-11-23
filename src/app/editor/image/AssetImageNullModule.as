@@ -12,7 +12,6 @@ package editor.image {
    import flash.events.MouseEvent;
       
    import com.tapirgames.util.GraphicsUtil;
-   import com.tapirgames.util.LocalImageLoader;
    
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;

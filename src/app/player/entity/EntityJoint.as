@@ -10,6 +10,7 @@ package player.entity {
    
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
+   import player.trigger.Parameter_Direct;
    
    import common.trigger.CoreEventIds;
    
@@ -171,12 +172,14 @@ package player.entity {
       {
          var  list_element:ListElement_EventHandler = mReachLowerLimitEventHandlerList;
          
-         mEventHandlerValueSource0.mValueObject = this;
+         //mEventHandlerValueSource0.mValueObject = this;
+         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
          
          mWorld.IncStepStage ();
          while (list_element != null)
          {
-            list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            //list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (valueSource0);
             
             list_element = list_element.mNextListElement;
          }
@@ -186,12 +189,14 @@ package player.entity {
       {
          var  list_element:ListElement_EventHandler = mReachUpperLimitEventHandlerList;
          
-         mEventHandlerValueSource0.mValueObject = this;
+         //mEventHandlerValueSource0.mValueObject = this;
+         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
          
          mWorld.IncStepStage ();
          while (list_element != null)
          {
-            list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            //list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (valueSource0);
             
             list_element = list_element.mNextListElement;
          }

@@ -94,7 +94,8 @@ package editor.asset {
       
       public function GetAppearanceLayerId ():int
       {
-         mAssetManager.CorrectAssetAppearanceIds ();
+         if (mAssetManager != null)
+            mAssetManager.CorrectAssetAppearanceIds ();
          
          return mAppearanceLayerId;
       }
@@ -106,7 +107,8 @@ package editor.asset {
       
       public function GetCreationOrderId ():int
       {
-         mAssetManager.CorrectAssetCreationIds ();
+         if (mAssetManager != null)
+            mAssetManager.CorrectAssetCreationIds ();
          
          return mCreationOrderId;
       }

@@ -197,8 +197,8 @@ private function OnAddedToStage (event:Event):void
    stage.addEventListener (KeyboardEvent.KEY_UP, OnKeyUp);
    
    //
-   addEventListener(Event.ACTIVATE, OnActivated);
-   addEventListener(Event.DEACTIVATE, OnDeactivated);
+   stage.addEventListener (Event.ACTIVATE, OnActivated);
+   stage.addEventListener (Event.ACTIVATE, OnDeactivated);
    
    //
    MoveWorldScene_DisplayOffset (0, 0);
@@ -231,8 +231,8 @@ private function OnRemovedFromStage (event:Event):void
    stage.removeEventListener (KeyboardEvent.KEY_UP, OnKeyUp);
    
    //
-   removeEventListener(Event.ACTIVATE, OnActivated);
-   removeEventListener(Event.DEACTIVATE, OnDeactivated);
+   stage.removeEventListener (Event.ACTIVATE, OnActivated);
+   stage.removeEventListener (Event.ACTIVATE, OnDeactivated);
 }
 
 //=============================================================
@@ -527,16 +527,17 @@ public function RegisterKeyboardEvent (exactKeyCode:int, event:KeyboardEvent, ha
 
 public function OnActivated (event:Event):void
 {
-   // to be exposed to users
+   HandleEventById (CoreEventIds.ID_OnGameActivated, null)
 }
 
 public function OnDeactivated (event:Event):void
 {
-   // to be exposed to users
-   
    // 
    ClearKeyHoldInfo (true);
    
    // todo: also a ClearMouseHoldInfo () ? This needs tracking the mouse position.
+   
+   // ...
+   HandleEventById (CoreEventIds.ID_OnGameDeactivated, null)
 }
 

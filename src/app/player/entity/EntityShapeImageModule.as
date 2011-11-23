@@ -13,6 +13,7 @@ package player.entity {
    import player.module.ModuleInstance;
    
    import player.trigger.entity.EntityEventHandler;
+   import player.trigger.Parameter_Direct;
    
    import common.Define;
    import common.Transform2D;
@@ -58,6 +59,16 @@ package player.entity {
 //=============================================================
       
       protected var mModuleIndex:int = -1;
+      
+      // for calling in loading 
+      public function SetModuleIndex (moduleIndex:int):void
+      {
+         mModuleIndex = moduleIndex;
+         mModuleInstance = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndex));
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
+      }
 
 //=============================================================
 //   
@@ -67,15 +78,31 @@ package player.entity {
             
       protected var mLoopToEndEventHandler:EntityEventHandler = null;
       
-      public function SetModuleIndex (moduleIndex:int, loopToEndEventHandler:EntityEventHandler = null):void
+      // for calling in APIs
+      public function SetModuleIndexByAPI (moduleIndex:int, loopToEndEventHandler:EntityEventHandler):void
       {
-         mModuleIndex = moduleIndex;
-         mModuleInstance = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndex));
+         SetModuleIndex (moduleIndex);
          
          mLoopToEndEventHandler = loopToEndEventHandler;
          
-         mNeedRebuildAppearanceObjects = true;
-         DelayUpdateAppearance (); 
+         RebuildShapePhysicsInternal ();
+      }
+      
+      // return: if the module changed.
+      private function OnModuleReachesSequeunceEnd (module:Module):Boolean
+      {
+         var moduleInstance:ModuleInstance = mModuleInstance;
+         
+         if (mLoopToEndEventHandler != null)
+         {
+            var valueSource1:Parameter_Direct = new Parameter_Direct (module);
+            var valueSource0:Parameter_Direct = new Parameter_Direct (this, valueSource1);
+            
+            mWorld.IncStepStage ();
+            mLoopToEndEventHandler.HandleEvent (valueSource0);
+         }
+         
+         return moduleInstance != mModuleInstance;
       }
       
 //=============================================================
@@ -94,7 +121,7 @@ package player.entity {
       
       override protected function UpdateInternal (dt:Number):void
       {
-         if (mModuleInstance.Step ())
+         if (mModuleInstance.Step (OnModuleReachesSequeunceEnd))
          {
             mNeedRebuildAppearanceObjects = true;
             DelayUpdateAppearance ();

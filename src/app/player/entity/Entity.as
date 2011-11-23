@@ -391,9 +391,10 @@ package player.entity {
 //   event value sources, they are static, so parallel computing is not supported
 //====================================================================================================
 
-      protected static var mEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, null);
-      protected static var mEventHandlerValueSourceList:Parameter = mEventHandlerValueSource0;
-
+      // not safe for nest callings
+      //protected static var mEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, null);
+      //protected static var mEventHandlerValueSourceList:Parameter = mEventHandlerValueSource0;
+      
       private var mCreateEventHandlerList:ListElement_EventHandler = null;
       private var mInitializeEventHandlerList:ListElement_EventHandler = null;
       private var mUpdateEventHandlerList:ListElement_EventHandler = null;
@@ -448,12 +449,14 @@ package player.entity {
       {
          var list_element:ListElement_EventHandler = mCreateEventHandlerList;
 
-         mEventHandlerValueSource0.mValueObject = this;
+         //mEventHandlerValueSource0.mValueObject = this;
+         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
          {
-            list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            //list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (valueSource0);
 
             list_element = list_element.mNextListElement;
          }
@@ -481,12 +484,14 @@ package player.entity {
 
          var list_element:ListElement_EventHandler = mInitializeEventHandlerList;
 
-         mEventHandlerValueSource0.mValueObject = this;
+         //mEventHandlerValueSource0.mValueObject = this;
+         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
          {
-            list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            //list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (valueSource0);
 
             list_element = list_element.mNextListElement;
          }
@@ -510,12 +515,14 @@ package player.entity {
 
          var  list_element:ListElement_EventHandler = mUpdateEventHandlerList;
 
-         mEventHandlerValueSource0.mValueObject = this;
+         //mEventHandlerValueSource0.mValueObject = this;
+         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
          {
-            list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            //list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (valueSource0);
 
             list_element = list_element.mNextListElement;
          }
@@ -562,12 +569,14 @@ package player.entity {
 
          var list_element:ListElement_EventHandler = mDestroyEventHandlerList;
 
-         mEventHandlerValueSource0.mValueObject = this;
+         //mEventHandlerValueSource0.mValueObject = this;
+         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
          {
-            list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            //list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (valueSource0);
 
             list_element = list_element.mNextListElement;
          }

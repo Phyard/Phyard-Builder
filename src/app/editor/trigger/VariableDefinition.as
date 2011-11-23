@@ -122,7 +122,7 @@ package editor.trigger {
       
       public static function ValidateValueObject_Entity (valueObject:Object):Object
       {
-         var world:World = Runtime.GetCurrentWorld ();
+         var world:World = Runtime.GetCurrentWorld (); // in loading stage, it would be null
          
          var entity:WorldEntity = valueObject as WorldEntity;
          if (entity != null && (entity.GetWorld () != world || entity.GetCreationOrderId () < 0))
@@ -133,7 +133,7 @@ package editor.trigger {
       
       public static function ValidateValueObject_CollisiontCategory (valueObject:Object):Object
       {
-         var world:World = Runtime.GetCurrentWorld ();
+         var world:World = Runtime.GetCurrentWorld (); // in loading stage, it would be null
          
          var category:EntityCollisionCategory = valueObject as EntityCollisionCategory;
          if (category != null && category.GetAppearanceLayerId () < 0)
@@ -144,10 +144,10 @@ package editor.trigger {
       
       public static function ValidateValueObject_Module (valueObject:Object):Object
       {
-         var world:World = Runtime.GetCurrentWorld ();
+         //var world:World = Runtime.GetCurrentWorld (); // in loading stage, it would be null
          
          var module:AssetImageModule = valueObject as AssetImageModule;
-         if (module != null && world.GetImageModuleIndex (module) < 0)
+         if (module != null && module.GetAppearanceLayerId () < 0)
             module = null;
          
          return module;

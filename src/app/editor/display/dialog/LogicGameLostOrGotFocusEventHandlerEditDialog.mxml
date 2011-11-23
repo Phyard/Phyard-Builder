@@ -23,8 +23,8 @@
          <mx:HBox width="100%" id="HanlderBasicSettingPanel" creationComplete="OnHanlderBasicSettingPanelCreationComplete()">
             <mx:Spacer width="100%"/>
             <mx:VBox>
-               <mx:RadioButton groupName="EventType" id="RadioButton_OnActivated" value="LowerLimit" label="Game Activated (Get Focus)" />
-               <mx:RadioButton groupName="EventType" id="RadioButton_OnDeactivated" value="UpperLimit" label="Game Deactivated (Lose Focus)" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_OnActivated" value="LowerLimit" label="Game Activated (Gains Focus)" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_OnDeactivated" value="UpperLimit" label="Game Deactivated (Loses Focus)" />
             </mx:VBox>
             <mx:Spacer width="100%"/>
          </mx:HBox>

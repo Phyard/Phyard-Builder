@@ -460,7 +460,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPositions,            GetVertexWorldPositions);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPositions,            SetVertexWorldPositions);
 
-      // game / entity / joint
+      // game / entity / shape / module
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModule_ChangeModule,            ChangeShapeModule);
 
@@ -4616,7 +4616,7 @@ package player.trigger {
          if (loopToEndHandler != null && loopToEndHandler.GetEventId () != CoreEventIds.ID_OnSequencedModuleLoopToEnd) // generally, impossible
             loopToEndHandler = null;
 
-         moduleShape.SetModuleIndex (moduleIndex, loopToEndHandler);
+         moduleShape.SetModuleIndexByAPI (moduleIndex, loopToEndHandler);
       }
 
    //*******************************************************************

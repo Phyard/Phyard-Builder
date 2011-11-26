@@ -129,13 +129,16 @@ package editor.sound {
       //trace ("OnLoadSoundComplete, mSound = " + mSound);
          
          mSoundInfo.SetFileData (_FileData_Temp);
+         
+         mNameText.htmlText = "<b>" + GetName () + "</b>";
+         mInfoText.htmlText = mSoundInfo.GetFileFormat () + ", " + mSoundInfo.GetSamplingRate () + "kHz, " + (mSoundInfo.IsStereo () ? "stereo" : "mono");
       }
       
       // !!! This function is not triggered even if there are some errors in loading.
       // It seems flash doesn't trigger some errors.
       private function OnLoadSoundError (event:Object):void
       {
-      //trace ("OnLoadSoundError");
+      trace ("OnLoadSoundError: " + event);
          _FileData_Temp = null;
          mSoundInfo.SetFileData (null);
       }
@@ -248,7 +251,7 @@ package editor.sound {
          mSound = sound;
       }
       
-      private function Play ():void
+      public function Play ():void
       {
          Stop ();
          
@@ -261,7 +264,7 @@ package editor.sound {
          mStopButton.visible = true;
       }
       
-      private function Stop ():void
+      public function Stop ():void
       {
          //SoundMixer.stopAll ();
          if (mSoundChannel != null)
@@ -278,8 +281,8 @@ package editor.sound {
 //   
 //=============================================================
       
-      private var mNameText:TextFieldEx = TextFieldEx.CreateTextField ("<b>A sound</b>");
-      private var mInfoText:TextFieldEx = TextFieldEx.CreateTextField ("mp3, 22kHz, stereo");
+      private var mNameText:TextFieldEx = TextFieldEx.CreateTextField ("<b> </b>");
+      private var mInfoText:TextFieldEx = TextFieldEx.CreateTextField (" ");
       private var mPlayButton:TextButton = new TextButton ("<font size='10'>Play</font>", Play);
       private var mStopButton:TextButton = new TextButton ("<font size='10'>Stop</font>", Stop);
       

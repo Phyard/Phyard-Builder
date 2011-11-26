@@ -92,6 +92,36 @@ package editor.sound {
 // 
 //=====================================================================
 
+      public function StopAllSounds ():void
+      {
+         var numSounds:int = GetNumAssets ();
+         for (var i:int = 0;i < numSounds; ++ i)
+         {
+            (GetAssetByAppearanceId (i) as AssetSound).Stop ();
+         }
+      }
+      
+      private var mVolume:Number = 0.5;
+      
+      public function GetSoundVolume ():Number
+      {
+         return mVolume;
+      }
+      
+      public function SetSoundVolume (volume:Number):void
+      {
+         if (volume < 0)
+            volume = 0;
+         if (volume > 1.0)
+            volume = 1.0;
+         
+         mVolume = volume;
+      }
+     
+//=====================================================================
+// 
+//=====================================================================
+
       private var mFileReferenceList:FileReferenceList = null;
       
       private function OpenLocalSoundFileDialog ():void

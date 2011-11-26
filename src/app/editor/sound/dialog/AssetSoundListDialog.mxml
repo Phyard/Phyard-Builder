@@ -10,20 +10,29 @@
     width="200" height="500"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
+    creationComplete="InitDialog ();"
     close="HideAssetSoundListDialog ();"
     >
 
-   <mx:HBox backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="100%"
-            paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+   <mx:VBox backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="100%"
             horizontalScrollPolicy="off" verticalScrollPolicy="off"
             horizontalGap="0" verticalGap="0" borderThickness="0"
             >
-      <sound:AssetSoundListingPanel id="panelAssetSoundListing" width="100%" height="100%"/>
-   </mx:HBox>
+      <mx:HBox width="100%" paddingTop="3" paddingLeft="3" paddingRight="3" paddingBottom="3" verticalAlign="middle">
+         <mx:Button id="ButtonStopAll" click="StopAllSounds ()" toolTip="Stop All" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-stop.png')" disabledIcon="@Embed('../../../res/play/play-stop-disabled.png')" />
+         <mx:Spacer width="100%" />
+         <mx:HSlider id="SliderVolume" change="AdjustVolume ()"  width="137" toolTip="Volume" minimum="0.0" maximum="1.0" snapInterval="0.01" value="0.5" allowTrackClick="true" liveDragging="true" />
+      </mx:HBox>
+      <mx:VBox id="Box_AssembledModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+         <sound:AssetSoundListingPanel id="panelAssetSoundListing" width="100%" height="100%"/>
+      </mx:VBox>
+   </mx:VBox>
 
    <mx:Script>
       <![CDATA[
-      
+         import flash.media.SoundMixer;
+         import flash.media.SoundTransform;
+         
          import mx.managers.PopUpManager;
          
          import editor.runtime.Runtime;
@@ -62,6 +71,27 @@
          }
          
       // ...
+         
+         private function InitDialog ():void
+         {
+            SliderVolume.value = Runtime.GetCurrentWorld ().GetAssetSoundManager ().GetSoundVolume ();
+         }
+         
+         private function StopAllSounds ():void
+         {
+            Runtime.GetCurrentWorld ().GetAssetSoundManager ().StopAllSounds ();
+            SoundMixer.stopAll ();
+         }
+         
+         private function AdjustVolume ():void
+         {
+            Runtime.GetCurrentWorld ().GetAssetSoundManager ().SetSoundVolume (SliderVolume.value);
+            SliderVolume.value = Runtime.GetCurrentWorld ().GetAssetSoundManager ().GetSoundVolume ();
+            var transform:SoundTransform = new SoundTransform();
+            transform.volume = Runtime.GetCurrentWorld ().GetAssetSoundManager ().GetSoundVolume ();
+            SoundMixer.soundTransform = transform;
+
+         }
 
      ]]>
    </mx:Script>

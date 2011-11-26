@@ -265,6 +265,7 @@ package com.tapirgames.util
          }
          catch (error:Error)
          {
+            trace (error.getStackTrace ());
             dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, error.message));
          }
       }

@@ -104,6 +104,7 @@ package editor.image {
 //=============================================================
       
       private var mFileData:ByteArray;
+         private var _FileData_Temp:ByteArray;
       
       public function CloneBitmapFileData ():ByteArray
       {
@@ -119,19 +120,18 @@ package editor.image {
       
       public function SetBitmapFileData (fileData:ByteArray):void
       {
-         mFileData = fileData;
+         mFileData = null;
+         _FileData_Temp = fileData;
          
          mBitmapData = null;
          
          if (fileData != null)
          {
-            //var loader:Loader = new Loader();
             var loader:ResourceLoader = new ResourceLoader ();
-            loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
-            loader.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
-            //loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
+            loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
+            loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
             loader.addEventListener (ResourceLoadEvent.IMAGE_LOADED, OnLoadImageComplete);
-            loader.loadBytes (fileData);
+            loader.loadImageFromByteArray (fileData);
          }
       }
       
@@ -139,15 +139,19 @@ package editor.image {
       {
          //var newBitmap:Bitmap = event.target.content as Bitmap;
          //var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
-         var newBitmap:Bitmap = ((event as ResourceLoadEvent).bitmap) as Bitmap;
+         var newBitmap:Bitmap = (event as ResourceLoadEvent).bitmap;
          mBitmapData = newBitmap.bitmapData;
+         
+         mFileData = _FileData_Temp;
          
          NotifyPixelsChanged ();
       }
       
+      // !!! This function is not triggered even if there are some errors in loading.
+      // It seems flash doesn't trigger some errors.
       private function OnLoadImageError (event:Object):void
       {
-         mFileData = null;
+         _FileData_Temp = null;
          
          NotifyPixelsChanged ();
       }

@@ -67,6 +67,8 @@ package player.image
       {
          if (fileData == null)
          {
+            mStatus = 1;
+            
             onLoadDone (this);
          }
          else
@@ -74,13 +76,12 @@ package player.image
             mCallbackOnLoadDone  = onLoadDone;
             mCallbackOnLoadError = onLoadError;
             
-            //var loader:Loader = new Loader();
+            // ...
             var loader:ResourceLoader = new ResourceLoader ();
-            loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
-            loader.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
-            //loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
+            loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
+            loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
             loader.addEventListener (ResourceLoadEvent.IMAGE_LOADED, OnLoadImageComplete);
-            loader.loadBytes (fileData);
+            loader.loadImageFromByteArray (fileData);
          }
       }
       

@@ -7,7 +7,7 @@
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:sound="editor.sound.dialog.*"
     title="Sound Assets Manager"
-    width="500" height="500"
+    width="200" height="500"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
     close="HideAssetSoundListDialog ();"
@@ -47,11 +47,18 @@
                PopUpManager.addPopUp (sAssetSoundListDialog, Runtime.GetApplication (), false);
                PopUpManager.centerPopUp (sAssetSoundListDialog);
             }
+            
+            sAssetSoundListDialog.GetAssetSoundListingPanel ().SetAssetSoundManager (Runtime.GetCurrentWorld ().GetAssetSoundManager ());
          }
          
          public static function HideAssetSoundListDialog ():void
          {
             PopUpManager.removePopUp(sAssetSoundListDialog);
+         }
+         
+         public function GetAssetSoundListingPanel ():AssetSoundListingPanel
+         {
+            return panelAssetSoundListing;
          }
          
       // ...

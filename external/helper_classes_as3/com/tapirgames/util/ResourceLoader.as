@@ -137,6 +137,7 @@ package com.tapirgames.util
             newData.writeShort (mCharacterID_TagDefineBitsJPEG2);
             if (imageFileData.length > 0)
             {
+               imageFileData.position = 0;
                newData.writeBytes (imageFileData);
             }
             
@@ -184,7 +185,7 @@ package com.tapirgames.util
       private static const SoundFormat_MP3:String = "mp3";
       private static const SoundFormatBits_MP3:int = 2 << 4;
       
-      public function loadSoundFromByteArray (soundFileData:ByteArray, soundFormat:String, soundRate:int, soundSampleSize:int, isMono:Boolean, numSamples:int, context:LoaderContext = null):void
+      public function loadSoundFromByteArray (soundFileData:ByteArray, soundFormat:String, soundRate:int, soundSampleSize:int, isStereo:Boolean, numSamples:int, context:LoaderContext = null):void
       {
          try
          {
@@ -198,21 +199,22 @@ package com.tapirgames.util
             
             var bitsSoundRate:int;
             
-            if (soundRate == 5500)
-            {
-               if (bitsSoundFormat == SoundFormatBits_MP3)
-                  throw new Error ("5.5kHz rate is not valid for mp3 format.");
-               
-               bitsSoundRate = 0 << 2;
-            }
-            else if (soundRate == 11000)
+            //if (soundRate == 5512)
+            //{
+            //   if (bitsSoundFormat == SoundFormatBits_MP3)
+            //      throw new Error ("5.5kHz rate is not valid for mp3 format.");
+            //   
+            //   bitsSoundRate = 0 << 2;
+            //}
+            //else 
+            if (soundRate == 11025)
                bitsSoundRate = 1 << 2;
-            else if (soundRate == 22000)
+            else if (soundRate == 22050)
                bitsSoundRate = 2 << 2;
-            else if (soundRate == 44000)
+            else if (soundRate == 44100)
                bitsSoundRate = 3 << 2;
             else
-               throw new Error ("Only 5.5kHz, 11kHz, 22kHz and 44kHz rates are supported.");
+               throw new Error ("Only 11kHz, 22kHz and 44kHz rates are supported.");
             
             var bitsSoundSize:int;
             
@@ -225,10 +227,10 @@ package com.tapirgames.util
             
             var bitsSoundType:int;
             
-            if (isMono)
-               bitsSoundType = 0 << 0;
-            else
+            if (isStereo)
                bitsSoundType = 1 << 0;
+            else
+               bitsSoundType = 0 << 0;
             
             if (numSamples < 0)
                throw new Error ("numSamples < 0!");
@@ -253,6 +255,7 @@ package com.tapirgames.util
             newData.writeInt (numSamples);
             if (soundFileData.length > 0)
             {
+               soundFileData.position = 0;
                newData.writeBytes (soundFileData);
             }
             

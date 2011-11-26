@@ -33,15 +33,31 @@ package editor.sound.dialog {
    
    import editor.asset.AssetManagerPanel;
    
+   import editor.sound.AssetSound;
+   import editor.sound.AssetSoundManager;
+   
    import editor.runtime.Runtime;
    
    import common.Define;
    import common.Version;
    
-   public class AssetSoundListingPanel extends AssetManagerPanel 
-   {  
-      public function AssetSoundListingPanel ()
+   public class AssetSoundListingPanel extends AssetManagerPanel
+   {
+      private var mAssetSoundManager:AssetSoundManager = null;
+      
+      public function SetAssetSoundManager (assetSoundManager:AssetSoundManager):void
       {
+         super.SetAssetManager (assetSoundManager);
+         
+         if (mAssetSoundManager != assetSoundManager)
+         {
+            mAssetSoundManager = assetSoundManager;
+         }
+      }
+      
+      override public function IsZoomSupported ():Boolean
+      {
+         return false;
       }
 
 //============================================================================

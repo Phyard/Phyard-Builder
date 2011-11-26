@@ -247,7 +247,7 @@ package editor.image {
          return mAssetImageDivideDialog;
       }
       
-      public static const kFileFilter:Array = [new FileFilter("Image File", "*jpg;*.png;*.gif;")];
+      public static const kFileFilter:Array = [new FileFilter("Image File (*.jpg;*.png;*.gif)", "*.jpg;*.png;*.gif")];
       
       private var mFileReference:FileReference = null; // flash bug: DON'T use this variable as a local variable, otherwise, the complete event will not fire.
       

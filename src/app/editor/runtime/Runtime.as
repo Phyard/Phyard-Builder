@@ -187,9 +187,9 @@ package editor.runtime {
             case Keyboard.F3:
                AssetImageModuleListDialog.ShowAssetImageModuleListDialog ();
                break;
-            //case Keyboard.F4:
-            //   AssetSoundListDialog.ShowAssetSoundListDialog ();
-            //   break;
+            case Keyboard.F4:
+               AssetSoundListDialog.ShowAssetSoundListDialog ();
+               break;
          }
             
          if (HasSettingDialogOpened ())

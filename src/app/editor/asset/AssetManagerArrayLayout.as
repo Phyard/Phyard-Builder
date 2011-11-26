@@ -154,10 +154,11 @@ package editor.asset {
          }
       }
       
-      protected function GetAssetIdBeforeModuleId (posX:Number, posY:Number):int
-      {
-         return 0;
-      }
+      // ?
+      //protected function GetAssetIdBeforeModuleId (posX:Number, posY:Number):int
+      //{
+      //   return 0;
+      //}
    }
 }
 

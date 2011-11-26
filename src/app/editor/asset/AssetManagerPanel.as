@@ -101,6 +101,11 @@ package editor.asset {
          return 1.0 / 4.0;
       }
       
+      public function IsZoomSupported ():Boolean
+      {
+         return true;
+      }
+      
       public function ScaleManager (scale:Number):void
       {
          if (mAssetManager != null)
@@ -453,16 +458,19 @@ package editor.asset {
          
          stage.focus = this;
          
-         if (mAssetManager == null)
-            return;
-         
-         var oldMouseManagerPoint:Point = new Point (mAssetManager.mouseX, mAssetManager.mouseY);
-
-         ScaleManager (event.delta > 0 ? 1.1 : 0.9);
-
-         var newMousePoint:Point = DisplayObjectUtil.LocalToLocal (mAssetManager, this, oldMouseManagerPoint);
-         
-         MoveManager (mouseX - newMousePoint.x, mouseY - newMousePoint.y);
+         if (IsZoomSupported ())
+         {
+            if (mAssetManager == null)
+               return;
+            
+            var oldMouseManagerPoint:Point = new Point (mAssetManager.mouseX, mAssetManager.mouseY);
+   
+            ScaleManager (event.delta > 0 ? 1.1 : 0.9);
+   
+            var newMousePoint:Point = DisplayObjectUtil.LocalToLocal (mAssetManager, this, oldMouseManagerPoint);
+            
+            MoveManager (mouseX - newMousePoint.x, mouseY - newMousePoint.y);
+         }
       }
       
       public function OnKeyDown (event:KeyboardEvent):void

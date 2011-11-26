@@ -76,6 +76,9 @@ package editor.world {
    import editor.image.AssetImageManager;
    import editor.image.AssetImagePureModuleManager;
    import editor.image.AssetImageCompositeModuleManager;
+   
+   import editor.sound.AssetSound;
+   import editor.sound.AssetSoundManager;
 
    import editor.runtime.Runtime; // temp, to remove
 
@@ -98,6 +101,7 @@ package editor.world {
       protected var mAssetImagePureModuleManager:AssetImagePureModuleManager;
       protected var mAssetImageAssembledModuleManager:AssetImageCompositeModuleManager;
       protected var mAssetImageSequencedModuleManager:AssetImageCompositeModuleManager;
+      protected var mAssetSoundManager:AssetSoundManager;
 
       // temp the 2 is not used
       // somewhere need to be modified to use the 2
@@ -126,6 +130,7 @@ package editor.world {
          mAssetImagePureModuleManager = new AssetImagePureModuleManager ();
          mAssetImageAssembledModuleManager = new AssetImageCompositeModuleManager (false);
          mAssetImageSequencedModuleManager = new AssetImageCompositeModuleManager (true);
+         mAssetSoundManager = new AssetSoundManager ();
       }
 
       override public function Destroy ():void
@@ -1764,6 +1769,30 @@ package editor.world {
          }
          
          return new AssetImageNullModule (); 
+      }
+      
+      public function GetAssetSoundManager ():AssetSoundManager
+      {
+         return mAssetSoundManager;
+      }
+      
+      public function GetSoundIndex (sound:AssetSound):int
+      {
+         if (sound == null)
+            return -1;
+         
+         if (sound.GetAssetSoundManager () != mAssetSoundManager)
+            return -1;
+         
+         return sound.GetAppearanceLayerId ();
+      }
+      
+      public function GetSoundByIndex (soundIndex:int):AssetSound
+      {
+         if (soundIndex < 0 || soundIndex >= mAssetSoundManager.GetNumAssets ())
+            return null;
+         
+         return mAssetSoundManager.GetAssetByAppearanceId (soundIndex) as AssetSound;
       }
 
 //=================================================================================

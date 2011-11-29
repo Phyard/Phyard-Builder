@@ -275,6 +275,7 @@ package player.trigger {
 
       // game / world / create
 
+         RegisterCoreFunction (CoreFunctionIds.ID_World_StopAllSounds,                        StopAllSounds);
          RegisterCoreFunction (CoreFunctionIds.ID_World_PlaySound,                            PlaySound);
 
       // game / collision category
@@ -2330,6 +2331,11 @@ package player.trigger {
    //*******************************************************************
    // game / world / create
    //*******************************************************************
+
+      public static function StopAllSounds (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Sound.StopAllSounds ();
+      }
 
       public static function PlaySound (valueSource:Parameter, valueTarget:Parameter):void
       {

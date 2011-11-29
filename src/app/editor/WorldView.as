@@ -1830,6 +1830,8 @@ package editor {
       
       public function Play_Stop ():void
       {
+         Runtime.StopAllSounds ();
+         
          //Mouse.show (); // maybe hide in playing. (now put in player.World)
          
          mAlreadySavedWhenPlayingError = false;

@@ -1456,6 +1456,10 @@ package common.trigger {
 
      // game / world / sound
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_StopAllSounds,
+                     null,
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_PlaySound,
                      [
                         [ValueTypeDefine.ValueType_Sound,       -1],

@@ -251,7 +251,8 @@ package common.trigger {
 
       public static const ID_World_CreateExplosion:int                = IdPool.CoreApiId_770;
 
-      public static const ID_World_PlaySound:int                = IdPool.CoreApiId_800;
+      public static const ID_World_StopAllSounds:int            = IdPool.CoreApiId_800;
+      public static const ID_World_PlaySound:int                = IdPool.CoreApiId_801;
 
       // VirtualClickOnEntityCenter (entity)
 

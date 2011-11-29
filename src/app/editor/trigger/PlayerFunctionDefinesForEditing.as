@@ -1539,6 +1539,10 @@ package editor.trigger {
 
      // game / world / sound
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_StopAllSounds, world_sound_package, "Stop All Sounds", null, null,
+                     null,
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_PlaySound, world_sound_package, "Play Sound", null, null,
                      [
                               new VariableDefinitionSound ("Sound"),

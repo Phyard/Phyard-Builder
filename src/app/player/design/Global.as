@@ -113,6 +113,8 @@ package player.design
          mAssembledModules     = null;
          mSequencedModules     = null;
          
+         //
+         Sound.StopAllSounds ();
          
          //
          mRandomNumberGenerators = new Array (Define.NumRngSlots);

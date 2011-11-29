@@ -45,6 +45,11 @@ package player.sound
          transform.volume = mSoundOn ? mSoundVolume : 0.0;
          SoundMixer.soundTransform = transform;
       }
+      
+      public static function StopAllSounds ():void
+      {
+         SoundMixer.stopAll ();
+      }
    
 //=====================================
    

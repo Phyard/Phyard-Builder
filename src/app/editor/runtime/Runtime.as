@@ -4,8 +4,11 @@ package editor.runtime {
    
    import flash.ui.ContextMenuItem;
    import flash.events.ContextMenuEvent;
+   
    import flash.events.KeyboardEvent;
    import flash.ui.Keyboard;
+   
+   import flash.media.SoundMixer;
    
    import mx.core.Application;
    
@@ -72,6 +75,9 @@ package editor.runtime {
          mLocalVariablesEditingDialogClosedCallBack = null;
          mInputVariablesEditingDialogClosedCallBack = null;
          mOutputVariablesEditingDialogClosedCallBack = null;
+         
+         // ...
+         StopAllSounds ();
       }
    
 //=====================================================================
@@ -322,6 +328,11 @@ package editor.runtime {
             volume = 1.0;
          
          mSoundVolume = volume;
+      }
+      
+      public static function StopAllSounds ():void
+      {
+         SoundMixer.stopAll ();
       }
       
 //=====================================================================

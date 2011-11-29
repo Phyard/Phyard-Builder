@@ -47,8 +47,16 @@ package editor.runtime {
          
          Asset.mNextActionId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
          Entity.mNextActionId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
-         AssetImageModuleListDialog.sAssetImageModuleListDialog = null;
-         AssetSoundListDialog.sAssetSoundListDialog = null;
+         if (AssetImageModuleListDialog.sAssetImageModuleListDialog != null)
+         {
+            AssetImageModuleListDialog.HideAssetImageModuleListDialog ();
+            AssetImageModuleListDialog.sAssetImageModuleListDialog = null;
+         }
+         if (AssetSoundListDialog.sAssetSoundListDialog != null)
+         {
+            AssetSoundListDialog.HideAssetSoundListDialog ();
+            AssetSoundListDialog.sAssetSoundListDialog = null;
+         }
          AssetImageModule.mCurrentAssetImageModule = null;
          InputEntitySelector.sNotifyEntityLinksModified = null;
          

@@ -121,6 +121,10 @@ package editor.sound {
             loader.addEventListener (ResourceLoadEvent.SOUND_LOADED, OnLoadSoundComplete);
             loader.loadSoundFromByteArray (fileData, mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
          }
+         else
+         {
+            OnLoadSoundError (null);
+         }
       }
       
       private function OnLoadSoundComplete (event:Event):void
@@ -129,7 +133,7 @@ package editor.sound {
       //trace ("OnLoadSoundComplete, mSound = " + mSound);
          
          mSoundInfo.SetFileData (_FileData_Temp);
-         
+         Stop ();
          mNameText.htmlText = "<b>" + GetName () + "</b>";
          mInfoText.htmlText = mSoundInfo.GetFileFormat () + ", " + mSoundInfo.GetSamplingRate () + "kHz, " + (mSoundInfo.IsStereo () ? "stereo" : "mono");
       }
@@ -139,8 +143,12 @@ package editor.sound {
       private function OnLoadSoundError (event:Object):void
       {
       trace ("OnLoadSoundError: " + event);
+         //event may be null
+         
          _FileData_Temp = null;
          mSoundInfo.SetFileData (null);
+         Stop ();
+         mPlayButton.SetEnabled (false);
       }
       
 //=============================================================
@@ -210,7 +218,11 @@ package editor.sound {
                }
             }
             
-            if (numDataFrames > 0)
+            if (numDataFrames == 0)
+            {
+               throw new Error ("No data frames are found.");
+            }
+            else
             {
                var soundData:ByteArray = new ByteArray ();
                soundData.writeShort(0);
@@ -223,9 +235,8 @@ package editor.sound {
                soundInfo.SetSamplingRate (samplingRate);
                soundInfo.SetSampleSize (16);
                
-               //trace (">>>>> soundInfo = " + soundInfo);
+               trace (">>>>> numDataFrames = " + numDataFrames + ", soundInfo = " + soundInfo);
             }
-            //trace ("===== numDataFrames = " + numDataFrames + ", numSamples = " + numSamples + ", samplingRate = " + samplingRate + ", isMono = " + isMono);
             
             return true;
          }
@@ -258,10 +269,11 @@ package editor.sound {
          if (mSound != null)
          {
             mSoundChannel = mSound.play ();
+            mSoundChannel.addEventListener (Event.SOUND_COMPLETE, OnSoundPlayComplete);
+            
+            mPlayButton.visible = false;
+            mStopButton.visible = true;
          }
-         
-         mPlayButton.visible = false;
-         mStopButton.visible = true;
       }
       
       public function Stop ():void
@@ -269,12 +281,18 @@ package editor.sound {
          //SoundMixer.stopAll ();
          if (mSoundChannel != null)
          {
+            mSoundChannel.removeEventListener (Event.SOUND_COMPLETE, OnSoundPlayComplete);
             mSoundChannel.stop ();
          }
          mSoundChannel = null;
          
          mPlayButton.visible = true;
          mStopButton.visible = false;
+      }
+      
+      private function OnSoundPlayComplete (event:Event):void
+      {
+         Stop ();
       }
       
 //=============================================================
@@ -347,6 +365,7 @@ package editor.sound {
          //customMenuItemsStack.push (menuItemClearSound);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
+         mAssetSoundManager.BuildContextMenuInternal (customMenuItemsStack);
       }
       
       private function OnContextMenuEvent_LoadSound (event:ContextMenuEvent):void

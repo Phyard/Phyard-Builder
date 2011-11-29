@@ -214,7 +214,7 @@ package com.tapirgames.util
             else if (soundRate == 44100)
                bitsSoundRate = 3 << 2;
             else
-               throw new Error ("Only 11kHz, 22kHz and 44kHz rates are supported.");
+               throw new Error ("Only 11kHz, 22kHz and 44kHz rates are supported: " + bitsSoundRate);
             
             var bitsSoundSize:int;
             
@@ -252,7 +252,7 @@ package com.tapirgames.util
             newData.writeInt (7 + soundFileData.length); // 7 for sound infos
             newData.writeShort (mCharacterID_TagDefineSound);
             newData.writeByte (bitsSoundFormat | bitsSoundRate | bitsSoundSize | bitsSoundType);
-            newData.writeInt (numSamples);
+            newData.writeUnsignedInt (numSamples);
             if (soundFileData.length > 0)
             {
                soundFileData.position = 0;

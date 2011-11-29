@@ -68,12 +68,15 @@ package editor.sound {
       {
          var menuItemLoadLocalSoundss:ContextMenuItem = new ContextMenuItem("Load Local Sounds(s) ...", true);
          //var menuItemCreateSound:ContextMenuItem = new ContextMenuItem("Create Blank Sound ...");
+         var menuItemDeleteSelecteds:ContextMenuItem = new ContextMenuItem("Delete Selected(s) ...", true);
          
          menuItemLoadLocalSoundss.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_LocalSounds);
          //menuItemCreateSound.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateSound);
+         menuItemDeleteSelecteds.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_DeleteSelectedAssets);
 
          customMenuItemsStack.push (menuItemLoadLocalSoundss);
          //customMenuItemsStack.push (menuItemCreateSound);
+         customMenuItemsStack.push (menuItemDeleteSelecteds);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
@@ -86,6 +89,11 @@ package editor.sound {
       private function OnContextMenuEvent_LocalSounds (event:ContextMenuEvent):void
       {
          OpenLocalSoundFileDialog ();
+      }
+      
+      private function OnContextMenuEvent_DeleteSelectedAssets (event:ContextMenuEvent):void
+      {
+         DeleteSelectedAssets ();
       }
       
 //=====================================================================

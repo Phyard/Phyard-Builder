@@ -12,6 +12,8 @@ package player.trigger {
    import player.entity.*;
    import player.trigger.entity.*;
 
+   import player.sound.Sound;
+
    import player.physics.PhysicsEngine;
 
    import player.trigger.FunctionDefinition_Core;
@@ -270,6 +272,10 @@ package player.trigger {
       // game / world / create
 
          RegisterCoreFunction (CoreFunctionIds.ID_World_CreateExplosion,                            CreateExplosion);
+
+      // game / world / create
+
+         RegisterCoreFunction (CoreFunctionIds.ID_World_PlaySound,                            PlaySound);
 
       // game / collision category
 
@@ -2319,6 +2325,26 @@ package player.trigger {
          numParticles = Global.GetCurrentWorld ().CreateExplosion (null, worldX, worldY, cat, numParticles, lifeSteps * Define.WorldStepTimeInterval_SpeedX1, density, restitution, speed, 1.0, color, visible);
 
          valueTarget.AssignValueObject (numParticles);
+      }
+
+   //*******************************************************************
+   // game / world / create
+   //*******************************************************************
+
+      public static function PlaySound (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var soundIndex:int = valueSource.EvaluateValueObject () as int;
+         if (isNaN (soundIndex))
+            soundIndex = -1;
+
+         valueSource = valueSource.mNextParameter;
+         var times:int = int (valueSource.EvaluateValueObject ());
+
+         var sound:Sound = Global.GetSoundByIndex (soundIndex);
+         if (sound != null)
+         {
+            sound.Play (times);
+         }
       }
 
    //*******************************************************************

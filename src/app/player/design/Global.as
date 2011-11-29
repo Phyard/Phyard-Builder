@@ -631,6 +631,16 @@ package player.design
          return new Module (); // a dummy module
       }
       
+      public static function GetSoundByIndex (soundIndex:int):Sound
+      {
+         if (soundIndex >= 0 && soundIndex < mSounds.length)
+         {
+            return mSounds [soundIndex] as Sound;
+         }
+         
+         return null;
+      }
+      
       public static function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void
       {
          if (rngSlot < 0 || rngSlot >= Define.NumRngSlots)

@@ -251,6 +251,8 @@ package common.trigger {
 
       public static const ID_World_CreateExplosion:int                = IdPool.CoreApiId_770;
 
+      public static const ID_World_PlaySound:int                = IdPool.CoreApiId_800;
+
       // VirtualClickOnEntityCenter (entity)
 
    // game / collision category

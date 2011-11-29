@@ -1454,6 +1454,16 @@ package common.trigger {
                      ]
                   );
 
+     // game / world / sound
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_PlaySound,
+                     [
+                        [ValueTypeDefine.ValueType_Sound,       -1],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       1],
+                     ],
+                     null
+                  );
+
      // game / world / appearance
 
 

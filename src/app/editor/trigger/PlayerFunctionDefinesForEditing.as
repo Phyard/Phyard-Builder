@@ -57,6 +57,7 @@ package editor.trigger {
          var world_camera_package:FunctionMenuGroup    = new FunctionMenuGroup ("Camera", sWorldMenuGroup);
          var world_script_package:FunctionMenuGroup    = new FunctionMenuGroup ("Script Calling", sWorldMenuGroup);
          var world_create_entity_package:FunctionMenuGroup    = new FunctionMenuGroup ("Create Entity", sWorldMenuGroup);
+         var world_sound_package:FunctionMenuGroup    = new FunctionMenuGroup ("Sound", sWorldMenuGroup);
 
          var entity_general_package:FunctionMenuGroup    = new FunctionMenuGroup ("General", sEntityMenuGroup);
          var entity_is_subtype_package:FunctionMenuGroup    = new FunctionMenuGroup ("Type Judgment", sEntityMenuGroup);
@@ -1534,6 +1535,16 @@ package editor.trigger {
                      [
                               new VariableDefinitionNumber ("Number of Created Particles"),
                      ]
+                  );
+
+     // game / world / sound
+
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_PlaySound, world_sound_package, "Play Sound", null, null,
+                     [
+                              new VariableDefinitionSound ("Sound"),
+                              new VariableDefinitionNumber ("Play Times", null, {mMinValue:0}),
+                     ],
+                     null
                   );
 
 

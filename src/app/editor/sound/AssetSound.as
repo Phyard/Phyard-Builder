@@ -146,18 +146,21 @@ package editor.sound {
          Stop ();
          mNameText.htmlText = "<b>" + GetName () + "</b>";
          mInfoText.htmlText = mSoundInfo.GetFileFormat () + ", " + mSoundInfo.GetSamplingRate () + "kHz, " + (mSoundInfo.IsStereo () ? "stereo" : "mono");
+         mPlayButton.SetEnabled (true);
       }
       
       // !!! This function is not triggered even if there are some errors in loading.
       // It seems flash doesn't trigger some errors.
       private function OnLoadSoundError (event:Object):void
       {
-      trace ("OnLoadSoundError: " + event);
+      //trace ("OnLoadSoundError: " + event);
          //event may be null
          
          _FileData_Temp = null;
          mSoundInfo.SetFileData (null);
          Stop ();
+         mNameText.htmlText = "";
+         mInfoText.htmlText = "";
          mPlayButton.SetEnabled (false);
       }
       
@@ -434,10 +437,10 @@ package editor.sound {
       public function OnLoadLocalSoundFinished (soundData:ByteArray, soundFileName:String):void
       {
          SetSoundFileData (soundData);
-         if (mName == null || mName.length == 0)
-         {
+         //if (mName == null || mName.length == 0)
+         //{
             SetName (soundFileName);
-         }
+         //}
       }
 
   }

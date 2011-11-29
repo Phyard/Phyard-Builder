@@ -82,7 +82,7 @@ package player.sound
             //mSoundChannel = mSound.play ();
             //mSoundChannel.addEventListener (Event.SOUND_COMPLETE, OnSoundPlayComplete);
             
-            var loops:int = times <= 0 ? 0x7FFFFFFF : times - 1;
+            var loops:int = times <= 0 ? 0x7FFFFFFF : times;
             mSound.play (0, loops);
          }
       }

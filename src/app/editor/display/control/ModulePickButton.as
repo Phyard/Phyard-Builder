@@ -7,6 +7,7 @@ package editor.display.control {
    
    import mx.controls.Button;
    
+   import editor.asset.Asset;
    import editor.image.AssetImageModule;
    import editor.image.dialog.AssetImageModuleListDialog;
    
@@ -14,7 +15,7 @@ package editor.display.control {
    {
       protected var mModule:AssetImageModule;
       
-      public function ModulePickButton (initialModule:AssetImageModule)
+      public function ModulePickButton (initialModule:AssetImageModule = null)
       {
          OnModulePicked (initialModule);
          
@@ -26,11 +27,16 @@ package editor.display.control {
          return mModule;
       }
       
-      private function OnModulePicked (module:AssetImageModule):void 
+      public function SetPickedModule (module:AssetImageModule):void
       {
-         mModule = module;
+          OnModulePicked (module);
+      }
+      
+      private function OnModulePicked (asset:Asset):void 
+      {
+         mModule = asset as AssetImageModule;
          
-         label = module == null ? "Null" : module.ToCodeString ();
+         label = mModule == null ? "Null" : mModule.ToCodeString ();
       }
       
       private function OnClick (event:MouseEvent):void 

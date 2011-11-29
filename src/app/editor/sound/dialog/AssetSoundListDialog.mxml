@@ -23,7 +23,7 @@
          <mx:Spacer width="100%" />
          <mx:HSlider id="SliderVolume" change="AdjustVolume ()"  width="137" toolTip="Volume" minimum="0.0" maximum="1.0" snapInterval="0.01" value="0.5" allowTrackClick="true" liveDragging="true" />
       </mx:HBox>
-      <mx:VBox id="Box_AssembledModules" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+      <mx:VBox id="Box_SoundListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
          <sound:AssetSoundListingPanel id="panelAssetSoundListing" width="100%" height="100%"/>
       </mx:VBox>
    </mx:VBox>
@@ -40,41 +40,81 @@
       // static functions
          
          public static var sAssetSoundListDialog:AssetSoundListDialog = null;
-         public static function ShowAssetSoundListDialog ():void
+         public static function ShowAssetSoundListDialog (OnSoundPicked:Function = null):void
          {
             if (sAssetSoundListDialog == null)
-            {
                sAssetSoundListDialog = new AssetSoundListDialog ();
-            }
             
-            if (sAssetSoundListDialog.parent != null)
+            if (sAssetSoundListDialog.parent != null) // OnSoundPicked must be null
             {
                PopUpManager.bringToFront (sAssetSoundListDialog);
             }
             else
             {
-               PopUpManager.addPopUp (sAssetSoundListDialog, Runtime.GetApplication (), false);
+               PopUpManager.addPopUp (sAssetSoundListDialog, Runtime.GetApplication (), OnSoundPicked != null);
                PopUpManager.centerPopUp (sAssetSoundListDialog);
             }
             
             sAssetSoundListDialog.GetAssetSoundListingPanel ().SetAssetSoundManager (Runtime.GetCurrentWorld ().GetAssetSoundManager ());
+            
+            if (OnSoundPicked != null)
+            {
+               sAssetSoundListDialog.mInPickingSound = true;
+               
+               sAssetSoundListDialog.GetAssetSoundListingPanel ().EnterPickAssetIntent (OnSoundPicked, EndPickSound);
+            }
          }
          
          public static function HideAssetSoundListDialog ():void
          {
-            PopUpManager.removePopUp(sAssetSoundListDialog);
+            if (sAssetSoundListDialog.mInPickingSound)
+            {
+               EndPickSound ();
+            }
+            else
+            {
+               PopUpManager.removePopUp (sAssetSoundListDialog);
+            }
+            
          }
+         
+         public static function StartPickSound (OnSoundPicked:Function):void
+         {
+            if (sAssetSoundListDialog != null)
+            {
+               PopUpManager.removePopUp (sAssetSoundListDialog);
+            }
+            
+            ShowAssetSoundListDialog (OnSoundPicked);
+         }
+         
+         public static function EndPickSound ():void
+         {
+            if (sAssetSoundListDialog != null)
+            {
+               sAssetSoundListDialog.mInPickingSound = false;
+               
+               PopUpManager.removePopUp(sAssetSoundListDialog);
+            
+               sAssetSoundListDialog.GetAssetSoundListingPanel ().ExitPickAssetIntent ();
+            }
+         }
+         
+      //======================================================
          
          public function GetAssetSoundListingPanel ():AssetSoundListingPanel
          {
             return panelAssetSoundListing;
          }
          
-      // ...
+      //======================================================
+      
+         internal var mInPickingSound:Boolean = false;
          
          private function InitDialog ():void
          {
-            SliderVolume.value = Runtime.GetCurrentWorld ().GetAssetSoundManager ().GetSoundVolume ();
+            SliderVolume.value = Runtime.GetSoundVolume ();
+            AdjustVolume ();
          }
          
          private function StopAllSounds ():void
@@ -85,12 +125,11 @@
          
          private function AdjustVolume ():void
          {
-            Runtime.GetCurrentWorld ().GetAssetSoundManager ().SetSoundVolume (SliderVolume.value);
-            SliderVolume.value = Runtime.GetCurrentWorld ().GetAssetSoundManager ().GetSoundVolume ();
+            Runtime.SetSoundVolume (SliderVolume.value);
+            SliderVolume.value = Runtime.GetSoundVolume ();
             var transform:SoundTransform = new SoundTransform();
-            transform.volume = Runtime.GetCurrentWorld ().GetAssetSoundManager ().GetSoundVolume ();
+            transform.volume = SliderVolume.value;
             SoundMixer.soundTransform = transform;
-
          }
 
      ]]>

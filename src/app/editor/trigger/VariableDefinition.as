@@ -11,6 +11,8 @@ package editor.trigger {
    
    import editor.image.AssetImageModule;
    
+   import editor.sound.AssetSound;
+   
    import editor.runtime.Runtime;
    
    import common.trigger.ValueTypeDefine;
@@ -44,6 +46,8 @@ package editor.trigger {
                return ValidateValueObject_CollisiontCategory (value);
             case ValueTypeDefine.ValueType_Module:
                return ValidateValueObject_Module (value);
+            case ValueTypeDefine.ValueType_Sound:
+               return ValidateValueObject_Sound (value);
             case ValueTypeDefine.ValueType_Array:
                return ValidateValueObject_Array (value);
             default:
@@ -67,6 +71,8 @@ package editor.trigger {
                return "CCat";
             case ValueTypeDefine.ValueType_Module:
                return "Module";
+            case ValueTypeDefine.ValueType_Sound:
+               return "Sound";
             case ValueTypeDefine.ValueType_Array:
                return "Array";
             default:
@@ -89,6 +95,8 @@ package editor.trigger {
             case ValueTypeDefine.ValueType_CollisionCategory:
                return null;
             case ValueTypeDefine.ValueType_Module:
+               return null;
+            case ValueTypeDefine.ValueType_Sound:
                return null;
             case ValueTypeDefine.ValueType_Array:
                return null;
@@ -113,6 +121,8 @@ package editor.trigger {
                return new VariableDefinitionCollisionCategory (variableName);
             case ValueTypeDefine.ValueType_Module:
                return new VariableDefinitionModule (variableName);
+            case ValueTypeDefine.ValueType_Sound:
+               return new VariableDefinitionSound (variableName);
             case ValueTypeDefine.ValueType_Array:
                return new VariableDefinitionArray (variableName);
             default:
@@ -151,6 +161,17 @@ package editor.trigger {
             module = null;
          
          return module;
+      }
+      
+      public static function ValidateValueObject_Sound (valueObject:Object):Object
+      {
+         //var world:World = Runtime.GetCurrentWorld (); // in loading stage, it would be null
+         
+         var sound:AssetSound = valueObject as AssetSound;
+         if (sound != null && sound.GetAppearanceLayerId () < 0)
+            sound = null;
+         
+         return sound;
       }
       
       public static function ValidateValueObject_Array (valueObject:Object):Object
@@ -541,11 +562,14 @@ package editor.trigger {
                case ValueTypeDefine.ValueType_Entity:
                   mPropertyVariableDefinition = new VariableDefinitionEntity ("Entity Property");
                   break;
-               case ValueTypeDefine.ValueType_Module:
-                  mPropertyVariableDefinition = new VariableDefinitionEntity ("Module Property");
-                  break;
                case ValueTypeDefine.ValueType_CollisionCategory:
                   mPropertyVariableDefinition = new VariableDefinitionCollisionCategory ("CCat Property");
+                  break;
+               case ValueTypeDefine.ValueType_Module:
+                  mPropertyVariableDefinition = new VariableDefinitionModule ("Module Property");
+                  break;
+               case ValueTypeDefine.ValueType_Sound:
+                  mPropertyVariableDefinition = new VariableDefinitionSound ("Sound Property");
                   break;
                case ValueTypeDefine.ValueType_Array:
                   mPropertyVariableDefinition = new VariableDefinitionArray ("Array Property");

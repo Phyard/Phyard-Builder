@@ -195,7 +195,7 @@ package com.tapirgames.util
             if (soundFormat == SoundFormat_MP3)
                bitsSoundFormat = SoundFormatBits_MP3;
             else
-               throw new Error ("Only mp3 is supported now.");
+               throw new Error ("Only mp3 is supported now: " + soundFormat);
             
             var bitsSoundRate:int;
             
@@ -214,7 +214,7 @@ package com.tapirgames.util
             else if (soundRate == 44100)
                bitsSoundRate = 3 << 2;
             else
-               throw new Error ("Only 11kHz, 22kHz and 44kHz rates are supported: " + bitsSoundRate);
+               throw new Error ("Only 11kHz, 22kHz and 44kHz rates are supported: " + soundRate);
             
             var bitsSoundSize:int;
             
@@ -223,7 +223,7 @@ package com.tapirgames.util
             else if (soundSampleSize == 16)
                bitsSoundSize = 1 << 1;
             else
-               throw new Error ("Only 8 and 16 bits sample sizes are supported.");
+               throw new Error ("Only 8 and 16 bits sample sizes are supported: " + soundSampleSize);
             
             var bitsSoundType:int;
             
@@ -233,7 +233,7 @@ package com.tapirgames.util
                bitsSoundType = 0 << 0;
             
             if (numSamples < 0)
-               throw new Error ("numSamples < 0!");
+               throw new Error ("numSamples must be larger than 0: " + numSamples);
             
          // ...
             

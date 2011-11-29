@@ -14,6 +14,8 @@ package player.design
    import player.module.*;
    import player.image.*;
    
+   import player.sound.Sound;
+   
    import com.tapirgames.util.RandomNumberGenerator;
    import com.tapirgames.util.MersenneTwisterRNG;
    
@@ -60,6 +62,8 @@ package player.design
       public static var mImageBitmapDivisions:Array; //
       public static var mAssembledModules:Array;
       public static var mSequencedModules:Array;
+
+      public static var mSounds:Array; //
       
    // callbacks for viewer
       
@@ -103,6 +107,8 @@ package player.design
          {
             mImageBitmaps         = null;
             mImageBitmapDivisions = null;
+            
+            mSounds = null; 
          }
          mAssembledModules     = null;
          mSequencedModules     = null;
@@ -271,7 +277,7 @@ package player.design
             
             for (imageId = 0; imageId < imageDefines.length; ++ imageId)
             {
-               image = new ImageBitmap ();;
+               image = new ImageBitmap ();
                image.SetId (imageId);
                mImageBitmaps [imageId] = image;
             }
@@ -303,8 +309,6 @@ package player.design
                image.SetFileData (imageDefine.mFileData, OnLoadImageDone, OnLoadImageError);
             }
          }
-         
-         OnLoadImageDone (null);
 
          mAssembledModules     = new Array (assembledModuleDefines.length);
 
@@ -467,6 +471,30 @@ package player.design
          return module;
       }
       
+      public static function CreateSounds (soundDefines:Array):void
+      {
+         Sound.UpdateSoundVolume ();
+         
+         if (mSounds == null)
+         {
+            mSounds = new Array (soundDefines.length);
+            
+            for (var soundId:int = 0; soundId < soundDefines.length; ++ soundId)
+            {
+               var soundDefine:Object = soundDefines [soundId];
+               
+               var sound:Sound = new Sound ();
+               mSounds [soundId] = sound;
+               
+               sound.SetId (soundId);
+               //soundDefine.mName
+               sound.SetAttributeBits (soundDefine.mAttributeBits);
+               sound.SetNumSamples (soundDefine.mNumSamples);
+               sound.SetFileDataAndLoad (soundDefine.mFileData, OnLoadSoundDone, OnLoadSoundError);
+            }
+         }
+      }
+      
       protected static function DisplayPoints2PhysicsPoints (displayPoints:Array):Array
       {
          var coorinateSyatem:CoordinateSystem = GetCurrentWorld ().GetCoordinateSystem ();
@@ -504,18 +532,58 @@ package player.design
          
          //...
          
+         CheckWorldBuildingStatus ();
+      }
+      
+      protected static function OnLoadImageError (image:ImageBitmap):void
+      {
+         GetCurrentWorld ().SetBuildingStatus (-1);
+      }
+      
+      protected static function OnLoadSoundDone (sound:Sound):void
+      {  
+         CheckWorldBuildingStatus ();
+      }
+      
+      protected static function OnLoadSoundError (sound:Sound):void
+      {
+         //GetCurrentWorld ().SetBuildingStatus (-1);
+         CheckWorldBuildingStatus ();
+      }
+      
+      public static function CheckWorldBuildingStatus ():void
+      {
          var pending:Boolean = false;
+         
+         var status:int;
          
          for (var imageId:int = 0; imageId < mImageBitmaps.length; ++ imageId)
          {
-            var image:ImageBitmap = mImageBitmaps [imageId];
-            var status:int = image.GetStatus ();
+            var image:ImageBitmap = mImageBitmaps [imageId] as ImageBitmap;
+            status = image.GetStatus ();
             
             if (status < 0)
             {
                GetCurrentWorld ().SetBuildingStatus (-1);
-               break;
+               return;
             }
+            
+            if (status == 0)
+            {
+               pending = true;
+            }
+         }
+         
+         for (var soundId:int = 0; soundId < mSounds.length; ++ soundId)
+         {
+            var sound:Sound = mSounds [soundId] as Sound;
+            status = sound.GetStatus ();
+            
+            //if (status < 0)
+            //{
+            //   GetCurrentWorld ().SetBuildingStatus (-1);
+            //   return;
+            //}
             
             if (status == 0)
             {
@@ -528,16 +596,11 @@ package player.design
             GetCurrentWorld ().SetBuildingStatus (0);
          }
          else
-         {
-            GetCurrentWorld ().SetBuildingStatus (1);
-            
+         {  
             GetCurrentWorld ().UpdateImageModuleAppearances ();
+            
+            GetCurrentWorld ().SetBuildingStatus (1);
          }
-      }
-      
-      protected static function OnLoadImageError (image:ImageBitmap):void
-      {
-         GetCurrentWorld ().SetBuildingStatus (-1);
       }
       
       public static function GetImageModuleByGlobalIndex (moduleId:int):Module

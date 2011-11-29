@@ -94,6 +94,16 @@ package editor.sound {
          mSoundInfo.SetAttributeBits (bits);
       }
       
+      public function GetSoundNumSamples ():int
+      {
+         return mSoundInfo.GetNumSamples ();
+      }
+      
+      public function SetSoundNumSamples (numSamples:int):void
+      {
+         mSoundInfo.SetNumSamples (numSamples);
+      }
+      
       public function CloneSoundFileData ():ByteArray
       {
          var fileData:ByteArray = mSoundInfo.GetFileData ();
@@ -118,7 +128,7 @@ package editor.sound {
             var loader:ResourceLoader = new ResourceLoader ();
             loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadSoundError);
             loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadSoundError);
-            loader.addEventListener (ResourceLoadEvent.SOUND_LOADED, OnLoadSoundComplete);
+            loader.addEventListener (ResourceLoadEvent.RESOURCE_LOADED, OnLoadSoundComplete);
             loader.loadSoundFromByteArray (fileData, mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
          }
          else
@@ -129,7 +139,7 @@ package editor.sound {
       
       private function OnLoadSoundComplete (event:Event):void
       {
-         mSound = (event as ResourceLoadEvent).sound;
+         mSound = (event as ResourceLoadEvent).resource as Sound;
       //trace ("OnLoadSoundComplete, mSound = " + mSound);
          
          mSoundInfo.SetFileData (_FileData_Temp);
@@ -158,6 +168,9 @@ package editor.sound {
       // only mp3 is supported
       private static function ParseSoundFile (fileData:ByteArray, soundInfo:SoundFile):Boolean
       {
+         if (fileData == null)
+            return false;
+         
          try
          {
             var dataStartIndex:int;
@@ -174,7 +187,7 @@ package editor.sound {
                var b0:int = fileData [i+0] & 0xff;
                var b1:int = fileData [i+1] & 0xff;
                
-               if (b0 == 0xFF && (b1 & 0xE0) == 0xE0) // ganeral frame sync
+               if ((b0 == 0xFF) && ((b1 & 0xE0) == 0xE0)) // general frame sync
                {
                   if (numDataFrames == 0) {
                      dataStartIndex = i;
@@ -220,7 +233,8 @@ package editor.sound {
             
             if (numDataFrames == 0)
             {
-               throw new Error ("No data frames are found.");
+               trace ("No data frames are found.");
+               return false;
             }
             else
             {
@@ -312,7 +326,7 @@ package editor.sound {
          GraphicsUtil.ClearAndDrawRect (this, 0, 0, cellWidth, cellHeight,
                                        IsSelected () ? 0x000066 : 0x006600, 0, true, IsSelected () ? 0xC0C0FF : 0xD0FFD0, false);
          
-         while (numChildren == 0)
+         if (numChildren == 0)
          {
             mouseChildren = true;
             
@@ -321,19 +335,20 @@ package editor.sound {
             addChild (mPlayButton);
             addChild (mStopButton);
             
-            var padding:Number = 3;
-            
-            mNameText.x = padding;
-            mNameText.y = padding;
-            mInfoText.x = padding;
-            mInfoText.y = mNameText.y + mNameText.height;
-            
-            mPlayButton.x = cellWidth - mPlayButton.width - padding;
-            mPlayButton.y = cellHeight - mPlayButton.height - padding;
-            mStopButton.x = cellWidth - mStopButton.width - padding;
-            mStopButton.y = cellHeight - mStopButton.height - padding;
             mStopButton.visible = false;
          }
+            
+         var padding:Number = 3;
+         
+         mNameText.x = padding;
+         mNameText.y = padding;
+         mInfoText.x = padding;
+         mInfoText.y = mNameText.y + mNameText.height;
+         
+         mPlayButton.x = cellWidth - mPlayButton.width - padding;
+         mPlayButton.y = cellHeight - mPlayButton.height - padding;
+         mStopButton.x = cellWidth - mStopButton.width - padding;
+         mStopButton.y = cellHeight - mStopButton.height - padding;
       }
       
       override public function UpdateSelectionProxy ():void

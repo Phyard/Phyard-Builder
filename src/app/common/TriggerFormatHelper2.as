@@ -649,6 +649,12 @@ package common {
                //return Global.GetImageModuleByGlobalIndex (moduleIndex);
                return moduleIndex;
             }
+            case ValueTypeDefine.ValueType_Sound:
+            {
+               var soundIndex:int = valueObject as int;
+               //return Global.GetSoundByIndex (soundIndex);
+               return soundIndex;
+            }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
                //{
@@ -866,6 +872,8 @@ package common {
             case ValueTypeDefine.ValueType_CollisionCategory:
                return binFile.readInt (); // in fact, short is ok
             case ValueTypeDefine.ValueType_Module:
+               return binFile.readInt (); // in fact, short is ok
+            case ValueTypeDefine.ValueType_Sound:
                return binFile.readInt (); // in fact, short is ok
             case ValueTypeDefine.ValueType_Array:
                var nullArray:Boolean = binFile.readByte () == 0;
@@ -1127,6 +1135,8 @@ package common {
             case ValueTypeDefine.ValueType_CollisionCategory:
                return valueObject as int;
             case ValueTypeDefine.ValueType_Module:
+               return valueObject as int;
+            case ValueTypeDefine.ValueType_Sound:
                return valueObject as int;
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null) 

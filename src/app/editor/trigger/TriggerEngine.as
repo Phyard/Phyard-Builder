@@ -46,6 +46,7 @@ package editor.trigger {
       private var mRegisterVariableSpace_Entity           :VariableSpaceRegister;
       private var mRegisterVariableSpace_CollisionCategory:VariableSpaceRegister;
       private var mRegisterVariableSpace_Module           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_Sound           :VariableSpaceRegister;
       private var mRegisterVariableSpace_Array            :VariableSpaceRegister;
       
       // custom session variables
@@ -77,6 +78,7 @@ package editor.trigger {
          mRegisterVariableSpace_Entity            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Entity);
          mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_CollisionCategory);
          mRegisterVariableSpace_Module            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Module);
+         mRegisterVariableSpace_Sound            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Sound);
          mRegisterVariableSpace_Array             = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Array);
          
          // custom session variable space
@@ -190,6 +192,8 @@ package editor.trigger {
                return mRegisterVariableSpace_CollisionCategory;
             case ValueTypeDefine.ValueType_Module:
                return mRegisterVariableSpace_Module;
+            case ValueTypeDefine.ValueType_Sound:
+               return mRegisterVariableSpace_Sound;
             case ValueTypeDefine.ValueType_Array:
                return mRegisterVariableSpace_Array;
             default:

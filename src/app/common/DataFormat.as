@@ -66,6 +66,9 @@ package common {
    import editor.image.vector.VectorShapePolylineForEditing;
    import editor.image.vector.VectorShapeTextForEditing;
    
+   import editor.sound.AssetSound;
+   import editor.sound.AssetSoundManager;
+   
    import editor.trigger.entity.EntityLogic;
    import editor.trigger.entity.EntityTask;
    import editor.trigger.entity.EntityBasicCondition;
@@ -819,7 +822,7 @@ package common {
          //<<
          
          //>>from v1.58
-         // iamge modules
+         // image modules
          //{
             var assetImageManager:AssetImageManager = editorWorld.GetAssetImageManager ();
             var pureModuleManager:AssetImagePureModuleManager = editorWorld.GetAssetImagePureModuleManager ();
@@ -877,6 +880,28 @@ package common {
                sequencedModuleDefine.mModuleSequenceDefines = ModuleInstances2Define (editorWorld, sequencedModule.GetModuleInstanceManager (), true);
                
                worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
+            }
+         //}
+         //<<
+         
+         //>>from v1.59
+         // sounds
+         //{
+            var assetSoundManager:AssetSoundManager = editorWorld.GetAssetSoundManager ();
+            
+            var numSounds:int = assetSoundManager.GetNumAssets ();
+            for (var soundId:int = 0; soundId < numSounds; ++ soundId)
+            {
+               var soundAsset:AssetSound = assetSoundManager.GetAssetByAppearanceId (soundId) as AssetSound;
+               
+               var soundDefine:Object = new Object ();
+               
+               soundDefine.mName = soundAsset.GetName ();
+               soundDefine.mAttributeBits = soundAsset.GetSoundAttributeBits ();
+               soundDefine.mNumSamples = soundAsset.GetSoundNumSamples ();
+               soundDefine.mFileData = soundAsset.CloneSoundFileData ();
+               
+               worldDefine.mSoundDefines.push (soundDefine);
             }
          //}
          //<<
@@ -1415,6 +1440,29 @@ package common {
                ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
                
                sequencedModule.UpdateAppearance ();
+            }
+         //}
+         //<<
+         
+         //>>from v1.59
+         // sounds
+         //{
+            var beginningSoundIndex:int = editorWorld.GetAssetSoundManager ().GetNumAssets ();
+   
+            var assetSoundManager:AssetSoundManager = editorWorld.GetAssetSoundManager ();
+            
+            for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
+            {
+               var soundDefine:Object = worldDefine.mSoundDefines [soundId];
+               
+               var soundAsset:AssetSound = assetSoundManager.CreateSound ();
+               
+               soundAsset.SetName (soundDefine.mName);
+               soundAsset.SetSoundAttributeBits (soundDefine.mAttributeBits);
+               soundAsset.SetSoundNumSamples (soundDefine.mNumSamples);
+               soundAsset.SetSoundFileData (soundDefine.mFileData);
+               
+               soundAsset.UpdateAppearance ();
             }
          //}
          //<<
@@ -2023,7 +2071,7 @@ package common {
             functionEntity.UpdateAppearance ();
             functionEntity.UpdateSelectionProxy ();
             
-            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable);
+            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
             TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionEntity.GetCodeSnippet (), functionEntity.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
          }
          editorWorld.GetFunctionManager().SetDelayUpdateFunctionMenu (false);
@@ -2098,7 +2146,7 @@ package common {
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, condition.GetCodeSnippet (), condition.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
@@ -2194,7 +2242,7 @@ package common {
                   }
                   //<<
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                   
                   //>>from v1.56
@@ -2204,13 +2252,13 @@ package common {
             
                      if (entityDefine.mPreFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable);
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
                         TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                      
                      if (entityDefine.mPostFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable);
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
                         TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                   }
@@ -2220,21 +2268,21 @@ package common {
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, action.GetCodeSnippet (), action.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
                   var entityFilter:EntityInputEntityScriptFilter = entityDefine.mEntity as EntityInputEntityScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, entityFilter.GetCodeSnippet (), entityFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
                   var entityPairFilter:EntityInputEntityPairScriptFilter = entityDefine.mEntity as EntityInputEntityPairScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, entityPairFilter.GetCodeSnippet (), entityPairFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
             }
@@ -2556,15 +2604,16 @@ package common {
                var imageDefine:Object = new Object ();
                
                imageDefine.mName = element.@name;
-               var fileDataBase64:String = element.text () [0];
-               if (fileDataBase64 == null)
+               
+               var imageFileDataBase64:String = element.text () [0];
+               if (imageFileDataBase64 == null)
                {
                   imageDefine.mFileData = null;
                }
                else
                {
-                  fileDataBase64 = fileDataBase64.replace (DataFormat3.Base64CharsRegExp, "");
-                  imageDefine.mFileData = DataFormat3.DecodeString2ByteArray (fileDataBase64);
+                  imageFileDataBase64 = imageFileDataBase64.replace (DataFormat3.Base64CharsRegExp, "");
+                  imageDefine.mFileData = DataFormat3.DecodeString2ByteArray (imageFileDataBase64);
                }
                
                worldDefine.mImageDefines.push (imageDefine);
@@ -2600,6 +2649,33 @@ package common {
                sequencedModuleDefine.mModuleSequenceDefines = XmlElements2ModuleInstanceDefines (element.ModuleSequence, true);
                
                worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
+            }
+         }
+         
+         // sounds
+         
+         if (worldDefine.mVersion >= 0x0159)
+         {
+            for each (element in worldXml.Sounds.Sound)
+            {
+               var soundDefine:Object = new Object ();
+               
+               soundDefine.mName = element.@name;
+               soundDefine.mAttributeBits = parseInt (element.@attribute_bits);
+               soundDefine.mNumSamples = parseInt (element.@sample_count);
+               
+               var soundFileDataBase64:String = element.text () [0];
+               if (soundFileDataBase64 == null)
+               {
+                  soundDefine.mFileData = null;
+               }
+               else
+               {
+                  soundFileDataBase64 = soundFileDataBase64.replace (DataFormat3.Base64CharsRegExp, "");
+                  soundDefine.mFileData = DataFormat3.DecodeString2ByteArray (soundFileDataBase64);
+               }
+               
+               worldDefine.mSoundDefines.push (soundDefine);
             }
          }
          
@@ -3830,6 +3906,7 @@ package common {
                var imageDefine:Object = worldDefine.mImageDefines [imageId];
                
                byteArray.writeUTF (imageDefine.mName == null ? "" : imageDefine.mName);
+               
                if (imageDefine.mFileData == null || imageDefine.mFileData.length == 0)
                {
                   byteArray.writeInt (0);
@@ -3868,6 +3945,31 @@ package common {
 
                //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
                WriteModuleInstanceDefinesIntoBinFile (byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
+            }
+         }
+         
+         // sounds
+         
+         if (worldDefine.mVersion >= 0x0159)
+         {
+            byteArray.writeShort (worldDefine.mSoundDefines.length);
+            for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
+            {
+               var soundDefine:Object = worldDefine.mSoundDefines [soundId];
+               
+               byteArray.writeUTF (soundDefine.mName == null ? "" : soundDefine.mName);
+               byteArray.writeInt (soundDefine.mAttributeBits);
+               byteArray.writeInt (soundDefine.mNumSamples);
+               
+               if (soundDefine.mFileData == null || soundDefine.mFileData == 0)
+               {
+                  byteArray.writeInt (0);
+               }
+               else
+               {
+                  byteArray.writeInt (soundDefine.mFileData.length);
+                  byteArray.writeBytes (soundDefine.mFileData, 0, soundDefine.mFileData.length);
+               }
             }
          }
          

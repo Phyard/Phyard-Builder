@@ -864,6 +864,42 @@ package editor.asset {
       {
          // ...
       }
+
+//=====================================================================
+// pick asset
+//=====================================================================
+      
+      public function EnterPickAssetIntent (onPick:Function, onEnd:Function):void
+      {
+         if (mAssetManager != null)
+         {
+            SetCurrentIntent (new IntentPickAsset (this, onPick, onEnd));
+            mAssetManager.NotifyPickingStatusChanged (true);
+         }
+      }
+      
+      public function ExitPickAssetIntent ():void
+      {
+         if (mAssetManager != null)
+         {
+            SetCurrentIntent (null);
+            mAssetManager.NotifyPickingStatusChanged (false);
+         }
+      }
+      
+      public function PickAssetAtPosition (managerX:Number, managerY:Number):Asset
+      {
+         if (mAssetManager != null)
+         {
+            var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
+            if (assetArray != null && assetArray.length >= 1)
+            {
+               return assetArray [0] as Asset;
+            }
+         }
+         
+         return null;
+      }
       
    }
 }

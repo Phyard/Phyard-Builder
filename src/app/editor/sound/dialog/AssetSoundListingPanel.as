@@ -52,6 +52,11 @@ package editor.sound.dialog {
          if (mAssetSoundManager != assetSoundManager)
          {
             mAssetSoundManager = assetSoundManager;
+            
+            if (mAssetSoundManager != null)
+            {
+               mAssetSoundManager.RearrangeAssetPositions (true);
+            }
          }
       }
       
@@ -59,7 +64,7 @@ package editor.sound.dialog {
       {
          return false;
       }
-
+      
 //============================================================================
 //   
 //============================================================================

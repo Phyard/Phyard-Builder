@@ -133,7 +133,7 @@ package com.tapirgames.util {
 					var bitrateIndex:uint = ((value & 0xf0) >> 4);
 					// get the frame's bitrate
 					if (bitrateIndex == 0 || bitrateIndex == 0x0f) {
-						throw(new Error("Unsupported bitrate index."));
+						throw(new Error("Unsupported bitrate index: " + bitrateIndex));
 					}
 					_bitrate = mpegBitrates[_version][_layer][bitrateIndex];
 					// get the frame's samplingrate

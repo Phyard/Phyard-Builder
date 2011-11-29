@@ -42,6 +42,8 @@ package common {
       public var mPureImageModuleDefines:Array = new Array ();
       public var mAssembledModuleDefines:Array = new Array ();
       public var mSequencedModuleDefines:Array = new Array ();
+      
+      public var mSoundDefines:Array = new Array ();
    }
 }
 

@@ -3,7 +3,7 @@
      The TitleWindowApp application displays this component.
      You cannot run it independently. -->
 
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*" xmlns:ctl="editor.display.control.*"
     title="Module Shape Button Setting" width="600" creationComplete="OnInitPanel()">
 
    <mx:TabNavigator width="100%" height="100%">
@@ -28,15 +28,15 @@
             <mx:VBox>
                <mx:HBox width="100%">
                   <mx:Label text="Module:" textAlign="right" width="128"/>
-                  <mx:Button id="ButtonPickModuleUp" label="Null" width="128" click="OnClickPickModuleUpButton ();" />
+                  <ctl:ModulePickButton id="ButtonPickModuleUp" label="Null" width="128" />
                </mx:HBox>
                <mx:HBox width="100%">
                   <mx:Label text="Mouse Over Module:" textAlign="right" width="128"/>
-                  <mx:Button id="ButtonPickModuleOver" label="Null" width="128" click="OnClickPickModuleOverButton ();" />
+                  <ctl:ModulePickButton id="ButtonPickModuleOver" label="Null" width="128" />
                </mx:HBox>
                <mx:HBox width="100%">
                   <mx:Label text="Mouse Hold Module:" textAlign="right" width="128"/>
-                  <mx:Button id="ButtonPickModuleDown" label="Null" width="128" click="OnClickPickModuleDownButton ();" />
+                  <ctl:ModulePickButton id="ButtonPickModuleDown" label="Null" width="128" />
                </mx:HBox>
             </mx:VBox>
             <mx:Spacer width="100%"/>
@@ -100,57 +100,9 @@
             mParams.mEnabledNonsense = true;
             BasicSettingPanel.SetValues (mParams);
             
-            UpdatePickModuleUpButtonLabel ();
-            UpdatePickModuleOverButtonLabel ();
-            UpdatePickModuleDownButtonLabel ();
-         }
-         
-         private function UpdatePickModuleUpButtonLabel ():void
-         {
-            ButtonPickModuleUp.label = mParams.mModuleUp == null ? "Null" : (mParams.mModuleUp as AssetImageModule).ToCodeString ();
-         }
-         
-         private function OnClickPickModuleUpButton ():void
-         {
-            AssetImageModuleListDialog.StartPickModule (OnModulePickedUp);
-         }
-         
-         private function OnModulePickedUp (module:AssetImageModule):void
-         {
-            mParams.mModuleUp = module;
-            UpdatePickModuleUpButtonLabel ();
-         }
-
-         private function UpdatePickModuleOverButtonLabel ():void
-         {
-            ButtonPickModuleOver.label = mParams.mModuleOver == null ? "Null" : (mParams.mModuleOver as AssetImageModule).ToCodeString ();
-         }
-         
-         private function OnClickPickModuleOverButton ():void
-         {
-            AssetImageModuleListDialog.StartPickModule (OnModulePickedOver);
-         }
-         
-         private function OnModulePickedOver (module:AssetImageModule):void
-         {
-            mParams.mModuleOver = module;
-            UpdatePickModuleOverButtonLabel ();
-         }
-
-         private function UpdatePickModuleDownButtonLabel ():void
-         {
-            ButtonPickModuleDown.label = mParams.mModuleDown == null ? "Null" : (mParams.mModuleDown as AssetImageModule).ToCodeString ();
-         }
-         
-         private function OnClickPickModuleDownButton ():void
-         {
-            AssetImageModuleListDialog.StartPickModule (OnModulePickedDown);
-         }
-         
-         private function OnModulePickedDown (module:AssetImageModule):void
-         {
-            mParams.mModuleDown = module;
-            UpdatePickModuleDownButtonLabel ();
+            ButtonPickModuleUp.SetPickedModule (mParams.mModuleUp);
+            ButtonPickModuleOver.SetPickedModule (mParams.mModuleOver);
+            ButtonPickModuleDown.SetPickedModule (mParams.mModuleDown);
          }
 
          public function SetConfirmFunc (onConfirm:Function):void
@@ -173,6 +125,10 @@
             if (BasicSettingPanel != null)
             {
                BasicSettingPanel.GetValues (mParams);
+               
+               mParams.mModuleUp = ButtonPickModuleUp.GetPickedModule ();
+               mParams.mModuleOver = ButtonPickModuleOver.GetPickedModule ();
+               mParams.mModuleDown = ButtonPickModuleDown.GetPickedModule ();
             }
 
             PopUpManager.removePopUp(this);

@@ -80,16 +80,14 @@ package player.image
             var loader:ResourceLoader = new ResourceLoader ();
             loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
             loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
-            loader.addEventListener (ResourceLoadEvent.IMAGE_LOADED, OnLoadImageComplete);
+            loader.addEventListener (ResourceLoadEvent.RESOURCE_LOADED, OnLoadImageComplete);
             loader.loadImageFromByteArray (fileData);
          }
       }
       
       private function OnLoadImageComplete (event:Event):void
       {
-         //var newBitmap:Bitmap = event.target.content as Bitmap;
-         //var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
-         var newBitmap:Bitmap = ((event as ResourceLoadEvent).bitmap) as Bitmap;
+         var newBitmap:Bitmap = (event as ResourceLoadEvent).resource as Bitmap;
          mBitmapData = newBitmap.bitmapData;
          
          mStatus = 1;
@@ -111,8 +109,5 @@ package player.image
          mCallbackOnLoadDone  = null;
          mCallbackOnLoadError = null;
       }
-      
-      
-      
    }
 }

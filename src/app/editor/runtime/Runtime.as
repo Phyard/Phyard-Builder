@@ -304,6 +304,27 @@ package editor.runtime {
       }
       
 //=====================================================================
+// sound
+//=====================================================================
+      
+      private static var mSoundVolume:Number = 0.5;
+      
+      public static function GetSoundVolume ():Number
+      {
+         return mSoundVolume;
+      }
+      
+      public static function SetSoundVolume (volume:Number):void
+      {
+         if (volume < 0)
+            volume = 0;
+         if (volume > 1.0)
+            volume = 1.0;
+         
+         mSoundVolume = volume;
+      }
+      
+//=====================================================================
 // create initial properties
 //=====================================================================
       

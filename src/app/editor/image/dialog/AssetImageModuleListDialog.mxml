@@ -67,10 +67,12 @@
             
             if (OnModulePicked != null)
             {
-               sAssetImageModuleListDialog.GetImageListingPanel ().EnterPickModuleIntent (OnModulePicked, EndPickModule);
-               sAssetImageModuleListDialog.GetPureModuleListingPanel ().EnterPickModuleIntent (OnModulePicked, EndPickModule);
-               sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().EnterPickModuleIntent (OnModulePicked, EndPickModule);
-               sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().EnterPickModuleIntent (OnModulePicked, EndPickModule);
+               sAssetImageModuleListDialog.mInPickingModule = true;
+               
+               sAssetImageModuleListDialog.GetImageListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickModule);
+               sAssetImageModuleListDialog.GetPureModuleListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickModule);
+               sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickModule);
+               sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickModule);
             }
          }
          
@@ -80,7 +82,7 @@
             {
                EndPickModule ();
             }
-            else if (sAssetImageModuleListDialog != null)
+            else
             {
                PopUpManager.removePopUp(sAssetImageModuleListDialog);
             }
@@ -90,9 +92,7 @@
          {
             if (sAssetImageModuleListDialog != null)
             {
-               sAssetImageModuleListDialog.mInPickingModule = true;
-               
-               PopUpManager.removePopUp(sAssetImageModuleListDialog);
+               PopUpManager.removePopUp (sAssetImageModuleListDialog);
             }
             
             ShowAssetImageModuleListDialog (OnModulePicked);
@@ -106,10 +106,10 @@
                
                PopUpManager.removePopUp(sAssetImageModuleListDialog);
             
-               sAssetImageModuleListDialog.GetImageListingPanel ().ExitPickModuleIntent ();
-               sAssetImageModuleListDialog.GetPureModuleListingPanel ().ExitPickModuleIntent ();
-               sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().ExitPickModuleIntent ();
-               sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().ExitPickModuleIntent ();
+               sAssetImageModuleListDialog.GetImageListingPanel ().ExitPickAssetIntent ();
+               sAssetImageModuleListDialog.GetPureModuleListingPanel ().ExitPickAssetIntent ();
+               sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().ExitPickAssetIntent ();
+               sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().ExitPickAssetIntent ();
             }
          }
          

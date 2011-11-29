@@ -96,6 +96,14 @@
                      <mx:Spacer width="3" />
                   </mx:HBox>
                </mx:VBox>
+               <mx:VBox id="Box_SoundVariableSettingPanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:Label width="65%" text="null" textAlign="left" />
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
                <mx:VBox id="Box_EntityArraySettingPanel" width="100%" height="100%">
                   <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                      <mx:Spacer width="3" />
@@ -117,6 +125,7 @@
          <menuitem label="New Collision Category Variable" data="CCat"/>
          <menuitem label="New Entity Variable" data="Entity"/>
          <menuitem label="New Module Variable" data="Module"/>
+         <menuitem label="New Sound Variable" data="Sound"/>
          <menuitem label="New Array Variable" data="Array"/>
       </root>
    </mx:XML>
@@ -144,6 +153,7 @@
             import editor.trigger.VariableDefinitionEntity;
             import editor.trigger.VariableDefinitionCollisionCategory;
             import editor.trigger.VariableDefinitionModule;
+            import editor.trigger.VariableDefinitionSound;
             import editor.trigger.VariableDefinitionArray;
 
             import common.trigger.ValueTypeDefine;
@@ -268,6 +278,10 @@
                else if (event.item.@data == "Module")
                {
                   variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Module, "aModule");
+               }
+               else if (event.item.@data == "Sound")
+               {
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Sound, "aSound");
                }
                else if (event.item.@data == "Array")
                {
@@ -402,6 +416,11 @@
                   {
                      //RadioButton_EntityType.selected = true;
                      ViewStack_VariableSetting.selectedChild = Box_ModuleVariableSettingPanel;
+                  }
+                  else if (variableDefinition is VariableDefinitionSound)
+                  {
+                     //RadioButton_EntityType.selected = true;
+                     ViewStack_VariableSetting.selectedChild = Box_SoundVariableSettingPanel;
                   }
                   else if (variableDefinition is VariableDefinitionArray)
                   {

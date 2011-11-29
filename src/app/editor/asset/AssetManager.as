@@ -1101,6 +1101,15 @@ package editor.asset {
          
          return assets;
       }
+        
+//=====================================================================
+// picking asset status
+//=====================================================================
+      
+      public function NotifyPickingStatusChanged (inPicking:Boolean):void
+      {
+         // some managers will override this
+      }
       
 //====================================================================
 //   properties

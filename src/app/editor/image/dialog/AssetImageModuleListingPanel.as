@@ -38,8 +38,6 @@ package editor.image.dialog {
    import editor.image.AssetImageModule;
    import editor.image.AssetImageModuleManager;
    
-   import editor.image.IntentPickModule;
-   
    import editor.runtime.Runtime;
    
    import common.Define;
@@ -63,43 +61,6 @@ package editor.image.dialog {
             }
          }
       }
-      
-      public function EnterPickModuleIntent (onPick:Function, onEnd:Function):void
-      {
-         if (mAssetImageModuleManager != null)
-         {
-            SetCurrentIntent (new IntentPickModule (this, onPick, onEnd));
-            mAssetImageModuleManager.NotifyPickingStatusChanged (true);
-         }
-      }
-      
-      public function ExitPickModuleIntent ():void
-      {
-         if (mAssetImageModuleManager != null)
-         {
-            SetCurrentIntent (null);
-            mAssetImageModuleManager.NotifyPickingStatusChanged (false);
-         }
-      }
-
-//=====================================================================
-// ...
-//=====================================================================
-      
-      public function PickModuleAtPosition (managerX:Number, managerY:Number):AssetImageModule
-      {
-         if (mAssetImageModuleManager != null)
-         {
-            var assetArray:Array = mAssetImageModuleManager.GetAssetsAtPoint (managerX, managerY);
-            if (assetArray != null && assetArray.length >= 1)
-            {
-               return assetArray [0] as AssetImageModule;
-            }
-         }
-         
-         return null; //new AssetImageNullModule ();
-      }
-        
       
    }
 }

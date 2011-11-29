@@ -1,20 +1,16 @@
-package editor.image {
+package editor.asset {
    
-   import editor.asset.IntentPut;
-   
-   import editor.image.dialog.AssetImageModuleListingPanel;
-   
-   public class IntentPickModule extends IntentPut
+   public class IntentPickAsset extends IntentPut
    {
-      protected var mAssetImageModuleListingPanel:AssetImageModuleListingPanel;
+      protected var mAssetManagerPanel:AssetManagerPanel;
       protected var mCallbackOnPick:Function;
       protected var mCallbackOnEnd:Function;
       
-      public function IntentPickModule (assetImageModuleListingPanel:AssetImageModuleListingPanel, callbackOnPick:Function, callbackOnEnd:Function)
+      public function IntentPickAsset (assetManagerPanel:AssetManagerPanel, callbackOnPick:Function, callbackOnEnd:Function)
       {
          super (null, OnEnd);
          
-         mAssetImageModuleListingPanel = assetImageModuleListingPanel;
+         mAssetManagerPanel = assetManagerPanel;
          mCallbackOnPick = callbackOnPick;
          mCallbackOnEnd = callbackOnEnd;
       }
@@ -35,10 +31,10 @@ package editor.image {
       {
          if (mCallbackOnPick != null && finished)
          {
-            var module:AssetImageModule = mAssetImageModuleListingPanel.PickModuleAtPosition (mCurrentX, mCurrentY); 
+            var asset:Asset = mAssetManagerPanel.PickAssetAtPosition (mCurrentX, mCurrentY); 
             
             //if (module != null) // it is ok to set null
-               mCallbackOnPick (module);
+               mCallbackOnPick (asset);
             
             OnEnd ();
          }

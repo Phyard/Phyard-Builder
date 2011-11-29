@@ -404,6 +404,8 @@ package common {
          if (isLoaingFromStretch)
          {
             Global.CreateImageModules (worldDefine.mImageDefines, worldDefine.mPureImageModuleDefines, worldDefine.mAssembledModuleDefines, worldDefine.mSequencedModuleDefines);
+            Global.CreateSounds (worldDefine.mSoundDefines);
+            Global.CheckWorldBuildingStatus ();
          }
 
    //*********************************************************************************************************************************
@@ -669,6 +671,11 @@ package common {
             xml.AssembledModules = <AssembledModules />;
             xml.SequencedModules = <SequencedModules />;
          }
+         
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            xml.Sounds = <Sounds />;
+         }
 
          //
 
@@ -819,8 +826,8 @@ package common {
                }
                else
                {
-                  var fileDataBase64:String = DataFormat3.EncodeByteArray2String (imageDefine.mFileData);
-                  element = <Image>{fileDataBase64}</Image>;
+                  var imageFileDataBase64:String = DataFormat3.EncodeByteArray2String (imageDefine.mFileData);
+                  element = <Image>{imageFileDataBase64}</Image>;
                }
                element.@name = imageDefine.mName;
                //element.@file_data = imageDefine.mFileData;
@@ -863,6 +870,32 @@ package common {
                ModuleInstanceDefines2XmlElements (sequencedModuleDefine.mModuleSequenceDefines, element, "ModuleSequence", true);
                
                xml.SequencedModules.appendChild (element);
+            }
+         }
+         
+         // sounds
+         
+         if (worldDefine.mVersion >= 0x0159)
+         {
+            for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
+            {
+               var soundDefine:Object = worldDefine.mSoundDefines [soundId];
+               
+               if (soundDefine.mFileData == null || soundDefine.mFileData.length == 0)
+               {
+                  element = <Sound/>;
+               }
+               else
+               {
+                  var soundFileDataBase64:String = DataFormat3.EncodeByteArray2String (soundDefine.mFileData);
+                  element = <Sound>{soundFileDataBase64}</Sound>;
+               }
+               element.@name = soundDefine.mName;
+               element.@attribute_bits = soundDefine.mAttributeBits;
+               element.@sample_count = soundDefine.mNumSamples;
+               //element.@file_data = soundDefine.mFileData;
+               
+               xml.Sounds.appendChild (element);
             }
          }
 
@@ -2185,15 +2218,15 @@ package common {
                
                imageDefine.mName = byteArray.readUTF ();
                
-               var fileSize:int = byteArray.readInt ();
-               if (fileSize == 0)
+               var imageFileSize:int = byteArray.readInt ();
+               if (imageFileSize == 0)
                {
                   imageDefine.mFileData = null;
                }
                else
                {
                   imageDefine.mFileData = new ByteArray ();
-                  imageDefine.mFileData.length = fileSize;
+                  imageDefine.mFileData.length = imageFileSize;
                   byteArray.readBytes (imageDefine.mFileData, 0, imageDefine.mFileData.length);
                }
                
@@ -2233,6 +2266,35 @@ package common {
                sequencedModuleDefine.mModuleSequenceDefines = ReadModuleInstanceDefinesFromBinFile (byteArray, true);
                
                worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
+            }
+         }
+         
+         // sounds
+         
+         if (worldDefine.mVersion >= 0x0159)
+         {
+            var numSounds:int = byteArray.readShort ();
+            for (var soundId:int = 0; soundId < numSounds; ++ soundId)
+            {
+               var soundDefine:Object = new Object ();
+               
+               soundDefine.mName = byteArray.readUTF ();
+               soundDefine.mAttributeBits = byteArray.readInt ();
+               soundDefine.mNumSamples = byteArray.readInt ();
+               
+               var soundFileSize:int = byteArray.readInt ();
+               if (soundFileSize == 0)
+               {
+                  soundDefine.mFileData = null;
+               }
+               else
+               {
+                  soundDefine.mFileData = new ByteArray ();
+                  soundDefine.mFileData.length = soundFileSize;
+                  byteArray.readBytes (soundDefine.mFileData, 0, soundDefine.mFileData.length);
+               }
+               
+               worldDefine.mSoundDefines.push (soundDefine);
             }
          }
 

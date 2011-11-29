@@ -108,23 +108,6 @@ package editor.sound {
             (GetAssetByAppearanceId (i) as AssetSound).Stop ();
          }
       }
-      
-      private var mVolume:Number = 0.5;
-      
-      public function GetSoundVolume ():Number
-      {
-         return mVolume;
-      }
-      
-      public function SetSoundVolume (volume:Number):void
-      {
-         if (volume < 0)
-            volume = 0;
-         if (volume > 1.0)
-            volume = 1.0;
-         
-         mVolume = volume;
-      }
      
 //=====================================================================
 // 

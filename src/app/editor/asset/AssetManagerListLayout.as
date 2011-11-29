@@ -119,6 +119,7 @@ package editor.asset {
                var boundRect:Rectangle = asset.getBounds (asset);
                
                asset.SetPosition (- boundRect.left + margin, mContentHeight - boundRect.top);
+               asset.UpdateAppearance ();
                asset.UpdateSelectionProxy ();
                
                mContentHeight += boundRect.height + margin;

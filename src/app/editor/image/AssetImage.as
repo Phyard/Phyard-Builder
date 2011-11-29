@@ -130,7 +130,7 @@ package editor.image {
             var loader:ResourceLoader = new ResourceLoader ();
             loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
             loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
-            loader.addEventListener (ResourceLoadEvent.IMAGE_LOADED, OnLoadImageComplete);
+            loader.addEventListener (ResourceLoadEvent.RESOURCE_LOADED, OnLoadImageComplete);
             loader.loadImageFromByteArray (fileData);
          }
       }
@@ -139,7 +139,7 @@ package editor.image {
       {
          //var newBitmap:Bitmap = event.target.content as Bitmap;
          //var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
-         var newBitmap:Bitmap = (event as ResourceLoadEvent).bitmap;
+         var newBitmap:Bitmap = (event as ResourceLoadEvent).resource as Bitmap;
          mBitmapData = newBitmap.bitmapData;
          
          mFileData = _FileData_Temp;

@@ -36,6 +36,7 @@ package editor.image.dialog {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.MathUtil;
    
+   import editor.asset.Asset;
    import editor.asset.AssetManagerPanel;
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
@@ -603,8 +604,10 @@ package editor.image.dialog {
          //}
       }
       
-      public function ChangeModuleForCurrentModuleInstacne (module:AssetImageModule):void
+      public function ChangeModuleForCurrentModuleInstacne (asset:Asset):void
       {
+         var module:AssetImageModule = asset as AssetImageModule;
+         
          var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
          
          if (mAssetImageModuleInstanceManager.GetNumSelectedAssets () == 1)
@@ -627,9 +630,9 @@ package editor.image.dialog {
             
             var offsetX:Number = MathUtil.ParseNumber (mTextInputPosX.text, 0.0);
             var offsetY:Number = MathUtil.ParseNumber (mTextInputPosY.text, 0.0);
-            var scaleValue:Number = MathUtil.ParseNumber (mTextInputScale.text, 1.0, Define.kFloatEpsilon, Number.MAX_VALUE);
+            var scaleValue:Number = MathUtil.ParseNumber (mTextInputScale.text, 1.0, - Number.MAX_VALUE, Number.MAX_VALUE);
             var angleDegrees:Number = MathUtil.ParseNumber (mTextInputAngle.text, 0.0);
-            var alphaValue:Number = MathUtil.ParseNumber (mTextInputAlpha.text, 1.0, 0.1, 1.0);
+            var alphaValue:Number = MathUtil.ParseNumber (mTextInputAlpha.text, 1.0, 0.0, 1.0);
             
             moduleInstance.SetTransformParameters (offsetX, offsetY, scaleValue, mCheckBoxFlipped.selected, angleDegrees);
             moduleInstance.SetDuration (mNumericStepperDuration.value);
@@ -699,9 +702,10 @@ package editor.image.dialog {
             
             moduleInstance.UpdateAppearance ();
             moduleInstance.UpdateSelectionProxy ();
+            moduleInstance.UpdateControlPoints ();
             
-            compositeModule.NotifyModifiedForReferers ();
-            //UpdateInterface (); // NotifyModifiedForReferers will call this
+            moduleInstance.NotifyModifiedForReferers ();
+            UpdateInterface ();
          }
       }
       

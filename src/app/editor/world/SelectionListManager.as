@@ -42,7 +42,7 @@ package editor.world {
       //>> a temp optimized implementation for bath selections
       public function SelectEntities (entityArray:Array, clearOldSelections:Boolean):Boolean
       {
-         if (entityArray == null)
+         if (entityArray == null || entityArray.length == 0)
          {
             if (clearOldSelections && mSelectedEntities.length > 0)
             {

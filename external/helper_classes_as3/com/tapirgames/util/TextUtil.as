@@ -31,6 +31,9 @@ package com.tapirgames.util {
       
       public static function GetHtmlWikiText (plainText:String, textAlign:String, fontSize:int = 16, fontColor:String = null, fontFace:String = null, bold:Boolean = false, italic:Boolean = false, underline:Boolean = false):String
       {
+         if (fontFace == null)
+            fontFace = "Verdana";
+         
          var wikiText:String = TextUtil.GetHtmlEscapedText (plainText);
          wikiText = TextUtil.ParseWikiString (wikiText);
          wikiText = TextUtil.CreateHtmlText (wikiText, fontSize, fontColor, fontFace, bold, italic, underline);

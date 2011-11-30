@@ -2474,6 +2474,18 @@ package editor.trigger {
                      ],
                      null
                   );
+/*
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_FlipSelf, shape_common_package, "Local Flip Shape", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?"),
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?"),
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                             new VariableDefinitionBoolean ("Flip Linear Velocity?"),
+                     ],
+                     null
+                  );
+*/
          /*
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint, shape_common_package, "Flip Shape By World Line", null, null,
                      [

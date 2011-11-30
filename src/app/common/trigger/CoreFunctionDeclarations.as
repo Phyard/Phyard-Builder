@@ -2424,6 +2424,17 @@ package common.trigger {
                      ],
                      null
                   );
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_FlipSelf,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
+                     null
+                  );
          /*
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,
                      [

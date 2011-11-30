@@ -567,6 +567,7 @@ package editor.entity {
       
       public function NotifySelectedChanged (selected:Boolean):void
       {
+      trace (new Error ().getStackTrace ());
          var changed:Boolean =  mSelected != selected;
          
          mSelected = selected;

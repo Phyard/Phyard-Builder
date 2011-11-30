@@ -458,11 +458,11 @@ package editor.asset {
          
          stage.focus = this;
          
+         if (mAssetManager == null)
+            return;
+         
          if (IsZoomSupported ())
          {
-            if (mAssetManager == null)
-               return;
-            
             var oldMouseManagerPoint:Point = new Point (mAssetManager.mouseX, mAssetManager.mouseY);
    
             ScaleManager (event.delta > 0 ? 1.1 : 0.9);
@@ -470,6 +470,10 @@ package editor.asset {
             var newMousePoint:Point = DisplayObjectUtil.LocalToLocal (mAssetManager, this, oldMouseManagerPoint);
             
             MoveManager (mouseX - newMousePoint.x, mouseY - newMousePoint.y);
+         }
+         else
+         {
+            MoveManager (0, 10.0 * event.delta / mAssetManager.GetScale ());
          }
       }
       

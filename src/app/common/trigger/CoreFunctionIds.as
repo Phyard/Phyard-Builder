@@ -411,6 +411,7 @@ package common.trigger {
       //public static const ID_EntityShape_FlipByLocalLinePoint:int           = IdPool.CoreApiId_1229;
       public static const ID_EntityShape_FlipByWorldLinePoint:int           = IdPool.CoreApiId_1230;
       */
+      public static const ID_EntityShape_FlipSelf:int           = IdPool.CoreApiId_1231;
 
       public static const ID_EntityShape_GetBrothers:int                    = IdPool.CoreApiId_1258;
       public static const ID_EntityShape_IsAttchedWith:int                  = IdPool.CoreApiId_1259;

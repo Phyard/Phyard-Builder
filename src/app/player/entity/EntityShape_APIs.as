@@ -14,7 +14,7 @@ possible actions:
 - ...
 */
 
-public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):Object
+public static function GetRelatedEntities (seedShape:EntityShape, bTeleportBrothers:Boolean, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):Object
 {
    var returnObject:Object =  new Object ();
 
@@ -35,10 +35,10 @@ public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnecte
    var joint:EntityJoint;
    var anchor:SubEntityJointAnchor;
 
-   IncreaseLastSpecialId ();
+   seedShape.IncreaseLastSpecialId ();
 
-   mSpecialId = sLastSpecialId;
-   shapesToTeleport.push (this);
+   seedShape.mSpecialId = sLastSpecialId;
+   shapesToTeleport.push (seedShape);
 
    if (bTeleportBrothers)
    {
@@ -136,7 +136,7 @@ public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnecte
    }
    else if (bBreakEmbarrassedJoints)
    {
-      anchor = this.mJointAnchorListHead;
+      anchor = seedShape.mJointAnchorListHead;
 
       while (anchor != null)
       {
@@ -173,7 +173,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    if (seedShape == null)
       return null;
 
-   var infos:Object = seedShape.GetRelatedEntities (bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics, false);
+   var infos:Object = GetRelatedEntities (seedShape, bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics, false);
 
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
@@ -383,20 +383,20 @@ private static function CreateAndPushEntityDefine (entity:Entity, entityDefineAr
 // transform
 //================================================================
 
-public function Teleport (deltaX:Number, deltaY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
+public static function Teleport (seedShape:EntityShape, deltaX:Number, deltaY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
-   Rotate (GetPositionX (), GetPositionY (), deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, false);
-   Translate (deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+   Rotate (seedShape, seedShape.GetPositionX (), seedShape.GetPositionY (), deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, false);
+   Translate (seedShape, deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 }
 
-public function Translate (deltaX:Number, deltaY:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
+public static function Translate (seedShape:EntityShape, deltaX:Number, deltaY:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
    if (deltaX == 0 && deltaY == 0)
       return;
 
 //...
 
-   var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+   var infos:Object = GetRelatedEntities (seedShape, true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
@@ -435,14 +435,14 @@ public function Translate (deltaX:Number, deltaY:Number, bTeleportConnectedMovab
    }
 }
 
-public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean, rotateVelocity:Boolean):void
+public static function Rotate (seedShape:EntityShape, fixedPointX:Number, fixedPointY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean, rotateVelocity:Boolean):void
 {
    if (deltaRotation == 0)
       return;
 
 // ...
 
-   var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+   var infos:Object = GetRelatedEntities (seedShape, true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
@@ -506,9 +506,87 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
    }
 }
 
-/*
-todo: need SetRotation intelligently. Use entity.GetRotationOffset ()
+// todo: need SetRotation intelligently. Use entity.GetRotationOffset ()
+public static function Flip (seedShape:EntityShape, pointX:Number, pointY:Number, normalX:Number, normalY:Number,
+                  bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean,
+                  flipVelocity:Boolean):void
+{
+   var normalXX:Number = normalX * normalX;
+   var normalYY:Number = normalY * normalY;
+   var normalLength:Number = Math.sqrt (normalXX + normalYY);
 
+   if (normalLength < Define.kFloatEpsilon)
+      return;
+
+// ...
+
+   var infos:Object = GetRelatedEntities (seedShape, true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   var shapesToTeleport:Array = infos.mShapesToTransform;
+   var jointsToTeleport:Array = infos.mJointsToTransform;
+
+// ...
+
+   var doubleLineAngle:Number = 2.0 * Math.atan2 (normalY, normalX);
+
+   normalX /= normalLength;
+   normalY /= normalLength;
+   var normalXX2:Number = 2.0 * normalX * normalX;
+   var normalYY2:Number = 2.0 * normalY * normalY;
+   var normalXY2:Number = 2.0 * normalX * normalY;
+   
+// ...
+
+   /*
+   var num:int = bodiesToTeleport.length;
+
+   for (var i:int = 0; i < num; ++ i)
+   {
+      var body:EntityBody = bodiesToTeleport [i] as EntityBody;
+
+      //...
+
+      var offsetX:Number = body.GetPositionX () - pointX;
+      var offsetY:Number = body.GetPositionY () - pointY;
+
+      body.SetPositionX (body.GetPositionX () - normalXX2 * offsetX - normalXY2 * offsetY);
+      body.SetPositionY (body.GetPositionY () - normalXY2 * offsetX - normalYY2 * offsetY);
+      //body.SetRotation (body.mPhysicsRotation + doubleLineAngle); // wrong. should rotate shapes instead
+      body.SynchronizePositionAndRotationToPhysicsProxy ();
+      if (flipVelocity && body.mNumPhysicsShapes > 0)
+      {
+         var bodyVx:Number = body.GetLinearVelocityX ();
+         var bodyVy:Number = body.GetLinearVelocityY ();
+      }
+
+      //...
+
+      var shape:EntityShape = body.mShapeListHead;
+
+      while (shape != null)
+      {
+         offsetX = shape.GetPositionX () - pointX;
+         offsetY = shape.GetPositionY () - pointY;
+   
+         shape.SetPositionX (shape.GetPositionX () - normalXX2 * offsetX - normalXY2 * offsetY);
+         shape.SetPositionY (shape.GetPositionY () - normalXY2 * offsetX - normalYY2 * offsetY);
+         shape.SetFlipped (! shape.IsFlipped ());
+         shape.SetRotation (shape.GetRotation () + (shape.IsFlipped () ? - doubleLineAngle : doubleLineAngle));
+         
+         shape.UpdatelLocalTransform ();
+         
+         if (shape.IsPhysicsShape ())
+            shape.RebuildShapePhysics ();
+
+         shape = shape.mNextShapeInBody;
+      }
+   }
+   */
+}
+
+/*
+// todo: need SetRotation intelligently. Use entity.GetRotationOffset ()
 public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Number,
                   bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean
                   ):void
@@ -546,12 +624,12 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
 
       //...
 
-      var offsetX:Number = body.mPositionX - pointX;
-      var offsetY:Number = body.mPositionY - pointY;
+      var offsetX:Number = body.GetPositionX () - pointX;
+      var offsetY:Number = body.GetPositionY () - pointY;
 
-      body.mPositionX = body.mPositionX - normalXX2 * offsetX - normalXY2 * offsetY;
-      body.mPositionY = body.mPositionY - normalXY2 * offsetX - normalYY2 * offsetY;
-      //body.SetRotation (body.mPhysicsRotation + doubleLineAngle);
+      body.SetPositionX (body.GetPositionX () - normalXX2 * offsetX - normalXY2 * offsetY);
+      body.SetPositionY (body.GetPositionY () - normalXY2 * offsetX - normalYY2 * offsetY);
+      //body.SetRotation (body.mPhysicsRotation + doubleLineAngle); // wrong. should rotate shapes instead
       body.SynchronizePositionAndRotationToPhysicsProxy ();
 
       //...
@@ -571,8 +649,8 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
          shape.mLocalPositionX = oldLocalX - normalXX2 * oldLocalX - normalXY2 * oldLocalY;
          shape.mLocalPositionY = oldLocalY - normalXY2 * oldLocalX - normalYY2 * oldLocalY;
          shape.mRelativeRotation = - shape.mRelativeRotation;
-         shape.mRelativeRotation += doubleLineAngle;
          shape.SetFlipped (! shape.IsFlipped ());
+         shape.mRelativeRotation += shape.IsFlipped () ? - doubleLineAngle : doubleLineAngle;
 
          shape.SynchronizeWithPhysicsProxy ();
          if (shape.IsPhysicsShape ())

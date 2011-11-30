@@ -38,12 +38,6 @@ package player.trigger {
 
    public class CoreFunctionDefinitions
    {
-//=============================
-// to avoid create objects frequently
-//=============================
-
-      private static var sPoint :Point = new Point ();
-      private static var sVector:Point = new Point ();
 
 //=============================
 
@@ -412,6 +406,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TranslateTo,                    TranslateShapeTo);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint,                      RotateShapeAroundWorldPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint,                    RotateShapeToAroundWorldPoint);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_FlipSelf,                       FlipShape);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,                   FlipShapeByWorldLinePoint);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,                    ScaleShapeWithFixedPoint);
 
@@ -2749,7 +2744,7 @@ package player.trigger {
 
       public static function WorldPoint2EntityLocalPoint (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var localPoint:Point = sPoint;
+         var localPoint:Point = new Point ();
 
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -2778,7 +2773,7 @@ package player.trigger {
 
       public static function EntityLocalPoint2WorldPoint (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var worldPoint:Point = sPoint;
+         var worldPoint:Point = new Point ();
 
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -2807,7 +2802,7 @@ package player.trigger {
 
       public static function WorldVector2EntityLocalVector (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var localVector:Point = sPoint;
+         var localVector:Point = new Point ();
 
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -2836,13 +2831,13 @@ package player.trigger {
 
       public static function EntityLocalVector2WorldVector (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var worldVectort:Point = sPoint;
+         var worldVector:Point = new Point ();
 
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
          {
-            worldVectort.x = 0.0;
-            worldVectort.y = 0.0;
+            worldVector.x = 0.0;
+            worldVector.y = 0.0;
          }
          else
          {
@@ -2852,15 +2847,15 @@ package player.trigger {
             valueSource = valueSource.mNextParameter;
             var local_dy:Number = valueSource.EvaluateValueObject () as Number;
 
-            shape.LocalVector2WorldVector (local_dx, local_dy, worldVectort);
+            shape.LocalVector2WorldVector (local_dx, local_dy, worldVector);
          }
 
          // ...
 
-         valueTarget.AssignValueObject (worldVectort.x);
+         valueTarget.AssignValueObject (worldVector.x);
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (worldVectort.y);
+         valueTarget.AssignValueObject (worldVector.y);
       }
 
       public static function IsEntityDestroyed (valueSource:Parameter, valueTarget:Parameter):void
@@ -3680,9 +3675,10 @@ package player.trigger {
 
          if (isLocalImpulse)
          {
-            shape.LocalVector2WorldVector (impulseX, impulseY, sVector);
-            impulseX = sVector.x;
-            impulseY = sVector.y;
+            var worldVector:Point = new Point ();
+            shape.LocalVector2WorldVector (impulseX, impulseY, worldVector);
+            impulseX = worldVector.x;
+            impulseY = worldVector.y;
          }
 
          var body:EntityBody = shape.GetBody ();
@@ -3707,9 +3703,10 @@ package player.trigger {
 
             if (isLocalPoint)
             {
-               shape.LocalPoint2WorldPoint (pointX, pointY, sPoint);
-               pointX = sPoint.x;
-               pointY = sPoint.y;
+               var worldPoint:Point = new Point ();
+               shape.LocalPoint2WorldPoint (pointX, pointY, worldPoint);
+               pointX = worldPoint.x;
+               pointY = worldPoint.y;
             }
 
             body.ApplyLinearImpulse (impulseX, impulseY, pointX, pointY);
@@ -3795,9 +3792,10 @@ package player.trigger {
 
          if (isLocalForce)
          {
-            shape.LocalVector2WorldVector (forceX, forceY, sVector);
-            forceX = sVector.x;
-            forceY = sVector.y;
+            var worldVector:Point = new Point ();
+            shape.LocalVector2WorldVector (forceX, forceY, worldVector);
+            forceX = worldVector.x;
+            forceY = worldVector.y;
          }
 
          var body:EntityBody = shape.GetBody ();
@@ -3826,9 +3824,10 @@ package player.trigger {
 
             if (isLocalPoint)
             {
-               shape.LocalPoint2WorldPoint (pointX, pointY, sPoint);
-               pointX = sPoint.x;
-               pointY = sPoint.y;
+               var worldPoint:Point = new Point ();
+               shape.LocalPoint2WorldPoint (pointX, pointY, worldPoint);
+               pointX = worldPoint.x;
+               pointY = worldPoint.y;
             }
 
             body.ApplyForceAtPoint (forceX, forceY, pointX, pointY);
@@ -3887,7 +3886,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Teleport (targetX - shape.GetPositionX (), targetY - shape.GetPositionY (), shape.GetRotationOffset (targetRotation), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         EntityShape.Teleport (shape, targetX - shape.GetPositionX (), targetY - shape.GetPositionY (), shape.GetRotationOffset (targetRotation), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
 
       public static function TeleportShape_Offsets (valueSource:Parameter, valueTarget:Parameter):void
@@ -3917,7 +3916,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Teleport (deltaX, deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         EntityShape.Teleport (shape, deltaX, deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
 
       public static function TranslateShape (valueSource:Parameter, valueTarget:Parameter):void
@@ -3944,7 +3943,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Translate (deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         EntityShape.Translate (shape, deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
 
       public static function TranslateShapeTo (valueSource:Parameter, valueTarget:Parameter):void
@@ -3971,7 +3970,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Translate (targetX - shape.GetPositionX (), targetY - shape.GetPositionY (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         EntityShape.Translate (shape, targetX - shape.GetPositionX (), targetY - shape.GetPositionY (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
 
       public static function RotateShapeAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
@@ -4004,7 +4003,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var rotateVelocity:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Rotate (fixedPointX, fixedPointY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
+         EntityShape.Rotate (shape, fixedPointX, fixedPointY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
       }
 
       public static function RotateShapeToAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
@@ -4037,7 +4036,36 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var rotateVelocity:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Rotate (fixedPointX, fixedPointY, shape.GetRotationOffset (targetRotation), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
+         EntityShape.Rotate (shape, fixedPointX, fixedPointY, shape.GetRotationOffset (targetRotation), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
+      }
+
+      public static function FlipShape (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var flipVelocity:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         var worldPoint:Point = new Point ();
+         shape.LocalPoint2WorldPoint (0, 0, worldPoint);
+         var worldVector:Point = new Point ();
+         shape.LocalVector2WorldVector (1, 0, worldVector);
+
+         EntityShape.Flip (shape, worldPoint.x, worldPoint.y, worldVector.x, worldVector.y, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, flipVelocity);
       }
 
       /*

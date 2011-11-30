@@ -3044,7 +3044,10 @@ package editor {
             if (_mouseEventCtrlDown || mCookieModeEnabled)
                mLastSelectedEntities = mEditorWorld.GetSelectedEntities ();
             else
+            {
                mEditorWorld.ClearSelectedEntities ();
+               OnSelectedEntitiesChanged ();
+            }
             
             // region select
             {
@@ -3167,6 +3170,7 @@ package editor {
             if (_isZeroMove && (! _mouseEventCtrlDown) && mCookieModeEnabled)
             {
                mEditorWorld.ClearSelectedEntities ();
+               OnSelectedEntitiesChanged ();
             }
          }
       }
@@ -3982,7 +3986,8 @@ package editor {
          if ((! mCookieModeEnabled))
             mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
          
-         CalSelectedEntitiesCenterPoint ();
+         //CalSelectedEntitiesCenterPoint ();
+         OnSelectedEntitiesChanged ();
       }
       
       public function ToggleEntitySelected (entity:Entity):void

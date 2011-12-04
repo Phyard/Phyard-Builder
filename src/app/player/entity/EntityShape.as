@@ -918,6 +918,11 @@ package player.entity {
             Transform2D.CombineTransforms (mBody.GetTransform (), mLocalTransform, mTransform);
          //}
 
+         ApplyTransformOnAppearanceObjectsContainer ();
+      }
+      
+      public function ApplyTransformOnAppearanceObjectsContainer ():void
+      {
          var newX:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (GetPositionX ());
          var newY:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (GetPositionY ());
          var newR:Number = mWorld.GetCoordinateSystem ().P2D_RotationRadians (GetRotationInTwoPI ()) * Define.kRadians2Degrees;
@@ -971,45 +976,79 @@ package player.entity {
       internal var mLocalCentroidX:Number = 0.0; // in body space
       internal var mLocalCentroidY:Number = 0.0; // in body space
       
+      private var mLocalCentroidXInShapeSpace:Number = 0.0; // in self space
+      private var mLocalCentroidYInShapeSpace:Number = 0.0;
+      
    // the following setter functions should be only called by mPhysicsShapeProxy
       
       public function SetMass (mass:Number):void
       {
+         if (mPhysicsProxy == null)
+            return;
+         
          mMass = mass;
       }
       
       public function GetMass ():Number
       {
+         if (mPhysicsProxy == null)
+            return 0.0;
+         
          return mMass;
       }
       
       public function SetInertia (inertia:Number):void
       {
+         if (mPhysicsProxy == null)
+            return;
+         
          mInertia = inertia;
       }
       
       public function GetInertia ():Number
       {
+         if (mPhysicsProxy == null)
+            return 0.0;
+         
          return mInertia;
       }
       
       // local centroid should be always synchronized.
-      public function SetCentroid (centroidX:Number, centroidY:Number):void
+      // or SynchronizeCentroid From BodySpace To ShapeSpace
+      public function SetCentroidInBodySpace (centroidX:Number, centroidY:Number):void
       {
+         if (mPhysicsProxy == null)
+            return;
+         
          mLocalCentroidX = centroidX;
          mLocalCentroidY = centroidY;
          
-         SynchronizeWorldCentroid ();
-         
          var shpeLocalCentroid:Point = new Point ();
-         WorldPoint2LocalPoint (mWorldCentroidX, mWorldCentroidY, shpeLocalCentroid);
+         
+         //SynchronizeWorldCentroid ();
+         //
+         //WorldPoint2LocalPoint (mWorldCentroidX, mWorldCentroidY, shpeLocalCentroid);
+         // from v1.59 (may cause a little incompatiblilities)
+         mLocalTransform.InverseTransformPointXY (mLocalCentroidX, mLocalCentroidY, shpeLocalCentroid);
          
          mLocalCentroidXInShapeSpace = shpeLocalCentroid.x;
          mLocalCentroidYInShapeSpace = shpeLocalCentroid.y;
       }
       
-      private var mLocalCentroidXInShapeSpace:Number = 0.0;
-      private var mLocalCentroidYInShapeSpace:Number = 0.0;
+      // this function is called in flip APIs
+      public function SynchronizeCentroidFromShapeSpaceToBodySpace ():void
+      {
+         if (mPhysicsProxy == null)
+            return;
+         
+         var bodyLocalCentroid:Point = new Point ();
+         
+         mLocalTransform.TransformPointXY (mLocalCentroidXInShapeSpace, mLocalCentroidYInShapeSpace, bodyLocalCentroid);
+         
+         mLocalCentroidX = bodyLocalCentroid.x;
+         mLocalCentroidY = bodyLocalCentroid.y;
+      }
+      
       public function GetLocalCentroidXInShapeSpace ():Number
       {
          return mLocalCentroidXInShapeSpace;
@@ -1024,7 +1063,7 @@ package player.entity {
       {
          if (mPhysicsProxy != null)
          {
-            mPhysicsShapeProxy.UpdateMass (); // which will call SetMass, SetInertia and SetCentroid. Seems not a good design. Better to pass these function in?
+            mPhysicsShapeProxy.UpdateMass (); // which will call SetMass, SetInertia and SetCentroidInBodySpace. Seems not a good design. Better to pass these function in?
          }
          else
          {
@@ -1034,6 +1073,8 @@ package player.entity {
             //mLocalCentroidY = mLocalPositionY;
             mLocalCentroidX = mLocalTransform.mOffsetX;
             mLocalCentroidY = mLocalTransform.mOffsetY;
+            mLocalCentroidXInShapeSpace = 0.0;
+            mLocalCentroidYInShapeSpace = 0.0;
          }
       }
       

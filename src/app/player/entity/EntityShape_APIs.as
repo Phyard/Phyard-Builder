@@ -506,6 +506,9 @@ public static function Rotate (seedShape:EntityShape, fixedPointX:Number, fixedP
    }
 }
 
+// for flip and scale, because box2d doesn't suppor flip and scale for b2Body, 
+// shape.mLocalCentroid is changed after clipping, so the handling is some different. 
+
 // todo: need SetRotation intelligently. Use entity.GetRotationOffset ()
 public static function Flip (seedShape:EntityShape, pointX:Number, pointY:Number, normalX:Number, normalY:Number,
                   bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean,
@@ -538,7 +541,6 @@ public static function Flip (seedShape:EntityShape, pointX:Number, pointY:Number
    
 // ...
 
-   /*
    var num:int = bodiesToTeleport.length;
 
    for (var i:int = 0; i < num; ++ i)
@@ -554,10 +556,22 @@ public static function Flip (seedShape:EntityShape, pointX:Number, pointY:Number
       body.SetPositionY (body.GetPositionY () - normalXY2 * offsetX - normalYY2 * offsetY);
       //body.SetRotation (body.mPhysicsRotation + doubleLineAngle); // wrong. should rotate shapes instead
       body.SynchronizePositionAndRotationToPhysicsProxy ();
-      if (flipVelocity && body.mNumPhysicsShapes > 0)
+      if (body.mNumPhysicsShapes > 0)
       {
-         var bodyVx:Number = body.GetLinearVelocityX ();
-         var bodyVy:Number = body.GetLinearVelocityY ();
+         if (flipVelocity)
+         {
+            var bodyVx:Number = body.GetLinearVelocityX ();
+            var bodyVy:Number = body.GetLinearVelocityY ();
+            var bodyAngularVelocity:Number = body.GetAngularVelocity ();
+            
+            body.SetAngularVelocity (- bodyAngularVelocity);
+            body.SetLinearVelocity (bodyVx - normalXX2 * bodyVx - normalXY2 * bodyVy,
+                                    bodyVy - normalXY2 * bodyVx - normalYY2 * bodyVy);
+         }
+         
+         body.NotifyVelocityChangedManually (); // shapes' velocity changed
+         body.NotifyMovedManually ();
+         body.SetSleeping (false);
       }
 
       //...
@@ -577,12 +591,120 @@ public static function Flip (seedShape:EntityShape, pointX:Number, pointY:Number
          shape.UpdatelLocalTransform ();
          
          if (shape.IsPhysicsShape ())
+         {
+            //>> an optimization to avoid calling body.CoincideWithCentroid
+            shape.SynchronizeCentroidFromShapeSpaceToBodySpace ();
+            //<<
+         
             shape.RebuildShapePhysics ();
+         }
 
+         //shape.SynchronizeWithPhysicsProxy (); // may be not essential? Yes, calling only ApplyTransformOnAppearanceObjectsContainer is ok.
+         shape.ApplyTransformOnAppearanceObjectsContainer ();
+         
+         shape.NotifyJointAnchorLocalPositionsChanged ();
+         
          shape = shape.mNextShapeInBody;
       }
    }
-   */
+}
+
+// for scale, there are more to do than rotate and flip.
+// same as flip, shape.mLocalCentroid is changed, but different with flip,
+// the mass of the area and path shapes are changed, especially they are changed differently:
+// - for area shapes, the ratio is scaleRatio * scaleRatio
+// - for path shapes, the ratio is scaleRatio
+// so we can't simplly call SynchronizeCentroidFromShapeSpaceToBodySpace + ScaleMass (scaleRatio * scaleRatio).
+// a fill slow body.OnShapeListChanged calling is needed.
+
+public static function Scale (seedShape:EntityShape, scaleRatio:Number, fixedPointX:Number, fixedPointY:Number,
+                              bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean,
+                              conserveMomentum:Boolean):void
+{
+   if (scaleRatio == 1.0)
+      return;
+
+   if (scaleRatio < Define.kFloatEpsilon) // may cause many problems. Negative values are also not allowed.
+      return;
+
+// ...
+
+   var infos:Object = GetRelatedEntities (seedShape, true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   var shapesToTeleport:Array = infos.mShapesToTransform;
+   var jointsToTeleport:Array = infos.mJointsToTransform;
+   
+// ...
+
+   var num:int = bodiesToTeleport.length;
+
+   for (var i:int = 0; i < num; ++ i)
+   {
+      var body:EntityBody = bodiesToTeleport [i] as EntityBody;
+      
+      var offsetX:Number;
+      var offsetY:Number;
+
+      // ...
+      
+      var shape:EntityShape = body.mShapeListHead;
+      while (shape != null)
+      {
+         offsetX = shape.GetPositionX () - fixedPointX;
+         offsetY = shape.GetPositionY () - fixedPointY;
+   
+         shape.SetPositionX (fixedPointX + scaleRatio * offsetX);
+         shape.SetPositionY (fixedPointY + scaleRatio * offsetY);
+         shape.SetScale (scaleRatio * shape.GetScale ());
+         
+         shape.UpdatelLocalTransform (); 
+            // although this will be called in the following body.OnShapeListChanged,
+            // but the next line shape.RebuildShapePhysics needs a corrent local transform.
+         
+         if (shape.IsPhysicsShape ())
+            shape.RebuildShapePhysics (); // body.OnShapeListChanged needs this be bone firstly.
+
+         //shape.SynchronizeWithPhysicsProxy (); // may be not essential? Yes, calling only ApplyTransformOnAppearanceObjectsContainer is ok.
+         shape.ApplyTransformOnAppearanceObjectsContainer ();
+         
+         shape.NotifyJointAnchorLocalPositionsChanged ();
+         
+         shape = shape.mNextShapeInBody;
+      }
+
+      //...
+
+      var oldVx:Number = body.GetLinearVelocityX ();
+      var oldVy:Number = body.GetLinearVelocityY ();
+      var oldAngularVelocity:Number = body.GetAngularVelocity ();
+      var oldMass:Number = body.GetMass ();
+      var oldInertia:Number = body.GetInertia ();
+      
+      // the centroid of body and shapes may be all changed.
+      body.OnShapeListChanged (true); // this function is slow but safe.
+
+      if (body.mNumPhysicsShapes > 0)
+      {
+         body.NotifyVelocityChangedManually ();
+         body.NotifyMovedManually ();
+         body.SetSleeping (false);
+         body.SynchronizeWithPhysicsProxyManually ();
+         
+         if (conserveMomentum)
+         {  
+            var newMass:Number = body.GetMass ();
+            var newInertia:Number = body.GetInertia ();
+            
+            if (Math.abs (oldMass) >= Define.kFloatEpsilon) // so newInertia is also not a small value
+            {
+               body.SetAngularVelocity (oldInertia * oldAngularVelocity / newInertia);
+               var massRatio:Number = oldMass / newMass;
+               body.SetLinearVelocity (massRatio * oldVx, massRatio * oldVy);
+            }
+         }
+      }
+   }
 }
 
 /*
@@ -1343,7 +1465,7 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
       //shape.ReconnectJoints (); // put below now to optimize
    }
 
-// ..
+// ...
 
    keptBody.OnShapeListChanged (isDiscardedPhysicsBody);
 
@@ -1565,6 +1687,8 @@ public function AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity
    }
 }
 
+// todo: 应该像AddLinearMomentum一样加一个onBodyCenter参数。
+// - 需要调用AddLinearMomentum来做适当调整.
 public function AddAngularMomentum (value:Number, valueIsVelocity:Boolean = false):void
 {
    // non-physics will also be valid

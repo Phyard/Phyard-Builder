@@ -108,6 +108,11 @@ package player.physics {
          return _b2Body.GetAngle ();
       }
       
+      public function SetAngularVelocity (av:Number):void
+      {
+         _b2Body.SetAngularVelocity (av);
+      }
+      
       public function GetAngularVelocity ():Number
       {
          return _b2Body.GetAngularVelocity ();

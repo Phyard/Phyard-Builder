@@ -126,7 +126,7 @@ package player.physics {
          
          mEntityShape.SetMass (mass);
          mEntityShape.SetInertia (inertia);
-         mEntityShape.SetCentroid (centroidX, centroidY);
+         mEntityShape.SetCentroidInBodySpace (centroidX, centroidY);
       }
       
 //========================================================================

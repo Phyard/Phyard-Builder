@@ -2474,7 +2474,7 @@ package editor.trigger {
                      ],
                      null
                   );
-/*
+
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_FlipSelf, shape_common_package, "Local Flip Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2485,8 +2485,6 @@ package editor.trigger {
                      ],
                      null
                   );
-*/
-         /*
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint, shape_common_package, "Flip Shape By World Line", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2497,22 +2495,23 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"),
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                             new VariableDefinitionBoolean ("Flip Velocity?"),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint, shape_common_package, "Scale Shape With Fixed Point", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Scale Ratio", null, {mMinValue: Define.kFloatEpsilon}),
                              new VariableDefinitionNumber ("Fixed Point X"),
                              new VariableDefinitionNumber ("Fixed Point Y"),
-                             new VariableDefinitionNumber ("Scale Ratio", null, {mMinValue: Define.kFloatEpsilon}),
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"),
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                             new VariableDefinitionBoolean ("Conserve Momentum?"),
                      ],
                      null
                   );
-         */
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers, entity_shape_brothers_package, "Get Shape Brothers", null, null,
                      [

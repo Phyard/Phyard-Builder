@@ -407,8 +407,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint,                      RotateShapeAroundWorldPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint,                    RotateShapeToAroundWorldPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_FlipSelf,                       FlipShape);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,                   FlipShapeByWorldLinePoint);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,                    ScaleShapeWithFixedPoint);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,                   FlipShapeByWorldLinePoint);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,                    ScaleShapeWithFixedPoint);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBrothers,                 GetBrothers);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsAttchedWith,               IsAttchedWith);
@@ -4068,7 +4068,6 @@ package player.trigger {
          EntityShape.Flip (shape, worldPoint.x, worldPoint.y, worldVector.x, worldVector.y, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, flipVelocity);
       }
 
-      /*
       public static function FlipShapeByWorldLinePoint (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -4099,7 +4098,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Flip (pointX, pointY, normalX, normalY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         valueSource = valueSource.mNextParameter;
+         var flipVelocity:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         EntityShape.Flip (shape, pointX, pointY, normalX, normalY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, flipVelocity);
       }
 
       public static function ScaleShapeWithFixedPoint (valueSource:Parameter, valueTarget:Parameter):void
@@ -4112,13 +4114,13 @@ package player.trigger {
             return;
 
          valueSource = valueSource.mNextParameter;
+         var scaleRatio:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
          var fixedPointX:Number = valueSource.EvaluateValueObject () as Number;
 
          valueSource = valueSource.mNextParameter;
          var fixedPointY:Number = valueSource.EvaluateValueObject () as Number;
-
-         valueSource = valueSource.mNextParameter;
-         var scaleRatio:Number = valueSource.EvaluateValueObject () as Number;
 
          valueSource = valueSource.mNextParameter;
          var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
@@ -4129,9 +4131,11 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Scale (fixedPointX, fixedPointY, scaleRatio, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         valueSource = valueSource.mNextParameter;
+         var conserveMomentum:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         EntityShape.Scale (shape, scaleRatio, fixedPointX, fixedPointY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, conserveMomentum);
       }
-      */
 
       public static function GetBrothers (valueSource:Parameter, valueTarget:Parameter):void
       {

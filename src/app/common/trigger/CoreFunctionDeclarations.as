@@ -2435,7 +2435,6 @@ package common.trigger {
                      ],
                      null
                   );
-         /*
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
@@ -2446,22 +2445,23 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       true],
                         [ValueTypeDefine.ValueType_Boolean,       false],
                         [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0],
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0],
                         [ValueTypeDefine.ValueType_Boolean,       true],
                         [ValueTypeDefine.ValueType_Boolean,       false],
                         [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ],
                      null
                   );
-         */
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers,
                      [

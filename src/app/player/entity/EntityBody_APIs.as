@@ -102,6 +102,17 @@ public function ApplyLinearImpulse (worldPulseX:Number, worldPulseY:Number, worl
    NotifyVelocityChangedManually ();
 }
 
+public function SetAngularVelocity (av:Number):void
+{
+   if (mPhysicsProxy == null)
+      return;
+      
+   mPhysicsProxyBody.SetAngularVelocity (av);
+   
+   //FlagVelocitySynchronized (false);
+   NotifyVelocityChangedManually ();
+}
+
 public function ApplyAngularImpulse (angularImpulse:Number):void
 {
    if (mPhysicsProxy == null)

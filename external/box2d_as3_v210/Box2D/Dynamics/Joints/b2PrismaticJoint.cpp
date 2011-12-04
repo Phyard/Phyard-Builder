@@ -236,7 +236,6 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	if (m_enableLimit)
 	{
 		var jointTranslation:Number = b2Math.b2Dot2 (m_axis, d);
-trace ("jointTranslation = " + jointTranslation + ", m_lowerTranslation = " + m_lowerTranslation + ", m_upperTranslation = " + m_upperTranslation + " d = " + d.x + ", " + d.y + ", m_axis = " + m_axis.x + ", " + m_axis.y);
 		if (Math.abs (m_upperTranslation - m_lowerTranslation) < 2.0 * b2Settings.b2_linearSlop)
 		{
 			m_limitState = b2Joint.e_equalLimits;

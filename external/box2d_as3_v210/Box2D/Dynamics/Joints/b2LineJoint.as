@@ -159,6 +159,8 @@ package Box2D.Dynamics.Joints
 				m_localAnchor2.y += dy;
 			}
 		}
+      
+      private static var worldAnchor:b2Vec2 = new b2Vec2 ();
 		
       override public function NotifyAnchorPositionChanged (newWorldX:Number, newWorldY:Number, isAnchorA:Boolean):void
       {
@@ -173,8 +175,6 @@ package Box2D.Dynamics.Joints
             m_bodyB.GetLocalPoint_Output (worldAnchor, m_localAnchor2);
          }
       }
-      
-      private static var worldAnchor:b2Vec2 = new b2Vec2 ();
 
 	} // class
 } // pacakge

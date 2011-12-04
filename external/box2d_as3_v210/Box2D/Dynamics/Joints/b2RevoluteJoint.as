@@ -134,6 +134,13 @@ package Box2D.Dynamics.Joints
 // hackings
 //***********************************************************************
 
+		protected var mReachMaxMotorTorqueCallback:Function = null;
+
+		public function SetReachMaxMotorTorqueCallback (callback:Function):void
+		{
+			mReachMaxMotorTorqueCallback = callback;
+		}
+
 		// call by b2Body
 
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
@@ -190,13 +197,31 @@ package Box2D.Dynamics.Joints
          //m_limitState = fromRevoluteJoint.m_limitState; // comment off for avoiding missing events
          m_impulse.CopyFrom (fromRevoluteJoint.m_impulse);
          m_motorImpulse = fromRevoluteJoint.m_motorImpulse;
+         
+         // ...
+         mFlipped = fromRevoluteJoint.mFlipped;
       }
-
-		protected var mReachMaxMotorTorqueCallback:Function = null;
-
-		public function SetReachMaxMotorTorqueCallback (callback:Function):void
+		
+		internal var mFlipped:Boolean = false;
+		override public function OnFlipped (pointX:Number, pointY:Number, normalXX2:Number, normalYY2:Number, normalXY2:Number):void
 		{
-			mReachMaxMotorTorqueCallback = callback;
+		   // assume bodies and shapes and anchor points are all flipped already.
+		   
+		   // ...
+		   
+		   mFlipped = ! mFlipped;
+		   
+		   //var tempVec:b2Vec2 = m_localAnchor1;
+		   //m_localAnchor2 = m_localAnchor1;
+		   //m_localAnchor1 = tempVec;
+		   
+		   //m_referenceAngle = - m_referenceAngle;
+		   
+		  // var temp:Number = m_lowerAngle;
+		  // m_lowerAngle = m_upperAngle;
+		  // m_upperAngle = temp;
+         
+         // maybe need more to do
 		}
 
 	} // class

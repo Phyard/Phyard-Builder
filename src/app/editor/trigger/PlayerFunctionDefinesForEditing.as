@@ -2512,6 +2512,22 @@ package editor.trigger {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsFlipped, shape_common_package, "Is Entity Flipped",  "@#0 = Is Entity ($0) Flipped?", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Flippped?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetScale, shape_common_package, "Get Entity Scale",  null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Current Scale"),
+                     ]
+                  );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers, entity_shape_brothers_package, "Get Shape Brothers", null, null,
                      [

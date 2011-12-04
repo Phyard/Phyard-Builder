@@ -77,6 +77,15 @@ package player.physics {
          joint.OnFlipped (pointX, pointY, normalXX2, normalYY2, normalXY2);
       }
       
+      public function OnScaled (scaleRatio:Number):void
+      {
+         var joint:b2Joint = GetB2joint ();
+         if (joint == null)
+            return;
+         
+         joint.OnScaled (scaleRatio);
+      }
+      
 //==================================================================
 //
 //==================================================================

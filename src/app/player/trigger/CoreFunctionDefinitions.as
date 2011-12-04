@@ -321,6 +321,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByDegrees,        GetEntityRotationByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByRadians,        GetEntityRotationByRadians);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians,        GetEntityAccumulatedRotationByDegrees);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsFlipped,        IsEntityFlipped);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetScale,        GetEntityScale);
 
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,        WorldPoint2EntityLocalPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,        EntityLocalPoint2WorldPoint);
@@ -2740,6 +2742,32 @@ package player.trigger {
          }
 
          valueTarget.AssignValueObject (entity.GetRotation ());
+      }
+
+      public static function IsEntityFlipped (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
+         if (entity == null)
+         {
+            valueTarget.AssignValueObject (false);
+
+            return;
+         }
+
+         valueTarget.AssignValueObject (entity.IsFlipped ());
+      }
+
+      public static function GetEntityScale (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
+         if (entity == null)
+         {
+            valueTarget.AssignValueObject (1.0);
+
+            return;
+         }
+
+         valueTarget.AssignValueObject (entity.GetScale ());
       }
 
       public static function WorldPoint2EntityLocalPoint (valueSource:Parameter, valueTarget:Parameter):void

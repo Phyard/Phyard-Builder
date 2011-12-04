@@ -224,7 +224,12 @@ package player.entity {
          {
             var angle:Number = mProxyJointHinge.GetJointAngle ();
             
-            if ( mMotorSpeed < 0 && angle < mLowerAngle )
+            //if (_JointIsFlipped) // :(
+            //{
+            //   angle = - angle;
+            //}
+            
+            if ( mMotorSpeed < 0 && angle < mLowerAngle)
             {
                OnJointReachLowerLimit ();
                

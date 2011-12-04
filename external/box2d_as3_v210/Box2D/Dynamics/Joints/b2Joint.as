@@ -343,8 +343,16 @@ package Box2D.Dynamics.Joints
 		
 		public function OnFlipped (pointX:Number, pointY:Number, normalXX2:Number, normalYY2:Number, normalXY2:Number):void
 		{
+		   // assume bodies and shapes and anchor points are all flipped already.
+		   // assume 2 bodies' angle is not changed in flipping.
+		   
 		   // to override
 		}
+		
+		public function OnScaled (scaleRatio:Number):void
+      {
+         // to override
+      }
 
 		public function FlagConnectedContactsForFiltering ():void
 		{

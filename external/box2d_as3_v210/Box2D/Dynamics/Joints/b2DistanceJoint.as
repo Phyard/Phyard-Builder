@@ -185,6 +185,11 @@ package Box2D.Dynamics.Joints
          m_impulse = fromDistanceJoint.m_impulse;
          m_length = fromDistanceJoint.m_length;
       }
+		
+		override public function OnScaled (scaleRatio:Number):void
+      {
+          m_length *= scaleRatio;
+      }
 
 	} // class
 } // package

@@ -311,6 +311,8 @@ package common.trigger {
       public static const ID_Entity_LocalPoint2WorldPoint:int           = IdPool.CoreApiId_1011;
       public static const ID_Entity_WorldVector2LocalVector:int         = IdPool.CoreApiId_1012;
       public static const ID_Entity_LocalVector2WorldVector:int         = IdPool.CoreApiId_1013;
+      public static const ID_Entity_IsFlipped:int         = IdPool.CoreApiId_1126;
+      public static const ID_Entity_GetScale:int         = IdPool.CoreApiId_1127;
 
       public static const ID_Entity_IsDestroyed:int                    = IdPool.CoreApiId_1049;
       public static const ID_Entity_Destroy:int                        = IdPool.CoreApiId_1050;

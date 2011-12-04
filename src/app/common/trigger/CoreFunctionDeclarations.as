@@ -1772,6 +1772,22 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsFlipped,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetScale,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                     ]
+                  );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Clone,
                      [

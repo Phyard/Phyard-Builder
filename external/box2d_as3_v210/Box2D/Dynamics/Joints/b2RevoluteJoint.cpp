@@ -93,7 +93,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
-
+	
 	if (m_enableMotor || m_enableLimit)
 	{
 		// You cannot create a rotation limit between bodies that
@@ -145,6 +145,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	if (m_enableLimit)
 	{
 		var jointAngle:Number = b2.m_sweep.a - b1.m_sweep.a - m_referenceAngle;
+	
 		if (Math.abs(m_upperAngle - m_lowerAngle) < 2.0 * b2Settings.b2_angularSlop)
 		{
 			m_limitState = b2Joint.e_equalLimits;
@@ -224,7 +225,7 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
-
+	
 	v1.CopyFrom (b1.m_linearVelocity);
 	var w1:Number = b1.m_angularVelocity;
 	v2.CopyFrom (b2.m_linearVelocity);
@@ -401,7 +402,7 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
-
+	
 	var angularError:Number = 0.0;
 	var positionError:Number = 0.0;
 
@@ -409,6 +410,7 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	if (m_enableLimit && m_limitState != e_inactiveLimit)
 	{
 		var angle:Number = b2.m_sweep.a - b1.m_sweep.a - m_referenceAngle;
+	
 		var limitImpulse:Number = 0.0;
 		
 		var C:Number;

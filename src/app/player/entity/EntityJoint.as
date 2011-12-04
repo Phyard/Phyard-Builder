@@ -61,6 +61,10 @@ package player.entity {
             if (entityDefine.mBreakable != undefined)
                SetBreakable (entityDefine.mBreakable);
             //<<
+         
+            //>>from v1.59, just a runtime info
+            _JointIsFlipped = entityDefine._JointIsFlipped;
+            //<<
          }
          else if (createStageId == 2)
          {
@@ -128,6 +132,10 @@ package player.entity {
          entityDefine.mConnectedShape1 = mAnchor1.GetShape ();
          entityDefine.mConnectedShape2 = mAnchor2.GetShape ();
          
+         //>>from v1.59, just a runtime info
+         entityDefine._JointIsFlipped = _JointIsFlipped;
+         //<<
+         
          return null;
       }
       
@@ -144,16 +152,25 @@ package player.entity {
          }
       }
       
+      // useful for hinge joints
+      protected var _JointIsFlipped:Boolean = false;
+      
       public function OnFlipped (pointX:Number, pointY:Number, normalXX2:Number, normalYY2:Number, normalXY2:Number):void
       {
          if (mPhysicsProxy != null)
          {
             (mPhysicsProxy as PhysicsProxyJoint).OnFlipped (pointX, pointY, normalXX2, normalYY2, normalXY2);
+            
+            _JointIsFlipped = ! _JointIsFlipped;
          }
       }
       
       public function OnScaled (scaleRatio:Number):void
       {
+         if (mPhysicsProxy != null)
+         {
+            (mPhysicsProxy as PhysicsProxyJoint).OnScaled (scaleRatio);
+         }
       }
 
 //=============================================================

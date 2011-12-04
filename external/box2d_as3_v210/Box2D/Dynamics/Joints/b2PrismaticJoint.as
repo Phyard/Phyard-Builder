@@ -203,12 +203,12 @@ package Box2D.Dynamics.Joints
 		override public function OnFlipped (pointX:Number, pointY:Number, normalXX2:Number, normalYY2:Number, normalXY2:Number):void
 		{
 		   // assume bodies and shapes and anchor points are all flipped already.
-		   // NotifyAnchorPositionChanged is already called, but anchorB was set wrongly.
 		   
 	      var tempVec:b2Vec2 = new b2Vec2 ();
 		   
 		   // ...
 		   
+		   // NotifyAnchorPositionChanged is already called, but anchorB was set wrongly. (slider joint is some different with other joints)
 		   m_bodyA.GetWorldPoint_Output (m_localAnchor1, tempVec);
 		   m_bodyB.GetLocalPoint_Output (tempVec, m_localAnchor2);
 		   
@@ -221,7 +221,25 @@ package Box2D.Dynamics.Joints
          tempVec.y = flippedY;
          m_bodyA.GetLocalVector_Output (tempVec, m_localXAxis1);
          b2Math.b2Cross_ScalarAndVector2_Output (1.0, m_localXAxis1, m_localYAxis1);
+         
+         // still has problems, maybe need more to do
 		}
+		
+		override public function OnScaled (scaleRatio:Number):void
+      {
+		   // assume bodies and shapes and anchor points are all flipped already.
+		   
+	      var tempVec:b2Vec2 = new b2Vec2 ();
+	      
+		   // NotifyAnchorPositionChanged is already called, but anchorB was set wrongly. (slider joint is some different with other joints)
+		   m_bodyA.GetWorldPoint_Output (m_localAnchor1, tempVec);
+		   m_bodyB.GetLocalPoint_Output (tempVec, m_localAnchor2);
+		   
+		   // ...
+         m_lowerTranslation *= scaleRatio;
+         m_upperTranslation *= scaleRatio;
+         m_motorSpeed *= scaleRatio;
+      }
       
 	} // class
 } // pacakge

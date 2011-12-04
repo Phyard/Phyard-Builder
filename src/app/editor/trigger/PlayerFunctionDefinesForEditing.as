@@ -2154,13 +2154,28 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionBoolean ("Sensor?"),
+                             new VariableDefinitionBoolean ("Is Sensor?"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, shape_physics_properties_package, "Set Sensor", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                             new VariableDefinitionBoolean ("Is Sensor?"),
+                             new VariableDefinitionBoolean ("Sensor?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsRotationFixed, shape_physics_properties_package, "Is Rotation Fixed", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Rotation Fixed?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetRotationFixed, shape_physics_properties_package, "Set Rotation Fixed", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionBoolean ("Rotation Fixed?"),
                      ],
                      null
                   );

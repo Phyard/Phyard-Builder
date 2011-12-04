@@ -63,6 +63,11 @@ package player.entity {
       // for calling in loading 
       public function SetModuleIndex (moduleIndex:int):void
       {
+         if (mModuleIndex == moduleIndex && mModuleInstance != null)
+         {
+            return;
+         }
+         
          mModuleIndex = moduleIndex;
          mModuleInstance = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndex));
          

@@ -369,6 +369,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,        SetShapeCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSensor,                    IsSensorShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsRotationFixed,                  IsShapeRotationFixed);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetRotationFixed,                 SetShapeRotationFixed);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetSleeping,                 SetShapeSleeping);
 
@@ -3387,6 +3389,29 @@ package player.trigger {
          var sensor:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          shape.SetAsSensor (sensor);
+      }
+
+      public static function IsShapeRotationFixed(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         var sensor:Boolean = shape == null ? false : (shape.IsDestroyedAlready () ? shape.IsRotationFixed () : shape.GetBody ().IsRotationFixed ());
+         valueTarget.AssignValueObject (sensor);
+      }
+
+      public static function SetShapeRotationFixed (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var fixRotation:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         shape.GetBody ().ModifyShapeRotationFixed (shape, fixRotation);
       }
 
       public static function IsShapeSleeping (valueSource:Parameter, valueTarget:Parameter):void

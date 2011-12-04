@@ -292,7 +292,7 @@ package player.entity {
       }
       
 //=============================================================
-//   mass, inertia
+//   mass, inertia, ...
 //=============================================================
       
       public function GetMass ():Number
@@ -309,6 +309,14 @@ package player.entity {
             return 0.0;
          else
             return mPhysicsProxyBody.GetInertia ();
+      }
+      
+      public function IsRotationFixed ():Boolean
+      {
+         if (mPhysicsProxy == null)
+            return false;
+         else
+            return  mPhysicsProxyBody.IsFixRotation ();
       }
       
 //=============================================================

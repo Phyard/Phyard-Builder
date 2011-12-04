@@ -356,6 +356,8 @@ package common.trigger {
       //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1154;
       public static const ID_EntityShape_IsSensor:int                  = IdPool.CoreApiId_1157;
       public static const ID_EntityShape_SetAsSensor:int               = IdPool.CoreApiId_1158;
+      public static const ID_EntityShape_IsRotationFixed:int                  = IdPool.CoreApiId_1163;
+      public static const ID_EntityShape_SetRotationFixed:int               = IdPool.CoreApiId_1164;
       //public static const ID_EntityShape_IsBullet:int                  = IdPool.CoreApiId_1159;
       //public static const ID_EntityShape_SetAsBullet:int               = IdPool.CoreApiId_1160;
       public static const ID_EntityShape_IsSleeping:int                  = IdPool.CoreApiId_1161;

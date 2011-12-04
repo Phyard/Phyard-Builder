@@ -397,6 +397,13 @@ public function ResetMassData():void
 		m_I = 0.0;
 		m_invI = 0.0;
 	}
+	
+	//>>hacking. see box2d issue#254
+	if (m_I == 0.0)
+	{
+	   m_angularVelocity = 0.0;
+	}
+	//<<
 
 	// Move center of mass.
 	//var oldCenter:b2Vec2 = m_sweep.c.Clone();

@@ -134,3 +134,24 @@ public function ClearVelocities ():void
    //FlagVelocitySynchronized (false);
    NotifyVelocityChangedManually ();
 }
+
+public function ModifyShapeRotationFixed (shape:EntityShape, fixRotation:Boolean):void
+{
+   if (fixRotation == shape.IsRotationFixed ())
+      return;
+   
+   shape.SetRotationFixed (fixRotation);
+   
+   if (mPhysicsProxy == null)
+      return;
+   
+   var bodyFixRoatation:Boolean = mPhysicsProxyBody.IsFixRotation ();
+   
+   if (fixRotation && bodyFixRoatation)
+      return;
+   
+   if ((! fixRotation) && (! bodyFixRoatation))
+      return;
+   
+   UpdateBodyPhysicsProperties ();
+}

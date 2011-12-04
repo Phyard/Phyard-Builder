@@ -143,6 +143,18 @@ package player.entity {
             (mPhysicsProxy as PhysicsProxyJoint).CopyRuntimeInfosFrom (fromPhysicsProxy as PhysicsProxyJoint);
          }
       }
+      
+      public function OnFlipped (pointX:Number, pointY:Number, normalXX2:Number, normalYY2:Number, normalXY2:Number):void
+      {
+         if (mPhysicsProxy != null)
+         {
+            (mPhysicsProxy as PhysicsProxyJoint).OnFlipped (pointX, pointY, normalXX2, normalYY2, normalXY2);
+         }
+      }
+      
+      public function OnScaled (scaleRatio:Number):void
+      {
+      }
 
 //=============================================================
 //   joint events

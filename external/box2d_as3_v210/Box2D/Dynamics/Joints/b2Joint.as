@@ -340,6 +340,11 @@ package Box2D.Dynamics.Joints
 		{
 		   // to override
 		}
+		
+		public function OnFlipped (pointX:Number, pointY:Number, normalXX2:Number, normalYY2:Number, normalXY2:Number):void
+		{
+		   // to override
+		}
 
 		public function FlagConnectedContactsForFiltering ():void
 		{

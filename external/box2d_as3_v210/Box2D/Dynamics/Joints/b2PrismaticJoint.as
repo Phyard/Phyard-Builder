@@ -198,6 +198,30 @@ package Box2D.Dynamics.Joints
          m_localAnchor1.CopyFrom (fromPrismaticJoint.m_localAnchor1); // maybe not correct
          m_localAnchor2.CopyFrom (fromPrismaticJoint.m_localAnchor2); // maybe not correct
       }
+		
+		// a very bad implementation
+		override public function OnFlipped (pointX:Number, pointY:Number, normalXX2:Number, normalYY2:Number, normalXY2:Number):void
+		{
+		   // assume bodies and shapes and anchor points are all flipped already.
+		   // NotifyAnchorPositionChanged is already called, but anchorB was set wrongly.
+		   
+	      var tempVec:b2Vec2 = new b2Vec2 ();
+		   
+		   // ...
+		   
+		   m_bodyA.GetWorldPoint_Output (m_localAnchor1, tempVec);
+		   m_bodyB.GetLocalPoint_Output (tempVec, m_localAnchor2);
+		   
+		   // ...
+		   
+		   m_bodyA.GetWorldVector_Output (m_localXAxis1, tempVec);
+		   var flippedX:Number = tempVec.x - normalXX2 * tempVec.x - normalXY2 * tempVec.y;
+         var flippedY:Number = tempVec.y - normalXY2 * tempVec.x - normalYY2 * tempVec.y;
+         tempVec.x = flippedX;
+         tempVec.y = flippedY;
+         m_bodyA.GetLocalVector_Output (tempVec, m_localXAxis1);
+         b2Math.b2Cross_ScalarAndVector2_Output (1.0, m_localXAxis1, m_localYAxis1);
+		}
       
 	} // class
 } // pacakge

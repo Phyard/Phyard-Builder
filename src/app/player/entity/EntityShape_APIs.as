@@ -409,7 +409,6 @@ public static function Translate (seedShape:EntityShape, deltaX:Number, deltaY:N
    for (var i:int = 0; i < num; ++ i)
    {
       var body:EntityBody = bodiesToTeleport [i] as EntityBody;
-
       //body.mPositionX += deltaX;
       //body.mPositionY += deltaY;
       body.SetPositionX (body.GetPositionX () + deltaX);
@@ -541,9 +540,9 @@ public static function Flip (seedShape:EntityShape, pointX:Number, pointY:Number
    
 // ...
 
-   var num:int = bodiesToTeleport.length;
+   var numBodies:int = bodiesToTeleport.length;
 
-   for (var i:int = 0; i < num; ++ i)
+   for (var i:int = 0; i < numBodies; ++ i)
    {
       var body:EntityBody = bodiesToTeleport [i] as EntityBody;
 
@@ -606,6 +605,14 @@ public static function Flip (seedShape:EntityShape, pointX:Number, pointY:Number
          
          shape = shape.mNextShapeInBody;
       }
+   }
+   
+   // joint
+   var numJoints:int = jointsToTeleport.length;
+   for (var j:int = 0; j < numJoints; ++ j)
+   {
+      var joint:EntityJoint = jointsToTeleport [j] as EntityJoint;
+      joint.OnFlipped (pointX, pointY, normalXX2, normalYY2, normalXY2);
    }
 }
 
@@ -705,409 +712,15 @@ public static function Scale (seedShape:EntityShape, scaleRatio:Number, fixedPoi
          }
       }
    }
-}
-
-/*
-// todo: need SetRotation intelligently. Use entity.GetRotationOffset ()
-public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Number,
-                  bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean
-                  ):void
-{
-   var normalXX:Number = normalX * normalX;
-   var normalYY:Number = normalY * normalY;
-   var normalLength:Number = Math.sqrt (normalXX + normalYY);
-
-   if (normalLength < Define.kFloatEpsilon)
-      return;
-
-// ...
-
-   var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
-
-   var bodiesToTeleport:Array = infos.mBodiesToTransform;
-   var shapesToTeleport:Array = infos.mShapesToTransform;
-   var jointsToTeleport:Array = infos.mJointsToTransform;
-
-// ...
-
-   var doubleLineAngle:Number = 2.0 * Math.atan2 (normalY, normalX);
-
-   normalX /= normalLength;
-   normalY /= normalLength;
-   var normalXX2:Number = 2.0 * normalX * normalX;
-   var normalYY2:Number = 2.0 * normalY * normalY;
-   var normalXY2:Number = 2.0 * normalX * normalY;
-
-   var num:int = bodiesToTeleport.length;
-
-   for (var i:int = 0; i < num; ++ i)
-   {
-      var body:EntityBody = bodiesToTeleport [i] as EntityBody;
-
-      //...
-
-      var offsetX:Number = body.GetPositionX () - pointX;
-      var offsetY:Number = body.GetPositionY () - pointY;
-
-      body.SetPositionX (body.GetPositionX () - normalXX2 * offsetX - normalXY2 * offsetY);
-      body.SetPositionY (body.GetPositionY () - normalXY2 * offsetX - normalYY2 * offsetY);
-      //body.SetRotation (body.mPhysicsRotation + doubleLineAngle); // wrong. should rotate shapes instead
-      body.SynchronizePositionAndRotationToPhysicsProxy ();
-
-      //...
-
-      var shape:EntityShape = body.mShapeListHead;
-
-      while (shape != null)
-      {
-         var localNormalX:Number =   normalX * mCosRotation + normalY * mSinRotation;
-         var localNormalY:Number = - normalX * mSinRotation + normalY * mCosRotation;
-         var localNormalXX2:Number = 2.0 * localNormalX * localNormalX;
-         var localNormalYY2:Number = 2.0 * localNormalY * localNormalY;
-         var localNormalXY2:Number = 2.0 * localNormalX * localNormalY;
-
-         var oldLocalX:Number = shape.mLocalPositionX;
-         var oldLocalY:Number = shape.mLocalPositionY;
-         shape.mLocalPositionX = oldLocalX - normalXX2 * oldLocalX - normalXY2 * oldLocalY;
-         shape.mLocalPositionY = oldLocalY - normalXY2 * oldLocalX - normalYY2 * oldLocalY;
-         shape.mRelativeRotation = - shape.mRelativeRotation;
-         shape.SetFlipped (! shape.IsFlipped ());
-         shape.mRelativeRotation += shape.IsFlipped () ? - doubleLineAngle : doubleLineAngle;
-
-         shape.SynchronizeWithPhysicsProxy ();
-         if (shape.IsPhysicsShape ())
-            shape.RebuildShapePhysics ();
-
-         shape = shape.mNextShapeInBody;
-      }
-
-      body.OnShapeListChanged (true);
-
-      //...
-
-      if (body.mNumPhysicsShapes > 0)
-      {
-         body.SynchronizeWithPhysicsProxyManually (); // essential?
-
-         //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
-         //var vx:Number = body.GetLinearVelocityX ();
-         //var vy:Number = body.GetLinearVelocityY ();
-         //body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos); // will call
-
-         body.NotifyVelocityChangedManually (); // shapes' velocity changed
-         body.NotifyMovedManually ();
-         body.SetSleeping (false);
-         body.SynchronizePositionAndRotationToPhysicsProxy ();
-      }
-
-      // ...
-
-      shape = body.mShapeListHead;
-
-      while (shape != null)
-      {
-         shape.SynchronizeWithPhysicsProxy ();
-         shape.NotifyJointAnchorLocalPositionsChanged ();
-
-         shape = shape.mNextShapeInBody;
-      }
-
-      // todo: effects on joints: remove joint angle, limits, velocity, ...
-   }
-
+   
    // joint
-   num = jointsToTeleport.length;
-   for (i = 0; i < num; ++ i)
+   var numJoints:int = jointsToTeleport.length;
+   for (var j:int = 0; j < numJoints; ++ j)
    {
-      var joint:EntityJoint = jointsToTeleport [i] as EntityJoint;
-      joint.OnFlipped (normalXX2, normalYY2, normalXY2);
-   }
-}
-
-public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number,
-                              bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean
-                              //, scaleBrothers:Boolean,
-                              //scaleSize:Boolean, scalePosition:Boolean,
-                              //conserveMomentum:Boolean, conserveMass:Boolean
-                              ):void
-{
-   if (scaleRatio == 1.0)
-      return;
-
-   if (scaleRatio < Define.kFloatEpsilon) // may cause many problems. Negative values are also not allowed.
-      return;
-
-// ...
-
-   var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
-
-   var bodiesToTeleport:Array = infos.mBodiesToTransform;
-   var shapesToTeleport:Array = infos.mShapesToTransform;
-   var jointsToTeleport:Array = infos.mJointsToTransform;
-
-// ...
-
-   var num:int = bodiesToTeleport.length;
-
-   var i:int;
-   var shape:EntityShape;
-
-   for (i = 0; i < num; ++ i)
-   {
-      var body:EntityBody = bodiesToTeleport [i] as EntityBody;
-
-      var dx:Number = body.mPositionX - fixedPointX;
-      var dy:Number = body.mPositionY - fixedPointY;
-
-      body.mPositionX = fixedPointX + dx * scaleRatio;
-      body.mPositionY = fixedPointY + dy * scaleRatio;
-      body.SynchronizePositionAndRotationToPhysicsProxy ();
-
-      // ...
-
-      shape = body.mShapeListHead;
-
-      while (shape != null)
-      {
-         //shape.ScaleSelf (scaleRatio);
-         shape.mLocalPositionX *= scaleRatio;
-         shape.mLocalPositionY *= scaleRatio;
-         shape.SetScale (shape.GetScale () * scaleRatio);
-
-         shape.SynchronizeWithPhysicsProxy ();
-         if (shape.IsPhysicsShape ())
-            shape.RebuildShapePhysics ();
-
-         shape = shape.mNextShapeInBody;
-      }
-
-      // ...
-
-
-
-      // ...
-
-      if (body.mNumPhysicsShapes > 0)
-      {
-         body.SynchronizeWithPhysicsProxyManually (); // essential?
-
-         //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
-         //var vx:Number = body.GetLinearVelocityX ();
-         //var vy:Number = body.GetLinearVelocityY ();
-         //body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos); // will call body.NotifyVelocityChangedManually ();
-
-         body.NotifyVelocityChangedManually (); // shapes' velocity changed
-         body.NotifyMovedManually ();
-         body.SetSleeping (false);
-         body.SynchronizePositionAndRotationToPhysicsProxy ();
-      }
-
-      // ...
-
-      shape = body.mShapeListHead;
-
-      while (shape != null)
-      {
-         shape.SynchronizeWithPhysicsProxy ();
-         shape.NotifyJointAnchorLocalPositionsChanged ();
-
-         shape = shape.mNextShapeInBody;
-      }
-
-      // todo: effects on joints: remove joint angle, limits, velocity, ...
-   }
-
-   // joint
-   num = jointsToTeleport.length;
-   for (i = 0; i < num; ++ i)
-   {
-      var joint:EntityJoint = jointsToTeleport [i] as EntityJoint;
+      var joint:EntityJoint = jointsToTeleport [j] as EntityJoint;
       joint.OnScaled (scaleRatio);
    }
 }
-*/
-
-//================================================================
-// telport
-//================================================================
-
-// the old teleport API is replaced with Translate+Rotate now (see above)
-/*
-public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
-{
-// ...
-   IncreaseLastSpecialId ();
-
-   var shape:EntityShape = this;
-   var shapesToTeleport:Array = new Array ();
-   var bodiesToTeleport:Array = new Array ();
-   var jointsToTeleport:Array = new Array ();
-   var jointsToBreak:Array = new Array ();
-   shapesToTeleport.push (shape);
-
-   var anchor:SubEntityJointAnchor;
-   var anotherShape:EntityShape;
-   var body:EntityBody;
-   var joint:EntityJoint;
-
-   var numShapesToTeleport:int = 0;
-
-   var i:int;
-   var num:int;
-
-// collect shapes to teleport
-// collect bodies of shapes to teleport
-
-   while (shapesToTeleport.length > numShapesToTeleport)
-   {
-      shape = shapesToTeleport [numShapesToTeleport];
-      shape.mSpecialId = sLastSpecialId;
-      ++ numShapesToTeleport;
-
-   // body
-
-      body = shape.mBody;
-      if (body.mSpecialId != sLastSpecialId)
-      {
-         body.mSpecialId = sLastSpecialId;
-         bodiesToTeleport.push (body);
-
-   // brother shapes
-
-         anotherShape = body.mShapeListHead;
-
-         while (anotherShape != null)
-         {
-            if (anotherShape.mSpecialId != sLastSpecialId)
-            {
-               anotherShape.mSpecialId = sLastSpecialId;
-               shapesToTeleport.push (anotherShape)
-            }
-
-            anotherShape = anotherShape.mNextShapeInBody;
-         }
-      }
-
-   // connected shapes
-
-      anchor = shape.mJointAnchorListHead;
-
-      while (anchor != null)
-      {
-         anotherShape = anchor.mAnotherJointAnchor.mShape;
-         anchor = anchor.mNextAnchor;
-
-         if (anotherShape != null && anotherShape.mSpecialId != sLastSpecialId)
-         {
-            anotherShape.mSpecialId = sLastSpecialId;
-
-            if (anotherShape.mBody.IsStatic ())
-            {
-               if (bTeleprotConnectedStatics)
-               {
-                  shapesToTeleport.push (anotherShape)
-               }
-            }
-            else
-            {
-               if (bTeleportConnectedMovables)
-               {
-                  shapesToTeleport.push (anotherShape);
-               }
-            }
-         }
-      }
-   }
-
-// collect joints connecting with 2 shapes to teleprot
-// collect joints connecting with only one shape to teleport
-
-   for (i = 0; i < numShapesToTeleport; ++ i)
-   {
-      shape = shapesToTeleport [i] as EntityShape;
-
-   // joints
-
-      anchor = shape.mJointAnchorListHead;
-
-      while (anchor != null)
-      {
-         anotherShape = anchor.mAnotherJointAnchor.mShape;
-         joint = anchor.mJoint;
-
-         anchor = anchor.mNextAnchor;
-
-         if (joint.mSpecialId != sLastSpecialId)
-         {
-            joint.mSpecialId = sLastSpecialId;
-
-            if (anotherShape == null || anotherShape.mSpecialId != sLastSpecialId) // shape will teleport, anotherShape will not
-            {
-               jointsToBreak.push (joint);
-            }
-            else // both shapes will teleport
-            {
-               jointsToTeleport.push (joint);
-            }
-         }
-      }
-   }
-
-// if bBreakEmbarrassedJoints is true, destroy joints connecting with only one shape to teleport,
-
-   if (bBreakEmbarrassedJoints)
-   {
-      num = jointsToBreak.length;
-
-      for (i = 0; i < num; ++ i)
-      {
-         joint = jointsToBreak [i] as EntityJoint;
-
-         joint.Destroy ();
-      }
-   }
-
-// move bodies to teleport
-
-   var oldPositionX:Number = mPositionX;
-   var oldPositionY:Number = mPositionY;
-   var cos:Number = Math.cos (deltaRotation);
-   var sin:Number = Math.sin (deltaRotation);
-   var dx:Number;
-   var dy:Number;
-// all these functions assume the physics of entities are all built.
-
-   num = bodiesToTeleport.length;
-
-   for (i = 0; i < num; ++ i)
-   {
-      body = bodiesToTeleport [i] as EntityBody;
-
-      body.SetSleeping (false);
-
-      dx = body.mPositionX - oldPositionX;
-      dy = body.mPositionY - oldPositionY;
-
-      body.mPositionX = targetX + dx * cos - dy * sin;
-      body.mPositionY = targetY + dx * sin + dy * cos;
-      body.SetRotation (body.mPhysicsRotation + deltaRotation);
-
-      body.SynchronizePositionAndRotationToPhysicsProxy ();
-
-   // update postion and rotation of shapes in body
-
-      anotherShape = body.mShapeListHead;
-
-      while (anotherShape != null)
-      {
-         anotherShape.SynchronizeWithPhysicsProxy ();
-         anotherShape.FlagWorldCentroidSynchronized (false);
-
-         anotherShape = anotherShape.mNextShapeInBody;
-      }
-   }
-}
-*/
 
 //================================================================
 // change size (different with scale)

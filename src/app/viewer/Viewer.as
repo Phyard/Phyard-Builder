@@ -132,6 +132,7 @@ package viewer {
          private var mShowSpeedAdjustor:Boolean;
          private var mShowScaleAdjustor:Boolean;
          private var mShowHelpButton:Boolean;
+         private var mAdaptiveViewportSize:Boolean;
          private var mViewportWidth:int;
          private var mViewportHeight:int;
          private var mViewerWidth:Number;
@@ -618,6 +619,7 @@ package viewer {
          mShowSpeedAdjustor = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
          mShowScaleAdjustor = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
          mShowHelpButton = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
+         mAdaptiveViewportSize = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_AdaptiveViewportSize) != 0);
          mViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
          mViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
          mViewerWidth = mViewportWidth;
@@ -1150,6 +1152,15 @@ package viewer {
             var containerSize:Point = mParamsFromContainer.GetViewportSize ();
             var containerWidth :Number = containerSize.x;
             var containerHeight:Number = containerSize.y;
+            
+            var viewerWidth:Number = mViewerWidth;
+            var viewerHeight:Number = mViewerHeight;
+            if (mAdaptiveViewportSize)
+            {
+               viewerWidth = containerWidth;
+               viewerHeight = containerHeight;
+            } 
+            
             var widthRatio :Number = containerWidth  / mViewerWidth ;
             var heightRatio:Number = containerHeight / mViewerHeight;
 
@@ -1294,6 +1305,9 @@ package viewer {
          theContextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
          defaultItems.print = true;
+         
+         if (theContextMenu.customItems == null) // possible null in air app
+            return;
 
          var addSeperaor:Boolean = false;
          if (Compile::Is_Debugging || mPlayerWorld != null && mWorldDesignProperties.mIsShareSourceCode)

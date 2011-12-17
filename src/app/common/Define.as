@@ -33,6 +33,9 @@ package common {
       //public static const MaxEntitiesCount:int = 1024 * 3;
       public static const MaxEntitiesCount:int = 0x7FFFFFFF; // unlimited
       
+      public static const MaxViewportSize:int = 1024;
+      public static const MinViewportSize:int = 50;
+      
       public static const DefaultWorldWidth:int = 500; //600; 
       public static const DefaultWorldHeight:int = 500; //600; 
       public static const WorldBorderThinknessLR:int = 10; 
@@ -48,10 +51,11 @@ package common {
       public static const DefaultPlayerWidth:int = 500; //600; 
       public static const DefaultPlayerHeight:int = 500; //600; 
       
-      public static const PlayerUiFlag_ShowPlayBar:int       = 1 << 0;
-      public static const PlayerUiFlag_ShowSpeedAdjustor:int = 1 << 1;
-      public static const PlayerUiFlag_ShowScaleAdjustor:int = 1 << 2;
-      public static const PlayerUiFlag_ShowHelpButton:int    = 1 << 3;
+      public static const PlayerUiFlag_ShowPlayBar:int          = 1 << 0;
+      public static const PlayerUiFlag_ShowSpeedAdjustor:int    = 1 << 1;
+      public static const PlayerUiFlag_ShowScaleAdjustor:int    = 1 << 2;
+      public static const PlayerUiFlag_ShowHelpButton:int       = 1 << 3;
+      public static const PlayerUiFlag_AdaptiveViewportSize:int = 1 << 7;
       
       public static const PlayerUiFlags_BeforeV0151:int = PlayerUiFlag_ShowPlayBar | PlayerUiFlag_ShowSpeedAdjustor
                                                      | PlayerUiFlag_ShowScaleAdjustor | PlayerUiFlag_ShowHelpButton

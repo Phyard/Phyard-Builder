@@ -1743,7 +1743,7 @@ package common {
          var appearId:int;
          var createId:int;
          var vertexId:int;
-
+         
          for (createId = 0; createId < numEntities; ++ createId)
          {
             var entityDefine:Object = new Object ();

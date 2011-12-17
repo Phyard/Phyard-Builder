@@ -106,8 +106,17 @@ package com.tapirgames.util
          this.contentLoaderInfo.addEventListener (Event.COMPLETE, onCompleteListener);
          this.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
          this.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
-      
-         super.loadBytes (newSwfFile, context);
+         
+         //>> for air, not very secure
+         if (context == null)
+            context = new LoaderContext();
+         if (context.hasOwnProperty ("allowCodeImport"))
+            (context as Object).allowCodeImport = true;
+         else if (context.hasOwnProperty ("allowLoadBytesCodeExecution"))
+            (context as Object).allowLoadBytesCodeExecution = true;
+         //<<
+         
+         this.loadBytes (newSwfFile, context);
       }
       
       private function OnLoadImageError (event:Event):void

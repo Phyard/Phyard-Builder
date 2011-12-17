@@ -5574,6 +5574,7 @@ package editor {
             
             if (codeString != null)
             {
+         trace ("111");
                const Text_PlayCode:String = "playcode";
                if (codeString.length > Text_PlayCode.length && codeString.substring (0, Text_PlayCode.length) == Text_PlayCode)
                {
@@ -5581,24 +5582,29 @@ package editor {
                   var offset:int = codeString.indexOf (Text_OldCodeStarting, Text_PlayCode.length);
                   if (offset > 0) // old playcode
                   {
+         trace ("222");
                      newWorldDefine = DataFormat2.HexString2WorldDefine (codeString.substring (offset));
                   }
                   else // new base64 playcode
                   {
+         trace ("333");
                      offset = Text_PlayCode.length;
                      var Text_CompressFormat:String = "compressformat=base64";
                      offset = codeString.indexOf (Text_CompressFormat, offset);
                      if (offset > 0)
                      {
+         trace ("aaa");
                         offset += Text_CompressFormat.length;
                         var Text_PlayCode2:String = "playcode=";
                         offset = codeString.indexOf (Text_PlayCode2, offset);
                         if (offset > 0)
                         {
+         trace ("bbb");
                            offset += Text_PlayCode2.length;
                            var offset2:int = codeString.indexOf ("@}", offset);
                            if (offset2 > 0)
                            {
+         trace ("ccc");
                               newWorldDefine = DataFormat2.PlayCode2WorldDefine_Base64 (codeString.substring (offset, offset2));
                            }
                         }

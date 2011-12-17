@@ -10,9 +10,9 @@
       <mx:Spacer width="100%"/>
       <mx:VBox>
          <mx:VBox width="100%">
-            <mx:Label text="Scene Field Setting (unit: pixel):"/>
+            <mx:Label text="Scene Field Settings (unit: pixels):"/>
          </mx:VBox>
-         <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnSceneSizeRationClick ()"/>
+         <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnSceneSizeRatioClick ()"/>
          <mx:HBox width="100%">
             <mx:Spacer width="10"/>
             <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_InfinteSize" value="infinite"
@@ -21,7 +21,7 @@
          <mx:HBox width="100%">
             <mx:Spacer width="10"/>
             <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_ViewportSize" value="viewport"
-                label="Viewport Size"/>
+                label="Same As Preferred Viewport Size"/>
          </mx:HBox>
          <mx:HBox id="Box_CustomViewportSize1" width="100%">
             <mx:Spacer width="100%"/>
@@ -34,7 +34,7 @@
          <mx:HBox width="100%">
             <mx:Spacer width="10"/>
             <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_CustomSize" value="custom"
-                label="Custom (pixels):"/>
+                label="Custom:"/>
          </mx:HBox>
          <mx:HBox id="Box_CustomSceneSize1" width="100%">
             <mx:Spacer width="100%"/>
@@ -125,6 +125,10 @@
 
          private function OnInitPanel ():void
          {
+            NumericStepper_CustomLeft_ViewportSize.minimum = - Number.MAX_VALUE;
+            NumericStepper_CustomLeft_ViewportSize.maximum = Number.MAX_VALUE;
+            NumericStepper_CustomTop_ViewportSize.minimum = - Number.MAX_VALUE;
+            NumericStepper_CustomTop_ViewportSize.maximum = Number.MAX_VALUE;
             NumericStepper_CustomLeft.minimum = - Number.MAX_VALUE;
             NumericStepper_CustomLeft.maximum = Number.MAX_VALUE;
             NumericStepper_CustomTop.minimum = - Number.MAX_VALUE;
@@ -182,7 +186,7 @@
             NumericStepper_TopBorderThickness.value = mParams.mWorldBorderTopThickness;
             NumericStepper_BottomBorderThickness.value = mParams.mWorldBorderBottomThickness;
 
-            OnSceneSizeRationClick ();
+            OnSceneSizeRatioClick ();
             OnBuildBorderClick ();
          }
 
@@ -196,7 +200,7 @@
             OnClose = onClose;
          }
 
-         private function OnSceneSizeRationClick ():void
+         private function OnSceneSizeRatioClick ():void
          {
             Box_CustomViewportSize1.enabled = RadioButton_ViewportSize.selected;
             Box_CustomSceneSize1.enabled = RadioButton_CustomSize.selected;

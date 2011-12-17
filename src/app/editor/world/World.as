@@ -603,24 +603,15 @@ package editor.world {
 
       public function ValidateViewportSize ():void
       {
-         if (mViewportWidth> 750)
-            mViewportWidth = 750;
-         if (mViewportWidth < 50)
-            mViewportWidth = 50;
+         if (mViewportWidth > Define.MaxViewportSize)
+            mViewportWidth = Define.MaxViewportSize;
+         if (mViewportWidth < Define.MinViewportSize)
+            mViewportWidth = Define.MinViewportSize;
 
-         if (mViewportHeight < 50)
-            mViewportHeight = 50;
-
-         if (mViewportWidth > 600)
-         {
-            if (mViewportHeight > 500)
-               mViewportHeight = 500;
-         }
-         else
-         {
-            if (mViewportHeight > 600)
-               mViewportHeight = 600;
-         }
+         if (mViewportHeight > Define.MaxViewportSize)
+            mViewportHeight = Define.MaxViewportSize;
+         if (mViewportHeight < Define.MinViewportSize)
+            mViewportHeight = Define.MinViewportSize;
       }
 
       public function IsAutoSleepingEnabled ():Boolean

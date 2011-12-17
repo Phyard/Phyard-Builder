@@ -39,27 +39,17 @@
             <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
 
             <mx:HBox width="100%" horizontalAlign="left">
-               <mx:Label text="Viewport Size (width x height by pixels):" />
+               <mx:Label text="Preferred Viewport Size (width x height by pixels):" />
             </mx:HBox>
             <mx:RadioButtonGroup id="RadioButtonGroup_CustomSize" itemClick="OnCustomSizeRatioClick ()"/>
             <mx:HBox width="100%">
                <mx:HBox width="50%" horizontalAlign="left">
                   <mx:Spacer width="30"/>
-                  <mx:RadioButton groupName="RadioButtonGroup_CustomSize" id="RadioButton_500x500" label="500x500 (default, 1:1)"/>
+                  <mx:RadioButton groupName="RadioButtonGroup_CustomSize" id="RadioButton_500x500" label="500x500"/>
                </mx:HBox>
                <mx:HBox width="50%" horizontalAlign="left">
                   <mx:Spacer width="30"/>
-                  <mx:RadioButton groupName="RadioButtonGroup_CustomSize" id="RadioButton_600x600" label="600x600 (1:1)"/>
-               </mx:HBox>
-            </mx:HBox>
-            <mx:HBox width="100%">
-               <mx:HBox width="50%" horizontalAlign="left">
-                  <mx:Spacer width="30"/>
-                  <mx:RadioButton groupName="RadioButtonGroup_CustomSize" id="RadioButton_480x320" label="480x320 (iPhone, 3:2)"/>
-               </mx:HBox>
-               <mx:HBox width="50%" horizontalAlign="left">
-                  <mx:Spacer width="30"/>
-                  <mx:RadioButton groupName="RadioButtonGroup_CustomSize" id="RadioButton_750x500" label="750x500 (3:2)"/>
+                  <mx:RadioButton groupName="RadioButtonGroup_CustomSize" id="RadioButton_600x600" label="600x600"/>
                </mx:HBox>
             </mx:HBox>
             <mx:HBox width="100%" horizontalAlign="left">
@@ -72,13 +62,15 @@
                   <mx:NumericStepper id="NumericStepper_CustomHeight" stepSize="1" width="56" />
                </mx:HBox>
             </mx:HBox>
-            <mx:HBox id="RadioButton_CustomSizeHelp1" width="100%" horizontalAlign="left">
+            <mx:HBox id="RadioButton_CustomSizeHelp" width="100%" horizontalAlign="left">
                <mx:Spacer width="50"/>
-               <mx:Label text="(Max width is 750. If width is larger than 600,"/>
+               <mx:Label text="(Max size is 1024x1024 and min size is 50x50)"/>
             </mx:HBox>
-            <mx:HBox id="RadioButton_CustomSizeHelp2" width="100%" horizontalAlign="left">
-               <mx:Spacer width="50"/>
-               <mx:Label text="max height is 500, otherwise, max height is 600.)"/>
+            <mx:HBox width="100%">
+               <mx:HBox width="50%" horizontalAlign="left">
+                  <mx:Spacer width="30"/>
+                  <mx:CheckBox id="CheckBox_AnyViewportSize" label="Self Adaptive Viewport"/>
+               </mx:HBox>
             </mx:HBox>
 
             <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
@@ -136,6 +128,7 @@
             CheckBox_ShowSpeedAdjustor.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0;
             CheckBox_ShowScaleAdjustor.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowScaleAdjustor) != 0;
             CheckBox_ShowHelpButton.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowHelpButton) != 0;
+            CheckBox_AnyViewportSize.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_AdaptiveViewportSize) != 0;
 
             var width:int = mParams.mViewportWidth;
             var height:int = mParams.mViewportHeight;
@@ -153,14 +146,6 @@
             else if (width == 600 && height == 600)
             {
                RadioButton_600x600.selected = true;
-            }
-            else if (width == 480 && height == 320)
-            {
-               RadioButton_480x320.selected = true;
-            }
-            else if (width == 750 && height == 500)
-            {
-               RadioButton_750x500.selected = true;
             }
             else
             {
@@ -192,8 +177,7 @@
          private function OnCustomSizeRatioClick ():void
          {
             Box_CustomSize.enabled = RadioButton_CustomSize.selected;
-            RadioButton_CustomSizeHelp1.enabled = RadioButton_CustomSize.selected;
-            RadioButton_CustomSizeHelp2.enabled = RadioButton_CustomSize.selected;
+            RadioButton_CustomSizeHelp.enabled = RadioButton_CustomSize.selected;
          }
 
          private function OnClickOkButton():void
@@ -204,6 +188,7 @@
                                     | (CheckBox_ShowSpeedAdjustor.selected ? Define.PlayerUiFlag_ShowSpeedAdjustor : 0)
                                     | (CheckBox_ShowScaleAdjustor.selected ? Define.PlayerUiFlag_ShowScaleAdjustor : 0)
                                     | (CheckBox_ShowHelpButton.selected ? Define.PlayerUiFlag_ShowHelpButton : 0)
+                                    | (CheckBox_AnyViewportSize.selected ? Define.PlayerUiFlag_AdaptiveViewportSize : 0)
                                     ;
 
             // ...
@@ -220,16 +205,6 @@
             {
                width = 600;
                height = 600;
-            }
-            else if (RadioButton_480x320.selected)
-            {
-               width = 480;
-               height = 320;
-            }
-            else if (RadioButton_750x500.selected)
-            {
-               width = 750;
-               height = 500;
             }
             else
             {

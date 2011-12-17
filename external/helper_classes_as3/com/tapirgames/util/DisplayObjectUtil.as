@@ -34,7 +34,8 @@ package com.tapirgames.util {
          var menuItem:ContextMenuItem = new ContextMenuItem(caption, addSeperator);
          if (selectedListener != null)
             menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
-         sprite.contextMenu.customItems.push (menuItem);
+         if (sprite.contextMenu != null) // sometimes, null for air app
+            sprite.contextMenu.customItems.push (menuItem);
          
          return menuItem;
       }

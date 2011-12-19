@@ -41,10 +41,6 @@ package viewer {
    import com.tapirgames.display.TextButton;
    import com.tapirgames.display.ImageButton;
 
-   import viewer.ui.UiUtil;
-   import viewer.ui.PlayHelpDialog;
-   import viewer.ui.PlayControlBar;
-
    import common.DataFormat3;
    import common.Define;
    import common.Version;
@@ -605,6 +601,7 @@ package viewer {
          if (mWorldDesignProperties.SetZoomScale == null)                    mWorldDesignProperties.SetZoomScale = DummyCallback;
          if (mWorldDesignProperties.GetViewportWidth == null)                mWorldDesignProperties.GetViewportWidth = DummyCallback_ViewSize;
          if (mWorldDesignProperties.GetViewportHeight == null)               mWorldDesignProperties.GetViewportHeight = DummyCallback_ViewSize;
+         if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
          if (mWorldDesignProperties.GetViewerUiFlags == null)                mWorldDesignProperties.GetViewerUiFlags = DummyCallback_UiFlags;
          if (mWorldDesignProperties.GetPlayBarColor == null)                 mWorldDesignProperties.GetPlayBarColor = DummyCallback_PlayBarColor;
          if (mWorldDesignProperties.Initialize == null)                      mWorldDesignProperties.Initialize = DummyCallback;
@@ -756,13 +753,13 @@ package viewer {
             // from v1.5
             mWorldPlugin.Call ("SetUiParams", {
                mWorld : mPlayerWorld,
-               OnClickRestart : mPlayControlBar.OnClickRestart,
-               IsPlaying : mPlayControlBar.IsPlaying,
-               SetPlaying : mPlayControlBar.SetPlaying,
-               GetPlayingSpeedX : mPlayControlBar.GetPlayingSpeedX,
-               SetPlayingSpeedX : mPlayControlBar.SetPlayingSpeedX,
-               GetZoomScale : mPlayControlBar.GetZoomScale,
-               SetZoomScale : mPlayControlBar.SetZoomScale
+               OnClickRestart : mUI.OnClickRestart,
+               IsPlaying : mUI.IsPlaying,
+               SetPlaying : mUI.SetPlaying,
+               GetPlayingSpeedX : mUI.GetPlayingSpeedX,
+               SetPlayingSpeedX : mUI.SetPlayingSpeedX,
+               GetZoomScale : mUI.GetZoomScale,
+               SetZoomScale : mUI.SetZoomScale
             });
 
             mWorldDesignProperties.Initialize ();
@@ -778,11 +775,11 @@ package viewer {
 
             // ...
             mPlayerWorldZoomScale = mWorldDesignProperties.GetZoomScale ();
-            mPlayControlBar.SetZoomScale (mPlayerWorldZoomScale);
+            mUI.SetZoomScale (mPlayerWorldZoomScale);
 
             if (isFirstTime)
             {
-               if (mStartRightNow) mPlayControlBar.OnClickStart ();
+               if (mStartRightNow) mUI.OnClickStart ();
             }
             
             ChangeState (StateId_Building);
@@ -881,9 +878,9 @@ package viewer {
                }
             }
 
-            if (mPlayControlBar != null)
+            if (mUI != null)
             {
-               mPlayControlBar.NotifyStepped ();
+               mUI.NotifyStepped ();
             }
          }
 
@@ -1017,7 +1014,7 @@ package viewer {
 
          mTextAuthorInfo = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, 0x0);
 
-         mFinishedDialog = UiUtil.CreateDialog ([mTextFinished, 20, mTextAuthorInfo, 20, buttonContainer]);
+         mFinishedDialog = UI.CreateDialog ([mTextFinished, 20, mTextAuthorInfo, 20, buttonContainer]);
          CenterSpriteOnWorld (mFinishedDialog);
          mFinishedDialog.visible = false;
          mFinishedDialog.alpha = 0.9;
@@ -1059,10 +1056,36 @@ package viewer {
       }
 
       private var mHelpDialog:Sprite;
+      
+      public function BuildPlayHelpDialog (onClose:Function):Sprite
+      {
+         var sprite:Sprite = new Sprite ();
+         
+         var tutorialText:String = 
+            "<font size='15' face='Verdana' color='#000000'>The goal of <b>Color Infection</b> puzzles is to infect all <font color='#FFFF00'><b>YELLOW</b></font> objects with "
+                        + "the <font color='#804000'><b>BROWN</b></font> color by colliding them with <font color='#804000'><b>BROWN</b></font> objects "
+                        + "but keep all <font color='#60FF60'><b>GREEN</b></font> objects uninfected."
+                        + "<br /><br />To play, <br/>"
+                        + "- click a <font color='#FF00FF'><b>PINK</b></font> object to destroy it,<br/>"
+                        + "- click a <font color='#000000'><b>BOMB</b></font> object to explode it."
+                        + "</font>";
+         
+         var textTutorial:TextFieldEx = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, Define.DefaultWorldWidth / 2);
+         
+         var box2dTextStr:String =  "<font size='10' face='Verdana' color='#000000'>(This player is based on fbox2d, an actionscript<br/>"
+                                                                                + "port of the famous box2d c++ physics engine.)</font>";
+         var box2dText:TextFieldEx = TextFieldEx.CreateTextField (box2dTextStr);
+         
+         var buttonCloseHelpDialog:TextButton = new TextButton ("<font face='Verdana' size='16' color='#0000FF'>   Close   </font>", onClose);
+         
+         UI.CreateDialog ([textTutorial, 20 , box2dText, 20, buttonCloseHelpDialog], sprite);
+         
+         return sprite;
+      }
 
       private function CreateHelpDialog ():void
       {
-         mHelpDialog = new PlayHelpDialog (CloseHelpDialog);
+         mHelpDialog = BuildPlayHelpDialog (CloseHelpDialog);
          CenterSpriteOnWorld (mHelpDialog);
 
          mHelpDialog.visible = false;
@@ -1084,7 +1107,13 @@ package viewer {
             mHelpDialog.visible = false;
       }
 
-      private var mPlayControlBar:PlayControlBar = null;
+      private function CenterSpriteOnWorld (sprite:Sprite):void
+      {
+         sprite.x = mWorldLayer.x + 0.5 * (mWorldDesignProperties.GetViewportWidth () - sprite.width);
+         sprite.y = mWorldLayer.y + 0.5 * (mWorldDesignProperties.GetViewportHeight () - sprite.height);
+      }
+
+      private var mUI:UI = null;
       private var mImageButtonMainMenu:ImageButton = null;
       private var mImageButtonPhyard:ImageButton = null;
 
@@ -1096,7 +1125,7 @@ package viewer {
 
          GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, mViewportWidth, Define.PlayerPlayBarThickness, mPlayBarColor, 1, true, mPlayBarColor);
 
-         mPlayControlBar = new PlayControlBar ({
+         mUI = new UI ({
                               OnRestart: OnRestart,
                               OnStart: OnStart,
                               OnPause: OnPause,
@@ -1105,9 +1134,9 @@ package viewer {
                               OnHelp: OnHelp, mShowHelpButton: mShowHelpButton,
                               OnMainMenu: null
                            });
-         mTopBarLayer.addChild (mPlayControlBar);
-         mPlayControlBar.x = 0.5 * (mTopBarLayer.width - mPlayControlBar.width);
-         mPlayControlBar.y = 2;
+         mTopBarLayer.addChild (mUI);
+         mUI.x = 0.5 * (mTopBarLayer.width - mUI.width);
+         mUI.y = 2;
 
          //GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, 0, 0, mViewerWidth - 1, mViewerHeight - 1, 0x606060);
 
@@ -1153,13 +1182,14 @@ package viewer {
             var containerWidth :Number = containerSize.x;
             var containerHeight:Number = containerSize.y;
             
-            var viewerWidth:Number = mViewerWidth;
-            var viewerHeight:Number = mViewerHeight;
+            //>>from v1.59
             if (mAdaptiveViewportSize)
             {
-               viewerWidth = containerWidth;
-               viewerHeight = containerHeight;
-            } 
+               mWorldDesignProperties.SetRealViewportSize (containerWidth, containerHeight);
+               
+               return;
+            }
+            //<<
             
             var widthRatio :Number = containerWidth  / mViewerWidth ;
             var heightRatio:Number = containerHeight / mViewerHeight;
@@ -1184,113 +1214,6 @@ package viewer {
             }
          }
       }
-
-      private function CenterSpriteOnWorld (sprite:Sprite):void
-      {
-         sprite.x = mWorldLayer.x + 0.5 * (mWorldDesignProperties.GetViewportWidth () - sprite.width);
-         sprite.y = mWorldLayer.y + 0.5 * (mWorldDesignProperties.GetViewportHeight () - sprite.height);
-      }
-
-//======================================================================
-//
-//======================================================================
-
-      /*
-      private function CheckStageSize (contentWidth:Number, contentHeight:Number):void
-      {
-         // In fact, I still don't know why this code works.
-         // Weird flash!
-
-         var defaultRatio:Number;
-         var stageRatio:Number;
-         var marginTop:Number; // default unit
-         var marginLeft:Number; // default unit
-         var scaleStageToDefault:Number;
-
-         defaultRatio = Number (App::Default_Height) / Number (App::Default_Width);
-         stageRatio = stage.stageHeight / stage.stageWidth;
-         if (defaultRatio < stageRatio)
-         {
-            marginLeft = 0;
-            marginTop = 0.5 * (Number (App::Default_Width) * stageRatio - Number (App::Default_Height));
-            scaleStageToDefault = Number (App::Default_Width) / stage.stageWidth;
-         }
-         else
-         {
-            marginLeft = 0.5 * (Number (App::Default_Height) / stageRatio - Number (App::Default_Width));
-            marginTop = 0;
-            scaleStageToDefault = Number (App::Default_Height) / stage.stageHeight;
-         }
-
-         var ratio:Number = contentHeight / contentWidth;
-         var availableWidth:Number; // stage unit
-         var availableHeight:Number; // stage unit
-         var scale:Number;
-         var topY:Number; // stage unit
-         var leftX:Number; // stage unit
-         if (Math.abs (ratio - stageRatio) < 1e-12)
-         {
-            availableWidth = stage.stageWidth;
-            availableHeight = stage.stageHeight;
-            scale = contentWidth >= contentHeight ? availableWidth / contentWidth : availableHeight / contentHeight;
-            leftX = 0;
-            topY = 0;
-         }
-         else if (ratio < stageRatio)
-         {
-            availableWidth = stage.stageWidth;
-            availableHeight = availableWidth * ratio;
-            scale = availableWidth / contentWidth;
-            leftX = 0;
-            topY = 0.5 * (stage.stageHeight - availableHeight);
-         }
-         else
-         {
-            availableHeight = stage.stageHeight;
-            availableWidth = availableHeight / ratio;
-            scale = availableHeight / contentHeight;
-            leftX = 0.5 * (stage.stageWidth - availableWidth);
-            topY = 0;
-         }
-         leftX *= scaleStageToDefault;
-         topY *= scaleStageToDefault;
-         scale *= scaleStageToDefault;
-
-         this.scaleX = this.scaleY = scale;
-         this.x =  leftX - marginLeft;
-         this.y = topY - marginTop;
-      }
-      */
-
-      /*
-      private function CheckStageSize (viewerWidth:Number, viewerHeight:Number):void
-      {
-         var containerSize:Point = mParamsFromContainer.GetViewportSize ();
-         var containerWidth :Number = containerSize.x;
-         var containerHeight:Number = containerSize.y;
-         var widthRatio :Number = containerWidth  / viewerWidth ;
-         var heightRatio:Number = containerHeight / viewerHeight;
-
-         if (widthRatio < heightRatio)
-         {
-            this.scaleX = this.scaleY = widthRatio;
-            this.x = 0;
-            this.y = 0.5 * Number (containerHeight - viewerHeight * widthRatio);
-         }
-         else if (widthRatio > heightRatio)
-         {
-            this.scaleX = this.scaleY = heightRatio;
-            this.x = 0.5 * Number (containerWidth - viewerWidth * heightRatio);
-            this.y = 0;
-         }
-         else
-         {
-            this.scaleX = this.scaleY = widthRatio;
-            this.x = 0;
-            this.y = 0;
-         }
-      }
-      */
 
 //======================================================================
 //
@@ -1522,18 +1445,18 @@ package viewer {
 
       public function IsPlaying ():Boolean
       {
-         if(mPlayControlBar == null)
+         if(mUI == null)
             return false;
 
-         return mPlayControlBar.IsPlaying ();
+         return mUI.IsPlaying ();
       }
 
       public function GetPlayingSpeedX ():int
       {
-         if(mPlayControlBar == null)
+         if(mUI == null)
             return 2;
 
-         return mPlayControlBar.GetPlayingSpeedX ();
+         return mUI.GetPlayingSpeedX ();
       }
 
       private function OnRestart (data:Object = null):void
@@ -1564,10 +1487,10 @@ package viewer {
 
       private function OnZoom (data:Object = null):void
       {
-         if (mPlayControlBar == null)
+         if (mUI == null)
             return;
 
-         mPlayerWorldZoomScale = mPlayControlBar.GetZoomScale ();
+         mPlayerWorldZoomScale = mUI.GetZoomScale ();
 
          if (mPlayerWorld == null)
             return;
@@ -1605,44 +1528,44 @@ package viewer {
             mParamsFromContainer.OnGoToPhyard (data);
       }
 
-   //=========================
-   // interfaces for editing
-   //=========================
+//===========================================================================
+// interfaces for editing
+//===========================================================================
 
       public function PlayRestart ():void
       {
-         if (mPlayControlBar != null)
-            mPlayControlBar.OnClickRestart ();
+         if (mUI != null)
+            mUI.OnClickRestart ();
       }
 
       public function PlayRun ():void
       {
-         if (mPlayControlBar != null)
-            mPlayControlBar.OnClickStart ();
+         if (mUI != null)
+            mUI.OnClickStart ();
       }
 
       public function PlayPause ():void
       {
-         if (mPlayControlBar != null)
-            mPlayControlBar.OnClickPause ();
+         if (mUI != null)
+            mUI.OnClickPause ();
       }
 
       public function PlayFaster (delta:uint):Boolean
       {
-         if (mPlayControlBar == null)
+         if (mUI == null)
             return true;
 
-         mPlayControlBar.SetPlayingSpeedX (GetPlayingSpeedX () + delta);
+         mUI.SetPlayingSpeedX (GetPlayingSpeedX () + delta);
 
          return true;
       }
 
       public function PlaySlower (delta:uint):Boolean
       {
-         if (mPlayControlBar == null)
+         if (mUI == null)
             return true;
 
-         mPlayControlBar.SetPlayingSpeedX (GetPlayingSpeedX () - delta);
+         mUI.SetPlayingSpeedX (GetPlayingSpeedX () - delta);
 
           return GetPlayingSpeedX () > 0;
       }

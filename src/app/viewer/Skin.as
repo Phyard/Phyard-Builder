@@ -4,13 +4,15 @@ package viewer {
    import flash.display.Sprite;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
+   
+   import flash.geom.Point;
 
    import com.tapirgames.display.ImageButton;
    import com.tapirgames.util.GraphicsUtil;
 
    import common.Define;
 
-   public class UI extends Sprite
+   public class Skin extends Sprite
    {
       [Embed(source="../../res/player/player-restart.png")]
       private static var IconRestart:Class;
@@ -54,7 +56,16 @@ package viewer {
 //======================================================================
 //
 //======================================================================
-
+      
+      public function GetPreferredViewerSize (viewportWidth:Number, viewportHeight:Number):Point
+      {
+         return new Point (viewportWidth, viewportHeight + Define.DefaultPlayerSkinPlayBarHeight);
+      }
+      
+//======================================================================
+//
+//======================================================================
+      
       private var _OnRestart:Function;
       private var _OnStart:Function;
       private var _OnPause:Function;
@@ -79,7 +90,9 @@ package viewer {
       private static const NumButtonSpeed:int = 5;
       private static const ButtonMargin:int = 8;
 
-      public function UI (params:Object)
+      protected var mViewer:Viewer;
+
+      public function Skin (params:Object)
       {
          _OnRestart = params.OnRestart;
          _OnStart = params.OnStart;

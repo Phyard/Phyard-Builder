@@ -399,6 +399,12 @@ package editor {
          
          //
          UpdateChildComponents ();
+         
+         // ...
+         if ( IsPlaying () )
+         {
+            UpdateDesignPalyerPosition ();
+         }
       }
       
       private var mFpsStat:FpsStat = new FpsStat ();
@@ -423,7 +429,6 @@ package editor {
                // will call mDesignPlayer.EnterFrame ()
                
                //
-               UpdateDesignPalyerPosition ();
                var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld () as player.world.World;
                var playingSteps:int = playerWorld == null ? 0 : playerWorld.GetSimulatedSteps ();
                StatusBar_SetRunningSteps ("Step#" + playingSteps);
@@ -1738,10 +1743,13 @@ package editor {
       {
          if (mDesignPlayer != null)
          {
-            var playerSize:Point = GetViewportSize ();
+            //var playerSize:Point = GetViewportSize ();
+            //
+            //mDesignPlayer.x = Math.round ((mViewWidth - playerSize.x) / 2);
+            //mDesignPlayer.y = Math.round ((mViewHeight - playerSize.y) / 2);
             
-            mDesignPlayer.x = Math.round ((mViewWidth - playerSize.x) / 2);
-            mDesignPlayer.y = Math.round ((mViewHeight - playerSize.y) / 2);
+            // new implemeation be compatible with UniViewer and GamePackager
+            mDesignPlayer.OnContainerResized ();
          }
       }
       
@@ -1771,18 +1779,22 @@ package editor {
       
       private function GetViewportSize ():Point
       {
+         /*
          var viewerUiFlags:int = mEditorWorld.GetViewerUiFlags ();
          var viewportWidth:int = mEditorWorld.GetViewportWidth ();
          var viewportHeight:int = mEditorWorld.GetViewportHeight ();
          
          if ((viewerUiFlags & Define.PlayerUiFlag_ShowPlayBar) != 0)
          {
-            return new Point (viewportWidth, viewportHeight + Define.PlayerPlayBarThickness);
+            return new Point (viewportWidth, viewportHeight + Define.DefaultPlayerSkinPlayBarHeight);
          }
          else
          {
             return new Point (viewportWidth, viewportHeight);
          }
+         */
+         
+         return new Point (mViewWidth, mViewHeight);
       }
       
       public function Play_RunRestart (keepPauseStatus:Boolean = false):void
@@ -2612,7 +2624,7 @@ package editor {
             var width:int = mEditorWorld.GetViewportWidth ();
             var height:int = mEditorWorld.GetViewportHeight ();
             var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
-            var heightWithPlayBar:int = (showPlayBar ? height + Define.PlayerPlayBarThickness : height);
+            var heightWithPlayBar:int = (showPlayBar ? height + Define.DefaultPlayerSkinPlayBarHeight : height);
             
             var fileFormatVersionString:String = DataFormat3.GetVersionHexString (Version.VersionNumber);
             

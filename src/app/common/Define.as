@@ -47,7 +47,7 @@ package common {
       public static const LargeWorldHalfWidth:int = 12000; 
       public static const LargeWorldHalfHeight:int = 12000; 
       
-      public static const PlayerPlayBarThickness:int = 20;
+      public static const DefaultPlayerSkinPlayBarHeight:int = 20;
       public static const DefaultPlayerWidth:int = 500; //600; 
       public static const DefaultPlayerHeight:int = 500; //600; 
       

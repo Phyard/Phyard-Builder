@@ -6,6 +6,7 @@ package viewer {
    import flash.display.BitmapData;
    
    import flash.geom.Point;
+   import flash.geom.Rectangle;
 
    import com.tapirgames.display.ImageButton;
    import com.tapirgames.util.GraphicsUtil;
@@ -14,83 +15,9 @@ package viewer {
 
    public class Skin extends Sprite
    {
-      [Embed(source="../../res/player/player-restart.png")]
-      private static var IconRestart:Class;
-      [Embed(source="../../res/player/player-restart-disabled.png")]
-      private static var IconRestartDisabled:Class;
-      [Embed(source="../../res/player/player-start.png")]
-      private static var IconStart:Class;
-      [Embed(source="../../res/player/player-pause.png")]
-      private static var IconPause:Class;
-
-      [Embed(source="../../res/player/player-help.png")]
-      private static var IconHelp:Class;
-
-      [Embed(source="../../res/player/player-speed.png")]
-      private static var IconSpeed:Class;
-      [Embed(source="../../res/player/player-speed-selected.png")]
-      private static var IconSpeedSelected:Class;
-
-      [Embed(source="../../res/player/player-zoom-in.png")]
-      private static var IconZoomIn:Class;
-      [Embed(source="../../res/player/player-zoom-in-disabled.png")]
-      private static var IconZoomInDisabled:Class;
-      [Embed(source="../../res/player/player-zoom-out.png")]
-      private static var IconZoomOut:Class;
-      [Embed(source="../../res/player/player-zoom-out-disabled.png")]
-      private static var IconZoomOutDisabled:Class;
-
-      private var mBitmapDataRetart:BitmapData = new IconRestart ().bitmapData;
-      private var mBitmapDataRetartDisabled:BitmapData = new IconRestartDisabled ().bitmapData;
-      private var mBitmapDataStart:BitmapData = new IconStart ().bitmapData;
-      private var mBitmapDataPause:BitmapData = new IconPause ().bitmapData;
-      private var mBitmapDataHelp:BitmapData  = new IconHelp ().bitmapData;
-      private var mBitmapDataSpeed:BitmapData  = new IconSpeed ().bitmapData;
-      private var mBitmapDataSpeedSelected:BitmapData  = new IconSpeedSelected ().bitmapData;
-
-      private var mBitmapDataZoomIn:BitmapData  = new IconZoomIn ().bitmapData;
-      private var mBitmapDataZoomInDisabled:BitmapData  = new IconZoomInDisabled ().bitmapData;
-      private var mBitmapDataZoomOut:BitmapData  = new IconZoomOut ().bitmapData;
-      private var mBitmapDataZoomOutDisabled:BitmapData  = new IconZoomOutDisabled ().bitmapData;
-
 //======================================================================
 //
 //======================================================================
-      
-      public function GetPreferredViewerSize (viewportWidth:Number, viewportHeight:Number):Point
-      {
-         return new Point (viewportWidth, viewportHeight + Define.DefaultPlayerSkinPlayBarHeight);
-      }
-      
-//======================================================================
-//
-//======================================================================
-      
-      private var _OnRestart:Function;
-      private var _OnStart:Function;
-      private var _OnPause:Function;
-      private var _OnSpeed:Function;
-      private var _OnHelp:Function;
-
-      private var _OnZoom:Function;
-
-      private var mIsPlaying:Boolean = false;
-      private var mPlayingSpeedX:int = 2;
-
-      private var mZoomScale:Number = 1.0;
-
-      private var mButtonRestart:ImageButton;
-      private var mButtonStartPause:ImageButton;
-      private var mButtonHelp:ImageButton;
-      private var mButtonSpeeds:Array;
-
-      private var mButtonZoomIn:ImageButton;
-      private var mButtonZoomOut:ImageButton;
-
-      private static const NumButtonSpeed:int = 5;
-      private static const ButtonMargin:int = 8;
-
-      protected var mViewer:Viewer;
 
       public function Skin (params:Object)
       {
@@ -100,247 +27,179 @@ package viewer {
          _OnSpeed = params.OnSpeed;
          _OnHelp = params.OnHelp;
          _OnZoom = params.OnZoom;
+      }
+      
+//======================================================================
+// viewer interfaces for skin
+//======================================================================
+      
+      // interfaces from viewer
+      private var _OnRestart:Function;
+      private var _OnStart:Function;
+      private var _OnPause:Function;
+      private var _OnSpeed:Function;
+      private var _OnZoom:Function;
+      private var _OnHelp:Function;
+      
+//======================================================================
+// skin interfaces for viewer
+//======================================================================
+      
+      // ...
+      protected var mViewerWidth :Number;
+      protected var mViewerHeight:Number;
 
-         mIsPlaying = false;
+      // ...
+      private var mIsStarted:Boolean = false;
+      private var mIsPlaying:Boolean = false;
+      private var mPlayingSpeedX:int = 2;
+      private var mZoomScale:Number = 1.0;
 
-         var bar:Sprite = new Sprite ();
-
-         var i:int;
-         var buttonX:Number = 0;
-
-      // restart start/pause, stop
-
-         mButtonRestart = new ImageButton (mBitmapDataRetartDisabled);
-         addChild (mButtonRestart);
-
-         mButtonRestart.x = buttonX;
-         buttonX += mButtonRestart.width;
-
-         mButtonStartPause = new ImageButton (mBitmapDataStart);
-         mButtonStartPause.SetClickEventHandler (OnClickStart);
-         addChild (mButtonStartPause);
-
-         mButtonStartPause.x = buttonX;
-         buttonX += mButtonStartPause.width;
-
-         buttonX += ButtonMargin;
-
-      // speed
-
-         mButtonSpeeds = new Array (5);
-
-         for (i = 0; i < NumButtonSpeed; ++ i)
-         {
-            mButtonSpeeds [i] = new ImageButton (mBitmapDataSpeed, i);
-
-            if (mButtonShown [i] && params.mShowSpeedAdjustor)
-            {
-               mButtonSpeeds [i].SetClickEventHandler (OnClickSpeed);
-
-               addChild (mButtonSpeeds[i]);
-
-               mButtonSpeeds[i].x = buttonX;
-               buttonX += mButtonSpeeds[i].width - 1;
-            }
-         }
-
-         buttonX += ButtonMargin;
-
-      // zoom
-
-         mButtonZoomIn = new ImageButton (mBitmapDataZoomIn);
-         mButtonZoomOut = new ImageButton (mBitmapDataZoomOut);
-
-         if (params.mShowScaleAdjustor)
-         {
-            mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
-            addChild (mButtonZoomIn);
-
-            mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
-            addChild (mButtonZoomOut);
-
-            mButtonZoomIn.x = buttonX;
-            buttonX += mButtonZoomIn.width;
-            mButtonZoomOut.x = buttonX;
-            buttonX += mButtonZoomOut.width;
-            buttonX += ButtonMargin;
-         }
-
-      // help
-
-         mButtonHelp = new ImageButton (mBitmapDataHelp);
-
-         if (params.mShowHelpButton)
-         {
-            mButtonHelp.SetClickEventHandler (OnClickHelp);
-            addChild (mButtonHelp);
-
-            mButtonHelp.x = buttonX;
-            buttonX += mButtonHelp.width;
-            buttonX += ButtonMargin;
-         }
-
-      //
-
-         OnClickSpeed (1); // speed X2
+      final public function SetViewerSize (viewerWidth:Number, viewerHeight:Number):void
+      {
+         mViewerWidth  = viewerWidth;
+         mViewerHeight = viewerHeight;
+      }
+      
+      // should call after SetViewerSize
+      public function GetContentRegion ():Rectangle
+      {
+         return new Rectangle (0, 0, mViewerWidth, mViewerHeight); // to override
+      }
+      
+      public function GetPreferredViewerSize (viewportWidth:Number, viewportHeight:Number):Point
+      {
+         return new Point (viewportWidth, viewportHeight); // to override
+      }
+      
+      public function Rebuild (params:Object):void
+      {
+         // to override
       }
 
-      public function IsPlaying ():Boolean
+      final public function IsStarted ():Boolean
+      {
+         return mIsStarted;
+      }
+      
+      final public function NotifyStarted ():void
+      {
+         if (mIsStarted)
+            return;
+         
+         mIsStarted = true;
+         
+         OnStartedChanged ();
+      }
+      
+      final public function Restart ():void
+      {
+         mIsStarted = false;
+         
+         if (_OnRestart != null)
+            _OnRestart ();
+         
+         OnStartedChanged ();
+      }
+      
+      protected function OnStartedChanged ():void
+      {
+         // to override
+      }
+
+      final public function IsPlaying ():Boolean
       {
          return mIsPlaying;
       }
 
-      public function SetPlaying (playing:Boolean):void
+      final public function SetPlaying (playing:Boolean):void
       {
-         if (mIsPlaying != playing)
+         if (mIsPlaying == playing)
+            return;
+         
+         mIsPlaying = playing;
+         
+         if (mIsPlaying)
          {
-            if (playing)
-               OnClickStart ();
-            else
-               OnClickPause ();
+            if (_OnStart != null)
+               _OnStart ();
          }
+         else
+         {
+            if (_OnPause != null)
+               _OnPause ();
+         }
+         
+         OnPlayingChanged ();
+      }
+      
+      protected function OnPlayingChanged ():void
+      {
+         // to override
       }
 
-      public function GetPlayingSpeedX ():int
+      final public function GetPlayingSpeedX ():int
       {
          return mPlayingSpeedX;
       }
 
-      public function GetZoomScale ():Number
-      {
-         return mZoomScale;
-      }
-
-      public function SetZoomScale (zoomScale:Number, smoothly:Boolean = true):void
-      {
-         var oldScale:Number = mZoomScale;
-
-         mZoomScale = zoomScale;
-
-         if ( mZoomScale <= Define.MinWorldZoomScale)
-         {
-            mZoomScale = Define.MinWorldZoomScale;
-
-            mButtonZoomOut.SetBitmapData (mBitmapDataZoomOutDisabled);
-            mButtonZoomOut.SetClickEventHandler (null);
-         }
-         else if (oldScale <= Define.MinWorldZoomScale)
-         {
-            mButtonZoomOut.SetBitmapData (mBitmapDataZoomOut);
-            mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
-         }
-
-         if ( mZoomScale >= Define.MaxWorldZoomScale)
-         {
-            mZoomScale = Define.MaxWorldZoomScale;
-
-            mButtonZoomIn.SetBitmapData (mBitmapDataZoomInDisabled);
-            mButtonZoomIn.SetClickEventHandler (null);
-         }
-         else if (oldScale >= Define.MaxWorldZoomScale)
-         {
-            mButtonZoomIn.SetBitmapData (mBitmapDataZoomIn);
-            mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
-         }
-
-         if (_OnZoom != null)
-            _OnZoom (smoothly);
-      }
-
-      public function NotifyStepped ():void
-      {
-         mButtonRestart.SetBitmapData (mBitmapDataRetart);
-         mButtonRestart.SetClickEventHandler (OnClickRestart);
-      }
-
-//======================================================================
-//
-//======================================================================
-
-      public function OnClickStart (data:Object = null):void
-      {
-         mIsPlaying = true;
-
-         mButtonRestart.SetBitmapData (mBitmapDataRetart);
-         mButtonRestart.SetClickEventHandler (OnClickRestart);
-
-         mButtonStartPause.SetBitmapData (mBitmapDataPause);
-         mButtonStartPause.SetClickEventHandler (OnClickPause);
-
-         if (_OnStart != null)
-            _OnStart ();
-      }
-
-      public function OnClickRestart (data:Object = null):void
-      {
-         if (mIsPlaying)
-         {
-            //OnClickStart (null);
-         }
-         else
-         {
-            mButtonRestart.SetBitmapData (mBitmapDataRetartDisabled);
-            mButtonRestart.SetClickEventHandler (null);
-            OnClickPause (null);
-         }
-
-         if (_OnRestart != null)
-            _OnRestart ();
-      }
-
-      public function OnClickPause (data:Object = null):void
-      {
-         mIsPlaying = false;
-
-         mButtonStartPause.SetBitmapData (mBitmapDataStart);
-         mButtonStartPause.SetClickEventHandler (OnClickStart);
-
-         if (_OnPause != null)
-            _OnPause ();
-      }
-
-      private static const ButtonIndex2SpeedXTable:Array = [1, 2, 3, 4, 5];
-      private static var mButtonShown:Array = [true, true, false, true, false];
-
-      public function OnClickSpeed (data:Object):void
-      {
-         var index:int = int (data);
-         if (index < 0) index = 0;
-         if (index >= NumButtonSpeed) index = NumButtonSpeed - 1;
-
-         SetPlayingSpeedX (ButtonIndex2SpeedXTable [index]);
-      }
-
-      public function SetPlayingSpeedX (speedX:int):void
+      final public function SetPlayingSpeedX (speedX:int):void
       {
          if (speedX < 0)
             speedX = 0;
 
+         if (mPlayingSpeedX == speedX)
+            return;
+         
+         var oldSpeedX:int = mPlayingSpeedX;
          mPlayingSpeedX = speedX;
-
-         for (var i:int = 0; i < NumButtonSpeed; ++ i)
-         {
-            if (ButtonIndex2SpeedXTable [i] == speedX)
-               mButtonSpeeds [i].SetBitmapData (mBitmapDataSpeedSelected);
-            else
-               mButtonSpeeds [i].SetBitmapData (mBitmapDataSpeed);
-         }
-
+         
          if (_OnSpeed != null)
             _OnSpeed ();
+         
+         OnPlayingSpeedXChanged (oldSpeedX);
       }
-
-      private function OnClickZoomIn (data:Object):void
+      
+      protected function OnPlayingSpeedXChanged (oldSpeedX:int):void
       {
-         SetZoomScale (mZoomScale * 2.0);
+         // to override
       }
 
-      private function OnClickZoomOut (data:Object):void
+      final public function GetZoomScale ():Number
       {
-         SetZoomScale (mZoomScale * 0.5);
+         return mZoomScale;
       }
 
-      private function OnClickHelp (data:Object):void
+      final public function SetZoomScale (zoomScale:Number, smoothly:Boolean = true):void
+      {
+         if ( zoomScale <= Define.MinWorldZoomScale)
+         {
+            zoomScale = Define.MinWorldZoomScale;
+         }
+
+         if ( zoomScale >= Define.MaxWorldZoomScale)
+         {
+            zoomScale = Define.MaxWorldZoomScale;
+         }
+         
+         if (mZoomScale == zoomScale)
+            return;
+         
+         var oldZoonScale:Number = mZoomScale;
+         mZoomScale = zoomScale;
+
+         if (_OnZoom != null)
+            _OnZoom (smoothly);
+         
+         OnZoomScaleChanged (oldZoonScale);
+      }
+      
+      protected function OnZoomScaleChanged (oldZoonScale:Number):void
+      {
+         // to override
+      }
+
+      final public function ShowHelpDialog ():void
       {
          if (_OnHelp != null)
             _OnHelp ();

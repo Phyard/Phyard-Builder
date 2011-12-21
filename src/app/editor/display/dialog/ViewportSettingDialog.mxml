@@ -68,7 +68,6 @@
             </mx:HBox>
             <mx:HBox width="100%">
                <mx:HBox width="50%" horizontalAlign="left">
-                  <mx:Spacer width="30"/>
                   <mx:CheckBox id="CheckBox_AnyViewportSize" label="Self Adaptive (occupy full space)"/>
                </mx:HBox>
             </mx:HBox>

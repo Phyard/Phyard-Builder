@@ -22,6 +22,7 @@
             <mx:Spacer width="10"/>
             <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_ViewportSize" value="viewport"
                 label="Same As Preferred Viewport Size"/>
+            <mx:Label id="Label_ViewportSize" text=""/>
          </mx:HBox>
          <mx:HBox id="Box_CustomViewportSize1" width="100%">
             <mx:Spacer width="100%"/>
@@ -117,6 +118,8 @@
          private var OnClose:Function = null;
 
          private var mParams:Object;
+         
+         private var mRadioButton_ViewportSize_InitialLabel:String = null;
 
          public function SetValues (initialValues:Object):void
          {
@@ -165,8 +168,10 @@
                RadioButton_InfinteSize.selected = false;
                RadioButton_CustomSize.selected = true;
             }
-
-            RadioButton_ViewportSize.label = "Viewport Size (width: " + mParams.mViewportWidth + ", height: "+ mParams.mViewportHeight + ")";
+            
+            if (mRadioButton_ViewportSize_InitialLabel == null)
+               mRadioButton_ViewportSize_InitialLabel = RadioButton_ViewportSize.label;
+            RadioButton_ViewportSize.label = mRadioButton_ViewportSize_InitialLabel + " (width: " + mParams.mViewportWidth + ", height: "+ mParams.mViewportHeight + ")";
 
             NumericStepper_CustomLeft_ViewportSize.value = mParams.mWorldLeft;
             NumericStepper_CustomTop_ViewportSize.value = mParams.mWorldTop;

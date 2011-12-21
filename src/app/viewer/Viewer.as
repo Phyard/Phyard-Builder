@@ -4,6 +4,8 @@ package viewer {
    import flash.utils.ByteArray;
 
    import flash.geom.Point;
+   import flash.geom.Rectangle;
+   
    import flash.display.DisplayObject;
    import flash.display.Sprite;
    import flash.display.Bitmap;
@@ -92,17 +94,17 @@ package viewer {
 
          if (mMaskViewerField)
          {
-            if (! contains (mMaskShape))
-               addChild (mMaskShape);
+            if (! mContentLayer.contains (mViewportMaskShape))
+               mContentLayer.addChild (mViewportMaskShape);
 
-            this.mask = mMaskShape;
+            mContentLayer.mask = mViewportMaskShape;
          }
          else
          {
-            if (contains (mMaskShape))
-               removeChild (mMaskShape);
+            if (mContentLayer.contains (mViewportMaskShape))
+               mContentLayer.removeChild (mViewportMaskShape);
 
-            this.mask = null;
+            mContentLayer.mask = null;
          }
       }
 
@@ -130,8 +132,6 @@ package viewer {
          private var mAdaptiveViewportSize:Boolean;
          private var mViewportWidth:int;
          private var mViewportHeight:int;
-         private var mViewerWidth:Number;
-         private var mViewerHeight:Number;
 
       private var mIsPlaying:Boolean = false;
       private var mPlayingSpeedX:int = 2;
@@ -139,13 +139,13 @@ package viewer {
       private var mPlayerWorldZoomScale:Number = 1.0;
       private var mPlayerWorldZoomScaleChangedSpeed:Number = 0.0;
 
-      private var mWorldLayer:Sprite = new Sprite ();
+      private var mContentLayer:Sprite = new Sprite ();
+         private var mWorldLayer:Sprite = new Sprite ();
+         private var mViewportMaskShape:Sprite = new Sprite ();
       private var mSkinLayer:Sprite = new Sprite ();
       //private var mErrorMessageLayer:Sprite = new Sprite ();
       private var mFinishedTextLayer:Sprite = new Sprite ();
       private var mDialogLayer:Sprite = new Sprite ();
-
-      private var mMaskShape:Sprite = new Sprite ();
 
 //======================================================================
 //
@@ -160,7 +160,8 @@ package viewer {
          if (params == null) // strange: flash auto instance this class when loading done. shit!
             return;
 
-         addChild (mWorldLayer);
+         addChild (mContentLayer)
+            mContentLayer.addChild (mWorldLayer);
          addChild (mSkinLayer);
          //addChild (mErrorMessageLayer);
          addChild (mFinishedTextLayer);
@@ -263,6 +264,7 @@ package viewer {
             case StateId_Loading:
                break;
             case StateId_LoadingError:
+               
                break;
             case StateId_Building:
                if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
@@ -609,8 +611,6 @@ package viewer {
          mAdaptiveViewportSize = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_AdaptiveViewportSize) != 0);
          mViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
          mViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
-         mViewerWidth = mViewportWidth;
-         mViewerHeight = mShowPlayBar ? (Define.DefaultPlayerSkinPlayBarHeight + mViewportHeight) : mViewportHeight;
       }
 
       private function DummyCallback (param1:Object = null, param2:Object = null, param3:Object = null):void
@@ -738,7 +738,7 @@ package viewer {
             // from v1.5
             mWorldPlugin.Call ("SetUiParams", {
                mWorld : mPlayerWorld,
-               OnClickRestart : mSkin.OnClickRestart,
+               OnClickRestart : mSkin.Restart,
                IsPlaying : mSkin.IsPlaying,
                SetPlaying : mSkin.SetPlaying,
                GetPlayingSpeedX : mSkin.GetPlayingSpeedX,
@@ -764,7 +764,7 @@ package viewer {
 
             if (isFirstTime)
             {
-               if (mStartRightNow) mSkin.OnClickStart ();
+               if (mStartRightNow) mSkin.SetPlaying (true);
             }
             
             ChangeState (StateId_Building);
@@ -865,7 +865,7 @@ package viewer {
 
             if (mSkin != null)
             {
-               mSkin.NotifyStepped ();
+               mSkin.NotifyStarted ();
             }
          }
 
@@ -922,13 +922,12 @@ package viewer {
 //======================================================================
 
       private var mFinishedDialog:Sprite;
-
-      private var mTextFinished:TextFieldEx;
-      private var mTextAuthorInfo:TextFieldEx;
-      private var mButtonMainMenu:TextButton;
-      private var mButtonNextLevel:TextButton;
-      private var mButtonReplay:TextButton;
-      private var mButtonCloseFinishDialog:TextButton;
+         private var mTextFinished:TextFieldEx;
+         private var mTextAuthorInfo:TextFieldEx;
+         private var mButtonMainMenu:TextButton;
+         private var mButtonNextLevel:TextButton;
+         private var mButtonReplay:TextButton;
+         private var mButtonCloseFinishDialog:TextButton;
 
       private var mEverFinished:Boolean = false;
 
@@ -1097,30 +1096,37 @@ package viewer {
 
       private function BuildSkin ():void
       {
-         OnContainerResized ();
-
          // play bar
 
-         GraphicsUtil.ClearAndDrawRect (mSkinLayer, 0, 0, mViewportWidth, Define.DefaultPlayerSkinPlayBarHeight, mPlayBarColor, 1, true, mPlayBarColor);
+         var skinParams:Object = {
+                  OnRestart: OnRestart,
+                  OnStart: OnStart,
+                  OnPause: OnPause,
+                  OnSpeed: OnSpeed,
+                  OnZoom: OnZoom,
+                  OnHelp: OnHelp,
+                  OnMainMenu: null
+               };
 
-         mSkin = new Skin (
-                        {
-                           OnRestart: OnRestart,
-                           OnStart: OnStart,
-                           OnPause: OnPause,
-                           OnSpeed: OnSpeed, mShowSpeedAdjustor: mShowSpeedAdjustor,
-                           OnZoom: OnZoom, mShowScaleAdjustor: mShowScaleAdjustor && (mParamsFromContainer.mHideScaleButtons == undefined || mParamsFromContainer.mHideScaleButtons == false),
-                           OnHelp: OnHelp, mShowHelpButton: mShowHelpButton,
-                           OnMainMenu: null
-                        });
+         if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0)
+            mSkin = new Skin (skinParams);
+         else
+            mSkin = new SkinPC (skinParams);
+         
          mSkinLayer.addChild (mSkin);
-         mSkin.x = 0.5 * (mSkinLayer.width - mSkin.width);
-         mSkin.y = 2;
+         //mSkin.x = 0.5 * (mSkinLayer.width - mSkin.width);
+         //mSkin.y = 2;
+         //
+         //mSkinLayer.visible = mShowPlayBar;
+         //mSkinLayer.x = 0;
+         //mSkinLayer.y = 0;
 
-         mSkinLayer.visible = mShowPlayBar;
-         mSkinLayer.x = 0;
-         mSkinLayer.y = 0;
-
+         // mask
+         SetMaskViewerField (mMaskViewerField);
+         
+         // adjust positions of layers
+         OnContainerResized ();
+         
          // main menu
          if (mParamsFromContainer.OnMainMenu != null)
          {
@@ -1140,20 +1146,6 @@ package viewer {
             mImageButtonPhyard.x = mViewportWidth - mImageButtonPhyard.width - 2;
             mImageButtonPhyard.y = 2;
          }
-
-         // mask
-         GraphicsUtil.ClearAndDrawRect (mMaskShape, 0, 0, mViewerWidth, mViewerHeight, 0x0, -1, true);
-         if (mMaskViewerField)
-         {
-            addChild (mMaskShape);
-            this.mask = mMaskViewerField ? mMaskShape : null;
-         }
-
-         // ...
-         if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
-            mWorldLayer.y = mSkinLayer.y + mSkinLayer.height;
-         else
-            mWorldLayer.y = mSkinLayer.y;
       }
 
       public function OnContainerResized ():void
@@ -1161,50 +1153,114 @@ package viewer {
          var containerSize:Point = mParamsFromContainer.GetViewportSize ();
          var containerWidth :Number = containerSize.x;
          var containerHeight:Number = containerSize.y;
+       
+         if (mSkin == null || mPlayerWorld == null || mWorldDesignProperties == null)
+            return;
+         
+         // position this
+         
+         var viewerWidth:Number;
+         var viewerHeight:Number;
          
          if (mParamsFromEditor != null)
          {
-            if (mSkin != null && mWorldDesignProperties != null)
-            {
-               var preferredViewerSize:Point = mSkin.GetPreferredViewerSize (mWorldDesignProperties.GetViewportWidth (), mWorldDesignProperties.GetViewportHeight ());
-               
-               this.x = Math.round ((containerWidth  - preferredViewerSize.x) / 2);
-               this.y = Math.round ((containerHeight - preferredViewerSize.y) / 2);
-            }
+            // put at center in container
+            
+            var preferredViewerSize:Point = mSkin.GetPreferredViewerSize (mViewportWidth, mViewportHeight);
+            
+            viewerWidth  = preferredViewerSize.x;
+            viewerHeight = preferredViewerSize.y;
+         
+            this.x = Math.round ((containerWidth  - viewerWidth ) / 2);
+            this.y = Math.round ((containerHeight - viewerHeight) / 2);
          }
          else //if (mParamsFromUniViewer != null || mParamsFromGamePackage != null)
          {
-            //>>from v1.59
-            //if (mAdaptiveViewportSize)
-            //{
-            //   mWorldDesignProperties.SetRealViewportSize (containerWidth, containerHeight);
-            //   
-            //   return;
-            //}
-            //<<
+            // fill all container space
             
-            var widthRatio :Number = containerWidth  / mViewerWidth ;
-            var heightRatio:Number = containerHeight / mViewerHeight;
-
-            if (widthRatio < heightRatio)
-            {
-               this.scaleX = this.scaleY = widthRatio;
-               this.x = 0;
-               this.y = 0.5 * Number (containerHeight - mViewerHeight * widthRatio);
-            }
-            else if (widthRatio > heightRatio)
-            {
-               this.scaleX = this.scaleY = heightRatio;
-               this.x = 0.5 * Number (containerWidth - mViewerWidth * heightRatio);
-               this.y = 0;
-            }
-            else
-            {
-               this.scaleX = this.scaleY = widthRatio;
-               this.x = 0;
-               this.y = 0;
-            }
+            viewerWidth  = containerWidth;
+            viewerHeight = containerHeight;
+            
+            this.x = this.y = 0.0;
          }
+         
+         // rebuild skin
+         
+         mSkin.SetViewerSize (viewerWidth, viewerHeight);
+         
+         mSkin.Rebuild ({
+                  mPlayBarColor : mPlayBarColor,
+                  mShowSpeedAdjustor: mShowSpeedAdjustor,
+                  mShowScaleAdjustor: mShowScaleAdjustor && (mParamsFromContainer.mHideScaleButtons == undefined || mParamsFromContainer.mHideScaleButtons == false),
+                  mShowHelpButton: mShowHelpButton
+                  });
+         
+         // position content layer
+         
+         var contentRegion:Rectangle = mSkin.GetContentRegion ();
+
+         mContentLayer.x = contentRegion.x;
+         mContentLayer.y = contentRegion.y;
+         
+         // position world layer
+            
+         var widthRatio :Number = contentRegion.width  / mViewportWidth ;
+         var heightRatio:Number = contentRegion.height / mViewportHeight;
+
+         if (widthRatio < heightRatio)
+         {
+            mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
+            mWorldLayer.y = 0.5 * Number (contentRegion.height - mViewportHeight * widthRatio);
+         }
+         else if (widthRatio > heightRatio)
+         {
+            mWorldLayer.scaleX = mWorldLayer.scaleY = heightRatio;
+            mWorldLayer.x = 0.5 * Number (contentRegion.width - mViewportWidth * heightRatio);
+         }
+         else
+         {
+            mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
+         }
+         
+         // position and rebuild viewport mask shape
+         
+         var halfContnetSpaceWidth:Number  = 0.5 * contentRegion.width;
+         var halfContentSpaceHeight:Number = 0.5 * contentRegion.height;
+         
+         mViewportMaskShape.x = halfContnetSpaceWidth;
+         mViewportMaskShape.y = halfContentSpaceHeight;
+         
+         if (mAdaptiveViewportSize)
+         {
+            // fill the full content space
+            
+            mViewportMaskShape.scaleX = mViewportMaskShape.scaleY = 1.0;
+            GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
+                              -halfContnetSpaceWidth, -halfContentSpaceHeight, contentRegion.width, contentRegion.height, 
+                              0x0, -1, true);
+            
+            //world.SetRealViewportSize (contentRegion.width / mWorldLayer.scaleX, contentRegion.height / mWorldLayer.scaleY);
+         }
+         else
+         {
+            // overlap the preferred viewport size region
+            
+            mViewportMaskShape.scaleX = mWorldLayer.scaleX;
+            mViewportMaskShape.scaleY = mWorldLayer.scaleY;
+            GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
+                              - 0.5 * mViewportWidth, - 0.5 * mViewportHeight, mViewportWidth, mViewportHeight, 
+                              0x0, -1, true);
+            
+            //world.SetRealViewportSize (mViewportWidth, mViewportHeight);
+         }
+         
+         // 1. remove mViewerWidth, ..., useless variables
+         // 2. main munu button -> Skin
+         // 3. help dialog -> Skin
+         
+         // message layer
+         
+         //world.SetRealViewportSize
       }
 
 //======================================================================
@@ -1445,7 +1501,7 @@ package viewer {
 
       public function GetPlayingSpeedX ():int
       {
-         if(mSkin == null)
+         if (mSkin == null)
             return 2;
 
          return mSkin.GetPlayingSpeedX ();
@@ -1527,19 +1583,19 @@ package viewer {
       public function PlayRestart ():void
       {
          if (mSkin != null)
-            mSkin.OnClickRestart ();
+            mSkin.Restart ();
       }
 
       public function PlayRun ():void
       {
          if (mSkin != null)
-            mSkin.OnClickStart ();
+            mSkin.SetPlaying (true);
       }
 
       public function PlayPause ():void
       {
          if (mSkin != null)
-            mSkin.OnClickPause ();
+            mSkin.SetPlaying (false);
       }
 
       public function PlayFaster (delta:uint):Boolean

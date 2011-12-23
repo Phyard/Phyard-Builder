@@ -117,6 +117,8 @@ package viewer {
          RebuildPlayBar (params);
          //RebuildHelpDialog ();
          //RebuildLevelFinishedDialog ();
+         CenterSpriteOnContentRegion (mLevelFinishedDialogLayer);
+         CenterSpriteOnContentRegion (mHelpDialog);
       }
 
       override protected function OnStartedChanged ():void
@@ -287,13 +289,17 @@ package viewer {
       
       private var mPlayBar:Sprite  = null;
       
-         private var mButtonRestart:ImageButton;
-         private var mButtonStartPause:ImageButton;
-         private var mButtonHelp:ImageButton;
-         private var mButtonSpeeds:Array;
+         private var mBasicButtonBar:Sprite;
+            private var mButtonRestart:ImageButton;
+            private var mButtonStartPause:ImageButton;
+            private var mButtonHelp:ImageButton;
+            private var mButtonSpeeds:Array;
    
-         private var mButtonZoomIn:ImageButton;
-         private var mButtonZoomOut:ImageButton;
+            private var mButtonZoomIn:ImageButton;
+            private var mButtonZoomOut:ImageButton;
+         
+         private var mButtonMainMenu:ImageButton;
+         private var mButtonGoToPhyard:ImageButton;
       
       private function RebuildPlayBar (params:Object):void
       {
@@ -309,7 +315,7 @@ package viewer {
             mPlayBarLayer.addChild (mPlayBar);
             
             // ...
-            var basicButtonBar:Sprite = new Sprite ();
+            mBasicButtonBar = new Sprite ();
             
             var i:int;
             var buttonX:Number = 0;
@@ -317,14 +323,14 @@ package viewer {
             // restart start/pause, stop
    
             mButtonRestart = new ImageButton (mBitmapDataRetartDisabled);
-            basicButtonBar.addChild (mButtonRestart);
+            mBasicButtonBar.addChild (mButtonRestart);
    
             mButtonRestart.x = buttonX;
             buttonX += mButtonRestart.width;
    
             mButtonStartPause = new ImageButton (mBitmapDataStart);
             mButtonStartPause.SetClickEventHandler (OnClickStart);
-            basicButtonBar.addChild (mButtonStartPause);
+            mBasicButtonBar.addChild (mButtonStartPause);
    
             mButtonStartPause.x = buttonX;
             buttonX += mButtonStartPause.width;
@@ -343,7 +349,7 @@ package viewer {
                {
                   mButtonSpeeds [i].SetClickEventHandler (OnClickSpeed);
    
-                  basicButtonBar.addChild (mButtonSpeeds[i]);
+                  mBasicButtonBar.addChild (mButtonSpeeds[i]);
    
                   mButtonSpeeds[i].x = buttonX;
                   buttonX += mButtonSpeeds[i].width - 1;
@@ -360,10 +366,10 @@ package viewer {
             if (params.mShowScaleAdjustor)
             {
                mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
-               basicButtonBar.addChild (mButtonZoomIn);
+               mBasicButtonBar.addChild (mButtonZoomIn);
    
                mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
-               basicButtonBar.addChild (mButtonZoomOut);
+               mBasicButtonBar.addChild (mButtonZoomOut);
    
                mButtonZoomIn.x = buttonX;
                buttonX += mButtonZoomIn.width;
@@ -379,7 +385,7 @@ package viewer {
             if (params.mShowHelpButton)
             {
                mButtonHelp.SetClickEventHandler (OnClickHelp);
-               basicButtonBar.addChild (mButtonHelp);
+               mBasicButtonBar.addChild (mButtonHelp);
    
                mButtonHelp.x = buttonX;
                buttonX += mButtonHelp.width;
@@ -388,32 +394,41 @@ package viewer {
          
             // ...
             
-            mPlayBar.addChild (basicButtonBar);
-            basicButtonBar.x = 0.5 * (mViewerWidth - basicButtonBar.width);
-            basicButtonBar.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - basicButtonBar.height);
+            mPlayBar.addChild (mBasicButtonBar);
          
             // main menu
             if (_OnMainMenu != null)
             {
-               var buttonMainMenu:ImageButton = new ImageButton (mBitmapDataMainMenu);
-               buttonMainMenu.SetClickEventHandler (_OnMainMenu);
-               mPlayBar.addChild (buttonMainMenu);
-               buttonMainMenu.x = 2;
-               buttonMainMenu.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - buttonMainMenu.height);
+               mButtonMainMenu = new ImageButton (mBitmapDataMainMenu);
+               mButtonMainMenu.SetClickEventHandler (_OnMainMenu);
+               mPlayBar.addChild (mButtonMainMenu);
             }
    
             // phyard link
             if (_OnGoToPhyard != null)
             {
-               var buttonGoToPhyard:ImageButton = new ImageButton (mBitmapDataPhyard);
-               buttonGoToPhyard.SetClickEventHandler (_OnGoToPhyard);
-               mPlayBar.addChild (buttonGoToPhyard);
-               buttonGoToPhyard.x = mViewerWidth - buttonGoToPhyard.width - 2;
-               buttonGoToPhyard.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - buttonGoToPhyard.height);
+               mButtonGoToPhyard = new ImageButton (mBitmapDataPhyard);
+               mButtonGoToPhyard.SetClickEventHandler (_OnGoToPhyard);
+               mPlayBar.addChild (mButtonGoToPhyard);
             }
             
             //
-            OnClickSpeed (1); // speed X2
+            OnPlayingSpeedXChanged (GetPlayingSpeedX ());
+         }
+         
+         mBasicButtonBar.x = 0.5 * (mViewerWidth - mBasicButtonBar.width);
+         mBasicButtonBar.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - mBasicButtonBar.height);
+   
+         if (mButtonMainMenu != null)
+         {
+            mButtonMainMenu.x = 2;
+            mButtonMainMenu.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - mButtonMainMenu.height);
+         }
+         
+         if (mButtonGoToPhyard != null)
+         {
+            mButtonGoToPhyard.x = mViewerWidth - mButtonGoToPhyard.width - 2;
+            mButtonGoToPhyard.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - mButtonGoToPhyard.height);
          }
       }
       

@@ -957,19 +957,24 @@ package viewer {
                   
                var widthRatio :Number = contentRegion.width  / mPreferredViewportWidth ;
                var heightRatio:Number = contentRegion.height / mPreferredViewportHeight;
-      
+               
+               GraphicsUtil.Clear (mContentLayer);
+               
                if (widthRatio < heightRatio)
                {
                   mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
-                  mWorldLayer.y = 0.5 * Number (contentRegion.height - mPreferredViewportHeight * widthRatio);
+                  mWorldLayer.x = 0.0;
+                  mWorldLayer.y = mAdaptiveViewportSize ? 0.0 : 0.5 * Number (contentRegion.height - mPreferredViewportHeight * widthRatio);
                }
                else if (widthRatio > heightRatio)
                {
                   mWorldLayer.scaleX = mWorldLayer.scaleY = heightRatio;
-                  mWorldLayer.x = 0.5 * Number (contentRegion.width - mPreferredViewportWidth * heightRatio);
+                  mWorldLayer.x = mAdaptiveViewportSize ? 0.0 : 0.5 * Number (contentRegion.width - mPreferredViewportWidth * heightRatio);
+                  mWorldLayer.y = 0.0;
                }
                else
                {
+                  mWorldLayer.x = mWorldLayer.y = 0.0;
                   mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
                }
                

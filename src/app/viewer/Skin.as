@@ -261,10 +261,13 @@ package viewer {
 
       protected function CenterSpriteOnContentRegion (sprite:Sprite):void
       {
-         var contentRegion:Rectangle = GetContentRegion ();
-         
-         sprite.x = contentRegion.x + 0.5 * (contentRegion.width  - sprite.width );
-         sprite.y = contentRegion.y + 0.5 * (contentRegion.height - sprite.height);
+         if (sprite != null)
+         {
+            var contentRegion:Rectangle = GetContentRegion ();
+            
+            sprite.x = contentRegion.x + 0.5 * (contentRegion.width  - sprite.width );
+            sprite.y = contentRegion.y + 0.5 * (contentRegion.height - sprite.height);
+         }
       }
       
       public static function CreateDialog (components:Array, dialog:Sprite = null):Sprite

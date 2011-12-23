@@ -2,13 +2,10 @@ package viewer {
 
    import flash.display.DisplayObject;
    import flash.display.Sprite;
-   import flash.display.Bitmap;
-   import flash.display.BitmapData;
    
    import flash.geom.Point;
    import flash.geom.Rectangle;
-
-   import com.tapirgames.display.ImageButton;
+   
    import com.tapirgames.util.GraphicsUtil;
 
    import common.Define;
@@ -25,21 +22,26 @@ package viewer {
          _OnStart = params.OnStart;
          _OnPause = params.OnPause;
          _OnSpeed = params.OnSpeed;
-         _OnHelp = params.OnHelp;
          _OnZoom = params.OnZoom;
+         
+         _OnMainMenu = params.OnMainMenu;
+         _OnNextLevel = params.OnNextLevel;
       }
       
 //======================================================================
 // viewer interfaces for skin
 //======================================================================
       
-      // interfaces from viewer
-      private var _OnRestart:Function;
-      private var _OnStart:Function;
-      private var _OnPause:Function;
-      private var _OnSpeed:Function;
-      private var _OnZoom:Function;
-      private var _OnHelp:Function;
+      // interfaces from viewer, None can be null
+      protected var _OnRestart:Function;
+      protected var _OnStart:Function;
+      protected var _OnPause:Function;
+      protected var _OnSpeed:Function;
+      protected var _OnZoom:Function;
+      
+      // these can be null
+      protected var _OnMainMenu:Function;
+      protected var _OnNextLevel:Function;
       
 //======================================================================
 // skin interfaces for viewer
@@ -54,6 +56,11 @@ package viewer {
       private var mIsPlaying:Boolean = false;
       private var mPlayingSpeedX:int = 2;
       private var mZoomScale:Number = 1.0;
+      
+      // ...
+      private var mIsHelpDialogVisible:Boolean = false;
+      private var mIsLevelFinishedDialogVisible:Boolean = false;
+      protected var mHasLevelFinishedDialogEverOpened:Boolean = false;
 
       final public function SetViewerSize (viewerWidth:Number, viewerHeight:Number):void
       {
@@ -70,6 +77,11 @@ package viewer {
       public function GetPreferredViewerSize (viewportWidth:Number, viewportHeight:Number):Point
       {
          return new Point (viewportWidth, viewportHeight); // to override
+      }
+      
+      public function Update (dt:Number):void
+      {
+         // to override
       }
       
       public function Rebuild (params:Object):void
@@ -94,6 +106,8 @@ package viewer {
       
       final public function Restart ():void
       {
+         mHasLevelFinishedDialogEverOpened = false;
+         
          mIsStarted = false;
          
          if (_OnRestart != null)
@@ -199,21 +213,57 @@ package viewer {
          // to override
       }
 
-      final public function ShowHelpDialog ():void
+      final public function IsHelpDialogVisible ():Boolean
       {
-         if (_OnHelp != null)
-            _OnHelp ();
+         return mIsHelpDialogVisible;
+      }
+
+      final public function SetHelpDialogVisible (show:Boolean):void
+      {
+         if (mIsHelpDialogVisible == show)
+            return;
+         
+         mIsHelpDialogVisible = show;
+         
+         OnHelpDialogVisibleChanged ();
+      }
+      
+      protected function OnHelpDialogVisibleChanged ():void
+      {
+         // to override
+      }
+
+      final public function IsLevelFinishedDialogVisible ():Boolean
+      {
+         return mIsLevelFinishedDialogVisible;
+      }
+
+      final public function SetLevelFinishedDialogVisible (show:Boolean):void
+      {
+         if (mIsLevelFinishedDialogVisible == show)
+            return;
+         
+         mIsLevelFinishedDialogVisible = show;
+         
+         OnLevelFinishedDialogVisibleChanged ();
+      }
+      
+      protected function OnLevelFinishedDialogVisibleChanged ():void
+      {
+         // to override
       }
 
 //======================================================================
 //
 //======================================================================
-      
-      
 
-//======================================================================
-//
-//======================================================================
+      protected function CenterSpriteOnContentRegion (sprite:Sprite):void
+      {
+         var contentRegion:Rectangle = GetContentRegion ();
+         
+         sprite.x = contentRegion.x + 0.5 * (contentRegion.width  - sprite.width );
+         sprite.y = contentRegion.y + 0.5 * (contentRegion.height - sprite.height);
+      }
       
       public static function CreateDialog (components:Array, dialog:Sprite = null):Sprite
       {

@@ -49,13 +49,6 @@ package viewer {
 
    public class Viewer extends Sprite
    {
-      [Embed(source="../../res/player/player-mainmenu.png")]
-      private static var IconMainMenu:Class;
-      [Embed(source="../../res/player/player-phyard.png")]
-      private static var IconPhyard:Class;
-
-      private var mBitmapDataMainMenu:BitmapData  = new IconMainMenu ().bitmapData;
-      private var mBitmapDataPhyard:BitmapData  = new IconPhyard ().bitmapData;
 
 //======================================================================
 //
@@ -719,21 +712,21 @@ package viewer {
 
             mWorldLayer.addChild (mPlayerWorld as Sprite);
 
-            mEverFinished = false;
+            //mEverFinished = false;
 
             if (isFirstTime)
             {
                BuildSkin ();
 
-               CreateHelpDialog ();
+               //CreateHelpDialog ();
 
-               CreateFinishedDialog ();
+               //CreateFinishedDialog ();
 
                BuildContextMenu ();
             }
 
-            CloseFinishedDialog ();
-            CloseHelpDialog ();
+            mSkin.SetLevelFinishedDialogVisible (false);
+            mSkin.SetHelpDialogVisible (false);
 
             // from v1.5
             mWorldPlugin.Call ("SetUiParams", {
@@ -830,7 +823,7 @@ package viewer {
          mStepTimeSpan.End ();
          mStepTimeSpan.Start ();
 
-         var paused:Boolean = (! IsPlaying ()) || mHelpDialog.visible;
+         var paused:Boolean = (! IsPlaying ()) || mSkin.IsHelpDialogVisible ();
 
          mWorldDesignProperties.SetPaused (paused);
          mWorldDesignProperties.SetSingleStepMode (singleStepMode);
@@ -863,20 +856,20 @@ package viewer {
                }
             }
 
-            if (mSkin != null)
-            {
-               mSkin.NotifyStarted ();
-            }
+            mSkin.NotifyStarted ();
          }
 
-         if (mWorldDesignProperties.IsLevelSuccessed ())
-         {
-            OpenFinishedDialog ();
-         }
-         else
-         {
-            CloseFinishedDialog ();
-         }
+         mSkin.SetLevelFinishedDialogVisible (mWorldDesignProperties.IsLevelSuccessed ());
+         mSkin.Update (mStepTimeSpan.GetLastSpan ());
+
+         //if (mWorldDesignProperties.IsLevelSuccessed ())
+         //{
+         //   OpenFinishedDialog ();
+         //}
+         //else
+         //{
+         //   CloseFinishedDialog ();
+         //}
       }
 
 //======================================================================
@@ -921,6 +914,9 @@ package viewer {
 //
 //======================================================================
 
+      //private var mEverFinished:Boolean = false;
+
+      /*
       private var mFinishedDialog:Sprite;
          private var mTextFinished:TextFieldEx;
          private var mTextAuthorInfo:TextFieldEx;
@@ -928,8 +924,6 @@ package viewer {
          private var mButtonNextLevel:TextButton;
          private var mButtonReplay:TextButton;
          private var mButtonCloseFinishDialog:TextButton;
-
-      private var mEverFinished:Boolean = false;
 
       private function CreateFinishedDialog ():void
       {
@@ -1089,10 +1083,12 @@ package viewer {
          sprite.x = mWorldLayer.x + 0.5 * (mWorldDesignProperties.GetViewportWidth () - sprite.width);
          sprite.y = mWorldLayer.y + 0.5 * (mWorldDesignProperties.GetViewportHeight () - sprite.height);
       }
+      */
+
+      //private var mImageButtonMainMenu:ImageButton = null;
+      //private var mImageButtonPhyard:ImageButton = null;
 
       private var mSkin:Skin = null;
-      private var mImageButtonMainMenu:ImageButton = null;
-      private var mImageButtonPhyard:ImageButton = null;
 
       private function BuildSkin ():void
       {
@@ -1104,8 +1100,9 @@ package viewer {
                   OnPause: OnPause,
                   OnSpeed: OnSpeed,
                   OnZoom: OnZoom,
-                  OnHelp: OnHelp,
-                  OnMainMenu: null
+                  
+                  OnMainMenu: mParamsFromContainer.OnMainMenu,
+                  OnNextLevel: mParamsFromContainer.OnNextLevel
                };
 
          if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0)
@@ -1127,6 +1124,7 @@ package viewer {
          // adjust positions of layers
          OnContainerResized ();
          
+         /*
          // main menu
          if (mParamsFromContainer.OnMainMenu != null)
          {
@@ -1146,6 +1144,7 @@ package viewer {
             mImageButtonPhyard.x = mViewportWidth - mImageButtonPhyard.width - 2;
             mImageButtonPhyard.y = 2;
          }
+         */
       }
 
       public function OnContainerResized ():void
@@ -1257,6 +1256,10 @@ package viewer {
          // 1. remove mViewerWidth, ..., useless variables
          // 2. main munu button -> Skin
          // 3. help dialog -> Skin
+         
+         // skin: main menu button and go to phyard button
+         
+         // loading status: images are not shown initially bug.
          
          // message layer
          
@@ -1553,28 +1556,28 @@ package viewer {
          mPlayerWorldZoomScaleChangedSpeed = ( mPlayerWorldZoomScale - mWorldDesignProperties.GetZoomScale () ) * 0.03;
       }
 
-      private function OnHelp (data:Object = null):void
-      {
-         OpenHelpDialog ();
-      }
-
-      private function OnMainMenu (data:Object = null):void
-      {
-         if (mParamsFromContainer.OnMainMenu != null)
-            mParamsFromContainer.OnMainMenu (data);
-      }
-      
-      private function OnNextLevel (data:Object = null):void
-      {
-         if (mParamsFromContainer.OnNextLevel != null)
-            mParamsFromContainer.OnNextLevel (data);
-      }
-
-      private function OnGotoPhyard (data:Object = null):void
-      {
-         if (mParamsFromContainer.OnGoToPhyard != null)
-            mParamsFromContainer.OnGoToPhyard (data);
-      }
+      //private function OnHelp (data:Object = null):void
+      //{
+      //   OpenHelpDialog ();
+      //}
+      //
+      //private function OnMainMenu (data:Object = null):void
+      //{
+      //   if (mParamsFromContainer.OnMainMenu != null)
+      //      mParamsFromContainer.OnMainMenu (data);
+      //}
+      //
+      //private function OnNextLevel (data:Object = null):void
+      //{
+      //   if (mParamsFromContainer.OnNextLevel != null)
+      //      mParamsFromContainer.OnNextLevel (data);
+      //}
+      //
+      //private function OnGotoPhyard (data:Object = null):void
+      //{
+      //   if (mParamsFromContainer.OnGoToPhyard != null)
+      //      mParamsFromContainer.OnGoToPhyard (data);
+      //}
 
 //===========================================================================
 // interfaces for editing

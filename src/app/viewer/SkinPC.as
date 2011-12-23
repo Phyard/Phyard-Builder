@@ -8,8 +8,12 @@ package viewer {
    import flash.geom.Point;
    import flash.geom.Rectangle;
 
-   import com.tapirgames.display.ImageButton;
    import com.tapirgames.util.GraphicsUtil;
+   import com.tapirgames.util.UrlUtil;
+   import com.tapirgames.util.TextUtil;
+   import com.tapirgames.display.TextFieldEx;
+   import com.tapirgames.display.TextButton;
+   import com.tapirgames.display.ImageButton;
 
    import common.Define;
 
@@ -53,14 +57,32 @@ package viewer {
       private var mBitmapDataZoomInDisabled:BitmapData  = new IconZoomInDisabled ().bitmapData;
       private var mBitmapDataZoomOut:BitmapData  = new IconZoomOut ().bitmapData;
       private var mBitmapDataZoomOutDisabled:BitmapData  = new IconZoomOutDisabled ().bitmapData;
+      
+      // ...
+      
+      [Embed(source="../../res/player/player-mainmenu.png")]
+      private static var IconMainMenu:Class;
+      [Embed(source="../../res/player/player-phyard.png")]
+      private static var IconPhyard:Class;
+
+      private var mBitmapDataMainMenu:BitmapData  = new IconMainMenu ().bitmapData;
+      private var mBitmapDataPhyard:BitmapData  = new IconPhyard ().bitmapData;
 
 //======================================================================
 //
 //======================================================================
       
+      private var mPlayBarLayer:Sprite = new Sprite ();
+      private var mHelpDialogLayer:Sprite = new Sprite ();
+      private var mLevelFinishedDialogLayer:Sprite = new Sprite ();
+      
       public function SkinPC (params:Object)
       {
          super (params);
+         
+         addChild (mPlayBarLayer);
+         addChild (mHelpDialogLayer);
+         addChild (mLevelFinishedDialogLayer);
       }
       
       override public function GetPreferredViewerSize (viewportWidth:Number, viewportHeight:Number):Point
@@ -75,20 +97,195 @@ package viewer {
          return new Rectangle (0, top, mViewerWidth, mViewerHeight - top);
       }
       
-      private var mPlayBar:Sprite  = null;
+      override public function Update (dt:Number):void
+      {
+         // to override
+      }
       
-      private var mButtonRestart:ImageButton;
-      private var mButtonStartPause:ImageButton;
-      private var mButtonHelp:ImageButton;
-      private var mButtonSpeeds:Array;
+      override public function Rebuild (params:Object):void
+      {
+         RebuildPlayBar (params);
+         //RebuildHelpDialog ();
+         //RebuildLevelFinishedDialog ();
+      }
 
-      private var mButtonZoomIn:ImageButton;
-      private var mButtonZoomOut:ImageButton;
+      override protected function OnStartedChanged ():void
+      {
+         if (IsStarted ())
+         {
+            mButtonRestart.SetBitmapData (mBitmapDataRetart);
+            mButtonRestart.SetClickEventHandler (OnClickRestart);
+         }
+         else
+         {
+            mButtonRestart.SetBitmapData (mBitmapDataRetartDisabled);
+            mButtonRestart.SetClickEventHandler (null);
+         }
+      }
+      
+      override protected function OnPlayingChanged ():void
+      {
+         if (IsPlaying ())
+         {
+            mButtonStartPause.SetBitmapData (mBitmapDataPause);
+            mButtonStartPause.SetClickEventHandler (OnClickPause);
+         }
+         else
+         {
+            mButtonStartPause.SetBitmapData (mBitmapDataStart);
+            mButtonStartPause.SetClickEventHandler (OnClickStart);
+         }
+      }
+      
+      override protected function OnPlayingSpeedXChanged (oldSpeedX:int):void
+      {
+         var speedX:int = GetPlayingSpeedX ();
+         
+         for (var i:int = 0; i < NumButtonSpeed; ++ i)
+         {
+            if (ButtonIndex2SpeedXTable [i] == speedX)
+               mButtonSpeeds [i].SetBitmapData (mBitmapDataSpeedSelected);
+            else
+               mButtonSpeeds [i].SetBitmapData (mBitmapDataSpeed);
+         }
+      }
+      
+      override protected function OnZoomScaleChanged (oldZoonScale:Number):void
+      {
+         var zoomScale:Number = GetZoomScale ();
+         
+         if (zoomScale <= Define.MinWorldZoomScale)
+         {
+            mButtonZoomOut.SetBitmapData (mBitmapDataZoomOutDisabled);
+            mButtonZoomOut.SetClickEventHandler (null);
+         }
+         else if (oldZoonScale <= Define.MinWorldZoomScale)
+         {
+            mButtonZoomOut.SetBitmapData (mBitmapDataZoomOut);
+            mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
+         }
+
+         if (zoomScale >= Define.MaxWorldZoomScale)
+         {
+            mButtonZoomIn.SetBitmapData (mBitmapDataZoomInDisabled);
+            mButtonZoomIn.SetClickEventHandler (null);
+         }
+         else if (oldZoonScale >= Define.MaxWorldZoomScale)
+         {
+            mButtonZoomIn.SetBitmapData (mBitmapDataZoomIn);
+            mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
+         }
+      }
+      
+      override protected function OnHelpDialogVisibleChanged ():void
+      {
+         if (mHelpDialog == null)
+         {
+            if (IsHelpDialogVisible ())
+               CreateHelpDialog ();
+         }
+         else
+         {
+            mHelpDialog.visible = IsHelpDialogVisible ();
+         }         
+      }
+      
+      override protected function OnLevelFinishedDialogVisibleChanged ():void
+      {
+         if (mLevelFinishedDialog == null)
+         {
+            if (IsLevelFinishedDialogVisible ())
+            {
+               CreateLevelFinishedDialog ();
+            }
+         }
+         
+         if (mLevelFinishedDialog != null)
+         {
+            mLevelFinishedDialog.visible = IsLevelFinishedDialogVisible () && (! mHasLevelFinishedDialogEverOpened);
+         
+            if (IsLevelFinishedDialogVisible ())
+            {
+               mHasLevelFinishedDialogEverOpened = true;
+            }
+         }
+      }
+      
+      
+//======================================================================
+//
+//======================================================================
+
+      private function OnClickRestart (data:Object = null):void
+      {
+         Restart ();
+      }
+
+      private function OnClickStart (data:Object = null):void
+      {
+         SetPlaying (true);
+      }
+
+      private function OnClickPause (data:Object = null):void
+      {
+         SetPlaying (false);
+      }
+
+      private static const ButtonIndex2SpeedXTable:Array = [1, 2, 3, 4, 5];
+      private static var mButtonShown:Array = [true, true, false, true, false];
+
+      private function OnClickSpeed (data:Object):void
+      {
+         var index:int = int (data);
+         if (index < 0) index = 0;
+         if (index >= NumButtonSpeed) index = NumButtonSpeed - 1;
+
+         SetPlayingSpeedX (ButtonIndex2SpeedXTable [index]);
+      }
+
+      private function OnClickZoomIn (data:Object):void
+      {
+         SetZoomScale (GetZoomScale () * 2.0);
+      }
+
+      private function OnClickZoomOut (data:Object):void
+      {
+         SetZoomScale (GetZoomScale () * 0.5);
+      }
+
+      private function OnClickHelp (data:Object):void
+      {
+         SetHelpDialogVisible (true);
+      }
+
+      private function OnClickCloseHelpDialog ():void
+      {
+         SetHelpDialogVisible (false);
+      }
+
+      private function OnClickCloseLevelFinishedDialog ():void
+      {
+         SetLevelFinishedDialogVisible (false);
+      }
+
+//======================================================================
+//
+//======================================================================
 
       private static const NumButtonSpeed:int = 5;
       private static const ButtonMargin:int = 8;
       
-      override public function Rebuild (params:Object):void
+      private var mPlayBar:Sprite  = null;
+      
+         private var mButtonRestart:ImageButton;
+         private var mButtonStartPause:ImageButton;
+         private var mButtonHelp:ImageButton;
+         private var mButtonSpeeds:Array;
+   
+         private var mButtonZoomIn:ImageButton;
+         private var mButtonZoomOut:ImageButton;
+      
+      private function RebuildPlayBar (params:Object):void
       {
          GraphicsUtil.ClearAndDrawRect (this, 
                               0, 0, mViewerWidth - 1, Define.DefaultPlayerSkinPlayBarHeight, 
@@ -99,6 +296,7 @@ package viewer {
          if (mPlayBar == null)
          {
             mPlayBar = new Sprite ();
+            mPlayBarLayer.addChild (mPlayBar);
             
             var i:int;
             var buttonX:Number = 0;
@@ -174,9 +372,6 @@ package viewer {
                buttonX += mButtonHelp.width;
                buttonX += ButtonMargin;
             }
-   
-            //
-            addChild (mPlayBar);
             
             //
             OnClickSpeed (1); // speed X2
@@ -185,120 +380,105 @@ package viewer {
          mPlayBar.x = 0.5 * (mViewerWidth - mPlayBar.width);
          mPlayBar.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - mPlayBar.height);
       }
+      
+//======================================================================
+//
+//======================================================================
 
-      override protected function OnStartedChanged ():void
-      {
-         if (IsStarted ())
-         {
-            mButtonRestart.SetBitmapData (mBitmapDataRetart);
-            mButtonRestart.SetClickEventHandler (OnClickRestart);
-         }
-         else
-         {
-            mButtonRestart.SetBitmapData (mBitmapDataRetartDisabled);
-            mButtonRestart.SetClickEventHandler (null);
-         }
-      }
-      
-      override protected function OnPlayingChanged ():void
-      {
-         if (IsPlaying ())
-         {
-            mButtonStartPause.SetBitmapData (mBitmapDataPause);
-            mButtonStartPause.SetClickEventHandler (OnClickPause);
-         }
-         else
-         {
-            mButtonStartPause.SetBitmapData (mBitmapDataStart);
-            mButtonStartPause.SetClickEventHandler (OnClickStart);
-         }
-      }
-      
-      override protected function OnPlayingSpeedXChanged (oldSpeedX:int):void
-      {
-         var speedX:int = GetPlayingSpeedX ();
-         
-         for (var i:int = 0; i < NumButtonSpeed; ++ i)
-         {
-            if (ButtonIndex2SpeedXTable [i] == speedX)
-               mButtonSpeeds [i].SetBitmapData (mBitmapDataSpeedSelected);
-            else
-               mButtonSpeeds [i].SetBitmapData (mBitmapDataSpeed);
-         }
-      }
-      
-      override protected function OnZoomScaleChanged (oldZoonScale:Number):void
-      {
-         var zoomScale:Number = GetZoomScale ();
-         
-         if (zoomScale <= Define.MinWorldZoomScale)
-         {
-            mButtonZoomOut.SetBitmapData (mBitmapDataZoomOutDisabled);
-            mButtonZoomOut.SetClickEventHandler (null);
-         }
-         else if (oldZoonScale <= Define.MinWorldZoomScale)
-         {
-            mButtonZoomOut.SetBitmapData (mBitmapDataZoomOut);
-            mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
-         }
+      private var mLevelFinishedDialog:Sprite = null;
 
-         if (zoomScale >= Define.MaxWorldZoomScale)
-         {
-            mButtonZoomIn.SetBitmapData (mBitmapDataZoomInDisabled);
-            mButtonZoomIn.SetClickEventHandler (null);
-         }
-         else if (oldZoonScale >= Define.MaxWorldZoomScale)
-         {
-            mButtonZoomIn.SetBitmapData (mBitmapDataZoomIn);
-            mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
-         }
+      private function CreateLevelFinishedDialog ():void
+      {
+         if (mLevelFinishedDialog != null && mLevelFinishedDialog.parent == mLevelFinishedDialogLayer)
+            mLevelFinishedDialogLayer.removeChild (mLevelFinishedDialog);
+         
+         // ...
+         
+         var buttonContainer:Sprite = new Sprite ();
+         var buttonMargin:Number = 50.0;
+         
+         //{
+            var buttonX:Number = 0;
+            if (_OnNextLevel != null && _OnNextLevel ())
+            {
+               var buttonNextLevel:TextButton = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Next</font>", _OnNextLevel);
+               buttonContainer.addChild (buttonNextLevel);
+               buttonNextLevel.x = buttonX;
+               buttonX += buttonNextLevel.width + buttonMargin;
+            }
+            
+            var buttonReplay:TextButton = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Replay</font>", _OnRestart);
+            buttonContainer.addChild (buttonReplay);
+            buttonReplay.x = buttonX;
+            buttonX += buttonReplay.width + buttonMargin;
+            
+            var buttonCloseFinishDialog:TextButton = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Close</font>", OnClickCloseLevelFinishedDialog);
+            buttonContainer.addChild (buttonCloseFinishDialog);
+            buttonCloseFinishDialog.x = buttonX;
+            buttonX += buttonCloseFinishDialog.width + buttonMargin;
+            
+            if (_OnMainMenu != null)
+            {
+               var buttonMainMenu:TextButton = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Menu</font>", _OnMainMenu);
+               buttonContainer.addChild (buttonMainMenu);
+               buttonMainMenu.x = buttonX;
+               buttonX += buttonMainMenu.width + buttonMargin;
+            }
+         //}
+         
+         // ...
+         
+         var levelFinishedString:String = "<font size='30' face='Verdana' color='#000000'> <b>Cool! It is solved.</b></font>";
+         var levelFinishedText:TextFieldEx = TextFieldEx.CreateTextField (levelFinishedString, false, 0xFFFFFF, 0x0, false);
+         
+         // ...
+         
+         var referLinkString:String = "<font face='Verdana' size='15'>Want to <font color='#0000FF'><u><a href='http://www.phyard.com' target='_blank'>design your own games</a></u></font>?</font>";
+
+         var referLinkTextField:TextFieldEx = TextFieldEx.CreateTextField (referLinkString, false, 0xFFFFFF, 0x0);
+
+         // ...
+         
+         mLevelFinishedDialog = Skin.CreateDialog ([levelFinishedText, 20, referLinkTextField, 20, buttonContainer]);
+         mLevelFinishedDialogLayer.addChild (mLevelFinishedDialog);
+         CenterSpriteOnContentRegion (mLevelFinishedDialogLayer);
       }
 
 //======================================================================
 //
 //======================================================================
 
-      private function OnClickRestart (data:Object = null):void
+      private var mHelpDialog:Sprite = null;
+
+      private function CreateHelpDialog ():void
       {
-         Restart ();
+         if (mHelpDialog != null && mHelpDialog.parent == mHelpDialogLayer)
+            mLevelFinishedDialogLayer.removeChild (mHelpDialog);
+
+         // ...
+                  
+         var tutorialText:String = 
+            "<font size='15' face='Verdana' color='#000000'>The goal of <b>Color Infection</b> puzzles is to infect all <font color='#FFFF00'><b>YELLOW</b></font> objects with "
+                        + "the <font color='#804000'><b>BROWN</b></font> color by colliding them with <font color='#804000'><b>BROWN</b></font> objects "
+                        + "but keep all <font color='#60FF60'><b>GREEN</b></font> objects uninfected."
+                        + "<br /><br />To play, <br/>"
+                        + "- click a <font color='#FF00FF'><b>PINK</b></font> object to destroy it,<br/>"
+                        + "- click a <font color='#000000'><b>BOMB</b></font> object to explode it."
+                        + "</font>";
+         
+         var textTutorial:TextFieldEx = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, Define.DefaultWorldWidth / 2);
+         
+         var box2dTextStr:String =  "<font size='10' face='Verdana' color='#000000'>(This player is based on fbox2d, an actionscript<br/>"
+                                                                                + "port of the famous box2d c++ physics engine.)</font>";
+         var box2dText:TextFieldEx = TextFieldEx.CreateTextField (box2dTextStr);
+         
+         var buttonCloseHelpDialog:TextButton = new TextButton ("<font face='Verdana' size='16' color='#0000FF'>   Close   </font>", OnClickCloseHelpDialog);
+         
+         // ...
+         
+         mHelpDialog = Skin.CreateDialog ([textTutorial, 20 , box2dText, 20, buttonCloseHelpDialog]);
+         mHelpDialogLayer.addChild (mHelpDialog);
+         CenterSpriteOnContentRegion (mHelpDialog);
       }
-
-      private function OnClickStart (data:Object = null):void
-      {
-         SetPlaying (true);
-      }
-
-      private function OnClickPause (data:Object = null):void
-      {
-         SetPlaying (false);
-      }
-
-      private static const ButtonIndex2SpeedXTable:Array = [1, 2, 3, 4, 5];
-      private static var mButtonShown:Array = [true, true, false, true, false];
-
-      private function OnClickSpeed (data:Object):void
-      {
-         var index:int = int (data);
-         if (index < 0) index = 0;
-         if (index >= NumButtonSpeed) index = NumButtonSpeed - 1;
-
-         SetPlayingSpeedX (ButtonIndex2SpeedXTable [index]);
-      }
-
-      private function OnClickZoomIn (data:Object):void
-      {
-         SetZoomScale (GetZoomScale () * 2.0);
-      }
-
-      private function OnClickZoomOut (data:Object):void
-      {
-         SetZoomScale (GetZoomScale () * 0.5);
-      }
-
-      private function OnClickHelp (data:Object):void
-      {
-         ShowHelpDialog ();
-      }
-
    }
 }

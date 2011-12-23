@@ -134,8 +134,9 @@ package player.world {
          mViewerUiFlags = worldDefine.mSettings.mViewerUiFlags;
          mPlayBarColor = worldDefine.mSettings.mPlayBarColor;
 
-         mViewportWidth = worldDefine.mSettings.mViewportWidth;
-         mViewportHeight = worldDefine.mSettings.mViewportHeight;
+         mPreferredViewportWidth = worldDefine.mSettings.mViewportWidth;
+         mPreferredViewportHeight = worldDefine.mSettings.mViewportHeight;
+         SetRealViewportSize (mPreferredViewportWidth, mPreferredViewportHeight);
          mZoomScale = worldDefine.mSettings.mZoomScale;
 
          mCameraRotatingEnabled = worldDefine.mSettings.mCameraRotatingEnabled;
@@ -244,6 +245,8 @@ package player.world {
       public function UpdateImageModuleAppearances ():void
       {
          mEntityList.UpdateImageModuleAppearances ();
+         
+         Repaint ();
       }
 
 //==============================================================================
@@ -849,7 +852,7 @@ package player.world {
 
          // mouse visibity
 
-         if (mMouseVisible || mBackgroundSprite.mouseX < 0 || mBackgroundSprite.mouseY < 0 || mBackgroundSprite.mouseX > mViewportWidth || mBackgroundSprite.mouseY > mViewportHeight)
+         if (mMouseVisible || mBackgroundSprite.mouseX < 0 || mBackgroundSprite.mouseY < 0 || mBackgroundSprite.mouseX > mRealViewportWidth || mBackgroundSprite.mouseY > mRealViewportHeight)
             Mouse.show ();
          else
             Mouse.hide ();
@@ -944,7 +947,7 @@ package player.world {
          sprite.y = 0;
          sprite.graphics.clear ();
          sprite.graphics.beginFill(bgColor);
-         sprite.graphics.drawRect (0, 0, mViewportWidth, mViewportHeight); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
+         sprite.graphics.drawRect (0, 0, mRealViewportWidth, mRealViewportHeight); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
          sprite.graphics.endFill ();
       }
 

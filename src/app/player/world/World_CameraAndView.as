@@ -29,8 +29,10 @@ private var mViewerUiFlags:int = Define.PlayerUiFlag_ShowPlayBar
                                | Define.PlayerUiFlag_ShowHelpButton
                                ;
 private var mPlayBarColor:uint = 0x606060;
-private var mViewportWidth:int = Define.DefaultPlayerWidth;
-private var mViewportHeight:int = Define.DefaultPlayerHeight;
+private var mPreferredViewportWidth:int = Define.DefaultPlayerWidth;
+private var mPreferredViewportHeight:int = Define.DefaultPlayerHeight;
+private var mRealViewportWidth:int = Define.DefaultPlayerWidth;
+private var mRealViewportHeight:int = Define.DefaultPlayerHeight;
 
 private var mCameraRotatingEnabled:Boolean = false;
 
@@ -44,14 +46,25 @@ public function GetPlayBarColor ():uint
    return mPlayBarColor;
 }
 
-public function GetViewportWidth ():int
+public function GetPreferredViewportWidth ():int
 {
-   return mViewportWidth;
+   return mPreferredViewportWidth;
 }
 
-public function GetViewportHeight ():int
+public function GetPreferredViewportHeight ():int
 {
-   return mViewportHeight;
+   return mPreferredViewportHeight;
+}
+
+public function SetRealViewportSize (realWidth:Number, realHeight:Number):void
+{
+   mRealViewportWidth  = realWidth;
+   mRealViewportHeight = realHeight;
+   
+   mCameraCenterX
+   mCameraCenterY
+
+   mBackgroundNeedRepaint = true;
 }
 
 //=====================================================================================
@@ -199,8 +212,8 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
       
       mContentLayer.x -= point.x;
       mContentLayer.y -= point.y;
-      mContentLayer.x += mViewportWidth  * 0.5;
-      mContentLayer.y += mViewportHeight * 0.5;
+      mContentLayer.x += mRealViewportWidth  * 0.5;
+      mContentLayer.y += mRealViewportHeight * 0.5;
       
       // use the above code now. The following code has some number errors.
       ////var angleRadians:Number = Math.PI * (- targetDisplayAngle) / 180.0;
@@ -208,49 +221,49 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
       //var cos:Number = Math.cos (angleRadians);
       //var sin:Number = Math.sin (angleRadians);
       //
-      //mContentLayer.x = (( - mCameraCenterX) * cos - ( - mCameraCenterY) * sin) * mContentLayer.scaleX + mViewportWidth  * 0.5;
-      //mContentLayer.y = (( - mCameraCenterX) * sin + ( - mCameraCenterY) * cos) * mContentLayer.scaleY + mViewportHeight * 0.5;
+      //mContentLayer.x = (( - mCameraCenterX) * cos - ( - mCameraCenterY) * sin) * mContentLayer.scaleX + mRealViewportWidth  * 0.5;
+      //mContentLayer.y = (( - mCameraCenterX) * sin + ( - mCameraCenterY) * cos) * mContentLayer.scaleY + mRealViewportHeight * 0.5;
    }
    else
    {
       var worldViewWidth :Number = mWorldWidth  * mContentLayer.scaleX;
       var worldViewHeight:Number = mWorldHeight * mContentLayer.scaleY;
       
-      if (worldViewWidth < mViewportWidth)
+      if (worldViewWidth < mRealViewportWidth)
       {
          mCameraCenterX = mWorldLeft + mWorldWidth * 0.5;
-         mContentLayer.x = (- mCameraCenterX) * mContentLayer.scaleX + mViewportWidth * 0.5;
+         mContentLayer.x = (- mCameraCenterX) * mContentLayer.scaleX + mRealViewportWidth * 0.5;
       }
       else
       {
          mCameraCenterX = targetDisplayX;
-         var leftInView:Number = (mWorldLeft - mCameraCenterX) * mContentLayer.scaleX + mViewportWidth * 0.5;
+         var leftInView:Number = (mWorldLeft - mCameraCenterX) * mContentLayer.scaleX + mRealViewportWidth * 0.5;
          
          if (leftInView > 0)
             leftInView = 0;
-         if (leftInView + worldViewWidth < mViewportWidth)
-            leftInView = mViewportWidth - worldViewWidth;
+         if (leftInView + worldViewWidth < mRealViewportWidth)
+            leftInView = mRealViewportWidth - worldViewWidth;
          
-         mCameraCenterX = mWorldLeft + (mViewportWidth * 0.5 - leftInView) / mContentLayer.scaleX;
+         mCameraCenterX = mWorldLeft + (mRealViewportWidth * 0.5 - leftInView) / mContentLayer.scaleX;
          mContentLayer.x = leftInView - mWorldLeft * mContentLayer.scaleX;
       }
       
-      if (worldViewHeight < mViewportHeight)
+      if (worldViewHeight < mRealViewportHeight)
       {
          mCameraCenterY = mWorldTop + mWorldHeight * 0.5;
-         mContentLayer.y = (- mCameraCenterY) * mContentLayer.scaleY + mViewportHeight * 0.5;
+         mContentLayer.y = (- mCameraCenterY) * mContentLayer.scaleY + mRealViewportHeight * 0.5;
       }
       else
       {
          mCameraCenterY = targetDisplayY;
-         var topInView:Number = (mWorldTop - mCameraCenterY) * mContentLayer.scaleY + mViewportHeight * 0.5;
+         var topInView:Number = (mWorldTop - mCameraCenterY) * mContentLayer.scaleY + mRealViewportHeight * 0.5;
          
          if (topInView > 0)
             topInView = 0;
-         if (topInView + worldViewHeight < mViewportHeight)
-            topInView = mViewportHeight - worldViewHeight;
+         if (topInView + worldViewHeight < mRealViewportHeight)
+            topInView = mRealViewportHeight - worldViewHeight;
          
-         mCameraCenterY = mWorldTop + (mViewportHeight * 0.5 - topInView) / mContentLayer.scaleY;
+         mCameraCenterY = mWorldTop + (mRealViewportHeight * 0.5 - topInView) / mContentLayer.scaleY;
          mContentLayer.y = topInView  - mWorldTop  * mContentLayer.scaleY;
       }
    }
@@ -316,7 +329,7 @@ protected function UpdateCamera ():void
       targetAngle = mCameraAngle + mCameraMovedOffsetAngle_ByMouse;
    }
    
-   var elasticStaticLength:Number = mViewportWidth < mViewportHeight ? mViewportWidth : mViewportHeight;
+   var elasticStaticLength:Number = mRealViewportWidth < mRealViewportHeight ? mRealViewportWidth : mRealViewportHeight;
    elasticStaticLength /= (mZoomScale * 4.0);
    var deltaCameraSpeed:Number = 1.0 / mZoomScale;
    var generalCameraSpeed:Number = elasticStaticLength / 16.0;

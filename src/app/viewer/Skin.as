@@ -26,6 +26,7 @@ package viewer {
          
          _OnMainMenu = params.OnMainMenu;
          _OnNextLevel = params.OnNextLevel;
+         _OnGoToPhyard = params.OnGoToPhyard;
       }
       
 //======================================================================
@@ -42,6 +43,7 @@ package viewer {
       // these can be null
       protected var _OnMainMenu:Function;
       protected var _OnNextLevel:Function;
+      protected var _OnGoToPhyard:Function;
       
 //======================================================================
 // skin interfaces for viewer

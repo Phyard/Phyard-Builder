@@ -123,8 +123,8 @@ package viewer {
          private var mShowScaleAdjustor:Boolean;
          private var mShowHelpButton:Boolean;
          private var mAdaptiveViewportSize:Boolean;
-         private var mViewportWidth:int;
-         private var mViewportHeight:int;
+         private var mPreferredViewportWidth:int;
+         private var mPreferredViewportHeight:int;
 
       private var mIsPlaying:Boolean = false;
       private var mPlayingSpeedX:int = 2;
@@ -136,9 +136,7 @@ package viewer {
          private var mWorldLayer:Sprite = new Sprite ();
          private var mViewportMaskShape:Sprite = new Sprite ();
       private var mSkinLayer:Sprite = new Sprite ();
-      //private var mErrorMessageLayer:Sprite = new Sprite ();
-      private var mFinishedTextLayer:Sprite = new Sprite ();
-      private var mDialogLayer:Sprite = new Sprite ();
+      private var mErrorMessageLayer:Sprite = new Sprite ();
 
 //======================================================================
 //
@@ -156,9 +154,8 @@ package viewer {
          addChild (mContentLayer)
             mContentLayer.addChild (mWorldLayer);
          addChild (mSkinLayer);
-         //addChild (mErrorMessageLayer);
-         addChild (mFinishedTextLayer);
-         addChild (mDialogLayer);
+         addChild (mErrorMessageLayer);
+         mErrorMessageLayer.visible = false;
 
          mParamsFromUniViewer = params.mParamsFromUniViewer;
          if (mParamsFromUniViewer != null)
@@ -219,11 +216,7 @@ package viewer {
                var buildStatus:int = mWorldDesignProperties.GetBuildingStatus (); 
                if (buildStatus > 0)
                {
-                  if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
-                  {
-                     this.visible = true;
-                     mParamsFromUniViewer.SetLoadingText (null);
-                  }
+                  SetErrorMessage (null);
                   
                   ChangeState (StateId_Playing);
                }
@@ -257,7 +250,7 @@ package viewer {
             case StateId_Loading:
                break;
             case StateId_LoadingError:
-               
+               SetErrorMessage ("Loading error!");
                break;
             case StateId_Building:
                if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
@@ -267,10 +260,15 @@ package viewer {
                }
                break;
             case StateId_BuildingError:
+               SetErrorMessage ("Building error!");
                break;
             case StateId_Playing:
                break;
             case StateId_PlayingError:
+               SetErrorMessage ("Runtime error!");
+               break;
+            case StateId_Unknown:
+            default:
                break;
          }
       }
@@ -401,7 +399,13 @@ package viewer {
          catch (error:Error)
          {
             TraceError (error);
+            
             ChangeState (StateId_ParsingError);
+
+            if (Compile::Is_Debugging)
+            {
+               throw error;
+            }
          }
       }
 
@@ -495,7 +499,9 @@ package viewer {
             ChangeState (StateId_LoadingError);
 
             if (Compile::Is_Debugging)
+            {
                throw error;
+            }
          }
       }
 
@@ -595,6 +601,7 @@ package viewer {
          if (mWorldDesignProperties.SetInteractiveEnabledWhenPaused == null) mWorldDesignProperties.SetInteractiveEnabledWhenPaused = DummyCallback;
          if (mWorldDesignProperties.SetCacheSystemEvent == null)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
          if (mWorldDesignProperties.GetBuildingStatus == null)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_BuildingStatus;
+         if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
 
          mPlayBarColor = mPlayerWorld == null ? 0x606060 : mWorldDesignProperties.GetPlayBarColor ();
          mShowPlayBar = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
@@ -602,8 +609,8 @@ package viewer {
          mShowScaleAdjustor = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
          mShowHelpButton = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
          mAdaptiveViewportSize = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_AdaptiveViewportSize) != 0);
-         mViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
-         mViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
+         mPreferredViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
+         mPreferredViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
       }
 
       private function DummyCallback (param1:Object = null, param2:Object = null, param3:Object = null):void
@@ -712,15 +719,9 @@ package viewer {
 
             mWorldLayer.addChild (mPlayerWorld as Sprite);
 
-            //mEverFinished = false;
-
             if (isFirstTime)
             {
                BuildSkin ();
-
-               //CreateHelpDialog ();
-
-               //CreateFinishedDialog ();
 
                BuildContextMenu ();
             }
@@ -766,10 +767,12 @@ package viewer {
          {
             TraceError (error);
 
-            if (Compile::Is_Debugging)
-               throw error;
-
             ChangeState (StateId_LoadingError);
+
+            if (Compile::Is_Debugging)
+            {
+               throw error;
+            }
          }
       }
 
@@ -782,6 +785,9 @@ package viewer {
 
       public function Step (singleStepMode:Boolean = false):void
       {
+         if (mErrorMessageLayer.visible)
+            return;
+         
          if (mPlayerWorld == null)
             return;
 
@@ -838,17 +844,10 @@ package viewer {
             {
                TraceError (error);
 
-               //if (mParamsFromEditor != null)
-               //{
-               //   throw error; // let editor to handle it
-               //}
-               //else
-               {
-                  // todo show dialog: "stop" or "continue";
-                  // write log of send message to server
+               // todo show dialog: "stop" or "continue";
+               // write log of send message to server
 
-                  ChangeState (StateId_PlayingError);
-               }
+               ChangeState (StateId_PlayingError);
 
                if (Compile::Is_Debugging)
                {
@@ -861,232 +860,11 @@ package viewer {
 
          mSkin.SetLevelFinishedDialogVisible (mWorldDesignProperties.IsLevelSuccessed ());
          mSkin.Update (mStepTimeSpan.GetLastSpan ());
-
-         //if (mWorldDesignProperties.IsLevelSuccessed ())
-         //{
-         //   OpenFinishedDialog ();
-         //}
-         //else
-         //{
-         //   CloseFinishedDialog ();
-         //}
       }
 
 //======================================================================
 //
 //======================================================================
-
-      /*
-      private function ClearInfoMessage ():void
-      {
-         while (mErrorMessageLayer.numChildren > 0)
-            mErrorMessageLayer.removeChildAt (0);
-         GraphicsUtil.Clear (mErrorMessageLayer);
-      }
-
-      private function BuildInfoMessage (message:String, linkUrl:String = null):void
-      {
-         ClearInfoMessage ();
-         
-         if (mParamsFromContainer.GetViewportSize == null)
-            return;
-
-         var size:Point = mParamsFromContainer.GetViewportSize ();
-         w = size.x;
-         h = size.y;
-
-         var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (message));
-         errorText.x = (w  - errorText.width ) * 0.5;
-         errorText.y = (h - errorText.height) * 0.5;
-         mErrorMessageLayer.addChild (errorText);
-
-         if (linkUrl != null)
-         {
-            var linkText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("<font size='10' color='#0000ff'><u><a href='" + linkUrl + "' target='_blank'>ColorInfection.com</a></u></font>"));
-            linkText.x = (w  - linkText.width ) * 0.5;
-            linkText.y = h - linkText.height - 20;
-            mErrorMessageLayer.addChild (linkText);
-         }
-      }
-      */
-
-//======================================================================
-//
-//======================================================================
-
-      //private var mEverFinished:Boolean = false;
-
-      /*
-      private var mFinishedDialog:Sprite;
-         private var mTextFinished:TextFieldEx;
-         private var mTextAuthorInfo:TextFieldEx;
-         private var mButtonMainMenu:TextButton;
-         private var mButtonNextLevel:TextButton;
-         private var mButtonReplay:TextButton;
-         private var mButtonCloseFinishDialog:TextButton;
-
-      private function CreateFinishedDialog ():void
-      {
-         var finishedText:String = "<font size='30' face='Verdana' color='#000000'> <b>Cool! It is solved.</b></font>";
-         mTextFinished = TextFieldEx.CreateTextField (finishedText, false, 0xFFFFFF, 0x0, false);
-
-         mButtonMainMenu = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Menu</font>", OnMainMenu);
-         mButtonNextLevel = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Next</font>", OnNextLevel);
-         mButtonReplay = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Replay</font>", OnRestart);
-         mButtonCloseFinishDialog = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Close</font>", CloseFinishedDialog);
-         var buttonContainer:Sprite = new Sprite ();
-         var buttonX:Number = 0;
-         if (mParamsFromContainer.HasNextLevel != null && mParamsFromContainer.HasNextLevel ())
-         {
-            buttonContainer.addChild (mButtonNextLevel);
-            mButtonNextLevel.x = buttonX;
-            buttonX += mButtonNextLevel.width + 50;
-         }
-         else if (mParamsFromContainer.OnMainMenu != null)
-         {
-            buttonContainer.addChild (mButtonMainMenu);
-            mButtonMainMenu.x = buttonX;
-            buttonX += mButtonMainMenu.width + 50;
-         }
-         buttonContainer.addChild (mButtonReplay);
-         mButtonReplay.x = buttonX;
-         buttonX += mButtonReplay.width + 50;
-         buttonContainer.addChild (mButtonCloseFinishDialog);
-         mButtonCloseFinishDialog.x = buttonX;
-
-         var infoText:String = "";
-
-         if (mWorldLayer != null)
-         {
-            var authorName:String = mWorldDesignProperties.mAuthorName;
-            var anthorUrl:String = mWorldDesignProperties.mAuthorHomepage.toLowerCase();
-
-            if (anthorUrl.indexOf ("http") != 0)
-               anthorUrl = null;
-
-            if (authorName != null && authorName.length > 0)
-            {
-               authorName = authorName.substr (0, 32);
-
-               var authorInfoText:String;
-
-               if (anthorUrl == null)
-                  infoText = infoText + "<font face='Verdana' size='15'>This puzzle is created by <b><i>" + authorName + "</i></b></font>.";
-               else
-                  infoText = infoText + "<font face='Verdana' size='15'>This puzzle is created by <font color='#0000FF'><b><i><u><a href='" + anthorUrl + "' target='_blank' >" + authorName + "</a></u></i></b></font>.</font>";
-            }
-         }
-
-         if (infoText.length > 0 )
-            infoText = infoText + "<br>";
-         infoText = infoText + "<br><font face='Verdana' size='15'>";
-         infoText = infoText + "Want to <font color='#0000FF'><u><a href='http://www.phyard.com' target='_blank'>design your own puzzles</a></u></font>?";
-         infoText = infoText + "</font>";
-
-         mTextAuthorInfo = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, 0x0);
-
-         mFinishedDialog = Skin.CreateDialog ([mTextFinished, 20, mTextAuthorInfo, 20, buttonContainer]);
-         CenterSpriteOnWorld (mFinishedDialog);
-         mFinishedDialog.visible = false;
-         mFinishedDialog.alpha = 0.9;
-
-         //
-         mFinishedTextLayer.addChild (mFinishedDialog);
-      }
-
-      private function OpenFinishedDialog ():void
-      {
-         if (mFinishedDialog == null)
-            return;
-
-         if (mFinishedDialog != null && ! mEverFinished)
-         {
-            mEverFinished = true;
-
-            mFinishedDialog.visible = true;
-
-            if (mParamsFromContainer.OnLevelFinished != null)
-               mParamsFromContainer.OnLevelFinished ();
-         }
-
-         if (mFinishedDialog.visible)
-         {
-            mFinishedDialog.alpha += 0.025;
-            if (mFinishedDialog.alpha > 0.9)
-               mFinishedDialog.alpha = 0.9;
-         }
-      }
-
-      private function CloseFinishedDialog ():void
-      {
-         if (mFinishedDialog != null)
-         {
-            mFinishedDialog.alpha = 0.00;
-            mFinishedDialog.visible = false;
-         }
-      }
-
-      private var mHelpDialog:Sprite;
-      
-      public function BuildPlayHelpDialog (onClose:Function):Sprite
-      {
-         var sprite:Sprite = new Sprite ();
-         
-         var tutorialText:String = 
-            "<font size='15' face='Verdana' color='#000000'>The goal of <b>Color Infection</b> puzzles is to infect all <font color='#FFFF00'><b>YELLOW</b></font> objects with "
-                        + "the <font color='#804000'><b>BROWN</b></font> color by colliding them with <font color='#804000'><b>BROWN</b></font> objects "
-                        + "but keep all <font color='#60FF60'><b>GREEN</b></font> objects uninfected."
-                        + "<br /><br />To play, <br/>"
-                        + "- click a <font color='#FF00FF'><b>PINK</b></font> object to destroy it,<br/>"
-                        + "- click a <font color='#000000'><b>BOMB</b></font> object to explode it."
-                        + "</font>";
-         
-         var textTutorial:TextFieldEx = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, Define.DefaultWorldWidth / 2);
-         
-         var box2dTextStr:String =  "<font size='10' face='Verdana' color='#000000'>(This player is based on fbox2d, an actionscript<br/>"
-                                                                                + "port of the famous box2d c++ physics engine.)</font>";
-         var box2dText:TextFieldEx = TextFieldEx.CreateTextField (box2dTextStr);
-         
-         var buttonCloseHelpDialog:TextButton = new TextButton ("<font face='Verdana' size='16' color='#0000FF'>   Close   </font>", onClose);
-         
-         Skin.CreateDialog ([textTutorial, 20 , box2dText, 20, buttonCloseHelpDialog], sprite);
-         
-         return sprite;
-      }
-
-      private function CreateHelpDialog ():void
-      {
-         mHelpDialog = BuildPlayHelpDialog (CloseHelpDialog);
-         CenterSpriteOnWorld (mHelpDialog);
-
-         mHelpDialog.visible = false;
-
-         mDialogLayer.addChild (mHelpDialog);
-      }
-
-      private function OpenHelpDialog ():void
-      {
-         if (mHelpDialog != null)
-            mHelpDialog.visible = true;
-
-         //OnPause (null);
-      }
-
-      private function CloseHelpDialog ():void
-      {
-         if (mHelpDialog != null)
-            mHelpDialog.visible = false;
-      }
-
-      private function CenterSpriteOnWorld (sprite:Sprite):void
-      {
-         sprite.x = mWorldLayer.x + 0.5 * (mWorldDesignProperties.GetViewportWidth () - sprite.width);
-         sprite.y = mWorldLayer.y + 0.5 * (mWorldDesignProperties.GetViewportHeight () - sprite.height);
-      }
-      */
-
-      //private var mImageButtonMainMenu:ImageButton = null;
-      //private var mImageButtonPhyard:ImageButton = null;
 
       private var mSkin:Skin = null;
 
@@ -1102,7 +880,8 @@ package viewer {
                   OnZoom: OnZoom,
                   
                   OnMainMenu: mParamsFromContainer.OnMainMenu,
-                  OnNextLevel: mParamsFromContainer.OnNextLevel
+                  OnNextLevel: mParamsFromContainer.OnNextLevel,
+                  OnGoToPhyard: mParamsFromContainer.OnGoToPhyard
                };
 
          if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0)
@@ -1111,40 +890,12 @@ package viewer {
             mSkin = new SkinPC (skinParams);
          
          mSkinLayer.addChild (mSkin);
-         //mSkin.x = 0.5 * (mSkinLayer.width - mSkin.width);
-         //mSkin.y = 2;
-         //
-         //mSkinLayer.visible = mShowPlayBar;
-         //mSkinLayer.x = 0;
-         //mSkinLayer.y = 0;
 
          // mask
          SetMaskViewerField (mMaskViewerField);
          
          // adjust positions of layers
          OnContainerResized ();
-         
-         /*
-         // main menu
-         if (mParamsFromContainer.OnMainMenu != null)
-         {
-            mImageButtonMainMenu = new ImageButton (mBitmapDataMainMenu);
-            mImageButtonMainMenu.SetClickEventHandler (OnMainMenu);
-            mSkinLayer.addChild (mImageButtonMainMenu);
-            mImageButtonMainMenu.x = 2;
-            mImageButtonMainMenu.y = 2;
-         }
-
-         // phyard link
-         if (mParamsFromContainer.OnGoToPhyard != null)
-         {
-            mImageButtonPhyard = new ImageButton (mBitmapDataPhyard);
-            mImageButtonPhyard.SetClickEventHandler (OnGotoPhyard);
-            mSkinLayer.addChild (mImageButtonPhyard);
-            mImageButtonPhyard.x = mViewportWidth - mImageButtonPhyard.width - 2;
-            mImageButtonPhyard.y = 2;
-         }
-         */
       }
 
       public function OnContainerResized ():void
@@ -1152,118 +903,172 @@ package viewer {
          var containerSize:Point = mParamsFromContainer.GetViewportSize ();
          var containerWidth :Number = containerSize.x;
          var containerHeight:Number = containerSize.y;
-       
-         if (mSkin == null || mPlayerWorld == null || mWorldDesignProperties == null)
+         
+         try
+         {
+            if (mSkin != null && mPlayerWorld != null && mWorldDesignProperties != null)
+            {
+               // position this
+               
+               var viewerWidth:Number;
+               var viewerHeight:Number;
+               
+               if (mParamsFromEditor != null)
+               {
+                  // put at center in container
+                  
+                  var preferredViewerSize:Point = mSkin.GetPreferredViewerSize (mPreferredViewportWidth, mPreferredViewportHeight);
+                  
+                  viewerWidth  = preferredViewerSize.x;
+                  viewerHeight = preferredViewerSize.y;
+               
+                  this.x = Math.round ((containerWidth  - viewerWidth ) / 2);
+                  this.y = Math.round ((containerHeight - viewerHeight) / 2);
+               }
+               else //if (mParamsFromUniViewer != null || mParamsFromGamePackage != null)
+               {
+                  // fill all container space
+                  
+                  viewerWidth  = containerWidth;
+                  viewerHeight = containerHeight;
+                  
+                  this.x = this.y = 0.0;
+               }
+               
+               // rebuild skin
+               
+               mSkin.SetViewerSize (viewerWidth, viewerHeight);
+               
+               mSkin.Rebuild ({
+                        mPlayBarColor : mPlayBarColor,
+                        mShowSpeedAdjustor: mShowSpeedAdjustor,
+                        mShowScaleAdjustor: mShowScaleAdjustor && (mParamsFromContainer.mHideScaleButtons == undefined || mParamsFromContainer.mHideScaleButtons == false),
+                        mShowHelpButton: mShowHelpButton
+                        });
+               
+               // position content layer
+               
+               var contentRegion:Rectangle = mSkin.GetContentRegion ();
+      
+               mContentLayer.x = contentRegion.x;
+               mContentLayer.y = contentRegion.y;
+               
+               // position world layer
+                  
+               var widthRatio :Number = contentRegion.width  / mPreferredViewportWidth ;
+               var heightRatio:Number = contentRegion.height / mPreferredViewportHeight;
+      
+               if (widthRatio < heightRatio)
+               {
+                  mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
+                  mWorldLayer.y = 0.5 * Number (contentRegion.height - mPreferredViewportHeight * widthRatio);
+               }
+               else if (widthRatio > heightRatio)
+               {
+                  mWorldLayer.scaleX = mWorldLayer.scaleY = heightRatio;
+                  mWorldLayer.x = 0.5 * Number (contentRegion.width - mPreferredViewportWidth * heightRatio);
+               }
+               else
+               {
+                  mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
+               }
+               
+               // position and rebuild viewport mask shape
+               
+               var halfContnetSpaceWidth:Number  = 0.5 * contentRegion.width;
+               var halfContentSpaceHeight:Number = 0.5 * contentRegion.height;
+               
+               mViewportMaskShape.x = halfContnetSpaceWidth;
+               mViewportMaskShape.y = halfContentSpaceHeight;
+               
+               if (mAdaptiveViewportSize)
+               {
+                  // fill the full content space
+                  
+                  mViewportMaskShape.scaleX = mViewportMaskShape.scaleY = 1.0;
+                  GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
+                                    -halfContnetSpaceWidth, -halfContentSpaceHeight, contentRegion.width, contentRegion.height, 
+                                    0x0, -1, true);
+                  
+                  mWorldDesignProperties.SetRealViewportSize (contentRegion.width / mWorldLayer.scaleX, contentRegion.height / mWorldLayer.scaleY);
+               }
+               else
+               {
+                  // overlap the preferred viewport size region
+                  
+                  mViewportMaskShape.scaleX = mWorldLayer.scaleX;
+                  mViewportMaskShape.scaleY = mWorldLayer.scaleY;
+                  GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
+                                    - 0.5 * mPreferredViewportWidth, - 0.5 * mPreferredViewportHeight, mPreferredViewportWidth, mPreferredViewportHeight, 
+                                    0x0, -1, true);
+                  
+                  mWorldDesignProperties.SetRealViewportSize (mPreferredViewportWidth, mPreferredViewportHeight);
+               }
+            }
+         }
+         catch (error:Error)
+         {
+            TraceError (error);
+            
+            ChangeState (StateId_PlayingError);
+
+            if (Compile::Is_Debugging)
+            {
+               throw error;
+            }
+            
             return;
-         
-         // position this
-         
-         var viewerWidth:Number;
-         var viewerHeight:Number;
-         
-         if (mParamsFromEditor != null)
-         {
-            // put at center in container
-            
-            var preferredViewerSize:Point = mSkin.GetPreferredViewerSize (mViewportWidth, mViewportHeight);
-            
-            viewerWidth  = preferredViewerSize.x;
-            viewerHeight = preferredViewerSize.y;
-         
-            this.x = Math.round ((containerWidth  - viewerWidth ) / 2);
-            this.y = Math.round ((containerHeight - viewerHeight) / 2);
-         }
-         else //if (mParamsFromUniViewer != null || mParamsFromGamePackage != null)
-         {
-            // fill all container space
-            
-            viewerWidth  = containerWidth;
-            viewerHeight = containerHeight;
-            
-            this.x = this.y = 0.0;
          }
          
-         // rebuild skin
-         
-         mSkin.SetViewerSize (viewerWidth, viewerHeight);
-         
-         mSkin.Rebuild ({
-                  mPlayBarColor : mPlayBarColor,
-                  mShowSpeedAdjustor: mShowSpeedAdjustor,
-                  mShowScaleAdjustor: mShowScaleAdjustor && (mParamsFromContainer.mHideScaleButtons == undefined || mParamsFromContainer.mHideScaleButtons == false),
-                  mShowHelpButton: mShowHelpButton
-                  });
-         
-         // position content layer
-         
-         var contentRegion:Rectangle = mSkin.GetContentRegion ();
+         if (mErrorMessageLayer.visible)
+         {
+            CenterErrorMessageText ();
+         }
+      }
 
-         mContentLayer.x = contentRegion.x;
-         mContentLayer.y = contentRegion.y;
-         
-         // position world layer
-            
-         var widthRatio :Number = contentRegion.width  / mViewportWidth ;
-         var heightRatio:Number = contentRegion.height / mViewportHeight;
-
-         if (widthRatio < heightRatio)
+//======================================================================
+//
+//======================================================================
+      
+      private var mErrorMessageText:TextFieldEx = null;
+      
+      private function SetErrorMessage (errorMessage:String):void
+      {           
+         if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
          {
-            mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
-            mWorldLayer.y = 0.5 * Number (contentRegion.height - mViewportHeight * widthRatio);
-         }
-         else if (widthRatio > heightRatio)
-         {
-            mWorldLayer.scaleX = mWorldLayer.scaleY = heightRatio;
-            mWorldLayer.x = 0.5 * Number (contentRegion.width - mViewportWidth * heightRatio);
-         }
-         else
-         {
-            mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
+            this.visible = true;
+            mParamsFromUniViewer.SetLoadingText (null);
          }
          
-         // position and rebuild viewport mask shape
-         
-         var halfContnetSpaceWidth:Number  = 0.5 * contentRegion.width;
-         var halfContentSpaceHeight:Number = 0.5 * contentRegion.height;
-         
-         mViewportMaskShape.x = halfContnetSpaceWidth;
-         mViewportMaskShape.y = halfContentSpaceHeight;
-         
-         if (mAdaptiveViewportSize)
+         if (errorMessage == null)
          {
-            // fill the full content space
-            
-            mViewportMaskShape.scaleX = mViewportMaskShape.scaleY = 1.0;
-            GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
-                              -halfContnetSpaceWidth, -halfContentSpaceHeight, contentRegion.width, contentRegion.height, 
-                              0x0, -1, true);
-            
-            //world.SetRealViewportSize (contentRegion.width / mWorldLayer.scaleX, contentRegion.height / mWorldLayer.scaleY);
-         }
-         else
-         {
-            // overlap the preferred viewport size region
-            
-            mViewportMaskShape.scaleX = mWorldLayer.scaleX;
-            mViewportMaskShape.scaleY = mWorldLayer.scaleY;
-            GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
-                              - 0.5 * mViewportWidth, - 0.5 * mViewportHeight, mViewportWidth, mViewportHeight, 
-                              0x0, -1, true);
-            
-            //world.SetRealViewportSize (mViewportWidth, mViewportHeight);
+            mErrorMessageLayer.visible = false;
+            return;
          }
          
-         // 1. remove mViewerWidth, ..., useless variables
-         // 2. main munu button -> Skin
-         // 3. help dialog -> Skin
+         mErrorMessageLayer.visible = true;
          
-         // skin: main menu button and go to phyard button
+         if (mErrorMessageText != null && mErrorMessageText.parent == mErrorMessageLayer)
+            mErrorMessageLayer.removeChild (mErrorMessageText);
          
-         // loading status: images are not shown initially bug.
+         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage), true, 0xFFFFFF);
+         mErrorMessageLayer.addChild (mErrorMessageText);
          
-         // message layer
-         
-         //world.SetRealViewportSize
+         CenterErrorMessageText ();
+      }
+      
+      private function CenterErrorMessageText ():void
+      {
+         if (mErrorMessageText != null)
+         {
+            mErrorMessageLayer.x = - this.x;
+            mErrorMessageLayer.y = - this.y;
+            
+            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+            
+            mErrorMessageText.x = 0.5 * (containerSize.x - mErrorMessageText.width );
+            mErrorMessageText.y = 0.5 * (containerSize.y - mErrorMessageText.height);
+         }
       }
 
 //======================================================================
@@ -1555,29 +1360,6 @@ package viewer {
 
          mPlayerWorldZoomScaleChangedSpeed = ( mPlayerWorldZoomScale - mWorldDesignProperties.GetZoomScale () ) * 0.03;
       }
-
-      //private function OnHelp (data:Object = null):void
-      //{
-      //   OpenHelpDialog ();
-      //}
-      //
-      //private function OnMainMenu (data:Object = null):void
-      //{
-      //   if (mParamsFromContainer.OnMainMenu != null)
-      //      mParamsFromContainer.OnMainMenu (data);
-      //}
-      //
-      //private function OnNextLevel (data:Object = null):void
-      //{
-      //   if (mParamsFromContainer.OnNextLevel != null)
-      //      mParamsFromContainer.OnNextLevel (data);
-      //}
-      //
-      //private function OnGotoPhyard (data:Object = null):void
-      //{
-      //   if (mParamsFromContainer.OnGoToPhyard != null)
-      //      mParamsFromContainer.OnGoToPhyard (data);
-      //}
 
 //===========================================================================
 // interfaces for editing

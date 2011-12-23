@@ -99,7 +99,17 @@ package viewer {
       
       override public function Update (dt:Number):void
       {
-         // to override
+         if (mLevelFinishedDialog != null)
+         {
+            if (mLevelFinishedDialog.visible)
+            {
+               if (mLevelFinishedDialog.alpha < 1.0) mLevelFinishedDialog.alpha += 0.02;
+            }
+            else
+            {
+               if (mLevelFinishedDialog.alpha > 0.0) mLevelFinishedDialog.alpha -= 0.02;
+            }
+         }
       }
       
       override public function Rebuild (params:Object):void
@@ -298,20 +308,23 @@ package viewer {
             mPlayBar = new Sprite ();
             mPlayBarLayer.addChild (mPlayBar);
             
+            // ...
+            var basicButtonBar:Sprite = new Sprite ();
+            
             var i:int;
             var buttonX:Number = 0;
    
             // restart start/pause, stop
    
             mButtonRestart = new ImageButton (mBitmapDataRetartDisabled);
-            mPlayBar.addChild (mButtonRestart);
+            basicButtonBar.addChild (mButtonRestart);
    
             mButtonRestart.x = buttonX;
             buttonX += mButtonRestart.width;
    
             mButtonStartPause = new ImageButton (mBitmapDataStart);
             mButtonStartPause.SetClickEventHandler (OnClickStart);
-            mPlayBar.addChild (mButtonStartPause);
+            basicButtonBar.addChild (mButtonStartPause);
    
             mButtonStartPause.x = buttonX;
             buttonX += mButtonStartPause.width;
@@ -330,7 +343,7 @@ package viewer {
                {
                   mButtonSpeeds [i].SetClickEventHandler (OnClickSpeed);
    
-                  mPlayBar.addChild (mButtonSpeeds[i]);
+                  basicButtonBar.addChild (mButtonSpeeds[i]);
    
                   mButtonSpeeds[i].x = buttonX;
                   buttonX += mButtonSpeeds[i].width - 1;
@@ -347,10 +360,10 @@ package viewer {
             if (params.mShowScaleAdjustor)
             {
                mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
-               mPlayBar.addChild (mButtonZoomIn);
+               basicButtonBar.addChild (mButtonZoomIn);
    
                mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
-               mPlayBar.addChild (mButtonZoomOut);
+               basicButtonBar.addChild (mButtonZoomOut);
    
                mButtonZoomIn.x = buttonX;
                buttonX += mButtonZoomIn.width;
@@ -366,19 +379,42 @@ package viewer {
             if (params.mShowHelpButton)
             {
                mButtonHelp.SetClickEventHandler (OnClickHelp);
-               mPlayBar.addChild (mButtonHelp);
+               basicButtonBar.addChild (mButtonHelp);
    
                mButtonHelp.x = buttonX;
                buttonX += mButtonHelp.width;
                buttonX += ButtonMargin;
             }
+         
+            // ...
+            
+            mPlayBar.addChild (basicButtonBar);
+            basicButtonBar.x = 0.5 * (mViewerWidth - basicButtonBar.width);
+            basicButtonBar.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - basicButtonBar.height);
+         
+            // main menu
+            if (_OnMainMenu != null)
+            {
+               var buttonMainMenu:ImageButton = new ImageButton (mBitmapDataMainMenu);
+               buttonMainMenu.SetClickEventHandler (_OnMainMenu);
+               mPlayBar.addChild (buttonMainMenu);
+               buttonMainMenu.x = 2;
+               buttonMainMenu.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - buttonMainMenu.height);
+            }
+   
+            // phyard link
+            if (_OnGoToPhyard != null)
+            {
+               var buttonGoToPhyard:ImageButton = new ImageButton (mBitmapDataPhyard);
+               buttonGoToPhyard.SetClickEventHandler (_OnGoToPhyard);
+               mPlayBar.addChild (buttonGoToPhyard);
+               buttonGoToPhyard.x = mViewerWidth - buttonGoToPhyard.width - 2;
+               buttonGoToPhyard.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - buttonGoToPhyard.height);
+            }
             
             //
             OnClickSpeed (1); // speed X2
          }
-         
-         mPlayBar.x = 0.5 * (mViewerWidth - mPlayBar.width);
-         mPlayBar.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - mPlayBar.height);
       }
       
 //======================================================================
@@ -442,6 +478,7 @@ package viewer {
          mLevelFinishedDialog = Skin.CreateDialog ([levelFinishedText, 20, referLinkTextField, 20, buttonContainer]);
          mLevelFinishedDialogLayer.addChild (mLevelFinishedDialog);
          CenterSpriteOnContentRegion (mLevelFinishedDialogLayer);
+         mLevelFinishedDialog.alpha = 0.01;
       }
 
 //======================================================================

@@ -37,8 +37,10 @@ package plugin
                   GetZoomScale : world.GetZoomScale, // from v1.04
                   SetZoomScale : world.SetZoomScale, // from v1.04
                   
-                  GetViewportWidth : world.GetViewportWidth, // from v1.50
-                  GetViewportHeight : world.GetViewportHeight, // from v1.50
+                  //GetViewportWidth : world.GetViewportWidth, // from v1.50
+                  //GetViewportHeight : world.GetViewportHeight, // from v1.50
+                  GetViewportWidth : world.GetPreferredViewportWidth, // from v1.59
+                  GetViewportHeight : world.GetPreferredViewportHeight, // from v1.59
                   GetViewerUiFlags : world.GetViewerUiFlags, // from v1.50
                   GetPlayBarColor : world.GetPlayBarColor, // from v1.50
                   
@@ -56,6 +58,8 @@ package plugin
                   SetCacheSystemEvent : world.SetCacheSystemEvent, // from v1.50
                   
                   GetBuildingStatus : world.GetBuildingStatus, // from v1.58
+                  
+                  SetRealViewportSize : world.SetRealViewportSize, // from v1.59
                   
                   "" : null
                };

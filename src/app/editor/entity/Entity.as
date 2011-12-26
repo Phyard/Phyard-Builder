@@ -408,6 +408,8 @@ package editor.entity {
          entity.SetVisible ( IsVisible () );
          entity.SetAlpha ( GetAlpha () );
          entity.SetEnabled ( IsEnabled () );
+         entity.SetScale ( GetScale () );
+         entity.SetFlipped ( IsFlipped () );
       }
       
       

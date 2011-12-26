@@ -247,27 +247,42 @@ package editor.image {
          return mAssetImageDivideDialog;
       }
       
-      public static const kFileFilter:Array = [new FileFilter("Image File (*.jpg;*.png;*.gif)", "*.jpg;*.png;*.gif")];
+      public static const kFileFilter:Array = [new FileFilter("Image File (*.jpg;*.png;*.gif)", "*.jpg;*.jpeg;*.png;*.gif")];
       
-      private var mFileReference:FileReference = null; // flash bug: DON'T use this variable as a local variable, otherwise, the complete event will not fire.
+      private var mFileReference:FileReference = null; 
       
       private function OpenLocalImageFileDialog ():void
       {
          mFileReference = new FileReference();
          mFileReference.addEventListener(Event.SELECT, OnSelectFileToLoad);
+         mFileReference.addEventListener(Event.CANCEL, OnSelectFileCancelled);
          mFileReference.browse (kFileFilter);
+      }
+      
+      private function OnSelectFileCancelled (event:Event):void
+      {
+         mFileReference = null;
       }
          
       private function OnSelectFileToLoad (event:Event):void
       {
-         mFileReference.addEventListener(Event.COMPLETE, OnFileLoadComplete);
-         mFileReference.load();
+         //var fileReference:FileReference = (event.target as FileReference); // flash bug: DON'T use this variable as a local variable, otherwise, the complete event will not fire.
+         var fileReference:FileReference = mFileReference;
+         fileReference.addEventListener(Event.COMPLETE, OnFileLoadComplete);
+         fileReference.addEventListener(IOErrorEvent.IO_ERROR, OnFileLoadError);
+         fileReference.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnFileLoadError);
+         fileReference.load();
+      }
+      
+      private function OnFileLoadError (event:Event):void
+      {
          mFileReference = null;
       }
       
       public function OnFileLoadComplete (event:Event):void
       {
-         var fileReference:FileReference = (event.target as FileReference);
+         //var fileReference:FileReference = (event.target as FileReference); // fuck, in brower, this doesn't work. But it is ok in standlone player.
+         var fileReference:FileReference = mFileReference;
          try
          {
             var clonedImageData:ByteArray = new ByteArray ();
@@ -284,6 +299,8 @@ package editor.image {
             trace (e.getStackTrace ());
          }
          fileReference.data.clear ();
+         
+         mFileReference = null;
       }
       
       public function OnLoadLocalImageFinished (imageData:ByteArray, imageFileName:String):void

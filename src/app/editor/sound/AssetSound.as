@@ -82,8 +82,6 @@ package editor.sound {
       
       private var mSoundInfo:SoundFile = new SoundFile ();
       
-      private var _FileData_Temp:ByteArray;
-
       public function GetSoundAttributeBits ():int
       {
          return mSoundInfo.GetAttributeBits ();
@@ -119,9 +117,8 @@ package editor.sound {
       
       public function SetSoundFileData (fileData:ByteArray):void
       {
-         mSound = null;
+         SetSound (null);
          mSoundInfo.SetFileData (null);
-         _FileData_Temp = fileData;
          
          if (ParseSoundFile (fileData, mSoundInfo))
          {
@@ -129,7 +126,9 @@ package editor.sound {
             loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadSoundError);
             loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadSoundError);
             loader.addEventListener (ResourceLoadEvent.RESOURCE_LOADED, OnLoadSoundComplete);
-            loader.loadSoundFromByteArray (fileData, mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
+            //loader.loadSoundFromByteArray (fileData, mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
+            // use fileData will make the beginning frames are lost in sound playing. Weird!
+            loader.loadSoundFromByteArray (mSoundInfo.GetFileData (), mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
          }
          else
          {
@@ -139,10 +138,9 @@ package editor.sound {
       
       private function OnLoadSoundComplete (event:Event):void
       {
-         mSound = (event as ResourceLoadEvent).resource as Sound;
+         SetSound ((event as ResourceLoadEvent).resource as Sound);
       //trace ("OnLoadSoundComplete, mSound = " + mSound);
          
-         mSoundInfo.SetFileData (_FileData_Temp);
          Stop ();
          mNameText.htmlText = "<b>" + GetName () + "</b>";
          mInfoText.htmlText = mSoundInfo.GetFileFormat () + ", " + mSoundInfo.GetSamplingRate () + "kHz, " + (mSoundInfo.IsStereo () ? "stereo" : "mono");
@@ -156,7 +154,6 @@ package editor.sound {
       //trace ("OnLoadSoundError: " + event);
          //event may be null
          
-         _FileData_Temp = null;
          mSoundInfo.SetFileData (null);
          Stop ();
          mNameText.htmlText = "";
@@ -243,9 +240,12 @@ package editor.sound {
             {
                var soundData:ByteArray = new ByteArray ();
                soundData.writeShort(0);
+               
                soundData.writeBytes (fileData, dataStartIndex, i - dataStartIndex);
+               //soundData.writeBytes (fileData, 0, fileData.length);
                
                soundInfo.SetFileData (soundData);
+               
                soundInfo.SetFileFormat ("mp3");
                soundInfo.SetNumSamples (numSamples);
                soundInfo.SetStereo (! isMono);
@@ -403,19 +403,34 @@ package editor.sound {
       {
          mFileReference = new FileReference();
          mFileReference.addEventListener(Event.SELECT, OnSelectFileToLoad);
+         mFileReference.addEventListener(Event.CANCEL, OnSelectFileCancelled);
          mFileReference.browse (kFileFilter);
+      }
+      
+      private function OnSelectFileCancelled (event:Event):void
+      {
+         mFileReference = null;
       }
          
       private function OnSelectFileToLoad (event:Event):void
       {
-         mFileReference.addEventListener(Event.COMPLETE, OnFileLoadComplete);
-         mFileReference.load();
+         //var fileReference:FileReference = (event.target as FileReference); // flash bug: DON'T use this variable as a local variable, otherwise, the complete event will not fire.
+         var fileReference:FileReference = mFileReference;
+         fileReference.addEventListener(Event.COMPLETE, OnFileLoadComplete);
+         fileReference.addEventListener(IOErrorEvent.IO_ERROR, OnFileLoadError);
+         fileReference.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnFileLoadError);
+         fileReference.load();
+      }
+      
+      private function OnFileLoadError (event:Event):void
+      {
          mFileReference = null;
       }
       
       public function OnFileLoadComplete (event:Event):void
       {
-         var fileReference:FileReference = (event.target as FileReference);
+         //var fileReference:FileReference = (event.target as FileReference); // fuck, in brower, this doesn't work. But it is ok in standlone player.
+         var fileReference:FileReference = mFileReference;
          try
          {
             var clonedSoundData:ByteArray = new ByteArray ();
@@ -432,6 +447,8 @@ package editor.sound {
             trace (e.getStackTrace ());
          }
          fileReference.data.clear ();
+         
+         mFileReference = null;
       }
       
       public function OnLoadLocalSoundFinished (soundData:ByteArray, soundFileName:String):void

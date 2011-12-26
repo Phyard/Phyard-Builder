@@ -262,6 +262,7 @@ package com.tapirgames.util
             newData.writeShort (mCharacterID_TagDefineSound);
             newData.writeByte (bitsSoundFormat | bitsSoundRate | bitsSoundSize | bitsSoundType);
             newData.writeUnsignedInt (numSamples);
+            // the sound data includes the num samples to skip (2 bytes at the beginning)
             if (soundFileData.length > 0)
             {
                soundFileData.position = 0;

@@ -218,6 +218,8 @@ package viewer {
                {
                   SetErrorMessage (null);
                   
+                  InitPlayerWorld ();
+                  
                   ChangeState (StateId_Playing);
                }
                else if (buildStatus < 0)
@@ -666,11 +668,12 @@ package viewer {
       {
       //trace ("ReloadPlayerWorld");
 
-         var isFirstTime:Boolean = (mPlayerWorld == null);
+         //var isFirstTime:Boolean = (mPlayerWorld == null);
+         mFirstTimePlaying = (mPlayerWorld == null);
 
          try
          {
-            if (isFirstTime)
+            if (mFirstTimePlaying)
             {
                RetrieveWorldPluginProperties ();
 
@@ -719,7 +722,7 @@ package viewer {
 
             mWorldLayer.addChild (mPlayerWorld as Sprite);
 
-            if (isFirstTime)
+            if (mFirstTimePlaying)
             {
                BuildSkin ();
 
@@ -741,6 +744,32 @@ package viewer {
                SetZoomScale : mSkin.SetZoomScale
             });
 
+            // ...
+            mPlayerWorldZoomScale = mWorldDesignProperties.GetZoomScale ();
+            mSkin.SetZoomScale (mPlayerWorldZoomScale);
+            
+            ChangeState (StateId_Building);
+         }
+         catch (error:Error)
+         {
+            TraceError (error);
+
+            ChangeState (StateId_LoadingError);
+
+            if (Compile::Is_Debugging)
+            {
+               throw error;
+            }
+         }
+      }
+
+      private var mFirstTimePlaying:Boolean = true;
+      
+      private function InitPlayerWorld ():void
+      {
+      //trace ("InitPlayerWorld");
+         try
+         {
             mWorldDesignProperties.Initialize ();
 
             // special handling, before v1.02 (not include v1.02), to make world center in viewer
@@ -752,22 +781,16 @@ package viewer {
                mWorldDesignProperties.Update (0, 1);
             }
 
-            // ...
-            mPlayerWorldZoomScale = mWorldDesignProperties.GetZoomScale ();
-            mSkin.SetZoomScale (mPlayerWorldZoomScale);
-
-            if (isFirstTime)
+            if (mFirstTimePlaying)
             {
                if (mStartRightNow) mSkin.SetPlaying (true);
             }
-            
-            ChangeState (StateId_Building);
          }
          catch (error:Error)
          {
             TraceError (error);
 
-            ChangeState (StateId_LoadingError);
+            ChangeState (StateId_BuildingError);
 
             if (Compile::Is_Debugging)
             {

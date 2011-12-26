@@ -119,6 +119,7 @@ package editor.sound {
       {
          SetSound (null);
          mSoundInfo.SetFileData (null);
+         mPlayButton.SetEnabled (false);
          
          if (ParseSoundFile (fileData, mSoundInfo))
          {

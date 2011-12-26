@@ -405,7 +405,7 @@ package common {
          {
             Global.CreateImageModules (worldDefine.mImageDefines, worldDefine.mPureImageModuleDefines, worldDefine.mAssembledModuleDefines, worldDefine.mSequencedModuleDefines);
             Global.CreateSounds (worldDefine.mSoundDefines);
-            Global.CheckWorldBuildingStatus ();
+            //Global.CheckWorldBuildingStatus (); // bug, EntityModule.mModuleIndex is not set yet. Moved to the end now.
          }
 
    //*********************************************************************************************************************************
@@ -502,7 +502,12 @@ package common {
    //*********************************************************************************************************************************
    //
    //*********************************************************************************************************************************
-
+         
+         if (isLoaingFromStretch)
+         {
+            Global.CheckWorldBuildingStatus ();
+         }
+         
          // removed from here, for many functions such as Global.SetPlaying are not registerd yet.
          //playerWorld.Initialize ();
 

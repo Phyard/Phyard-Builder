@@ -5522,6 +5522,9 @@ package editor {
       
       public function SelectEntityByIds (entityIds:Array, clearOldSelecteds:Boolean = true, selectBoothers:Boolean = false):void
       {
+         if (entityIds == null)
+            return;
+         
          var entites:Array = new Array ();
          
          for each (var entityId:int in entityIds)
@@ -5558,7 +5561,7 @@ package editor {
             //{
             //   entites.push (entity);
             //}
-            var selectableEntites:Array =  (entity as EntityJoint).GetSelectableEntities ();
+            var selectableEntites:Array =  entity.GetSelectableEntities ();
             for each (var selectableEntity:Entity in selectableEntites)
             {
                 entites.push (selectableEntity);

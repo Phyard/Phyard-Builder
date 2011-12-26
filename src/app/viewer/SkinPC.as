@@ -304,7 +304,7 @@ package viewer {
       private function RebuildPlayBar (params:Object):void
       {
          GraphicsUtil.ClearAndDrawRect (this, 
-                              0, 0, mViewerWidth - 1, Define.DefaultPlayerSkinPlayBarHeight, 
+                              0, 0, mViewerWidth, Define.DefaultPlayerSkinPlayBarHeight, 
                               params.mPlayBarColor, 1, true, params.mPlayBarColor);
          
          // ...
@@ -315,6 +315,7 @@ package viewer {
             mPlayBarLayer.addChild (mPlayBar);
             
             // ...
+            
             mBasicButtonBar = new Sprite ();
             
             var i:int;

@@ -205,10 +205,10 @@ package univiewer
          viewer.alpha = 0.0;
          addChild (viewer);
 
-         mWiewer = viewer;
+         mViewer = viewer;
       }
 
-      private var mWiewer:Object = null;
+      private var mViewer:Object = null;
 
       private function GetViewportSize ():Point
       {
@@ -218,9 +218,9 @@ package univiewer
 
       private function OnResize (event:Event):void
       {
-         if (mWiewer != null && mWiewer.hasOwnProperty ("OnContainerResized"))
+         if (mViewer != null && mViewer.hasOwnProperty ("OnContainerResized"))
          {
-            mWiewer.OnContainerResized ();
+            mViewer.OnContainerResized ();
          }
       }
 

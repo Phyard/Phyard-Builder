@@ -3,11 +3,11 @@
      The TitleWindowApp application displays this component.
      You cannot run it independently. -->
 
-<mx:TitleWindow 
+<container:ResizableTitleWindow xmlns:container="editor.display.container.*"
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:sound="editor.sound.dialog.*"
     title="Sound Assets Manager"
-    width="200" height="500"
+    width="216" height="500"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
     creationComplete="InitDialog ();"
@@ -43,7 +43,10 @@
          public static function ShowAssetSoundListDialog (OnSoundPicked:Function = null):void
          {
             if (sAssetSoundListDialog == null)
+            {
                sAssetSoundListDialog = new AssetSoundListDialog ();
+               sAssetSoundListDialog.SetAllowedResizingModeBits (ResizingMode_Bottom);
+            }
             
             if (sAssetSoundListDialog.parent != null) // OnSoundPicked must be null
             {
@@ -137,4 +140,4 @@
 
 
 
-</mx:TitleWindow>
+</container:ResizableTitleWindow>

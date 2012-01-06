@@ -3,10 +3,11 @@
      The TitleWindowApp application displays this component.
      You cannot run it independently. -->
 
-<mx:TitleWindow 
+<container:ResizableTitleWindow xmlns:container="editor.display.container.*"
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:image="editor.image.dialog.*" 
     title="Image Assets Manager"
+    borderThickness="30"
     width="600" height="500"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
@@ -48,7 +49,9 @@
          public static function ShowAssetImageModuleListDialog (OnModulePicked:Function = null):void
          {
             if (sAssetImageModuleListDialog == null)
+            {
                sAssetImageModuleListDialog = new AssetImageModuleListDialog ();
+            }
             
             if (sAssetImageModuleListDialog.parent != null) // OnModulePicked must be null
             {
@@ -149,4 +152,4 @@
 
 
 
-</mx:TitleWindow>
+</container:ResizableTitleWindow>

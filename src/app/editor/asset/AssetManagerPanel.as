@@ -461,7 +461,7 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         if (IsZoomSupported ())
+         if (IsZoomSupported () && (! event.ctrlKey))
          {
             var oldMouseManagerPoint:Point = new Point (mAssetManager.mouseX, mAssetManager.mouseY);
    

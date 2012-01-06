@@ -12,10 +12,10 @@ Container {
 }
 
 TitleWindow {
-   borderThicknessLeft:5px;
-   borderThicknessRight:5px;
+   borderThicknessLeft:8px;
+   borderThicknessRight:8px;
    borderThicknessTop:1px;
-   borderThicknessBottom:5px;
+   borderThicknessBottom:8px;
    borderAlpha:1.0;
    borderColor:#C0C0C0;
    color:#000000;

@@ -23,7 +23,21 @@ package common {
       
       public static const kDefaultCoordinateSystem:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.05, false);
       public static const kDefaultCoordinateSystem_BeforeV0108:CoordinateSystem = kDefaultCoordinateSystem; // new CoordinateSystem (0.0, 0.0, 0.1, false);
+
+//===========================================================================
+// network return code
+//===========================================================================
       
+      public static const k_ReturnCode_UnknowError:int = 0;
+      public static const k_ReturnCode_Successed:int = 1;
+      public static const k_ReturnCode_NotLoggedIn:int = 2;
+      public static const k_ReturnCode_SlotIdOutOfRange:int = 3;
+      public static const k_ReturnCode_DesignNotCreatedYet:int = 4;
+      public static const k_ReturnCode_DesignAlreadyRemoved:int = 5;
+      public static const k_ReturnCode_DesignCannotBeCreated:int = 6;
+      public static const k_ReturnCode_ProfileNameNotCreatedYet:int = 7;
+      public static const k_ReturnCode_NoEnoughRightsToProcess:int = 8;
+            
 //===========================================================================
 // world
 //===========================================================================

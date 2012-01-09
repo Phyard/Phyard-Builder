@@ -853,6 +853,7 @@
                MainView.ShowWorldSavingDialog = ShowWorldSavingDialog;
                MainView.ShowWorldLoadingDialog = ShowWorldLoadingDialog;
                MainView.ShowWorldQuickLoadingDialog = ShowWorldQuickLoadingDialog;
+               MainView.ShowExportSwfFileDialog = ShowExportSwfFileDialog;
                
                MainView.ShowPlayCodeLoadingDialog = ShowPlayCodeLoadingDialog;
                MainView.ShowImportSourceCodeDialog = ShowImportSourceCodeDialog;
@@ -2026,6 +2027,17 @@
             //   settingDialog.SetConfirmFunc (onConfirmFunc);
             //   settingDialog.SetCloseFunc (OnCloseDialog);
             //}
+            
+            private function ShowExportSwfFileDialog (initialValues:Object):void
+            {
+               OnOpenDialog ();
+               
+               var dialog:WorldSaveAsSwfDialog = new WorldSaveAsSwfDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetValues (initialValues);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
             
             private function ShowWorldSavingDialog (initialValues:Object):void
             {

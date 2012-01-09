@@ -433,6 +433,18 @@
       </antcall>
    </target>
 
+   <target name="debug-plugin-packager">
+      <antcall target="debug-plugin">
+         <param name="plugin-name" value="packager" />
+      </antcall>
+   </target>
+
+   <target name="release-plugin-packager">
+      <antcall target="release-plugin">
+         <param name="plugin-name" value="packager" />
+      </antcall>
+   </target>
+
    <!-- ####################### alchemy build ########################3 -->
 
    <target name="--pre-compile-alchemy">

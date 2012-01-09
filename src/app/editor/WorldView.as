@@ -2058,6 +2058,7 @@ package editor {
       public var ShowWorldLoadingDialog:Function = null;
       public var ShowWorldQuickLoadingDialog:Function = null;
       public var ShowImportSourceCodeDialog:Function = null;
+      public var ShowExportSwfFileDialog:Function = null;
       
       public var ShowCollisionGroupManageDialog:Function = null;
       
@@ -3315,6 +3316,10 @@ package editor {
                   break;
                case 82: // R
                   Redo ();
+                  break;
+               case 80: // P
+                  if (event.ctrlKey && event.shiftKey)
+                     ExportSwfFile ();
                   break;
                case 83: // S
                   if (event.ctrlKey && event.shiftKey)
@@ -5589,7 +5594,7 @@ package editor {
             
             if (codeString != null)
             {
-         trace ("111");
+         //trace ("111");
                const Text_PlayCode:String = "playcode";
                if (codeString.length > Text_PlayCode.length && codeString.substring (0, Text_PlayCode.length) == Text_PlayCode)
                {
@@ -5597,29 +5602,29 @@ package editor {
                   var offset:int = codeString.indexOf (Text_OldCodeStarting, Text_PlayCode.length);
                   if (offset > 0) // old playcode
                   {
-         trace ("222");
+         //trace ("222");
                      newWorldDefine = DataFormat2.HexString2WorldDefine (codeString.substring (offset));
                   }
                   else // new base64 playcode
                   {
-         trace ("333");
+         //trace ("333");
                      offset = Text_PlayCode.length;
                      var Text_CompressFormat:String = "compressformat=base64";
                      offset = codeString.indexOf (Text_CompressFormat, offset);
                      if (offset > 0)
                      {
-         trace ("aaa");
+         //trace ("aaa");
                         offset += Text_CompressFormat.length;
                         var Text_PlayCode2:String = "playcode=";
                         offset = codeString.indexOf (Text_PlayCode2, offset);
                         if (offset > 0)
                         {
-         trace ("bbb");
+         //trace ("bbb");
                            offset += Text_PlayCode2.length;
                            var offset2:int = codeString.indexOf ("@}", offset);
                            if (offset2 > 0)
                            {
-         trace ("ccc");
+         //trace ("ccc");
                               newWorldDefine = DataFormat2.PlayCode2WorldDefine_Base64 (codeString.substring (offset, offset2));
                            }
                         }
@@ -6158,19 +6163,40 @@ package editor {
          }
       }
       
+      public function ExportSwfFile ():void
+      {
+         if (! IsOnlineEditing ())
+            return;
+         
+         var urlParams:Object = GetFlashParams ();
+         
+         var viewportWidth:int = mEditorWorld.GetViewportWidth ();
+         var viewportHeight:int = mEditorWorld.GetViewportHeight ();
+         var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+         var heightWithPlayBar:int = (showPlayBar ? viewportHeight + Define.DefaultPlayerSkinPlayBarHeight : viewportHeight);
+
+         var levelData:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+         levelData.compress ();
+
+         var values:Object = new Object ();
+         values.mVersionString = Runtime.GetVersionString ();
+         
+         values.mAuthor = urlParams.mAuthorName;
+         values.mSlotId = urlParams.mSlotID;
+         values.mWorldDataFormatVersion = Version.VersionNumber;
+         values.mWorldBinaryData = levelData;
+         values.mViewportWidth = viewportWidth;
+         values.mViewportHeight = viewportHeight;
+         values.mShowPlayBar = showPlayBar;
+         values.mViewerWidth = viewportWidth;
+         values.mViewerHeight = heightWithPlayBar;
+         
+         ShowExportSwfFileDialog (values);
+      }
+      
 //============================================================================
 // online save / open 
 //============================================================================
-      
-      public static const k_ReturnCode_UnknowError:int = 0;
-      public static const k_ReturnCode_Successed:int = 1;
-      public static const k_ReturnCode_NotLoggedIn:int = 2;
-      public static const k_ReturnCode_SlotIdOutOfRange:int = 3;
-      public static const k_ReturnCode_DesignNotCreatedYet:int = 4;
-      public static const k_ReturnCode_DesignAlreadyRemoved:int = 5;
-      public static const k_ReturnCode_DesignCannotBeCreated:int = 6;
-      public static const k_ReturnCode_ProfileNameNotCreatedYet:int = 7;
-      public static const k_ReturnCode_NoEnoughRightsToProcess:int = 8;
 
       public function GetFlashParams ():Object
       {
@@ -6316,7 +6342,7 @@ package editor {
                returnMessage = data.readUTFBytes (length);
             }
             
-            if (returnCode == k_ReturnCode_Successed)
+            if (returnCode == Define.k_ReturnCode_Successed)
             {
                mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save succeeded", EffectMessagePopup.kBgColor_OK));
             }
@@ -6389,13 +6415,13 @@ package editor {
       {
          var loader:URLLoader = URLLoader(event.target);
          
-         var returnCode:int = k_ReturnCode_UnknowError;
+         var returnCode:int = Define.k_ReturnCode_UnknowError;
          
          var data:ByteArray = ByteArray (loader.data);
          
          returnCode = data.readByte ();
          
-         if (returnCode != k_ReturnCode_Successed)
+         if (returnCode != Define.k_ReturnCode_Successed)
          {
             //Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, EffectMessagePopup.kBgColor_Error));

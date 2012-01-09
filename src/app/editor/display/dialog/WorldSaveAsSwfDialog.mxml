@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+    title="Export SWF Package" width="600"
+    creationComplete="InitApp ();">
+
+   <mx:Spacer height="10"/>
+   
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_Message" text="Waiting ..."/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   <mx:Spacer height="10"/>
+   
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button id="Button_Save" label="Export SWF Package" enabled="false" click="OnClickSaveToLocalDisk ();"/>
+      <mx:Spacer width="50"/>
+      <mx:Button label="Close" click="OnClickCloseButton ();"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:Spacer height="10"/>
+   
+   <mx:Script>
+     <![CDATA[       
+         
+         import flash.net.FileReference;
+         import flash.net.FileFilter;
+         import flash.events.IOErrorEvent;
+         import flash.events.Event;
+         
+         import mx.managers.PopUpManager;
+         
+         import editor.runtime.Runtime;
+         
+         import common.Define;
+         
+         private var OnClose:Function = null;
+         
+         private var mInputValues:Object;
+         
+         private function InitApp ():void
+         {
+            if (mPackagerPlugin == null)
+            {
+               if (mPackagerPlugin != null)
+               {
+                  Label_Message.text = "Waiting ...";
+                  Button_Save.enabled = false;
+               }
+            }
+            else
+            {
+               Label_Message.text = "Press \"Export SWF Package\" to export";
+               Button_Save.enabled = true;
+            }
+            
+            addEventListener (Event.ENTER_FRAME, OnEnterFrame);
+         }
+         
+         private function OnEnterFrame (event:Event):void 
+         {
+            if (mErrorInfo == null)
+            {
+               Label_Message.text = "Ready for exporting!";
+               Button_Save.enabled = true;
+            }
+            else if (mErrorInfo != Label_Message.text)
+            {
+               Label_Message.text = mErrorInfo;
+            }
+         }
+         
+         public function SetValues (values:Object):void
+         {
+            mInputValues = values;
+            
+            StartLoadingPackagerPlugin ();
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickCloseButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         private function OnClickSaveToLocalDisk ():void
+         {
+            if (mPackagerPlugin == null)
+               return;
+            
+            var swfFileData:ByteArray = (mPackagerPlugin.Call as Function) ("CreateSwfPackage", 
+                                                      {
+                                                       mSwfSeedFile: mSwfSeedFile,
+                                                       
+                                                       mWorldPluginFilename : mWorldPluginFilename,
+                                                       mAuthor : mInputValues.mAuthor,
+                                                       mSlotId : mInputValues.mSlotId,
+                                                       mWorldDataFormatVersion : mInputValues.mWorldDataFormatVersion,
+                                                       mWorldBinaryData : mInputValues.mWorldBinaryData,
+                                                       mViewportWidth : mInputValues.mViewportWidth, 
+                                                       mViewportHeight : mInputValues.mViewportHeight,
+                                                       mShowPlayBar : mInputValues.mShowPlayBar,
+                                                       mViewerWidth : mInputValues.mViewerWidth,
+                                                       mViewerHeight : mInputValues.mViewerHeight
+                                                       }
+                                                   ) as ByteArray;
+            
+            var fileReference:FileReference = new FileReference();
+            fileReference.addEventListener(Event.COMPLETE, OnFileSaveComplete);
+            fileReference.addEventListener(IOErrorEvent.IO_ERROR, OnFileSaveError);
+            fileReference.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnFileSaveError);
+            fileReference.save (swfFileData, Runtime.GetRecommandDesignFilename ().replace (/\.phyardx/g, ".swf"));
+            
+            Label_Message.text = "Save ...";
+            Button_Save.enabled = false;
+         }
+         
+         private function OnFileSaveError (event:Event):void
+         {
+            Label_Message.text = "Saving Error!";
+            Button_Save.enabled = true;
+         }
+         
+         private function OnFileSaveComplete (event:Event):void
+         {
+            Label_Message.text = "Saved";
+            Button_Save.enabled = true;
+         }
+         
+//===========================================================================================
+// ...
+//===========================================================================================
+         
+         private static var mIsLoading:Boolean = false;
+         private static var mPackagerPlugin:Object = null;
+         private static var mErrorInfo:String = null;
+         
+         private static var mWorldPluginFilename:String;
+         private static var mSwfSeedFile:ByteArray;
+         private static var mSwfPackagerApplicationDomain:ApplicationDomain;
+         
+         private function StartLoadingPackagerPlugin ():void
+         {
+            if (mIsLoading)
+               return;
+            
+            if (mPackagerPlugin != null)
+               return;
+            
+            mErrorInfo = null;
+            
+            var infoUrl:String = "/studio/design/download/swf?version=" + mInputValues.mVersionString;
+            
+            var request:URLRequest = new URLRequest (infoUrl);
+            request.method = URLRequestMethod.GET;
+            
+            var loader:URLLoader = new URLLoader ();
+            loader.dataFormat = URLLoaderDataFormat.BINARY;
+
+            loader.addEventListener(Event.COMPLETE, OnLoadInfoComplete);
+            loader.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
+            loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+            
+            loader.load (request);
+         }
+         
+         private static function OnLoadingError (event:Event = null):void
+         {
+            mPackagerPlugin = null;
+            mIsLoading = false;
+            
+            if (event != null)
+            {
+               mErrorInfo = event.toString ();
+            }
+         }
+         
+         private static function OnLoadInfoComplete (event:Event):void
+         {
+            var stream:ByteArray = ByteArray ((event.target as URLLoader).data);
+   
+            var returnCode:int = stream.readByte ();
+   
+            if (returnCode != Define.k_ReturnCode_Successed)
+            {
+               mErrorInfo = "Loading error! Code = " + returnCode;
+               OnLoadingError ();
+               return;
+            }
+            
+            try
+            {
+               mWorldPluginFilename = stream.readUTF ();
+              
+               var swfSeedFileSize:int = stream.readInt ();
+               mSwfSeedFile = new ByteArray ();
+               stream.readBytes (mSwfSeedFile, 0, swfSeedFileSize);
+               
+               var packagerPluginFileDataSize:int = stream.readInt ();
+               var packagerPluginFileData:ByteArray = new ByteArray ();
+               stream.readBytes (packagerPluginFileData, 0, packagerPluginFileDataSize);
+            }
+            catch (error:Error)
+            {
+               mErrorInfo = "Parse data error!";
+               OnLoadingError ();
+               return;
+            }
+            
+            mPackagerPlugin = null;
+            
+            var loader:Loader = new Loader ();
+
+            loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadSwfPackagerComplete);
+            loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
+            loader.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+            
+            mSwfPackagerApplicationDomain = new ApplicationDomain ();
+            loader.loadBytes (packagerPluginFileData, new LoaderContext (false, mSwfPackagerApplicationDomain));
+         }
+         
+         private static function OnLoadSwfPackagerComplete (event:Event):void
+         {
+            //SetInfoText (null);
+   
+            mPackagerPlugin = mSwfPackagerApplicationDomain.getDefinition("Main") as Class;
+            if (mPackagerPlugin == null)
+            {
+               mPackagerPlugin = null;
+               
+               mErrorInfo = "Failed!";
+               OnLoadingError ();
+               return;
+            }
+            
+            mErrorInfo = null;
+         }
+         
+     ]]>
+   </mx:Script>
+   
+   
+
+</mx:TitleWindow>

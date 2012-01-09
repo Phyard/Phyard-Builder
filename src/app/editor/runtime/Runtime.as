@@ -143,12 +143,17 @@ package editor.runtime {
 //
 //=====================================================================
 
-      public static function GetAboutContextMenuItem ():ContextMenuItem
+      public static function GetVersionString ():String
       {
          var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
          var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
          
-         var menuItemAbout:ContextMenuItem = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), true);
+         return majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16);
+      }
+
+      public static function GetAboutContextMenuItem ():ContextMenuItem
+      {
+         var menuItemAbout:ContextMenuItem = new ContextMenuItem("About Phyard Builder v" + GetVersionString (), true);
          menuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
          
          return menuItemAbout;

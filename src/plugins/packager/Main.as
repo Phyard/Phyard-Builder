@@ -2,7 +2,7 @@ package
 {
    import flash.display.Sprite;
    
-   import viewer.Viewer;
+   import packager.Packager;
    
    public class Main extends Sprite
    {
@@ -10,8 +10,11 @@ package
       {
          switch (name)
          {
-            case "NewViewer":
-               return new Viewer (params);
+            case "CreateSwfPackage":
+               //var packager:Packager = new Packager (); // shit flex!
+               //return packager.PackageNewFileData (params);
+               var aPackager:Packager = new Packager ();
+               return aPackager.PackageNewFileData (params);
             default:
             {
                return null;

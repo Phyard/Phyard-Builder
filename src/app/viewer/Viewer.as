@@ -258,8 +258,8 @@ package viewer {
                if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
                {
                   mParamsFromUniViewer.SetLoadingText ("Building ...");
-                  this.visible = false;
                }
+               this.visible = false;
                break;
             case StateId_BuildingError:
                SetErrorMessage ("Building error!");
@@ -1062,9 +1062,10 @@ package viewer {
       
       private function SetErrorMessage (errorMessage:String):void
       {           
+         this.visible = true;
+         
          if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
          {
-            this.visible = true;
             mParamsFromUniViewer.SetLoadingText (null);
          }
          

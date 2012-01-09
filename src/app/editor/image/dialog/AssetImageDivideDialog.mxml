@@ -3,7 +3,7 @@
      The TitleWindowApp application displays this component.
      You cannot run it independently. -->
 
-<mx:TitleWindow 
+<container:ResizableTitleWindow xmlns:container="editor.display.container.*"
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:image="editor.image.dialog.*"
     title="Divide Image Pure Modules"
@@ -105,4 +105,4 @@
 
 
 
-</mx:TitleWindow>
+</container:ResizableTitleWindow>

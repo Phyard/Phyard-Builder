@@ -525,6 +525,15 @@
             private function OnAddedToStage (event:Event):void 
             {
                stage.addEventListener (KeyboardEvent.KEY_DOWN, Runtime.OnKeyDown);
+               
+               stage.addEventListener (MouseEvent.MOUSE_DOWN, CheckMouseHoldStatus);
+               stage.addEventListener (MouseEvent.MOUSE_MOVE, CheckMouseHoldStatus);
+               stage.addEventListener (MouseEvent.MOUSE_UP, CheckMouseHoldStatus);
+            }
+            
+            private function CheckMouseHoldStatus (event:MouseEvent):void
+            {
+               Runtime.SetMouseButtonHold (event.buttonDown);
             }
             
             private function InitApp ():void

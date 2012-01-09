@@ -6,6 +6,8 @@ package editor.display.container
    
    import mx.managers.CursorManager;
 	import mx.containers.TitleWindow;
+	
+	import editor.runtime.Runtime; // project specified
 
 	public class ResizableTitleWindow extends TitleWindow
 	{
@@ -62,47 +64,54 @@ package editor.display.container
          }
          else if (mInDragging)
          {
-            var dx:Number = mouseX - mDraggingFromX;
-            var dy:Number = mouseY - mDraggingFromY;
-            
-            if ((mResizingMode & ResizingMode_Top) != 0)
-               dy = - dy;
-            else if ((mResizingMode & ResizingMode_Bottom) == 0)
-               dy = 0;
-            
-            if ((mResizingMode & ResizingMode_Left) != 0)
-               dx = - dx;
-            else if ((mResizingMode & ResizingMode_Right) == 0)
-               dx = 0;
-            
-            var oldWidth:Number = width;
-            var oldHeight:Number = height;
-            
-            var newWidth:Number = width + dx;
-            var newHeight:Number = height + dy;
-            
-            if (newWidth < 100)
-               newWidth = 100;
-            if (newHeight < 100)
-               newHeight = 100;
-            if (newWidth > stage.stageWidth)
-               newWidth = stage.stageWidth;
-            if (newHeight > stage.stageHeight)
-               newHeight = stage.stageHeight;
-            
-            width = newWidth;
-            height = newHeight;
-            
-            dx = width - oldWidth;
-            dy = height - oldHeight;
-            
-            if ((mResizingMode & ResizingMode_Top) != 0)
-               y -= dy;
-            if ((mResizingMode & ResizingMode_Left) != 0)
-               x -= dx;
+            if (Runtime.IsMouseButtonHold ())
+            {
+               var dx:Number = mouseX - mDraggingFromX;
+               var dy:Number = mouseY - mDraggingFromY;
+               
+               if ((mResizingMode & ResizingMode_Top) != 0)
+                  dy = - dy;
+               else if ((mResizingMode & ResizingMode_Bottom) == 0)
+                  dy = 0;
+               
+               if ((mResizingMode & ResizingMode_Left) != 0)
+                  dx = - dx;
+               else if ((mResizingMode & ResizingMode_Right) == 0)
+                  dx = 0;
+               
+               var oldWidth:Number = width;
+               var oldHeight:Number = height;
+               
+               var newWidth:Number = width + dx;
+               var newHeight:Number = height + dy;
+               
+               if (newWidth < 100)
+                  newWidth = 100;
+               if (newHeight < 100)
+                  newHeight = 100;
+               if (newWidth > stage.stageWidth)
+                  newWidth = stage.stageWidth;
+               if (newHeight > stage.stageHeight)
+                  newHeight = stage.stageHeight;
+               
+               width = newWidth;
+               height = newHeight;
+               
+               dx = width - oldWidth;
+               dy = height - oldHeight;
+               
+               if ((mResizingMode & ResizingMode_Top) != 0)
+                  y -= dy;
+               if ((mResizingMode & ResizingMode_Left) != 0)
+                  x -= dx;
 
-            mDraggingFromX = mouseX;
-            mDraggingFromY = mouseY;
+               mDraggingFromX = mouseX;
+               mDraggingFromY = mouseY;
+            }
+            else
+            {
+               StopDragging ();
+            }
          }
       }
       

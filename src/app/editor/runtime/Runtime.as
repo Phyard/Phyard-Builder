@@ -127,6 +127,18 @@ package editor.runtime {
          return mApplication;
       }
       
+      private static var mIsMouseButtonHold:Boolean = false;
+      
+      public static function SetMouseButtonHold (hold:Boolean):void
+      {
+         mIsMouseButtonHold = hold;
+      }
+      
+      public static function IsMouseButtonHold ():Boolean
+      {
+         return mIsMouseButtonHold;
+      }
+      
 //=====================================================================
 //
 //=====================================================================

@@ -246,6 +246,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetGravityAcceleration_Vector,      GetWorldGravityAcceleration_Vector);
 
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint,                   GetPhysicsShapesAtPoint);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetIntersectionsWithLineSegment,         etIntersectionsWithLineSegment);
+
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraRotationByDegrees,                GetCameraRotation_Degrees);
@@ -403,7 +406,6 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint,            ApplyLinearImpulseAtWorldPointOnShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse,                       ApplyAngularImpulse);
 
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetPhysicsOnesAtPoint,         GetPhysicsShapesAtPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Translate,                      TranslateShape);
@@ -3910,6 +3912,22 @@ package player.trigger {
          var pointY:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY));
+      }
+
+      public static function etIntersectionsWithLineSegment(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var startPointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var startPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var endPointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var endPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetIntersectionsWithLineSegment (startPointX, startPointY, endPointX, endPointY));
       }
 
       public static function TeleportShape (valueSource:Parameter, valueTarget:Parameter):void

@@ -33,6 +33,8 @@ package viewer {
    import flash.display.Loader;
    import flash.display.LoaderInfo;
    import flash.system.LoaderContext;
+   
+   import flash.system.Capabilities;
 
    import com.tapirgames.display.FpsCounter;
    import com.tapirgames.util.TimeSpan;
@@ -62,44 +64,6 @@ package viewer {
          private var mParamsFromUniViewer:Object = null;
          private var mParamsFromEditor:Object = null;
          private var mParamsFromGamePackage:Object = null;
-
-   // special interfaces for editor
-
-      private var mExternalPaused:Boolean = false;
-      public function SetExternalPaused (paused:Boolean):void
-      {
-         mExternalPaused = paused;
-      }
-
-      public function GetPlayerWorld ():Object
-      {
-         return mPlayerWorld;
-      }
-
-      public function UpdateSingleStep ():void
-      {
-         Step (true);
-      }
-
-      public function SetMaskViewerField (mask:Boolean):void
-      {
-         mMaskViewerField = mask;
-
-         if (mMaskViewerField)
-         {
-            if (! mContentLayer.contains (mViewportMaskShape))
-               mContentLayer.addChild (mViewportMaskShape);
-
-            mContentLayer.mask = mViewportMaskShape;
-         }
-         else
-         {
-            if (mContentLayer.contains (mViewportMaskShape))
-               mContentLayer.removeChild (mViewportMaskShape);
-
-            mContentLayer.mask = null;
-         }
-      }
 
 //======================================================================
 //
@@ -142,8 +106,6 @@ package viewer {
 //
 //======================================================================
 
-
-
       public function Viewer (params:Object = null)
       {
          trace ("Viewer params = " + params);
@@ -173,16 +135,173 @@ package viewer {
 
       private function OnAddedToStage (e:Event):void
       {
+         CheckPlatformCapabilities ();
+         
          addEventListener (Event.ENTER_FRAME, Update);
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
+         
+         stage.addEventListener (Event.ACTIVATE, OnActivated);
+         stage.addEventListener (Event.DEACTIVATE, OnDeactivated);
 
          ParseParams ();
       }
 
       private function OnRemovedFromFrame (e:Event):void
       {
+         stage.removeEventListener (Event.ACTIVATE, OnActivated);
+         stage.removeEventListener (Event.DEACTIVATE, OnDeactivated);
+         
          removeEventListener (Event.ENTER_FRAME, Update);
          removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
+         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+      }
+
+//======================================================================
+// stop simulation on mobile devices
+//======================================================================
+      
+      private var mIsAppDeactivated:Boolean = false;
+      
+      public function OnActivated (event:Event):void
+      {
+         mIsAppDeactivated = false;
+      }
+      
+      public function OnDeactivated (event:Event):void
+      {
+         mIsAppDeactivated = true;
+      }
+
+//======================================================================
+// platform capabilities
+//======================================================================
+
+      private var mIsMobileDevice:Boolean = false; // false for PC device
+         private var mIsPhoneDevice:Boolean = false; // only valid when mIsMobileDevice is true
+      private var mIsAirApp:Boolean = false; // false for browser app
+         private var mNativeApplicationClass:Object = null; // only valid when mIsAirApp is true
+      
+      private var mGeolocationClass:Object = null;
+      private var mAccelerometerClass:Object = null;
+      private var mMultitouchClass:Object = null;
+
+      private function CheckPlatformCapabilities ():void
+      {
+         try
+         {
+            //Capabilities.pixelAspectRatio;
+            //Capabilities.language // en, zh-TW, zh-CN, ru, pt, fr, de, es, ar, ...
+            //Capabilities.isDebugger
+            //Capabilities.playerType // 
+                // "StandAlone" for the stand-alone Flash Player
+                // "External" for the external Flash Player or in test mode
+                // "PlugIn" for the Flash Player browser plug-in
+                // "ActiveX" for the Flash Player ActiveX control used by Microsoft Internet Explorer
+            //Capabilities.version
+                // WIN 9,0,0,0  // Flash Player 9 for Windows
+                // MAC 7,0,25,0   // Flash Player 7 for Macintosh
+                // UNIX 5,0,55,0  // Flash Player 5 for UNIX
+            //Capabilities.serverString
+            
+            var dpi:int = Capabilities.screenDPI;
+            var screenX:int = Capabilities.screenResolutionX;
+            var screenY:int = Capabilities.screenResolutionY;
+            var diagonal:Number = Math.sqrt((screenX*screenX)+(screenY*screenY))/dpi;
+            // if diagonal is higher than 6, we will assume it is a tablet
+            mIsPhoneDevice = diagonal < 6;
+            if (mIsPhoneDevice)
+            {
+               mIsMobileDevice = true;
+            }
+            else
+            {
+               var manufacturer:String = Capabilities.manufacturer;
+               manufacturer = (manufacturer == null ? "" : manufacturer.toLowerCase ());
+               var osname:String = Capabilities.os;
+               osname = (osname == null ? "" : osname.toLowerCase ());
+               if (manufacturer.indexOf ("android") >= 0 || osname.indexOf ("ios") >= 0 || manufacturer.indexOf ("phone") >= 0 || manufacturer.indexOf ("pad") >= 0) // phone may be iphone or "windows phone" or "lephone"
+               {
+                  mIsMobileDevice = true;
+               }
+               if (! mIsMobileDevice)
+               {
+                  if (osname.indexOf ("android") >= 0 || osname.indexOf ("ios") >= 0 || osname.indexOf ("phone") >= 0 || osname.indexOf ("pad") >= 0)
+                  {
+                     mIsMobileDevice = true;
+                  }
+               }
+            }
+         
+            // 
+         
+            mIsAirApp = ApplicationDomain.currentDomain.hasDefinition ("flash.desktop.NativeApplication");
+            if (mIsAirApp)
+            {
+               mNativeApplicationClass = ApplicationDomain.currentDomain.getDefinition ("flash.desktop.NativeApplication") as Class;
+               // mNativeApplicationClass.nativeApplication.runtimeVersion
+               // mNativeApplicationClass.nativeApplication.systemIdleMode
+               // mNativeApplicationClass.nativeApplication.idleThreshold 
+               // NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.NORMAL;
+               // NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.KEEP_AWAKE; // 防止黑屏省电模式，AndroidManifest中需要添加权限
+               
+               // best put in Game.as
+               //NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit)
+               //mNativeApplicationClass.nativeApplication.exit ()
+            }
+            
+            if (ApplicationDomain.currentDomain.hasDefinition ("flash.sensors.Geolocation"))
+            {
+               mGeolocationClass = ApplicationDomain.currentDomain.getDefinition ("flash.sensors.Geolocation") as Class;
+               if (! mGeolocationClass.isSupported)
+               {
+                  mGeolocationClass = null;
+               }
+            }
+               
+            if ((! mIsMobileDevice) && mGeolocationClass != null)
+            {
+               mIsMobileDevice = true;
+            }
+            
+            if (ApplicationDomain.currentDomain.hasDefinition ("flash.sensors.Accelerometer"))
+            {
+               mAccelerometerClass = ApplicationDomain.currentDomain.getDefinition ("flash.sensors.Accelerometer") as Class;
+               if (! mAccelerometerClass.isSupported)
+               {
+                  mAccelerometerClass = null;
+               }
+            }
+               
+            if ((! mIsMobileDevice) && mAccelerometerClass != null)
+            {
+               mIsMobileDevice = true;
+            }
+            
+            
+            if (ApplicationDomain.currentDomain.hasDefinition ("flash.ui.Multitouch"))
+            {
+               mMultitouchClass = ApplicationDomain.currentDomain.getDefinition ("flash.ui.Multitouch") as Class;
+               if (mMultitouchClass.maxTouchPoints > 0)
+               {
+                  mMultitouchClass = null;
+               }
+            }
+               
+            if ((! mIsMobileDevice) && mMultitouchClass != null)
+            {
+               mIsMobileDevice = true;
+            }
+            
+         }
+         catch (error:Error)
+         {
+            TraceError (error);
+         
+            if (Compile::Is_Debugging)
+            {
+               throw error;
+            }
+         }
       }
 
 //======================================================================
@@ -202,6 +321,9 @@ package viewer {
 
       public function Update (event:Event):void
       {
+         if (mIsAppDeactivated && mIsMobileDevice)
+            return; // avoid making the mobile device slow
+         
          switch (mStateId)
          {
             case StateId_Loading:
@@ -277,7 +399,8 @@ package viewer {
 
       public static function TraceError (error:Error):void
       {
-         trace (error.getStackTrace ());
+         //if (Compile::Is_Debugging)
+            trace (error.getStackTrace ());
       }
 
 //======================================================================
@@ -1328,6 +1451,26 @@ package viewer {
 //
 //======================================================================
 
+      public function SetMaskViewerField (mask:Boolean):void
+      {
+         mMaskViewerField = mask;
+
+         if (mMaskViewerField)
+         {
+            if (! mContentLayer.contains (mViewportMaskShape))
+               mContentLayer.addChild (mViewportMaskShape);
+
+            mContentLayer.mask = mViewportMaskShape;
+         }
+         else
+         {
+            if (mContentLayer.contains (mViewportMaskShape))
+               mContentLayer.removeChild (mViewportMaskShape);
+
+            mContentLayer.mask = null;
+         }
+      }
+
       public function IsPlaying ():Boolean
       {
          if(mSkin == null)
@@ -1442,6 +1585,22 @@ package viewer {
       public function SetOnPlayStatusChangedFunction (onPlayStatusChanged:Function):void
       {
          _onPlayStatusChanged = onPlayStatusChanged;
+      }
+      
+      private var mExternalPaused:Boolean = false;
+      public function SetExternalPaused (paused:Boolean):void
+      {
+         mExternalPaused = paused;
+      }
+
+      public function GetPlayerWorld ():Object
+      {
+         return mPlayerWorld;
+      }
+
+      public function UpdateSingleStep ():void
+      {
+         Step (true);
       }
 
    }

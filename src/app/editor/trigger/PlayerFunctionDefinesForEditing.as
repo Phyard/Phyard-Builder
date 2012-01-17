@@ -1402,13 +1402,24 @@ package editor.trigger {
                      ]
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetPhysicsOnesAtPoint, world_physics_package, "Get Physics Shapes At Point", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint, world_physics_package, "Get Physics Shapes At Point", null, null,
                      [
                              new VariableDefinitionNumber ("Point X"),
                              new VariableDefinitionNumber ("Point Y"),
                      ],
                      [
                              new VariableDefinitionArray ("Physics Shapes"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetIntersectionsWithLineSegment, world_physics_package, "Get Intersections With Line Segmentt", null, null,
+                     [
+                             new VariableDefinitionNumber ("Start Point X"),
+                             new VariableDefinitionNumber ("Start Point Y"),
+                             new VariableDefinitionNumber ("End Point X"),
+                             new VariableDefinitionNumber ("End Point Y"),
+                     ],
+                     [
+                             new VariableDefinitionArray ("Intersections"),
                      ]
                   );
 

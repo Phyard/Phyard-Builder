@@ -120,7 +120,8 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 	}
 
 	var t:Number = numerator / denominator;
-	if (t < 0.0 || 1.0 < t)
+	//if (t < 0.0 || 1.0 < t) // r141
+	if (t < 0.0 || input.maxFraction < t) // changed in r200
 	{
 		return false;
 	}

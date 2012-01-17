@@ -26,6 +26,7 @@ package player.physics {
    import Box2D.b2WorldPool;
    
    import Box2dEx.Helper.b2eWorldAABBQueryCallback;
+   import Box2dEx.Helper.b2eWorldRayCastCallback;
    
    import player.entity.EntityShape;
    
@@ -192,7 +193,7 @@ package player.physics {
       
       public function GetShapesAtPoint (physicsWorldX:Number, physicsWorldY:Number):Array
       {
-         var vertex:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (physicsWorldX,physicsWorldY);
+         var vertex:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (physicsWorldX, physicsWorldY);
          
          var fixtures:Array = b2eWorldAABBQueryCallback.GetFixturesContainPoint (_b2World, vertex);
          
@@ -210,6 +211,38 @@ package player.physics {
          
          return shapes;
       }
+      
+      public function GetIntersectionsWithLineSegment (startPointX:Number, startPointY:Number, endPointX:Number, endPointY:Number):Array
+      {
+         var point1:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (startPointX, startPointY);
+         var point2:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (endPointX, endPointY);
+         
+         var infos:Array = b2eWorldRayCastCallback.GetIntersectionInfoWithLineSegment (_b2World, point1, point2);
+         
+         var infosNonBox2dSpecified:Array = new Array (infos.length);
+         if (infos.length > 0)
+         {
+            var dx:Number = endPointX - startPointX;
+            var dy:Number = endPointY - startPointY;
+            var segmentLength:Number = Math.sqrt (dx * dx + dy * dy);
+            
+            for (var i:int = 0; i < infos.length; ++ i)
+            {
+               var theInfo:Array = infos [i];
+               
+               var fixture:b2Fixture = theInfo[0] as b2Fixture;
+               var point:b2Vec2 = theInfo[1] as b2Vec2;
+               var normal:b2Vec2 = theInfo[2] as b2Vec2;
+               var fraction:Number = theInfo[3] as Number;
+               
+               var entityShape:EntityShape = (fixture.GetUserData () as PhysicsProxyShape).GetEntityShape ();
+               infosNonBox2dSpecified [i] = [entityShape, point.x, point.y, normal.x, normal.y, fraction, segmentLength * fraction];
+            }
+         }
+         
+         return infosNonBox2dSpecified;
+      }
+      
       
    }
    

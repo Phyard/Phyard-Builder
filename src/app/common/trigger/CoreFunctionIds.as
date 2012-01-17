@@ -230,6 +230,9 @@ package common.trigger {
       public static const ID_World_SetGravityAcceleration_Vector:int        = IdPool.CoreApiId_712;
       public static const ID_World_GetGravityAcceleration_Vector:int        = IdPool.CoreApiId_713;
 
+      public static const ID_World_GetPhysicsOnesAtPoint:int            = IdPool.CoreApiId_1251;
+      public static const ID_World_GetIntersectionsWithLineSegment:int        = IdPool.CoreApiId_715;
+
       public static const ID_World_SetCurrentCamera:int                               = IdPool.CoreApiId_717;
       public static const ID_World_GetCameraCenter:int                               = IdPool.CoreApiId_719;
       public static const ID_World_GetCameraRotationByDegrees:int                    = IdPool.CoreApiId_718;
@@ -398,7 +401,6 @@ package common.trigger {
       public static const ID_EntityShape_ApplyLinearImpulseAtWorldPoint:int                   = IdPool.CoreApiId_1108;
       public static const ID_EntityShape_ApplyAngularImpulse:int                              = IdPool.CoreApiId_1109;
 
-      public static const ID_EntityShape_GetPhysicsOnesAtPoint:int            = IdPool.CoreApiId_1251;
       public static const ID_EntityShape_Teleport:int                         = IdPool.CoreApiId_1252;
       public static const ID_EntityShape_TeleportOffsets:int                  = IdPool.CoreApiId_1253;
 

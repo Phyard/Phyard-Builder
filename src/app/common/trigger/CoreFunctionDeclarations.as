@@ -1329,6 +1329,27 @@ package common.trigger {
                      ]
                   );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetIntersectionsWithLineSegment,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ]
+                  );
+
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
@@ -2373,15 +2394,6 @@ package common.trigger {
 
          // ...
 
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetPhysicsOnesAtPoint,
-                     [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
-                     ],
-                     [
-                        [ValueTypeDefine.ValueType_Array,       null],
-                     ]
-                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Teleport,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],

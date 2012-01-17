@@ -276,6 +276,8 @@ package common.trigger {
       public static const CoreApiId_712:int = 712; // world
       public static const CoreApiId_713:int = 713; // world
 
+      public static const CoreApiId_715:int = 715; // world
+
       public static const CoreApiId_717:int = 717; // world
       public static const CoreApiId_718:int = 718; // world
       public static const CoreApiId_719:int = 719; // world
@@ -434,7 +436,7 @@ package common.trigger {
       public static const CoreApiId_1230:int = 1230;
       public static const CoreApiId_1231:int = 1231;
 
-      public static const CoreApiId_1251:int = 1251;
+      public static const CoreApiId_1251:int = 1251; // ID_World_GetPhysicsOnesAtPoint
       public static const CoreApiId_1252:int = 1252;
       public static const CoreApiId_1253:int = 1253;
 

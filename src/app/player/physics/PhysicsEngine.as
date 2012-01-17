@@ -27,6 +27,7 @@ package player.physics {
    
    import Box2dEx.Helper.b2eWorldAABBQueryCallback;
    import Box2dEx.Helper.b2eWorldRayCastCallback;
+   import Box2dEx.Helper.b2eRayCastIntersection;
    
    import player.entity.EntityShape;
    
@@ -212,12 +213,311 @@ package player.physics {
          return shapes;
       }
       
+      // limits: only works for convex shapes with body built  
+      private function GetValidIntersectionsWithLineSegment (startPointX:Number, startPointY:Number, endPointX:Number, endPointY:Number):Array
+      {
+         var incomingIntersections:Array = b2eWorldRayCastCallback.GetIntersectionInfoWithLineSegment (_b2World, 
+                                                             b2Vec2.b2Vec2_From2Numbers (startPointX, startPointY), 
+                                                             b2Vec2.b2Vec2_From2Numbers (endPointX, endPointY));
+         var outcomingIntersections:Array = b2eWorldRayCastCallback.GetIntersectionInfoWithLineSegment (_b2World, 
+                                                             b2Vec2.b2Vec2_From2Numbers (endPointX, endPointY), 
+                                                             b2Vec2.b2Vec2_From2Numbers (startPointX, startPointY));
+
+trace ("incomingIntersections.length = " + incomingIntersections.length);         
+trace ("outcomingIntersections.length = " + outcomingIntersections.length);         
+         
+         // ...
+         
+         var shape:EntityShape;
+         var intersection:b2eRayCastIntersection;
+         for each (intersection in incomingIntersections)
+         {
+            shape = ((intersection.mFixture as b2Fixture).GetUserData () as PhysicsProxyShape).GetEntityShape ();
+            intersection.mUserData = shape;
+            intersection.mIsIncoming = true;
+         }
+         for each (intersection in outcomingIntersections)
+         {
+            shape = ((intersection.mFixture as b2Fixture).GetUserData () as PhysicsProxyShape).GetEntityShape ();
+            intersection.mUserData = shape;
+            intersection.mIsIncoming = false;
+            
+            intersection.mFraction = 1.0 - intersection.mFraction;
+         }
+
+         var allIntersections:Array = incomingIntersections.concat (outcomingIntersections);
+         allIntersections.sort (IntersectionComparor);
+         
+trace ("allIntersections.length = " + allIntersections.length);         
+
+         // ...
+         
+         var validIntersections:Array = new Array ();
+         
+         for each (intersection in allIntersections)
+         {
+            shape = intersection.mUserData as EntityShape;
+
+trace ("  -- shape = " + shape.GetCreationId ());
+         
+            if (intersection.mIsIncoming)
+            {
+trace ("  -- aaa");
+               if (shape.mUserData2 != null)
+               {
+trace ("  -- bbb");
+                  validIntersections.push (shape.mUserData2);
+                  
+                  shape.mUserData1 = null;
+                  shape.mUserData2 = null;
+               }
+               
+               if (shape.mUserData1 == null)
+               {
+                  shape.mUserData1 = intersection;
+                  
+trace ("  -- ccc");
+
+                  validIntersections.push (intersection);
+               }
+            }
+            else
+            {
+trace ("  -- ddd");
+               shape.mUserData2 = intersection;
+            }
+         }
+         
+trace ("validIntersectionslength = " + validIntersections.length);   
+         
+         // ...
+         
+         for each (intersection in outcomingIntersections)
+         {
+            shape = intersection.mUserData as EntityShape;
+
+            if (shape.mUserData2 == intersection)
+            {
+               validIntersections.push (intersection);
+            }
+            
+            shape.mUserData2 = null;
+         }
+         
+trace ("validIntersectionslength = " + validIntersections.length);   
+         
+         for each (intersection in incomingIntersections)
+         {
+            shape = intersection.mUserData as EntityShape;
+            shape.mUserData1 = null;
+         }
+
+         validIntersections.sort (IntersectionComparor);
+
+         return validIntersections;
+      }
+      
+      private static function IntersectionComparor (iA:b2eRayCastIntersection, iB:b2eRayCastIntersection):int
+      {
+         if (iA.mFraction > iB.mFraction)
+            return 1;
+         if (iA.mFraction < iB.mFraction)
+            return -1;
+         return 0;
+      }
+      
+      public function GetFirstIncomingIntersection (startPointX:Number, startPointY:Number, endPointX:Number, endPointY:Number):Array
+      {
+         var validIntersections:Array = GetValidIntersectionsWithLineSegment (startPointX, startPointY, endPointX, endPointY);
+         var dx:Number = endPointX - startPointX;
+         var dy:Number = endPointY - startPointY;
+         var segmentLength:Number = Math.sqrt (dx * dx + dy * dy);
+         
+         for each (var intersection:b2eRayCastIntersection in validIntersections)
+         {
+            if (intersection.mIsIncoming)
+            {
+               return [intersection.mUserData as EntityShape, 
+                       intersection.mPoint.x, intersection.mPoint.y, 
+                       intersection.mNormal.x, intersection.mNormal.y, 
+                       intersection.mFraction, segmentLength * intersection.mFraction];
+            }
+         }
+         
+         return null;
+      }
+      
+      public function GetFirstOutcomingIntersection (startPointX:Number, startPointY:Number, endPointX:Number, endPointY:Number):Array
+      {
+         var validIntersections:Array = GetValidIntersectionsWithLineSegment (startPointX, startPointY, endPointX, endPointY);
+         var dx:Number = endPointX - startPointX;
+         var dy:Number = endPointY - startPointY;
+         var segmentLength:Number = Math.sqrt (dx * dx + dy * dy);
+         
+         for each (var intersection:b2eRayCastIntersection in validIntersections)
+         {
+            if (! intersection.mIsIncoming)
+            {
+               return [intersection.mUserData as EntityShape, 
+                       intersection.mPoint.x, intersection.mPoint.y, 
+                       intersection.mNormal.x, intersection.mNormal.y, 
+                       intersection.mFraction, segmentLength * intersection.mFraction];
+            }
+         }
+         
+         return null;
+      }
+      
+      public function GetIntersectedShapes (startPointX:Number, startPointY:Number, endPointX:Number, endPointY:Number, includingHalfIntersecteds:Boolean):Array
+      {
+         var validIntersections:Array = GetValidIntersectionsWithLineSegment (startPointX, startPointY, endPointX, endPointY);
+         
+         var intersection:b2eRayCastIntersection;
+         var shape:EntityShape;
+         
+         for each (intersection in validIntersections)
+         {
+            shape = intersection.mUserData as EntityShape;
+            shape.mUserData1 = null;
+            shape.mUserData2 = null;
+         }
+         
+         var intersectedShapes:Array = new Array ();
+         
+         for each (intersection in validIntersections)
+         {
+            shape = intersection.mUserData as EntityShape;
+            
+            if (intersection.mIsIncoming)
+            {
+               shape.mUserData1 = intersection;
+               
+               if (includingHalfIntersecteds && shape.mUserData2 == null)
+               {
+                  shape.mUserData2 = intersection;
+                  intersectedShapes.push (shape);
+               }
+            }
+            else
+            {
+               if (includingHalfIntersecteds)
+               {
+                  if (shape.mUserData1 == null)
+                  {
+                     shape.mUserData1 = intersection;
+                     intersectedShapes.push (shape);
+                  }
+               }
+               else if (shape.mUserData1 != null && shape.mUserData2 == null)
+               {
+                  intersectedShapes.push (shape);
+               }
+
+               shape.mUserData2 = intersection;
+            }
+         }
+         
+         for each (intersection in validIntersections)
+         {
+            shape = intersection.mUserData as EntityShape;
+            shape.mUserData1 = null;
+            shape.mUserData2 = null;
+         }
+         
+         return intersectedShapes;
+      }
+      
+      /*
+      public function GetIntersectionSegments (startPointX:Number, startPointY:Number, endPointX:Number, endPointY:Number):Array
+      {
+         var validIntersections:Array = GetValidIntersectionsWithLineSegment (startPointX, startPointY, endPointX, endPointY);
+         var dx:Number = endPointX - startPointX;
+         var dy:Number = endPointY - startPointY;
+         var segmentLength:Number = Math.sqrt (dx * dx + dy * dy);
+         
+         var intersection:b2eRayCastIntersection;
+         
+         // ...
+         
+         for each (intersection : validIntersections)
+         {
+            shape = intersection.mUserData as EntityShape;
+            shape.mUserData1 = null;
+            shape.mUserData2 = null;
+         }
+         
+         // ...
+         
+         var intersectionSegments:Array = new Array ();
+         
+         for each (intersection : validIntersections)
+         {
+            shape = intersection.mUserData as EntityShape;
+            
+            if (intersection.mIsIncoming)
+            {
+               if (shape.mUserData2 != null) // shape.mUserData1 must also not null
+               {
+                  // new segment
+                  
+                  var itstA:b2eRayCastIntersection = shape.mUserData1 as b2eRayCastIntersection;
+                  var itstB:b2eRayCastIntersection = shape.mUserData2 as b2eRayCastIntersection;
+                  
+                  intersectionSegments.push ([shape, 
+                                             itstA.mPoint.x, itstA.mPoint.y, itstA.mNormal.x, itstA.mNormal.y, itstA.mFraction, segmentLength * itstA.mFraction,
+                                             itstB.mPoint.x, itstB.mPoint.y, itstB.mNormal.x, itstB.mNormal.y, itstB.mFraction, segmentLength * itstB.mFraction]);
+                  
+                  shape.mUserData1 = null;
+                  shape.mUserData2 = null;
+               }
+               
+               if (shape.mUserData1 == null)
+               {
+                  shape.mUserData1 = intersection;
+               }
+            }
+            else
+            {
+               if (shape.mUserData1 != null)
+               {
+                  shape.mUserData2 = intersection;
+               }
+            }
+         }
+         
+         // ...
+         
+         for each (intersection : outcomingIntersections)
+         {
+            shape = intersection.mUserData as EntityShape;
+   
+            if (! intersection.mIsIncoming)
+            {
+               if (shape.mUserData2 == intersection)// shape.mUserData1 must not null
+               {
+                  var itstA:b2eRayCastIntersection = shape.mUserData1 as b2eRayCastIntersection;
+                  var itstB:b2eRayCastIntersection = shape.mUserData2 as b2eRayCastIntersection;
+                  
+                  intersectionSegments.push ([shape, 
+                                             itstA.mPoint.x, itstA.mPoint.y, itstA.mNormal.x, itstA.mNormal.y, itstA.mFraction, segmentLength * itstA.mFraction,
+                                             itstB.mPoint.x, itstB.mPoint.y, itstB.mNormal.x, itstB.mNormal.y, itstB.mFraction, segmentLength * itstB.mFraction]);
+               }
+            }
+            
+            shape.mUserData1 = null;
+            shape.mUserData2 = null;
+         }
+         
+         return intersectionSegments;
+      }
+      */
+      
+      /*
       public function GetIntersectionsWithLineSegment (startPointX:Number, startPointY:Number, endPointX:Number, endPointY:Number):Array
       {
-         var point1:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (startPointX, startPointY);
-         var point2:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (endPointX, endPointY);
-         
-         var infos:Array = b2eWorldRayCastCallback.GetIntersectionInfoWithLineSegment (_b2World, point1, point2);
+         var infos:Array = b2eWorldRayCastCallback.GetIntersectionInfoWithLineSegment (_b2World, 
+                                                             b2Vec2.b2Vec2_From2Numbers (startPointX, startPointY), 
+                                                             b2Vec2.b2Vec2_From2Numbers (endPointX, endPointY));
          
          var infosNonBox2dSpecified:Array = new Array (infos.length);
          if (infos.length > 0)
@@ -242,6 +542,7 @@ package player.physics {
          
          return infosNonBox2dSpecified;
       }
+      */
       
       
    }

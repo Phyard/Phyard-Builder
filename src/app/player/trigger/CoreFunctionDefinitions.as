@@ -247,7 +247,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetGravityAcceleration_Vector,      GetWorldGravityAcceleration_Vector);
 
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint,                   GetPhysicsShapesAtPoint);
-         RegisterCoreFunction (CoreFunctionIds.ID_World_GetIntersectionsWithLineSegment,         etIntersectionsWithLineSegment);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetFirstIncomingIntersectionWithLineSegment,         GetFirstIncomingIntersectionWithLineSegment);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment,         GetFirstOutcomingIntersectionWithLineSegment);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,         GetIntersectedShapesWithLineSegment);
 
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
@@ -3914,7 +3916,7 @@ package player.trigger {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY));
       }
 
-      public static function etIntersectionsWithLineSegment(valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetFirstIncomingIntersectionWithLineSegment(valueSource:Parameter, valueTarget:Parameter):void
       {
          var startPointX:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -3927,8 +3929,44 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var endPointY:Number = valueSource.EvaluateValueObject () as Number;
 
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetIntersectionsWithLineSegment (startPointX, startPointY, endPointX, endPointY));
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetFirstIncomingIntersection (startPointX, startPointY, endPointX, endPointY));
       }
+
+      public static function GetFirstOutcomingIntersectionWithLineSegment(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var startPointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var startPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var endPointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var endPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetFirstOutcomingIntersection (startPointX, startPointY, endPointX, endPointY));
+      }
+
+      public static function GetIntersectedShapesWithLineSegment(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var startPointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var startPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var endPointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var endPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var includingHalfIntersecteds:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetIntersectedShapes (startPointX, startPointY, endPointX, endPointY, includingHalfIntersecteds));
+      }
+
 
       public static function TeleportShape (valueSource:Parameter, valueTarget:Parameter):void
       {

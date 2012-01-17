@@ -231,7 +231,11 @@ package common.trigger {
       public static const ID_World_GetGravityAcceleration_Vector:int        = IdPool.CoreApiId_713;
 
       public static const ID_World_GetPhysicsOnesAtPoint:int            = IdPool.CoreApiId_1251;
-      public static const ID_World_GetIntersectionsWithLineSegment:int        = IdPool.CoreApiId_715;
+
+      public static const ID_World_GetFirstIncomingIntersectionWithLineSegment:int        = IdPool.CoreApiId_730;
+      public static const ID_World_GetFirstOutcomingIntersectionWithLineSegment:int        = IdPool.CoreApiId_731;
+      public static const ID_World_GetIntersectedShapesWithLineSegment:int        = IdPool.CoreApiId_732;
+      public static const ID_World_GetIntersectionSegmentsWithLineSegment:int        = IdPool.CoreApiId_733;
 
       public static const ID_World_SetCurrentCamera:int                               = IdPool.CoreApiId_717;
       public static const ID_World_GetCameraCenter:int                               = IdPool.CoreApiId_719;

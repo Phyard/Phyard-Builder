@@ -1411,7 +1411,7 @@ package editor.trigger {
                              new VariableDefinitionArray ("Physics Shapes"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetIntersectionsWithLineSegment, world_physics_package, "Get Intersections With Line Segmentt", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetFirstIncomingIntersectionWithLineSegment, world_physics_package, "Get First Incoming Intersection With Line Segment", null, null,
                      [
                              new VariableDefinitionNumber ("Start Point X"),
                              new VariableDefinitionNumber ("Start Point Y"),
@@ -1419,9 +1419,43 @@ package editor.trigger {
                              new VariableDefinitionNumber ("End Point Y"),
                      ],
                      [
-                             new VariableDefinitionArray ("Intersections"),
+                             new VariableDefinitionArray ("First Incoming Intersection"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment, world_physics_package, "Get First Outcoming Intersection With Line Segment", null, null,
+                     [
+                             new VariableDefinitionNumber ("Start Point X"),
+                             new VariableDefinitionNumber ("Start Point Y"),
+                             new VariableDefinitionNumber ("End Point X"),
+                             new VariableDefinitionNumber ("End Point Y"),
+                     ],
+                     [
+                             new VariableDefinitionArray ("First Outcoming Intersection"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment, world_physics_package, "Get Intersected Shapes With Line Segment", null, null,
+                     [
+                             new VariableDefinitionNumber ("Start Point X"),
+                             new VariableDefinitionNumber ("Start Point Y"),
+                             new VariableDefinitionNumber ("End Point X"),
+                             new VariableDefinitionNumber ("End Point Y"),
+                             new VariableDefinitionBoolean ("Including Half Intersecteds?"),
+                     ],
+                     [
+                             new VariableDefinitionArray ("Intersected Shapes"),
+                     ]
+                  );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetIntersectionSegmentsWithLineSegment, world_physics_package, "Get Intersection Segments With Line Segment", null, null,
+         //            [
+         //                    new VariableDefinitionNumber ("Start Point X"),
+         //                    new VariableDefinitionNumber ("Start Point Y"),
+         //                    new VariableDefinitionNumber ("End Point X"),
+         //                    new VariableDefinitionNumber ("End Point Y"),
+         //            ],
+         //            [
+         //                    new VariableDefinitionArray ("First Outcoming Intersection"),
+         //            ]
+         //         );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera, world_camera_package, "Set Current Camera", null, null,
                      [

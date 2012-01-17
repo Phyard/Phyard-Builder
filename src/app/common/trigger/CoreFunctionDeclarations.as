@@ -1338,7 +1338,7 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetIntersectionsWithLineSegment,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetFirstIncomingIntersectionWithLineSegment,
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
@@ -1349,6 +1349,40 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,     false],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ]
+                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetIntersectionSegmentsWithLineSegment,
+         //            [
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+         //            ],
+         //            [
+         //               [ValueTypeDefine.ValueType_Array,       null],
+         //            ]
+         //         );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera,
                      [

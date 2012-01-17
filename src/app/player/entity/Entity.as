@@ -741,9 +741,11 @@ package player.entity {
 //==============================================================================
 
    // for some API convinience
-
-      internal var mSpecialId:int = 0;
-      public static var sLastSpecialId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
+      
+      public static const MinId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
+      
+      internal var mSpecialId:int = MinId;
+      public static var sLastSpecialId:int = MinId;
 
       internal function IncreaseLastSpecialId ():void
       {
@@ -755,14 +757,28 @@ package player.entity {
 
       protected function ResetEntitySpecialIds ():void
       {
-         sLastSpecialId = 0;
+         sLastSpecialId = MinId;
 
          mWorld.ResetEntitySpecialIds ();
       }
 
+      public function SetSpecialId (id:int):void
+      {
+         mSpecialId = id;
+      }
+
+      public function GetSpecialId ():int
+      {
+         return mSpecialId;
+      }
+
       public function ResetSpecialId ():void
       {
-         mSpecialId = 0;
+         mSpecialId = MinId;
       }
+      
+      // for some optimizations
+      public var mUserData1:Object;
+      public var mUserData2:Object;
    }
 }

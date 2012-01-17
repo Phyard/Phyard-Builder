@@ -1,23 +1,23 @@
 
 package Box2dEx.Helper {
-   
+
    import Box2D.Common.b2Vec2;
    import Box2D.Dynamics.b2RayCastCallback;
    import Box2D.Dynamics.b2World;
    import Box2D.Dynamics.b2Fixture;
-   
+
    public class b2eWorldRayCastCallback implements b2RayCastCallback
    {
       public static function GetIntersectionInfoWithLineSegment (world:b2World, point1:b2Vec2, point2:b2Vec2):Array
       {
          var callback:b2eWorldRayCastCallback = new b2eWorldRayCastCallback ();
          world.RayCast (callback, point1, point2);
-         
+
          return callback.GetHits ();
       }
 
 //=================================================================
-// 
+//
 //=================================================================
 
       protected var mMaxHits:int;
@@ -49,9 +49,9 @@ package Box2dEx.Helper {
       public function ReportFixture (fixture:b2Fixture, point:b2Vec2,
                               normal:b2Vec2, fraction:Number):Number
       {
-         mHits.push ([fixture, point, normal, fraction]);
+         mHits.push (new b2eRayCastIntersection (fixture, point, normal, fraction));
          ++ mNumHits;
-         
+
          //return (mMaxHits <= 0 || mNumHits < mMaxHits) ? fraction : 0;
          return (mMaxHits <= 0 || mNumHits < mMaxHits) ? 1.0 : 0.0;
       }

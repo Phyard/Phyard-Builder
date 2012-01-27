@@ -126,16 +126,18 @@ package viewer {
             }
          }
          
+         var fadingSpeed:Number = 0.05;
+         
          if (IsPlaying ())
          {
             mHubButtonContainer.visible = true;
             if (mHubButtonContainer.alpha < 0.5)
-               mHubButtonContainer.alpha += 0.02;
+               mHubButtonContainer.alpha += fadingSpeed;
             if (mHubButtonContainer.alpha > 0.5)
                mHubButtonContainer.alpha = 0.5;
             
             if (mPlayBar.alpha > 0.0)
-               mPlayBar.alpha -= 0.02;
+               mPlayBar.alpha -= fadingSpeed;
             if (mPlayBar.alpha <= 0.0)
             {
                mPlayBar.alpha = 0.0;
@@ -146,12 +148,12 @@ package viewer {
          {
             mPlayBar.visible = true;
             if (mPlayBar.alpha < 1.0)
-               mPlayBar.alpha += 0.02;
+               mPlayBar.alpha += fadingSpeed;
             if (mPlayBar.alpha >= 1.0)
                mPlayBar.alpha = 1.0;
             
             if (mHubButtonContainer.alpha > 0.0)
-               mHubButtonContainer.alpha -= 0.02;
+               mHubButtonContainer.alpha -= fadingSpeed;
             if (mHubButtonContainer.alpha <= 0.0)
             {
                mHubButtonContainer.alpha = 0.0;
@@ -179,11 +181,38 @@ package viewer {
       
       override protected function OnPlayingSpeedXChanged (oldSpeedX:int):void
       {
+         var speedX:int = GetPlayingSpeedX ();
+         
+         if (mFasterButton != null)
+         {
+            mFasterButton.alpha = speedX >= 4 ? 0.5 : 1.0;
+         }
+         
+         if (mSlowerButton != null)
+         {
+            mSlowerButton.alpha = speedX <= 1 ? 0.5 : 1.0;
+         }
       }
       
       override protected function OnZoomScaleChanged (oldZoonScale:Number):void
       {
-
+         var zoomScale:Number = GetZoomScale ();
+         
+         if (mScaleOutButton != null)
+         {
+            mScaleOutButton.alpha = zoomScale <= Define.MinWorldZoomScale ? 0.5 : 1.0;
+         }
+         
+         if (mScaleInButton != null)
+         {
+            mScaleInButton.alpha = zoomScale >= Define.MaxWorldZoomScale ? 0.5 : 1.0;
+         }
+      }
+      
+      override protected function OnSoundEnabledChanged ():void
+      {
+         mSoundOnButton.visible = IsSoundEnabled ();
+         mSoundOffButton.visible = ! mSoundOnButton.visible;
       }
       
       override protected function OnHelpDialogVisibleChanged ():void
@@ -241,19 +270,25 @@ package viewer {
       {
          SetPlaying (false);
       }
-
-      private static const ButtonIndex2SpeedXTable:Array = [1, 2, 3, 4, 5];
-      private static var mButtonShown:Array = [true, true, false, true, false];
-
-      private function OnClickSpeed (data:Object):void
+      
+      private function OnClickFaster (data:Object):void
       {
-         var index:int = int (data);
-         if (index < 0) index = 0;
-         if (index >= NumButtonSpeed) index = NumButtonSpeed - 1;
-
-         SetPlayingSpeedX (ButtonIndex2SpeedXTable [index]);
+         var speedX:int = GetPlayingSpeedX ();
+         speedX = speedX < 1 ? 1 : speedX * 2;
+         if (speedX > 4)
+            speedX = 4;
+         SetPlayingSpeedX (speedX);
       }
 
+      private function OnClickSlower (data:Object):void
+      {
+         var speedX:int = GetPlayingSpeedX ();
+         speedX = speedX / 2;
+         if (speedX < 1)
+            speedX = 1;
+         SetPlayingSpeedX (speedX);
+      }
+      
       private function OnClickZoomIn (data:Object):void
       {
          SetZoomScale (GetZoomScale () * 2.0);
@@ -263,10 +298,22 @@ package viewer {
       {
          SetZoomScale (GetZoomScale () * 0.5);
       }
+      
+      private function OnClickSoundOn (data:Object):void
+      {
+         SetSoundEnabled (false);
+      }
+      
+      private function OnClickSoundOff (data:Object):void
+      {
+         SetSoundEnabled (true);
+      }
 
       private function OnClickHelp (data:Object):void
       {
          SetHelpDialogVisible (true);
+         
+         SetPlaying (true);
       }
 
       private function OnClickCloseHelpDialog ():void
@@ -290,16 +337,18 @@ package viewer {
          private var mBarMask:Shape;
          private var mBarBackground:Sprite;
          private var mBasicButtonBar:Sprite;
-            private var mButtonRestart:ImageButton;
-            private var mButtonStartPause:ImageButton;
-            private var mButtonHelp:ImageButton;
-            private var mButtonMainMenu:ImageButton;
-            //private var mButtonGoToPhyard:ImageButton;
+            private var mStartButton:Sprite;
+            private var mRestartButton:Sprite;
+            private var mSoundOnButton:Sprite;
+            private var mSoundOffButton:Sprite;
+            private var mHelpButton:Sprite;
+            private var mExitButton:Sprite;
       
       private var mHubButtonContainer:Sprite;
-         private var mButtonSpeeds:Array;
-         private var mButtonZoomIn:ImageButton;
-         private var mButtonZoomOut:ImageButton;
+            private var mScaleOutButton:Sprite;
+            private var mScaleInButton:Sprite;
+            private var mFasterButton:Sprite;
+            private var mSlowerButton:Sprite;
          
       private function RebuildPlayBar (params:Object):void
       {
@@ -310,19 +359,77 @@ package viewer {
             mHubButtonContainer.visible = false;
             mPlayBarLayer.addChild (mHubButtonContainer);
             
+            var topMargin:Number = 10 * GetSkinScale ();
+            
             // ...
             
             var mPauseButton:Sprite = CreateButton (0, mPauseButtonData);
             mPauseButton.scaleX = mPauseButton.scaleY = GetSkinScale ();
-            mPauseButton.x = 10 + 0.5 * mPauseButton.width;
-            mPauseButton.y = 10 + 0.5 * mPauseButton.height;
+            mPauseButton.x = topMargin + 0.5 * mPauseButton.width;
+            mPauseButton.y = topMargin + 0.5 * mPauseButton.height;
+            mPauseButton.buttonMode = true;
             mPauseButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickPause);
             mHubButtonContainer.addChild (mPauseButton);
-         }            
-                  
-         if (mPlayBar == null)
-         {
+            
             // ...
+            
+            var buttonX:Number;
+            var buttonY:Number;
+            
+            buttonX = mViewerWidth - topMargin;
+            
+            if (params.mShowScaleAdjustor)
+            {
+               mScaleOutButton = CreateButton (0, mScaleOutButtonData);
+               mScaleOutButton.scaleX = mScaleOutButton.scaleY = GetSkinScale ();
+               buttonX -= mScaleOutButton.width;
+               mScaleOutButton.x = buttonX + 0.5 * mScaleOutButton.width;
+               mScaleOutButton.y = topMargin  + 0.5 * mScaleOutButton.height;
+               mScaleOutButton.buttonMode = true;
+               mScaleOutButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickZoomOut);
+               mHubButtonContainer.addChild (mScaleOutButton);
+               
+               buttonX -= ButtonMargin;
+               
+               mScaleInButton = CreateButton (0, mScaleInButtonData);
+               mScaleInButton.scaleX = mScaleInButton.scaleY = GetSkinScale ();
+               buttonX -= mScaleInButton.width;
+               mScaleInButton.x = buttonX + 0.5 * mScaleInButton.width;
+               mScaleInButton.y = topMargin  + 0.5 * mScaleInButton.height;
+               mScaleInButton.buttonMode = true;
+               mScaleInButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickZoomIn);
+               mHubButtonContainer.addChild (mScaleInButton);
+               
+               buttonX -= ButtonMargin;
+            }
+            
+            if (params.mShowSpeedAdjustor)
+            {
+               mFasterButton = CreateButton (0, mFasterButtonData);
+               mFasterButton.scaleX = mFasterButton.scaleY = GetSkinScale ();
+               buttonX -= mFasterButton.width;
+               mFasterButton.x = buttonX + 0.5 * mFasterButton.width;
+               mFasterButton.y = topMargin  + 0.5 * mFasterButton.height;
+               mFasterButton.buttonMode = true;
+               mFasterButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickFaster);
+               mHubButtonContainer.addChild (mFasterButton);
+               
+               buttonX -= ButtonMargin;
+               
+               mSlowerButton = CreateButton (0, mSlowerButtonData);
+               mSlowerButton.scaleX = mSlowerButton.scaleY = GetSkinScale ();
+               buttonX -= mSlowerButton.width;
+               mSlowerButton.x = buttonX + 0.5 * mSlowerButton.width;
+               mSlowerButton.y = topMargin  + 0.5 * mSlowerButton.height;
+               mSlowerButton.buttonMode = true;
+               mSlowerButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickSlower);
+               mHubButtonContainer.addChild (mSlowerButton);
+               
+               buttonX -= ButtonMargin;
+            }
+                  
+            //=======================================
+            
             mPlayBar = new Sprite ();
             mPlayBarLayer.addChild (mPlayBar);
             mPlayBar.alpha = 0.0;
@@ -333,72 +440,115 @@ package viewer {
             mBasicButtonBar = new Sprite ();
             mPlayBar.addChild (mBasicButtonBar);
             
-            var buttonY:Number = 0;
+            buttonY = 0;
    
             // restart start/pause, stop
             
-            var mStartButton:Sprite = CreateButton (0, mPlayButtonData);
+            mStartButton = CreateButton (0, mPlayButtonData);
             buttonY += mStartButton.height;
             mStartButton.y = buttonY;
+            mStartButton.buttonMode = true;
             mStartButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickStart);
             mBasicButtonBar.addChild (mStartButton);
             
             buttonY += ButtonMargin;
             
-            var mRestartButton:Sprite = CreateButton (0, mRestartButtonData);
+            mRestartButton = CreateButton (0, mRestartButtonData);
             buttonY += mRestartButton.height;
             mRestartButton.y = buttonY;
+            mRestartButton.buttonMode = true;
             mRestartButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickRestart);
             mBasicButtonBar.addChild (mRestartButton);
             
             buttonY += ButtonMargin;
             
-            var mSoundButton:Sprite = CreateButton (0, mSoundOffButtonData);
-            buttonY += mSoundButton.height;
-            mSoundButton.y = buttonY;
-            mBasicButtonBar.addChild (mSoundButton);
+            if (true || params.mShowSoundController)
+            {
+               mSoundOnButton = CreateButton (0, mSoundOnButtonData);
+               buttonY += mSoundOnButton.height;
+               mSoundOnButton.y = buttonY;
+               mSoundOnButton.buttonMode = true;
+               mSoundOnButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickSoundOn);
+               mBasicButtonBar.addChild (mSoundOnButton);
+               
+               buttonY += ButtonMargin;
+               
+               mSoundOffButton = CreateButton (0, mSoundOffButtonData);
+               mSoundOffButton.x = mSoundOnButton.x;
+               mSoundOffButton.y = mSoundOnButton.y;
+               mSoundOffButton.buttonMode = true;
+               mSoundOffButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickSoundOff);
+               mSoundOffButton.visible = false;
+               mBasicButtonBar.addChild (mSoundOffButton);
+            }
             
-            buttonY += ButtonMargin;
+            if (params.mShowHelpButton)
+            {
+               mHelpButton = CreateButton (0, mHelpButtonData);
+               buttonY += mHelpButton.height;
+               mHelpButton.y = buttonY;
+               mHelpButton.buttonMode = true;
+               mHelpButton.addEventListener(MouseEvent.MOUSE_DOWN, OnClickHelp);
+               mBasicButtonBar.addChild (mHelpButton);
+               
+               buttonY += ButtonMargin;
+            }
             
-            var mMenuButton:Sprite = CreateButton (0, mMenuButtonData);
-            buttonY += mMenuButton.height;
-            mMenuButton.y = buttonY;
-            mBasicButtonBar.addChild (mMenuButton);
+            if (_OnExitLevel != null)
+            {
+               if (mHasMainMenu)
+               {
+                  mExitButton = CreateButton (0, mMenuButtonData);
+               }
+               else
+               {
+                  mExitButton = CreateButton (0, mExitAppButtonData);
+               }
+               
+               buttonY += mExitButton.height;
+               mExitButton.y = buttonY;
+               mExitButton.buttonMode = true;
+               mExitButton.addEventListener(MouseEvent.MOUSE_DOWN, _OnExitLevel);
+               mBasicButtonBar.addChild (mExitButton);
+               
+               buttonY += ButtonMargin;
+            }
+         
+            // ... 
+         
+            var bounds:Rectangle = mBasicButtonBar.getBounds (mBasicButtonBar);
+            var topBottomMargin:Number = 0.5 * (GetPlayBarWidth () - bounds.width);
+            mBasicButtonBar.x = topBottomMargin - bounds.x;
+            mBasicButtonBar.y = topBottomMargin - bounds.y;
             
-            buttonY += ButtonMargin;
+            // ...
             
-            var mHelpButton:Sprite = CreateButton (0, mMenuButtonData);
-            buttonY += mHelpButton.height;
-            mHelpButton.y = buttonY;
-            mBasicButtonBar.addChild (mHelpButton);
+            mBarBackground = new Sprite ();
+            mPlayBar.addChildAt (mBarBackground, 0);
+            //GraphicsUtil.DrawRect (mBarBackground, - DefaultButtonBaseHalfSize, 0, GetPlayBarWidth () + DefaultButtonBaseHalfSize, bounds.height + topBottomMargin + topBottomMargin, params.mPlayBarColor, -1, true, params.mPlayBarColor, false, true, DefaultButtonBaseHalfSize);
+            GraphicsUtil.DrawRect (mBarBackground, 0, 0, GetPlayBarWidth () + DefaultButtonBaseHalfSize, bounds.height + topBottomMargin + topBottomMargin, params.mPlayBarColor, -1, true, params.mPlayBarColor, false, false);
             
-            buttonY += ButtonMargin;
+            mBarMask = new Shape ();
+            GraphicsUtil.DrawRect (mBarMask, 0, 0, GetPlayBarWidth (), bounds.height + topBottomMargin + topBottomMargin, 0x0, -1, true, 0x0, false);
+            mPlayBar.addChild (mBarMask);
+            mPlayBar.mask = mBarMask;
+            mBarMask.visible = false;
+
+            // ...
+            
+            var unscaldHeight:Number = mPlayBar.height;
+            mPlayBar.scaleX = mPlayBar.scaleY = GetSkinScale ();
+            if (mPlayBar.height > mViewerHeight)
+               mPlayBar.scaleX = mPlayBar.scaleY =  mViewerHeight / unscaldHeight;
+            mPlayBar.x = 0;
+            mPlayBar.y = 0.5 * (mViewerHeight - mPlayBar.height);
+
+            // ...
+         
+            //mPlayBar.rotation = -90;
+            //mPlayBar.x = 0.5 * (mViewerWidth - mPlayBar.width);
+            //mPlayBar.y = GetPlayBarWidth ();
          }
-         
-         // ... 
-         
-         var bounds:Rectangle = mBasicButtonBar.getBounds (mBasicButtonBar);
-         var margin:Number = 0.5 * (GetPlayBarWidth () - bounds.width);
-         mBasicButtonBar.x = margin - bounds.x;
-         mBasicButtonBar.y = margin - bounds.y;
-         
-         // ...
-         
-         mBarBackground = new Sprite ();
-         mPlayBar.addChildAt (mBarBackground, 0);
-         GraphicsUtil.DrawRect (mBarBackground, - DefaultButtonBaseHalfSize, 0, GetPlayBarWidth () + DefaultButtonBaseHalfSize, bounds.height + margin + margin, params.mPlayBarColor, -1, true, params.mPlayBarColor, false, true, DefaultButtonBaseHalfSize);
-         
-         mBarMask = new Shape ();
-         GraphicsUtil.DrawRect (mBarMask, 0, 0, GetPlayBarWidth (), bounds.height + margin + margin, 0x0, -1, true, 0x0, false);
-         mPlayBar.addChild (mBarMask);
-         mPlayBar.mask = mBarMask;
-         mBarMask.visible = false;
-         
-         // ...
-         
-         mPlayBar.scaleX = mPlayBar.scaleY = GetSkinScale ();
-         mPlayBar.x = 0;
-         mPlayBar.y = 0.5 * (mViewerHeight - mPlayBar.height);
 
       }
       
@@ -438,9 +588,9 @@ package viewer {
             buttonCloseFinishDialog.x = buttonX;
             buttonX += buttonCloseFinishDialog.width + buttonMargin;
             
-            if (_OnMainMenu != null)
+            if (_OnExitLevel != null)
             {
-               var buttonMainMenu:TextButton = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Menu</font>", _OnMainMenu);
+               var buttonMainMenu:TextButton = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Menu</font>", _OnExitLevel);
                buttonContainer.addChild (buttonMainMenu);
                buttonMainMenu.x = buttonX;
                buttonX += buttonMainMenu.width + buttonMargin;

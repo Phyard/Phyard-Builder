@@ -87,6 +87,7 @@ package viewer {
          private var mShowSpeedAdjustor:Boolean;
          private var mShowScaleAdjustor:Boolean;
          private var mShowHelpButton:Boolean;
+         private var mShowSoundController:Boolean;
          private var mAdaptiveViewportSize:Boolean;
          private var mPreferredViewportWidth:int;
          private var mPreferredViewportHeight:int;
@@ -179,8 +180,6 @@ package viewer {
 
       private var mIsMobileDevice:Boolean = false; // false for PC device
          private var mIsPhoneDevice:Boolean = false; // only valid when mIsMobileDevice is true
-      private var mIsAirApp:Boolean = false; // false for browser app
-         private var mNativeApplicationClass:Object = null; // only valid when mIsAirApp is true
       
       private var mGeolocationClass:Object = null;
       private var mAccelerometerClass:Object = null;
@@ -236,21 +235,6 @@ package viewer {
          
             // 
          
-            mIsAirApp = ApplicationDomain.currentDomain.hasDefinition ("flash.desktop.NativeApplication");
-            if (mIsAirApp)
-            {
-               mNativeApplicationClass = ApplicationDomain.currentDomain.getDefinition ("flash.desktop.NativeApplication") as Class;
-               // mNativeApplicationClass.nativeApplication.runtimeVersion
-               // mNativeApplicationClass.nativeApplication.systemIdleMode
-               // mNativeApplicationClass.nativeApplication.idleThreshold 
-               // NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.NORMAL;
-               // NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.KEEP_AWAKE; // 防止黑屏省电模式，AndroidManifest中需要添加权限
-               
-               // best put in Game.as
-               //NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit)
-               //mNativeApplicationClass.nativeApplication.exit ()
-            }
-            
             if (ApplicationDomain.currentDomain.hasDefinition ("flash.sensors.Geolocation"))
             {
                mGeolocationClass = ApplicationDomain.currentDomain.getDefinition ("flash.sensors.Geolocation") as Class;
@@ -727,11 +711,16 @@ package viewer {
          if (mWorldDesignProperties.SetCacheSystemEvent == null)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
          if (mWorldDesignProperties.GetBuildingStatus == null)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_BuildingStatus;
          if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
+         if (mWorldDesignProperties.mHasSounds == undefined)                 mWorldDesignProperties.mHasSounds = false;
+         if (mWorldDesignProperties.mInitialSoundEnabled == undefined)       mWorldDesignProperties.mInitialSoundEnabled = true;
+         if (mWorldDesignProperties.mInitialSpeedX == undefined)             mWorldDesignProperties.mInitialSpeedX = 2;
+         if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
 
          mPlayBarColor = mPlayerWorld == null ? 0x606060 : mWorldDesignProperties.GetPlayBarColor ();
          mShowPlayBar = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
          mShowSpeedAdjustor = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
          mShowScaleAdjustor = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
+         mShowSoundController = mWorldDesignProperties.mHasSounds;
          mShowHelpButton = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
          mAdaptiveViewportSize = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_AdaptiveViewportSize) != 0);
          mPreferredViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
@@ -851,6 +840,10 @@ package viewer {
 
                BuildContextMenu ();
             }
+            
+            mSkin.SetSoundEnabled (mWorldDesignProperties.mInitialSoundEnabled);
+            mSkin.SetPlayingSpeedX (mWorldDesignProperties.mInitialSpeedX);
+            mSkin.SetZoomScale (mWorldDesignProperties.mInitialZoomScale, false);
 
             mSkin.SetLevelFinishedDialogVisible (false);
             mSkin.SetHelpDialogVisible (false);
@@ -864,7 +857,9 @@ package viewer {
                GetPlayingSpeedX : mSkin.GetPlayingSpeedX,
                SetPlayingSpeedX : mSkin.SetPlayingSpeedX,
                GetZoomScale : mSkin.GetZoomScale,
-               SetZoomScale : mSkin.SetZoomScale
+               SetZoomScale : mSkin.SetZoomScale,
+               IsSoundEnabled : mSkin.IsSoundEnabled,
+               SetSoundEnabled : mSkin.SetSoundEnabled
             });
 
             // ...
@@ -1022,10 +1017,12 @@ package viewer {
                   OnRestart: OnRestart,
                   OnStart: OnStart,
                   OnPause: OnPause,
-                  OnSpeed: OnSpeed,
-                  OnZoom: OnZoom,
+                  OnSpeedChanged: OnSpeedChanged,
+                  OnScaleChanged: OnScaleChanged,
+                  OnSoundControlChanged: OnSoundControlChanged,
                   
-                  OnMainMenu: mParamsFromContainer.OnMainMenu,
+                  mHasMainMenu: mParamsFromContainer.mHasMainMenu,
+                  OnExitLevel: mParamsFromContainer.OnExitLevel,
                   OnNextLevel: mParamsFromContainer.OnNextLevel,
                   OnGoToPhyard: mParamsFromContainer.OnGoToPhyard
                };
@@ -1033,22 +1030,19 @@ package viewer {
          // for testing phones
          mIsPhoneDevice = true;
          
-         //if (mIsPhoneDevice)
-         //{
-         //   mSkin = new SkinSmallScreen (skinParams); // mobile phone
-         //}
-         //else
-         //{
+         if (mIsPhoneDevice)
+         {
+            mSkin = new SkinSmallScreen (skinParams); // mobile phone
+         }
+         else
+         {
             // fot testing tablets
             //mIsMobileDevice = true;
-            //skinParams.OnMainMenu = OnZoom;
-            //skinParams.OnNextLevel = OnZoom;
-            //skinParams.OnGoToPhyard = OnZoom;
             
-         //   skinParams.mIsMobileDevice = mIsMobileDevice;
+            skinParams.mIsMobileDevice = mIsMobileDevice;
             
             mSkin = new SkinLargeScreen (skinParams); // PC or tablet
-         //}
+         }
          
          mSkin.SetShowPlayBar ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
          mSkinLayer.addChild (mSkin);
@@ -1105,7 +1099,8 @@ package viewer {
                         mPlayBarColor : mPlayBarColor,
                         mShowSpeedAdjustor: mShowSpeedAdjustor,
                         mShowScaleAdjustor: mShowScaleAdjustor && (mParamsFromContainer.mHideScaleButtons == undefined || mParamsFromContainer.mHideScaleButtons == false),
-                        mShowHelpButton: mShowHelpButton
+                        mShowHelpButton: mShowHelpButton,
+                        mShowSoundController: mShowSoundController
                         });
                
                // position content layer
@@ -1463,6 +1458,27 @@ package viewer {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
 
+//===========================================================================
+// interfaces for game template
+//===========================================================================
+
+      public function OnBackKeyDown ():Boolean
+      {
+         if (mSkin != null)
+         {
+            if (mSkin.IsPlaying ())
+               mSkin.SetPlaying (false);
+            else if (mParamsFromContainer.OnExitLevel != null)
+               mParamsFromContainer.OnExitLevel ();
+            else
+               return false;
+            
+            return true;
+         }
+         
+         return false;
+      }
+
 //======================================================================
 //
 //======================================================================
@@ -1486,6 +1502,10 @@ package viewer {
             mContentLayer.mask = null;
          }
       }
+      
+//======================================================================
+//
+//======================================================================
 
       public function IsPlaying ():Boolean
       {
@@ -1523,13 +1543,13 @@ package viewer {
             _onPlayStatusChanged ();
       }
 
-      private function OnSpeed (data:Object = null):void
+      private function OnSpeedChanged (data:Object = null):void
       {
-         if (_OnSpeed != null)
-            _OnSpeed ();
+         if (_OnSpeedChanged != null)
+            _OnSpeedChanged ();
       }
 
-      private function OnZoom (data:Object = null):void
+      private function OnScaleChanged (data:Object = null):void
       {
          if (mSkin == null)
             return;
@@ -1539,7 +1559,7 @@ package viewer {
          if (mPlayerWorld == null)
             return;
 
-         if ((data is Boolean) && (! (data as Boolean)))
+         if ((data is Boolean) && (! (data as Boolean))) // not smoothly
          {
             mWorldDesignProperties.SetZoomScale (mPlayerWorldZoomScale);
 
@@ -1547,6 +1567,14 @@ package viewer {
          }
 
          mPlayerWorldZoomScaleChangedSpeed = ( mPlayerWorldZoomScale - mWorldDesignProperties.GetZoomScale () ) * 0.03;
+      }
+
+      private function OnSoundControlChanged (data:Object = null):void
+      {
+         if (mSkin == null)
+            return;
+
+         mWorldDesignProperties.SetSoundEnabled (mSkin.IsSoundEnabled ());
       }
 
 //===========================================================================
@@ -1591,10 +1619,10 @@ package viewer {
           return GetPlayingSpeedX () > 0;
       }
 
-      private var _OnSpeed:Function = null;
+      private var _OnSpeedChanged:Function = null;
       public function SetOnSpeedChangedFunction (onSpeed:Function):void
       {
-         _OnSpeed = onSpeed;
+         _OnSpeedChanged = onSpeed;
       }
 
       private var _onPlayStatusChanged:Function = null;

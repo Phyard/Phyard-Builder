@@ -65,15 +65,17 @@ package player.design
 
       public static var mSounds:Array; //
       
-   // callbacks for viewer
+   // callbacks from viewer
       
-      public static var RestartPlay:Function;
-      public static var IsPlaying:Function;
-      public static var SetPlaying:Function;
-      public static var GetSpeedX:Function;
-      public static var SetSpeedX:Function;
-      public static var GetScale:Function;
-      public static var SetScale:Function;
+      public static var UI_RestartPlay:Function;
+      public static var UI_IsPlaying:Function;
+      public static var UI_SetPlaying:Function;
+      public static var UI_GetSpeedX:Function;
+      public static var UI_SetSpeedX:Function;
+      public static var UI_GetZoomScale:Function;
+      public static var UI_SetZoomScale:Function;
+      public static var UI_IsSoundEnabled:Function;
+      public static var UI_SetSoundEnabled:Function;
       
 //==============================================================================
 // static values
@@ -120,13 +122,15 @@ package player.design
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
          
          //
-         RestartPlay = null;
-         IsPlaying = null;
-         SetPlaying = null;
-         GetSpeedX = null;
-         SetSpeedX = null;
-         GetScale = null;
-         SetScale = null;
+         UI_RestartPlay = null;
+         UI_IsPlaying = null;
+         UI_SetPlaying = null;
+         UI_GetSpeedX = null;
+         UI_SetSpeedX = null;
+         UI_GetZoomScale = null;
+         UI_SetZoomScale = null;
+         UI_IsSoundEnabled = null;
+         UI_SetSoundEnabled = null;
          
          //
          Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
@@ -633,6 +637,11 @@ package player.design
          return new Module (); // a dummy module
       }
       
+      public static function HasSounds ():Boolean
+      {
+         return mSounds != null && mSounds.length > 0;
+      }
+      
       public static function GetSoundByIndex (soundIndex:int):Sound
       {
          if (soundIndex >= 0 && soundIndex < mSounds.length)
@@ -660,6 +669,30 @@ package player.design
       public static function GetRandomNumberGenerator (rngSlot:int):RandomNumberGenerator
       {
          return mRandomNumberGenerators [rngSlot];
+      }
+      
+//==============================================================================
+// sound
+//==============================================================================
+      
+      private static var mIsSoundsEnabled:Boolean = true;
+      
+      public static function IsSoundEnabled ():Boolean
+      {
+         return mIsSoundsEnabled;
+      }
+      
+      public static function SetSoundEnabled (enabled:Boolean):void
+      {
+         if (mIsSoundsEnabled != enabled)
+         {
+            mIsSoundsEnabled = enabled;
+            
+            if (! mIsSoundsEnabled)
+            {
+               Sound.StopAllSounds ();
+            }
+         }
       }
       
 //==============================================================================

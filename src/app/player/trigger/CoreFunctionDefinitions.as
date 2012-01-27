@@ -1970,24 +1970,24 @@ package player.trigger {
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.RestartPlay ();
+         Global.UI_RestartPlay ();
       }
 
       public static function IsLevelPaused (valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (! Global.IsPlaying ());
+         valueTarget.AssignValueObject (! Global.UI_IsPlaying ());
       }
 
       public static function SetLevelPaused (valueSource:Parameter, valueTarget:Parameter):void
       {
          var paused:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
-         Global.SetPlaying (! paused);
+         Global.UI_SetPlaying (! paused);
       }
 
       public static function GetPlaySpeedX (valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetSpeedX ());
+         valueTarget.AssignValueObject (Global.UI_GetSpeedX ());
       }
 
       public static function SetPlaySpeedX (valueSource:Parameter, valueTarget:Parameter):void
@@ -1998,12 +1998,12 @@ package player.trigger {
          else if (speedX > 9)
             speedX = 9;
 
-         Global.SetSpeedX (speedX);
+         Global.UI_SetSpeedX (speedX);
       }
 
       public static function GetWorldScale (valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetScale());
+         valueTarget.AssignValueObject (Global.UI_GetZoomScale());
       }
 
       public static function SetWorldScale (valueSource:Parameter, valueTarget:Parameter):void
@@ -2017,7 +2017,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var smoothly:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.SetScale (scale, smoothly);
+         Global.UI_SetZoomScale (scale, smoothly);
       }
 
       public static function GetLevelMilliseconds (valueSource:Parameter, valueTarget:Parameter):void

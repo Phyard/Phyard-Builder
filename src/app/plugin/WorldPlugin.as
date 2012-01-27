@@ -61,18 +61,26 @@ package plugin
                   
                   SetRealViewportSize : world.SetRealViewportSize, // from v1.59
                   
+                  mInitialSpeedX : world.GetInitialSpeedX (), // from v1.59
+                  mInitialZoomScale : world.GetZoomScale (), // from v1.59
+                  mHasSounds : Global.HasSounds (), // from v1.59
+                  mInitialSoundEnabled : Global.IsSoundEnabled (), // from v1.59
+                  SetSoundEnabled : Global.SetSoundEnabled, // from v1.59
+                  
                   "" : null
                };
             case "SetUiParams":
                world = params.mWorld as World;
                
-               Global.RestartPlay = params.OnClickRestart as Function;
-               Global.IsPlaying = params.IsPlaying as Function;
-               Global.SetPlaying = params.SetPlaying as Function;
-               Global.GetSpeedX = params.GetPlayingSpeedX as Function;
-               Global.SetSpeedX = params.SetPlayingSpeedX as Function;
-               Global.GetScale = params.GetZoomScale as Function;
-               Global.SetScale = params.SetZoomScale as Function; // from v1.53, SetScale has a 2nd param: changeScaleSmoothly, default value is true
+               Global.UI_RestartPlay = params.OnClickRestart as Function;
+               Global.UI_IsPlaying = params.IsPlaying as Function;
+               Global.UI_SetPlaying = params.SetPlaying as Function;
+               Global.UI_GetSpeedX = params.GetPlayingSpeedX as Function;
+               Global.UI_SetSpeedX = params.SetPlayingSpeedX as Function;
+               Global.UI_GetZoomScale = params.GetZoomScale as Function;
+               Global.UI_SetZoomScale = params.SetZoomScale as Function; // from v1.53, SetScale has a 2nd param: changeScaleSmoothly, default value is true
+               Global.UI_IsSoundEnabled = params.IsSoundEnabled as Function; // from v1.59
+               Global.UI_SetSoundEnabled = params.SetSoundEnabled as Function; // from v1.59
                
                break;
             default:

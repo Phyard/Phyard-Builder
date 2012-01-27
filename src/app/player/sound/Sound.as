@@ -13,6 +13,8 @@ package player.sound
    import com.tapirgames.util.ResourceLoader;
    import com.tapirgames.util.ResourceLoadEvent;
    
+   import player.design.Global;
+   
    import common.sound.SoundFile;
 
    public class Sound extends SoundFile
@@ -82,13 +84,16 @@ package player.sound
       
       public function Play (times:int = 1):void
       {
-         if (mSound != null)
+         if (Global.IsSoundEnabled ())
          {
-            //mSoundChannel = mSound.play ();
-            //mSoundChannel.addEventListener (Event.SOUND_COMPLETE, OnSoundPlayComplete);
-            
-            var loops:int = times <= 0 ? 0x7FFFFFFF : times;
-            mSound.play (0, loops);
+            if (mSound != null)
+            {
+               //mSoundChannel = mSound.play ();
+               //mSoundChannel.addEventListener (Event.SOUND_COMPLETE, OnSoundPlayComplete);
+               
+               var loops:int = times <= 0 ? 0x7FFFFFFF : times;
+               mSound.play (0, loops);
+            }
          }
       }
       

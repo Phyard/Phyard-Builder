@@ -418,11 +418,14 @@ package viewer {
          
             // main menu
 
-            if (_OnMainMenu != null)
+            if (_OnExitLevel != null)
             {
-               mButtonMainMenu = new ImageButton (mBitmapDataMainMenu);
-               mButtonMainMenu.SetClickEventHandler (_OnMainMenu);
-               mPlayBar.addChild (mButtonMainMenu);
+               //if (mHasMainMenu)
+               //{
+                  mButtonMainMenu = new ImageButton (mBitmapDataMainMenu);
+                  mButtonMainMenu.SetClickEventHandler (_OnExitLevel);
+                  mPlayBar.addChild (mButtonMainMenu);
+               //}
             }
    
             // phyard link
@@ -491,9 +494,9 @@ package viewer {
             buttonCloseFinishDialog.x = buttonX;
             buttonX += buttonCloseFinishDialog.width + buttonMargin;
             
-            if (_OnMainMenu != null)
+            if (_OnExitLevel != null)
             {
-               var buttonMainMenu:TextButton = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Menu</font>", _OnMainMenu);
+               var buttonMainMenu:TextButton = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Menu</font>", _OnExitLevel);
                buttonContainer.addChild (buttonMainMenu);
                buttonMainMenu.x = buttonX;
                buttonX += buttonMainMenu.width + buttonMargin;

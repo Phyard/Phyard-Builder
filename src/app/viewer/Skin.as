@@ -22,10 +22,12 @@ package viewer {
          _OnRestart = params.OnRestart;
          _OnStart = params.OnStart;
          _OnPause = params.OnPause;
-         _OnSpeed = params.OnSpeed;
-         _OnZoom = params.OnZoom;
+         _OnSpeedChanged = params.OnSpeedChanged;
+         _OnScaleChanged = params.OnScaleChanged;
+         _OnSoundControlChanged = params.OnSoundControlChanged;
          
-         _OnMainMenu = params.OnMainMenu;
+         mHasMainMenu = params.mHasMainMenu;
+         _OnExitLevel = params.OnExitLevel;
          _OnNextLevel = params.OnNextLevel;
          _OnGoToPhyard = params.OnGoToPhyard;
       }
@@ -38,11 +40,13 @@ package viewer {
       protected var _OnRestart:Function;
       protected var _OnStart:Function;
       protected var _OnPause:Function;
-      protected var _OnSpeed:Function;
-      protected var _OnZoom:Function;
+      protected var _OnSpeedChanged:Function;
+      protected var _OnScaleChanged:Function;
+      protected var _OnSoundControlChanged:Function;
       
       // these can be null
-      protected var _OnMainMenu:Function;
+      protected var mHasMainMenu:Boolean;
+      protected var _OnExitLevel:Function;
       protected var _OnNextLevel:Function;
       protected var _OnGoToPhyard:Function;
       
@@ -62,6 +66,7 @@ package viewer {
       private var mIsPlaying:Boolean = false;
       private var mPlayingSpeedX:int = 2;
       private var mZoomScale:Number = 1.0;
+      private var mIsSoundEnabled:Boolean = true;
       
       // ...
       private var mIsHelpDialogVisible:Boolean = false;
@@ -185,8 +190,8 @@ package viewer {
          var oldSpeedX:int = mPlayingSpeedX;
          mPlayingSpeedX = speedX;
          
-         if (_OnSpeed != null)
-            _OnSpeed ();
+         if (_OnSpeedChanged != null)
+            _OnSpeedChanged ();
          
          OnPlayingSpeedXChanged (oldSpeedX);
       }
@@ -219,13 +224,36 @@ package viewer {
          var oldZoonScale:Number = mZoomScale;
          mZoomScale = zoomScale;
 
-         if (_OnZoom != null)
-            _OnZoom (smoothly);
+         if (_OnScaleChanged != null)
+            _OnScaleChanged (smoothly);
          
          OnZoomScaleChanged (oldZoonScale);
       }
       
       protected function OnZoomScaleChanged (oldZoonScale:Number):void
+      {
+         // to override
+      }
+      
+      final public function IsSoundEnabled ():Boolean
+      {
+         return mIsSoundEnabled;
+      }
+      
+      final public function SetSoundEnabled (soundOn:Boolean):void
+      {
+         if (mIsSoundEnabled == soundOn)
+            return;
+         
+         mIsSoundEnabled = soundOn;
+         
+         if (_OnSoundControlChanged != null)
+            _OnSoundControlChanged ();
+         
+         OnSoundEnabledChanged ();
+      }
+      
+      protected function OnSoundEnabledChanged ():void
       {
          // to override
       }
@@ -380,70 +408,239 @@ package viewer {
       
       protected static var mMenuButtonData:Array = [
          [3,
-             -16, -13, 
-             -16, -7,
-             -10, -7,
-             -10, -13,
+             -15, -12, 
+             -15, -8,
+             -11, -8,
+             -11, -12,
          ],
          [3,
-             -8, -13,
-             -8, -7,
-             16, -7,
-             16, -13,
+             -8, -12,
+             -8, -8,
+             15, -8,
+             15, -12,
          ],
          [3,
-             -16, -3, 
-             -16,  3,
-             -10,  3,
-             -10, -3,
+             -15, -2, 
+             -15,  2,
+             -11,  2,
+             -11, -2,
          ],
          [3,
-             -8, -3,
-             -8,  3,
-             16,  3,
-             16, -3,
+             -8, -2,
+             -8,  2,
+             15,  2,
+             15, -2,
          ],
          [3,
-             -16,  7, 
-             -16, 13,
-             -10, 13,
-             -10,  7,
+             -15,  8, 
+             -15, 12,
+             -11, 12,
+             -11,  8,
          ],
          [3,
-             -8,  7,
-             -8, 13,
-             16, 13,
-             16,  7,
+             -8,  8,
+             -8, 12,
+             15, 13,
+             15,  8,
+         ],
+      ];
+      
+      protected static var mSoundOnButtonData:Array = [
+         [3,
+             -15,   5,
+              -9,   5,
+              -3,  11,
+              -1,  11,
+              -1, -11,
+              -3, -11,
+              -9,  -5,
+             -15,  -5, 
+         ],
+         [2 | (3 << 8),
+              4, -9,
+             13,  0, // control point
+              4,  9,
+         ],
+         [2 | (3 << 8),
+              9,  14,
+             22,   0, // control point
+              9, -14,
          ],
       ];
       
       protected static var mSoundOffButtonData:Array = [
          [3,
-             -14,   5,
-              -8,   5,
-              -2,  11,
-               0,  11,
-               0, -11,
-              -2, -11,
-              -8,  -5,
-             -14,  -5, 
+             -15,   5,
+              -9,   5,
+              -3,  11,
+              -1,  11,
+              -1, -11,
+              -3, -11,
+              -9,  -5,
+             -15,  -5, 
          ],
-         [1,
-              7, -4,
-             15,  4,
+         [1 | (3 << 8),
+              6, -4,
+             14,  4,
          ],
-         [1,
-              7,  4, 
-             15, -4,
+         [1 | (3 << 8),
+              6,  4, 
+             14, -4,
          ],
       ];
       
-      protected static const DefaultButtonBaseHalfSize:Number = 24.0;
+      protected static var mExitAppButtonData:Array = [
+         [3,
+              5, -5,
+              1,  0,
+              5,  5,
+              5,  3,
+             11,  3,
+             11, -3,
+              5, -3,
+         ],
+         [1 | (3 << 8),
+               9,  -6, 
+               9, -16,
+             -10, -16,
+             -10,  16,
+               9,  16,
+               9,   6,
+         ],
+      ];
+      
+      protected static var mExitLevelButtonData:Array = [
+         [1 | (5 << 8),
+              -11,  -5,
+              -11,  11,
+         ],
+         [1 | (5 << 8),
+                5, 11,
+              -11, 11,
+         ],
+         [1 | (5 << 8),
+               10, -10,
+              -11, 11,
+         ],
+      ];
+      
+      protected static var mNextLevelButtonData:Array = [
+         [1 | (5 << 8),
+                0, 10,
+               14,  0,
+         ],
+         [1 | (5 << 8),
+                0, -10,
+               14,   0,
+         ],
+         [1 | (5 << 8),
+              -14, 0,
+               14, 0,
+         ],
+      ];
+      
+      protected static var mHelpButtonData:Array = [
+         [3,
+              -6,  -6,
+             -10,  -6,
+             -10, -17,
+              11, -17,
+              11,   2,
+               2,   2,
+               2,  11,
+              -2,  11,
+              -2,  -2,
+               7,  -2,
+               7, -13,
+              -6, -13,
+         ],
+         [3,
+              -2, 15,
+               2, 15,
+               2, 19,
+              -2, 19,
+         ],
+      ];
+      
+      protected static var mSlowerButtonData:Array = [
+         [3,
+              -2,  -1,
+               9, -12,
+               9,  12,
+              -2,   1,
+              -2,  12,
+             -14,   0,
+              -2, -12,
+         ],
+      ];
+      
+      protected static var mFasterButtonData:Array = [
+         [3,
+               2,  -1,
+              -9, -12,
+              -9,  12,
+               2,   1,
+               2,  12,
+              14,   0,
+               2, -12,
+         ],
+      ];
+      
+      //protected static var mScaleInButtonData:Array = [
+      //   [1 | (5 << 8),
+      //        -7, 0,
+      //         7, 0,
+      //   ],
+      //   [1 | (5 << 8),
+      //         0, -7,
+      //         0,  7,
+      //   ],
+      //   [0 | (5 << 8),
+      //        0, 0, 13, 0, // x, y, radius, filled
+      //   ],
+      //];
+      //
+      //protected static var mScaleOutButtonData:Array = [
+      //   [1 | (5 << 8),
+      //        -7, 0,
+      //         7, 0,
+      //   ],
+      //   [0 | (5 << 8),
+      //        0, 0, 13, 0, // x, y, radius, filled
+      //   ],
+      //];
+      
+      protected static var mScaleInButtonData:Array = [
+         [3,
+              -12,  -2,
+              -12,   2,
+               -2,   2,
+               -2,  12,
+                2,  12,
+                2,   2,
+               12,   2,
+               12,  -2,
+                2,  -2,
+                2, -12,
+               -2, -12,
+               -2,  -2,
+         ],
+      ];
+      
+      protected static var mScaleOutButtonData:Array = [
+         [3,
+              -12, -2,
+              -12,  2,
+               12,  2,
+               12, -2,
+         ],
+      ];
+      
+      protected static const DefaultButtonBaseHalfSize:Number = 26.0;
       protected static const DefaultButtonBaseFilledColor:uint = 0x61a70e;
-      protected static const DefaultButtonBaseBorderThickness:Number = 2.0;
+      protected static const DefaultButtonBaseBorderThickness:Number = 5.0;
       protected static const DefaultButtonBaseBorderColor:uint = 0x50e61d;
       protected static const DefaultButtonIconFilledColor:uint = 0xff0000;
-      protected static const DefaultButtonIconLineThickness:uint = 3;
       
       private static function ShapeDataToPointArray (shapeData:Array):Array
       {
@@ -476,15 +673,22 @@ package viewer {
          for (var i:int = 0; i < buttonData.length; ++ i)
          {
             var shapeData:Array = buttonData [i] as Array;
-            switch (shapeData [0])
+            
+            var shapeTyle:int = (shapeData [0] >> 0) & 0xFF;
+            var thickness:Number = (shapeData [0] >> 8) & 0xFF;
+             
+            switch (shapeTyle)
             {
                case 0: // circle
-                  GraphicsUtil.DrawCircle (iconShape, shapeData [1], shapeData[2], shapeData[3], DefaultButtonIconFilledColor, DefaultButtonIconLineThickness, shapeData[4] != 0, DefaultButtonIconFilledColor);
+                  GraphicsUtil.DrawCircle (iconShape, shapeData [1], shapeData[2], shapeData[3], DefaultButtonIconFilledColor, thickness, shapeData[4] != 0, DefaultButtonIconFilledColor);
                   break;
                case 1: // polyline
-                  GraphicsUtil.DrawPolyline (iconShape, ShapeDataToPointArray (shapeData), DefaultButtonIconFilledColor, DefaultButtonIconLineThickness, true, false);
+                  GraphicsUtil.DrawPolyline (iconShape, ShapeDataToPointArray (shapeData), DefaultButtonIconFilledColor, thickness, true, false);
                   break;
                case 2: // curve
+                  iconShape.graphics.lineStyle(thickness, DefaultButtonIconFilledColor);
+                  iconShape.graphics.moveTo(shapeData [1], shapeData[2]);
+                  iconShape.graphics.curveTo(shapeData[3], shapeData[4], shapeData[5], shapeData[6]);
                   break;
                case 3: // polygon
                   GraphicsUtil.DrawPolygon (iconShape, ShapeDataToPointArray (shapeData), 0x0, -1, true, DefaultButtonIconFilledColor);

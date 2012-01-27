@@ -246,6 +246,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetGravityAcceleration_Vector,      GetWorldGravityAcceleration_Vector);
 
+         RegisterCoreFunction (CoreFunctionIds.ID_World_UpdateShapeContactStatusInfos,                   UpdateShapeContactStatusInfos);
+
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint,                   GetPhysicsShapesAtPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetFirstIncomingIntersectionWithLineSegment,         GetFirstIncomingIntersectionWithLineSegment);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment,         GetFirstOutcomingIntersectionWithLineSegment);
@@ -3904,6 +3906,11 @@ package player.trigger {
          var torque:Number = valueSource.EvaluateValueObject () as Number;
 
          shape.GetBody ().ApplyTorque (torque);
+      }
+
+      public static function UpdateShapeContactStatusInfos(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.GetCurrentWorld ().UpdateShapeContactStatusInfos ();
       }
 
       public static function GetPhysicsShapesAtPoint(valueSource:Parameter, valueTarget:Parameter):void

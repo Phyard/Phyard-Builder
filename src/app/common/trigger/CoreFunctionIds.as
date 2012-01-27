@@ -230,6 +230,8 @@ package common.trigger {
       public static const ID_World_SetGravityAcceleration_Vector:int        = IdPool.CoreApiId_712;
       public static const ID_World_GetGravityAcceleration_Vector:int        = IdPool.CoreApiId_713;
 
+      public static const ID_World_UpdateShapeContactStatusInfos:int        = IdPool.CoreApiId_715;
+
       public static const ID_World_GetPhysicsOnesAtPoint:int            = IdPool.CoreApiId_1251;
 
       public static const ID_World_GetFirstIncomingIntersectionWithLineSegment:int        = IdPool.CoreApiId_730;

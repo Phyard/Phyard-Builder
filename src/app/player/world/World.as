@@ -848,6 +848,11 @@ package player.world {
          //-----------------------------
          }
       }
+      
+      public function UpdateShapeContactStatusInfos ():void
+      {
+         UpdatePhysics (0.0);
+      }
 
 //=============================================================
 //   paint

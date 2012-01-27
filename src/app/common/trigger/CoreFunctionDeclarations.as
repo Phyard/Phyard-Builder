@@ -1329,6 +1329,11 @@ package common.trigger {
                      ]
                   );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_UpdateShapeContactStatusInfos,
+                     null,
+                     null
+                  );
+
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint,
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],

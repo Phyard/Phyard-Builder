@@ -1402,6 +1402,11 @@ package editor.trigger {
                      ]
                   );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_UpdateShapeContactStatusInfos, world_physics_package, "Update Shape Contact Status Infos", null, null,
+                     null,
+                     null
+                  );
+
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint, world_physics_package, "Get Physics Shapes At Point", null, null,
                      [
                              new VariableDefinitionNumber ("Point X"),

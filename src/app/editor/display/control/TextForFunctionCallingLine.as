@@ -3,6 +3,8 @@ package editor.display.control {
    
    import flash.events.Event;
    
+   import flash.system.Capabilities;
+   
    import mx.events.FlexEvent;
    
    import mx.controls.Label;
@@ -35,7 +37,7 @@ package editor.display.control {
             
             setStyle ("paddingLeft", 16 * callingData.mIndentLevel);
             
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
             {
                htmlText = callingData.mLineNumber + ": " + callingData.mHtmlText;
             }

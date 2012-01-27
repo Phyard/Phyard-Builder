@@ -97,21 +97,27 @@ package com.tapirgames.util {
       }
       
       // roundCorners is only useful when drawing border
-      public static function ClearAndDrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundCorners:Boolean = false):void
+      public static function ClearAndDrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundJoints:Boolean = false, roundCorners:Boolean = false, cornerRadius:Number = 1.0):void
       {
          shape.graphics.clear ();
          if (filled) shape.graphics.beginFill(fillColor);
-         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundCorners ? CapsStyle.ROUND: CapsStyle.SQUARE, roundCorners ? JointStyle.ROUND : JointStyle.MITER, 255);
-         shape.graphics.drawRect(x, y, w, h);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundJoints ? CapsStyle.ROUND: CapsStyle.SQUARE, roundJoints ? JointStyle.ROUND : JointStyle.MITER, 255);
+         if (roundCorners)
+            shape.graphics.drawRoundRect(x, y, w, h, cornerRadius, cornerRadius);
+         else
+            shape.graphics.drawRect(x, y, w, h);
          if (filled) shape.graphics.endFill();
       }
       
       // roundCorners is only useful when drawing border
-      public static function DrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundCorners:Boolean = false):void
+      public static function DrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundJoints:Boolean = false, roundCorners:Boolean = false, cornerRadius:Number = 1.0):void
       {
          if (filled) shape.graphics.beginFill(fillColor);
-         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundCorners ? CapsStyle.ROUND: CapsStyle.SQUARE, roundCorners ? JointStyle.ROUND : JointStyle.MITER, 255);
-         shape.graphics.drawRect(x, y, w, h);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundJoints ? CapsStyle.ROUND: CapsStyle.SQUARE, roundJoints ? JointStyle.ROUND : JointStyle.MITER, 255);
+         if (roundCorners)
+            shape.graphics.drawRoundRect(x, y, w, h, cornerRadius, cornerRadius);
+         else
+            shape.graphics.drawRect(x, y, w, h);
          if (filled) shape.graphics.endFill();
       }
       

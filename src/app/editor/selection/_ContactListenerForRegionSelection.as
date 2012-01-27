@@ -1,6 +1,8 @@
 
 package editor.selection {
 
+   import flash.system.Capabilities;
+   
    import Box2D.Collision.*;
    import Box2D.Collision.Shapes.*;
    import Box2D.Dynamics.Contacts.*;
@@ -40,7 +42,7 @@ package editor.selection {
          if (body1 != mCollideWithBody && body2 != mCollideWithBody)
             return;
          
-         if (Compile::Is_Debugging)// && false)
+         if (Capabilities.isDebugger)// && false)
          {
             mContacts.push (contact);
          }

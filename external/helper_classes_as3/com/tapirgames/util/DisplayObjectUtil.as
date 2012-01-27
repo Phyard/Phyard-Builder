@@ -66,7 +66,7 @@ package com.tapirgames.util {
             {
                bitmapData = new BitmapData (1, 1);
                
-               //if (Compile::Is_Debugging)
+               //if (flash.system.Capabilities.isDebugger)
                //   throw error;
             }
             

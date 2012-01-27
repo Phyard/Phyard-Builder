@@ -3,6 +3,8 @@ package editor.entity {
    
    import flash.display.Sprite;
    
+   import flash.system.Capabilities;
+   
    import com.tapirgames.display.TextFieldEx;
    
    import editor.world.EntityContainer;
@@ -149,7 +151,7 @@ package editor.entity {
          // ...
          UnreferAllReferings ();
          NotifyDestroyedForReferers ();
-         if (Compile::Is_Debugging)
+         if (Capabilities.isDebugger)
          {
             FinalAssertReferPairs ();
          }

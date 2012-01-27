@@ -19,6 +19,7 @@ package viewer {
 
    import flash.system.System;
    import flash.system.ApplicationDomain;
+   import flash.system.Capabilities;
 
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
@@ -209,6 +210,7 @@ package viewer {
             var diagonal:Number = Math.sqrt((screenX*screenX)+(screenY*screenY))/dpi;
             // if diagonal is higher than 6, we will assume it is a tablet
             mIsPhoneDevice = diagonal < 6;
+
             if (mIsPhoneDevice)
             {
                mIsMobileDevice = true;
@@ -258,10 +260,10 @@ package viewer {
                }
             }
                
-            if ((! mIsMobileDevice) && mGeolocationClass != null)
-            {
-               mIsMobileDevice = true;
-            }
+            //if ((! mIsMobileDevice) && mGeolocationClass != null)
+            //{
+            //   mIsMobileDevice = true;
+            //}
             
             if (ApplicationDomain.currentDomain.hasDefinition ("flash.sensors.Accelerometer"))
             {
@@ -272,16 +274,15 @@ package viewer {
                }
             }
                
-            if ((! mIsMobileDevice) && mAccelerometerClass != null)
-            {
-               mIsMobileDevice = true;
-            }
-            
+            //if ((! mIsMobileDevice) && mAccelerometerClass != null)
+            //{
+            //   mIsMobileDevice = true;
+            //}
             
             if (ApplicationDomain.currentDomain.hasDefinition ("flash.ui.Multitouch"))
             {
                mMultitouchClass = ApplicationDomain.currentDomain.getDefinition ("flash.ui.Multitouch") as Class;
-               if (mMultitouchClass.maxTouchPoints > 0)
+               if (mMultitouchClass.maxTouchPoints <= 0)
                {
                   mMultitouchClass = null;
                }
@@ -291,13 +292,12 @@ package viewer {
             {
                mIsMobileDevice = true;
             }
-            
          }
          catch (error:Error)
          {
             TraceError (error);
          
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
             {
                throw error;
             }
@@ -399,7 +399,7 @@ package viewer {
 
       public static function TraceError (error:Error):void
       {
-         //if (Compile::Is_Debugging)
+         //if (Capabilities.isDebugger)
             trace (error.getStackTrace ());
       }
 
@@ -527,7 +527,7 @@ package viewer {
             
             ChangeState (StateId_ParsingError);
 
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
             {
                throw error;
             }
@@ -573,7 +573,7 @@ package viewer {
          {
             TraceError (error);
 
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
                throw error;
 
             return false;
@@ -623,7 +623,7 @@ package viewer {
 
             ChangeState (StateId_LoadingError);
 
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
             {
                throw error;
             }
@@ -657,7 +657,7 @@ package viewer {
          {
             TraceError (error);
 
-            if (Compile::Is_Debugging)
+            if (flash.system.Capabilities.isDebugger)
                throw error;
 
             return false;
@@ -879,7 +879,7 @@ package viewer {
 
             ChangeState (StateId_LoadingError);
 
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
             {
                throw error;
             }
@@ -915,7 +915,7 @@ package viewer {
 
             ChangeState (StateId_BuildingError);
 
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
             {
                throw error;
             }
@@ -995,7 +995,7 @@ package viewer {
 
                ChangeState (StateId_PlayingError);
 
-               if (Compile::Is_Debugging)
+               if (Capabilities.isDebugger)
                {
                   throw error;
                }
@@ -1030,11 +1030,27 @@ package viewer {
                   OnGoToPhyard: mParamsFromContainer.OnGoToPhyard
                };
 
-         if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0)
-            mSkin = new Skin (skinParams);
-         else
-            mSkin = new SkinPC (skinParams);
+         // for testing phones
+         mIsPhoneDevice = true;
          
+         //if (mIsPhoneDevice)
+         //{
+         //   mSkin = new SkinSmallScreen (skinParams); // mobile phone
+         //}
+         //else
+         //{
+            // fot testing tablets
+            //mIsMobileDevice = true;
+            //skinParams.OnMainMenu = OnZoom;
+            //skinParams.OnNextLevel = OnZoom;
+            //skinParams.OnGoToPhyard = OnZoom;
+            
+         //   skinParams.mIsMobileDevice = mIsMobileDevice;
+            
+            mSkin = new SkinLargeScreen (skinParams); // PC or tablet
+         //}
+         
+         mSkin.SetShowPlayBar ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
          mSkinLayer.addChild (mSkin);
 
          // mask
@@ -1163,7 +1179,7 @@ package viewer {
             
             ChangeState (StateId_PlayingError);
 
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
             {
                throw error;
             }
@@ -1241,7 +1257,7 @@ package viewer {
             return;
 
          var addSeperaor:Boolean = false;
-         if (Compile::Is_Debugging || mPlayerWorld != null && mWorldDesignProperties.mIsShareSourceCode)
+         if (Capabilities.isDebugger || mPlayerWorld != null && mWorldDesignProperties.mIsShareSourceCode)
          {
             if (mWorldBinaryData != null && mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine != null && mWorldPluginProperties.WorldFormat_WorldDefine2Xml != null)
             {
@@ -1315,7 +1331,7 @@ package viewer {
             var width:int = mWorldDesignProperties.GetViewportWidth ();
             var height:int = mWorldDesignProperties.GetViewportHeight ();
             if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
-               height += 20;
+               height += Define.DefaultPlayerSkinPlayBarHeight;
 
             var index:int = mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?");
             var uniplayerUrl:String = "http://www.phyard.com/" + mParamsFromUniViewer.mUniViewerUrl.substr (index);

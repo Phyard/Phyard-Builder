@@ -8,6 +8,7 @@ package editor {
    
    import flash.utils.Dictionary;
    import flash.utils.ByteArray;
+   import flash.system.Capabilities;
    
    import flash.display.LoaderInfo;
    
@@ -813,7 +814,7 @@ package editor {
       
       public function RepaintWorldDebugInfo ():void
       {
-         if (Compile::Is_Debugging)// && false)
+         if (Capabilities.isDebugger)// && false)
          {
             mWorldDebugInfoLayer.x = mEditorWorld.x;
             mWorldDebugInfoLayer.y = mEditorWorld.y;
@@ -1809,7 +1810,7 @@ package editor {
          
          //var useQuickMethod:Boolean;
          //
-         //if (Compile::Is_Debugging)
+         //if (Capabilities.isDebugger)
          //{
          //   useQuickMethod = true;
          //}
@@ -2668,7 +2669,7 @@ package editor {
          {
             Alert.show("Sorry, saving error!", "Error");
             
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
                throw error;
          }
       }
@@ -3246,8 +3247,9 @@ package editor {
          {
             switch (event.keyCode)
             {
-               case Keyboard.SPACE:
-                  //mDesignPlayer.UpdateSingleStep (); // cancelled from v1.55
+               case 70: // F
+               //case Keyboard.SPACE: // cancelled from v1.55
+                  mDesignPlayer.UpdateSingleStep (); 
                   break;
                default:
                   break;
@@ -5654,7 +5656,7 @@ package editor {
          }
          catch (error:Error)
          {
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
                throw error;
             
             //Alert.show ("Error: " + error + "\n " + error.getStackTrace ());
@@ -5753,7 +5755,7 @@ package editor {
          {
             //Alert.show("Sorry, export  error!", "Error");
             
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
                throw error;
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export failed", EffectMessagePopup.kBgColor_Error));
@@ -5858,7 +5860,7 @@ package editor {
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error));
             
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
                throw error;
          }
       }
@@ -6098,7 +6100,7 @@ package editor {
          {
             //Alert.show("Sorry, quick saving error! " + error, "Error");
             
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
                throw error;
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save failed", EffectMessagePopup.kBgColor_Error));
@@ -6156,7 +6158,7 @@ package editor {
          {
             RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
 
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
                throw error;
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load failed", EffectMessagePopup.kBgColor_Error));
@@ -6359,7 +6361,7 @@ package editor {
             
             RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             
-            if (Compile::Is_Debugging)
+            if (Capabilities.isDebugger)
                throw error;
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error));
@@ -6461,7 +6463,7 @@ package editor {
             {
                RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
                
-               if (Compile::Is_Debugging)
+               if (Capabilities.isDebugger)
                   throw error;
                
                //Alert.show("Sorry, online loading error!", "Error");

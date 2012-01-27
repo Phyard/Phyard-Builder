@@ -17,7 +17,7 @@ package viewer {
 
    import common.Define;
 
-   public class SkinPC extends Skin
+   public class SkinLargeScreen extends Skin
    {
       [Embed(source="../../res/player/player-restart.png")]
       private static var IconRestart:Class;
@@ -72,27 +72,41 @@ package viewer {
 //
 //======================================================================
       
+      private var mIsMobileDevice:Boolean;
+      
       private var mPlayBarLayer:Sprite = new Sprite ();
       private var mHelpDialogLayer:Sprite = new Sprite ();
       private var mLevelFinishedDialogLayer:Sprite = new Sprite ();
       
-      public function SkinPC (params:Object)
+      public function SkinLargeScreen (params:Object)
       {
          super (params);
+         
+         mIsMobileDevice = params.mIsMobileDevice;
          
          addChild (mPlayBarLayer);
          addChild (mHelpDialogLayer);
          addChild (mLevelFinishedDialogLayer);
       }
       
+      private function GetPlayBarHeight ():Number
+      {
+         return IsShowPlayBar () ? (mIsMobileDevice ? 60 : Define.DefaultPlayerSkinPlayBarHeight) : 0;
+      }
+      
+      private function GetButtonScale ():Number
+      {
+         return mIsMobileDevice ? (GetPlayBarHeight () / Define.DefaultPlayerSkinPlayBarHeight) : 1.0;
+      }
+      
       override public function GetPreferredViewerSize (viewportWidth:Number, viewportHeight:Number):Point
       {
-         return new Point (viewportWidth, viewportHeight + Define.DefaultPlayerSkinPlayBarHeight);
+         return new Point (viewportWidth, viewportHeight + GetPlayBarHeight ());
       }
       
       override public function GetContentRegion ():Rectangle
       {
-         var top:Number = Define.DefaultPlayerSkinPlayBarHeight;
+         var top:Number = GetPlayBarHeight ();
          
          return new Rectangle (0, top, mViewerWidth, mViewerHeight - top);
       }
@@ -288,7 +302,7 @@ package viewer {
       private static const ButtonMargin:int = 8;
       
       private var mPlayBar:Sprite  = null;
-      
+         private var mBarBackground:Sprite;
          private var mBasicButtonBar:Sprite;
             private var mButtonRestart:ImageButton;
             private var mButtonStartPause:ImageButton;
@@ -303,20 +317,29 @@ package viewer {
       
       private function RebuildPlayBar (params:Object):void
       {
-         GraphicsUtil.ClearAndDrawRect (this, 
-                              0, 0, mViewerWidth, Define.DefaultPlayerSkinPlayBarHeight, 
-                              params.mPlayBarColor, 1, true, params.mPlayBarColor);
-         
          // ...
          
          if (mPlayBar == null)
          {
             mPlayBar = new Sprite ();
+            mPlayBar.visible = IsShowPlayBar ();
+            
             mPlayBarLayer.addChild (mPlayBar);
             
             // ...
             
+            mBarBackground = new Sprite ();
+            GraphicsUtil.ClearAndDrawRect (mBarBackground, 
+                                 0, 0, mViewerWidth, GetPlayBarHeight (), 
+                                 params.mPlayBarColor, 1, true, params.mPlayBarColor);
+            mPlayBar.addChild (mBarBackground);
+            
+            // ...
+            
             mBasicButtonBar = new Sprite ();
+            mPlayBar.addChild (mBasicButtonBar);
+            
+            mBasicButtonBar.scaleX = mBasicButtonBar.scaleY = GetButtonScale ();
             
             var i:int;
             var buttonX:Number = 0;
@@ -393,11 +416,8 @@ package viewer {
                buttonX += ButtonMargin;
             }
          
-            // ...
-            
-            mPlayBar.addChild (mBasicButtonBar);
-         
             // main menu
+
             if (_OnMainMenu != null)
             {
                mButtonMainMenu = new ImageButton (mBitmapDataMainMenu);
@@ -418,18 +438,20 @@ package viewer {
          }
          
          mBasicButtonBar.x = 0.5 * (mViewerWidth - mBasicButtonBar.width);
-         mBasicButtonBar.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - mBasicButtonBar.height);
+         mBasicButtonBar.y = 0.5 * (GetPlayBarHeight () - mBasicButtonBar.height);
    
          if (mButtonMainMenu != null)
          {
-            mButtonMainMenu.x = 2;
-            mButtonMainMenu.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - mButtonMainMenu.height);
+            mButtonMainMenu.scaleX = mButtonMainMenu.scaleY = GetButtonScale ();
+            mButtonMainMenu.x = 2 * GetButtonScale ();
+            mButtonMainMenu.y = 0.5 * (GetPlayBarHeight () - mButtonMainMenu.height);
          }
          
          if (mButtonGoToPhyard != null)
          {
-            mButtonGoToPhyard.x = mViewerWidth - mButtonGoToPhyard.width - 2;
-            mButtonGoToPhyard.y = 0.5 * (Define.DefaultPlayerSkinPlayBarHeight - mButtonGoToPhyard.height);
+            mButtonGoToPhyard.scaleX = mButtonGoToPhyard.scaleY = GetButtonScale ();
+            mButtonGoToPhyard.x = mViewerWidth - mButtonGoToPhyard.width - 2 * GetButtonScale ();
+            mButtonGoToPhyard.y = 0.5 * (GetPlayBarHeight () - mButtonGoToPhyard.height);
          }
       }
       

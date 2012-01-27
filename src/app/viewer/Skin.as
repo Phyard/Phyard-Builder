@@ -2,6 +2,7 @@ package viewer {
 
    import flash.display.DisplayObject;
    import flash.display.Sprite;
+   import flash.display.Shape;
    
    import flash.geom.Point;
    import flash.geom.Rectangle;
@@ -52,6 +53,9 @@ package viewer {
       // ...
       protected var mViewerWidth :Number;
       protected var mViewerHeight:Number;
+      
+      //
+      protected var mShowPlayBar:Boolean = true;
 
       // ...
       private var mIsStarted:Boolean = false;
@@ -84,6 +88,17 @@ package viewer {
       public function Update (dt:Number):void
       {
          // to override
+      }
+      
+      // should call this function 
+      final public function SetShowPlayBar (showPlayBar:Boolean):void
+      {
+         mShowPlayBar = showPlayBar;
+      }
+      
+      final public function IsShowPlayBar ():Boolean
+      {
+         return mShowPlayBar;
       }
       
       public function Rebuild (params:Object):void
@@ -320,6 +335,170 @@ package viewer {
          }
          
          return dialog;
+      }
+
+//======================================================================
+//
+//======================================================================
+
+      protected static var mPlayButtonData:Array = [
+         [3,
+             8,  0.0,
+            -5, -12, 
+            -5,  12,
+         ],
+      ];
+      
+      protected static var mPauseButtonData:Array = [
+         [3,
+           -11, -12, 
+           -11,  12,
+            -4,  12,
+            -4, -12,
+         ],
+         [3,
+             4, -12, 
+             4,  12,
+            11,  12,
+            11, -12,
+         ],
+      ];
+      
+      protected static var mRestartButtonData:Array = [
+         [3,
+             -10, -12,
+             -10,  12,
+              -7,  12,
+              -7, -12,
+         ],
+         [3,
+             -4, 0.0, 
+             10,  12,
+             10, -12,
+         ],
+      ];
+      
+      protected static var mMenuButtonData:Array = [
+         [3,
+             -16, -13, 
+             -16, -7,
+             -10, -7,
+             -10, -13,
+         ],
+         [3,
+             -8, -13,
+             -8, -7,
+             16, -7,
+             16, -13,
+         ],
+         [3,
+             -16, -3, 
+             -16,  3,
+             -10,  3,
+             -10, -3,
+         ],
+         [3,
+             -8, -3,
+             -8,  3,
+             16,  3,
+             16, -3,
+         ],
+         [3,
+             -16,  7, 
+             -16, 13,
+             -10, 13,
+             -10,  7,
+         ],
+         [3,
+             -8,  7,
+             -8, 13,
+             16, 13,
+             16,  7,
+         ],
+      ];
+      
+      protected static var mSoundOffButtonData:Array = [
+         [3,
+             -14,   5,
+              -8,   5,
+              -2,  11,
+               0,  11,
+               0, -11,
+              -2, -11,
+              -8,  -5,
+             -14,  -5, 
+         ],
+         [1,
+              7, -4,
+             15,  4,
+         ],
+         [1,
+              7,  4, 
+             15, -4,
+         ],
+      ];
+      
+      protected static const DefaultButtonBaseHalfSize:Number = 24.0;
+      protected static const DefaultButtonBaseFilledColor:uint = 0x61a70e;
+      protected static const DefaultButtonBaseBorderThickness:Number = 2.0;
+      protected static const DefaultButtonBaseBorderColor:uint = 0x50e61d;
+      protected static const DefaultButtonIconFilledColor:uint = 0xff0000;
+      protected static const DefaultButtonIconLineThickness:uint = 3;
+      
+      private static function ShapeDataToPointArray (shapeData:Array):Array
+      {
+         var numPoints:int = shapeData.length / 2;
+         var points:Array = new Array (numPoints);
+         var index:int = 1;
+         for (var i:int = 0; i < numPoints; ++ i)
+         {
+            points [i] = new Point (shapeData [index ++], shapeData [index ++]);
+         }
+         
+         return points;
+      }
+
+      protected static function CreateButton (baseShapeType:int, buttonData:Array):Sprite
+      {
+         var baseShape:Shape = new Shape ();
+         if (baseShapeType == 0) // circle
+         {
+            GraphicsUtil.DrawCircle (baseShape, 0, 0, DefaultButtonBaseHalfSize, DefaultButtonBaseFilledColor, DefaultButtonBaseBorderThickness, true, DefaultButtonBaseBorderColor);
+         }
+         else // rectangle
+         {
+            GraphicsUtil.DrawRect (baseShape, 
+                                 - DefaultButtonBaseHalfSize, - DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, 
+                                 DefaultButtonBaseFilledColor, DefaultButtonBaseBorderThickness, true, DefaultButtonBaseBorderColor);
+         }
+         
+         var iconShape:Shape = new Shape ();
+         for (var i:int = 0; i < buttonData.length; ++ i)
+         {
+            var shapeData:Array = buttonData [i] as Array;
+            switch (shapeData [0])
+            {
+               case 0: // circle
+                  GraphicsUtil.DrawCircle (iconShape, shapeData [1], shapeData[2], shapeData[3], DefaultButtonIconFilledColor, DefaultButtonIconLineThickness, shapeData[4] != 0, DefaultButtonIconFilledColor);
+                  break;
+               case 1: // polyline
+                  GraphicsUtil.DrawPolyline (iconShape, ShapeDataToPointArray (shapeData), DefaultButtonIconFilledColor, DefaultButtonIconLineThickness, true, false);
+                  break;
+               case 2: // curve
+                  break;
+               case 3: // polygon
+                  GraphicsUtil.DrawPolygon (iconShape, ShapeDataToPointArray (shapeData), 0x0, -1, true, DefaultButtonIconFilledColor);
+                  break;
+               default:
+                  break;
+            }
+         }
+         
+         var button:Sprite = new Sprite;
+         button.addChild (baseShape);
+         button.addChild (iconShape);
+         
+         return button;
       }
 
    }

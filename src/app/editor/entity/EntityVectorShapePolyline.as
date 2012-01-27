@@ -3,6 +3,7 @@ package editor.entity {
 
    import flash.display.Sprite;
    import flash.geom.Point;
+   import flash.system.Capabilities;
 
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
@@ -142,7 +143,7 @@ package editor.entity {
                (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [mLocalPoints.length - 1].x, mLocalPoints [mLocalPoints.length - 1].y, halfThickness);
          }
 
-         if (Compile::Is_Debugging)// && false)
+         if (Capabilities.isDebugger)// && false)
          {
             if (mPhysicsShapesLayer == null)
             {

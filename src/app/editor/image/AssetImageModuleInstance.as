@@ -8,6 +8,7 @@ package editor.image {
    import flash.display.BitmapData;
    import flash.display.Loader;
    import flash.display.LoaderInfo;
+   import flash.system.Capabilities;
    
    import flash.geom.Rectangle;
    import flash.geom.Point;
@@ -224,7 +225,7 @@ package editor.image {
          mSelectionProxy.Rebuild (GetPositionX (), GetPositionY (), 0.0);
          mAssetImageModule.BuildImageModuleSelectionProxy (mSelectionProxy, new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mAssetManager.GetScale () * GetScale ());
          
-         if (Compile::Is_Debugging)// && false)
+         if (Capabilities.isDebugger)// && false)
          {
             if (mPhysicsShapesLayer == null)
             {

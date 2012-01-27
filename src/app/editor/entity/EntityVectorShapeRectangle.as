@@ -3,6 +3,7 @@ package editor.entity {
 
    import flash.display.Sprite;
    import flash.geom.Point;
+   import flash.system.Capabilities;
 
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
@@ -115,7 +116,7 @@ package editor.entity {
 
          (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (GetPositionX (), GetPositionY (), GetHalfWidth () + borderThickness * 0.5 , GetHalfHeight () + borderThickness * 0.5, GetRotation ());
 
-         if (Compile::Is_Debugging)// && false)
+         if (Capabilities.isDebugger)// && false)
          {
             if (mPhysicsShapesLayer == null)
             {

@@ -3,6 +3,7 @@ package editor.entity {
 
    import flash.display.Sprite;
    import flash.geom.Point;
+   import flash.system.Capabilities;
 
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
@@ -108,6 +109,12 @@ package editor.entity {
          else if (GetVertexPointsCount () > 2)
          {
             GraphicsUtil.ClearAndDrawPolygon (this, mLocalPoints, borderColor, borderThickness, drawBg, filledColor);
+            
+            //this.graphics.clear ();
+            //var bitmapData:flash.display.BitmapData = (mWorld.GetAssetImageManager ().GetAssetByAppearanceId (0) as Object).GetBitmapData ();
+            //this.graphics.beginBitmapFill (bitmapData);
+            //GraphicsUtil.DrawPolygon (this, mLocalPoints, borderColor, borderThickness, false);
+            //this.graphics.endFill ();
          }
 
          if (!mIsValid)
@@ -155,7 +162,7 @@ package editor.entity {
                (mSelectionProxy as SelectionProxyPolygon).CreateLineSegmentZone (mLocalPoints [mLocalPoints.length - 1].x, mLocalPoints [mLocalPoints.length - 1].y, mLocalPoints [0].x, mLocalPoints [0].y, borderThickness);
          }
 
-         if (Compile::Is_Debugging)// && false)
+         if (Capabilities.isDebugger)// && false)
          {
             if (mPhysicsShapesLayer == null)
             {

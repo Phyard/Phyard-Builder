@@ -3,6 +3,7 @@ package editor.asset {
    
    import flash.display.Sprite;
    import flash.geom.Point;
+   import flash.system.Capabilities;
    
    import flash.events.Event;
    import flash.ui.ContextMenu;
@@ -146,7 +147,7 @@ package editor.asset {
          
          UnreferAllReferings ();
          NotifyDestroyedForReferers ();
-         if (Compile::Is_Debugging)
+         if (Capabilities.isDebugger)
          {
             FinalAssertReferPairs ();
          }

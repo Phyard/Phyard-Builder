@@ -223,9 +223,6 @@ package player.physics {
                                                              b2Vec2.b2Vec2_From2Numbers (endPointX, endPointY), 
                                                              b2Vec2.b2Vec2_From2Numbers (startPointX, startPointY));
 
-trace ("incomingIntersections.length = " + incomingIntersections.length);         
-trace ("outcomingIntersections.length = " + outcomingIntersections.length);         
-         
          // ...
          
          var shape:EntityShape;
@@ -248,8 +245,6 @@ trace ("outcomingIntersections.length = " + outcomingIntersections.length);
          var allIntersections:Array = incomingIntersections.concat (outcomingIntersections);
          allIntersections.sort (IntersectionComparor);
          
-trace ("allIntersections.length = " + allIntersections.length);         
-
          // ...
          
          var validIntersections:Array = new Array ();
@@ -258,14 +253,10 @@ trace ("allIntersections.length = " + allIntersections.length);
          {
             shape = intersection.mUserData as EntityShape;
 
-trace ("  -- shape = " + shape.GetCreationId ());
-         
             if (intersection.mIsIncoming)
             {
-trace ("  -- aaa");
                if (shape.mUserData2 != null)
                {
-trace ("  -- bbb");
                   validIntersections.push (shape.mUserData2);
                   
                   shape.mUserData1 = null;
@@ -276,19 +267,14 @@ trace ("  -- bbb");
                {
                   shape.mUserData1 = intersection;
                   
-trace ("  -- ccc");
-
                   validIntersections.push (intersection);
                }
             }
             else
             {
-trace ("  -- ddd");
                shape.mUserData2 = intersection;
             }
          }
-         
-trace ("validIntersectionslength = " + validIntersections.length);   
          
          // ...
          
@@ -303,8 +289,6 @@ trace ("validIntersectionslength = " + validIntersections.length);
             
             shape.mUserData2 = null;
          }
-         
-trace ("validIntersectionslength = " + validIntersections.length);   
          
          for each (intersection in incomingIntersections)
          {

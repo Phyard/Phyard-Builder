@@ -338,11 +338,12 @@ public class b2PairManager
 		{
 		   m_pairCountEverMax = m_pairCount;
 		   
-		   if (Compile::Is_Debugging)
-		   {
-		      if ( (m_pairCountEverMax & 31) == 0 )
-		         trace ("m_pairCountEverMax = " + m_pairCountEverMax);
-		   }
+		   //if (Compile::Is_Debugging)
+		   //if (flash.system.Capabilities.isDebugger)
+		   //{
+		   //   if ( (m_pairCountEverMax & 31) == 0 )
+		   //      trace ("m_pairCountEverMax = " + m_pairCountEverMax);
+		   //}
 		}
 		
 		//trace ("m_pairCount = " + m_pairCount + ", m_freePair = " + m_freePair);

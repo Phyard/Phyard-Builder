@@ -178,7 +178,7 @@ package viewer {
 // platform capabilities
 //======================================================================
 
-      private var mIsMobileDevice:Boolean = false; // false for PC device
+      private var mIsTouchScreen:Boolean = false; // false for PC device
          private var mIsPhoneDevice:Boolean = false; // only valid when mIsMobileDevice is true
       
       private var mGeolocationClass:Object = null;
@@ -212,26 +212,26 @@ package viewer {
 
             if (mIsPhoneDevice)
             {
-               mIsMobileDevice = true;
+               mIsTouchScreen = true;
             }
-            else
-            {
-               var manufacturer:String = Capabilities.manufacturer;
-               manufacturer = (manufacturer == null ? "" : manufacturer.toLowerCase ());
-               var osname:String = Capabilities.os;
-               osname = (osname == null ? "" : osname.toLowerCase ());
-               if (manufacturer.indexOf ("android") >= 0 || osname.indexOf ("ios") >= 0 || manufacturer.indexOf ("phone") >= 0 || manufacturer.indexOf ("pad") >= 0) // phone may be iphone or "windows phone" or "lephone"
-               {
-                  mIsMobileDevice = true;
-               }
-               if (! mIsMobileDevice)
-               {
-                  if (osname.indexOf ("android") >= 0 || osname.indexOf ("ios") >= 0 || osname.indexOf ("phone") >= 0 || osname.indexOf ("pad") >= 0)
-                  {
-                     mIsMobileDevice = true;
-                  }
-               }
-            }
+            //else
+            //{
+            //   var manufacturer:String = Capabilities.manufacturer;
+            //   manufacturer = (manufacturer == null ? "" : manufacturer.toLowerCase ());
+            //   var osname:String = Capabilities.os;
+            //   osname = (osname == null ? "" : osname.toLowerCase ());
+            //   if (manufacturer.indexOf ("android") >= 0 || osname.indexOf ("ios") >= 0 || manufacturer.indexOf ("phone") >= 0 || manufacturer.indexOf ("pad") >= 0) // phone may be iphone or "windows phone" or "lephone"
+            //   {
+            //      mIsTouchScreen = true;
+            //   }
+            //   if (! mIsMobileDevice)
+            //   {
+            //      if (osname.indexOf ("android") >= 0 || osname.indexOf ("ios") >= 0 || osname.indexOf ("phone") >= 0 || osname.indexOf ("pad") >= 0)
+            //      {
+            //         mIsTouchScreen = true;
+            //      }
+            //   }
+            //}
          
             // 
          
@@ -272,9 +272,9 @@ package viewer {
                }
             }
                
-            if ((! mIsMobileDevice) && mMultitouchClass != null)
+            if (mMultitouchClass != null)
             {
-               mIsMobileDevice = true;
+               mIsTouchScreen = true;
             }
          }
          catch (error:Error)
@@ -305,7 +305,7 @@ package viewer {
 
       public function Update (event:Event):void
       {
-         if (mIsAppDeactivated && mIsMobileDevice)
+         if (mIsAppDeactivated && mIsTouchScreen)
             return; // avoid making the mobile device slow
          
          switch (mStateId)
@@ -1011,9 +1011,18 @@ package viewer {
 
       private function BuildSkin ():void
       {
-         // play bar
+         var useOverlaySkin:Boolean = (mParamsFromContainer.skin != null && mParamsFromContainer.skin.toLowerCase () == "overlay");
+         
+         // fot testing
+         //useOverlaySkin = true;
+         //mIsTouchScreen = true;
+         //   mIsPhoneDevice = true;
 
          var skinParams:Object = {
+                  mIsOverlay: useOverlaySkin,
+                  mIsTouchScreen: mIsTouchScreen,
+                  mIsPhoneDevice: mIsPhoneDevice,
+                  
                   OnRestart: OnRestart,
                   OnStart: OnStart,
                   OnPause: OnPause,
@@ -1024,25 +1033,11 @@ package viewer {
                   mHasMainMenu: mParamsFromContainer.mHasMainMenu,
                   OnExitLevel: mParamsFromContainer.OnExitLevel,
                   OnNextLevel: mParamsFromContainer.OnNextLevel,
+                  mHasNextLevel: mParamsFromContainer.mHasNextLevel,
                   OnGoToPhyard: mParamsFromContainer.OnGoToPhyard
                };
 
-         // for testing phones
-         //mIsPhoneDevice = true;
-         
-         if (mIsPhoneDevice)
-         {
-            mSkin = new SkinSmallScreen (skinParams); // mobile phone
-         }
-         else
-         {
-            // fot testing tablets
-            //mIsMobileDevice = true;
-            
-            skinParams.mIsMobileDevice = mIsMobileDevice;
-            
-            mSkin = new SkinLargeScreen (skinParams); // PC or tablet
-         }
+         mSkin = new SkinDefault (skinParams);
          
          mSkin.SetShowPlayBar ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
          mSkinLayer.addChild (mSkin);
@@ -1458,27 +1453,6 @@ package viewer {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
 
-//===========================================================================
-// interfaces for game template
-//===========================================================================
-
-      public function OnBackKeyDown ():Boolean
-      {
-         if (mSkin != null)
-         {
-            if (mSkin.IsPlaying ())
-               mSkin.SetPlaying (false);
-            else if (mParamsFromContainer.OnExitLevel != null)
-               mParamsFromContainer.OnExitLevel ();
-            else
-               return false;
-            
-            return true;
-         }
-         
-         return false;
-      }
-
 //======================================================================
 //
 //======================================================================
@@ -1502,6 +1476,37 @@ package viewer {
             mContentLayer.mask = null;
          }
       }
+
+//===========================================================================
+// interfaces for game template
+//===========================================================================
+
+      // return: need game tempalte to continue handling or not
+      public function OnBackKeyDown ():Boolean
+      {
+         if (mSkin != null)
+         {
+            if (mSkin.AreSomeDialogsVisible ())
+               mSkin.CloseAllVisibleDialogs ();
+            else if (mSkin.IsPlaying ())
+               mSkin.SetPlaying (false);
+            else if (mParamsFromContainer.OnExitLevel != null)
+               mParamsFromContainer.OnExitLevel ();
+            else
+               return false;
+            
+            return true;
+         }
+         
+         return false;
+      }
+      
+      public function IsSoundEnabled ():Boolean
+      {
+         return mSoundEnabled;
+      }
+      
+      //public function Get
       
 //======================================================================
 //
@@ -1568,6 +1573,10 @@ package viewer {
 
          mPlayerWorldZoomScaleChangedSpeed = ( mPlayerWorldZoomScale - mWorldDesignProperties.GetZoomScale () ) * 0.03;
       }
+
+   //======================================================================
+
+      private var mSoundEnabled:Boolean = true;
 
       private function OnSoundControlChanged (data:Object = null):void
       {

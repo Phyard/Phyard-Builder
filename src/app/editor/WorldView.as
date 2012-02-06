@@ -6322,7 +6322,7 @@ package editor {
             //loader.addEventListener (Event.OPEN, openHandler);
             //loader.addEventListener (HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
          
-         loader.addEventListener (ProgressEvent.PROGRESS, OnOnlineSaveProgress);
+         //loader.addEventListener (ProgressEvent.PROGRESS, OnOnlineSaveProgress); // will not be triggered
          
          loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnOnlineSaveError);
          loader.addEventListener (IOErrorEvent.IO_ERROR, OnOnlineSaveError);
@@ -6332,7 +6332,8 @@ package editor {
          loader.load ( request );
          //navigateToURL ( request )
          
-         mOnlineSavingPopup = new EffectMessagePopup ("Saving ...", EffectMessagePopup.kBgColor_Special);
+         mOnlineSavingPopup = new EffectMessagePopup ("Saving ... (Please don't close the editor!)", EffectMessagePopup.kBgColor_Special);
+         mOnlineSavingPopup.SetAutoFade (false);
          mFloatingMessageLayer.addChild (mOnlineSavingPopup);
       }
       
@@ -6341,16 +6342,16 @@ package editor {
       
       private var mOnlineSavingPopup:EffectMessagePopup = null;
       
-      private function OnOnlineSaveProgress (event:ProgressEvent):void
-      {
-         if (mOnlineSavingPopup != null)
-            mOnlineSavingPopup.Rebuild ("Saving ... (" + (100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special);
-      } 
+      //private function OnOnlineSaveProgress (event:ProgressEvent):void
+      //{
+      //   if (mOnlineSavingPopup != null)
+      //      mOnlineSavingPopup.Rebuild ("Saving ... (" + Math.floor(100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special);
+      //} 
       
       private function OnOnlineSaveError (event:Event):void
       {
          if (mOnlineSavingPopup != null)
-            mOnlineSavingPopup.SetFade (true);
+            mOnlineSavingPopup.SetAutoFade (true);
          
          mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error));
       } 
@@ -6358,7 +6359,7 @@ package editor {
       private function OnOnlineSaveCompleted(event:Event):void 
       {
          if (mOnlineSavingPopup != null)
-            mOnlineSavingPopup.SetFade (true);
+            mOnlineSavingPopup.SetAutoFade (true);
          
          var loader:URLLoader = URLLoader(event.target);
          
@@ -6446,6 +6447,7 @@ package editor {
          loader.load ( request );
          
          mOnlineLoadingPopup = new EffectMessagePopup ("Loading ...", EffectMessagePopup.kBgColor_Special);
+         mOnlineLoadingPopup.SetAutoFade (false);
          mFloatingMessageLayer.addChild (mOnlineLoadingPopup);
          
          return true;
@@ -6456,13 +6458,13 @@ package editor {
       private function OnOnlineLoadProgress (event:ProgressEvent):void
       {
          if (mOnlineLoadingPopup != null)
-            mOnlineLoadingPopup.Rebuild ("Loading ... (" + (100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special);
+            mOnlineLoadingPopup.Rebuild ("Loading ... (" + Math.floor (100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special);
       } 
       
       private function OnOnlineLoadError (event:Event):void
       {
          if (mOnlineLoadingPopup != null)
-            mOnlineLoadingPopup.SetFade (true);
+            mOnlineLoadingPopup.SetAutoFade (true);
          
          mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error));
       } 
@@ -6470,7 +6472,7 @@ package editor {
       private function OnOnlineLoadCompleted(event:Event):void 
       {
          if (mOnlineLoadingPopup != null)
-            mOnlineLoadingPopup.SetFade (true);
+            mOnlineLoadingPopup.SetAutoFade (true);
          
          var loader:URLLoader = URLLoader(event.target);
          

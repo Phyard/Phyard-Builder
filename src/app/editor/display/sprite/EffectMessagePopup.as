@@ -66,7 +66,7 @@ package editor.display.sprite {
       internal var mTargetX:Number;
       internal var mTargetY:Number;
       
-      public function EffectMessagePopup (text:String, bgColor:uint, textColor:uint = 0x0, autoFade:Boolean = true):void
+      public function EffectMessagePopup (text:String, bgColor:uint, textColor:uint = 0x0):void
       {
          Rebuild (text, bgColor, textColor);
          
@@ -77,15 +77,15 @@ package editor.display.sprite {
             x = 300;
          else
             x = 0.5 * Runtime.mEditorWorldView.GetViewWidth ();
-         x -= 0.5 *  width;
+         x -= 0.5 * width;
          y = kToppestY;
          
-         mAutoFade = autoFade;
+         mAutoFade = true;
       }
       
-      public function SetFade (fade:Boolean):void
+      public function SetAutoFade (autoFade:Boolean):void
       {
-         mAutoFade = fade;
+         mAutoFade = autoFade;
       }
       
       public function Remove ():void

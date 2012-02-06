@@ -23,57 +23,6 @@ package viewer {
 
    public class SkinSmallScreen extends Skin
    {
-      [Embed(source="../../res/player/button_base.png")]
-      private static var IconButtonBase:Class;
-      
-      [Embed(source="../../res/player/player-restart.png")]
-      private static var IconRestart:Class;
-      [Embed(source="../../res/player/player-restart-disabled.png")]
-      private static var IconRestartDisabled:Class;
-      [Embed(source="../../res/player/player-start.png")]
-      private static var IconStart:Class;
-      [Embed(source="../../res/player/player-pause.png")]
-      private static var IconPause:Class;
-
-      [Embed(source="../../res/player/player-help.png")]
-      private static var IconHelp:Class;
-
-      [Embed(source="../../res/player/player-speed.png")]
-      private static var IconSpeed:Class;
-      [Embed(source="../../res/player/player-speed-selected.png")]
-      private static var IconSpeedSelected:Class;
-
-      [Embed(source="../../res/player/player-zoom-in.png")]
-      private static var IconZoomIn:Class;
-      [Embed(source="../../res/player/player-zoom-in-disabled.png")]
-      private static var IconZoomInDisabled:Class;
-      [Embed(source="../../res/player/player-zoom-out.png")]
-      private static var IconZoomOut:Class;
-      [Embed(source="../../res/player/player-zoom-out-disabled.png")]
-      private static var IconZoomOutDisabled:Class;
-
-      private var mBitmapDataRetart:BitmapData = new IconRestart ().bitmapData;
-      private var mBitmapDataRetartDisabled:BitmapData = new IconRestartDisabled ().bitmapData;
-      private var mBitmapDataStart:BitmapData = new IconStart ().bitmapData;
-      private var mBitmapDataPause:BitmapData = new IconPause ().bitmapData;
-      private var mBitmapDataHelp:BitmapData  = new IconHelp ().bitmapData;
-      private var mBitmapDataSpeed:BitmapData  = new IconSpeed ().bitmapData;
-      private var mBitmapDataSpeedSelected:BitmapData  = new IconSpeedSelected ().bitmapData;
-
-      private var mBitmapDataZoomIn:BitmapData  = new IconZoomIn ().bitmapData;
-      private var mBitmapDataZoomInDisabled:BitmapData  = new IconZoomInDisabled ().bitmapData;
-      private var mBitmapDataZoomOut:BitmapData  = new IconZoomOut ().bitmapData;
-      private var mBitmapDataZoomOutDisabled:BitmapData  = new IconZoomOutDisabled ().bitmapData;
-      
-      // ...
-      
-      [Embed(source="../../res/player/player-mainmenu.png")]
-      private static var IconMainMenu:Class;
-      [Embed(source="../../res/player/player-phyard.png")]
-      private static var IconPhyard:Class;
-
-      private var mBitmapDataMainMenu:BitmapData  = new IconMainMenu ().bitmapData;
-      private var mBitmapDataPhyard:BitmapData  = new IconPhyard ().bitmapData;
 
 //======================================================================
 //

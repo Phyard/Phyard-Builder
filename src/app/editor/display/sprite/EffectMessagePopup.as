@@ -17,6 +17,7 @@ package editor.display.sprite {
       public static const kBgColor_General:uint = 0xFFFFC0;
       public static const kBgColor_OK:uint = 0xC0FFC0;
       public static const kBgColor_Error:uint = 0xFFC0C0;
+      public static const kBgColor_Special:uint = 0xC0C0FF;
       
       //
       public static const kMessageBoxHeightInterval:Number = 26.0;
@@ -60,17 +61,14 @@ package editor.display.sprite {
 //
 //======================================================
       
+      internal var mAutoFade:Boolean;
+      
       internal var mTargetX:Number;
       internal var mTargetY:Number;
       
-      public function EffectMessagePopup (text:String, bgColor:uint, textColor:uint = 0x0):void
+      public function EffectMessagePopup (text:String, bgColor:uint, textColor:uint = 0x0, autoFade:Boolean = true):void
       {
-         // creating a bitmap instead of text filed os for the alpha of text field is unchangeable.
-         var textBitemp:Bitmap = DisplayObjectUtil.CreateCacheDisplayObject (TextFieldEx.CreateTextField (text, true, bgColor, textColor, false, 0, false, false));
-         GraphicsUtil.ClearAndDrawRect (this, 0, 0, textBitemp.width + 1, textBitemp.height + 1, 0, 1, true, bgColor);
-         addChild (textBitemp);
-         textBitemp.x = 1;
-         textBitemp.y = 1;
+         Rebuild (text, bgColor, textColor);
          
          mTargetX = kLeftestX;
          mTargetY = kToppestY;
@@ -79,8 +77,33 @@ package editor.display.sprite {
             x = 300;
          else
             x = 0.5 * Runtime.mEditorWorldView.GetViewWidth ();
-         x -= 0.5 * textBitemp.width;
+         x -= 0.5 *  width;
          y = kToppestY;
+         
+         mAutoFade = autoFade;
+      }
+      
+      public function SetFade (fade:Boolean):void
+      {
+         mAutoFade = fade;
+      }
+      
+      public function Remove ():void
+      {
+         alpha = 0.0;
+      }
+      
+      public function Rebuild (text:String, bgColor:uint, textColor:uint = 0x0):void
+      {
+         while (numChildren > 0)
+            removeChildAt (0);
+         
+         // creating a bitmap instead of text filed os for the alpha of text field is unchangeable.
+         var textBitemp:Bitmap = DisplayObjectUtil.CreateCacheDisplayObject (TextFieldEx.CreateTextField (text, true, bgColor, textColor, false, 0, false, false));
+         GraphicsUtil.ClearAndDrawRect (this, 0, 0, textBitemp.width + 1, textBitemp.height + 1, 0, 1, true, bgColor);
+         addChild (textBitemp);
+         textBitemp.x = 1;
+         textBitemp.y = 1;
       }
       
       override public function Update ():void
@@ -102,7 +125,9 @@ package editor.display.sprite {
             y += dy * speed / length;
          }
          
-         alpha -= kDeltaFadeAlpha;
+         if (mAutoFade)
+            alpha -= kDeltaFadeAlpha;
+         
          if (alpha <= 0.0 )
          {
             parent.removeChild (this);

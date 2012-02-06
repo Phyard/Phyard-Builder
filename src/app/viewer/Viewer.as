@@ -1028,7 +1028,7 @@ package viewer {
                };
 
          // for testing phones
-         mIsPhoneDevice = true;
+         //mIsPhoneDevice = true;
          
          if (mIsPhoneDevice)
          {

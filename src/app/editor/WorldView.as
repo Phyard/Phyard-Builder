@@ -4,6 +4,9 @@ package editor {
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.KeyboardEvent;
+   import flash.events.ProgressEvent;
+   import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
    import flash.events.EventPhase;
    
    import flash.utils.Dictionary;
@@ -6277,17 +6280,20 @@ package editor {
          designDataAll.writeByte  (shareSourceCode ? 1 : 0); // share source code?
          //<<
          
+         //
+         
          designDataAll.writeByte (isImportant ? 1 : 0);
          
          designDataAll.writeInt (designDataRevisionComment.length);
          designDataAll.writeInt (designDataForEditing.length);
-         designDataAll.writeInt (shareSourceCode ? 0 : designDataForPlaying.length);
+         //designDataAll.writeInt (shareSourceCode ? 0 : designDataForPlaying.length);
+         designDataAll.writeInt (0); // !! currently, playing data is totally same as editing data
          
          designDataAll.writeBytes (designDataRevisionComment);
          designDataAll.writeBytes (designDataForEditing);
          if (! shareSourceCode)
          {
-            designDataAll.writeBytes (designDataForPlaying);
+            //designDataAll.writeBytes (designDataForPlaying); // !! currently, playing data is totally same as editing data
          }
          
 //infoString =  designDataForEditing[0] + ", " + designDataForEditing[1] + ", " + designDataForEditing[2]
@@ -6314,22 +6320,46 @@ package editor {
          loader.dataFormat = URLLoaderDataFormat.BINARY;
             
             //loader.addEventListener (Event.OPEN, openHandler);
-            //loader.addEventListener (ProgressEvent.PROGRESS, progressHandler);
-            //loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
             //loader.addEventListener (HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
-            //loader.addEventListener (IOErrorEvent.IO_ERROR, ioErrorHandler);
          
+         loader.addEventListener (ProgressEvent.PROGRESS, OnOnlineSaveProgress);
+         
+         loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnOnlineSaveError);
+         loader.addEventListener (IOErrorEvent.IO_ERROR, OnOnlineSaveError);
+
          loader.addEventListener(Event.COMPLETE, OnOnlineSaveCompleted);
          
          loader.load ( request );
          //navigateToURL ( request )
+         
+         mOnlineSavingPopup = new EffectMessagePopup ("Saving ...", EffectMessagePopup.kBgColor_Special);
+         mFloatingMessageLayer.addChild (mOnlineSavingPopup);
       }
       
 // to debug a bug. seems there is a bug in ByteArray.compress () on linux
 //private var infoString:String = "";
       
+      private var mOnlineSavingPopup:EffectMessagePopup = null;
+      
+      private function OnOnlineSaveProgress (event:ProgressEvent):void
+      {
+         if (mOnlineSavingPopup != null)
+            mOnlineSavingPopup.Rebuild ("Saving ... (" + (100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special);
+      } 
+      
+      private function OnOnlineSaveError (event:Event):void
+      {
+         if (mOnlineSavingPopup != null)
+            mOnlineSavingPopup.SetFade (true);
+         
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error));
+      } 
+      
       private function OnOnlineSaveCompleted(event:Event):void 
       {
+         if (mOnlineSavingPopup != null)
+            mOnlineSavingPopup.SetFade (true);
+         
          var loader:URLLoader = URLLoader(event.target);
          
          try
@@ -6406,15 +6436,42 @@ package editor {
          var loader:URLLoader = new URLLoader ();
          loader.dataFormat = URLLoaderDataFormat.BINARY;
          
+         loader.addEventListener (ProgressEvent.PROGRESS, OnOnlineLoadProgress);
+         
+         loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnOnlineSaveError);
+         loader.addEventListener (IOErrorEvent.IO_ERROR, OnOnlineLoadError);
+         
          loader.addEventListener(Event.COMPLETE, OnOnlineLoadCompleted);
          
          loader.load ( request );
          
+         mOnlineLoadingPopup = new EffectMessagePopup ("Loading ...", EffectMessagePopup.kBgColor_Special);
+         mFloatingMessageLayer.addChild (mOnlineLoadingPopup);
+         
          return true;
       }
       
+      private var mOnlineLoadingPopup:EffectMessagePopup = null;
+      
+      private function OnOnlineLoadProgress (event:ProgressEvent):void
+      {
+         if (mOnlineLoadingPopup != null)
+            mOnlineLoadingPopup.Rebuild ("Loading ... (" + (100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special);
+      } 
+      
+      private function OnOnlineLoadError (event:Event):void
+      {
+         if (mOnlineLoadingPopup != null)
+            mOnlineLoadingPopup.SetFade (true);
+         
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error));
+      } 
+      
       private function OnOnlineLoadCompleted(event:Event):void 
       {
+         if (mOnlineLoadingPopup != null)
+            mOnlineLoadingPopup.SetFade (true);
+         
          var loader:URLLoader = URLLoader(event.target);
          
          var returnCode:int = Define.k_ReturnCode_UnknowError;

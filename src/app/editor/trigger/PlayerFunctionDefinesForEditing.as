@@ -596,7 +596,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_RemoveElements, array_package, "Remove Elements", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_RemoveElements, array_package, "Remove Array Elements", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("From Index"),
@@ -604,7 +604,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_InsertElements, array_package, "Insert Elements", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_InsertElements, array_package, "Insert Array Elements", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Index"),
@@ -620,6 +620,20 @@ package editor.trigger {
                      [
                               new VariableDefinitionArray ("Result Array"),
                      ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SwapElements, array_package, "Swap Array Elements", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"),
+                              new VariableDefinitionNumber ("Element Index 1"),
+                              new VariableDefinitionNumber ("Element Index 2"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Reverse, array_package, "Reverse Arrays", null, null,
+                     [
+                              new VariableDefinitionArray ("Array To Reverse"),
+                     ],
+                     null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean, array_package, "Set Element With Boolean", null, null,
                      [
@@ -1343,6 +1357,12 @@ package editor.trigger {
                      [
                         new VariableDefinitionNumber ("Mouse X"),
                         new VariableDefinitionNumber ("Mouse Y"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetNumEntitiesPlacedInEditor, world_general_package, "Get Number Of Entities Placed In Editor", null, null,
+                     null,
+                     [
+                        new VariableDefinitionNumber ("Number Of Entities"),
                      ]
                   );
 

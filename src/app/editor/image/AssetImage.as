@@ -41,7 +41,7 @@ package editor.image {
    
    import common.Define;
    
-   public class AssetImage extends AssetImageModule //Asset
+   public class AssetImage extends AssetImageBitmapModule //AssetImageModule //Asset
    {
       protected var mAssetImageManager:AssetImageManager;
       
@@ -156,7 +156,7 @@ package editor.image {
          NotifyPixelsChanged ();
       }
       
-      public function GetBitmapData ():BitmapData
+      override public function GetBitmapData ():BitmapData
       {
          return mBitmapData;
       }

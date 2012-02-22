@@ -131,6 +131,9 @@ package editor.image {
 
       public function CanRefImageModule (module:AssetImageModule):Boolean
       {
+         if (module == null)
+            return true;
+         
          if ((module is AssetImageCompositeModule) && (module as AssetImageCompositeModule).IsSequenced ())
          {
             return false;

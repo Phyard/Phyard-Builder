@@ -1,6 +1,6 @@
 package common.shape
 {
-   import common.Define;
+   import common.Transform2D;
 
    public class VectorShape
    {
@@ -177,5 +177,15 @@ package common.shape
       {
          SetBodyOpacity (opacity * 255 / 100);
       }
+      
+      // body texture
+      
+      //protected var mBodyTextureModule:Object;
+         // for editing, it is a ...
+         // for define, it is id
+         // for playing, it is a ...
+      //protected var mBodyTextureTransform:Transform2D; // only valid when mBodyTextureModuleId is valid
+         // in editing, it is a transform in world space
+         // in playing, it is a transform in module instance space
    }
 }

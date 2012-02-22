@@ -33,7 +33,7 @@ package editor.image {
    import common.Define;
    import common.ValueAdjuster;
    
-   public class AssetImagePureModule extends AssetImageModule
+   public class AssetImagePureModule extends AssetImageBitmapModule //AssetImageModule
    {
       protected var mAssetImagePureModuleManager:AssetImagePureModuleManager;
       protected var mImageDivisionPeer:AssetImageDivision;
@@ -81,6 +81,14 @@ package editor.image {
          UpdateAppearance ();
          
          NotifyModifiedForReferers ();
+      }
+      
+      override public function GetBitmapData ():BitmapData
+      {
+         if (mImageDivisionPeer == null)
+            return null;
+         
+         return mImageDivisionPeer.GetBitmapData ();
       }
       
 //=============================================================

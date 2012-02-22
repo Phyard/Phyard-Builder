@@ -1592,9 +1592,15 @@ package viewer {
             if (mSkin.AreSomeDialogsVisible ())
                mSkin.CloseAllVisibleDialogs ();
             else if (mSkin.IsPlaying ())
+            {
                mSkin.SetPlaying (false);
+               // disable sounds
+            }
             else if (mParamsFromContainer.OnExitLevel != null)
+            {
                mParamsFromContainer.OnExitLevel ();
+               // close sounds
+            }
             else
                return false;
             

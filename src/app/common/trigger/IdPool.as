@@ -140,6 +140,8 @@ package common.trigger {
       public static const CoreApiId_100:int = 100; //
       public static const CoreApiId_101:int = 101; //
       public static const CoreApiId_102:int = 102; //
+      public static const CoreApiId_103:int = 103; //
+      public static const CoreApiId_104:int = 104; //
 
       public static const CoreApiId_120:int = 120; //
       public static const CoreApiId_121:int = 121; //
@@ -263,6 +265,7 @@ package common.trigger {
       public static const CoreApiId_601:int = 601; // design
       public static const CoreApiId_602:int = 602; // design
       public static const CoreApiId_603:int = 603; // design
+      public static const CoreApiId_604:int = 604; // design
 
       public static const CoreApiId_609:int = 609; // design
       public static const CoreApiId_610:int = 610; // design

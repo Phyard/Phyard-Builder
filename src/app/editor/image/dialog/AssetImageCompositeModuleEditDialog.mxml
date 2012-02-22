@@ -64,6 +64,9 @@
             <mx:FormItem id="FormItemBodyColor" width="100%" label="Body Color:" horizontalScrollPolicy="off">
                <mx:ColorPicker id="ColorPickerBodyColor" showTextField="true" selectedColor="0xFFFFFF" change="ChangeModuleInstanceProperties ();"/>
             </mx:FormItem>
+            <mx:FormItem id="FormItemPickTextureModule" width="100%" label="Body Texture:" horizontalScrollPolicy="off">
+               <mx:Button id="ButtonPickTextureModule" label="Null" width="100%" click="OnClickPickTextureModuleButton ();" />
+            </mx:FormItem>
             <mx:FormItem id="FormItemBuildBorder" width="100%" label="Build Border:" horizontalScrollPolicy="off">
                <mx:CheckBox selected="false" id="CheckBoxBuildBorder" label="" click="ChangeModuleInstanceProperties ();"/>
             </mx:FormItem>
@@ -265,6 +268,7 @@
             panelAssetImageCompositeModuleEditing.mCheckBoxShowBody = CheckBoxShowBody;
             panelAssetImageCompositeModuleEditing.mNumericStepperBodyOpacity = NumericStepperBodyOpacity;
             panelAssetImageCompositeModuleEditing.mColorPickerBodyColor = ColorPickerBodyColor;
+            panelAssetImageCompositeModuleEditing.mButtonPickTextureModule = ButtonPickTextureModule;
             
             panelAssetImageCompositeModuleEditing.mCheckBoxBuildBorder = CheckBoxBuildBorder;
             panelAssetImageCompositeModuleEditing.mCheckBoxShowBorder = CheckBoxShowBorder;
@@ -300,6 +304,11 @@
          private function OnClickPickModuleButton ():void
          {
             AssetImageModuleListDialog.StartPickModule (panelAssetImageCompositeModuleEditing.ChangeModuleForCurrentModuleInstacne);
+         }
+         
+         private function OnClickPickTextureModuleButton ():void
+         {
+            AssetImageModuleListDialog.StartPickModule (panelAssetImageCompositeModuleEditing.ChangeTextureModuleForCurrentShapeModuleInstacne);
          }
          
          private function ChangeModuleInstanceProperties ():void

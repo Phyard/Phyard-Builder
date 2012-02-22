@@ -34,6 +34,7 @@ package editor.asset {
             mFirstTime = false;
          }
          
+         var startLength:Number    = Math.sqrt ((mStartY    - mCenterY) * (mStartY    - mCenterY) + (mStartX    - mCenterX) * (mStartX    - mCenterX));
          var lastLength:Number    = Math.sqrt ((mLastY    - mCenterY) * (mLastY    - mCenterY) + (mLastX    - mCenterX) * (mLastX    - mCenterX));
          var currentLength:Number = Math.sqrt ((mCurrentY - mCenterY) * (mCurrentY - mCenterY) + (mCurrentX - mCenterX) * (mCurrentX - mCenterX));
          
@@ -42,6 +43,7 @@ package editor.asset {
             mLastX = mCurrentX;
             mLastY = mCurrentY;
             mAssetManagerPanel.ScaleSelectedAssets (mCenterX, mCenterY, currentLength / lastLength, mScalePosition, mScaleSelf, false);
+            mAssetManagerPanel.RepositionScaleRotateFlipHandlers (currentLength / startLength, 0.0);
          }
          
          super.Process (finished);
@@ -50,6 +52,7 @@ package editor.asset {
       override protected function TerminateInternal (passively:Boolean):void
       {
          mAssetManagerPanel.ScaleSelectedAssets (mCenterX, mCenterY, 1.0, mScalePosition, mScaleSelf, true);
+         mAssetManagerPanel.RepositionScaleRotateFlipHandlers (1.0, 0.0);
          
          super.TerminateInternal (passively);
       }

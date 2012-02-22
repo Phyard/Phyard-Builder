@@ -545,6 +545,20 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SwapElements,
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Reverse,
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean,
                      [
                         [ValueTypeDefine.ValueType_Array,       null],
@@ -1270,6 +1284,12 @@ package common.trigger {
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetNumEntitiesPlacedInEditor,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
 

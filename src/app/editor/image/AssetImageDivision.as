@@ -191,6 +191,11 @@ package editor.image {
 //   
 //=============================================================
       
+      public function GetBitmapData ():BitmapData
+      {
+         return mBitmapData;
+      }
+      
       public function UpdatePixels ():void
       {
          var assetImage:AssetImage = mAssetImageDivisionManager.GetAssetImage ();

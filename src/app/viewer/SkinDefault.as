@@ -519,6 +519,7 @@ package viewer {
                mInfosLayer.mouseChildren = false;
                               
                mFpsText = new TextField ();
+
                mInfosPanel.addChild (mFpsText);
                mFpsText.mouseEnabled = false;
                
@@ -550,7 +551,7 @@ package viewer {
                mInfosPanel.x = 0.5 * (mViewerWidth - bounds.width) + bounds.x;
                mInfosPanel.y = mViewerHeight - bounds.height - 3 + bounds.y;
                
-               //GraphicsUtil.DrawRect (mInfosPanel, bounds.x, bounds.y, bounds.width, bounds.height, 0x0, 1, true, 0xFFFFFF);
+               GraphicsUtil.DrawRect (mInfosPanel, bounds.x, bounds.y, bounds.width, bounds.height, 0x0, 1, true, 0xFFFFFF);
             }
          }
       }

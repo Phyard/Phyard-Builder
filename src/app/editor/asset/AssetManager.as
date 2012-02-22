@@ -959,6 +959,8 @@ package editor.asset {
          
          removeChild (asset);
          addChildAt (asset, newIndex);
+         
+         NotifyModifiedForReferers ();
       }
       
       public function OnAssetCreated (asset:Asset):void

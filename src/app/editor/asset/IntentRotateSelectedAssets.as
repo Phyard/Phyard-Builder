@@ -34,6 +34,7 @@ package editor.asset {
             mFirstTime = false;
          }
          
+         var startAngle:Number = Math.atan2 (mStartY - mCenterY, mStartX - mCenterX);
          var lastAngle:Number = Math.atan2 (mLastY - mCenterY, mLastX - mCenterX);
          var currentAngle:Number = Math.atan2 (mCurrentY - mCenterY, mCurrentX - mCenterX);
          
@@ -43,6 +44,7 @@ package editor.asset {
          if (currentAngle != lastAngle)
          {
             mAssetManagerPanel.RotateSelectedAssets (mCenterX, mCenterY, currentAngle - lastAngle, mRotatePosition, mRotateSelf, false);
+            mAssetManagerPanel.RepositionScaleRotateFlipHandlers (1.0, currentAngle - startAngle);
          }
          
          super.Process (finished);
@@ -51,6 +53,7 @@ package editor.asset {
       override protected function TerminateInternal (passively:Boolean):void
       {
          mAssetManagerPanel.RotateSelectedAssets (mCenterX, mCenterY, 0, mRotatePosition, mRotateSelf, true);
+         mAssetManagerPanel.RepositionScaleRotateFlipHandlers (1.0, 0.0);
          
          super.TerminateInternal (passively);
       }

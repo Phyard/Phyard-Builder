@@ -1,4 +1,3 @@
-
 package editor.image.dialog {
    import flash.display.Sprite;
    import flash.display.DisplayObject;
@@ -44,6 +43,7 @@ package editor.image.dialog {
    import editor.asset.IntentTaps;
    
    import editor.image.AssetImageModule;
+   import editor.image.AssetImageBitmapModule;
    import editor.image.AssetImageCompositeModule;
    import editor.image.AssetImageModuleInstance;
    import editor.image.AssetImageModuleInstanceManager;
@@ -371,6 +371,7 @@ package editor.image.dialog {
       public var mCheckBoxShowBody:CheckBox;
       public var mNumericStepperBodyOpacity:NumericStepper;
       public var mColorPickerBodyColor:ColorPicker;
+      public var mButtonPickTextureModule:Button;
       
       public var mCheckBoxBuildBorder:CheckBox;
       public var mCheckBoxShowBorder:CheckBox;
@@ -447,6 +448,8 @@ package editor.image.dialog {
                }
                else if (vectorShape is VectorShapeArea)
                {
+                  mFormOtherPropertySettings.addChild (mButtonPickTextureModule.parent);
+                  
                   var areaVectorShape:VectorShapeArea = vectorShape as VectorShapeArea;
                
                   mFormOtherPropertySettings.addChild (mCheckBoxBuildBorder.parent);
@@ -473,6 +476,9 @@ package editor.image.dialog {
                      mFormOtherPropertySettings.addChild (mTextInputRectWidth.parent);
                      mFormOtherPropertySettings.addChild (mTextInputRectHeight.parent);
                   }
+                  
+                  // texture
+                  
                }
             }
             else // module ref, or AssetImageNullModule
@@ -512,6 +518,7 @@ package editor.image.dialog {
             mCheckBoxVisible.enabled = true; mCheckBoxVisible.selected = moudleInstance.IsVisible ();
             
             var imageModule:AssetImageModule = moudleInstance.GetAssetImageModule ();
+            var shapeBodyTexutureModule:AssetImageBitmapModule = moudleInstance.GetBodyTextureModule ();
 
             mFormOtherPropertySettings.enabled = true;
             
@@ -540,6 +547,8 @@ package editor.image.dialog {
                }
                else if (vectorShape is VectorShapeArea)
                {
+                  mButtonPickTextureModule.label = shapeBodyTexutureModule == null ? "Null" : shapeBodyTexutureModule.ToCodeString ();
+                  
                   var areaVectorShape:VectorShapeArea = vectorShape as VectorShapeArea;
                   
                   mCheckBoxBuildBorder.selected = areaVectorShape.IsBuildBorder ();
@@ -615,6 +624,29 @@ package editor.image.dialog {
             var moduleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.GetSelectedAssets ()[0] as AssetImageModuleInstance;
             
             moduleInstance.RebuildFromModule (module);
+         }
+      }
+      
+      public function ChangeTextureModuleForCurrentShapeModuleInstacne (asset:Asset):void
+      {
+         var bitmapModule:AssetImageBitmapModule = asset as AssetImageBitmapModule;
+         
+         var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
+         
+         if (mAssetImageModuleInstanceManager.GetNumSelectedAssets () == 1)
+         {
+            var moduleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManager.GetSelectedAssets ()[0] as AssetImageModuleInstance;
+            if (moduleInstance.SetBodyTextureModule (bitmapModule))
+            {
+               moduleInstance.UpdateAppearance ();
+               //moduleInstance.UpdateSelectionProxy ();
+               //moduleInstance.UpdateControlPoints ();
+               
+               moduleInstance.NotifyModifiedForReferers ();
+               //UpdateInterface ();
+               
+               UpdateInterface ();
+            }
          }
       }
       

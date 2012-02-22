@@ -129,7 +129,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetLength,               SetArrayLength);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_RemoveElements,               RemoveArrayElements);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_InsertElements,               InsertArrayElements);
-         RegisterCoreFunction (CoreFunctionIds.ID_Array_Concat,                  ConcatArrays);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_Concat,                       ConcatArrays);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SwapElements,                SwapArrayElements);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_Reverse,                     ReverseArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithBoolean,     SetArrayElementWithBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsBoolean,       GetArrayElementAsBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithNumber,     SetArrayElementWithNumber);
@@ -233,6 +235,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelSteps,                    GetLevelSteps);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetMousePosition,                 GetWorldMousePosition);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsMouseButtonHold,                IsMouseButtonHold);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetNumEntitiesPlacedInEditor,     GetNumEntitiesPlacedInEditor);
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelStatus,                   SetLevelStatus);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelSuccessed,                 IsLevelSuccessed);
@@ -1271,36 +1274,36 @@ package player.trigger {
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
 
-         if (array != null)
+         if (array == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         //var index:int = valueSource.EvaluateValueObject () as int;
+         var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
+
+         valueSource = valueSource.mNextParameter;
+         var num:int = int (valueSource.EvaluateValueObject ()); // from v1.56
+
+         if (num <= 0)
+            return;
+
+         if (toRemove)
          {
-            valueSource = valueSource.mNextParameter;
-            //var index:int = valueSource.EvaluateValueObject () as int;
-            var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
-
-            valueSource = valueSource.mNextParameter;
-            var num:int = int (valueSource.EvaluateValueObject ()); // from v1.56
-
-            if (num <= 0)
-               return;
-
-            if (toRemove)
+            if (index >= 0 && index < array.length)
             {
-               if (index >= 0 && index < array.length)
-               {
-                  array.splice (index, num);
-               }
+               array.splice (index, num);
             }
-            else
-            {
-               if (index < 0)
-                  index = 0;
-               if (index > array.length)
-                  index = array.length;
+         }
+         else
+         {
+            if (index < 0)
+               index = 0;
+            if (index > array.length)
+               index = array.length;
 
-               while (-- num >= 0)
-               {
-                  array.splice (index, 0, undefined);
-               }
+            while (-- num >= 0)
+            {
+               array.splice (index, 0, undefined);
             }
          }
       }
@@ -1329,6 +1332,41 @@ package player.trigger {
          }
 
          valueTarget.AssignValueObject (resultArray);
+      }
+
+      private static function SwapArrayElements (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array:Array = valueSource.EvaluateValueObject () as Array;
+
+         if (array == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         //var index:int = valueSource.EvaluateValueObject () as int;
+         var index1:int = int (valueSource.EvaluateValueObject ()); // from v1.56
+
+         if (index1 < 0 || index1 > array.length)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var index2:int = int (valueSource.EvaluateValueObject ()); // from v1.56
+
+         if (index2 < 0 || index2 > array.length)
+            return;
+
+         var temp:Object = array [index1];
+         array [index1] = array [index2];
+         array [index2] = temp;
+      }
+
+      private static function ReverseArray (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array:Array = valueSource.EvaluateValueObject () as Array;
+
+         if (array != null)
+         {
+            array.reverse ();
+         }
       }
 
       private static function SetArrayElementWithSpecfiedClass (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void
@@ -2038,6 +2076,11 @@ package player.trigger {
 
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentMouseY ());
+      }
+
+      public static function GetNumEntitiesPlacedInEditor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetNumEntitiesInEditor ());
       }
 
       public static function SetLevelStatus (valueSource:Parameter, valueTarget:Parameter):void

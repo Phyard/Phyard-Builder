@@ -12,12 +12,14 @@ package editor.image.vector
    
    import editor.selection.SelectionProxy;
    
-   import common.shape.VectorShapeRectangle;
-   import common.shape.VectorShapeText;
-   
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
    import editor.asset.ControlPointModifyResult;
+   
+   import editor.image.AssetImageBitmapModule;
+   
+   import common.shape.VectorShapeRectangle;
+   import common.shape.VectorShapeText;
    
    import common.Transform2D;
    
@@ -26,6 +28,17 @@ package editor.image.vector
       public function OnCreating (points:Array):Point
       {
          return VectorShapeRectangleForEditing.OnCreatingRectangle (this, points);
+      }
+      
+      //protected var mBodyTextureModule:AssetImageBitmapModule = null;
+      public function GetBodyTextureModule ():AssetImageBitmapModule
+      {
+         return null; //mBodyTextureModule;
+      }
+      
+      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void
+      {
+         //mBodyTextureModule = bitmapModule;
       }
       
       public function CreateSprite ():DisplayObject

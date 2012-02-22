@@ -11,6 +11,8 @@ package editor.image.vector
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
    import editor.asset.ControlPointModifyResult;
+   
+   import editor.image.AssetImageBitmapModule;
 
    import common.shape.VectorShapePolygon;
    import common.shape.VectorShapePolyline;
@@ -61,6 +63,17 @@ package editor.image.vector
          SetValid (numPoints >= 2);
 
          return new Point (centerX, centerY);
+      }
+      
+      protected var mBodyTextureModule:AssetImageBitmapModule = null;
+      public function GetBodyTextureModule ():AssetImageBitmapModule
+      {
+         return mBodyTextureModule;
+      }
+      
+      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void
+      {
+         mBodyTextureModule = bitmapModule;
       }
 
       public function CreateSprite ():DisplayObject

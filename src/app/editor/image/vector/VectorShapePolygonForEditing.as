@@ -11,6 +11,8 @@ package editor.image.vector
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
    import editor.asset.ControlPointModifyResult;
+   
+   import editor.image.AssetImageBitmapModule;
 
    import common.shape.VectorShapePolygon;
 
@@ -89,6 +91,17 @@ package editor.image.vector
 
          return new Point (centerX, centerY);
       }
+      
+      protected var mBodyTextureModule:AssetImageBitmapModule = null;
+      public function GetBodyTextureModule ():AssetImageBitmapModule
+      {
+         return mBodyTextureModule;
+      }
+      
+      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void
+      {
+         mBodyTextureModule = bitmapModule;
+      }
 
       public function CreateSprite ():DisplayObject
       {
@@ -121,7 +134,8 @@ package editor.image.vector
          }
          else if (numVertexes >= 3)
          {
-            GraphicsUtil.ClearAndDrawPolygon (polygonSprite, vertexPoints, borderColor, borderThickness, drawBg, filledColor);
+            GraphicsUtil.ClearAndDrawPolygon (polygonSprite, vertexPoints, borderColor, borderThickness, drawBg, filledColor, 
+                                              mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData ());
          }
 
          return polygonSprite;

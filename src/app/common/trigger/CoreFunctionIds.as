@@ -101,7 +101,9 @@ package common.trigger {
       public static const ID_Array_SetLength:int                = IdPool.CoreApiId_99; // v1.54
       public static const ID_Array_RemoveElements:int                = IdPool.CoreApiId_100; // v1.54
       public static const ID_Array_InsertElements:int                = IdPool.CoreApiId_102; // v1.56
-      public static const ID_Array_Concat:int                = IdPool.CoreApiId_79; // v1.57
+      public static const ID_Array_Concat:int                  = IdPool.CoreApiId_79; // v1.57
+      public static const ID_Array_SwapElements:int          = IdPool.CoreApiId_103; // v1.59
+      public static const ID_Array_Reverse:int               = IdPool.CoreApiId_104; // v1.59
       public static const ID_Array_SetElementWithBoolean:int     = IdPool.CoreApiId_87; // v1.54
       public static const ID_Array_GetElementAsBoolean:int       = IdPool.CoreApiId_88; // v1.54
       public static const ID_Array_SetElementWithNumber:int      = IdPool.CoreApiId_89; // v1.54
@@ -217,6 +219,7 @@ package common.trigger {
       public static const ID_Design_GetLevelMilliseconds:int                    = IdPool.CoreApiId_600;
       public static const ID_Design_GetLevelSteps:int                           = IdPool.CoreApiId_601;
       public static const ID_Design_GetMousePosition:int                        = IdPool.CoreApiId_602;
+      public static const ID_Design_GetNumEntitiesPlacedInEditor:int            = IdPool.CoreApiId_604;
 
       public static const ID_Design_SetLevelStatus:int                           = IdPool.CoreApiId_609;
       public static const ID_Design_IsLevelSuccessed:int                         = IdPool.CoreApiId_610;

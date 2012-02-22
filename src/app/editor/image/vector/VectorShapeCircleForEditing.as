@@ -11,6 +11,8 @@ package editor.image.vector
    import editor.asset.Asset;
    import editor.asset.ControlPoint;
    import editor.asset.ControlPointModifyResult;
+   
+   import editor.image.AssetImageBitmapModule;
 
    import common.shape.VectorShapeCircle;
 
@@ -40,6 +42,17 @@ package editor.image.vector
 
          return new Point (posX, posY);
       }
+      
+      protected var mBodyTextureModule:AssetImageBitmapModule = null;
+      public function GetBodyTextureModule ():AssetImageBitmapModule
+      {
+         return mBodyTextureModule;
+      }
+      
+      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void
+      {
+         mBodyTextureModule = bitmapModule;
+      }
 
       public function CreateSprite ():DisplayObject
       {
@@ -59,7 +72,8 @@ package editor.image.vector
 
          var circleSprite:Shape = new Shape ();
          GraphicsUtil.ClearAndDrawCircle (circleSprite, 0, 0, visualRadius, borderColor,
-                                                            borderThickness, drawBg, filledColor);
+                                                            borderThickness, drawBg, filledColor, 
+                                                            mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData ());
 
          return circleSprite;
       }

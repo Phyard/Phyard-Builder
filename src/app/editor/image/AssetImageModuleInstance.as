@@ -35,6 +35,8 @@ package editor.image {
    
    import editor.image.vector.VectorShapeForEditing;
    
+   import common.shape.*;
+   
    import common.Transform2D;
    
    import common.Define;
@@ -81,16 +83,21 @@ package editor.image {
          if (! mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().CanRefImageModule (assetImageModule))
             return false;
          
-         if (mReferPair != null)
+         if (mReferPair_Module != null)
          {
-            mReferPair.Break ();
+            mReferPair_Module.Break ();
             mAssetImageModule = null;
          }
+         
+         SetBodyTextureModule (null);
+         
+         if (assetImageModule == null)
+            assetImageModule = new AssetImageNullModule ();
          
          if (assetImageModule != null)
          {
             mAssetImageModule = assetImageModule;
-            mReferPair = ReferObject (mAssetImageModule);
+            mReferPair_Module = ReferObject (mAssetImageModule);
          }
          
          if (mAssetImageModuleInstanceForListingPeer != null) // if this function is called in constructor 
@@ -114,17 +121,81 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
+
+      public function GetBodyTextureModule ():AssetImageBitmapModule
+      {
+         if (mAssetImageModule is AssetImageShapeModule)
+         {  
+            var vectorShape:VectorShapeForEditing = (mAssetImageModule as AssetImageShapeModule).GetVectorShape () as VectorShapeForEditing;
+            
+            //if (vectorShape is VectorShapePath)
+            //{
+            //}
+            //else 
+            if (vectorShape is VectorShapeArea)
+            {
+               return vectorShape.GetBodyTextureModule ();
+            }
+         }
+         
+         return null;
+      }
+
+      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):Boolean
+      {
+         if (mAssetImageModule is AssetImageShapeModule)
+         {  
+            var vectorShape:VectorShapeForEditing = (mAssetImageModule as AssetImageShapeModule).GetVectorShape () as VectorShapeForEditing;
+                   // is also a  
+            
+            //if (vectorShape is VectorShapePath)
+            //{
+            //}
+            //else 
+            if (vectorShape is VectorShapeArea)
+            {
+               if (mReferPair_ShapeBodyTexture != null)
+               {
+                  mReferPair_ShapeBodyTexture.Break ();
+                  mReferPair_ShapeBodyTexture = null;
+               }
+               
+               vectorShape.SetBodyTextureModule (bitmapModule);
+               
+               if (bitmapModule != null)
+               {
+                  mReferPair_ShapeBodyTexture = ReferObject (bitmapModule);
+               }
+               
+               return true;
+            }
+         }
+         
+         return false;
+      }
       
-      private var mReferPair:ReferPair;
+//=============================================================
+//   
+//=============================================================
+      
+      private var mReferPair_Module:ReferPair;
+      private var mReferPair_ShapeBodyTexture:ReferPair;
       
       override public function OnReferingModified (referPair:ReferPair, info:Object = null):void
       {
          super.OnReferingModified (referPair, info);
          
-         if (referPair == mReferPair)
+         if (referPair == mReferPair_Module)
          {
             UpdateAppearance ();
             UpdateSelectionProxy ();
+            
+            //NotifyModifiedForReferers
+            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+         }
+         else if (referPair == mReferPair_ShapeBodyTexture)
+         {
+            UpdateAppearance ();
             
             //NotifyModifiedForReferers
             mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
@@ -135,11 +206,18 @@ package editor.image {
       {
          super.OnReferingDestroyed (referPair);
          
-         if (referPair == mReferPair)
+         if (referPair == mReferPair_Module)
          {
             mAssetImageModuleInstanceManager.DestroyAsset (this);
-            mReferPair = null;
+            mReferPair_Module = null;
             mAssetImageModule = null;
+            
+            //NotifyModifiedForReferers
+            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+         }
+         else if (referPair == mReferPair_ShapeBodyTexture)
+         {
+            SetBodyTextureModule (null);
             
             //NotifyModifiedForReferers
             mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
@@ -405,6 +483,7 @@ package editor.image {
             
             UpdateAppearance ();
             UpdateSelectionProxy ();
+            RebuildControlPoints ();
             
             NotifyModifiedForReferers ();
          }

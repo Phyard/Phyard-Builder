@@ -631,48 +631,78 @@ package editor.asset {
             mScaleRotateFlipHandlersContainer = new Sprite ();
             mForegroundLayer.addChild (mScaleRotateFlipHandlersContainer);
             
+            var handlersBaseCircle:Sprite = new Sprite ();
             var rotateBothHandler:Sprite = new Sprite ();
             var rotateSelfHandler:Sprite = new Sprite ();
             var rotatePosHandler:Sprite = new Sprite ();
             var scaleBothHandler:Sprite = new Sprite ();
             var scaleSelfHandler:Sprite = new Sprite ();
             var scalePosHandler:Sprite = new Sprite ();
-            var flipBothHandler:Sprite = new Sprite ();
-            var flipSelfHandler:Sprite = new Sprite ();
+            var flipHorizontallyHandler:Sprite = new Sprite ();
+            var flipVerticallyHandler:Sprite = new Sprite ();
+            var crossingShape:Shape = new Shape ();
             
+            mScaleRotateFlipHandlersContainer.addChild (handlersBaseCircle);
             mScaleRotateFlipHandlersContainer.addChild (rotateBothHandler);
             mScaleRotateFlipHandlersContainer.addChild (scaleBothHandler);
-            mScaleRotateFlipHandlersContainer.addChild (flipBothHandler);
+            mScaleRotateFlipHandlersContainer.addChild (flipHorizontallyHandler);
             mScaleRotateFlipHandlersContainer.addChild (rotateSelfHandler);
             mScaleRotateFlipHandlersContainer.addChild (scaleSelfHandler);
             mScaleRotateFlipHandlersContainer.addChild (rotatePosHandler);
-            mScaleRotateFlipHandlersContainer.addChild (flipSelfHandler);
+            mScaleRotateFlipHandlersContainer.addChild (flipVerticallyHandler);
             mScaleRotateFlipHandlersContainer.addChild (scalePosHandler);
+            mScaleRotateFlipHandlersContainer.addChild (crossingShape);
             
+            handlersBaseCircle.addEventListener (MouseEvent.MOUSE_DOWN, OnStartMoveScaleRotateFlipHandlers);
             rotateBothHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartRotateSelecteds);
             rotateSelfHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartRotateSelectedSelves);
             rotatePosHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartRotateSelectedPositions);
             scaleBothHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelecteds);
             scaleSelfHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelectedSelves);
             scalePosHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnStartScaleSelectedPositions);
-            flipBothHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelecteds);
-            flipSelfHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelectedsSelves);
+            flipHorizontallyHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelecteds);
+            flipVerticallyHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelectedsVertically);
+            
+            var contextMenuFlipHorizontally:ContextMenu = new ContextMenu ();
+            contextMenuFlipHorizontally.hideBuiltInItems ();
+            contextMenuFlipHorizontally.builtInItems.print = true;
+            flipHorizontallyHandler.contextMenu = contextMenuFlipHorizontally;
+            var menuItemFlipSelectedsPositionsOnly:ContextMenuItem = new ContextMenuItem("Horizontal-Flip Selected Entities (Positions Only)");
+            menuItemFlipSelectedsPositionsOnly.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelecteds_PositionsOnly);
+            contextMenuFlipHorizontally.customItems.push (menuItemFlipSelectedsPositionsOnly);
+            var menuItemFlipSelectedsWioutPositions:ContextMenuItem = new ContextMenuItem("Horizontal-Flip Selected Entities (Without Flipping Positions)");
+            menuItemFlipSelectedsWioutPositions.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelecteds_WioutPositions);
+            contextMenuFlipHorizontally.customItems.push (menuItemFlipSelectedsWioutPositions);
+            
+            var contextMenuFlipVertically:ContextMenu = new ContextMenu ();
+            contextMenuFlipVertically.hideBuiltInItems ();
+            contextMenuFlipVertically.builtInItems.print = true;
+            flipVerticallyHandler.contextMenu = contextMenuFlipVertically;
+            var menuItemFlipSelectedsPositionsOnlyVertically:ContextMenuItem = new ContextMenuItem("Vertical-Flip Selected Entities (Positions Only)");
+            menuItemFlipSelectedsPositionsOnlyVertically.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelectedsVertically_PositionsOnly);
+            contextMenuFlipVertically.customItems.push (menuItemFlipSelectedsPositionsOnlyVertically);
+            var menuItemFlipSelectedsWioutPositionsVertically:ContextMenuItem = new ContextMenuItem("Vertical-Flip Selected Entities (Without Flipping Positions)");
+            menuItemFlipSelectedsWioutPositionsVertically.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelectedsVertically_WioutPositions);
+            contextMenuFlipVertically.customItems.push (menuItemFlipSelectedsWioutPositionsVertically);
             
             var halfHandlerSize:Number = 6;
+            var handlerRadius:Number = halfHandlerSize * 1.2;
             var handlerSize:Number = halfHandlerSize + halfHandlerSize;
             
-            GraphicsUtil.ClearAndDrawCircle (rotateBothHandler, 0, 0, halfHandlerSize, 0x0, 0, true, 0x0000FF);
-            GraphicsUtil.ClearAndDrawCircle (rotateSelfHandler, 0, 0, halfHandlerSize, 0x0, 0, true, 0x00FF00);
-            GraphicsUtil.ClearAndDrawCircle (rotatePosHandler, 0, 0, halfHandlerSize, 0x0, 0, true, 0xFF0000);
+            GraphicsUtil.ClearAndDrawCircle (rotateBothHandler, 0, 0, handlerRadius, 0x0, 0, true, 0x0000FF);
+            GraphicsUtil.ClearAndDrawCircle (rotateSelfHandler, 0, 0, handlerRadius, 0x0, 0, true, 0x00FF00);
+            GraphicsUtil.ClearAndDrawCircle (rotatePosHandler, 0, 0, handlerRadius, 0x0, 0, true, 0xFF0000);
             GraphicsUtil.ClearAndDrawRect (scaleBothHandler, -halfHandlerSize, -3, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);
             GraphicsUtil.ClearAndDrawRect (scaleSelfHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x00FF00, false);
             GraphicsUtil.ClearAndDrawRect (scalePosHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF0000, false);
-            GraphicsUtil.ClearAndDrawRect (flipBothHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);
-               GraphicsUtil.DrawLine (flipBothHandler, -halfHandlerSize, -halfHandlerSize, halfHandlerSize, halfHandlerSize, 0xFFFFFF, 0);
-            GraphicsUtil.ClearAndDrawRect (flipSelfHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF9900, false);
-               GraphicsUtil.DrawLine (flipSelfHandler, -halfHandlerSize, -halfHandlerSize, halfHandlerSize, halfHandlerSize, 0xFFFFFF, 0);
-            flipBothHandler.rotation = 45;
-            flipSelfHandler.rotation = 45;
+            GraphicsUtil.ClearAndDrawRect (flipHorizontallyHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);
+               GraphicsUtil.DrawLine (flipHorizontallyHandler, -halfHandlerSize, -halfHandlerSize, halfHandlerSize, halfHandlerSize, 0xFFFFFF, 0);
+            GraphicsUtil.ClearAndDrawRect (flipVerticallyHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF9900, false);
+               GraphicsUtil.DrawLine (flipVerticallyHandler, -halfHandlerSize, -halfHandlerSize, halfHandlerSize, halfHandlerSize, 0xFFFFFF, 0);
+            flipHorizontallyHandler.rotation = 45;
+            flipVerticallyHandler.rotation = 135;
+            GraphicsUtil.ClearAndDrawLine (crossingShape, 0, -5, 0, 5, 0x008000, 0);
+            GraphicsUtil.DrawLine (crossingShape, -5, 0, 5, 0, 0x008000, 0);
          }
          
          mScaleRotateFlipHandlersContainer.visible = isVisible;
@@ -680,7 +710,7 @@ package editor.asset {
             return;
          
          RepositionScaleRotateFlipHandlersContainer ();
-         RepositionScaleRotateFlipHandlers (ScaleRotateFlipCircleRadius, 0);
+         RepositionScaleRotateFlipHandlers (1.0, 0);
       }
       
       protected function RepositionScaleRotateFlipHandlersContainer ():void
@@ -715,18 +745,31 @@ package editor.asset {
          mScaleRotateFlipHandlersContainer.y = panelPoint.y;
       }
       
-      protected function RepositionScaleRotateFlipHandlers (radius:Number, rotationDegrees:Number):void
+      public function RepositionScaleRotateFlipHandlers (radiusScale:Number, rotationRadians:Number):void
       {
-         GraphicsUtil.ClearAndDrawCircle (mScaleRotateFlipHandlersContainer, 0, 0, radius, 0xC0FFC0, 5, false);
-         var rotationRadians:Number = rotationDegrees * Math.PI / 180.0;
+         var radius:Number = ScaleRotateFlipCircleRadius * radiusScale;
+         var handlersBaseCircle:Sprite = mScaleRotateFlipHandlersContainer.getChildAt (0) as Sprite;
+         GraphicsUtil.ClearAndDrawCircle (handlersBaseCircle, 0, 0, radius, 0xC0FFC0, 8, false);
          var deltaRadians:Number = 0.25 * Math.PI;
-         for (var i:int = 0; i < mScaleRotateFlipHandlersContainer.numChildren; ++ i)
+         for (var i:int = 1; i <= 8; ++ i)
          {
             var displayObject:DisplayObject = mScaleRotateFlipHandlersContainer.getChildAt (i);
             displayObject.x = radius * Math.cos (rotationRadians);
             displayObject.y = radius * Math.sin (rotationRadians);
             rotationRadians += deltaRadians;
          }
+      }
+      
+      protected function OnStartMoveScaleRotateFlipHandlers(event:MouseEvent):void
+      {
+         SetCurrentIntent (new IntentMovemScaleRotateFlipHandlers (this));
+         mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+      }
+      
+      public function MoveScaleRotateFlipHandlers (dx:Number, dy:Number):void
+      {
+         mScaleRotateFlipHandlersContainer.x += dx;
+         mScaleRotateFlipHandlersContainer.y += dy;
       }
       
       protected function OnStartRotateSelecteds(event:MouseEvent):void
@@ -773,16 +816,48 @@ package editor.asset {
       
       protected function OnFlipSelecteds(event:MouseEvent):void
       {
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y + ScaleRotateFlipCircleRadius));
-         SetCurrentIntent (new IntentFlipSelectedAssets (this, managerPoint.x, managerPoint.y, true, true));
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var handlerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y + ScaleRotateFlipCircleRadius));
+         SetCurrentIntent (new IntentFlipSelectedAssets (this, managerPoint.x, managerPoint.y, handlerPoint.y, true, true, false));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
-      protected function OnFlipSelectedsSelves(event:MouseEvent):void
+      protected function OnFlipSelectedsVertically(event:MouseEvent):void
       {
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y - ScaleRotateFlipCircleRadius));
-         SetCurrentIntent (new IntentFlipSelectedAssets (this, managerPoint.x, managerPoint.y, false, true));
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var handlerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y - ScaleRotateFlipCircleRadius));
+         SetCurrentIntent (new IntentFlipSelectedAssets (this, managerPoint.x, managerPoint.y, handlerPoint.y, true, true, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+      }
+      
+      private function OnFlipSelecteds_PositionsOnly (event:ContextMenuEvent):void
+      {
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         FlipSelectedAssets (managerPoint.x, true, false, true);
+      }
+      
+      private function OnFlipSelecteds_WioutPositions (event:ContextMenuEvent):void
+      {
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         FlipSelectedAssets (managerPoint.x, false, true, true);
+      }
+      
+      private function OnFlipSelectedsVertically_PositionsOnly (event:ContextMenuEvent):void
+      {
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         RotateSelectedAssets (managerPoint.x, managerPoint.y, Math.PI, true, false, false);
+         FlipSelectedAssets (managerPoint.x, true, false, true);
+      }
+      
+      private function OnFlipSelectedsVertically_WioutPositions (event:ContextMenuEvent):void
+      {
+         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         RotateSelectedAssets (managerPoint.x, managerPoint.y, Math.PI, false, true, false);
+         FlipSelectedAssets (managerPoint.x, false, true, true);
       }
       
 //=================================================================================

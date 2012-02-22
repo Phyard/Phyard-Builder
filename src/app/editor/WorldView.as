@@ -1788,7 +1788,8 @@ package editor {
          var viewportWidth:int = mEditorWorld.GetViewportWidth ();
          var viewportHeight:int = mEditorWorld.GetViewportHeight ();
          
-         if ((viewerUiFlags & Define.PlayerUiFlag_ShowPlayBar) != 0)
+         //if ((viewerUiFlags & Define.PlayerUiFlag_UseDefaultSkin) != 0)
+         if ((viewerUiFlags & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin)
          {
             return new Point (viewportWidth, viewportHeight + Define.DefaultPlayerSkinPlayBarHeight);
          }
@@ -2628,7 +2629,8 @@ package editor {
             // ...
             var width:int = mEditorWorld.GetViewportWidth ();
             var height:int = mEditorWorld.GetViewportHeight ();
-            var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+            //var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+            var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
             var heightWithPlayBar:int = (showPlayBar ? height + Define.DefaultPlayerSkinPlayBarHeight : height);
             
             var fileFormatVersionString:String = DataFormat3.GetVersionHexString (Version.VersionNumber);
@@ -6177,7 +6179,8 @@ package editor {
          
          var viewportWidth:int = mEditorWorld.GetViewportWidth ();
          var viewportHeight:int = mEditorWorld.GetViewportHeight ();
-         var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+         //var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+         var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
          var heightWithPlayBar:int = (showPlayBar ? viewportHeight + Define.DefaultPlayerSkinPlayBarHeight : viewportHeight);
 
          var levelData:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
@@ -6276,7 +6279,8 @@ package editor {
          var shareSourceCode:Boolean = mEditorWorld.IsShareSourceCode ();
          designDataAll.writeShort (mEditorWorld.GetViewportWidth ()); // view width
          designDataAll.writeShort (mEditorWorld.GetViewportHeight ()); // view height
-         designDataAll.writeByte  ((mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
+         //designDataAll.writeByte  ((mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
+         designDataAll.writeByte  ((mEditorWorld.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin ? 1 : 0);
          designDataAll.writeByte  (shareSourceCode ? 1 : 0); // share source code?
          //<<
          

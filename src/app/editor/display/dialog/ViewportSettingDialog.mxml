@@ -10,28 +10,47 @@
       <mx:Spacer width="100%"/>
          <mx:VBox width="100%">
             <mx:HBox width="100%" verticalAlign="middle">
-               <mx:CheckBox id="CheckBox_ShowPlayBar" label="Show Play Bar" click="OnShowPlayBarClick ()"/>
+               <mx:CheckBox id="CheckBox_ShowPlayBar" label="Use Default Skin" click="OnShowPlayBarClick ()"/>
             </mx:HBox>
             <mx:VBox id="Box_PlayBarOptions" width="100%">
                <mx:HBox width="100%">
                   <mx:HBox width="50%" horizontalAlign="left">
-                     <mx:Spacer width="30"/>
-                     <mx:Label text="Background Color:" />
-                     <mx:ColorPicker id="ColorPicker_PlayBarColor" showTextField="true" selectedColor="0x606060"/>
+                     <mx:Spacer width="16"/>
+                     <mx:CheckBox id="CheckBox_ShowSpeedAdjustor" label="Show Speed Adjustor  "/>
+                  </mx:HBox>
+                  <mx:HBox horizontalAlign="left">
+                     <mx:Spacer width="16"/>
+                     <mx:CheckBox id="CheckBox_ShowScaleAdjustor" label="Show Scale Adjustor"/>
+                  </mx:HBox>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:HBox horizontalAlign="left">
+                     <mx:Spacer width="16"/>
+                     <mx:CheckBox id="CheckBox_ShowSoundController" label="Show Sound Controller"/>
                   </mx:HBox>
                   <mx:HBox width="50%" horizontalAlign="left">
-                     <mx:Spacer width="30"/>
-                     <mx:CheckBox id="CheckBox_ShowSpeedAdjustor" label="Show Speed Adjustor"/>
+                     <mx:Spacer width="16"/>
+                     <mx:CheckBox id="CheckBox_ShowHelpButton" label="Show Help Button"/>
+                  </mx:HBox>
+               </mx:HBox>
+               <mx:RadioButtonGroup id="RadioButtonGroup_SkinType" itemClick="OnSkinTypeRatioClick ()"/>
+               <mx:HBox width="100%">
+                  <mx:HBox width="50%" horizontalAlign="left">
+                     <mx:Spacer width="16"/>
+                     <mx:RadioButton groupName="RadioButtonGroup_SkinType" id="SkinType_Overlay" label="Use Overlay Skin"/>
+                  </mx:HBox>
+                  <mx:HBox horizontalAlign="left">
                   </mx:HBox>
                </mx:HBox>
                <mx:HBox width="100%">
                   <mx:HBox width="50%" horizontalAlign="left">
-                     <mx:Spacer width="30"/>
-                     <mx:CheckBox id="CheckBox_ShowScaleAdjustor" label="Show Scale Adjustor"/>
+                     <mx:Spacer width="16"/>
+                     <mx:RadioButton groupName="RadioButtonGroup_SkinType" id="SkinType_TopBar" label="Use Top Bar Skin"/>
                   </mx:HBox>
-                  <mx:HBox width="50%" horizontalAlign="left">
-                     <mx:Spacer width="30"/>
-                     <mx:CheckBox id="CheckBox_ShowHelpButton" label="Show Help Button"/>
+                  <mx:HBox id="Box_TopBarBackground" horizontalAlign="left">
+                     <mx:Spacer width="16"/>
+                     <mx:Label text="Background Color:" />
+                     <mx:ColorPicker id="ColorPicker_PlayBarColor" showTextField="true" selectedColor="0x606060"/>
                   </mx:HBox>
                </mx:HBox>
             </mx:VBox>
@@ -44,16 +63,16 @@
             <mx:RadioButtonGroup id="RadioButtonGroup_CustomSize" itemClick="OnCustomSizeRatioClick ()"/>
             <mx:HBox width="100%">
                <mx:HBox width="50%" horizontalAlign="left">
-                  <mx:Spacer width="30"/>
+                  <mx:Spacer width="16"/>
                   <mx:RadioButton groupName="RadioButtonGroup_CustomSize" id="RadioButton_500x500" label="500x500"/>
                </mx:HBox>
                <mx:HBox width="50%" horizontalAlign="left">
-                  <mx:Spacer width="30"/>
+                  <mx:Spacer width="16"/>
                   <mx:RadioButton groupName="RadioButtonGroup_CustomSize" id="RadioButton_600x600" label="600x600"/>
                </mx:HBox>
             </mx:HBox>
             <mx:HBox width="100%" horizontalAlign="left">
-               <mx:Spacer width="30"/>
+               <mx:Spacer width="16"/>
                <mx:RadioButton groupName="RadioButtonGroup_CustomSize" id="RadioButton_CustomSize" label="Custom Size:"/>
                <mx:HBox id="Box_CustomSize" width="100%" horizontalAlign="left">
                   <mx:Spacer width="10"/>
@@ -63,8 +82,9 @@
                </mx:HBox>
             </mx:HBox>
             <mx:HBox id="RadioButton_CustomSizeHelp" width="100%" horizontalAlign="left">
-               <mx:Spacer width="50"/>
+               <mx:Spacer width="100%"/>
                <mx:Label text="(Max size is 1024x1024 and min size is 50x50)"/>
+               <mx:Spacer width="100%"/>
             </mx:HBox>
             <mx:HBox width="100%">
                <mx:HBox width="50%" horizontalAlign="left">
@@ -123,10 +143,14 @@
          {
             ColorPicker_PlayBarColor.selectedColor = mParams.mPlayBarColor;
 
-            CheckBox_ShowPlayBar.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowPlayBar) != 0;
+            CheckBox_ShowPlayBar.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseDefaultSkin) != 0;
             CheckBox_ShowSpeedAdjustor.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0;
             CheckBox_ShowScaleAdjustor.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowScaleAdjustor) != 0;
             CheckBox_ShowHelpButton.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowHelpButton) != 0;
+            CheckBox_ShowSoundController.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowSoundController) != 0;
+            SkinType_Overlay.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseOverlaySkin) != 0;
+            SkinType_TopBar.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseOverlaySkin) == 0;
+            
             CheckBox_AnyViewportSize.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_AdaptiveViewportSize) != 0;
 
             var width:int = mParams.mViewportWidth;
@@ -155,6 +179,7 @@
             RadioButton_EnableCameraRotatingNo.selected = (! mParams.mCameraRotatingEnabled);
 
             OnShowPlayBarClick ();
+            OnSkinTypeRatioClick ();
             OnCustomSizeRatioClick ();
          }
 
@@ -173,6 +198,11 @@
             Box_PlayBarOptions.enabled = CheckBox_ShowPlayBar.selected;
          }
 
+         private function OnSkinTypeRatioClick ():void
+         {
+            Box_TopBarBackground.enabled = SkinType_TopBar.selected;
+         }
+
          private function OnCustomSizeRatioClick ():void
          {
             Box_CustomSize.enabled = RadioButton_CustomSize.selected;
@@ -183,11 +213,13 @@
          {
             mParams.mPlayBarColor = ColorPicker_PlayBarColor.selectedColor;
 
-            mParams.mViewerUiFlags = (CheckBox_ShowPlayBar.selected ? Define.PlayerUiFlag_ShowPlayBar : 0)
+            mParams.mViewerUiFlags = (CheckBox_ShowPlayBar.selected ? Define.PlayerUiFlag_UseDefaultSkin : 0)
                                     | (CheckBox_ShowSpeedAdjustor.selected ? Define.PlayerUiFlag_ShowSpeedAdjustor : 0)
                                     | (CheckBox_ShowScaleAdjustor.selected ? Define.PlayerUiFlag_ShowScaleAdjustor : 0)
+                                    | (CheckBox_ShowSoundController.selected ? Define.PlayerUiFlag_ShowSoundController : 0)
                                     | (CheckBox_ShowHelpButton.selected ? Define.PlayerUiFlag_ShowHelpButton : 0)
                                     | (CheckBox_AnyViewportSize.selected ? Define.PlayerUiFlag_AdaptiveViewportSize : 0)
+                                    | (SkinType_Overlay.selected ? Define.PlayerUiFlag_UseOverlaySkin : 0)
                                     ;
 
             // ...

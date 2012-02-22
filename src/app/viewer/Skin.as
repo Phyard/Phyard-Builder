@@ -311,9 +311,14 @@ package viewer {
       {
          // to override
       }
+      
+      public function OnDeactivate ():void
+      {
+         // to override
+      }
 
 //======================================================================
-//
+// for Viewer
 //======================================================================
       
       public function AreSomeDialogsVisible ():Boolean

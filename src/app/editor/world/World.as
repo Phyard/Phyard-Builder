@@ -234,11 +234,7 @@ package editor.world {
       //<<
 
       //>>1.51
-      private var mViewerUiFlags:int = Define.PlayerUiFlag_ShowPlayBar
-                                         | Define.PlayerUiFlag_ShowSpeedAdjustor
-                                         | Define.PlayerUiFlag_ShowScaleAdjustor
-                                         | Define.PlayerUiFlag_ShowHelpButton
-                                         ;
+      private var mViewerUiFlags:int = Define.DefaultPlayerUiFlags;
       private var mPlayBarColor:uint = 0x606060;
 
       private var mViewportWidth:int = Define.DefaultPlayerWidth;

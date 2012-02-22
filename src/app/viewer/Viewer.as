@@ -82,10 +82,12 @@ package viewer {
       private var mWorldSourceCode:String = null;
 
       private var mPlayerWorld:Object = null;
-         private var mPlayBarColor:uint;
          private var mShowPlayBar:Boolean;
+         private var mUseOverlaySkin:Boolean;
+         private var mPlayBarColor:uint;
          private var mShowSpeedAdjustor:Boolean;
          private var mShowScaleAdjustor:Boolean;
+         private var mShowSoundAdjustor:Boolean;
          private var mShowHelpButton:Boolean;
          private var mShowSoundController:Boolean;
          private var mAdaptiveViewportSize:Boolean;
@@ -726,12 +728,14 @@ package viewer {
          if (mWorldDesignProperties.mInitialSpeedX == undefined)             mWorldDesignProperties.mInitialSpeedX = 2;
          if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
 
+         mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
+         mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
          mPlayBarColor = mPlayerWorld == null ? 0x606060 : mWorldDesignProperties.GetPlayBarColor ();
-         mShowPlayBar = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
-         mShowSpeedAdjustor = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
-         mShowScaleAdjustor = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
-         mShowSoundController = mWorldDesignProperties.mHasSounds;
-         mShowHelpButton = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
+         mShowSpeedAdjustor = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
+         mShowScaleAdjustor = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
+         mShowSoundController = (mWorldDesignProperties.mHasSounds) && 
+                              (mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSoundController) != 0));
+         mShowHelpButton = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
          mAdaptiveViewportSize = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_AdaptiveViewportSize) != 0);
          mPreferredViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
          mPreferredViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
@@ -763,13 +767,17 @@ package viewer {
 
       private function DummyCallback_UiFlags ():int
       {
-         if (mWorldPluginProperties.mWorldVersion >= 0x0104)
+         if (mWorldPluginProperties.mWorldVersion >= 0x0159)
          {
-            return Define.PlayerUiFlag_ShowPlayBar | Define.PlayerUiFlag_ShowSpeedAdjustor | Define.PlayerUiFlag_ShowScaleAdjustor | Define.PlayerUiFlag_ShowHelpButton;
+            return Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_ShowSoundController | Define.PlayerUiFlag_UseOverlaySkin;
+         }
+         else if (mWorldPluginProperties.mWorldVersion >= 0x0104)
+         {
+            return Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_ShowSpeedAdjustor | Define.PlayerUiFlag_ShowScaleAdjustor | Define.PlayerUiFlag_ShowHelpButton;
          }
          else
          {
-            return Define.PlayerUiFlag_ShowPlayBar | Define.PlayerUiFlag_ShowSpeedAdjustor | Define.PlayerUiFlag_ShowHelpButton;
+            return Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_ShowSpeedAdjustor | Define.PlayerUiFlag_ShowHelpButton;
          }
       }
       
@@ -837,10 +845,8 @@ package viewer {
 
             RetrieveWorldDesignProperties ();
 
-            var hidePlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0;
-
-            mWorldDesignProperties.SetCacheSystemEvent (! hidePlayBar);
-            mWorldDesignProperties.SetInteractiveEnabledWhenPaused (hidePlayBar ||  mParamsFromEditor != null);
+            mWorldDesignProperties.SetCacheSystemEvent (mShowPlayBar);
+            mWorldDesignProperties.SetInteractiveEnabledWhenPaused ((! mShowPlayBar) ||  mParamsFromEditor != null);
 
             mWorldLayer.addChild (mPlayerWorld as Sprite);
 
@@ -912,6 +918,12 @@ package viewer {
             if (mFirstTimePlaying)
             {
                if (mStartRightNow) mSkin.SetPlaying (true);
+            }
+            
+            // ...
+            if (mParamsFromUniViewer != null && mFirstTimePlaying)
+            {
+               mSkin.OnDeactivate ();
             }
          }
          catch (error:Error)
@@ -1021,7 +1033,7 @@ package viewer {
 
       private function BuildSkin ():void
       {
-         var useOverlaySkin:Boolean = (mParamsFromContainer.skin != null && mParamsFromContainer.skin.toLowerCase () == "overlay");
+         var useOverlaySkinForcely:Boolean = (mParamsFromContainer.skin != null && mParamsFromContainer.skin.toLowerCase () == "overlay");
          
          // fot testing
          //useOverlaySkin = true;
@@ -1029,7 +1041,7 @@ package viewer {
          //   mIsPhoneDevice = true;
 
          var skinParams:Object = {
-                  mIsOverlay: useOverlaySkin,
+                  mIsOverlay: mUseOverlaySkin || useOverlaySkinForcely,
                   mIsTouchScreen: mIsTouchScreen,
                   mIsPhoneDevice: mIsPhoneDevice,
                   
@@ -1049,7 +1061,7 @@ package viewer {
 
          mSkin = new SkinDefault (skinParams);
          
-         mSkin.SetShowPlayBar ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
+         mSkin.SetShowPlayBar (mShowPlayBar);
          mSkinLayer.addChild (mSkin);
 
          // mask
@@ -1330,7 +1342,8 @@ package viewer {
          {
             var width:int = mWorldDesignProperties.GetViewportWidth ();
             var height:int = mWorldDesignProperties.GetViewportHeight ();
-            if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+            //if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+            if ((mWorldDesignProperties.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin)
                height += Define.DefaultPlayerSkinPlayBarHeight;
 
             var index:int = mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?");
@@ -1388,7 +1401,8 @@ package viewer {
             //{
             //   var width:int = mWorldDesignProperties.GetViewportWidth ();
             //   var height:int = mWorldDesignProperties.GetViewportHeight ();
-            //   if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+            //   //if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+            //   if ((mWorldDesignProperties.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin)
             //      height += 20;
             //
             //   var substr:String = "uniplayer.swf?";
@@ -1443,7 +1457,8 @@ package viewer {
                   // v1.00 has no GetVersion () in player.World (fixed now)
                   //var fileVersionHexString:String = DataFormat3.GetVersionHexString (mWorldPluginProperties.mWorldVersion);
 
-                  var showPlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+                  //var showPlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+                  var showPlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
                   var viewportWidth:int = mWorldDesignProperties.GetViewportWidth ();
                   var viewportHeight:int = mWorldDesignProperties.GetViewportHeight ();
 

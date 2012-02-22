@@ -23,11 +23,7 @@ public function ContentLayerToThis (point:Point):Point
 //
 //=====================================================================================
 
-private var mViewerUiFlags:int = Define.PlayerUiFlag_ShowPlayBar
-                               | Define.PlayerUiFlag_ShowSpeedAdjustor
-                               | Define.PlayerUiFlag_ShowScaleAdjustor
-                               | Define.PlayerUiFlag_ShowHelpButton
-                               ;
+private var mViewerUiFlags:int = Define.DefaultPlayerUiFlags;
 private var mPlayBarColor:uint = 0x606060;
 private var mPreferredViewportWidth:int = Define.DefaultPlayerWidth;
 private var mPreferredViewportHeight:int = Define.DefaultPlayerHeight;

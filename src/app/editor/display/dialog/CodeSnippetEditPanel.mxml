@@ -1151,7 +1151,7 @@
                AppendContextMenuItem (sprite, "from Direct Entity", isForTarget ? OnSelectValueSource_Direct_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_Direct_ForEntiryPropertyOwner, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
                if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
-                  AppendContextMenuItem (sprite, "from Input Entity Varialbe", isForTarget ? OnSelectValueSource_InputVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_InputVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
+                  AppendContextMenuItem (sprite, "from Input Entity Variable", isForTarget ? OnSelectValueSource_InputVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_InputVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
 
                AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
 
@@ -1172,7 +1172,7 @@
                AppendContextMenuItem (sprite, "from Direct Value", OnSelectValueSource_Direct, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
                if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
-                  AppendContextMenuItem (sprite, "from Input Varialbe", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
+                  AppendContextMenuItem (sprite, "from Input Variable", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
 
                if (! mIsDesignIndependentCustomFunction)
                {

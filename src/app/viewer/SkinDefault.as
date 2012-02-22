@@ -5,6 +5,7 @@ package viewer {
    import flash.display.Shape;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
+   import flash.text.TextField;
    
    import flash.geom.Point;
    import flash.geom.Rectangle;
@@ -34,6 +35,8 @@ package viewer {
       private var mHudLayer:Sprite = new Sprite ();
       private var mHelpDialogLayer:Sprite = new Sprite ();
       private var mLevelFinishedDialogLayer:Sprite = new Sprite ();
+      private var mDeactivatedLayer:Sprite = new Sprite ();
+      private var mInfosLayer:Sprite = new Sprite ();
       
       public function SkinDefault (params:Object)
       {
@@ -42,6 +45,11 @@ package viewer {
          addChild (mHelpDialogLayer);
          addChild (mLevelFinishedDialogLayer);
          addChild (mHudLayer);
+         addChild (mDeactivatedLayer);
+         addChild (mInfosLayer);
+         mDeactivatedLayer.visible = false;
+         mInfosLayer.visible = false;
+         //mInfosLayer.alpha = 0.67;
       }
 
 //======================================================================
@@ -67,6 +75,26 @@ package viewer {
       
       override public function Update (dt:Number):void
       {
+         if (mDeactivated)
+         {
+            UpdateDeactivatedLayer ();
+            return;
+         }
+         
+         mFpsTime += dt; 
+         ++ mFpsSteps;
+         if (mFpsSteps >= 30)
+         {
+            mFps = mFpsSteps / mFpsTime;
+            mFpsTime = 0.0;
+            mFpsSteps = 0;
+            
+            if (mInfosLayer.visible)
+            {
+               UpdateInfosPanel ();
+            }
+         }
+         
          var fadingSpeed:Number = 0.05;
          
          if (mLevelFinishedDialog != null)
@@ -322,10 +350,28 @@ package viewer {
          //}
       }
       
+      //private var mFirstTimeDeactived:Boolean = true;
+      private var mDeactivated:Boolean = false;
+      private var mIsPlayingBeforeDeactivated:Boolean;
+      override public function OnDeactivate ():void
+      {
+         mDeactivated = true;
+         mIsPlayingBeforeDeactivated = true; //mFirstTimeDeactived ? true : IsPlaying ();
+         //mFirstTimeDeactived = false;
+         SetPlaying (false);
+      }
       
 //======================================================================
 //
 //======================================================================
+
+      private function OnActivate (data:Object = null):void
+      {
+         mDeactivated = false;
+         SetPlaying (mIsPlayingBeforeDeactivated);
+         
+         mDeactivatedLayer.visible = false;
+      }
 
       private function OnClickRestartForPlay (data:Object = null):void
       {
@@ -354,6 +400,11 @@ package viewer {
       private function OnClickPause (data:Object = null):void
       {
          SetPlaying (false);
+         
+         if (! IsPlaying ())
+         {
+            TryToToggleInfosPanelVisibility ();
+         }
       }
       
       private function OnClickFaster (data:Object):void
@@ -416,6 +467,148 @@ package viewer {
             mHasLevelFinishedDialogEverOpened = true;
          
          SetLevelFinishedDialogVisible (false);
+      }
+      
+      override public function CloseAllVisibleDialogs ():void
+      {
+         if (IsHelpDialogVisible ())
+            OnClickCloseHelpDialog (null);
+         
+         if (IsLevelFinishedDialogVisible ())
+            OnClickCloseLevelFinishedDialog (null);
+      }
+
+//======================================================================
+// 
+//======================================================================
+      
+      private var mPauseTimes:Array = new Array (0, 0, 0, 0, 0);
+      private var mPausedIndex:int = 0;
+      
+      private var mFpsTime:Number = 0.0; 
+      private var mFpsSteps:int = 0;
+      private var mFps:Number = 0.0;
+      
+      private var mInfosPanel:Sprite = null;
+      private var mFpsText:TextField;
+      
+      private function TryToToggleInfosPanelVisibility ():void
+      {
+         var currentTime:Number = new Date ().getTime ();
+         mPauseTimes [mPausedIndex] = currentTime;
+         mPausedIndex = (mPausedIndex + 1) % mPauseTimes.length;
+         if (currentTime - mPauseTimes [mPausedIndex] > 5000)
+            return;
+         
+         for (var i:int = 0; i < mPauseTimes.length; ++ i)
+            mPauseTimes [i] = 0;
+         
+         if (mInfosLayer.visible)
+         {
+            mInfosLayer.visible = false;
+         }
+         else
+         {
+            mInfosLayer.visible = true;
+            
+            if (mInfosPanel == null)
+            {
+               mInfosPanel = new Sprite ();
+               mInfosLayer.addChild (mInfosPanel);
+               mInfosLayer.mouseEnabled = false;
+               mInfosLayer.mouseChildren = false;
+                              
+               mFpsText = new TextField ();
+               mInfosPanel.addChild (mFpsText);
+               mFpsText.mouseEnabled = false;
+               
+               mFpsText.autoSize = "left";
+               mFpsText.textColor = 0x0;
+               mFpsText.background = false;
+               mFpsText.border = true;
+               mFpsText.borderColor = 0x0;
+               mFpsText.wordWrap = false;
+                  //mFpsText.width = mViewerWidth / 2;
+               mFpsText.selectable = false;
+            }
+            
+            UpdateInfosPanel ();
+         }
+      }
+      
+      private function UpdateInfosPanel ():void
+      {
+         if (mInfosLayer.visible)
+         {
+            if (mInfosPanel != null)
+            {
+               mFpsText.htmlText = "FPS: " + mFps.toPrecision (3);
+               
+               GraphicsUtil.Clear (mInfosPanel);
+               
+               var bounds:Rectangle = mInfosPanel.getBounds (mInfosPanel);
+               mInfosPanel.x = 0.5 * (mViewerWidth - bounds.width) + bounds.x;
+               mInfosPanel.y = mViewerHeight - bounds.height - 3 + bounds.y;
+               
+               //GraphicsUtil.DrawRect (mInfosPanel, bounds.x, bounds.y, bounds.width, bounds.height, 0x0, 1, true, 0xFFFFFF);
+            }
+         }
+      }
+      
+//======================================================================
+// 
+//======================================================================
+      
+      private var mLastDeactivatedLayerSize:int = 0;
+      private var mActivateButton:Sprite = null;
+      
+      private function UpdateDeactivatedLayer ():void
+      {
+         if (mDeactivated)
+         {
+            if (! mDeactivatedLayer.visible)
+            {
+               mDeactivatedLayer.alpha = 0.0;
+               mDeactivatedLayer.visible = true;
+            }
+            
+            var targetAlpha:Number = 0.83;
+            
+            //if (mDeactivatedLayer.alpha > targetAlpha)
+            //   mDeactivatedLayer.alpha = targetAlpha;
+            //else if (mDeactivatedLayer.alpha < targetAlpha - 0.05)
+            //   mDeactivatedLayer.alpha += 0.05;
+            
+            if (mDeactivatedLayer.alpha < targetAlpha - 0.05 || mDeactivatedLayer.alpha > targetAlpha + 0.05)
+               mDeactivatedLayer.alpha = targetAlpha;
+            
+            if (mActivateButton == null)
+            {
+               mActivateButton = CreateButton (0, mPlayButtonData, true, mIsTouchScreen, OnActivate);
+               if (mActivateButton.width < 0.33 * mViewerWidth && mActivateButton.height < 0.33 * mViewerHeight)
+               {
+                  mActivateButton.scaleX *= 2.0;
+                  mActivateButton.scaleY *= 2.0;
+               }
+               
+               mDeactivatedLayer.addChild (mActivateButton);
+            }
+            
+            var rightSize:int = (mViewerWidth << 16) | mViewerHeight;
+            if (mLastDeactivatedLayerSize != rightSize)
+            {
+               mLastDeactivatedLayerSize = rightSize;
+               
+               GraphicsUtil.ClearAndDrawRect (mDeactivatedLayer, 0, 0, mViewerWidth, mViewerHeight, 0xFFFFFF, -1, true, 0xFFFFFF);
+               
+               mActivateButton.x = 0.5 * mViewerWidth;
+               mActivateButton.y = 0.5 * mViewerHeight;
+            }
+         }
+         else if (mDeactivatedLayer.visible)
+         {
+            mDeactivatedLayer.visible = false;
+         }
       }
 
 //======================================================================
@@ -670,21 +863,6 @@ package viewer {
             
             buttonX += (mStartButton.width + gap);
             
-            if (params.mShowScaleAdjustor)
-            {  
-               mScaleInButton = CreateButton (1, mScaleInButtonData, false, false, OnClickZoomIn);
-               mScaleInButton.x = buttonX;
-               mPlayBarButtonLayer.addChild (mScaleInButton);
-               
-               buttonX += (mScaleInButton.width + 1);
-               
-               mScaleOutButton = CreateButton (1, mScaleOutButtonData, false, false, OnClickZoomOut);
-               mScaleOutButton.x = buttonX;
-               mPlayBarButtonLayer.addChild (mScaleOutButton);
-               
-               buttonX += (mScaleOutButton.width + gap);
-            }
-            
             if (params.mShowSpeedAdjustor)
             {  
                mSlowerButton = CreateButton (1, mSlowerButtonData, false, false, OnClickSlower);
@@ -698,6 +876,21 @@ package viewer {
                mPlayBarButtonLayer.addChild (mFasterButton);
                
                buttonX += (mFasterButton.width + gap);
+            }
+            
+            if (params.mShowScaleAdjustor)
+            {  
+               mScaleInButton = CreateButton (1, mScaleInButtonData, false, false, OnClickZoomIn);
+               mScaleInButton.x = buttonX;
+               mPlayBarButtonLayer.addChild (mScaleInButton);
+               
+               buttonX += (mScaleInButton.width + 1);
+               
+               mScaleOutButton = CreateButton (1, mScaleOutButtonData, false, false, OnClickZoomOut);
+               mScaleOutButton.x = buttonX;
+               mPlayBarButtonLayer.addChild (mScaleOutButton);
+               
+               buttonX += (mScaleOutButton.width + gap);
             }
             
             if (params.mShowSoundController)
@@ -746,6 +939,8 @@ package viewer {
             mPlayBarButtonLayer.x = 0.5 * (mViewerWidth  - mPlayBarButtonLayer.scaleX * bounds.width ) - mPlayBarButtonLayer.scaleX * bounds.x;
             mPlayBarButtonLayer.y = 0.5 * (PlayBarHeight - mPlayBarButtonLayer.scaleY * bounds.height) - mPlayBarButtonLayer.scaleY * bounds.y;
          }
+         
+         UpdateDeactivatedLayer ();
          
          OnPlayingChanged ();
          OnPlayingSpeedXChanged ();
@@ -875,7 +1070,7 @@ package viewer {
          
          // ...
          
-         var referLinkString:String = "<p align='center'><font face='Verdana' size='13'><font color='#0000FF'><u><a href='http://www.phyard.com' target='_blank'>Have interest making your own games?</a></u></font></font></p>";
+         var referLinkString:String = "<p align='center'><font face='Verdana' size='13'><font color='#0000FF'><u><a href='http://www.phyard.com/?from=complete_dialog' target='_blank'>Have interest making your own games?</a></u></font></font></p>";
 
          var referLinkTextField:TextFieldEx = TextFieldEx.CreateTextField (referLinkString, false, 0xFFFFFF, 0x0, true, GetPreferredDialogWidth ());
 

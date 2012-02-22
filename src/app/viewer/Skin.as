@@ -207,10 +207,10 @@ package viewer {
          if (_OnSpeedChanged != null)
             _OnSpeedChanged ();
          
-         OnPlayingSpeedXChanged (oldSpeedX);
+         OnPlayingSpeedXChanged ();
       }
       
-      protected function OnPlayingSpeedXChanged (oldSpeedX:int):void
+      protected function OnPlayingSpeedXChanged ():void
       {
          // to override
       }
@@ -241,10 +241,10 @@ package viewer {
          if (_OnScaleChanged != null)
             _OnScaleChanged (smoothly);
          
-         OnZoomScaleChanged (oldZoonScale);
+         OnZoomScaleChanged ();
       }
       
-      protected function OnZoomScaleChanged (oldZoonScale:Number):void
+      protected function OnZoomScaleChanged ():void
       {
          // to override
       }

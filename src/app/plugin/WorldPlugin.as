@@ -10,7 +10,7 @@ package plugin
    {
       public static function Call (name:String, params:Object = null):Object 
       {
-         var world:World ;
+         var world:World;
          
          switch (name)
          {

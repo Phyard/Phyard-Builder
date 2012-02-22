@@ -67,22 +67,56 @@ package viewer {
       
       override public function Update (dt:Number):void
       {
+         var fadingSpeed:Number = 0.05;
+         
          if (mLevelFinishedDialog != null)
          {
-            if (mLevelFinishedDialog.visible)
+            if (IsLevelFinishedDialogVisible () && (! mHasLevelFinishedDialogEverOpened))
             {
-               if (mLevelFinishedDialog.alpha < 1.0) mLevelFinishedDialog.alpha += 0.02;
+               mLevelFinishedDialog.visible = true;
+               
+               if (mLevelFinishedDialog.alpha < 1.0)
+                  mLevelFinishedDialog.alpha += fadingSpeed;
+               if (mLevelFinishedDialog.alpha >= 1.0)
+                  mLevelFinishedDialog.alpha = 1.0;
             }
             else
             {
-               if (mLevelFinishedDialog.alpha > 0.0) mLevelFinishedDialog.alpha -= 0.02;
+               if (mLevelFinishedDialog.alpha > 0.0) 
+                  mLevelFinishedDialog.alpha -= fadingSpeed;
+               if (mLevelFinishedDialog.alpha <= 0.0)
+               {
+                  mLevelFinishedDialog.alpha = 0.0;
+                  mLevelFinishedDialog.visible = false;
+               }
+            }
+         }
+         
+         if (mHelpDialog != null)
+         {
+            if (IsHelpDialogVisible ())
+            {
+               mHelpDialog.visible = true;
+               
+               if (mHelpDialog.alpha < 1.0)
+                  mHelpDialog.alpha += fadingSpeed;
+               if (mHelpDialog.alpha >= 1.0)
+                  mHelpDialog.alpha = 1.0;
+            }
+            else
+            {
+               if (mHelpDialog.alpha > 0.0)
+                  mHelpDialog.alpha -= fadingSpeed;
+               if (mHelpDialog.alpha <= 0.0)
+               {
+                  mHelpDialog.alpha = 0.0;
+                  mHelpDialog.visible = false;
+               }
             }
          }
          
          if (mIsOverlay)
          {
-            var fadingSpeed:Number = 0.05;
-            
             var isPlaying:Boolean = IsPlaying () && (! AreSomeDialogsVisible ());
             
             if (isPlaying)
@@ -157,7 +191,7 @@ package viewer {
          }
       }
       
-      override protected function OnPlayingSpeedXChanged (oldSpeedX:int):void
+      override protected function OnPlayingSpeedXChanged ():void
       {
          var speedX:int = GetPlayingSpeedX ();
          
@@ -191,7 +225,7 @@ package viewer {
          }
       }
       
-      override protected function OnZoomScaleChanged (oldZoonScale:Number):void
+      override protected function OnZoomScaleChanged ():void
       {
          var zoomScale:Number = GetZoomScale ();
          
@@ -229,27 +263,39 @@ package viewer {
       {
          if (mIsOverlay)
          {
-            mSoundOnButton_Overlay.visible = IsSoundEnabled ();
-            mSoundOffButton_Overlay.visible = ! mSoundOnButton_Overlay.visible;
+            if (mSoundOnButton_Overlay != null)
+               mSoundOnButton_Overlay.visible = IsSoundEnabled ();
+            if (mSoundOffButton_Overlay != null)
+               mSoundOffButton_Overlay.visible = ! IsSoundEnabled ();
          }
          else
          {
-            mSoundOnButton.visible = IsSoundEnabled ();
-            mSoundOffButton.visible = ! mSoundOnButton.visible;
+            if (mSoundOnButton != null)
+               mSoundOnButton.visible = IsSoundEnabled ();
+            if (mSoundOffButton != null)
+               mSoundOffButton.visible = ! IsSoundEnabled ();
          }
       }
       
       override protected function OnHelpDialogVisibleChanged ():void
       {
+         if (IsHelpDialogVisible ())
+            OnClickCloseLevelFinishedDialog (null);
+         
          if (mHelpDialog == null)
          {
             if (IsHelpDialogVisible ())
                CreateHelpDialog ();
+         
+            if (mHelpDialog != null)
+            {
+               mHelpDialog.alpha = 0.0;
+            }
          }
-         else
-         {
-            mHelpDialog.visible = IsHelpDialogVisible ();
-         }         
+         //else
+         //{
+         //   mHelpDialog.visible = IsHelpDialogVisible ();
+         //}
       }
       
       override protected function OnLevelFinishedDialogVisibleChanged ():void
@@ -263,20 +309,17 @@ package viewer {
          if (mLevelFinishedDialog == null)
          {
             if (IsLevelFinishedDialogVisible ())
-            {
                CreateLevelFinishedDialog ();
-            }
-         }
-         
-         if (mLevelFinishedDialog != null)
-         {
-            mLevelFinishedDialog.visible = IsLevelFinishedDialogVisible () && (! mHasLevelFinishedDialogEverOpened);
-         
-            if (IsLevelFinishedDialogVisible ())
+            
+            if (mLevelFinishedDialog != null)
             {
-               mHasLevelFinishedDialogEverOpened = true;
+               mLevelFinishedDialog.alpha = 0.0;
             }
          }
+         //else
+         //{
+         //   mLevelFinishedDialog.visible = IsLevelFinishedDialogVisible () && (! mHasLevelFinishedDialogEverOpened);
+         //}
       }
       
       
@@ -292,6 +335,13 @@ package viewer {
       }
 
       private function OnClickRestartForPause (data:Object = null):void
+      {
+         Restart ();
+         
+         SetPlaying (true);
+      }
+      
+      private function OnClickRestart (data:Object = null):void
       {
          Restart ();
       }
@@ -338,14 +388,14 @@ package viewer {
       {
          SetSoundEnabled (false);
          
-         SetPlaying (true);
+         //SetPlaying (true);
       }
       
       private function OnClickSoundOff (data:Object):void
       {
          SetSoundEnabled (true);
          
-         SetPlaying (true);
+         //SetPlaying (true);
       }
 
       private function OnClickHelp (data:Object):void
@@ -362,6 +412,9 @@ package viewer {
 
       private function OnClickCloseLevelFinishedDialog (data:Object):void
       {
+         if (mLevelFinishedDialog != null)
+            mHasLevelFinishedDialogEverOpened = true;
+         
          SetLevelFinishedDialogVisible (false);
       }
 
@@ -567,7 +620,7 @@ package viewer {
                      buttonX = margin;
                      buttonY = mViewerHeight - margin;
                
-                     mExitButton_Overlay = CreateButton (0, mHasMainMenu ? mMenuButtonData : mExitLevelButtonData, mIsOverlay, mIsTouchScreen, _OnExitLevel);
+                     mExitButton_Overlay = CreateButton (0, mHasMainMenu ? mMenuButtonData : mBackButtonData, mIsOverlay, mIsTouchScreen, _OnExitLevel);
                      mExitButton_Overlay.x = buttonX + 0.5 * mExitButton_Overlay.width;
                      mExitButton_Overlay.y = buttonY - 0.5 * mExitButton_Overlay.height;
                      mHudLayerForPause.addChild (mExitButton_Overlay);
@@ -577,11 +630,14 @@ package viewer {
                   
                   // ...
                   
-                  mSoundOffButton_Overlay = CreateButton (0, mSoundOffButtonData, mIsOverlay, mIsTouchScreen, OnClickSoundOff);
-                  mSoundOffButton_Overlay.x = mSoundOnButton_Overlay.x;
-                  mSoundOffButton_Overlay.y = mSoundOnButton_Overlay.y;
-                  mSoundOffButton_Overlay.visible = false;
-                  mHudLayerForPause.addChild (mSoundOffButton_Overlay);
+                  if (params.mShowSoundController)
+                  {
+                     mSoundOffButton_Overlay = CreateButton (0, mSoundOffButtonData, mIsOverlay, mIsTouchScreen, OnClickSoundOff);
+                     mSoundOffButton_Overlay.x = mSoundOnButton_Overlay.x;
+                     mSoundOffButton_Overlay.y = mSoundOnButton_Overlay.y;
+                     mSoundOffButton_Overlay.visible = false;
+                     mHudLayerForPause.addChild (mSoundOffButton_Overlay);
+                  }
                //}
             //}
          }
@@ -597,7 +653,7 @@ package viewer {
             
             buttonX = 0;
             
-            mRestartButton = CreateButton (1, mRestartButtonData, false, false, OnClickRestartForPause);
+            mRestartButton = CreateButton (1, mRestartButtonData, false, false, OnClickRestart);
             mRestartButton.x = buttonX ;
             mPlayBarButtonLayer.addChild (mRestartButton);
             
@@ -679,17 +735,22 @@ package viewer {
                   mPlayBar.addChild (mHelpButton);
                }
                
-               mExitButton = CreateButton (1, mHasMainMenu ? mMenuButtonData : mExitLevelButtonData, false, false, _OnExitLevel);
+               mExitButton = CreateButton (1, mHasMainMenu ? mMenuButtonData : mBackButtonData, false, false, _OnExitLevel);
                mExitButton.x = gap + 0.5 * mExitButton.width;
                mExitButton.y = 0.5 * PlayBarHeight;
                mPlayBar.addChild (mExitButton);
             }
             
             //
-            var bounds:Rectangle = mPlayBarButtonLayer.getBounds (mPlayBar);
-            mPlayBarButtonLayer.x = 0.5 * (mViewerWidth - bounds.width) - bounds.x;
-            mPlayBarButtonLayer.y = 0.5 * (PlayBarHeight - bounds.height) - bounds.y;
+            var bounds:Rectangle = mPlayBarButtonLayer.getBounds (mPlayBarButtonLayer);
+            mPlayBarButtonLayer.x = 0.5 * (mViewerWidth  - mPlayBarButtonLayer.scaleX * bounds.width ) - mPlayBarButtonLayer.scaleX * bounds.x;
+            mPlayBarButtonLayer.y = 0.5 * (PlayBarHeight - mPlayBarButtonLayer.scaleY * bounds.height) - mPlayBarButtonLayer.scaleY * bounds.y;
          }
+         
+         OnPlayingChanged ();
+         OnPlayingSpeedXChanged ();
+         OnZoomScaleChanged ();
+         OnSoundEnabledChanged ();
       }
       
 //======================================================================
@@ -697,10 +758,21 @@ package viewer {
 //======================================================================
 
       private function GetPreferredDialogWidth ():Number
-      {
-         var w:Number = mViewerWidth * 0.67;
-         if (w > 320)
-            w = 320;
+      {  
+         var w:Number;
+         
+         if (mIsTouchScreen)
+         {
+            w = 4.0 * GetPreferredButtonSize (true, true) + 2.0 * GetButtonGap ();
+            if (w > mViewerWidth * 0.75)
+               w = mViewerWidth * 0.75;
+         }
+         else
+         {
+            w = mViewerWidth * 0.75;
+            if (w > 350)
+               w = 350;
+         }
          
          return w;
       }
@@ -798,14 +870,14 @@ package viewer {
          
          // ...
          
-         var levelFinishedString:String = "<font size='30' face='Verdana' color='#000000'> <b>Cool! It is solved.</b></font>";
-         var levelFinishedText:TextFieldEx = TextFieldEx.CreateTextField (levelFinishedString, false, 0xFFFFFF, 0x0, false);
+         var levelFinishedString:String = "<p align='center'><font size='30' face='Verdana' color='#000000'> <b>Cool! It is solved.</b></font></p>";
+         var levelFinishedText:TextFieldEx = TextFieldEx.CreateTextField (levelFinishedString, false, 0xFFFFFF, 0x0, true, GetPreferredDialogWidth ());
          
          // ...
          
-         var referLinkString:String = "<font face='Verdana' size='15'>Want to <font color='#0000FF'><u><a href='http://www.phyard.com' target='_blank'>design your own games</a></u></font>?</font>";
+         var referLinkString:String = "<p align='center'><font face='Verdana' size='13'><font color='#0000FF'><u><a href='http://www.phyard.com' target='_blank'>Have interest making your own games?</a></u></font></font></p>";
 
-         var referLinkTextField:TextFieldEx = TextFieldEx.CreateTextField (referLinkString, false, 0xFFFFFF, 0x0);
+         var referLinkTextField:TextFieldEx = TextFieldEx.CreateTextField (referLinkString, false, 0xFFFFFF, 0x0, true, GetPreferredDialogWidth ());
 
          // ...
          
@@ -835,7 +907,6 @@ package viewer {
                         + "<br /><br />To play, click a <font color='#FF00FF'><b>PINK</b></font> object to destroy it or click a <font color='#000000'><b>BOMB</b></font> object to explode it."
                         + "</font>";
          
-         var textWidth:Number = 360;
          var textTutorial:TextFieldEx = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, GetPreferredDialogWidth ());
          
          var mOkButton:Sprite = CreateButton (0, mOkButtonData, true, mIsTouchScreen, OnClickCloseHelpDialog);
@@ -857,8 +928,10 @@ package viewer {
          {
             var contentRegion:Rectangle = GetContentRegion ();
             
-            sprite.x = contentRegion.x + 0.5 * (contentRegion.width  - sprite.width );
-            sprite.y = contentRegion.y + 0.5 * (contentRegion.height - sprite.height);
+            var spriteBounds:Rectangle = sprite.getBounds (sprite);
+            
+            sprite.x = contentRegion.x + 0.5 * (contentRegion.width  - spriteBounds.width  * sprite.scaleX) - spriteBounds.x * sprite.scaleX;
+            sprite.y = contentRegion.y + 0.5 * (contentRegion.height - spriteBounds.height * sprite.scaleY) - spriteBounds.y * sprite.scaleY;
          }
       }
       
@@ -943,7 +1016,8 @@ package viewer {
             
             if (buttonPanel.numChildren > 1)
             {
-               var preferredWidth:Number = dialogWidth - maxButtonHeight - maxButtonHeight;
+               //var preferredWidth:Number = dialogWidth - maxButtonHeight - maxButtonHeight;
+               var preferredWidth:Number = 0.75 * dialogWidth;
                var buttonsWidth:Number = buttonPanel.width - maxButtonHeight;
                if (buttonsWidth > 0 && preferredWidth > 0 && buttonsWidth < preferredWidth)
                {
@@ -955,15 +1029,13 @@ package viewer {
                   }
                }
             }
-            
-            
          }
          
          // ...
          
          var bg:Sprite = new Sprite ();
          GraphicsUtil.DrawRect (bg, 0, 0, dialogWidth, dialogHeight, 
-                                0x606060, 5, true, 0x8080D0,
+                                0x606060, 5, true, 0xB0B0D0, //0x8080D0,
                                 false, true, 16);
             // shape:Object, x:Number, y:Number, w:Number, h:Number, 
             // borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, 
@@ -989,18 +1061,21 @@ package viewer {
             if (buttonPanel.numChildren == 1)
             {
                sprite = buttonPanel.getChildAt (0);
-               if (sprite.x < dialogWidth - sprite.width)
-               {
-                  sprite.x = dialogWidth - sprite.width;
-               }
+               //if (sprite.x < dialogWidth - sprite.width)
+               //{
+               //   sprite.x = dialogWidth - sprite.width;
+               //}
+               if (sprite.x < dialogWidth * 0.875)
+                  sprite.x = dialogWidth * 0.875;
+               
                buttonPanel.x = 0.0;
             }
             else
             {  
-               buttonPanel.x = 0.5 * (dialogWidth - buttonPanel.width) - bounds.x * buttonPanel.scaleX;
+               buttonPanel.x = 0.5 * (dialogWidth - buttonPanel.width * buttonPanel.scaleX) - bounds.x * buttonPanel.scaleX;
             }
             
-            buttonPanel.y = dialogHeight - 0.5 * buttonPanel.height - bounds.y * buttonPanel.scaleY;
+            buttonPanel.y = dialogHeight - 0.5 * buttonPanel.height * buttonPanel.scaleY - bounds.y * buttonPanel.scaleY;
          }
          
          // ...
@@ -1012,7 +1087,7 @@ package viewer {
 //
 //======================================================================
 
-      protected static var mPlayButtonData:Array = [
+      public static const mPlayButtonData:Array = [
          [3,
              8,  0.0,
             -5, -12, 
@@ -1020,7 +1095,7 @@ package viewer {
          ],
       ];
       
-      protected static var mPauseButtonData:Array = [
+      public static const mPauseButtonData:Array = [
          [3,
            -11, -12, 
            -11,  12,
@@ -1088,7 +1163,7 @@ package viewer {
          ],
       ];
       
-      protected static var mSoundOnButtonData:Array = [
+      public static const mSoundOnButtonData:Array = [
          [3,
              -15,   5,
               -9,   5,
@@ -1111,7 +1186,7 @@ package viewer {
          ],
       ];
       
-      protected static var mSoundOffButtonData:Array = [
+      public static const mSoundOffButtonData:Array = [
          [3,
              -15,   5,
               -9,   5,
@@ -1132,7 +1207,7 @@ package viewer {
          ],
       ];
       
-      protected static var mExitAppButtonData:Array = [
+      public static const mExitAppButtonData:Array = [
          [3,
               5, -5,
               1,  0,
@@ -1152,7 +1227,7 @@ package viewer {
          ],
       ];
       
-      protected static var mExitLevelButtonData:Array = [
+      public static const mBackButtonData:Array = [
          [1 | (5 << 8),
               -11,  -5,
               -11,  11,
@@ -1167,7 +1242,7 @@ package viewer {
          ],
       ];
       
-      protected static var mNextLevelButtonData:Array = [
+      public static const mNextLevelButtonData:Array = [
          [1 | (5 << 8),
                 0, 10,
                14,  0,
@@ -1182,7 +1257,7 @@ package viewer {
          ],
       ];
       
-      protected static var mHelpButtonData:Array = [
+      public static const mHelpButtonData:Array = [
          [3,
               -6,  -4,
              -10,  -4,
@@ -1205,7 +1280,7 @@ package viewer {
          ],
       ];
       
-      protected static var mSlowerButtonData:Array = [
+      public static const mSlowerButtonData:Array = [
          [3,
               -2,  -1,
                9, -12,
@@ -1217,7 +1292,7 @@ package viewer {
          ],
       ];
       
-      protected static var mFasterButtonData:Array = [
+      public static const mFasterButtonData:Array = [
          [3,
                2,  -1,
               -9, -12,
@@ -1229,7 +1304,7 @@ package viewer {
          ],
       ];
       
-      //protected static var mScaleInButtonData:Array = [
+      //public static const mScaleInButtonData:Array = [
       //   [1 | (5 << 8),
       //        -7, 0,
       //         7, 0,
@@ -1243,7 +1318,7 @@ package viewer {
       //   ],
       //];
       //
-      //protected static var mScaleOutButtonData:Array = [
+      //public static const mScaleOutButtonData:Array = [
       //   [1 | (5 << 8),
       //        -7, 0,
       //         7, 0,
@@ -1253,7 +1328,7 @@ package viewer {
       //   ],
       //];
       
-      protected static var mScaleInButtonData:Array = [
+      public static const mScaleInButtonData:Array = [
          [3,
               -12,  -2,
               -12,   2,
@@ -1270,7 +1345,7 @@ package viewer {
          ],
       ];
       
-      protected static var mScaleOutButtonData:Array = [
+      public static const mScaleOutButtonData:Array = [
          [3,
               -12, -2,
               -12,  2,
@@ -1279,7 +1354,7 @@ package viewer {
          ],
       ];
       
-      protected static var mOkButtonData:Array = [
+      public static const mOkButtonData:Array = [
          [3,
                -4,   5,
                -9,  -2,
@@ -1290,7 +1365,7 @@ package viewer {
          ],
       ];
       
-      protected static var mCloseButtonData:Array = [
+      public static const mCloseButtonData:Array = [
          [3,
                6,   0,
               12,   6,
@@ -1327,7 +1402,7 @@ package viewer {
          return points;
       }
 
-      protected static function CreateButton (baseShapeType:int, buttonData:Array, isOverlay:Boolean, isTocuhScreen:Boolean, onClickHandler:Function = null):Sprite
+      public static function CreateButton (baseShapeType:int, buttonData:Array, isOverlay:Boolean, isTocuhScreen:Boolean, onClickHandler:Function = null):Sprite
       {
          var baseShape:Shape = new Shape ();
          if (baseShapeType == 0) // circle
@@ -1392,22 +1467,18 @@ package viewer {
       
       private static function ScaleButton (button:Sprite, isOverlay:Boolean, isTocuhScreen:Boolean):void
       {
-         var targetPixels:Number;
-         if (isTocuhScreen)
-            targetPixels = Capabilities.screenDPI * 0.4; // 0.4 inches
-         else if (isOverlay)
-            targetPixels = 32.0;
-         else
-            targetPixels = 16.0;
-         
-         button.scaleX = button.scaleY = targetPixels / button.width;
+         button.scaleX = button.scaleY = GetPreferredButtonSize (isOverlay, isTocuhScreen) / button.width;
       }
-
-//======================================================================
-// interfaces for game template
-//======================================================================
-
       
+      private static function GetPreferredButtonSize (isOverlay:Boolean, isTocuhScreen:Boolean):Number
+      {
+         if (isTocuhScreen)
+            return Capabilities.screenDPI * 0.32; // 0.32 inches
+         else if (isOverlay)
+            return 32.0;
+         else
+            return 16.0;
+      }
       
    }
 }

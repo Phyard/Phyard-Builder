@@ -178,15 +178,22 @@ package viewer {
 // platform capabilities
 //======================================================================
 
-      private var mIsTouchScreen:Boolean = false; // false for PC device
-         private var mIsPhoneDevice:Boolean = false; // only valid when mIsMobileDevice is true
+      private static var mIsTouchScreen:Boolean = false; // false for PC device
+         private static var mIsPhoneDevice:Boolean = false; // only valid when mIsMobileDevice is true
       
-      private var mGeolocationClass:Object = null;
-      private var mAccelerometerClass:Object = null;
-      private var mMultitouchClass:Object = null;
-
-      private function CheckPlatformCapabilities ():void
+      private static var mGeolocationClass:Object = null;
+      private static var mAccelerometerClass:Object = null;
+      private static var mMultitouchClass:Object = null;
+      
+      private static var mPlatformCapabilitiesChecked:Boolean = false;
+      
+      private static function CheckPlatformCapabilities ():void
       {
+         if (mPlatformCapabilitiesChecked)
+            return;
+         
+         mPlatformCapabilitiesChecked = true;
+         
          try
          {
             //Capabilities.pixelAspectRatio;
@@ -381,10 +388,14 @@ package viewer {
          }
       }
 
+      private static var mLastErrorInfo:String = null;
+      
       public static function TraceError (error:Error):void
       {
-         //if (Capabilities.isDebugger)
+         if (Capabilities.isDebugger)
             trace (error.getStackTrace ());
+         
+         mLastErrorInfo = "Error: id=" + error.errorID + ", msg=" + error.message + "\n" + error.getStackTrace ();
       }
 
 //======================================================================
@@ -712,7 +723,6 @@ package viewer {
          if (mWorldDesignProperties.GetBuildingStatus == null)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_BuildingStatus;
          if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
          if (mWorldDesignProperties.mHasSounds == undefined)                 mWorldDesignProperties.mHasSounds = false;
-         if (mWorldDesignProperties.mInitialSoundEnabled == undefined)       mWorldDesignProperties.mInitialSoundEnabled = true;
          if (mWorldDesignProperties.mInitialSpeedX == undefined)             mWorldDesignProperties.mInitialSpeedX = 2;
          if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
 
@@ -841,7 +851,7 @@ package viewer {
                BuildContextMenu ();
             }
             
-            mSkin.SetSoundEnabled (mWorldDesignProperties.mInitialSoundEnabled);
+            mSkin.SetSoundEnabled (mIsSoundEnabled); // will call OnSoundControlChanged ()
             mSkin.SetPlayingSpeedX (mWorldDesignProperties.mInitialSpeedX);
             mSkin.SetZoomScale (mWorldDesignProperties.mInitialZoomScale, false);
 
@@ -1209,7 +1219,7 @@ package viewer {
          if (mErrorMessageText != null && mErrorMessageText.parent == mErrorMessageLayer)
             mErrorMessageLayer.removeChild (mErrorMessageText);
          
-         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage), true, 0xFFFFFF);
+         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage) + "<br>" + mLastErrorInfo, true, 0xFFFFFF);
          mErrorMessageLayer.addChild (mErrorMessageText);
          
          CenterErrorMessageText ();
@@ -1476,37 +1486,6 @@ package viewer {
             mContentLayer.mask = null;
          }
       }
-
-//===========================================================================
-// interfaces for game template
-//===========================================================================
-
-      // return: need game tempalte to continue handling or not
-      public function OnBackKeyDown ():Boolean
-      {
-         if (mSkin != null)
-         {
-            if (mSkin.AreSomeDialogsVisible ())
-               mSkin.CloseAllVisibleDialogs ();
-            else if (mSkin.IsPlaying ())
-               mSkin.SetPlaying (false);
-            else if (mParamsFromContainer.OnExitLevel != null)
-               mParamsFromContainer.OnExitLevel ();
-            else
-               return false;
-            
-            return true;
-         }
-         
-         return false;
-      }
-      
-      public function IsSoundEnabled ():Boolean
-      {
-         return mSoundEnabled;
-      }
-      
-      //public function Get
       
 //======================================================================
 //
@@ -1576,16 +1555,90 @@ package viewer {
 
    //======================================================================
 
-      private var mSoundEnabled:Boolean = true;
-
       private function OnSoundControlChanged (data:Object = null):void
       {
          if (mSkin == null)
             return;
 
+         mIsSoundEnabled = mSkin.IsSoundEnabled ();
+         
          mWorldDesignProperties.SetSoundEnabled (mSkin.IsSoundEnabled ());
       }
 
+//===========================================================================
+// interfaces for game template
+//===========================================================================
+
+      // return: need game tempalte to continue handling or not
+      public function OnBackKeyDown ():Boolean
+      {
+         if (mSkin != null)
+         {
+            if (mSkin.AreSomeDialogsVisible ())
+               mSkin.CloseAllVisibleDialogs ();
+            else if (mSkin.IsPlaying ())
+               mSkin.SetPlaying (false);
+            else if (mParamsFromContainer.OnExitLevel != null)
+               mParamsFromContainer.OnExitLevel ();
+            else
+               return false;
+            
+            return true;
+         }
+         
+         return false;
+      }
+      
+      // sound
+      
+      private static var mIsSoundEnabled:Boolean = true; // to record and init sound setting
+
+      public static function SetSoundEnabled (soundOn:Boolean):void
+      {
+         mIsSoundEnabled = soundOn;
+      }
+      
+      public static function IsSoundEnabled ():Boolean
+      {
+         return mIsSoundEnabled;
+      }
+      
+      //
+
+      public static function IsTouchScreen ():Boolean
+      {
+         CheckPlatformCapabilities ();
+         
+         return mIsTouchScreen;
+      }
+      
+      // create buttons
+
+      public static function CreatePlayButton (onClickHandler:Function):Sprite
+      {
+         return SkinDefault.CreateButton (0, SkinDefault.mPlayButtonData, true, IsTouchScreen (), onClickHandler);
+      }
+
+      public static function CreateExitAppButton (onClickHandler:Function):Sprite
+      {
+         return SkinDefault.CreateButton (0, SkinDefault.mExitAppButtonData, true, IsTouchScreen (), onClickHandler);
+      }
+      
+      public static function CreateBackButton (onClickHandler:Function):Sprite
+      {
+         return SkinDefault.CreateButton (0, SkinDefault.mBackButtonData, true, IsTouchScreen (), onClickHandler);
+      }
+      
+      public static function CreateSoundOnButton (onClickHandler:Function):Sprite
+      {
+         return SkinDefault.CreateButton (0, SkinDefault.mSoundOnButtonData, true, IsTouchScreen (), onClickHandler);
+      }
+      
+      public static function CreateSoundOffButton (onClickHandler:Function):Sprite
+      {
+         return SkinDefault.CreateButton (0, SkinDefault.mSoundOffButtonData, true, IsTouchScreen (), onClickHandler);
+      }
+      
 //===========================================================================
 // interfaces for editing
 //===========================================================================

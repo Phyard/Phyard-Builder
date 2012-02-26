@@ -47,19 +47,8 @@ package editor.image.vector
       {
          return OnCreatingRectangle (this, points);
       }
-      
-      protected var mBodyTextureModule:AssetImageBitmapModule = null;
-      public function GetBodyTextureModule ():AssetImageBitmapModule
-      {
-         return mBodyTextureModule;
-      }
-      
-      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void
-      {
-         mBodyTextureModule = bitmapModule;
-      }
 
-      public static function CreateRectangleSprite (rectangle:VectorShapeRectangle, bodyTextureModule:AssetImageBitmapModule = null):DisplayObject
+      public static function CreateRectangleSprite (rectangle:VectorShapeRectangle, bodyTextureModule:AssetImageBitmapModule = null, bodyTextureTransform:Transform2D = null):DisplayObject
       {
          var filledColor:uint = rectangle.GetBodyColor ();
          var borderColor:uint = rectangle.GetBorderColor ();
@@ -75,18 +64,19 @@ package editor.image.vector
 
          var visualHalfWidth:Number = rectangle.GetHalfWidth () + 0.5; // be consistent with player
          var visualHalfHeight:Number = rectangle.GetHalfHeight () + 0.5; // be consistent with player
-
+         
          var rectSprite:Shape = new Shape ();
          GraphicsUtil.ClearAndDrawRect (rectSprite, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, 
                                         borderColor, borderThickness, drawBg, filledColor, rectangle.IsRoundCorners (), false, 1.0, 
-                                        bodyTextureModule == null ? null : bodyTextureModule.GetBitmapData ());
+                                        bodyTextureModule == null ? null : bodyTextureModule.GetBitmapData (),
+                                        bodyTextureTransform == null ? null : bodyTextureTransform.ToMatrix ());
 
          return rectSprite;
       }
 
       public function CreateSprite ():DisplayObject
       {
-         return CreateRectangleSprite (this, mBodyTextureModule);
+         return CreateRectangleSprite (this, GetBodyTextureModule () as AssetImageBitmapModule, GetBodyTextureTransform ());
       }
 
       public static function BuildRectangleSelectionProxy (rectangle:VectorShapeRectangle, selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void

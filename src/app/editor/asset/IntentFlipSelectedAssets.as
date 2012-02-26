@@ -12,7 +12,9 @@ package editor.asset {
       protected var mFlipSelf:Boolean;
       protected var mFlipVertically:Boolean = false;
       
-      public function IntentFlipSelectedAssets (assetManagerPanel:AssetManagerPanel, centerX:Number, centerY:Number, handlerY:Number, flipPosition:Boolean, flipSelf:Boolean, flipVertically:Boolean)
+      protected var mFlipBodyTexture:Boolean;
+      
+      public function IntentFlipSelectedAssets (assetManagerPanel:AssetManagerPanel, flipBodyTexture:Boolean, centerX:Number, centerY:Number, handlerY:Number, flipPosition:Boolean, flipSelf:Boolean, flipVertically:Boolean)
       {
          mAssetManagerPanel = assetManagerPanel;
          mCenterX = centerX;
@@ -21,6 +23,8 @@ package editor.asset {
          mFlipPosition = flipPosition;
          mFlipSelf = flipSelf;
          mFlipVertically = flipVertically;
+         
+         mFlipBodyTexture = flipBodyTexture;
       }
       
    //================================================================
@@ -37,9 +41,9 @@ package editor.asset {
          if (length < 8)
          {
             if (mFlipVertically)
-               mAssetManagerPanel.RotateSelectedAssets (mCenterX, mCenterY, Math.PI, mFlipPosition, mFlipSelf, false);
+               mAssetManagerPanel.RotateSelectedAssets (mFlipBodyTexture, mCenterX, mCenterY, Math.PI, mFlipPosition, mFlipSelf, false);
             
-            mAssetManagerPanel.FlipSelectedAssets (mCenterX, mFlipPosition, mFlipSelf, true);
+            mAssetManagerPanel.FlipSelectedAssets (mFlipBodyTexture, mCenterX, mFlipPosition, mFlipSelf, true);
          }
       }
       

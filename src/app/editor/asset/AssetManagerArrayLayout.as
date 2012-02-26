@@ -63,9 +63,12 @@ package editor.asset {
          RearrangeAssetPositions ();
       }
       
-      override public function MoveSelectedAssets (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
+      override public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
       {
-         // temp do nothing
+         if (moveBodyTexture)
+            super.MoveSelectedAssets (moveBodyTexture, offsetX, offsetY, updateSelectionProxy);
+         //else
+            // temp do nothing
       }
       
       override public function DeleteSelectedAssets (passively:Boolean = false):Boolean

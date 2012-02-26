@@ -64,17 +64,6 @@ package editor.image.vector
 
          return new Point (centerX, centerY);
       }
-      
-      protected var mBodyTextureModule:AssetImageBitmapModule = null;
-      public function GetBodyTextureModule ():AssetImageBitmapModule
-      {
-         return mBodyTextureModule;
-      }
-      
-      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void
-      {
-         mBodyTextureModule = bitmapModule;
-      }
 
       public function CreateSprite ():DisplayObject
       {

@@ -3,6 +3,7 @@ package common {
    import flash.display.DisplayObject;
    
    import flash.geom.Point;
+   import flash.geom.Matrix;
    
    public class Transform2D extends Point
    {
@@ -101,7 +102,7 @@ package common {
       public function set mOffsetX (ox:Number):void {this.x = ox;};
       public function get mOffsetY ():Number {return y;};
       public function set mOffsetY (oy:Number):void {this.y = oy;};
-      public var mScale:Number;
+      public var mScale:Number; // currently, sX == sY, so the order of SCALE and FLIP+ROTATE is not important. But it is best to use this order: offset*flip*rotate*scale*(x,y)
       public var mFlipped:Boolean; // maybe can be mergerd in mScale, mScale is negative means flipped
       public var mRotation:Number;
       
@@ -159,6 +160,23 @@ package common {
       // ...
          
          return inverse;
+      }
+      
+      public function ToMatrix (matrix:Matrix = null):Matrix
+      {
+         //@ to optimize
+         var a:Number = mScale * (mFlipped ? -cos : cos); var c:Number = mScale * (mFlipped ? sin : -sin);
+         var b:Number = mScale * (                  sin); var d:Number = mScale * (                  cos);
+
+         if (matrix == null)
+            matrix = new Matrix (a, b, c, d, mOffsetX, mOffsetY);
+         else
+         {
+            matrix.a = a; matrix.b = b; matrix.tx = mOffsetX;
+            matrix.c = c; matrix.d = d; matrix.ty = mOffsetY;
+         }
+         
+         return matrix;
       }
       
       public function TransformPoint (inPoint:Point, outPoint:Point = null):Point

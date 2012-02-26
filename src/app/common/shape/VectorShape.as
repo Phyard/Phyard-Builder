@@ -180,12 +180,32 @@ package common.shape
       
       // body texture
       
-      //protected var mBodyTextureModule:Object;
-         // for editing, it is a ...
+      protected var mBodyTextureModule:Object;
+         // for editing, it is a editor.image.AssetImageBitmapModule
          // for define, it is id
-         // for playing, it is a ...
-      //protected var mBodyTextureTransform:Transform2D; // only valid when mBodyTextureModuleId is valid
-         // in editing, it is a transform in world space
-         // in playing, it is a transform in module instance space
+         // for playing, it is a player.image.ImageBitmap
+      protected var mBodyTextureTransform:Transform2D; 
+         // only valid when mBodyTextureModuleId is valid
+         // a transform in module instance space
+      
+      public function GetBodyTextureModule ():Object
+      {
+         return mBodyTextureModule;
+      }
+      
+      public function SetBodyTextureModule (bodyTexture:Object):void
+      {
+         mBodyTextureModule = bodyTexture;
+      }
+      
+      public function GetBodyTextureTransform ():Transform2D
+      {
+         return mBodyTextureTransform;
+      }
+      
+      public function SetBodyTextureTransform (bodyTextureTransform:Transform2D):void
+      {
+         mBodyTextureTransform = bodyTextureTransform;
+      }
    }
 }

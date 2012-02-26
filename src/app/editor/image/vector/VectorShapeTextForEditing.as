@@ -30,17 +30,6 @@ package editor.image.vector
          return VectorShapeRectangleForEditing.OnCreatingRectangle (this, points);
       }
       
-      //protected var mBodyTextureModule:AssetImageBitmapModule = null;
-      public function GetBodyTextureModule ():AssetImageBitmapModule
-      {
-         return null; //mBodyTextureModule;
-      }
-      
-      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void
-      {
-         //mBodyTextureModule = bitmapModule;
-      }
-      
       public function CreateSprite ():DisplayObject
       {
          var container:Sprite = new Sprite ();

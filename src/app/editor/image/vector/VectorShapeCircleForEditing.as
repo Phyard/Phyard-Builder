@@ -42,17 +42,6 @@ package editor.image.vector
 
          return new Point (posX, posY);
       }
-      
-      protected var mBodyTextureModule:AssetImageBitmapModule = null;
-      public function GetBodyTextureModule ():AssetImageBitmapModule
-      {
-         return mBodyTextureModule;
-      }
-      
-      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void
-      {
-         mBodyTextureModule = bitmapModule;
-      }
 
       public function CreateSprite ():DisplayObject
       {
@@ -69,11 +58,15 @@ package editor.image.vector
          }
 
          var visualRadius:Number = mRadius + 0.5; // be consistent with player
+         
+         var bitmapModule:AssetImageBitmapModule = GetBodyTextureModule () as AssetImageBitmapModule;
+         var bitmapTransform:Transform2D = GetBodyTextureTransform ();
 
          var circleSprite:Shape = new Shape ();
          GraphicsUtil.ClearAndDrawCircle (circleSprite, 0, 0, visualRadius, borderColor,
                                                             borderThickness, drawBg, filledColor, 
-                                                            mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData ());
+                                                            bitmapModule == null ? null : bitmapModule.GetBitmapData (),
+                                                            bitmapTransform == null ? null : bitmapTransform.ToMatrix ());
 
          return circleSprite;
       }

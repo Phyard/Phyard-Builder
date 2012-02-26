@@ -639,11 +639,8 @@ package editor.image.dialog {
             if (moduleInstance.SetBodyTextureModule (bitmapModule))
             {
                moduleInstance.UpdateAppearance ();
-               //moduleInstance.UpdateSelectionProxy ();
-               //moduleInstance.UpdateControlPoints ();
                
                moduleInstance.NotifyModifiedForReferers ();
-               //UpdateInterface ();
                
                UpdateInterface ();
             }

@@ -8,6 +8,7 @@ package com.tapirgames.util {
    import flash.display.JointStyle;
    
    import flash.geom.Point;
+   import flash.geom.Matrix;
    
    
    import com.tapirgames.suit2d.loader.Sprite2dFile;
@@ -98,7 +99,7 @@ package com.tapirgames.util {
       }
       
       // roundCorners is only useful when drawing border
-      public static function ClearAndDrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundJoints:Boolean = false, roundCorners:Boolean = false, cornerRadius:Number = 1.0, fillTexture:BitmapData = null):void
+      public static function ClearAndDrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundJoints:Boolean = false, roundCorners:Boolean = false, cornerRadius:Number = 1.0, fillTexture:BitmapData = null, fillTextureMatrix:Matrix = null):void
       {
          shape.graphics.clear ();
          if (filled)
@@ -106,7 +107,7 @@ package com.tapirgames.util {
             if (fillTexture == null)
                shape.graphics.beginFill(fillColor);
             else
-               shape.graphics.beginBitmapFill (fillTexture);
+               shape.graphics.beginBitmapFill (fillTexture, fillTextureMatrix);
          }
          if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundJoints ? CapsStyle.ROUND: CapsStyle.SQUARE, roundJoints ? JointStyle.ROUND : JointStyle.MITER, 255);
          if (roundCorners)
@@ -117,14 +118,14 @@ package com.tapirgames.util {
       }
       
       // roundCorners is only useful when drawing border
-      public static function DrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundJoints:Boolean = false, roundCorners:Boolean = false, cornerRadius:Number = 1.0, fillTexture:BitmapData = null):void
+      public static function DrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundJoints:Boolean = false, roundCorners:Boolean = false, cornerRadius:Number = 1.0, fillTexture:BitmapData = null, fillTextureMatrix:Matrix = null):void
       {
          if (filled)
          {
             if (fillTexture == null)
                shape.graphics.beginFill(fillColor);
             else
-               shape.graphics.beginBitmapFill (fillTexture);
+               shape.graphics.beginBitmapFill (fillTexture, fillTextureMatrix);
          }
          if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundJoints ? CapsStyle.ROUND: CapsStyle.SQUARE, roundJoints ? JointStyle.ROUND : JointStyle.MITER, 255);
          if (roundCorners)
@@ -160,7 +161,7 @@ package com.tapirgames.util {
          if (filled) shape.graphics.endFill();
       }
       
-      public static function ClearAndDrawCircle (shape:Object, x:Number, y:Number, radius:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF, fillTexture:BitmapData = null):void
+      public static function ClearAndDrawCircle (shape:Object, x:Number, y:Number, radius:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF, fillTexture:BitmapData = null, fillTextureMatrix:Matrix = null):void
       {
          shape.graphics.clear ();
          if (filled)
@@ -168,21 +169,21 @@ package com.tapirgames.util {
             if (fillTexture == null)
                shape.graphics.beginFill(fillColor);
             else
-               shape.graphics.beginBitmapFill (fillTexture);
+               shape.graphics.beginBitmapFill (fillTexture, fillTextureMatrix);
          }
          if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
          shape.graphics.drawCircle(x, y, radius);
          if (filled) shape.graphics.endFill();
       }
       
-      public static function DrawCircle (shape:Object, x:Number, y:Number, radius:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF, fillTexture:BitmapData = null):void
+      public static function DrawCircle (shape:Object, x:Number, y:Number, radius:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF, fillTexture:BitmapData = null, fillTextureMatrix:Matrix = null):void
       {
          if (filled)
          {
             if (fillTexture == null)
                shape.graphics.beginFill(fillColor);
             else
-               shape.graphics.beginBitmapFill (fillTexture);
+               shape.graphics.beginBitmapFill (fillTexture, fillTextureMatrix);
          }
          if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
          shape.graphics.drawCircle(x, y, radius);
@@ -274,14 +275,14 @@ package com.tapirgames.util {
          shape.graphics.lineStyle();
       }
       
-      public static function ClearAndDrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFF, fillTexture:BitmapData = null):void
+      public static function ClearAndDrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFF, fillTexture:BitmapData = null, fillTextureMatrix:Matrix = null):void
       {
          shape.graphics.clear ();
          
-         DrawPolygon (shape, points, borderColor, borderSize, filled, fillColor, fillTexture);
+         DrawPolygon (shape, points, borderColor, borderSize, filled, fillColor, fillTexture, fillTextureMatrix);
       }
       
-      public static function DrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF, fillTexture:BitmapData = null):void
+      public static function DrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF, fillTexture:BitmapData = null, fillTextureMatrix:Matrix = null):void
       {
          if (points == null)
             return;
@@ -295,7 +296,7 @@ package com.tapirgames.util {
             if (fillTexture == null)
                shape.graphics.beginFill(fillColor);
             else
-               shape.graphics.beginBitmapFill (fillTexture);
+               shape.graphics.beginBitmapFill (fillTexture, fillTextureMatrix);
          }
          if (borderSize >= 0) 
             shape.graphics.lineStyle(borderSize, borderColor);

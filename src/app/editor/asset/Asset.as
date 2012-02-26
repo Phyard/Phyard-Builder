@@ -355,6 +355,11 @@ package editor.asset {
          }
       }
       
+      public function MoveBodyTexture (offsetX:Number, offsetY:Number, intentionDone:Boolean = true):void
+      {
+         // to override
+      }
+      
       public function MoveTo (targetX:Number, targetY:Number, intentionDone:Boolean = true):void
       {
          SetPosition (targetX, targetY);
@@ -386,6 +391,11 @@ package editor.asset {
          }
       }
       
+      public function RotateBodyTexturePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number, intentionDone:Boolean = true):void
+      {
+         // to override
+      }
+      
       public function RotateSelf (deltaRotation:Number, intentionDone:Boolean = true):void
       {
          if (IsFlipped ())
@@ -398,6 +408,11 @@ package editor.asset {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+      }
+      
+      public function RotateBodyTextureSelf (deltaRotation:Number, intentionDone:Boolean = true):void
+      {
+         // to override
       }
       
       // generally, don't use this function
@@ -428,6 +443,11 @@ package editor.asset {
          }
       }
       
+      public function ScaleBodyTexturePosition (centerX:Number, centerY:Number, s:Number, intentionDone:Boolean = true):void
+      {
+         // to override
+      }
+      
       public function ScaleSelf (s:Number, intentionDone:Boolean = true):void
       {
          if (s < 0)
@@ -440,6 +460,11 @@ package editor.asset {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+      }
+      
+      public function ScaleBodyTextureSelf (s:Number, intentionDone:Boolean = true):void
+      {
+         // to override
       }
       
       public function ScaleSelfTo (targetScale:Number, intentionDone:Boolean = true):void
@@ -464,6 +489,11 @@ package editor.asset {
          }
       }
       
+      public function FlipBodyTexturePosition (planeX:Number, intentionDone:Boolean = true):void
+      {
+         // to override
+      }
+      
       public function FlipSelf (intentionDone:Boolean = true):void
       {
          SetFlipped (! IsFlipped ());
@@ -473,6 +503,11 @@ package editor.asset {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+      }
+      
+      public function FlipBodyTextureSelf (intentionDone:Boolean = true):void
+      {
+         // to override
       }
       
 //====================================================================

@@ -91,17 +91,6 @@ package editor.image.vector
 
          return new Point (centerX, centerY);
       }
-      
-      protected var mBodyTextureModule:AssetImageBitmapModule = null;
-      public function GetBodyTextureModule ():AssetImageBitmapModule
-      {
-         return mBodyTextureModule;
-      }
-      
-      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void
-      {
-         mBodyTextureModule = bitmapModule;
-      }
 
       public function CreateSprite ():DisplayObject
       {
@@ -134,8 +123,12 @@ package editor.image.vector
          }
          else if (numVertexes >= 3)
          {
+            var bitmapModule:AssetImageBitmapModule = GetBodyTextureModule () as AssetImageBitmapModule;
+            var bitmapTransform:Transform2D = GetBodyTextureTransform ();
+            
             GraphicsUtil.ClearAndDrawPolygon (polygonSprite, vertexPoints, borderColor, borderThickness, drawBg, filledColor, 
-                                              mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData ());
+                                              bitmapModule == null ? null : bitmapModule.GetBitmapData (),
+                                              bitmapTransform == null ? null : bitmapTransform.ToMatrix ());
          }
 
          return polygonSprite;

@@ -16,9 +16,6 @@ package editor.image.vector
    public interface VectorShapeForEditing
    {
       function OnCreating (points:Array):Point;
-      
-      function GetBodyTextureModule ():AssetImageBitmapModule;
-      function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):void;
 
       function CreateSprite ():DisplayObject;
       function BuildSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void;

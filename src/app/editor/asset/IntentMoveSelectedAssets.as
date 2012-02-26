@@ -4,9 +4,13 @@ package editor.asset {
    {
       protected var mAssetManagerPanel:AssetManagerPanel;
       
-      public function IntentMoveSelectedAssets (assetManagerPanel:AssetManagerPanel)
+      protected var mMoveBodyTexture:Boolean;
+      
+      public function IntentMoveSelectedAssets (assetManagerPanel:AssetManagerPanel, moveBodyTexture:Boolean)
       {
          mAssetManagerPanel = assetManagerPanel;
+         
+         mMoveBodyTexture = moveBodyTexture;
       }
       
    //================================================================
@@ -32,14 +36,14 @@ package editor.asset {
          mLastX = mCurrentX;
          mLastY = mCurrentY;
          
-         mAssetManagerPanel.MoveSelectedAssets (dx, dy, false);
+         mAssetManagerPanel.MoveSelectedAssets (mMoveBodyTexture, dx, dy, false);
          
          super.Process (finished);
       }
       
       override protected function TerminateInternal (passively:Boolean):void
       {
-         mAssetManagerPanel.MoveSelectedAssets (0, 0, true);
+         mAssetManagerPanel.MoveSelectedAssets (mMoveBodyTexture, 0, 0, true);
          
          super.TerminateInternal (passively);
       }

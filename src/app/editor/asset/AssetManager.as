@@ -513,7 +513,7 @@ package editor.asset {
          return count > 0;
       }
       
-      public function MoveSelectedAssets (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
+      public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
       {
          var assetArray:Array = GetSelectedAssets ();
          
@@ -523,7 +523,10 @@ package editor.asset {
          {
             asset = assetArray [i] as Asset;
             
-            asset.Move (offsetX, offsetY, updateSelectionProxy);
+            if (moveBodyTexture)
+               asset.MoveBodyTexture (offsetX, offsetY, updateSelectionProxy);
+            else
+               asset.Move (offsetX, offsetY, updateSelectionProxy);
          }
          
          if (updateSelectionProxy && assetArray.length > 0)
@@ -532,7 +535,7 @@ package editor.asset {
          }
       }
       
-      public function RotateSelectedAssets (updateSelectionProxy:Boolean, deltaRot:Number, rotateSelf:Boolean, rotatePosition:Boolean = false, centerX:Number = NaN, centerY:Number = NaN):void
+      public function RotateSelectedAssets (rotateBodyTexture:Boolean, updateSelectionProxy:Boolean, deltaRot:Number, rotateSelf:Boolean, rotatePosition:Boolean = false, centerX:Number = NaN, centerY:Number = NaN):void
       {
          var assetArray:Array = GetSelectedAssets ();
          
@@ -548,12 +551,18 @@ package editor.asset {
             
             if (rotatePosition)
             {
-               asset.RotatePositionByCosSin (centerX, centerY, cos, sin, updateSelectionProxyWhenRotatePosition);
+               if (rotateBodyTexture)
+                  asset.RotateBodyTexturePositionByCosSin (centerX, centerY, cos, sin, updateSelectionProxyWhenRotatePosition);
+               else
+                  asset.RotatePositionByCosSin (centerX, centerY, cos, sin, updateSelectionProxyWhenRotatePosition);
             }
             
             if (rotateSelf)
             {
-               asset.RotateSelf (deltaRot, updateSelectionProxy);
+               if (rotateBodyTexture)
+                  asset.RotateBodyTextureSelf (deltaRot, updateSelectionProxy);
+               else
+                  asset.RotateSelf (deltaRot, updateSelectionProxy);
             }
          }
          
@@ -563,7 +572,7 @@ package editor.asset {
          }
       }
       
-      public function ScaleSelectedAssets (updateSelectionProxy:Boolean, s:Number, scaleSelf:Boolean, scalePosition:Boolean = false, centerX:Number = NaN, centerY:Number = NaN):void
+      public function ScaleSelectedAssets (scaleBodyTexture:Boolean, updateSelectionProxy:Boolean, s:Number, scaleSelf:Boolean, scalePosition:Boolean = false, centerX:Number = NaN, centerY:Number = NaN):void
       {
          var assetArray:Array = GetSelectedAssets ();
          
@@ -577,12 +586,18 @@ package editor.asset {
             
             if (scalePosition)
             {
-               asset.ScalePosition (centerX, centerY, s, updateSelectionProxyWhenScalePosition);
+               if (scaleBodyTexture)
+                  asset.ScaleBodyTexturePosition (centerX, centerY, s, updateSelectionProxyWhenScalePosition);
+               else
+                  asset.ScalePosition (centerX, centerY, s, updateSelectionProxyWhenScalePosition);
             }
             
             if (scaleSelf)
             {
-               asset.ScaleSelf (s, updateSelectionProxy);
+               if (scaleBodyTexture)
+                  asset.ScaleBodyTextureSelf (s, updateSelectionProxy);
+               else
+                  asset.ScaleSelf (s, updateSelectionProxy);
             }
          }
          
@@ -592,7 +607,7 @@ package editor.asset {
          }
       }
       
-      public function FlipSelectedAssets (updateSelectionProxy:Boolean, flipSelf:Boolean, flipPosition:Boolean = false, planeX:Number = NaN):void
+      public function FlipSelectedAssets (flipBodyTexture:Boolean, updateSelectionProxy:Boolean, flipSelf:Boolean, flipPosition:Boolean = false, planeX:Number = NaN):void
       {
          var assetArray:Array = GetSelectedAssets ();
          
@@ -606,12 +621,18 @@ package editor.asset {
             
             if (flipPosition)
             {
-               asset.FlipPosition (planeX, updateSelectionProxyWhenScalePosition);
+               if (flipBodyTexture)
+                  asset.FlipBodyTexturePosition (planeX, updateSelectionProxyWhenScalePosition);
+               else
+                  asset.FlipPosition (planeX, updateSelectionProxyWhenScalePosition);
             }
             
             if (flipSelf)
             {
-               asset.FlipSelf (updateSelectionProxy);
+               if (flipBodyTexture)
+                  asset.FlipBodyTextureSelf (updateSelectionProxy);
+               else
+                  asset.FlipSelf (updateSelectionProxy);
             }
          }
          

@@ -8,13 +8,17 @@ package editor.asset {
       protected var mRotatePosition:Boolean;
       protected var mRotateSelf:Boolean;
       
-      public function IntentRotateSelectedAssets (assetManagerPanel:AssetManagerPanel, centerX:Number, centerY:Number, rotatePosition:Boolean, rotateSelf:Boolean)
+      protected var mRotateBodyTexture:Boolean;
+      
+      public function IntentRotateSelectedAssets (assetManagerPanel:AssetManagerPanel, rotateBodyTexture:Boolean, centerX:Number, centerY:Number, rotatePosition:Boolean, rotateSelf:Boolean)
       {
          mAssetManagerPanel = assetManagerPanel;
          mCenterX = centerX;
          mCenterY = centerY;
          mRotatePosition = rotatePosition;
          mRotateSelf = rotateSelf;
+         
+         mRotateBodyTexture = rotateBodyTexture;
       }
       
    //================================================================
@@ -43,7 +47,8 @@ package editor.asset {
       
          if (currentAngle != lastAngle)
          {
-            mAssetManagerPanel.RotateSelectedAssets (mCenterX, mCenterY, currentAngle - lastAngle, mRotatePosition, mRotateSelf, false);
+            mAssetManagerPanel.RotateSelectedAssets (mRotateBodyTexture, mCenterX, mCenterY, currentAngle - lastAngle, mRotatePosition, mRotateSelf, false);
+            
             mAssetManagerPanel.RepositionScaleRotateFlipHandlers (1.0, currentAngle - startAngle);
          }
          
@@ -52,7 +57,8 @@ package editor.asset {
       
       override protected function TerminateInternal (passively:Boolean):void
       {
-         mAssetManagerPanel.RotateSelectedAssets (mCenterX, mCenterY, 0, mRotatePosition, mRotateSelf, true);
+         mAssetManagerPanel.RotateSelectedAssets (mRotateBodyTexture, mCenterX, mCenterY, 0, mRotatePosition, mRotateSelf, true);
+         
          mAssetManagerPanel.RepositionScaleRotateFlipHandlers (1.0, 0.0);
          
          super.TerminateInternal (passively);

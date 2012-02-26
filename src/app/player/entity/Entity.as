@@ -744,10 +744,11 @@ package player.entity {
       
       public static const MinId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
       
-      internal var mSpecialId:int = MinId;
       public static var sLastSpecialId:int = MinId;
+      
+      internal var mSpecialId:int = MinId;
 
-      internal function IncreaseLastSpecialId ():void
+      public function IncreaseLastSpecialId ():void
       {
          if (sLastSpecialId == 0x7FFFFFFF)
             ResetEntitySpecialIds (); // generally, this will not happen
@@ -778,7 +779,9 @@ package player.entity {
       }
       
       // for some optimizations
-      public var mUserData1:Object;
-      public var mUserData2:Object;
+      //public var mUserData1:Object;
+      //public var mUserData2:Object;
+      
+      public var mTempData:Object;
    }
 }

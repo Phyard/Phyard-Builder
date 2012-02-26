@@ -224,6 +224,7 @@ package player.physics {
                                                              b2Vec2.b2Vec2_From2Numbers (startPointX, startPointY));
 
          // ...
+//trace ("=========================================== (" + startPointX + ", " + startPointY + ") to (" + endPointX + ", " + endPointY + ")");
          
          var shape:EntityShape;
          var intersection:b2eRayCastIntersection;
@@ -232,6 +233,9 @@ package player.physics {
             shape = ((intersection.mFixture as b2Fixture).GetUserData () as PhysicsProxyShape).GetEntityShape ();
             intersection.mUserData = shape;
             intersection.mIsIncoming = true;
+//trace ("++ in@" + intersection.mFraction + "," + shape.ToString () + ": " + shape.mTempData);
+            
+            shape.mTempData = 0;
          }
          for each (intersection in outcomingIntersections)
          {
@@ -240,6 +244,9 @@ package player.physics {
             intersection.mIsIncoming = false;
             
             intersection.mFraction = 1.0 - intersection.mFraction;
+//trace ("--- out@" + intersection.mFraction + "," + shape.ToString () + ": " + shape.mTempData);
+            
+            shape.mTempData = 0;
          }
 
          var allIntersections:Array = incomingIntersections.concat (outcomingIntersections);
@@ -247,57 +254,76 @@ package player.physics {
          
          // ...
          
+         if (allIntersections.length > 0)
+         {
+            var fixturesAtStartVertex:Array = b2eWorldAABBQueryCallback.GetFixturesContainPoint (_b2World, b2Vec2.b2Vec2_From2Numbers (startPointX, startPointY));
+            var i:int;
+            
+            var firstIntersection:b2eRayCastIntersection = allIntersections [0] as b2eRayCastIntersection;
+            if (firstIntersection.mIsIncoming) // box2d has some inaccuracy. A trick to make the result better.
+            {
+               var fixturesAtHalfFirstIncomingPoint:Array = b2eWorldAABBQueryCallback.GetFixturesContainPoint (_b2World, 
+                                       b2Vec2.b2Vec2_From2Numbers (0.5 * (startPointX + firstIntersection.mPoint.x), 0.5 * (startPointY + firstIntersection.mPoint.y)));
+               
+               var validFixturesAtStartVertex:Array = new Array ();
+               for (i = 0; i < fixturesAtStartVertex.length; ++ i)
+               {
+                  var fixture:Object = fixturesAtStartVertex [i];
+                  if (fixturesAtHalfFirstIncomingPoint.indexOf (fixture) >= 0)
+                  {
+                     validFixturesAtStartVertex.push (fixture);
+                  }
+               }
+               
+               fixturesAtStartVertex = validFixturesAtStartVertex;
+            }
+            
+            for (i = 0; i < fixturesAtStartVertex.length; ++ i)
+            {
+               shape = ((fixturesAtStartVertex [i] as b2Fixture).GetUserData () as PhysicsProxyShape).GetEntityShape ();
+               
+               shape.mTempData = (shape.mTempData as int) + 1;
+//trace (">>>" + shape.ToString () + ": " + shape.mTempData);
+            }
+         }
+         
+         // ...
+//trace ("********");
+//var jjj:int = 0;
+         
          var validIntersections:Array = new Array ();
          
          for each (intersection in allIntersections)
          {
             shape = intersection.mUserData as EntityShape;
 
+//trace ("intersection#" + jjj + ": " + (intersection.mIsIncoming ? "in@" : "out@") + intersection.mFraction + ", " + shape.ToString () + ": " + shape.mTempData);
             if (intersection.mIsIncoming)
             {
-               if (shape.mUserData2 != null)
+               if (shape.mTempData <= 0) // should not < 0
                {
-                  validIntersections.push (shape.mUserData2);
-                  
-                  shape.mUserData1 = null;
-                  shape.mUserData2 = null;
+//trace ("   new in added");
+                  validIntersections.push (intersection);
+                  shape.mTempData = 0;
                }
                
-               if (shape.mUserData1 == null)
-               {
-                  shape.mUserData1 = intersection;
-                  
-                  validIntersections.push (intersection);
-               }
+               shape.mTempData = (shape.mTempData as int) + 1;
             }
             else
             {
-               shape.mUserData2 = intersection;
+               shape.mTempData = (shape.mTempData as int) - 1;
+               
+               if (shape.mTempData <= 0) // should not < 0 but possible for box2d's inaccuracy
+               {
+//trace ("   new out added");
+                  validIntersections.push (intersection);
+                  shape.mTempData = 0;
+               }
             }
          }
          
          // ...
          
-         for each (intersection in outcomingIntersections)
-         {
-            shape = intersection.mUserData as EntityShape;
-
-            if (shape.mUserData2 == intersection)
-            {
-               validIntersections.push (intersection);
-            }
-            
-            shape.mUserData2 = null;
-         }
-         
-         for each (intersection in incomingIntersections)
-         {
-            shape = intersection.mUserData as EntityShape;
-            shape.mUserData1 = null;
-         }
-
-         validIntersections.sort (IntersectionComparor);
-
          return validIntersections;
       }
       
@@ -362,8 +388,7 @@ package player.physics {
          for each (intersection in validIntersections)
          {
             shape = intersection.mUserData as EntityShape;
-            shape.mUserData1 = null;
-            shape.mUserData2 = null;
+            shape.mTempData = 0;
          }
          
          var intersectedShapes:Array = new Array ();
@@ -372,40 +397,34 @@ package player.physics {
          {
             shape = intersection.mUserData as EntityShape;
             
+            var shapeTempData:int = shape.mTempData as int;
+            
             if (intersection.mIsIncoming)
             {
-               shape.mUserData1 = intersection;
-               
-               if (includingHalfIntersecteds && shape.mUserData2 == null)
+               if (shapeTempData < 2)
                {
-                  shape.mUserData2 = intersection;
-                  intersectedShapes.push (shape);
+                  if (includingHalfIntersecteds)
+                  {
+                     intersectedShapes.push (shape);
+                     shape.mTempData = 2;
+                  }
+                  else
+                  {
+                     shape.mTempData = 1;
+                  }
                }
             }
             else
             {
-               if (includingHalfIntersecteds)
+               if (shapeTempData < 2)
                {
-                  if (shape.mUserData1 == null)
+                  if (includingHalfIntersecteds || shapeTempData > 0)
                   {
-                     shape.mUserData1 = intersection;
                      intersectedShapes.push (shape);
+                     shape.mTempData = 2;
                   }
                }
-               else if (shape.mUserData1 != null && shape.mUserData2 == null)
-               {
-                  intersectedShapes.push (shape);
-               }
-
-               shape.mUserData2 = intersection;
             }
-         }
-         
-         for each (intersection in validIntersections)
-         {
-            shape = intersection.mUserData as EntityShape;
-            shape.mUserData1 = null;
-            shape.mUserData2 = null;
          }
          
          return intersectedShapes;

@@ -39,6 +39,7 @@ package common {
    
    import editor.image.AssetImage;
    import editor.image.AssetImageManager;
+   import editor.image.AssetImageBitmapModule;
    import editor.image.AssetImagePureModule;
    import editor.image.AssetImagePureModuleManager;
    import editor.image.AssetImageCompositeModule;
@@ -1049,6 +1050,22 @@ package common {
                   //Text Shape 最好还是不从Rectangle继承下来。以后可以选择多种气泡背景，Rectangle只是其中之一。
                   //原点可以选在网格9个位置
                }
+               
+               //>> from v1.60
+               var bodyTextureDefine:Object = new Object ();
+               moduleInstanceDefine.mBodyTextureDefine = bodyTextureDefine;
+               
+               var bodyTextureTransform:Transform2D = areaVectorShape.GetBodyTextureTransform ();
+               bodyTextureDefine.mModuleIndex = editorWorld.GetImageModuleIndex (areaVectorShape.GetBodyTextureModule () as AssetImageModule);
+               if (bodyTextureDefine.mModuleIndex >= 0)
+               {
+                  bodyTextureDefine.mPosX = bodyTextureTransform == null ? 0.0 : bodyTextureTransform.mOffsetX;
+                  bodyTextureDefine.mPosY = bodyTextureTransform == null ? 0.0 : bodyTextureTransform.mOffsetY;
+                  bodyTextureDefine.mScale = bodyTextureTransform == null ? 1.0 : bodyTextureTransform.mScale;
+                  bodyTextureDefine.mIsFlipped = bodyTextureTransform == null ? false : bodyTextureTransform.mFlipped;
+                  bodyTextureDefine.mRotation = bodyTextureTransform == null ? 0.0 : bodyTextureTransform.mRotation;
+               }
+               //<<
             }
          }
          else if (imageModule is AssetImageNullModule)
@@ -1160,6 +1177,16 @@ package common {
                {
                   areaVectorShape.SetBorderOpacityAndColor (moduleInstanceDefine.mShapeBorderOpacityAndColor); // argb
                   areaVectorShape.SetBorderThickness (moduleInstanceDefine.mShapeBorderThickness);
+                  
+                  //>> from v1.60
+                  var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
+                  if (bodyTextureDefine.mModuleIndex >= 0)
+                  {
+                     areaVectorShape.SetBodyTextureModule (editorWorld.GetImageModuleByIndex (moduleInstanceDefine.mModuleIndex) as AssetImageBitmapModule);
+                     areaVectorShape.SetBodyTextureTransform (new Transform2D (bodyTextureDefine.mPosX, bodyTextureDefine.mPosY, 
+                                                              bodyTextureDefine.mScale, bodyTextureDefine.mIsFlipped, bodyTextureDefine.mRotation));
+                  }
+                  //<<
                }
                
                vectorShape = areaVectorShape;
@@ -2636,7 +2663,7 @@ package common {
             {
                var assembledModuleDefine:Object = new Object ();
                
-               assembledModuleDefine.mModulePartDefines = XmlElements2ModuleInstanceDefines (element.ModulePart, false);
+               assembledModuleDefine.mModulePartDefines = XmlElements2ModuleInstanceDefines (worldDefine.mVersion, element.ModulePart, false);
                
                worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
             }
@@ -2646,7 +2673,7 @@ package common {
                var sequencedModuleDefine:Object = new Object ();
                
                //sequencedModuleDefine.mIsLooped = parseInt(element.@looped) != 0;
-               sequencedModuleDefine.mModuleSequenceDefines = XmlElements2ModuleInstanceDefines (element.ModuleSequence, true);
+               sequencedModuleDefine.mModuleSequenceDefines = XmlElements2ModuleInstanceDefines (worldDefine.mVersion, element.ModuleSequence, true);
                
                worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
             }
@@ -2682,7 +2709,7 @@ package common {
          return worldDefine;
       }
       
-      public static function XmlElements2ModuleInstanceDefines (xmlElements:XMLList, forSequencedModule:Boolean):Array
+      public static function XmlElements2ModuleInstanceDefines (worldVersion:int, xmlElements:XMLList, forSequencedModule:Boolean):Array
       {
          var moduleInstanceDefines:Array = new Array ();
          
@@ -2703,7 +2730,7 @@ package common {
                moduleInstanceDefine.mModuleDuration = parseFloat (element.@duration);
             }
             
-            XmlElement2ModuleInstanceDefine (moduleInstanceDefine, element);
+            XmlElement2ModuleInstanceDefine (worldVersion, moduleInstanceDefine, element);
             
             moduleInstanceDefines.push (moduleInstanceDefine);
          }
@@ -2711,7 +2738,7 @@ package common {
          return moduleInstanceDefines;
       }
       
-      public static function XmlElement2ModuleInstanceDefine (moduleInstanceDefine:Object, element:XML):void
+      public static function XmlElement2ModuleInstanceDefine (worldVersion:int, moduleInstanceDefine:Object, element:XML):void
       {
          moduleInstanceDefine.mModuleType = element.@module_type;
          
@@ -2746,6 +2773,24 @@ package common {
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
                   moduleInstanceDefine.mPolyLocalPoints = XmlElement2LocalVertices (element);
+               }
+               
+               if (worldVersion >= 0x0160)
+               {
+                  var bodyTextureElement:Object = element.BodyTexture;
+                  
+                  var bodyTextureDefine:Object = new Object ();
+                  moduleInstanceDefine.mBodyTextureDefine = bodyTextureDefine;
+                  
+                  bodyTextureDefine.mModuleIndex = parseInt (bodyTextureElement.@module_index);
+                  if (bodyTextureDefine.mModuleIndex >= 0)
+                  {
+                     bodyTextureDefine.mPosX = parseFloat (bodyTextureElement.@x);
+                     bodyTextureDefine.mPosY = parseFloat (bodyTextureElement.@y);
+                     bodyTextureDefine.mScale = parseFloat(bodyTextureElement.@scale);
+                     bodyTextureDefine.mIsFlipped = parseInt (bodyTextureElement.@flipped) != 0;
+                     bodyTextureDefine.mRotation = parseFloat (bodyTextureElement.@r);
+                  }
                }
             }
          }
@@ -3935,7 +3980,7 @@ package common {
             {
                var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
 
-               WriteModuleInstanceDefinesIntoBinFile (byteArray, assembledModuleDefine.mModulePartDefines, false);
+               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, assembledModuleDefine.mModulePartDefines, false);
             }
 
             byteArray.writeShort (worldDefine.mSequencedModuleDefines.length);
@@ -3944,7 +3989,7 @@ package common {
                var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
 
                //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
-               WriteModuleInstanceDefinesIntoBinFile (byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
+               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
             }
          }
          
@@ -4045,7 +4090,7 @@ package common {
          }
       }
          
-      public static function WriteModuleInstanceDefinesIntoBinFile (byteArray:ByteArray, moduleInstanceDefines:Array, forSequencedModule:Boolean):void
+      public static function WriteModuleInstanceDefinesIntoBinFile (worldVersion:int, byteArray:ByteArray, moduleInstanceDefines:Array, forSequencedModule:Boolean):void
       {
          byteArray.writeShort (moduleInstanceDefines.length);
          for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
@@ -4065,11 +4110,11 @@ package common {
                byteArray.writeFloat (moduleInstanceDefine.mModuleDuration);
             }
             
-            WriteModuleInstanceDefineIntoBinFile (byteArray, moduleInstanceDefine);
+            WriteModuleInstanceDefineIntoBinFile (worldVersion, byteArray, moduleInstanceDefine);
          }
       }
       
-      public static function WriteModuleInstanceDefineIntoBinFile (byteArray:ByteArray, moduleInstanceDefine:Object):void
+      public static function WriteModuleInstanceDefineIntoBinFile (worldVersion:int, byteArray:ByteArray, moduleInstanceDefine:Object):void
       {
          byteArray.writeShort (moduleInstanceDefine.mModuleType);
          
@@ -4104,6 +4149,21 @@ package common {
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
                   WriteLocalVerticesIntoBinFile (byteArray, moduleInstanceDefine.mPolyLocalPoints);
+               }
+               
+               if (worldVersion >= 0x0160)
+               {
+                  var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
+                  
+                  byteArray.writeShort (bodyTextureDefine.mModuleIndex);
+                  if (bodyTextureDefine.mModuleIndex >= 0)
+                  {
+                     byteArray.writeFloat (bodyTextureDefine.mPosX);
+                     byteArray.writeFloat (bodyTextureDefine.mPosY);
+                     byteArray.writeFloat (bodyTextureDefine.mScale);
+                     byteArray.writeByte (bodyTextureDefine.mIsFlipped ? 1 : 0);
+                     byteArray.writeFloat (bodyTextureDefine.mRotation);
+                  }
                }
             }
          }

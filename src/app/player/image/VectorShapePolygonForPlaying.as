@@ -28,6 +28,9 @@ package player.image
                transform.TransformUntransformedDisplayObject (bodyShape);
             
             moduleSprite.addChild (bodyShape);
+         
+            var bitmapModule:ImageBitmap = GetBodyTextureModule () as ImageBitmap;
+            var bitmapTransform:Transform2D = GetBodyTextureTransform ();
             
             GraphicsUtil.ClearAndDrawPolygon (
                      bodyShape,
@@ -35,7 +38,9 @@ package player.image
                      borderColor,
                      -1, // not draw border
                      true, // draw background
-                     bodyColor
+                     bodyColor,
+                     bitmapModule == null ? null : bitmapModule.GetBitmapData (),
+                     bitmapTransform == null ? null : bitmapTransform.ToMatrix ()
                   );
          }
          

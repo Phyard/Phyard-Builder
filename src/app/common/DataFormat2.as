@@ -762,7 +762,7 @@ package common {
 
             xml.CollisionCategories.@default_category_index = worldDefine.mDefaultCollisionCategoryIndex;
 
-            xml.CollisionCategoryFriendPairs = <CollisionCategoryFriendPairs />
+            xml.CollisionCategoryFriendPairs = <CollisionCategoryFriendPairs />;
 
             for (var pairId:int = 0; pairId < worldDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
             {
@@ -860,7 +860,7 @@ package common {
 
                element = <AssembledModule />;
                
-               ModuleInstanceDefines2XmlElements (assembledModuleDefine.mModulePartDefines, element, "ModulePart", false);
+               ModuleInstanceDefines2XmlElements (worldDefine.mVersion, assembledModuleDefine.mModulePartDefines, element, "ModulePart", false);
                
                xml.AssembledModules.appendChild (element);
             }
@@ -872,7 +872,7 @@ package common {
                element = <SequencedModule />;
                
                //element.@looped = sequencedModuleDefine.mIsLooped ? 1 : 0;
-               ModuleInstanceDefines2XmlElements (sequencedModuleDefine.mModuleSequenceDefines, element, "ModuleSequence", true);
+               ModuleInstanceDefines2XmlElements (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, element, "ModuleSequence", true);
                
                xml.SequencedModules.appendChild (element);
             }
@@ -907,7 +907,7 @@ package common {
          return xml;
       }
       
-      public static function ModuleInstanceDefines2XmlElements (moduleInstanceDefines:Array, parentElement:XML, childElementName:String, forSequencedModule:Boolean):void
+      public static function ModuleInstanceDefines2XmlElements (worldVersion:int, moduleInstanceDefines:Array, parentElement:XML, childElementName:String, forSequencedModule:Boolean):void
       {
          for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
          {
@@ -929,13 +929,13 @@ package common {
                element.@duration = moduleInstanceDefine.mModuleDuration;
             }
             
-            ModuleInstanceDefine2XmlElement (moduleInstanceDefine, element);
+            ModuleInstanceDefine2XmlElement (worldVersion, moduleInstanceDefine, element);
             
             parentElement.appendChild (element);
          }
       }
       
-      public static function ModuleInstanceDefine2XmlElement (moduleInstanceDefine:Object, element:XML):void
+      public static function ModuleInstanceDefine2XmlElement (worldVersion:int, moduleInstanceDefine:Object, element:XML):void
       {
          element.@module_type = moduleInstanceDefine.mModuleType;
          
@@ -970,6 +970,24 @@ package common {
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
                   LocalVertices2XmlElement (moduleInstanceDefine.mPolyLocalPoints, element);
+               }
+               
+               if (worldVersion >= 0x0160)
+               {
+                  var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
+                  
+                  element.BodyTexture = <BodyTexture />
+                  var bodyTextureElement:Object = element.BodyTexture;
+                  
+                  bodyTextureElement.@module_index = bodyTextureDefine.mModuleIndex;
+                  if (bodyTextureDefine.mModuleIndex >= 0)
+                  {
+                     bodyTextureElement.@x = bodyTextureDefine.mPosX;
+                     bodyTextureElement.@y = bodyTextureDefine.mPosY;
+                     bodyTextureElement.@scale = bodyTextureDefine.mScale;
+                     bodyTextureElement.@flipped = bodyTextureDefine.mIsFlipped ? 1 : 0;
+                     bodyTextureElement.@r = bodyTextureDefine.mRotation;
+                  }
                }
             }
          }
@@ -2257,7 +2275,7 @@ package common {
             {
                var assembledModuleDefine:Object = new Object ();
 
-               assembledModuleDefine.mModulePartDefines = ReadModuleInstanceDefinesFromBinFile (byteArray, false);
+               assembledModuleDefine.mModulePartDefines = ReadModuleInstanceDefinesFromBinFile (worldDefine.mVersion, byteArray, false);
                
                worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
             }
@@ -2268,7 +2286,7 @@ package common {
                var sequencedModuleDefine:Object = new Object ();
 
                //sequencedModuleDefine.mIsLooped = byteArray.readByte () != 0;
-               sequencedModuleDefine.mModuleSequenceDefines = ReadModuleInstanceDefinesFromBinFile (byteArray, true);
+               sequencedModuleDefine.mModuleSequenceDefines = ReadModuleInstanceDefinesFromBinFile (worldDefine.mVersion, byteArray, true);
                
                worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
             }
@@ -2373,7 +2391,7 @@ package common {
          }
       }
          
-      public static function ReadModuleInstanceDefinesFromBinFile (byteArray:ByteArray, forSequencedModule:Boolean):Array
+      public static function ReadModuleInstanceDefinesFromBinFile (worldVersion:int, byteArray:ByteArray, forSequencedModule:Boolean):Array
       {
          var numModuleInstances:int = byteArray.readShort ();
          var moduleInstanceDefines:Array= new Array (numModuleInstances);
@@ -2396,13 +2414,13 @@ package common {
                moduleInstanceDefine.mModuleDuration = byteArray.readFloat ();
             }
             
-            ReadModuleInstanceDefineFromBinFile (byteArray, moduleInstanceDefine);
+            ReadModuleInstanceDefineFromBinFile (worldVersion, byteArray, moduleInstanceDefine);
          }
          
          return moduleInstanceDefines;
       }
       
-      public static function ReadModuleInstanceDefineFromBinFile (byteArray:ByteArray, moduleInstanceDefine:Object):void
+      public static function ReadModuleInstanceDefineFromBinFile (worldVersion:int, byteArray:ByteArray, moduleInstanceDefine:Object):void
       {
          moduleInstanceDefine.mModuleType = byteArray.readShort ();
          
@@ -2437,6 +2455,22 @@ package common {
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
                   moduleInstanceDefine.mPolyLocalPoints = ReadLocalVerticesFromBinFile (byteArray);
+               }
+               
+               if (worldVersion >= 0x0160)
+               {
+                  var bodyTextureDefine:Object = new Object ();
+                  moduleInstanceDefine.mBodyTextureDefine = bodyTextureDefine;
+                  
+                  bodyTextureDefine.mModuleIndex = byteArray.readShort ();
+                  if (bodyTextureDefine.mModuleIndex >= 0)
+                  {
+                     bodyTextureDefine.mPosX = byteArray.readFloat ();
+                     bodyTextureDefine.mPosY = byteArray.readFloat ();
+                     bodyTextureDefine.mScale = byteArray.readFloat ();
+                     bodyTextureDefine.mIsFlipped = byteArray.readByte () != 0;
+                     bodyTextureDefine.mRotation = byteArray.readFloat ();
+                  }
                }
             }
          }
@@ -2834,7 +2868,7 @@ package common {
             {
                var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
 
-               AdjustNumberValuesInModuleInstanceDefines (assembledModuleDefine.mModulePartDefines, false);
+               AdjustNumberValuesInModuleInstanceDefines (worldDefine.mVersion, assembledModuleDefine.mModulePartDefines, false);
             }
             
             for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
@@ -2842,7 +2876,7 @@ package common {
                var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
 
                //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
-               AdjustNumberValuesInModuleInstanceDefines (sequencedModuleDefine.mModuleSequenceDefines, true);
+               AdjustNumberValuesInModuleInstanceDefines (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, true);
             }
          //}
          //
@@ -2866,9 +2900,9 @@ package common {
             entityDefine.mLinearVelocityAngle = ValueAdjuster.Number2Precision (entityDefine.mLinearVelocityAngle, 6);
             entityDefine.mAngularVelocity = ValueAdjuster.Number2Precision (entityDefine.mAngularVelocity, 6);
          }
-      } 
+      }
       
-      public static function AdjustNumberValuesInModuleInstanceDefines (moduleInstanceDefines:Array, forSequencedModule:Boolean):void
+      public static function AdjustNumberValuesInModuleInstanceDefines (worldVersion:int, moduleInstanceDefines:Array, forSequencedModule:Boolean):void
       {
          for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
          {
@@ -2883,11 +2917,11 @@ package common {
             if (forSequencedModule)
                moduleInstanceDefine.mModuleDuration = ValueAdjuster.Number2Precision (moduleInstanceDefine.mModuleDuration, 6);
             
-            AdjustNumberValuesInModuleInstanceDefine (moduleInstanceDefine);
+            AdjustNumberValuesInModuleInstanceDefine (worldVersion, moduleInstanceDefine);
          }
       }
       
-      public static function AdjustNumberValuesInModuleInstanceDefine (moduleInstanceDefine:Object):void
+      public static function AdjustNumberValuesInModuleInstanceDefine (worldVersion:int, moduleInstanceDefine:Object):void
       {
          if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
          {
@@ -2917,6 +2951,17 @@ package common {
                {
                   AdjustNumberValuesInPointArray (moduleInstanceDefine.mPolyLocalPoints);
                }
+               
+               //>>from v1.60
+               var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
+               if (bodyTextureDefine.mModuleIndex >= 0)
+               {
+                  bodyTextureDefine.mPosX = ValueAdjuster.Number2Precision (bodyTextureDefine.mPosX, 6); //12); // here, different with entity
+                  bodyTextureDefine.mPosY = ValueAdjuster.Number2Precision (bodyTextureDefine.mPosY, 6); //12);
+                  bodyTextureDefine.mScale = ValueAdjuster.Number2Precision (bodyTextureDefine.mScale, 6);
+                  bodyTextureDefine.mRotation = ValueAdjuster.Number2Precision (bodyTextureDefine.mRotation, 6);
+               }
+               //<<
             }
          }
          //else if (Define.IsShapeEntity (moduleInstanceDefine.mModuleType))
@@ -3262,6 +3307,51 @@ package common {
                {
                   functionDefine.mDesignDependent = false;
                }
+            }
+         }
+         
+         // modules
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
+            {
+               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+
+               FillMissedFieldsInModuleInstanceDefines (worldDefine.mVersion, assembledModuleDefine.mModulePartDefines, false);
+            }
+            
+            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
+            {
+               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+
+               //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
+               FillMissedFieldsInModuleInstanceDefines (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, true);
+            }
+         }
+      }
+      
+
+      
+      public static function FillMissedFieldsInModuleInstanceDefines (worldVersion:int, moduleInstanceDefines:Array, forSequencedModule:Boolean):void
+      {
+         for (var miId:int = 0; miId < moduleInstanceDefines.length; ++ miId)
+         {
+            var moduleInstanceDefine:Object = moduleInstanceDefines [miId];
+            
+            FillMissedFieldsInModuleInstanceDefine (worldVersion, moduleInstanceDefine);
+         }
+      }
+      
+      public static function FillMissedFieldsInModuleInstanceDefine (worldVersion:int, moduleInstanceDefine:Object):void
+      {
+         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+         {
+            if (worldVersion < 0x0160)
+            {
+               var bodyTextureDefine:Object = new Object ();
+               moduleInstanceDefine.mBodyTextureDefine = bodyTextureDefine;
+               
+               bodyTextureDefine.mModuleIndex = -1;
             }
          }
       }

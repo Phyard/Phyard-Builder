@@ -260,8 +260,9 @@ package player.physics {
             var i:int;
             
             var firstIntersection:b2eRayCastIntersection = allIntersections [0] as b2eRayCastIntersection;
-            if (firstIntersection.mIsIncoming) // box2d has some inaccuracy. A trick to make the result better.
-            {
+            //if (firstIntersection.mIsIncoming) 
+            // box2d has some inaccuracy. A trick to make the result better.
+            //{
                var fixturesAtHalfFirstIncomingPoint:Array = b2eWorldAABBQueryCallback.GetFixturesContainPoint (_b2World, 
                                        b2Vec2.b2Vec2_From2Numbers (0.5 * (startPointX + firstIntersection.mPoint.x), 0.5 * (startPointY + firstIntersection.mPoint.y)));
                
@@ -276,7 +277,7 @@ package player.physics {
                }
                
                fixturesAtStartVertex = validFixturesAtStartVertex;
-            }
+            //}
             
             for (i = 0; i < fixturesAtStartVertex.length; ++ i)
             {

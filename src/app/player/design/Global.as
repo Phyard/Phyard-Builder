@@ -452,6 +452,16 @@ package player.design
                   areaShape.SetBorderOpacityAndColor (moduleInstanceDefine.mShapeBorderOpacityAndColor);
                   areaShape.SetBorderThickness (moduleInstanceDefine.mShapeBorderThickness);
                   areaShape.SetBorderThicknessInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mShapeBorderThickness));
+                  
+                  //>> from v1.60
+                  var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
+                  if (bodyTextureDefine != null && bodyTextureDefine.mModuleIndex >= 0)
+                  {
+                     areaShape.SetBodyTextureModule (GetImageModuleByGlobalIndex (bodyTextureDefine.mModuleIndex) as ImageBitmap);
+                     areaShape.SetBodyTextureTransform (new Transform2D (bodyTextureDefine.mPosX, bodyTextureDefine.mPosY, 
+                                                              bodyTextureDefine.mScale, bodyTextureDefine.mIsFlipped, bodyTextureDefine.mRotation));
+                  }
+                  //<<
                }
             }
             

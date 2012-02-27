@@ -100,6 +100,8 @@ package editor.image {
             mReferPair_Module = ReferObject (mAssetImageModule);
          }
          
+         SetBodyTextureModule (GetBodyTextureModule ()); // important. In loading the GetBodyTextureModule () may be not null
+         
          if (mAssetImageModuleInstanceForListingPeer != null) // if this function is called in constructor 
          {
             mAssetImageModuleInstanceForListingPeer.SetAssetImageModule (assetImageModule);

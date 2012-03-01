@@ -974,20 +974,9 @@ package common {
                
                if (worldVersion >= 0x0160)
                {
-                  var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
+                  element.BodyTexture = <BodyTexture />;
                   
-                  element.BodyTexture = <BodyTexture />
-                  var bodyTextureElement:Object = element.BodyTexture;
-                  
-                  bodyTextureElement.@module_index = bodyTextureDefine.mModuleIndex;
-                  if (bodyTextureDefine.mModuleIndex >= 0)
-                  {
-                     bodyTextureElement.@x = bodyTextureDefine.mPosX;
-                     bodyTextureElement.@y = bodyTextureDefine.mPosY;
-                     bodyTextureElement.@scale = bodyTextureDefine.mScale;
-                     bodyTextureElement.@flipped = bodyTextureDefine.mIsFlipped ? 1 : 0;
-                     bodyTextureElement.@r = bodyTextureDefine.mRotation;
-                  }
+                  TextureDefine2Xml (element.BodyTexture, moduleInstanceDefine.mBodyTextureDefine);
                }
             }
          }
@@ -1000,6 +989,19 @@ package common {
          }
          else // ...
          {
+         }
+      }
+      
+      public static function TextureDefine2Xml (textureElement:Object, textureDefine:Object):void
+      {
+         textureElement.@module_index = textureDefine.mModuleIndex;
+         if (textureDefine.mModuleIndex >= 0)
+         {
+            textureElement.@x = textureDefine.mPosX;
+            textureElement.@y = textureDefine.mPosY;
+            textureElement.@scale = textureDefine.mScale;
+            textureElement.@flipped = textureDefine.mIsFlipped ? 1 : 0;
+            textureElement.@r = textureDefine.mRotation;
          }
       }
       
@@ -1342,6 +1344,13 @@ package common {
                {
                   element.@radius = entityDefine.mRadius;
                   element.@appearance_type = entityDefine.mAppearanceType;
+               
+                  if (worldDefine.mVersion >= 0x0160)
+                  {
+                     element.BodyTexture = <BodyTexture />;
+                     
+                     TextureDefine2Xml (element.BodyTexture, entityDefine.mBodyTextureDefine);
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                {
@@ -1352,10 +1361,24 @@ package common {
 
                   element.@half_width = entityDefine.mHalfWidth;
                   element.@half_height = entityDefine.mHalfHeight;
+               
+                  if (worldDefine.mVersion >= 0x0160)
+                  {
+                     element.BodyTexture = <BodyTexture />;
+                     
+                     TextureDefine2Xml (element.BodyTexture, entityDefine.mBodyTextureDefine);
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                {
                   LocalVertices2XmlElement (entityDefine.mLocalPoints, element);
+               
+                  if (worldDefine.mVersion >= 0x0160)
+                  {
+                     element.BodyTexture = <BodyTexture />;
+                     
+                     TextureDefine2Xml (element.BodyTexture, entityDefine.mBodyTextureDefine);
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                {
@@ -1961,6 +1984,11 @@ package common {
                   {
                      entityDefine.mRadius = byteArray.readFloat ();
                      entityDefine.mAppearanceType = byteArray.readByte ();
+                     
+                     if (worldDefine.mVersion >= 0x0160)
+                     {
+                        entityDefine.mBodyTextureDefine = ReadTextureDefineFromBinFile (byteArray);
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
@@ -1971,10 +1999,20 @@ package common {
 
                      entityDefine.mHalfWidth = byteArray.readFloat ();
                      entityDefine.mHalfHeight = byteArray.readFloat ();
+                     
+                     if (worldDefine.mVersion >= 0x0160)
+                     {
+                        entityDefine.mBodyTextureDefine = ReadTextureDefineFromBinFile (byteArray);
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
                      entityDefine.mLocalPoints = ReadLocalVerticesFromBinFile (byteArray);
+                     
+                     if (worldDefine.mVersion >= 0x0160)
+                     {
+                        entityDefine.mBodyTextureDefine = ReadTextureDefineFromBinFile (byteArray);
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
@@ -2459,18 +2497,7 @@ package common {
                
                if (worldVersion >= 0x0160)
                {
-                  var bodyTextureDefine:Object = new Object ();
-                  moduleInstanceDefine.mBodyTextureDefine = bodyTextureDefine;
-                  
-                  bodyTextureDefine.mModuleIndex = byteArray.readShort ();
-                  if (bodyTextureDefine.mModuleIndex >= 0)
-                  {
-                     bodyTextureDefine.mPosX = byteArray.readFloat ();
-                     bodyTextureDefine.mPosY = byteArray.readFloat ();
-                     bodyTextureDefine.mScale = byteArray.readFloat ();
-                     bodyTextureDefine.mIsFlipped = byteArray.readByte () != 0;
-                     bodyTextureDefine.mRotation = byteArray.readFloat ();
-                  }
+                  moduleInstanceDefine.mBodyTextureDefine = ReadTextureDefineFromBinFile (byteArray);
                }
             }
          }
@@ -2484,6 +2511,23 @@ package common {
          else // ...
          {
          }
+      }
+      
+      public static function ReadTextureDefineFromBinFile (byteArray:ByteArray):Object
+      {
+         var textureDefine:Object = new Object ();
+         
+         textureDefine.mModuleIndex = byteArray.readShort ();
+         if (textureDefine.mModuleIndex >= 0)
+         {
+            textureDefine.mPosX = byteArray.readFloat ();
+            textureDefine.mPosY = byteArray.readFloat ();
+            textureDefine.mScale = byteArray.readFloat ();
+            textureDefine.mIsFlipped = byteArray.readByte () != 0;
+            textureDefine.mRotation = byteArray.readFloat ();
+         }
+         
+         return textureDefine;
       }
       
       public static function ReadLocalVerticesFromBinFile (byteArray:ByteArray):Array
@@ -2664,6 +2708,11 @@ package common {
 
                      if (isForPlayer)
                         entityDefine.mRadius = ValueAdjuster.AdjustCircleDisplayRadius (entityDefine.mRadius, worldDefine.mVersion);
+               
+                     if (worldDefine.mVersion >= 0x0160)
+                     {
+                        AdjustNumberValuesInTextureDefine (entityDefine.mBodyTextureDefine);
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
@@ -2679,6 +2728,11 @@ package common {
 
                      entityDefine.mHalfWidth = ValueAdjuster.Number2Precision (entityDefine.mHalfWidth, 6);
                      entityDefine.mHalfHeight = ValueAdjuster.Number2Precision (entityDefine.mHalfHeight, 6);
+               
+                     if (worldDefine.mVersion >= 0x0160)
+                     {
+                        AdjustNumberValuesInTextureDefine (entityDefine.mBodyTextureDefine);
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
@@ -2693,6 +2747,11 @@ package common {
                      {
                         if (entityDefine.mBorderThickness < 2.0)
                            entityDefine.mBuildBorder = false;
+                     }
+               
+                     if (worldDefine.mVersion >= 0x0160)
+                     {
+                        AdjustNumberValuesInTextureDefine (entityDefine.mBodyTextureDefine);
                      }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
@@ -2953,14 +3012,7 @@ package common {
                }
                
                //>>from v1.60
-               var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
-               if (bodyTextureDefine.mModuleIndex >= 0)
-               {
-                  bodyTextureDefine.mPosX = ValueAdjuster.Number2Precision (bodyTextureDefine.mPosX, 6); //12); // here, different with entity
-                  bodyTextureDefine.mPosY = ValueAdjuster.Number2Precision (bodyTextureDefine.mPosY, 6); //12);
-                  bodyTextureDefine.mScale = ValueAdjuster.Number2Precision (bodyTextureDefine.mScale, 6);
-                  bodyTextureDefine.mRotation = ValueAdjuster.Number2Precision (bodyTextureDefine.mRotation, 6);
-               }
+               AdjustNumberValuesInTextureDefine (moduleInstanceDefine.mBodyTextureDefine);
                //<<
             }
          }
@@ -2974,6 +3026,17 @@ package common {
          //else // ...
          //{
          //}
+      }
+      
+      public static function AdjustNumberValuesInTextureDefine (textureDefine:Object):void
+      {
+         if (textureDefine.mModuleIndex >= 0)
+         {
+            textureDefine.mPosX = ValueAdjuster.Number2Precision (textureDefine.mPosX, 6); //12); // here, different with entity
+            textureDefine.mPosY = ValueAdjuster.Number2Precision (textureDefine.mPosY, 6); //12);
+            textureDefine.mScale = ValueAdjuster.Number2Precision (textureDefine.mScale, 6);
+            textureDefine.mRotation = ValueAdjuster.Number2Precision (textureDefine.mRotation, 6);
+         }
       }
       
       public static function AdjustNumberValuesInPointArray (points:Array):void
@@ -3144,6 +3207,11 @@ package common {
                {
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
+                     if (worldDefine.mVersion < 0x0160)
+                     {
+                        entityDefine.mBodyTextureDefine = new Object ();
+                        entityDefine.mBodyTextureDefine.mModuleIndex = -1;
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
@@ -3151,9 +3219,20 @@ package common {
                      {
                         entityDefine.mIsRoundCorners = false;
                      }
+                     
+                     if (worldDefine.mVersion < 0x0160)
+                     {
+                        entityDefine.mBodyTextureDefine = new Object ();
+                        entityDefine.mBodyTextureDefine.mModuleIndex = -1;
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
+                     if (worldDefine.mVersion < 0x0160)
+                     {
+                        entityDefine.mBodyTextureDefine = new Object ();
+                        entityDefine.mBodyTextureDefine.mModuleIndex = -1;
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
@@ -3338,20 +3417,13 @@ package common {
          {
             var moduleInstanceDefine:Object = moduleInstanceDefines [miId];
             
-            FillMissedFieldsInModuleInstanceDefine (worldVersion, moduleInstanceDefine);
-         }
-      }
-      
-      public static function FillMissedFieldsInModuleInstanceDefine (worldVersion:int, moduleInstanceDefine:Object):void
-      {
-         if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
-         {
             if (worldVersion < 0x0160)
             {
-               var bodyTextureDefine:Object = new Object ();
-               moduleInstanceDefine.mBodyTextureDefine = bodyTextureDefine;
-               
-               bodyTextureDefine.mModuleIndex = -1;
+               if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+               {
+                  moduleInstanceDefine.mBodyTextureDefine = new Object ();
+                  moduleInstanceDefine.mBodyTextureDefine.mModuleIndex = -1;
+               }
             }
          }
       }

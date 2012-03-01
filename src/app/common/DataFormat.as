@@ -444,6 +444,11 @@ package common {
                      entityDefine.mRadius = (vectorShape as EntityVectorShapeCircle).GetRadius ();
                      
                      entityDefine.mAppearanceType = (vectorShape as EntityVectorShapeCircle).GetAppearanceType ();
+                     
+                     //>>from v1.60 (to implement)
+                     entityDefine.mBodyTextureDefine = Texture2TextureDefine (-1,
+                                                                                      null);
+                     //<<
                   }
                   else if (editorEntity is EntityVectorShapeRectangle)
                   {
@@ -455,6 +460,11 @@ package common {
                      //from v1.08
                      entityDefine.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
                      //<<
+                     
+                     //>>from v1.60 (to implement)
+                     entityDefine.mBodyTextureDefine = Texture2TextureDefine (-1,
+                                                                                      null);
+                     //<<
                   }
                   //>>from v1.04
                   else if (editorEntity is EntityVectorShapePolygon)
@@ -462,6 +472,11 @@ package common {
                      entityDefine.mEntityType = Define.EntityType_ShapePolygon;
                      
                      entityDefine.mLocalPoints = (vectorShape as EntityVectorShapePolygon).GetLocalVertexPoints ();
+                     
+                     //>>from v1.60 (to implement)
+                     entityDefine.mBodyTextureDefine = Texture2TextureDefine (-1,
+                                                                                      null);
+                     //<<
                   }
                   //<<
                   //>>from v1.05
@@ -1052,19 +1067,8 @@ package common {
                }
                
                //>> from v1.60
-               var bodyTextureDefine:Object = new Object ();
-               moduleInstanceDefine.mBodyTextureDefine = bodyTextureDefine;
-               
-               var bodyTextureTransform:Transform2D = areaVectorShape.GetBodyTextureTransform ();
-               bodyTextureDefine.mModuleIndex = editorWorld.GetImageModuleIndex (areaVectorShape.GetBodyTextureModule () as AssetImageModule);
-               if (bodyTextureDefine.mModuleIndex >= 0)
-               {
-                  bodyTextureDefine.mPosX = bodyTextureTransform == null ? 0.0 : bodyTextureTransform.mOffsetX;
-                  bodyTextureDefine.mPosY = bodyTextureTransform == null ? 0.0 : bodyTextureTransform.mOffsetY;
-                  bodyTextureDefine.mScale = bodyTextureTransform == null ? 1.0 : bodyTextureTransform.mScale;
-                  bodyTextureDefine.mIsFlipped = bodyTextureTransform == null ? false : bodyTextureTransform.mFlipped;
-                  bodyTextureDefine.mRotation = bodyTextureTransform == null ? 0.0 : bodyTextureTransform.mRotation;
-               }
+               moduleInstanceDefine.mBodyTextureDefine = Texture2TextureDefine (editorWorld.GetImageModuleIndex (areaVectorShape.GetBodyTextureModule () as AssetImageModule),
+                                                                                        areaVectorShape.GetBodyTextureTransform ());
                //<<
             }
          }
@@ -1080,7 +1084,24 @@ package common {
          }
          
          return moduleInstanceDefine;
-      }     
+      }
+      
+      public static function Texture2TextureDefine(textureModuleIndex:int, textureTransform:Transform2D):Object
+      {
+         var textureDefine:Object = new Object ();
+         
+         textureDefine.mModuleIndex = textureModuleIndex;
+         if (textureModuleIndex >= 0)
+         {
+            textureDefine.mPosX = textureTransform == null ? 0.0 : textureTransform.mOffsetX;
+            textureDefine.mPosY = textureTransform == null ? 0.0 : textureTransform.mOffsetY;
+            textureDefine.mScale = textureTransform == null ? 1.0 : textureTransform.mScale;
+            textureDefine.mIsFlipped = textureTransform == null ? false : textureTransform.mFlipped;
+            textureDefine.mRotation = textureTransform == null ? 0.0 : textureTransform.mRotation;
+         }
+         
+         return textureDefine;
+      }
       
 //==============================================================
 //
@@ -1179,13 +1200,7 @@ package common {
                   areaVectorShape.SetBorderThickness (moduleInstanceDefine.mShapeBorderThickness);
                   
                   //>> from v1.60
-                  var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
-                  if (bodyTextureDefine.mModuleIndex >= 0)
-                  {
-                     areaVectorShape.SetBodyTextureModule (editorWorld.GetImageModuleByIndex (moduleInstanceDefine.mModuleIndex) as AssetImageBitmapModule);
-                     areaVectorShape.SetBodyTextureTransform (new Transform2D (bodyTextureDefine.mPosX, bodyTextureDefine.mPosY, 
-                                                              bodyTextureDefine.mScale, bodyTextureDefine.mIsFlipped, bodyTextureDefine.mRotation));
-                  }
+                  SetShapeBodyTexture (editorWorld, areaVectorShape, moduleInstanceDefine.mBodyTextureDefine);
                   //<<
                }
                
@@ -1214,6 +1229,16 @@ package common {
             imageModule = new AssetImageNullModule ();
       
          return imageModule;
+      }
+      
+      public static function SetShapeBodyTexture (editorWorld:World, areaVectorShape:VectorShapeArea, textureDefine:Object):void
+      {
+         if (textureDefine.mModuleIndex >= 0)
+         {
+            areaVectorShape.SetBodyTextureModule (editorWorld.GetImageModuleByIndex (textureDefine.mModuleIndex) as AssetImageBitmapModule);
+            areaVectorShape.SetBodyTextureTransform (new Transform2D (textureDefine.mPosX, textureDefine.mPosY, 
+                                                     textureDefine.mScale, textureDefine.mIsFlipped, textureDefine.mRotation));
+         }
       }
       
       public static function SetShapePhysicsProperties (shape:EntityShape, entityDefine:Object, beginningCollisionCategoryIndex:int):void
@@ -1657,6 +1682,10 @@ package common {
                      circle.SetAppearanceType (entityDefine.mAppearanceType);
                      circle.SetRadius (entityDefine.mRadius);
                      
+                     //>> from v1.60
+                     //SetShapeBodyTexture (editorWorld, areaVectorShape, entityDefine.mBodyTextureDefine);
+                     //<<
+                     
                      entity = vectorShape = circle;
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
@@ -1667,6 +1696,10 @@ package common {
                      
                      //from v1.08
                      rect.SetRoundCorners (entityDefine.mIsRoundCorners);
+                     //<<
+                     
+                     //>> from v1.60
+                     //SetShapeBodyTexture (editorWorld, areaVectorShape, entityDefine.mBodyTextureDefine);
                      //<<
                      
                      entity = vectorShape = rect;
@@ -1680,6 +1713,10 @@ package common {
                      //   polygon.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
                      //   polygon.SetRotation (entityDefine.mRotation);                 // but the SetLocalVertexPoints needs position and rotation set before
                      //polygon.SetLocalVertexPoints (entityDefine.mLocalPoints);
+                     
+                     //>> from v1.60
+                     //SetShapeBodyTexture (editorWorld, areaVectorShape, entityDefine.mBodyTextureDefine);
+                     //<<
                      
                      entity = vectorShape = polygon;
                   }
@@ -2777,20 +2814,7 @@ package common {
                
                if (worldVersion >= 0x0160)
                {
-                  var bodyTextureElement:Object = element.BodyTexture;
-                  
-                  var bodyTextureDefine:Object = new Object ();
-                  moduleInstanceDefine.mBodyTextureDefine = bodyTextureDefine;
-                  
-                  bodyTextureDefine.mModuleIndex = parseInt (bodyTextureElement.@module_index);
-                  if (bodyTextureDefine.mModuleIndex >= 0)
-                  {
-                     bodyTextureDefine.mPosX = parseFloat (bodyTextureElement.@x);
-                     bodyTextureDefine.mPosY = parseFloat (bodyTextureElement.@y);
-                     bodyTextureDefine.mScale = parseFloat(bodyTextureElement.@scale);
-                     bodyTextureDefine.mIsFlipped = parseInt (bodyTextureElement.@flipped) != 0;
-                     bodyTextureDefine.mRotation = parseFloat (bodyTextureElement.@r);
-                  }
+                  moduleInstanceDefine.mBodyTextureDefine = Xml2TextureDefine (element.BodyTexture);
                }
             }
          }
@@ -2804,6 +2828,23 @@ package common {
          else // ...
          {
          }
+      }
+      
+      public static function Xml2TextureDefine (textureElement:Object):Object
+      {
+         var textureDefine:Object = new Object ();
+         
+         textureDefine.mModuleIndex = parseInt (textureElement.@module_index);
+         if (textureDefine.mModuleIndex >= 0)
+         {
+            textureDefine.mPosX = parseFloat (textureElement.@x);
+            textureDefine.mPosY = parseFloat (textureElement.@y);
+            textureDefine.mScale = parseFloat(textureElement.@scale);
+            textureDefine.mIsFlipped = parseInt (textureElement.@flipped) != 0;
+            textureDefine.mRotation = parseFloat (textureElement.@r);
+         }
+         
+         return textureDefine;
       }
       
       public static function Xml2ShapePhysicsProperties (entityDefine:Object, element:XML, worldDefine:WorldDefine):void
@@ -3091,6 +3132,11 @@ package common {
                {
                   entityDefine.mRadius = parseFloat (element.@radius);
                   entityDefine.mAppearanceType = parseInt (element.@appearance_type);
+               
+                  if (worldDefine.mVersion >= 0x0160)
+                  {
+                     entityDefine.mBodyTextureDefine = Xml2TextureDefine (element.BodyTexture);
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                {
@@ -3101,10 +3147,20 @@ package common {
                   
                   entityDefine.mHalfWidth = parseFloat (element.@half_width);
                   entityDefine.mHalfHeight = parseFloat (element.@half_height);
+               
+                  if (worldDefine.mVersion >= 0x0160)
+                  {
+                     entityDefine.mBodyTextureDefine = Xml2TextureDefine (element.BodyTexture);
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                {
                   entityDefine.mLocalPoints = XmlElement2LocalVertices (element);
+               
+                  if (worldDefine.mVersion >= 0x0160)
+                  {
+                     entityDefine.mBodyTextureDefine = Xml2TextureDefine (element.BodyTexture);
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                {
@@ -3683,6 +3739,11 @@ package common {
                   {
                      byteArray.writeFloat (entityDefine.mRadius);
                      byteArray.writeByte (entityDefine.mAppearanceType);
+                     
+                     if (worldDefine.mVersion >= 0x0160)
+                     {
+                        WriteTextureDefine (byteArray, entityDefine.mBodyTextureDefine);
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
@@ -3693,10 +3754,20 @@ package common {
                      
                      byteArray.writeFloat (entityDefine.mHalfWidth);
                      byteArray.writeFloat (entityDefine.mHalfHeight);
+                     
+                     if (worldDefine.mVersion >= 0x0160)
+                     {
+                        WriteTextureDefine (byteArray, entityDefine.mBodyTextureDefine);
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
                      WriteLocalVerticesIntoBinFile (byteArray, entityDefine.mLocalPoints);
+                     
+                     if (worldDefine.mVersion >= 0x0160)
+                     {
+                        WriteTextureDefine (byteArray, entityDefine.mBodyTextureDefine);
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
@@ -4153,17 +4224,7 @@ package common {
                
                if (worldVersion >= 0x0160)
                {
-                  var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
-                  
-                  byteArray.writeShort (bodyTextureDefine.mModuleIndex);
-                  if (bodyTextureDefine.mModuleIndex >= 0)
-                  {
-                     byteArray.writeFloat (bodyTextureDefine.mPosX);
-                     byteArray.writeFloat (bodyTextureDefine.mPosY);
-                     byteArray.writeFloat (bodyTextureDefine.mScale);
-                     byteArray.writeByte (bodyTextureDefine.mIsFlipped ? 1 : 0);
-                     byteArray.writeFloat (bodyTextureDefine.mRotation);
-                  }
+                  WriteTextureDefine (byteArray, moduleInstanceDefine.mBodyTextureDefine);
                }
             }
          }
@@ -4176,6 +4237,19 @@ package common {
          }
          else // ...
          {
+         }
+      }
+      
+      public static function WriteTextureDefine (byteArray:ByteArray, textureDefine:Object):void
+      {
+         byteArray.writeShort (textureDefine.mModuleIndex);
+         if (textureDefine.mModuleIndex >= 0)
+         {
+            byteArray.writeFloat (textureDefine.mPosX);
+            byteArray.writeFloat (textureDefine.mPosY);
+            byteArray.writeFloat (textureDefine.mScale);
+            byteArray.writeByte (textureDefine.mIsFlipped ? 1 : 0);
+            byteArray.writeFloat (textureDefine.mRotation);
          }
       }
       

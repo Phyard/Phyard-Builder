@@ -2371,7 +2371,9 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var cat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
-         numParticles = Global.GetCurrentWorld ().CreateExplosion (null, worldX, worldY, cat, numParticles, lifeSteps * Define.WorldStepTimeInterval_SpeedX1, density, restitution, speed, 1.0, color, visible);
+         numParticles = Global.GetCurrentWorld ().CreateExplosion (null, worldX, worldY, cat, numParticles, 
+                     lifeSteps * Global.GetCurrentWorld ().GetPhysicsSimulationStepTimeLength (), 
+                     density, restitution, speed, 1.0, color, visible);
 
          valueTarget.AssignValueObject (numParticles);
       }

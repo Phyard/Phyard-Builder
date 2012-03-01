@@ -798,7 +798,7 @@ package player.world {
       public function Update_FixedStepInterval_SpeedX (escapedTime1:Number, speedX:int):void
       {
          //var dt:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5;
-         //var dt:Number = Define.WorldStepTimeInterval_SpeedX1;
+         //var dt:Number = Define.WorldStepTimeInterval_SpeedX1; // before v1.60. (1.0 / 30 * 0.5)
          var dt:Number = mPhysicsSimulationStepTimeLength;
 
          if (escapedTime1 == 0)
@@ -1273,6 +1273,11 @@ package player.world {
       // particles use the last step gravity to ...
       private var mLastStepGravityAccelerationX:Number;
       private var mLastStepGravityAccelerationY:Number;
+
+      public function GetPhysicsSimulationStepTimeLength ():Number
+      {
+         return mPhysicsSimulationStepTimeLength;
+      }
 
       public function SetDefaultGravityAccelerationMagnitude (magnitude:Number):void
       {

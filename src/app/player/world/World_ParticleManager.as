@@ -4,7 +4,8 @@
 //=============================================================
 
 public static const NumParticlesToCreatedEachStep:int = 8;
-public static const ParticlesCreateingStepInterval:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5 * 0.99;
+//public static const ParticlesCreateingStepInterval:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5 * 0.99;
+// move to bomb.mParticlesCreateingStepInterval
 
 //=============================================================
 //    
@@ -41,7 +42,9 @@ public function ExplodeBomb (bombShape:EntityShape, radius:Number):void
    var particlePhysicsSpeed:Number = mCoordinateSystem.D2P_LinearVelocityMagnitude (particleDisplaySpeed);
    
    var particleDensity:Number = 5.0 * density;
-   var particleLifeTime:Number = Define.WorldStepTimeInterval_SpeedX2 * 18 * ( 0.5 + 1.5 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
+   //var particleLifeTime:Number = Define.WorldStepTimeInterval_SpeedX2 * 18 * ( 0.5 + 1.5 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
+   // from 1.60
+   var particleLifeTime:Number = GetPhysicsSimulationStepTimeLength () * 36 * ( 0.5 + 1.5 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
    
    worldDisplayRadius = worldDisplayRadius - 1;
    if (worldDisplayRadius < 1)
@@ -84,6 +87,7 @@ public function CreateExplosion (createFrondOfEntity:Entity, posX:Number, posY:N
    bomb.mParticleColor = color;
    bomb.mParticleVisible = isVisible;
    
+   bomb.mParticlesCreateingStepInterval = GetPhysicsSimulationStepTimeLength () * 0.99;
    bomb.mBornTime = 0;
    bomb.mLastTimeStamp = 0;
    bomb.mNumCreatedWaves = 0;
@@ -108,7 +112,8 @@ public function ParticleManager_Update (dt:Number):void
       }
       
       bomb.mBornTime += dt;
-      if (bomb.mBornTime - bomb.mLastTimeStamp < ParticlesCreateingStepInterval)
+      //if (bomb.mBornTime - bomb.mLastTimeStamp < ParticlesCreateingStepInterval)
+      if (bomb.mBornTime - bomb.mLastTimeStamp < bomb.mParticlesCreateingStepInterval)
          continue;
       
       var createFrondOfEntity:Entity = bomb.mCreateFrondOfEntity as Entity;

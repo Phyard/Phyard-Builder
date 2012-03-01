@@ -92,8 +92,8 @@ package common {
       public static const MinAppFPS:Number = 10.0;
       public static const MaxAppFPS:Number = 100.0;
       
-      public static const WorldStepTimeInterval_SpeedX2:Number = 1.0 / 30;
-      public static const WorldStepTimeInterval_SpeedX1:Number = 0.5 * WorldStepTimeInterval_SpeedX2;
+      //public static const WorldStepTimeInterval_SpeedX2:Number = 1.0 / 30;
+      //public static const WorldStepTimeInterval_SpeedX1:Number = 0.5 * WorldStepTimeInterval_SpeedX2;
       
       public static const WorldStepVelocityIterations_Low:int = 1;
       public static const WorldStepPositionIterations_Low:int = 1;

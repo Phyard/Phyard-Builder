@@ -154,6 +154,8 @@ package player.entity {
       {
          var displayWidth :Number = displayHalfWidth +  displayHalfWidth;
          var displayHeight:Number = displayHalfHeight +  displayHalfHeight;
+            
+         // todo: body texture (remember add texture define in ToEntityDefine)
          
          GraphicsUtil.ClearAndDrawRect (
                   mBackgroundShape,

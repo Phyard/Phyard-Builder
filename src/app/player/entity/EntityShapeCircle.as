@@ -115,6 +115,8 @@ package player.entity {
             
          // background
             
+            // todo: body texture (remember add texture define in ToEntityDefine)
+            
             GraphicsUtil.ClearAndDrawCircle (
                      mBackgroundShape,
                      0,

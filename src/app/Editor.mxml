@@ -464,7 +464,7 @@
 
    <mx:XML id="ConfigDesignMenuData">
       <root>
-         <menuitem label="Config Level Rules ..." data="rules"/>
+         <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
          <menuitem label="Config Physics Engine ..." data="physics"/>
          <menuitem label="Config World Appearance ..." data="appearance"/>
@@ -1034,7 +1034,7 @@
             
             private function OnSelectedConfigDesignMemu (event:MenuEvent):void
             {
-               if (event.item.@data == "rules")
+               if (event.item.@data == "general")
                {
                   ShowLevelRulesEditDialog ();
                }

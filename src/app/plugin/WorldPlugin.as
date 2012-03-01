@@ -67,6 +67,9 @@ package plugin
                   mInitialSoundEnabled : Global.IsSoundEnabled (), // from v1.59
                   SetSoundEnabled : Global.SetSoundEnabled, // from v1.59
                   
+                  mPreferredFPS : world.GetPreferredFPS (), // from v1.60
+                  mPauseOnFocusLost : world.IsPauseOnFocusLost (), // from v1.60 
+                  
                   "" : null
                };
             case "SetUiParams":

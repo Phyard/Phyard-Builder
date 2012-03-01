@@ -8,6 +8,7 @@ package viewer {
    
    import flash.display.DisplayObject;
    import flash.display.Sprite;
+   import flash.display.Shape;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
@@ -37,7 +38,6 @@ package viewer {
    
    import flash.system.Capabilities;
 
-   import com.tapirgames.display.FpsCounter;
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.UrlUtil;
@@ -174,6 +174,11 @@ package viewer {
       public function OnDeactivated (event:Event):void
       {
          mIsAppDeactivated = true;
+         
+         if (mStateId == StateId_Playing && mWorldDesignProperties != null && (mWorldDesignProperties.mPauseOnFocusLost as Boolean))
+         {
+            if (mSkin != null) mSkin.OnDeactivate ();
+         }
       }
 
 //======================================================================
@@ -727,6 +732,8 @@ package viewer {
          if (mWorldDesignProperties.mHasSounds == undefined)                 mWorldDesignProperties.mHasSounds = false;
          if (mWorldDesignProperties.mInitialSpeedX == undefined)             mWorldDesignProperties.mInitialSpeedX = 2;
          if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
+         if (mWorldDesignProperties.mPreferredFPS == undefined)              mWorldDesignProperties.mPreferredFPS = 30;
+         if (mWorldDesignProperties.mPauseOnFocusLost == undefined)          mWorldDesignProperties.mPauseOnFocusLost = false;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -796,7 +803,7 @@ package viewer {
 
       private function ReloadPlayerWorld (restartLevel:Boolean = false):void
       {
-      //trace ("ReloadPlayerWorld");
+      trace ("ReloadPlayerWorld");
 
          //var isFirstTime:Boolean = (mPlayerWorld == null);
          mFirstTimePlaying = (mPlayerWorld == null);
@@ -882,6 +889,9 @@ package viewer {
             mPlayerWorldZoomScale = mWorldDesignProperties.GetZoomScale ();
             mSkin.SetZoomScale (mPlayerWorldZoomScale);
             
+            // set fps. Don't forget restore fps when exit playing.
+            stage.frameRate = mWorldDesignProperties.mPreferredFPS;
+            
             ChangeState (StateId_Building);
          }
          catch (error:Error)
@@ -943,7 +953,6 @@ package viewer {
 //
 //======================================================================
 
-      private var mFpsCounter:FpsCounter;
       private var mStepTimeSpan:TimeSpan = new TimeSpan ();
 
       public function Step (singleStepMode:Boolean = false):void
@@ -1070,7 +1079,7 @@ package viewer {
          // adjust positions of layers
          OnContainerResized ();
       }
-
+      
       public function OnContainerResized ():void
       {
          var containerSize:Point = mParamsFromContainer.GetViewportSize ();

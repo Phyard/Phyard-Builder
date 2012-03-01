@@ -69,6 +69,8 @@ package player.entity {
             
             var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
             
+            // todo: body texture (remember add texture define in ToEntityDefine)
+            
             GraphicsUtil.ClearAndDrawPolygon (
                      mBackgroundShape,
                      mLocalDisplayPoints,

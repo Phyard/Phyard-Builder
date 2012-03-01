@@ -4,15 +4,29 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Level Rules Setting" width="600" creationComplete="OnInitPanel()">
+    title="World General Settings" width="600" creationComplete="OnInitPanel()">
 
-    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
-      <mx:Spacer width="100%"/>
-      <mx:VBox>
-         <mx:CheckBox id="CheckBox_CiRulesEnabled" label="Enable C.I. Rules"/>
-      </mx:VBox>
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
+    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10" horizontalAlign="center">
+       <mx:Grid id="Grid_Settings">
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Preferred FPS (frames per second):" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:TextInput id="Text_PreferredFPS" width="100" />
+                <mx:Label text="(from 10 to 100)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+          <mx:GridRow>
+             <mx:GridItem>
+               <mx:CheckBox id="CheckBox_CiRulesEnabled" label="Enable C.I. Rules"/>
+             </mx:GridItem>
+             <mx:GridItem>
+               <mx:CheckBox id="CheckBox_PauseOnFocusLost" label="Pause Game When Focus Is Lost"/>
+             </mx:GridItem>
+          </mx:GridRow>
+       </mx:Grid>
+    </mx:HBox>
 
    <mx:Spacer height="5"/>
 
@@ -50,6 +64,8 @@
 
          private function OnInitPanel ():void
          {
+            Text_PreferredFPS.text = "" + mParams.mPreferredFPS;
+            CheckBox_PauseOnFocusLost.selected = mParams.mIsPauseOnFocusLost;
             CheckBox_CiRulesEnabled.selected = mParams.mIsCiRulesEnabled;
          }
 
@@ -64,7 +80,12 @@
          }
 
          private function OnClickOkButton():void
-         {
+         {  
+            var fps:Number = parseFloat (Text_PreferredFPS.text);
+            if (! isNaN (fps))
+               mParams.mPreferredFPS = fps;
+            
+            mParams.mIsPauseOnFocusLost = CheckBox_PauseOnFocusLost.selected;
             mParams.mIsCiRulesEnabled = CheckBox_CiRulesEnabled.selected;
 
             PopUpManager.removePopUp(this);

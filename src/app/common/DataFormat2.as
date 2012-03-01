@@ -643,6 +643,25 @@ package common {
             xml.Settings.appendChild (element);
          }
 
+         if (worldDefine.mVersion >= 0x0160)
+         {
+            element = IntSetting2XmlElement ("initial_speedx", worldDefine.mSettings.mInitialSpeedX);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("preferred_fps", worldDefine.mSettings.mPreferredFPS);
+            xml.Settings.appendChild (element);
+            element = BoolSetting2XmlElement ("pause_on_focus_lost", worldDefine.mSettings.mPauseOnFocusLost);
+            xml.Settings.appendChild (element);
+            
+            element = BoolSetting2XmlElement ("physics_simulation_enabled", worldDefine.mSettings.mPhysicsSimulationEnabled);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("physics_simulation_time_step", worldDefine.mSettings.mPhysicsSimulationStepTimeLength);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("physics_simulation_quality", worldDefine.mSettings.mPhysicsSimulationQuality, true);
+            xml.Settings.appendChild (element);
+            element = BoolSetting2XmlElement ("physics_simulation_check_toi", worldDefine.mSettings.mCheckTimeOfImpact);
+            xml.Settings.appendChild (element);
+         }
+
          // precreate some nodes
 
          xml.Entities = <Entities />
@@ -1706,6 +1725,18 @@ package common {
                worldDefine.mSettings.mAutoSleepingEnabled = byteArray.readByte () != 0;
                worldDefine.mSettings.mCameraRotatingEnabled = byteArray.readByte () != 0;
             }
+
+            if (worldDefine.mVersion >= 0x0160)
+            {
+               worldDefine.mSettings.mInitialSpeedX = byteArray.readByte ();
+               worldDefine.mSettings.mPreferredFPS = byteArray.readFloat ();
+               worldDefine.mSettings.mPauseOnFocusLost = byteArray.readByte () != 0;
+               
+               worldDefine.mSettings.mPhysicsSimulationEnabled = byteArray.readByte () != 0;
+               worldDefine.mSettings.mPhysicsSimulationStepTimeLength = byteArray.readFloat ();
+               worldDefine.mSettings.mPhysicsSimulationQuality = byteArray.readUnsignedInt ();
+               worldDefine.mSettings.mCheckTimeOfImpact = byteArray.readByte () != 0;
+            }
          }
 
          // collision category
@@ -2611,6 +2642,13 @@ package common {
          worldDefine.mSettings.mCoordinatesOriginY = ValueAdjuster.Number2Precision (worldDefine.mSettings.mCoordinatesOriginY, 12);
          worldDefine.mSettings.mCoordinatesScale = ValueAdjuster.Number2Precision (worldDefine.mSettings.mCoordinatesScale, 12);
 
+         worldDefine.mSettings.mPreferredFPS = ValueAdjuster.Number2Precision (worldDefine.mSettings.mPreferredFPS, 6);
+         if (worldDefine.mVersion >= 0x0160)
+         {
+            // for version earliser than v1.60, it is best not adjust this value
+            worldDefine.mSettings.mPhysicsSimulationStepTimeLength = ValueAdjuster.Number2Precision (worldDefine.mSettings.mPhysicsSimulationStepTimeLength, 6);
+         }
+
          // collision category
 
          if (worldDefine.mVersion >= 0x0102)
@@ -3134,6 +3172,18 @@ package common {
          {
             worldDefine.mSettings.mAutoSleepingEnabled = true;
             worldDefine.mSettings.mCameraRotatingEnabled = false;
+         }
+
+         if (worldDefine.mVersion < 0x0160)
+         {
+            worldDefine.mSettings.mInitialSpeedX = 2;
+            worldDefine.mSettings.mPreferredFPS = 30;
+            worldDefine.mSettings.mPauseOnFocusLost = false;
+            
+            worldDefine.mSettings.mPhysicsSimulationEnabled = true;
+            worldDefine.mSettings.mPhysicsSimulationStepTimeLength = (1.0 / 30) * 0.5;
+            worldDefine.mSettings.mPhysicsSimulationQuality = 0x0803;
+            worldDefine.mSettings.mCheckTimeOfImpact = true;
          }
 
          // collision category

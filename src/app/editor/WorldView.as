@@ -343,6 +343,8 @@ package editor {
       
       private var mIsOnlineEditing:Boolean = false;
       
+      private var mOriginalFPS:Number = 30;
+      
       public function IsOnlineEditing ():Boolean
       {
          return mIsOnlineEditing;
@@ -350,6 +352,9 @@ package editor {
       
       private function OnAddedToStage (event:Event):void 
       {
+         //..
+         mOriginalFPS = stage.frameRate;
+         
          // ...
          addEventListener (Event.ENTER_FRAME, OnEnterFrame);
          
@@ -1847,6 +1852,9 @@ package editor {
       
       public function Play_Stop ():void
       {
+         stage.frameRate = mOriginalFPS;
+         
+         //...
          Runtime.StopAllSounds ();
          
          //Mouse.show (); // maybe hide in playing. (now put in player.World)
@@ -5368,13 +5376,17 @@ package editor {
       {
          var info:Object = new Object ();
          
+         info.mPreferredFPS = mEditorWorld.GetPreferredFPS ();
+         info.mIsPauseOnFocusLost = mEditorWorld.IsPauseOnFocusLost ();
          info.mIsCiRulesEnabled = mEditorWorld.IsCiRulesEnabled ();
          
          return info;
       }
       
       public function SetCurrentWorldLevelRulesInfo (info:Object):void
-      {
+      {  
+         mEditorWorld.SetPreferredFPS (info.mPreferredFPS);
+         mEditorWorld.SetPauseOnFocusLost (info.mIsPauseOnFocusLost);
          mEditorWorld.SetCiRulesEnabled (info.mIsCiRulesEnabled);
          
          CreateUndoPoint ("World rules are changed");
@@ -5384,20 +5396,31 @@ package editor {
       {
          var info:Object = new Object ();
          
+         info.mPhysicsSimulationEnabled = mEditorWorld.IsPhysicsSimulationEnabled ();
+         info.mPhysicsSimulationStepTimeLength = mEditorWorld.GetPhysicsSimulationStepTimeLength ();
+         info.mVelocityIterations = mEditorWorld.GetPhysicsSimulationVelocityIterations ();
+         info.mPositionIterations = mEditorWorld.GetPhysicsSimulationPositionIterations ();
+         info.mCheckTimeOfImpact = mEditorWorld.IsCheckTimeOfImpact ();
+         info.mInitialSpeedX = mEditorWorld.GetInitialSpeedX ();
+         info.mAutoSleepingEnabled = mEditorWorld.IsAutoSleepingEnabled ();
          info.mDefaultGravityAccelerationMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (mEditorWorld.GetDefaultGravityAccelerationMagnitude ()), 6);
          info.mDefaultGravityAccelerationAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees (mEditorWorld.GetDefaultGravityAccelerationAngle ()), 6);
-         info.mAutoSleepingEnabled = mEditorWorld.IsAutoSleepingEnabled ();
          
          return info;
       }
       
       public function SetCurrentWorldPhysicsInfo (info:Object):void
       {
+         mEditorWorld.SetPhysicsSimulationEnabled (info.mPhysicsSimulationEnabled);
+         mEditorWorld.SetPhysicsSimulationStepTimeLength (info.mPhysicsSimulationStepTimeLength);
+         mEditorWorld.SetPhysicsSimulationIterations (info.mVelocityIterations, info.mPositionIterations);
+         mEditorWorld.SetCheckTimeOfImpact (info.mCheckTimeOfImpact);
+         mEditorWorld.SetInitialSpeedX (info.mInitialSpeedX);
+         mEditorWorld.SetAutoSleepingEnabled (info.mAutoSleepingEnabled);
          mEditorWorld.SetDefaultGravityAccelerationMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (info.mDefaultGravityAccelerationMagnitude));
          mEditorWorld.SetDefaultGravityAccelerationAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (info.mDefaultGravityAccelerationAngle));
-         mEditorWorld.SetAutoSleepingEnabled (info.mAutoSleepingEnabled);
          
-         CreateUndoPoint ("Default gravity is changed");
+         CreateUndoPoint ("World physics settings are changed");
       }
       
       public function GetCurrentWorldAppearanceInfo ():Object

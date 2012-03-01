@@ -189,6 +189,17 @@ package common {
             worldDefine.mSettings.mAutoSleepingEnabled = editorWorld.IsAutoSleepingEnabled ();
             worldDefine.mSettings.mCameraRotatingEnabled = editorWorld.IsCameraRotatingEnabled ();
             //<<
+            
+            //>>from v1.60
+            worldDefine.mSettings.mInitialSpeedX = editorWorld.GetInitialSpeedX ();
+            worldDefine.mSettings.mPreferredFPS = editorWorld.GetPreferredFPS ();
+            worldDefine.mSettings.mPauseOnFocusLost = editorWorld.IsPauseOnFocusLost ();
+            
+            worldDefine.mSettings.mPhysicsSimulationEnabled = editorWorld.IsPhysicsSimulationEnabled ();
+            worldDefine.mSettings.mPhysicsSimulationStepTimeLength = editorWorld.GetPhysicsSimulationStepTimeLength ();
+            worldDefine.mSettings.mPhysicsSimulationQuality = editorWorld.GetPhysicsSimulationQuality ();
+            worldDefine.mSettings.mCheckTimeOfImpact = editorWorld.IsCheckTimeOfImpact ();
+            //<<
          }
          
          var numEntities:int = editorWorld.GetNumEntities ();
@@ -1361,6 +1372,17 @@ package common {
                editorWorld.SetAutoSleepingEnabled (worldDefine.mSettings.mAutoSleepingEnabled);
                editorWorld.SetCameraRotatingEnabled (worldDefine.mSettings.mCameraRotatingEnabled);
                //<<
+            
+               //>>from v1.60
+               editorWorld.SetInitialSpeedX (worldDefine.mSettings.mInitialSpeedX);
+               editorWorld.SetPreferredFPS (worldDefine.mSettings.mPreferredFPS);
+               editorWorld.SetPauseOnFocusLost (worldDefine.mSettings.mPauseOnFocusLost);
+               
+               editorWorld.SetPhysicsSimulationEnabled (worldDefine.mSettings.mPhysicsSimulationEnabled);
+               editorWorld.SetPhysicsSimulationStepTimeLength (worldDefine.mSettings.mPhysicsSimulationStepTimeLength);
+               editorWorld.SetPhysicsSimulationQuality (worldDefine.mSettings.mPhysicsSimulationQuality);
+               editorWorld.SetCheckTimeOfImpact (worldDefine.mSettings.mCheckTimeOfImpact);
+               //<<
             }
          }
          
@@ -2526,6 +2548,24 @@ package common {
                   worldDefine.mSettings.mCameraRotatingEnabled = parseInt (element.@value) != 0;
                //<<
                
+               //>>from v1.60
+               else if (element.@name == "initial_speedx")
+                  worldDefine.mSettings.mInitialSpeedX = parseInt (element.@value);
+               else if (element.@name == "preferred_fps")
+                  worldDefine.mSettings.mPreferredFPS = parseFloat (element.@value);
+               else if (element.@name == "pause_on_focus_lost")
+                  worldDefine.mSettings.mPauseOnFocusLost = parseInt (element.@value) != 0;
+               
+               else if (element.@name == "physics_simulation_enabled")
+                  worldDefine.mSettings.mPhysicsSimulationEnabled = parseInt (element.@value) != 0;
+               else if (element.@name == "physics_simulation_time_step")
+                  worldDefine.mSettings.mPhysicsSimulationStepTimeLength = parseFloat (element.@value);
+               else if (element.@name == "physics_simulation_quality")
+                  worldDefine.mSettings.mPhysicsSimulationQuality = parseInt ( (element.@value).substr (2), 16);
+               else if (element.@name == "physics_simulation_check_toi")
+                  worldDefine.mSettings.mCheckTimeOfImpact = parseInt (element.@value) != 0;
+               //<<
+               
                else
                   trace ("Unkown setting: " + element.@name);
             }
@@ -3471,6 +3511,18 @@ package common {
             {
                byteArray.writeByte (worldDefine.mSettings.mAutoSleepingEnabled ? 1 : 0);
                byteArray.writeByte (worldDefine.mSettings.mCameraRotatingEnabled ? 1 : 0);
+            }
+            
+            if (worldDefine.mVersion >= 0x0160)
+            {
+               byteArray.writeByte (worldDefine.mSettings.mInitialSpeedX);
+               byteArray.writeFloat (worldDefine.mSettings.mPreferredFPS);
+               byteArray.writeByte (worldDefine.mSettings.mPauseOnFocusLost ? 1 : 0);
+               
+               byteArray.writeByte (worldDefine.mSettings.mPhysicsSimulationEnabled ? 1 : 0);
+               byteArray.writeFloat (worldDefine.mSettings.mPhysicsSimulationStepTimeLength);
+               byteArray.writeUnsignedInt (worldDefine.mSettings.mPhysicsSimulationQuality);
+               byteArray.writeByte (worldDefine.mSettings.mCheckTimeOfImpact ? 1 : 0);
             }
          }
          

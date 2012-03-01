@@ -41,14 +41,22 @@ package player.physics {
       internal var _b2World:b2World; // used within package
       internal var _b2GroundBody:b2Body;
       
+      private var mPhysicsSimulationEnabled:Boolean;
+      private var mCheckTimeOfImpact:Boolean;
+      
       private var mContactListener:_ContactListener;
       private var mContactFilter:_ContactFilter;
       
-      public function PhysicsEngine (pixelsPerMeter:Number, autoSleepingEnabled:Boolean):void
+      public function PhysicsEngine (pixelsPerMeter:Number, simulationEnabled:Boolean, checkTimeOfImpact:Boolean, autoSleepingEnabled:Boolean):void
       {
+         mPhysicsSimulationEnabled = simulationEnabled;
+         mCheckTimeOfImpact = checkTimeOfImpact;
+         
          var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0, 0);
          
          _b2World = b2WorldPool.AllocB2World (gravity, autoSleepingEnabled, pixelsPerMeter);
+         _b2World.SetContinuousPhysics (mCheckTimeOfImpact);
+         
          _b2GroundBody = _b2World.CreateBody(new b2BodyDef());
          
          mContactListener = new _ContactListener ();
@@ -109,12 +117,25 @@ package player.physics {
 //   
 //=================================================================
       
+      private var mVelocityIterations:int = 8;
+      private var mPositionIterations:int = 3;
+      
+      public function SetSimulationQuality (quality:uint):void
+      {
+         mVelocityIterations = (quality >> 8) & 0xFF;
+         mPositionIterations = (quality >> 0) & 0xFF;
+      }
+      
       public function Update (escapedTime:Number):void
       {
-         //(_b2World.m_contactListener as _ContactListener).Reset ();
-         //_b2World.Step (escapedTime, 30); // v2.01
-         _b2World.Step (escapedTime, 8, 3); // v2.10
-         //_b2World.Step (escapedTime, 8, 6); // v2.10
+         if (mPhysicsSimulationEnabled)
+         {
+            _b2World.Step (escapedTime, mVelocityIterations, mPositionIterations);
+         }
+         else
+         {
+            _b2World.Step (0.0, 1, 1);
+         }
       }
       
 //=================================================================

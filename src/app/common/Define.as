@@ -89,8 +89,18 @@ package common {
       
       public static const WorldFieldMargin:int = 1024; // how much the entites can be put outside of the player field.
       
+      public static const MinAppFPS:Number = 10.0;
+      public static const MaxAppFPS:Number = 100.0;
+      
       public static const WorldStepTimeInterval_SpeedX2:Number = 1.0 / 30;
       public static const WorldStepTimeInterval_SpeedX1:Number = 0.5 * WorldStepTimeInterval_SpeedX2;
+      
+      public static const WorldStepVelocityIterations_Low:int = 1;
+      public static const WorldStepPositionIterations_Low:int = 1;
+      public static const WorldStepVelocityIterations_Medium:int = 8;
+      public static const WorldStepPositionIterations_Medium:int = 3;
+      public static const WorldStepVelocityIterations_High:int = 15;
+      public static const WorldStepPositionIterations_High:int = 5;
       
       public static function IsNormalScene (sceneLeft:int, sceneTop:int, sceneWidth:int, sceneHeight:int):Boolean
       {

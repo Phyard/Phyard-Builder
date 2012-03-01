@@ -113,6 +113,8 @@ package editor.world {
          super ();
 
       //
+         SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium)
+         
          //mSelectionEngineForVertexes = new SelectionEngine ();
          mSelectionEngineForVertexes = mSelectionEngine;
 
@@ -244,6 +246,20 @@ package editor.world {
       //>>v1.55
       private var mAutoSleepingEnabled:Boolean = true;
       private var mCameraRotatingEnabled:Boolean = false;
+      //<<
+      
+      //>>v1.60
+      private var mPhysicsSimulationEnabled:Boolean = true;
+      private var mPhysicsSimulationStepTimeLength:Number = 1.0 / 30.0;
+      private var mPhysicsSimulationQuality:int = 0x00000803; // constructor will call SetPhysicsSimulationIterations to override this
+                        // low 8 bits for positionIterations
+                        // next 8 bits for velocityIterations
+                        // hight 16 bits are reserved.
+      private var mCheckTimeOfImpact:Boolean = true;
+      private var mInitialSpeedX:int = 1; // [0, 4]
+      
+      private var mPreferredFPS:Number = 30.0
+      private var mPauseOnFocusLost:Boolean = false;
       //<<
 
       public function SetAuthorName (name:String):void
@@ -619,7 +635,111 @@ package editor.world {
       {
          mAutoSleepingEnabled = enabled;
       }
-
+      
+      public function IsPhysicsSimulationEnabled ():Boolean
+      {
+         return mPhysicsSimulationEnabled;
+      }
+      
+      public function SetPhysicsSimulationEnabled (enabled:Boolean):void
+      {
+         mPhysicsSimulationEnabled = enabled;
+      }
+      
+      public function GetPhysicsSimulationStepTimeLength ():Number
+      {
+         return mPhysicsSimulationStepTimeLength;
+      }
+      
+      public function SetPhysicsSimulationStepTimeLength (dt:Number):void
+      {
+         if (dt < 0)
+            dt = -dt;
+         
+         mPhysicsSimulationStepTimeLength = dt;
+      }
+      
+      public function GetPhysicsSimulationQuality ():int
+      {
+         return mPhysicsSimulationQuality;
+      }
+      
+      public function SetPhysicsSimulationQuality (quality:int):void
+      {
+         mPhysicsSimulationQuality = quality;
+      }
+      
+            public function GetPhysicsSimulationVelocityIterations ():int
+            {
+               return (mPhysicsSimulationQuality >> 8) & 0xFF;
+            }
+      
+            public function GetPhysicsSimulationPositionIterations ():int
+            {
+               return (mPhysicsSimulationQuality >> 0) & 0xFF;
+            }
+            
+            public function SetPhysicsSimulationIterations (velocityIterations:int, positionIterations:int):void
+            {
+               if (velocityIterations < Define.WorldStepVelocityIterations_Low)
+                  velocityIterations = Define.WorldStepVelocityIterations_Low;
+               else if (velocityIterations > 100) //Define.WorldStepVelocityIterations_High)
+                  velocityIterations = 100; //Define.WorldStepVelocityIterations_High;
+              
+               if (positionIterations < Define.WorldStepPositionIterations_Low)
+                  positionIterations = Define.WorldStepPositionIterations_Low;
+               else if (positionIterations > 100) //Define.WorldStepPositionIterations_High)
+                  positionIterations = 100; //Define.WorldStepPositionIterations_High;
+              
+               // if this changed, DateFormat2.FillMissedFieldsInWorldDefine needs to be changed also.
+               mPhysicsSimulationQuality = ((velocityIterations & 0xFF) << 8) | ((positionIterations & 0xFF) << 0);
+            }
+      
+      public function IsCheckTimeOfImpact ():Boolean
+      {
+         return mCheckTimeOfImpact;
+      }
+      
+      public function SetCheckTimeOfImpact (checkTOI:Boolean):void
+      {
+         mCheckTimeOfImpact = checkTOI;
+      }
+      
+      public function GetInitialSpeedX ():int
+      {
+         return mInitialSpeedX;
+      }
+      
+      public function SetInitialSpeedX (speedX:int):void
+      {
+         mInitialSpeedX = speedX;
+      }
+      
+      public function GetPreferredFPS ():Number
+      {
+         return mPreferredFPS;
+      }
+      
+      public function SetPreferredFPS (fps:Number):void
+      {
+         if (fps < Define.MinAppFPS)
+            fps = Define.MinAppFPS;
+         else if (fps > Define.MaxAppFPS)
+            fps = Define.MaxAppFPS;
+         
+         mPreferredFPS = fps;
+      }
+      
+      public function IsPauseOnFocusLost ():Boolean
+      {
+         return mPauseOnFocusLost;
+      }
+      
+      public function SetPauseOnFocusLost (pauseOnFocusLost:Boolean):void
+      {
+         mPauseOnFocusLost = pauseOnFocusLost;
+      }
+      
       public function IsCameraRotatingEnabled ():Boolean
       {
          return mCameraRotatingEnabled;

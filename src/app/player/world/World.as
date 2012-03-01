@@ -98,7 +98,7 @@ package player.world {
       private var mAuthorHonepage:String = "";
       private var mShareSourceCode:Boolean = false;
       private var mPermitPublishing:Boolean = false;
-
+      
    // ...
 
       private var mNumEntitiesInEditor:int;
@@ -128,6 +128,17 @@ package player.world {
          mAuthorHonepage   = worldDefine.mAuthorHomepage;
          mShareSourceCode  = worldDefine.mShareSourceCode;
          mPermitPublishing = worldDefine.mPermitPublishing;
+         
+         // ...
+         
+         mInitialSpeedX = worldDefine.mSettings.mInitialSpeedX;
+         mPreferredFPS = worldDefine.mSettings.mPreferredFPS;
+         mPauseOnFocusLost = worldDefine.mSettings.mPauseOnFocusLost;
+         
+         mPhysicsSimulationEnabled = worldDefine.mSettings.mPhysicsSimulationEnabled;
+         mPhysicsSimulationQuality = worldDefine.mSettings.mPhysicsSimulationQuality;
+         mCheckTimeOfImpact = worldDefine.mSettings.mCheckTimeOfImpact;
+         mPhysicsSimulationStepTimeLength = worldDefine.mSettings.mPhysicsSimulationStepTimeLength;
 
          // ...
 
@@ -579,6 +590,30 @@ package player.world {
    // ...
 
 //=============================================================
+//   some params
+//=============================================================
+
+      private var mInitialSpeedX:int;
+            
+      private var mPreferredFPS:Number;
+      private var mPauseOnFocusLost:Boolean;      
+      
+      public function GetInitialSpeedX ():int
+      {
+         return mInitialSpeedX;
+      }
+      
+      public function GetPreferredFPS ():Number
+      {
+         return mPreferredFPS;
+      }
+      
+      public function IsPauseOnFocusLost ():Boolean
+      {
+         return mPauseOnFocusLost;
+      }
+
+//=============================================================
 //   init
 //=============================================================
 
@@ -713,17 +748,6 @@ package player.world {
       }
 
 //=============================================================
-//   update params
-//=============================================================
-
-      private var mInitialSpeedX:int = 2;
-      
-      public function GetInitialSpeedX ():int
-      {
-         return mInitialSpeedX;
-      }
-
-//=============================================================
 //   update
 //=============================================================
 
@@ -773,7 +797,9 @@ package player.world {
 
       public function Update_FixedStepInterval_SpeedX (escapedTime1:Number, speedX:int):void
       {
-         var dt:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5;
+         //var dt:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5;
+         //var dt:Number = Define.WorldStepTimeInterval_SpeedX1;
+         var dt:Number = mPhysicsSimulationStepTimeLength;
 
          if (escapedTime1 == 0)
             dt = 0;
@@ -1232,6 +1258,14 @@ package player.world {
       private var mDefaultGravityAccelerationMagnitude:Number;
       private var mDefaultGravityAccelerationAngle:Number;
       private var mAutoSleepingEnabled:Boolean;
+      
+      private var mPhysicsSimulationEnabled:Boolean = true;
+      private var mPhysicsSimulationStepTimeLength:Number = 1.0 / 30.0;
+      private var mPhysicsSimulationQuality:int = 0x00000803; // constructor will call SetPhysicsSimulationIterations to override this
+                        // low 8 bits for positionIterations
+                        // next 8 bits for velocityIterations
+                        // hight 16 bits are reserved.
+      private var mCheckTimeOfImpact:Boolean = true;
 
       private var mCurrentGravityAccelerationX:Number;
       private var mCurrentGravityAccelerationY:Number;
@@ -1321,7 +1355,9 @@ package player.world {
          ClearGlobalForces ();
          SetCurrentGravityAcceleration (mDefaultGravityAccelerationMagnitude * Math.cos (mDefaultGravityAccelerationAngle), mDefaultGravityAccelerationMagnitude * Math.sin (mDefaultGravityAccelerationAngle));
 
-         mPhysicsEngine = new PhysicsEngine (mCoordinateSystem.GetScale (), mAutoSleepingEnabled);
+         mPhysicsEngine = new PhysicsEngine (mCoordinateSystem.GetScale (), mPhysicsSimulationEnabled, mCheckTimeOfImpact, mAutoSleepingEnabled);
+
+         mPhysicsEngine.SetSimulationQuality (mPhysicsSimulationQuality);
 
          mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
          mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished);
@@ -1329,7 +1365,7 @@ package player.world {
          mLastStepGravityAccelerationX = mCurrentGravityAccelerationX;
          mLastStepGravityAccelerationY = mCurrentGravityAccelerationY;
          mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX, mCurrentGravityAccelerationY);
-      }
+      }   
 
    //===============================
    // init physics

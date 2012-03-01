@@ -287,6 +287,22 @@ package Box2D.Dynamics
 		//	return m_contactManager.m_contactList;
 		//}
 
+      
+		public function SetWarmStarting (flag:Boolean):void
+		{
+		   m_warmStarting = flag;
+		}
+
+		public function SetContinuousPhysics (flag:Boolean):void
+		{
+		   m_continuousPhysics = flag;
+		}
+
+		public function SetSubStepping (flag:Boolean):void
+		{
+		   m_subStepping = flag;
+		}
+
 		public function GetBodyCount():int
 		{
 			return m_bodyCount;

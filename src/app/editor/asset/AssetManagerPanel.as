@@ -363,6 +363,11 @@ package editor.asset {
          
          mIsMouseZeroMove = false; // avoid some handing in OnMouseUp
          
+         // ...
+         
+         if (! mAssetManager.SupportSelectingEntitiesWithMouse ())
+            return;
+         
          var oldSelectedAssets:Array = mAssetManager.GetSelectedAssets ();
 
          var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);

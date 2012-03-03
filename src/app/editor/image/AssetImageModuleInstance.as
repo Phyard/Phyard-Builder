@@ -123,6 +123,24 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
+      
+      private function IsSequenceModuleFrame ():Boolean
+      {
+         return mAssetImageModuleInstanceManager != null && mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ().IsSequenced ()
+      }
+      
+      override public function Update (escapedTime:Number):void
+      {
+         if (IsSequenceModuleFrame ())
+         {
+            SetVisibleForEditing (IsSelected ());
+            this.visible = IsSelected ();
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
 
       public function GetVectorShapeWithBodyTexture ():VectorShape
       {
@@ -501,10 +519,11 @@ package editor.image {
          GraphicsUtil.Clear (this);
          
          mAssetImageModule.BuildImageModuleAppearance (this);
-         alpha = 0.5;
          
-         if (IsSelected ())
+         if (IsSelected () && (! IsSequenceModuleFrame ()))
          {
+            alpha = 0.5;
+
             var shape:Shape = new Shape ();
             
             var rectangle:Rectangle = this.getBounds (this);
@@ -531,22 +550,22 @@ package editor.image {
          mSelectionProxy.Rebuild (GetPositionX (), GetPositionY (), 0.0);
          mAssetImageModule.BuildImageModuleSelectionProxy (mSelectionProxy, new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mAssetManager.GetScale () * GetScale ());
          
-         if (Capabilities.isDebugger)// && false)
-         {
-            if (mPhysicsShapesLayer == null)
-            {
-               mPhysicsShapesLayer = new Sprite ();
-               addChild (mPhysicsShapesLayer);
-            }
-            while (mPhysicsShapesLayer.numChildren > 0)
-               mPhysicsShapesLayer.removeChildAt (0);
-            
-            mSelectionProxy.AddPhysicsShapes (mPhysicsShapesLayer);
-         }         
+         //if (Capabilities.isDebugger)// && false)
+         //{
+         //   if (mPhysicsShapesLayer == null)
+         //   {
+         //      mPhysicsShapesLayer = new Sprite ();
+         //      addChild (mPhysicsShapesLayer);
+         //   }
+         //   while (mPhysicsShapesLayer.numChildren > 0)
+         //      mPhysicsShapesLayer.removeChildAt (0);
+         //   
+         //   mSelectionProxy.AddPhysicsShapes (mPhysicsShapesLayer);
+         //}         
       }
       
       // for debug
-      private var mPhysicsShapesLayer:Sprite = null;
+      //private var mPhysicsShapesLayer:Sprite = null;
       
 //=============================================================
 //   control points

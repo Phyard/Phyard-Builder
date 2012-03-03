@@ -545,7 +545,7 @@ package editor.asset {
       {
          mVisibleForEditing = visibleForEditing;
          
-         alpha = mVisibleForEditing ? 1.0 : 0.33;
+         alpha = mVisibleForEditing ? 1.0 : 0.33; // new a GetNormalAlpha ()
       }
       
       public function IsVisibleForEditing ():Boolean

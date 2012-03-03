@@ -88,7 +88,7 @@ package editor.image.dialog {
             
             UpdateInterface ();
             
-            MoveManager (0.5 * mParentWidth - mAssetImageModuleInstanceManager.x, 0.5 * mParentHeight - mAssetImageModuleInstanceManager.y);
+            AdjustPosition ();
          }
       }
       
@@ -96,6 +96,35 @@ package editor.image.dialog {
       public function SetAssetImageModuleInstanceListingPanelPeer (assetImageModuleInstanceListingPanel:AssetImageModuleInstanceListingPanel):void
       {
          mAssetImageModuleInstanceListingPanelPeer = assetImageModuleInstanceListingPanel;
+      }
+      
+//=====================================================================
+//
+//=====================================================================
+      
+      override protected function OnResize (event:Event):void 
+      {
+         super.OnResize (event);
+            //mParentWidth  = parent.width;
+            //mParentHeight = parent.height;
+            //UpdateBackgroundAndContentMaskSprites ();
+         
+         if (mAssetImageModuleInstanceManager != null)
+         {
+            AdjustPosition ();
+         }
+      }
+      
+      //private var mOldParentWidth:Number = 0;
+      //private var mOldParentHeight:Number = 0; 
+      
+      private function AdjustPosition ():void
+      {
+         MoveManager (0.5 * mParentWidth - mAssetImageModuleInstanceManager.x, 0.5 * mParentHeight - mAssetImageModuleInstanceManager.y);
+         //MoveManager (0.5 * (mParentWidth - mOldParentWidth) - mAssetImageModuleInstanceManager.x, 0.5 * (mParentHeight - mOldParentHeight) - mAssetImageModuleInstanceManager.y);
+         //
+         //mOldParentWidth = mParentWidth;
+         //mOldParentHeight = mParentHeight;
       }
       
 //=====================================================================

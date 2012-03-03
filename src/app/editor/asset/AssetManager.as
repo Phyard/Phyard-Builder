@@ -340,6 +340,11 @@ package editor.asset {
          return mSelectionList.AreSelectedAssetsContainingPoint (pointX, pointY);
       }
       
+      public function SupportSelectingEntitiesWithMouse ():Boolean
+      {
+         return true;
+      }
+      
 //=================================================================================
 //   select assets / control points / linkables
 //=================================================================================

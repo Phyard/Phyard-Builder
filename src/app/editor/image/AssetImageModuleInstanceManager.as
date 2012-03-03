@@ -48,6 +48,15 @@ package editor.image {
 //   
 //=============================================================
       
+      override public function SupportSelectingEntitiesWithMouse ():Boolean
+      {
+         return ! mAssetImageCompositeModule.IsSequenced ();
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
       {
          if (super.DeleteSelectedAssets ())

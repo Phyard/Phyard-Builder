@@ -250,7 +250,7 @@ package editor.world {
       
       //>>v1.60
       private var mPhysicsSimulationEnabled:Boolean = true;
-      private var mPhysicsSimulationStepTimeLength:Number = 1.0 / 30.0;
+      private var mPhysicsSimulationStepTimeLength:Number = 0.04; // 25 fps
       private var mPhysicsSimulationQuality:int = 0x00000803; // constructor will call SetPhysicsSimulationIterations to override this
                         // low 8 bits for positionIterations
                         // next 8 bits for velocityIterations
@@ -258,7 +258,7 @@ package editor.world {
       private var mCheckTimeOfImpact:Boolean = true;
       private var mInitialSpeedX:int = 1; // [0, 4]
       
-      private var mPreferredFPS:Number = 30.0
+      private var mPreferredFPS:Number = 25;
       private var mPauseOnFocusLost:Boolean = false;
       //<<
 

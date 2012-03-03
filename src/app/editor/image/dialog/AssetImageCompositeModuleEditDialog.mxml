@@ -41,7 +41,7 @@
             <mx:FormItem width="100%" label="Visible:" horizontalScrollPolicy="off">
                <mx:CheckBox selected="false" id="CheckBoxVisible" label="" click="ChangeModuleInstanceProperties ();"/>
             </mx:FormItem>
-            <mx:FormItem width="100%" label="Duration:" horizontalScrollPolicy="off">
+            <mx:FormItem width="100%" label="Duration (steps):" horizontalScrollPolicy="off">
                <mx:NumericStepper id="NumericStepperDuration" width="100%" stepSize="1" value="1" minimum="0" maximum="10000" change="ChangeModuleInstanceProperties ();" />
             </mx:FormItem>
          </mx:Form>
@@ -125,22 +125,40 @@
                   <mx:Button height="100%" id="ButtonViewAppearance" label="View Appearance" toggle="true" click=";" />
                </mx:HBox>
             </mx:HBox>
-            <mx:HDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
-               <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-                  <image:AssetImageCompositeModuleEditingPanel id="panelAssetImageCompositeModuleEditing" width="100%" height="100%"/>
-               </mx:HBox>
-               <mx:VBox width="100" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-                  <mx:HBox borderStyle="solid" borderThickness="1" width="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
-                     <mx:Button id="ButtonDeleteModuleInstances" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" toolTip="Delete" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
-                     <mx:Spacer width="100%"/>
-                     <mx:Button id="ButtonMoveUpModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceUp ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
-                     <mx:Button id="ButtonMoveDownModuleInstance" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
-                  </mx:HBox>
+            <mx:ViewStack id="ViewStack_ModuleInstancesPanel" creationPolicy="all" borderStyle="none" width="100%" height="100%">
+               <mx:HDividedBox id="theDividedBox_H" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
                   <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-                     <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing" width="100%" height="100%"/>
+                     <image:AssetImageCompositeModuleEditingPanel id="panelAssetImageCompositeModuleEditing_H" width="100%" height="100%"/>
                   </mx:HBox>
-               </mx:VBox>
-            </mx:HDividedBox>
+                  <mx:VBox width="100" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+                     <mx:HBox borderStyle="solid" borderThickness="1" width="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+                        <mx:Button id="ButtonDeleteModuleInstances_H" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" toolTip="Delete" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
+                        <mx:Spacer width="100%"/>
+                        <mx:Button id="ButtonMoveUpModuleInstance_H" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceUp ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
+                        <mx:Button id="ButtonMoveDownModuleInstance_H" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
+                     </mx:HBox>
+                     <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+                        <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing_H" width="100%" height="100%"/>
+                     </mx:HBox>
+                  </mx:VBox>
+               </mx:HDividedBox>
+               <mx:VDividedBox id="theDividedBox_V" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
+                  <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+                     <image:AssetImageCompositeModuleEditingPanel id="panelAssetImageCompositeModuleEditing_V" width="100%" height="100%"/>
+                  </mx:HBox>
+                  <mx:HBox width="100%" height="100" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+                     <mx:VBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+                        <mx:Button id="ButtonDeleteModuleInstances_V" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" toolTip="Delete" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
+                        <mx:Spacer height="100%"/>
+                        <mx:Button id="ButtonMoveUpModuleInstance_V" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceUp ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveleft.png')" disabledIcon="@Embed('../../../res/action/command_moveleft-disabled.png')" />
+                        <mx:Button id="ButtonMoveDownModuleInstance_V" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveright.png')" disabledIcon="@Embed('../../../res/action/command_moveright-disabled.png')" />
+                     </mx:VBox>
+                     <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+                        <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing_V" width="100%" height="100%"/>
+                     </mx:HBox>
+                  </mx:HBox>
+               </mx:VDividedBox>
+            </mx:ViewStack>
          </mx:VBox>
       </mx:HBox>
    </mx:HBox>
@@ -149,8 +167,11 @@
       <![CDATA[
       
          import mx.managers.PopUpManager;
+         import mx.controls.Button;
          
          import editor.image.AssetImageCompositeModule;
+         import editor.image.dialog.AssetImageCompositeModuleEditingPanel;
+         import editor.image.dialog.AssetImageModuleInstanceListingPanel;
          
          import editor.runtime.Runtime;
          
@@ -161,6 +182,7 @@
             if (assetImageCompositeModuleEditDialog == null)
             {
                assetImageCompositeModuleEditDialog = new AssetImageCompositeModuleEditDialog ();
+               assetImageCompositeModuleEditDialog.SetUseLayoutForSequencedModule (assetImageCompositeModule.IsSequenced ());
             }
             
             if (assetImageCompositeModuleEditDialog.parent != null)
@@ -219,11 +241,42 @@
       
       //=====================================================================
       
+         private var panelAssetImageCompositeModuleEditing:AssetImageCompositeModuleEditingPanel;
+         private var panelAssetImageModuleInstanceListing:AssetImageModuleInstanceListingPanel;
+         private var ButtonDeleteModuleInstances:Button;
+         private var ButtonMoveUpModuleInstance:Button;
+         private var ButtonMoveDownModuleInstance:Button;
+         
+         private var mUseSequencelayout:Boolean = false;
+         public function SetUseLayoutForSequencedModule (useSequencelayout:Boolean):void
+         {
+            mUseSequencelayout = useSequencelayout;
+         }
+      
          public function InitDialog ():void
          {
             // temp for preview version
             //BoxPropertySettings.parent.removeChild (BoxPropertySettings);
             //ViewStackPlayStop.parent.removeChild (ViewStackPlayStop);
+            
+            if (mUseSequencelayout)
+            {
+               panelAssetImageCompositeModuleEditing = panelAssetImageCompositeModuleEditing_V;
+               panelAssetImageModuleInstanceListing = panelAssetImageModuleInstanceListing_V;
+               ButtonDeleteModuleInstances = ButtonDeleteModuleInstances_V;
+               ButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance_V;
+               ButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance_V;
+               
+               ViewStack_ModuleInstancesPanel.selectedChild = theDividedBox_V;
+            }
+            else
+            {
+               panelAssetImageCompositeModuleEditing = panelAssetImageCompositeModuleEditing_H;
+               panelAssetImageModuleInstanceListing = panelAssetImageModuleInstanceListing_H;
+               ButtonDeleteModuleInstances = ButtonDeleteModuleInstances_H;
+               ButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance_H;
+               ButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance_H;
+            }
 
             //...
             panelAssetImageCompositeModuleEditing.mButtonCreateGeneralModuleInstance = ButtonCreateGeneralModuleInstance;

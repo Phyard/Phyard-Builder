@@ -54,7 +54,7 @@ package common.trigger {
       public static const ID_Design_IsMouseButtonHold:int                  = IdPool.CoreApiId_603;
       public static const ID_SetMouseVisible:int                        = IdPool.CoreApiId_75; // from v1.56
       public static const ID_IsAccelerometerSupported:int                        = IdPool.CoreApiId_76; // from v1.60
-      public static const ID_GetAccelerationVector:int                        = IdPool.CoreApiId_77; // from v1.60
+      public static const ID_GetAcceleration:int                                 = IdPool.CoreApiId_77; // from v1.60
 
    // string
 

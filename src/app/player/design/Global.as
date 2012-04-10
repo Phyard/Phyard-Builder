@@ -701,10 +701,12 @@ package player.design
          {
             mIsSoundsEnabled = enabled;
             
-            if (! mIsSoundsEnabled)
-            {
-               Sound.StopAllSounds ();
-            }
+            //if (! mIsSoundsEnabled)
+            //{
+            //   Sound.StopAllSounds ();
+            //}
+
+            Sound.SetSoundVolume (mIsSoundsEnabled ? 1.0 : 0.0);
          }
       }
       

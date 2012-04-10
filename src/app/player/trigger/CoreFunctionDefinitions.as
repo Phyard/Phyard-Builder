@@ -79,7 +79,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_IsKeyHold,                        IsKeyHold);
          RegisterCoreFunction (CoreFunctionIds.ID_SetMouseVisible,                  SetMouseVisible);
          RegisterCoreFunction (CoreFunctionIds.ID_IsAccelerometerSupported,                  IsAccelerometerSupported);
-         RegisterCoreFunction (CoreFunctionIds.ID_GetAccelerationVector,                     GetAccelerationVector);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetAcceleration,                     GetAccelerationVector);
 
       // string
 

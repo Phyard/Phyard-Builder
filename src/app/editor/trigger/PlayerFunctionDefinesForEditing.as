@@ -282,7 +282,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Supported?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetAccelerationVector, system_package, "Get Acceleration Vector", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetAcceleration, system_package, "Get Acceleration", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("Acceleration X"),

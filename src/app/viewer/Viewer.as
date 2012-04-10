@@ -1337,7 +1337,12 @@ package viewer {
          if (theContextMenu.customItems == null) // possible null in air app
             return;
 
-         var addSeperaor:Boolean = false;
+         var restartCodeMenuItem:ContextMenuItem = new ContextMenuItem("Restart", false);
+         theContextMenu.customItems.push (restartCodeMenuItem);
+         restartCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnRestart);
+
+         var addSeperaorBeforeVersion:Boolean = true;
+         var addSeperaorForSelf:Boolean = true;
          if (Capabilities.isDebugger || mPlayerWorld != null && mWorldDesignProperties.mIsShareSourceCode)
          {
             if (mWorldBinaryData != null && mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine != null && mWorldPluginProperties.WorldFormat_WorldDefine2Xml != null)
@@ -1349,11 +1354,12 @@ package viewer {
 
                if (mWorldSourceCode != null)
                {
-                  var copySourceCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", false);
+                  var copySourceCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", addSeperaorForSelf);
                   theContextMenu.customItems.push (copySourceCodeMenuItem);
                   copySourceCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopySourceCode);
 
-                  addSeperaor = true;
+                  addSeperaorBeforeVersion = true;
+                  addSeperaorForSelf = false;
                }
             }
          }
@@ -1362,19 +1368,22 @@ package viewer {
          {
             if (mWorldDesignProperties.mIsPermitPublishing)
             {
-               var copyEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy HTML Embed Code", false);
+               var copyEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy HTML Embed Code", addSeperaorForSelf);
                theContextMenu.customItems.push (copyEmbedCodeMenuItem);
                copyEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyEmbedCode);
+               
+               addSeperaorForSelf = false;
             }
 
-            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Phyard Forum Embed Code", false);
+            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Phyard Forum Embed Code", addSeperaorForSelf);
             theContextMenu.customItems.push (copyForumEmbedCodeMenuItem);
             copyForumEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyForumEmbedCode);
 
-            addSeperaor = true;
+            addSeperaorBeforeVersion = true;
+            addSeperaorForSelf = false;
          }
 
-         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer", addSeperaor); // v" + DataFormat3.GetVersionString (Version.VersionNumber), addSeperaor);
+         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer", addSeperaorBeforeVersion); // v" + DataFormat3.GetVersionString (Version.VersionNumber), addSeperaorBeforeVersion);
          theContextMenu.customItems.push (aboutItem);
          aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
 
@@ -1706,27 +1715,32 @@ package viewer {
 
       public static function CreatePlayButton (onClickHandler:Function):Sprite
       {
-         return SkinDefault.CreateButton (0, SkinDefault.mPlayButtonData, true, IsTouchScreen (), onClickHandler);
+         return SkinDefault.CreateButton (0, SkinDefault.mPlayButtonData, SkinDefault.DefaultButtonIconFilledColor, true, IsTouchScreen (), onClickHandler);
       }
 
       public static function CreateExitAppButton (onClickHandler:Function):Sprite
       {
-         return SkinDefault.CreateButton (0, SkinDefault.mExitAppButtonData, true, IsTouchScreen (), onClickHandler);
+         return SkinDefault.CreateButton (0, SkinDefault.mExitAppButtonData, SkinDefault.DefaultButtonIconFilledColor, true, IsTouchScreen (), onClickHandler);
       }
       
       public static function CreateBackButton (onClickHandler:Function):Sprite
       {
-         return SkinDefault.CreateButton (0, SkinDefault.mBackButtonData, true, IsTouchScreen (), onClickHandler);
+         return SkinDefault.CreateButton (0, SkinDefault.mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, true, IsTouchScreen (), onClickHandler);
       }
       
       public static function CreateSoundOnButton (onClickHandler:Function):Sprite
       {
-         return SkinDefault.CreateButton (0, SkinDefault.mSoundOnButtonData, true, IsTouchScreen (), onClickHandler);
+         return SkinDefault.CreateButton (0, SkinDefault.mSoundOnButtonData, SkinDefault.DefaultButtonIconFilledColor, true, IsTouchScreen (), onClickHandler);
       }
       
       public static function CreateSoundOffButton (onClickHandler:Function):Sprite
       {
-         return SkinDefault.CreateButton (0, SkinDefault.mSoundOffButtonData, true, IsTouchScreen (), onClickHandler);
+         return SkinDefault.CreateButton (0, SkinDefault.mSoundOffButtonData, SkinDefault.DefaultButtonIconFilledColor, true, IsTouchScreen (), onClickHandler);
+      }
+      
+      public static function CreateLockIcon (iconColor:uint):DisplayObject
+      {
+         return SkinDefault.CreateButton (-1, SkinDefault.mLockButtonData, iconColor, true, IsTouchScreen (), null);
       }
       
 //===========================================================================

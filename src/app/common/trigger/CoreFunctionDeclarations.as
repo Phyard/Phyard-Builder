@@ -207,7 +207,7 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_GetAccelerationVector,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetAcceleration,
                      null,
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],

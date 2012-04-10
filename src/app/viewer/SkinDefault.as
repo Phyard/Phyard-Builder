@@ -585,7 +585,7 @@ package viewer {
             
             if (mActivateButton == null)
             {
-               mActivateButton = CreateButton (0, mPlayButtonData, true, mIsTouchScreen, OnActivate);
+               mActivateButton = CreateButton (0, mPlayButtonData, SkinDefault.DefaultButtonIconFilledColor, true, mIsTouchScreen, OnActivate);
                if (mActivateButton.width < 0.33 * mViewerWidth && mActivateButton.height < 0.33 * mViewerHeight)
                {
                   mActivateButton.scaleX *= 2.0;
@@ -684,14 +684,14 @@ package viewer {
                   buttonX = margin;
                   buttonY = margin;
                   
-                  mPauseButton_Overlay = CreateButton (0, mPauseButtonData, mIsOverlay, mIsTouchScreen, OnClickPause);
+                  mPauseButton_Overlay = CreateButton (0, mPauseButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickPause);
                   mPauseButton_Overlay.x = buttonX + 0.5 * mPauseButton_Overlay.width;
                   mPauseButton_Overlay.y = buttonY + 0.5 * mPauseButton_Overlay.height;
                   mHudLayerForPlay.addChild (mPauseButton_Overlay);
                   
                   buttonX += (mPauseButton_Overlay.width + gap);
                   
-                  //mRestartButtonForPlay_Overlay = CreateButton (0, mRestartButtonData, mIsOverlay, mIsTouchScreen, OnClickRestartForPlay);
+                  //mRestartButtonForPlay_Overlay = CreateButton (0, mRestartButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickRestartForPlay);
                   //mRestartButtonForPlay_Overlay.x = buttonX + 0.5 * mRestartButtonForPlay_Overlay.width;
                   //mRestartButtonForPlay_Overlay.y = buttonY + 0.5 * mRestartButtonForPlay_Overlay.height;
                   //mHudLayerForPlay.addChild (mRestartButtonForPlay_Overlay);
@@ -705,14 +705,14 @@ package viewer {
                   
                   if (params.mShowScaleAdjustor)
                   {
-                     mScaleOutButton_Overlay = CreateButton (0, mScaleOutButtonData, mIsOverlay, mIsTouchScreen, OnClickZoomOut);
+                     mScaleOutButton_Overlay = CreateButton (0, mScaleOutButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickZoomOut);
                      mScaleOutButton_Overlay.x = buttonX - 0.5 * mScaleOutButton_Overlay.width;
                      mScaleOutButton_Overlay.y = buttonY + 0.5 * mScaleOutButton_Overlay.height;
                      mHudLayerForPlay.addChild (mScaleOutButton_Overlay);
                      
                      buttonX -= (mScaleOutButton_Overlay.width + gap);
                      
-                     mScaleInButton_Overlay = CreateButton (0, mScaleInButtonData, mIsOverlay, mIsTouchScreen, OnClickZoomIn);
+                     mScaleInButton_Overlay = CreateButton (0, mScaleInButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickZoomIn);
                      mScaleInButton_Overlay.x = buttonX - 0.5 * mScaleInButton_Overlay.width;
                      mScaleInButton_Overlay.y = buttonY + 0.5 * mScaleInButton_Overlay.height;
                      mHudLayerForPlay.addChild (mScaleInButton_Overlay);
@@ -722,14 +722,14 @@ package viewer {
                   
                   if (params.mShowSpeedAdjustor)
                   {
-                     mFasterButton_Overlay = CreateButton (0, mFasterButtonData, mIsOverlay, mIsTouchScreen, OnClickFaster);
+                     mFasterButton_Overlay = CreateButton (0, mFasterButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickFaster);
                      mFasterButton_Overlay.x = buttonX - 0.5 * mFasterButton_Overlay.width;
                      mFasterButton_Overlay.y = buttonY + 0.5 * mFasterButton_Overlay.height;
                      mHudLayerForPlay.addChild (mFasterButton_Overlay);
                      
                      buttonX -= (mFasterButton_Overlay.width + gap);
                      
-                     mSlowerButton_Overlay = CreateButton (0, mSlowerButtonData, mIsOverlay, mIsTouchScreen, OnClickSlower);
+                     mSlowerButton_Overlay = CreateButton (0, mSlowerButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickSlower);
                      mSlowerButton_Overlay.x = buttonX - 0.5 * mSlowerButton_Overlay.width;
                      mSlowerButton_Overlay.y = buttonY + 0.5 * mSlowerButton_Overlay.height;
                      mHudLayerForPlay.addChild (mSlowerButton_Overlay);
@@ -751,14 +751,14 @@ package viewer {
                   buttonX = margin;
                   buttonY = margin;
       
-                  mStartButton_Overlay = CreateButton (0, mPlayButtonData, mIsOverlay, mIsTouchScreen, OnClickStart);
+                  mStartButton_Overlay = CreateButton (0, mPlayButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickStart);
                   mStartButton_Overlay.x = buttonX + 0.5 * mStartButton_Overlay.width;
                   mStartButton_Overlay.y = buttonY + 0.5 * mStartButton_Overlay.height;
                   mHudLayerForPause.addChild (mStartButton_Overlay);
                   
                   buttonX += (mStartButton_Overlay.width + gap);
                   
-                  mRestartButtonForPause_Overlay = CreateButton (0, mRestartButtonData, mIsOverlay, mIsTouchScreen, OnClickRestartForPause);
+                  mRestartButtonForPause_Overlay = CreateButton (0, mRestartButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickRestartForPause);
                   mRestartButtonForPause_Overlay.x = buttonX + 0.5 * mRestartButtonForPause_Overlay.width;
                   mRestartButtonForPause_Overlay.y = buttonY + 0.5 * mRestartButtonForPause_Overlay.height;
                   mHudLayerForPause.addChild (mRestartButtonForPause_Overlay);
@@ -772,7 +772,7 @@ package viewer {
                   
                   if (params.mShowHelpButton)
                   {
-                     mHelpButton_Overlay = CreateButton (0, mHelpButtonData, mIsOverlay, mIsTouchScreen, OnClickHelp);
+                     mHelpButton_Overlay = CreateButton (0, mHelpButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickHelp);
                      mHelpButton_Overlay.x = buttonX - 0.5 * mHelpButton_Overlay.width;
                      mHelpButton_Overlay.y = buttonY + 0.5 * mHelpButton_Overlay.height;
                      mHudLayerForPause.addChild (mHelpButton_Overlay);
@@ -786,7 +786,7 @@ package viewer {
                   {
                      if (params.mShowSoundController)
                      {
-                        mSoundOnButton_Overlay = CreateButton (0, mSoundOnButtonData, mIsOverlay, mIsTouchScreen, OnClickSoundOn);
+                        mSoundOnButton_Overlay = CreateButton (0, mSoundOnButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickSoundOn);
                         mSoundOnButton_Overlay.x = buttonX - 0.5 * mSoundOnButton_Overlay.width;
                         mSoundOnButton_Overlay.y = buttonY + 0.5 * mSoundOnButton_Overlay.height;
                         mHudLayerForPause.addChild (mSoundOnButton_Overlay);
@@ -801,7 +801,7 @@ package viewer {
                      
                      if (params.mShowSoundController)
                      {
-                        mSoundOnButton_Overlay = CreateButton (0, mSoundOnButtonData, mIsOverlay, mIsTouchScreen, OnClickSoundOn);
+                        mSoundOnButton_Overlay = CreateButton (0, mSoundOnButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickSoundOn);
                         mSoundOnButton_Overlay.x = buttonX - 0.5 * mSoundOnButton_Overlay.width;
                         mSoundOnButton_Overlay.y = buttonY - 0.5 * mSoundOnButton_Overlay.height;
                         mHudLayerForPause.addChild (mSoundOnButton_Overlay);
@@ -814,7 +814,7 @@ package viewer {
                      buttonX = margin;
                      buttonY = mViewerHeight - margin;
                
-                     mExitButton_Overlay = CreateButton (0, mHasMainMenu ? mMenuButtonData : mBackButtonData, mIsOverlay, mIsTouchScreen, _OnExitLevel);
+                     mExitButton_Overlay = CreateButton (0, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, _OnExitLevel);
                      mExitButton_Overlay.x = buttonX + 0.5 * mExitButton_Overlay.width;
                      mExitButton_Overlay.y = buttonY - 0.5 * mExitButton_Overlay.height;
                      mHudLayerForPause.addChild (mExitButton_Overlay);
@@ -826,7 +826,7 @@ package viewer {
                   
                   if (params.mShowSoundController)
                   {
-                     mSoundOffButton_Overlay = CreateButton (0, mSoundOffButtonData, mIsOverlay, mIsTouchScreen, OnClickSoundOff);
+                     mSoundOffButton_Overlay = CreateButton (0, mSoundOffButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickSoundOff);
                      mSoundOffButton_Overlay.x = mSoundOnButton_Overlay.x;
                      mSoundOffButton_Overlay.y = mSoundOnButton_Overlay.y;
                      mSoundOffButton_Overlay.visible = false;
@@ -847,17 +847,17 @@ package viewer {
             
             buttonX = 0;
             
-            mRestartButton = CreateButton (1, mRestartButtonData, false, false, OnClickRestart);
+            mRestartButton = CreateButton (1, mRestartButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickRestart);
             mRestartButton.x = buttonX ;
             mPlayBarButtonLayer.addChild (mRestartButton);
             
             buttonX += (mRestartButton.width + 1);
             
-            mStartButton = CreateButton (1, mPlayButtonData, false, false, OnClickStart);
+            mStartButton = CreateButton (1, mPlayButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickStart);
             mStartButton.x = buttonX;
             mPlayBarButtonLayer.addChild (mStartButton);
             
-               mPauseButton = CreateButton (1, mPauseButtonData, false, false, OnClickPause);
+               mPauseButton = CreateButton (1, mPauseButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickPause);
                mPauseButton.x = buttonX;
                mPauseButton.visible = false;
                mPlayBarButtonLayer.addChild (mPauseButton);
@@ -866,13 +866,13 @@ package viewer {
             
             if (params.mShowSpeedAdjustor)
             {  
-               mSlowerButton = CreateButton (1, mSlowerButtonData, false, false, OnClickSlower);
+               mSlowerButton = CreateButton (1, mSlowerButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickSlower);
                mSlowerButton.x = buttonX;
                mPlayBarButtonLayer.addChild (mSlowerButton);
                
                buttonX += (mSlowerButton.width + 1);
                
-               mFasterButton = CreateButton (1, mFasterButtonData, false, false, OnClickFaster);
+               mFasterButton = CreateButton (1, mFasterButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickFaster);
                mFasterButton.x = buttonX;
                mPlayBarButtonLayer.addChild (mFasterButton);
                
@@ -881,13 +881,13 @@ package viewer {
             
             if (params.mShowScaleAdjustor)
             {  
-               mScaleInButton = CreateButton (1, mScaleInButtonData, false, false, OnClickZoomIn);
+               mScaleInButton = CreateButton (1, mScaleInButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickZoomIn);
                mScaleInButton.x = buttonX;
                mPlayBarButtonLayer.addChild (mScaleInButton);
                
                buttonX += (mScaleInButton.width + 1);
                
-               mScaleOutButton = CreateButton (1, mScaleOutButtonData, false, false, OnClickZoomOut);
+               mScaleOutButton = CreateButton (1, mScaleOutButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickZoomOut);
                mScaleOutButton.x = buttonX;
                mPlayBarButtonLayer.addChild (mScaleOutButton);
                
@@ -896,11 +896,11 @@ package viewer {
             
             if (params.mShowSoundController)
             {
-               mSoundOnButton = CreateButton (1, mSoundOnButtonData, false, false, OnClickSoundOn);
+               mSoundOnButton = CreateButton (1, mSoundOnButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickSoundOn);
                mSoundOnButton.x = buttonX;
                mPlayBarButtonLayer.addChild (mSoundOnButton);
                
-                  mSoundOffButton = CreateButton (1, mSoundOffButtonData, false, false, OnClickSoundOff);
+                  mSoundOffButton = CreateButton (1, mSoundOffButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickSoundOff);
                   mSoundOffButton.x = buttonX;
                   mSoundOffButton.visible = false;
                   mPlayBarButtonLayer.addChild (mSoundOffButton);
@@ -912,7 +912,7 @@ package viewer {
             {
                if (params.mShowHelpButton)
                {
-                  mHelpButton = CreateButton (1, mHelpButtonData, false, false, OnClickHelp);
+                  mHelpButton = CreateButton (1, mHelpButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickHelp);
                   mHelpButton.x = buttonX;
                   mPlayBarButtonLayer.addChild (mHelpButton);
                   
@@ -923,13 +923,13 @@ package viewer {
             {
                if (params.mShowHelpButton)
                {
-                  mHelpButton = CreateButton (1, mHelpButtonData, false, false, OnClickHelp);
+                  mHelpButton = CreateButton (1, mHelpButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnClickHelp);
                   mHelpButton.x = mViewerWidth - gap - 0.5 * mHelpButton.width;
                   mHelpButton.y = 0.5 * PlayBarHeight;
                   mPlayBar.addChild (mHelpButton);
                }
                
-               mExitButton = CreateButton (1, mHasMainMenu ? mMenuButtonData : mBackButtonData, false, false, _OnExitLevel);
+               mExitButton = CreateButton (1, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, _OnExitLevel);
                mExitButton.x = gap + 0.5 * mExitButton.width;
                mExitButton.y = 0.5 * PlayBarHeight;
                mPlayBar.addChild (mExitButton);
@@ -1031,7 +1031,7 @@ package viewer {
          
          if (_OnExitLevel != null && mHasMainMenu)
          {
-            var exitButton:Sprite = CreateButton (0, mMenuButtonData, true, mIsTouchScreen, OnClickExitLevel);
+            var exitButton:Sprite = CreateButton (0, mMenuButtonData, SkinDefault.DefaultButtonIconFilledColor, true, mIsTouchScreen, OnClickExitLevel);
             exitButton.x = buttonX + 0.5 * exitButton.width;
             buttons.push (exitButton);
             buttons.push (gap);
@@ -1040,7 +1040,7 @@ package viewer {
          }
          else
          {
-            var replayButton:Sprite = CreateButton (0, mRestartButtonData, true, mIsTouchScreen, OnClickRestartForPlay);
+            var replayButton:Sprite = CreateButton (0, mRestartButtonData, SkinDefault.DefaultButtonIconFilledColor, true, mIsTouchScreen, OnClickRestartForPlay);
             replayButton.x = buttonX + 0.5 * replayButton.width;
             buttons.push (replayButton);
             buttons.push (gap);
@@ -1048,7 +1048,7 @@ package viewer {
             buttonX += (replayButton.width + margin);
          }
          
-         var closeButton:Sprite = CreateButton (0, mCloseButtonData, true, mIsTouchScreen, OnClickCloseLevelFinishedDialog);
+         var closeButton:Sprite = CreateButton (0, mCloseButtonData, SkinDefault.DefaultButtonIconFilledColor, true, mIsTouchScreen, OnClickCloseLevelFinishedDialog);
          closeButton.x = buttonX + 0.5 * closeButton.width;
          buttons.push (closeButton);
          
@@ -1056,7 +1056,7 @@ package viewer {
          
          if (_OnNextLevel != null && mHasNextLevel)
          {
-            var nextLevelButton:Sprite = CreateButton (0, mNextLevelButtonData, true, mIsTouchScreen, OnClickNextLevel);
+            var nextLevelButton:Sprite = CreateButton (0, mNextLevelButtonData, SkinDefault.DefaultButtonIconFilledColor, true, mIsTouchScreen, OnClickNextLevel);
             nextLevelButton.x = buttonX + 0.5 * nextLevelButton.width;
             buttons.push (gap);
             buttons.push (nextLevelButton);
@@ -1105,7 +1105,7 @@ package viewer {
          
          var textTutorial:TextFieldEx = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, GetPreferredDialogWidth ());
          
-         var mOkButton:Sprite = CreateButton (0, mOkButtonData, true, mIsTouchScreen, OnClickCloseHelpDialog);
+         var mOkButton:Sprite = CreateButton (0, mOkButtonData, SkinDefault.DefaultButtonIconFilledColor, true, mIsTouchScreen, OnClickCloseHelpDialog);
          
          // ...
        
@@ -1459,19 +1459,19 @@ package viewer {
              -10,  -4,
              -10, -14,
               11, -14,
-              11,   3,
-               2,   3,
-               2,   9,
-              -2,   9,
-              -2,  -1,
-               7,  -1,
+              11,   2,
+               3,   2,
+               3,   8,
+              -2,   8,
+              -2,  -2,
+               7,  -2,
                7, -10,
               -6, -10,
          ],
          [3,
-              -2, 12,
-               2, 12,
-               2, 16,
+              -2, 11,
+               3, 11,
+               3, 16,
               -2, 16,
          ],
       ];
@@ -1578,12 +1578,34 @@ package viewer {
          ],
       ];
       
-      protected static const DefaultButtonBaseRadius:Number = 26.0;
-      protected static const DefaultButtonBaseHalfSize:Number = 20.0;
-      protected static const DefaultButtonBaseFilledColor:uint = 0x61a70e;
-      protected static const DefaultButtonBaseBorderThickness:Number = 5.0;
-      protected static const DefaultButtonBaseBorderColor:uint = 0x50e61d;
-      protected static const DefaultButtonIconFilledColor:uint = 0xff0000;
+      public static const mLockButtonData:Array = [
+         [1 | (3 << 8),
+              -10,  -3, 
+              -10, -10,
+         ],
+         [2 | (3 << 8),
+              -10, -10,
+                0, -22, // control point
+               10, -10,
+         ],
+         [1 | (3 << 8),
+               10,  -3, 
+               10, -10,
+         ],
+         [3,
+              -15,  -2,
+               15,  -2,
+               15,  16,
+              -15,  16,
+         ],
+      ];
+      
+      public static const DefaultButtonBaseRadius:Number = 26.0;
+      public static const DefaultButtonBaseHalfSize:Number = 20.0;
+      public static const DefaultButtonBaseFilledColor:uint = 0x61a70e;
+      public static const DefaultButtonBaseBorderThickness:Number = 5.0;
+      public static const DefaultButtonBaseBorderColor:uint = 0x50e61d;
+      public static const DefaultButtonIconFilledColor:uint = 0xff0000;
       
       private static function ShapeDataToPointArray (shapeData:Array):Array
       {
@@ -1598,21 +1620,26 @@ package viewer {
          return points;
       }
 
-      public static function CreateButton (baseShapeType:int, buttonData:Array, isOverlay:Boolean, isTocuhScreen:Boolean, onClickHandler:Function = null):Sprite
+      public static function CreateButton (baseShapeType:int, buttonData:Array, iconColor:uint, isOverlay:Boolean, isTocuhScreen:Boolean, onClickHandler:Function = null):Sprite
       {
-         var baseShape:Shape = new Shape ();
-         if (baseShapeType == 0) // circle
+         var baseShape:Shape = null;
+         
+         if (baseShapeType >= 0)
          {
-            GraphicsUtil.DrawCircle (baseShape, 0, 0, DefaultButtonBaseRadius, DefaultButtonBaseFilledColor, DefaultButtonBaseBorderThickness, true, DefaultButtonBaseBorderColor);
-         }
-         else // rectangle
-         {
-            //GraphicsUtil.DrawRect (baseShape, 
-            //                     - DefaultButtonBaseHalfSize, - DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, 
-            //                     DefaultButtonBaseFilledColor, DefaultButtonBaseBorderThickness, true, DefaultButtonBaseBorderColor);
-            GraphicsUtil.DrawRect (baseShape, 
-                                 - DefaultButtonBaseHalfSize, - DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, 
-                                 DefaultButtonBaseFilledColor, -1, true, DefaultButtonBaseBorderColor);
+            baseShape = new Shape ();
+            if (baseShapeType == 0) // circle
+            {
+               GraphicsUtil.DrawCircle (baseShape, 0, 0, DefaultButtonBaseRadius, DefaultButtonBaseFilledColor, DefaultButtonBaseBorderThickness, true, DefaultButtonBaseBorderColor);
+            }
+            else // rectangle
+            {
+               //GraphicsUtil.DrawRect (baseShape, 
+               //                     - DefaultButtonBaseHalfSize, - DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, 
+               //                     DefaultButtonBaseFilledColor, DefaultButtonBaseBorderThickness, true, DefaultButtonBaseBorderColor);
+               GraphicsUtil.DrawRect (baseShape, 
+                                    - DefaultButtonBaseHalfSize, - DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, DefaultButtonBaseHalfSize + DefaultButtonBaseHalfSize, 
+                                    DefaultButtonBaseFilledColor, -1, true, DefaultButtonBaseBorderColor);
+            }
          }
          
          var iconShape:Shape = new Shape ();
@@ -1626,18 +1653,18 @@ package viewer {
             switch (shapeTyle)
             {
                case 0: // circle
-                  GraphicsUtil.DrawCircle (iconShape, shapeData [1], shapeData[2], shapeData[3], DefaultButtonIconFilledColor, thickness, shapeData[4] != 0, DefaultButtonIconFilledColor);
+                  GraphicsUtil.DrawCircle (iconShape, shapeData [1], shapeData[2], shapeData[3], iconColor, thickness, shapeData[4] != 0, iconColor);
                   break;
                case 1: // polyline
-                  GraphicsUtil.DrawPolyline (iconShape, ShapeDataToPointArray (shapeData), DefaultButtonIconFilledColor, thickness, true, false);
+                  GraphicsUtil.DrawPolyline (iconShape, ShapeDataToPointArray (shapeData), iconColor, thickness, true, false);
                   break;
                case 2: // curve
-                  iconShape.graphics.lineStyle(thickness, DefaultButtonIconFilledColor);
+                  iconShape.graphics.lineStyle(thickness, iconColor);
                   iconShape.graphics.moveTo(shapeData [1], shapeData[2]);
                   iconShape.graphics.curveTo(shapeData[3], shapeData[4], shapeData[5], shapeData[6]);
                   break;
                case 3: // polygon
-                  GraphicsUtil.DrawPolygon (iconShape, ShapeDataToPointArray (shapeData), 0x0, -1, true, DefaultButtonIconFilledColor);
+                  GraphicsUtil.DrawPolygon (iconShape, ShapeDataToPointArray (shapeData), 0x0, -1, true, iconColor);
                   break;
                default:
                   break;
@@ -1645,7 +1672,8 @@ package viewer {
          }
          
          var button:Sprite = new Sprite;
-         button.addChild (baseShape);
+         if (baseShape != null)
+            button.addChild (baseShape);
          button.addChild (iconShape);
          
          // ...

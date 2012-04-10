@@ -1153,7 +1153,7 @@
                if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Input Entity Variable", isForTarget ? OnSelectValueSource_InputVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_InputVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
 
-               AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+               //AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
 
                if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Session Entity Variable", isForTarget ? OnSelectValueSource_SessionVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_SessionVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
@@ -1179,7 +1179,7 @@
                   if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Entity Custom Property", OnSelectValueSource_EntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
 
-                  AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+                  //AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
 
                   if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Session Variable", OnSelectValueSource_SessionVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
@@ -1678,7 +1678,7 @@
                if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Custom Entity Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
 
-               AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+               //AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
 
                if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Session Variable", OnSelectValueTarget_SessionVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);

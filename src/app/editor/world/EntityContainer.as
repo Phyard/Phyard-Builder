@@ -5,11 +5,62 @@ package editor.world {
    import flash.display.DisplayObject;
    import flash.geom.Point;
    import flash.geom.Matrix;
+   import flash.utils.Dictionary;
    
    import com.tapirgames.util.Logger;
-   
+
    import editor.entity.Entity;
+   import editor.entity.WorldSubEntity;
+
+   import editor.entity.EntityVectorShape;
+   import editor.entity.EntityVectorShapeCircle;
+   import editor.entity.EntityVectorShapeRectangle;
+   import editor.entity.EntityVectorShapePolygon;
+   import editor.entity.EntityVectorShapePolyline;
+   import editor.entity.EntityVectorShapeText;
+   import editor.entity.EntityVectorShapeTextButton;
+   import editor.entity.EntityVectorShapeGravityController;
    
+   import editor.entity.EntityShapeImageModule;
+   import editor.entity.EntityShapeImageModuleButton;
+
+   import editor.entity.EntityUtility;
+   import editor.entity.EntityUtilityCamera;
+   import editor.entity.EntityUtilityPowerSource;
+
+   import editor.entity.EntityJoint;
+   import editor.entity.EntityJointDistance;
+   import editor.entity.EntityJointHinge;
+   import editor.entity.EntityJointSlider;
+   import editor.entity.EntityJointSpring;
+   import editor.entity.EntityJointWeld;
+   import editor.entity.EntityJointDummy;
+
+   import editor.entity.SubEntityJointAnchor;
+
+   import editor.trigger.entity.EntityLogic;
+   import editor.trigger.entity.EntityBasicCondition;
+   import editor.trigger.entity.EntityConditionDoor;
+   import editor.trigger.entity.EntityTask;
+   import editor.trigger.entity.EntityInputEntityAssigner;
+   import editor.trigger.entity.EntityInputEntityPairAssigner;
+   import editor.trigger.entity.EntityInputEntityScriptFilter;
+   import editor.trigger.entity.EntityInputEntityPairScriptFilter;
+   import editor.trigger.entity.EntityInputEntityRegionSelector;
+   import editor.trigger.entity.EntityEventHandler;
+   import editor.trigger.entity.EntityEventHandler_Timer;
+   import editor.trigger.entity.EntityEventHandler_TimerWithPrePostHandling;
+   import editor.trigger.entity.EntityEventHandler_Keyboard;
+   import editor.trigger.entity.EntityEventHandler_Mouse;
+   import editor.trigger.entity.EntityEventHandler_Contact;
+   import editor.trigger.entity.EntityEventHandler_JointReachLimit;
+   import editor.trigger.entity.EntityEventHandler_ModuleLoopToEnd;
+   import editor.trigger.entity.EntityEventHandler_GameLostOrGotFocus;
+   import editor.trigger.entity.EntityAction;
+
+   //import editor.trigger.entity.EntityFunctionPackage;
+   //import editor.trigger.entity.EntityFunction;
+
    import editor.entity.VertexController;
    
    import editor.selection.SelectionEngine;
@@ -560,8 +611,153 @@ package editor.world {
          
          return count > 0;
       }
-      
+
+//=================================================================================
+//   clone
+//=================================================================================
+
       public function CloneSelectedEntities (offsetX:Number, offsetY:Number, cloningInfo:Array = null):void
+      {
+         var selectedEntities:Array = GetSelectedEntities ();
+         var cloningInfoArray:Array = new Array ();
+
+         CloneSelectedEntities_OldEntityContianer (offsetX, offsetY, cloningInfoArray);
+
+      // keep glued relation, shape index
+
+         if (selectedEntities.length != cloningInfoArray.length)
+            return;
+
+         var i:int;
+         var j:int;
+         var index:int;
+         var info:Object;
+         var selectedEntity:Entity;
+         var mainEntity:Entity;
+         var clonedMainEntity:Entity;
+
+         var jointEntity:EntityJoint;
+         var shapeIndex1:int;
+         var shapeIndex2:int;
+         var newJointEntity:EntityJoint;
+         var shapeEntity:EntityVectorShape;
+         var newShapeEntity:EntityVectorShape;
+
+         var count:int = selectedEntities.length;
+         var clonedEntities:Array = new Array (count);
+
+         for (i = 0; i < count; ++ i)
+         {
+            info = cloningInfoArray [i];
+
+            mainEntity = info.mMainEntity;
+            clonedMainEntity = info.mClonedMainEntity;
+
+            if (clonedMainEntity == null)
+               continue;
+
+            if (mainEntity is EntityJoint)
+            {
+               if (info.mChecked != null && info.mChecked)
+                  continue;
+
+            ////////////////////////////////////////////////////////
+            // auto set shape indexes for joints
+            ///////////////////////////////////////////////////////
+
+               jointEntity = mainEntity as EntityJoint;
+               newJointEntity = clonedMainEntity as EntityJoint;
+
+               shapeIndex1 = jointEntity.GetConnectedShape1Index ();
+               shapeIndex2 = jointEntity.GetConnectedShape2Index ();
+
+               if (shapeIndex1 >= 0)
+               {
+                  shapeEntity = GetEntityByCreationId (shapeIndex1) as EntityVectorShape;
+                  index = selectedEntities.indexOf (shapeEntity);
+                  if (index >= 0)
+                  {
+                     newShapeEntity = cloningInfoArray [index].mClonedMainEntity;
+                     newJointEntity.SetConnectedShape1Index (GetEntityCreationId (newShapeEntity));
+                  }
+               }
+
+               if (shapeIndex2 >= 0)
+               {
+                  shapeEntity = GetEntityByCreationId (shapeIndex2) as EntityVectorShape;
+                  index = selectedEntities.indexOf (shapeEntity);
+                  if (index >= 0)
+                  {
+                     newShapeEntity = cloningInfoArray [index].mClonedMainEntity;
+                     newJointEntity.SetConnectedShape2Index (GetEntityCreationId (newShapeEntity));
+                  }
+               }
+           //<<
+           ///////////////////////////////////////////////////////
+
+               var selectableEntities:Array = mainEntity.GetSelectableEntities ();
+               var clonedSelectableEntities:Array = clonedMainEntity.GetSelectableEntities ();
+
+               for (j = 0; j < selectableEntities.length; ++ j)
+               {
+                  index = selectedEntities.indexOf (selectableEntities [j]);
+                  if (index < 0)
+                  {
+                     index = selectedEntities.length;
+                     selectedEntities.push (selectableEntities [j]);
+                     cloningInfoArray.push (info);
+                  }
+
+                  clonedEntities [index] = clonedSelectableEntities [j];
+
+                  cloningInfoArray [index].mChecked = true;
+               }
+            } // if (mainEntity is EntityJoint)
+            else
+            {
+               clonedEntities [i] = clonedMainEntity;
+            }
+         }
+
+         var botherGroupDict:Dictionary = new Dictionary ();
+         var newBotherGroupArray:Array = new Array ();
+         var oldBrotherGroup:Array;
+         var newBrotherGroup:Array;
+
+         for (i = 0; i < selectedEntities.length; ++ i)
+         {
+            selectedEntity = selectedEntities [i];
+
+            oldBrotherGroup = selectedEntity.GetBrothers ();
+
+            if (oldBrotherGroup == null)
+               continue;
+
+            newBrotherGroup = botherGroupDict [oldBrotherGroup];
+            if (newBrotherGroup == null)
+            {
+               newBrotherGroup = new Array ();
+               botherGroupDict [oldBrotherGroup] = newBrotherGroup;
+
+               newBotherGroupArray.push (newBrotherGroup);
+            }
+
+            if (clonedEntities [i] != null)
+               newBrotherGroup.push (clonedEntities [i]);
+         }
+
+         for (i = 0; i < newBotherGroupArray.length; ++ i)
+         {
+            newBrotherGroup = newBotherGroupArray [i];
+
+            if (newBrotherGroup.length <= 1)
+               return;
+
+            GlueEntities (newBrotherGroup);
+         }
+      }
+      
+      private function CloneSelectedEntities_OldEntityContianer (offsetX:Number, offsetY:Number, cloningInfo:Array = null):void
       {
          var selectedEntities:Array = GetSelectedEntities ();
          var mainEntities:Array = new Array ();
@@ -746,6 +942,8 @@ package editor.world {
                addChild (entity);
             }
          }
+
+         CorrectLayerIdsForJoints ();
       }
       
       public function MoveSelectedEntitiesToBottom ():void
@@ -770,6 +968,69 @@ package editor.world {
             //   removeChild (entity.GetMainEntity ());
             //   addChildAt (entity.GetMainEntity (), 0);
             //}
+         }
+
+         CorrectLayerIdsForJoints ();
+      }
+
+      // make sure the joint is befind of its anchors in aapearance list
+      // so that there are some conviences in playing initization.
+      public function CorrectLayerIdsForJoints ():void
+      {
+         var numEntities:int = mEntitiesSortedByCreationId.length;
+
+         for (var i:int = 0; i < numEntities; ++ i)
+         {
+            var entity:Entity = mEntitiesSortedByCreationId [i] as Entity;
+
+            if (entity is EntityJoint)
+            {
+               var maxIndex:int = -1;
+
+               var joint:Object = entity as Object;
+
+               if (joint.hasOwnProperty ("GetAnchor"))
+               {
+                  var anchor:WorldSubEntity = joint.GetAnchor () as WorldSubEntity;
+                  if (anchor != null)
+                  {
+                     var index:int = getChildIndex (anchor);
+                     if (index > maxIndex)
+                        maxIndex = index;
+                  }
+               }
+               else
+               {
+                  if (joint.hasOwnProperty ("GetAnchor1"))
+                  {
+                     var anchor1:WorldSubEntity = joint.GetAnchor1 () as WorldSubEntity;
+                     if (anchor1 != null)
+                     {
+                        var index1:int = getChildIndex (anchor1);
+                        if (index1 > maxIndex)
+                           maxIndex = index1;
+                     }
+                  }
+
+                  if (joint.hasOwnProperty ("GetAnchor2"))
+                  {
+                     var anchor2:WorldSubEntity = joint.GetAnchor2 () as WorldSubEntity;
+                     if (anchor2 != null)
+                     {
+                        var index2:int = getChildIndex (anchor2);
+                        if (index2 > maxIndex)
+                           maxIndex = index2;
+                     }
+                  }
+               }
+
+               var oldIndex:int = getChildIndex (entity);
+               if (maxIndex > oldIndex)
+               {
+                  removeChild (entity);
+                  addChildAt (entity, maxIndex);
+               }
+            }
          }
       }
       
@@ -1034,6 +1295,100 @@ package editor.world {
          }
          
          return entities;
+      }
+
+//=================================================================================
+//   visibility in editing, not playing
+//=================================================================================
+
+      private var mVisiblesVisible:Boolean = true;
+      private var mInvisiblesVisible:Boolean = true;
+      private var mShapesVisible:Boolean = true;
+      private var mJointsVisible:Boolean = true;
+      private var mTriggersVisible:Boolean = true;
+      private var mLinksVisible:Boolean = true;
+
+      public function SetVisiblesVisible (visible:Boolean):void
+      {
+         mVisiblesVisible = visible;
+
+         UpdateEntityVisibility ();
+      }
+
+      public function SetInvisiblesVisible (visible:Boolean):void
+      {
+         mInvisiblesVisible = visible;
+
+         UpdateEntityVisibility ();
+      }
+
+      public function SetShapesVisible (visible:Boolean):void
+      {
+         mShapesVisible = visible;
+
+         UpdateEntityVisibility ();
+      }
+
+      public function SetJointsVisible (visible:Boolean):void
+      {
+         mJointsVisible = visible;
+
+         UpdateEntityVisibility ();
+      }
+
+      public function SetTriggersVisible (visible:Boolean):void
+      {
+         mTriggersVisible = visible;
+
+         UpdateEntityVisibility ();
+      }
+
+      private function UpdateEntityVisibility ():void
+      {
+         var entity:Entity;
+
+         var numEntities:int = mEntitiesSortedByCreationId.length;
+         if (numEntities != numChildren)
+            trace ("!!! numEntities != numChildren");
+
+         var ildVisible:Boolean;
+
+         for (var i:int = 0; i < numEntities; ++ i)
+         {
+            entity = mEntitiesSortedByCreationId [i] as Entity;
+            if (entity == null)
+               continue; // should not
+
+            if (entity.IsVisible ())
+            {
+               entity.SetVisibleInEditor (mVisiblesVisible);
+            }
+            else
+            {
+               entity.SetVisibleInEditor (mInvisiblesVisible);
+            }
+
+            if (entity.IsVisibleInEditor ())
+            {
+               if (entity is EntityVectorShape || entity is EntityUtility)
+               {
+                  entity.SetVisibleInEditor (mShapesVisible);
+               }
+               else if (entity is EntityJoint || entity is SubEntityJointAnchor)
+               {
+                  entity.SetVisibleInEditor (mJointsVisible);
+               }
+               else if (entity is EntityLogic)
+               {
+                  entity.SetVisibleInEditor (mTriggersVisible);
+               }
+            }
+
+            if ((! entity.IsVisibleInEditor ()) && entity.IsSelected ())
+            {
+               mSelectionListManager.RemoveSelectedEntity (entity);
+            }
+         }
       }
       
 //=================================================================================

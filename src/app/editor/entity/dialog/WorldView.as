@@ -233,12 +233,13 @@ package editor.entity.dialog {
       //public var mCollisionManagerView:CollisionManagerView = null;
       
       //
-      private var mEditorWorld:editor.world.World;
+      //private var EditorContext.GetCurrentWorld ():editor.world.World;
+      private var mEntityContainer:EntityContainer;
       
          private var mViewCenterWorldX:Number = DefaultWorldWidth * 0.5;
          private var mViewCenterWorldY:Number = DefaultWorldHeight * 0.5;
-         private var mEditorWorldZoomScale:Number = 1.0;
-         private var mEditorWorldZoomScaleChangedSpeed:Number = 0.0;
+         private var mEntityContainerZoomScale:Number = 1.0;
+         private var mEntityContainerZoomScaleChangedSpeed:Number = 0.0;
          
          private var mViewWidth:Number        = DefaultWorldWidth;
          private var mViewHeight:Number       = DefaultWorldHeight;
@@ -327,7 +328,7 @@ package editor.entity.dialog {
       
       public function GetEditorWorld ():editor.world.World
       {
-         return mEditorWorld;
+         return EditorContext.GetCurrentWorld ();
       }
       
       private function RegisterNotifyFunctions ():void
@@ -443,19 +444,19 @@ package editor.entity.dialog {
             }
             else
             {
-               if (mEditorWorld.GetEntityContainer ().scaleX != mEditorWorldZoomScale)
+               if (mEntityContainer.scaleX != mEntityContainerZoomScale)
                {
-                  if (mEditorWorld.GetEntityContainer ().scaleX < mEditorWorldZoomScale)
+                  if (mEntityContainer.scaleX < mEntityContainerZoomScale)
                   {
-                     if (mEditorWorldZoomScaleChangedSpeed < 0)
-                        mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
+                     if (mEntityContainerZoomScaleChangedSpeed < 0)
+                        mEntityContainerZoomScaleChangedSpeed = - mEntityContainerZoomScaleChangedSpeed;
                      
-                     newScale = mEditorWorld.GetEntityContainer ().scaleX + mEditorWorldZoomScaleChangedSpeed;
-                     mEditorWorld.GetEntityContainer ().scaleY = mEditorWorld.GetEntityContainer ().scaleX = newScale;
+                     newScale = mEntityContainer.scaleX + mEntityContainerZoomScaleChangedSpeed;
+                     mEntityContainer.scaleY = mEntityContainer.scaleX = newScale;
                      
-                     if (mEditorWorld.GetEntityContainer ().scaleX >= mEditorWorldZoomScale)
+                     if (mEntityContainer.scaleX >= mEntityContainerZoomScale)
                      {
-                        mEditorWorld.GetEntityContainer ().SetZoomScale (mEditorWorldZoomScale);
+                        mEntityContainer.SetZoomScale (mEntityContainerZoomScale);
                         NotifyEntityLinksModified ();
                         NotifyEntityIdsModified ();
                      }
@@ -465,17 +466,17 @@ package editor.entity.dialog {
                      
                      UpdateBackgroundAndWorldPosition ();
                   }
-                  else if (mEditorWorld.GetEntityContainer ().scaleX > mEditorWorldZoomScale)
+                  else if (mEntityContainer.scaleX > mEntityContainerZoomScale)
                   {
-                     if (mEditorWorldZoomScaleChangedSpeed > 0)
-                        mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
+                     if (mEntityContainerZoomScaleChangedSpeed > 0)
+                        mEntityContainerZoomScaleChangedSpeed = - mEntityContainerZoomScaleChangedSpeed;
                      
-                     newScale = mEditorWorld.GetEntityContainer ().scaleX + mEditorWorldZoomScaleChangedSpeed;
-                     mEditorWorld.GetEntityContainer ().scaleY = mEditorWorld.GetEntityContainer ().scaleX = newScale;
+                     newScale = mEntityContainer.scaleX + mEntityContainerZoomScaleChangedSpeed;
+                     mEntityContainer.scaleY = mEntityContainer.scaleX = newScale;
                      
-                     if (mEditorWorld.GetEntityContainer ().scaleX <= mEditorWorldZoomScale)
+                     if (mEntityContainer.scaleX <= mEntityContainerZoomScale)
                      {
-                        mEditorWorld.GetEntityContainer ().SetZoomScale (mEditorWorldZoomScale);
+                        mEntityContainer.SetZoomScale (mEntityContainerZoomScale);
                         NotifyEntityLinksModified ();
                         NotifyEntityIdsModified ();
                      }
@@ -487,7 +488,7 @@ package editor.entity.dialog {
                   }
                }
                
-               mEditorWorld.GetEntityContainer ().Update (mStepTimeSpan.GetLastSpan ());
+               mEntityContainer.Update (mStepTimeSpan.GetLastSpan ());
                
                RepaintEntityLinks ();
                RepaintEntityIds ();
@@ -509,10 +510,10 @@ package editor.entity.dialog {
       
       private function SynchronizePositionAndScaleWithEditorWorld (sprite:Sprite):void
       {
-            sprite.scaleX = mEditorWorld.GetEntityContainer ().scaleX;
-            sprite.scaleY = mEditorWorld.GetEntityContainer ().scaleY;
-            sprite.x = mEditorWorld.GetEntityContainer ().x;
-            sprite.y = mEditorWorld.GetEntityContainer ().y;
+            sprite.scaleX = mEntityContainer.scaleX;
+            sprite.scaleY = mEntityContainer.scaleY;
+            sprite.x = mEntityContainer.x;
+            sprite.y = mEntityContainer.y;
       }
       
 //==================================================================================
@@ -547,12 +548,15 @@ package editor.entity.dialog {
             mEditorBackgroundLayer.addChild (mEntityLinksLayer);
          }
          
+         if (mEntityContainer == null)
+            return;
+         
          var sceneLeft  :Number;
          var sceneTop   :Number;
          var sceneWidth :Number;
          var sceneHeight:Number;
          
-         if (mEditorWorld.GetEntityContainer ().IsInfiniteSceneSize ())
+         if (mEntityContainer.IsInfiniteSceneSize ())
          {
             sceneLeft   = -1000000000; // about halft of - 0x7FFFFFFF;
             sceneTop    = - 1000000000; // about half of - 0x7FFFFFFF;
@@ -561,15 +565,15 @@ package editor.entity.dialog {
          }
          else
          {
-            sceneLeft   = mEditorWorld.GetEntityContainer ().GetWorldLeft ();
-            sceneTop    = mEditorWorld.GetEntityContainer ().GetWorldTop ();
-            sceneWidth  = mEditorWorld.GetEntityContainer ().GetWorldWidth ();
-            sceneHeight = mEditorWorld.GetEntityContainer ().GetWorldHeight ();
+            sceneLeft   = mEntityContainer.GetWorldLeft ();
+            sceneTop    = mEntityContainer.GetWorldTop ();
+            sceneWidth  = mEntityContainer.GetWorldWidth ();
+            sceneHeight = mEntityContainer.GetWorldHeight ();
          }
          
-         var bgColor    :uint = mEditorWorld.GetEntityContainer ().GetBackgroundColor ();
-         var borderColor:uint = mEditorWorld.GetEntityContainer ().GetBorderColor ();
-         var drawBorder:Boolean = mEditorWorld.GetEntityContainer ().IsBuildBorder ();
+         var bgColor    :uint = mEntityContainer.GetBackgroundColor ();
+         var borderColor:uint = mEntityContainer.GetBorderColor ();
+         var drawBorder:Boolean = mEntityContainer.IsBuildBorder ();
          
          if (mViewCenterWorldX < sceneLeft)
             mViewCenterWorldX = sceneLeft;
@@ -580,22 +584,22 @@ package editor.entity.dialog {
          if (mViewCenterWorldY > sceneTop + sceneHeight)
             mViewCenterWorldY = sceneTop + sceneHeight;
          
-         mEditorWorld.GetEntityContainer ().SetCameraCenterX (mViewCenterWorldX);
-         mEditorWorld.GetEntityContainer ().SetCameraCenterY (mViewCenterWorldY);
+         mEntityContainer.SetCameraCenterX (mViewCenterWorldX);
+         mEntityContainer.SetCameraCenterY (mViewCenterWorldY);
          
-         //mEditorWorld.GetEntityContainer ().SetZoomScale (mEditorWorldZoomScale);
+         //mEntityContainer.SetZoomScale (mEntityContainerZoomScale);
          
-         var worldOriginViewX:Number = (0 - mViewCenterWorldX) * mEditorWorld.GetEntityContainer ().scaleX + mViewWidth  * 0.5;
-         var worldOriginViewY:Number = (0 - mViewCenterWorldY) * mEditorWorld.GetEntityContainer ().scaleY + mViewHeight * 0.5;
-         var worldViewLeft:Number   = (sceneLeft - mViewCenterWorldX) * mEditorWorld.GetEntityContainer ().scaleX + mViewWidth  * 0.5;
-         var worldViewTop:Number    = (sceneTop  - mViewCenterWorldY) * mEditorWorld.GetEntityContainer ().scaleY + mViewHeight * 0.5;
-         var worldViewRight:Number  = worldViewLeft + sceneWidth  * mEditorWorld.GetEntityContainer ().scaleX;
-         var worldViewBottom:Number = worldViewTop  + sceneHeight * mEditorWorld.GetEntityContainer ().scaleY;
-         var worldViewWidth:Number  = sceneWidth  * mEditorWorld.GetEntityContainer ().scaleX;
-         var worldViewHeight:Number = sceneHeight * mEditorWorld.GetEntityContainer ().scaleY;
+         var worldOriginViewX:Number = (0 - mViewCenterWorldX) * mEntityContainer.scaleX + mViewWidth  * 0.5;
+         var worldOriginViewY:Number = (0 - mViewCenterWorldY) * mEntityContainer.scaleY + mViewHeight * 0.5;
+         var worldViewLeft:Number   = (sceneLeft - mViewCenterWorldX) * mEntityContainer.scaleX + mViewWidth  * 0.5;
+         var worldViewTop:Number    = (sceneTop  - mViewCenterWorldY) * mEntityContainer.scaleY + mViewHeight * 0.5;
+         var worldViewRight:Number  = worldViewLeft + sceneWidth  * mEntityContainer.scaleX;
+         var worldViewBottom:Number = worldViewTop  + sceneHeight * mEntityContainer.scaleY;
+         var worldViewWidth:Number  = sceneWidth  * mEntityContainer.scaleX;
+         var worldViewHeight:Number = sceneHeight * mEntityContainer.scaleY;
          
-         mEditorWorld.GetEntityContainer ().x = Math.round (worldOriginViewX);
-         mEditorWorld.GetEntityContainer ().y = Math.round (worldOriginViewY);
+         mEntityContainer.x = Math.round (worldOriginViewX);
+         mEntityContainer.y = Math.round (worldOriginViewY);
          
          //>>
          var adjustDx:Number = Math.round (worldOriginViewX) - worldOriginViewX;
@@ -608,8 +612,8 @@ package editor.entity.dialog {
          worldViewRight += adjustDx;
          worldViewBottom += adjustDy;
          
-         mEditorWorld.GetEntityContainer ().x += adjustDx;
-         mEditorWorld.GetEntityContainer ().y += adjustDy;
+         mEntityContainer.x += adjustDx;
+         mEntityContainer.y += adjustDy;
          //<<
          
          //SynchrinizePlayerWorldWithEditorWorld ();
@@ -622,8 +626,8 @@ package editor.entity.dialog {
          var bgWidth :Number = bgRight - bgLeft;
          var bgHeight:Number = bgBottom - bgTop;
          
-         var gridWidth:Number  = BackgroundGridSize * mEditorWorld.GetEntityContainer ().scaleX;
-         var gridHeight:Number = BackgroundGridSize * mEditorWorld.GetEntityContainer ().scaleY;
+         var gridWidth:Number  = BackgroundGridSize * mEntityContainer.scaleX;
+         var gridHeight:Number = BackgroundGridSize * mEntityContainer.scaleY;
          
          var gridX:Number;
          if (bgLeft == worldViewLeft)
@@ -662,10 +666,10 @@ package editor.entity.dialog {
          
          if (drawBorder)
          {
-            var borderThinknessL:Number = mEditorWorld.GetEntityContainer ().GetWorldBorderLeftThickness () * mEditorWorld.GetEntityContainer ().scaleX;
-            var borderThinknessR:Number = mEditorWorld.GetEntityContainer ().GetWorldBorderRightThickness () * mEditorWorld.GetEntityContainer ().scaleX;
-            var borderThinknessT:Number = mEditorWorld.GetEntityContainer ().GetWorldBorderTopThickness () * mEditorWorld.GetEntityContainer ().scaleY;
-            var borderThinknessB:Number = mEditorWorld.GetEntityContainer ().GetWorldBorderBottomThickness () * mEditorWorld.GetEntityContainer ().scaleY;
+            var borderThinknessL:Number = mEntityContainer.GetWorldBorderLeftThickness () * mEntityContainer.scaleX;
+            var borderThinknessR:Number = mEntityContainer.GetWorldBorderRightThickness () * mEntityContainer.scaleX;
+            var borderThinknessT:Number = mEntityContainer.GetWorldBorderTopThickness () * mEntityContainer.scaleY;
+            var borderThinknessB:Number = mEntityContainer.GetWorldBorderBottomThickness () * mEntityContainer.scaleY;
             
             mEditorBackgroundLayer.graphics.beginFill(borderColor);
             mEditorBackgroundLayer.graphics.drawRect (worldViewLeft, worldViewTop, borderThinknessL, worldViewHeight);
@@ -682,7 +686,7 @@ package editor.entity.dialog {
       public function UpdateSelectedEntityInfo ():void
       {
          // ...
-         if (mLastSelectedEntity != null && ! mEditorWorld.GetEntityContainer ().IsEntitySelected (mLastSelectedEntity))
+         if (mLastSelectedEntity != null && ! mEntityContainer.IsEntitySelected (mLastSelectedEntity))
             SetLastSelectedEntities (null);
          
          if (mMainSelectedEntity == null)
@@ -703,9 +707,9 @@ package editor.entity.dialog {
          
          if (mainEntity != mMainSelectedEntity)
          {
-            infoText = " (of &lt;" + mEditorWorld.GetEntityContainer ().GetEntityCreationId (mainEntity) + "&gt; " + mainEntity.GetTypeName () + ")" + infoText;
+            infoText = " (of &lt;" + mEntityContainer.GetEntityCreationId (mainEntity) + "&gt; " + mainEntity.GetTypeName () + ")" + infoText;
          }
-         infoText = "<b>&lt;" + mEditorWorld.GetEntityContainer ().GetEntityCreationId (mMainSelectedEntity) + "&gt; " + mMainSelectedEntity.GetTypeName () + infoText;
+         infoText = "<b>&lt;" + mEntityContainer.GetEntityCreationId (mMainSelectedEntity) + "&gt; " + mMainSelectedEntity.GetTypeName () + infoText;
          
          StatusBar_SetMainSelectedEntityInfo (infoText);
       }
@@ -738,9 +742,9 @@ package editor.entity.dialog {
          }
          else
          {
-            worldPoint = mEditorWorld.GetEntityContainer ().globalToLocal (new Point (Math.round(stagePoint.x), Math.round (stagePoint.y)));
-            px = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_PositionX (worldPoint.x), 6);
-            py = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_PositionY (worldPoint.y), 6);
+            worldPoint = mEntityContainer.globalToLocal (new Point (Math.round(stagePoint.x), Math.round (stagePoint.y)));
+            px = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (worldPoint.x), 6);
+            py = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (worldPoint.y), 6);
          }
          
          StatusBar_SetMainDisplayPosition ("(" + worldPoint.x + "px, " + worldPoint.y + "px)");
@@ -749,8 +753,8 @@ package editor.entity.dialog {
       
       private function UpdateSelectedEntitiesCenterSprite ():void
       {
-         //var point:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld.GetEntityContainer (), this, _SelectedEntitiesCenterPoint );
-         var point:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld.GetEntityContainer (), mForegroundLayer, _SelectedEntitiesCenterPoint );
+         //var point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, _SelectedEntitiesCenterPoint );
+         var point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, mForegroundLayer, _SelectedEntitiesCenterPoint );
          mSelectedEntitiesCenterSprite.x = point.x;
          mSelectedEntitiesCenterSprite.y = point.y;
       }
@@ -770,19 +774,19 @@ package editor.entity.dialog {
          {
             mEntityLinksModified = false;
             mEntityLinksLayer.graphics.clear ();
-            mEditorWorld.GetEntityContainer ().DrawEntityLinks (mEntityLinksLayer, mShowAllEntityLinks);
+            mEntityContainer.DrawEntityLinks (mEntityLinksLayer, mShowAllEntityLinks);
             
             UpdateSelectedEntityInfo ();
          }
          
-         if (mEntityLinksLayer.scaleX != mEditorWorld.GetEntityContainer ().scaleX)
-            mEntityLinksLayer.scaleX = mEditorWorld.GetEntityContainer ().scaleX;
-         if (mEntityLinksLayer.scaleY != mEditorWorld.GetEntityContainer ().scaleY)
-            mEntityLinksLayer.scaleY = mEditorWorld.GetEntityContainer ().scaleY;
-         if ((int (20.0 * mEntityLinksLayer.x)) != (int (20.0 * mEditorWorld.GetEntityContainer ().x)))
-            mEntityLinksLayer.x = mEditorWorld.GetEntityContainer ().x;
-         if ((int (20.0 * mEntityLinksLayer.y)) != (int (20.0 * mEditorWorld.GetEntityContainer ().y)))
-            mEntityLinksLayer.y = mEditorWorld.GetEntityContainer ().y;
+         if (mEntityLinksLayer.scaleX != mEntityContainer.scaleX)
+            mEntityLinksLayer.scaleX = mEntityContainer.scaleX;
+         if (mEntityLinksLayer.scaleY != mEntityContainer.scaleY)
+            mEntityLinksLayer.scaleY = mEntityContainer.scaleY;
+         if ((int (20.0 * mEntityLinksLayer.x)) != (int (20.0 * mEntityContainer.x)))
+            mEntityLinksLayer.x = mEntityContainer.x;
+         if ((int (20.0 * mEntityLinksLayer.y)) != (int (20.0 * mEntityContainer.y)))
+            mEntityLinksLayer.y = mEntityContainer.y;
       }
       
       private var mEntityIdsModified:Boolean = false;
@@ -805,32 +809,32 @@ package editor.entity.dialog {
             if (! mShowAllEntityIds)
                return;
             
-            mEditorWorld.GetEntityContainer ().DrawEntityIds (mEntityIdsLayer);
+            mEntityContainer.DrawEntityIds (mEntityIdsLayer);
          }
          
-         if (mEntityIdsLayer.scaleX != mEditorWorld.GetEntityContainer ().scaleX)
-            mEntityIdsLayer.scaleX = mEditorWorld.GetEntityContainer ().scaleX;
-         if (mEntityIdsLayer.scaleY != mEditorWorld.GetEntityContainer ().scaleY)
-            mEntityIdsLayer.scaleY = mEditorWorld.GetEntityContainer ().scaleY;
-         if ((int (20.0 * mEntityIdsLayer.x)) != (int (20.0 * mEditorWorld.GetEntityContainer ().x)))
-            mEntityIdsLayer.x = mEditorWorld.GetEntityContainer ().x;
-         if ((int (20.0 * mEntityIdsLayer.y)) != (int (20.0 * mEditorWorld.GetEntityContainer ().y)))
-            mEntityIdsLayer.y = mEditorWorld.GetEntityContainer ().y;
+         if (mEntityIdsLayer.scaleX != mEntityContainer.scaleX)
+            mEntityIdsLayer.scaleX = mEntityContainer.scaleX;
+         if (mEntityIdsLayer.scaleY != mEntityContainer.scaleY)
+            mEntityIdsLayer.scaleY = mEntityContainer.scaleY;
+         if ((int (20.0 * mEntityIdsLayer.x)) != (int (20.0 * mEntityContainer.x)))
+            mEntityIdsLayer.x = mEntityContainer.x;
+         if ((int (20.0 * mEntityIdsLayer.y)) != (int (20.0 * mEntityContainer.y)))
+            mEntityIdsLayer.y = mEntityContainer.y;
      }
       
       public function RepaintWorldDebugInfo ():void
       {
          if (Capabilities.isDebugger)// && false)
          {
-            mWorldDebugInfoLayer.x = mEditorWorld.GetEntityContainer ().x;
-            mWorldDebugInfoLayer.y = mEditorWorld.GetEntityContainer ().y;
-            mWorldDebugInfoLayer.scaleX = mEditorWorld.GetEntityContainer ().scaleX;
-            mWorldDebugInfoLayer.scaleY = mEditorWorld.GetEntityContainer ().scaleY;
+            mWorldDebugInfoLayer.x = mEntityContainer.x;
+            mWorldDebugInfoLayer.y = mEntityContainer.y;
+            mWorldDebugInfoLayer.scaleX = mEntityContainer.scaleX;
+            mWorldDebugInfoLayer.scaleY = mEntityContainer.scaleY;
             
             while (mWorldDebugInfoLayer.numChildren > 0)
                mWorldDebugInfoLayer.removeChildAt (0);
             
-            mEditorWorld.GetEntityContainer ().RepaintContactsInLastRegionSelecting (mWorldDebugInfoLayer);
+            mEntityContainer.RepaintContactsInLastRegionSelecting (mWorldDebugInfoLayer);
          }
       }
       
@@ -1398,7 +1402,7 @@ package editor.entity.dialog {
       private function UpdateUiButtonsEnabledStatus ():void
       {
       // edit
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          
          //mButtonSetting.enabled = selectedEntities.length == 1 && IsEntitySettingable (selectedEntities[0]);
          mButtonSetting.enabled = mLastSelectedEntity != null && IsEntitySettingable (mLastSelectedEntity);
@@ -1430,12 +1434,12 @@ package editor.entity.dialog {
          
       // creat ...
          
-         //mButtonCreateGravityController.enabled = mEditorWorld.GetEntityContainer ().GetNumEntities (Filters.IsGravityControllerEntity) == 0;
-         //mButtonCreateCamera           .enabled = mEditorWorld.GetEntityContainer ().GetNumEntities (Filters.IsCameraEntity) == 0;
+         //mButtonCreateGravityController.enabled = mEntityContainer.GetNumEntities (Filters.IsGravityControllerEntity) == 0;
+         //mButtonCreateCamera           .enabled = mEntityContainer.GetNumEntities (Filters.IsCameraEntity) == 0;
          
       // file ...
          
-         mButtonNewDesign.enabled = true; //mEditorWorld.GetEntityContainer ().numChildren > 0;
+         mButtonNewDesign.enabled = true; //mEntityContainer.numChildren > 0;
          
       // context menu
          
@@ -1572,16 +1576,16 @@ package editor.entity.dialog {
                break;
             
             case mButtonHideInvisibleEntities:
-               mEditorWorld.GetEntityContainer ().SetInvisiblesVisible (! mButtonHideInvisibleEntities.selected);
+               mEntityContainer.SetInvisiblesVisible (! mButtonHideInvisibleEntities.selected);
                OnSelectedEntitiesChanged ();
                break;
             case mButtonHideShapesAndJoints:
-               mEditorWorld.GetEntityContainer ().SetShapesVisible (! mButtonHideShapesAndJoints.selected);
-               mEditorWorld.GetEntityContainer ().SetJointsVisible (! mButtonHideShapesAndJoints.selected);
+               mEntityContainer.SetShapesVisible (! mButtonHideShapesAndJoints.selected);
+               mEntityContainer.SetJointsVisible (! mButtonHideShapesAndJoints.selected);
                OnSelectedEntitiesChanged ();
                break;
             case mButtonHideTriggers:
-               mEditorWorld.GetEntityContainer ().SetTriggersVisible (! mButtonHideTriggers.selected);
+               mEntityContainer.SetTriggersVisible (! mButtonHideTriggers.selected);
                OnSelectedEntitiesChanged ();
                break;
             
@@ -1621,52 +1625,62 @@ package editor.entity.dialog {
          theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
-      public function SetEditorWorld (newEditorWorld:editor.world.World, firstTime:Boolean = false):void
+      public function SetEntityContainer (container:EntityContainer, firstTime:Boolean = false):void
       {
-         if (newEditorWorld == null || newEditorWorld == mEditorWorld)
+         if (container == mEntityContainer)
             return;
+         
+         if (mEntityContainer != null && mEntityContainer.parent != null)
+         {
+            mEntityContainer.parent.removeChild (mEntityContainer);
+         }
+         
+         mEntityContainer = null;
+         
+         if (container == null)
+         {  
+            return;
+         }
+         
+         mEntityContainer = container;
          
          NotifyEntityLinksModified ();
          
-         DestroyEditorWorld ();
          ClearAccumulatedModificationsByArrowKeys ();
          
-         EditorContext.BuildNewSingleton (newEditorWorld);
-         mEditorWorld = newEditorWorld;
-         
-         mEditorWorld.GetCollisionCategoryManager ().SetChanged (false);
-         //if (mEditorWorld.GetEntityContainer ().GetFunctionManager ().IsChanged ())
+         EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().SetChanged (false);
+         //if (mEntityContainer.GetFunctionManager ().IsChanged ())
          //{
-         //   mEditorWorld.GetEntityContainer ().GetFunctionManager ().UpdateFunctionMenu ();
-         //   mEditorWorld.GetEntityContainer ().GetFunctionManager ().SetChanged (false)
-         //   mEditorWorld.GetEntityContainer ().GetFunctionManager ().SetDelayUpdateFunctionMenu (false)
+         //   mEntityContainer.GetFunctionManager ().UpdateFunctionMenu ();
+         //   mEntityContainer.GetFunctionManager ().SetChanged (false)
+         //   mEntityContainer.GetFunctionManager ().SetDelayUpdateFunctionMenu (false)
          //}
-         if (mEditorWorld.GetCodeLibManager ().IsChanged ())
+         if (EditorContext.GetCurrentWorld ().GetCodeLibManager ().IsChanged ())
          {
-            mEditorWorld.GetCodeLibManager ().UpdateFunctionMenu ();
-            mEditorWorld.GetCodeLibManager ().SetChanged (false)
-            mEditorWorld.GetCodeLibManager ().SetDelayUpdateFunctionMenu (false)
+            EditorContext.GetCurrentWorld ().GetCodeLibManager ().UpdateFunctionMenu ();
+            EditorContext.GetCurrentWorld ().GetCodeLibManager ().SetChanged (false)
+            EditorContext.GetCurrentWorld ().GetCodeLibManager ().SetDelayUpdateFunctionMenu (false)
          }
          
-         mEditorWorld.GetEntityContainer ().scaleX = mEditorWorld.GetEntityContainer ().scaleY = mEditorWorldZoomScale = mEditorWorld.GetEntityContainer ().GetZoomScale ();
+         mEntityContainer.scaleX = mEntityContainer.scaleY = mEntityContainerZoomScale = mEntityContainer.GetZoomScale ();
          
          if (NotifyEditingScaleChanged != null)
             NotifyEditingScaleChanged ();
          
-         mContentLayer.addChild (mEditorWorld.GetEntityContainer ());
+         mContentLayer.addChild (mEntityContainer);
          
          //if (EditorContext.mCollisionCategoryView != null)
-         //   EditorContext.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetEntityContainer ().GetCollisionManager ());
+         //   EditorContext.mCollisionCategoryView.SetCollisionManager (mEntityContainer.GetCollisionManager ());
          if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
          {
-            CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().SetCollisionCategoryManager (mEditorWorld.GetCollisionCategoryManager ());
+            CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().SetCollisionCategoryManager (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ());
          }
          
          //if (EditorContext.mFunctionEditingView != null)
-         //   EditorContext.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetEntityContainer ().GetFunctionManager ());
+         //   EditorContext.mFunctionEditingView.SetFunctionManager (mEntityContainer.GetFunctionManager ());
          if (CodeLibListDialog.sCodeLibListDialog != null)
          {
-            CodeLibListDialog.sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (mEditorWorld.GetCodeLibManager ());
+            CodeLibListDialog.sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (EditorContext.GetCurrentWorld ().GetCodeLibManager ());
          }
          
          if (firstTime)
@@ -1693,26 +1707,13 @@ package editor.entity.dialog {
          }
       }
       
-      private function DestroyEditorWorld ():void
-      {
-         if ( mEditorWorld != null)
-         {
-            mEditorWorld.Destroy ();
-            
-            if ( mContentLayer.contains (mEditorWorld.GetEntityContainer ()) )
-               mContentLayer.removeChild (mEditorWorld.GetEntityContainer ());
-         }
-         
-         mEditorWorld = null;
-      }
-      
       public function ScaleEditorWorld (scaleIn:Boolean):Boolean
       {
          var reachLimit:Boolean = false;
          
          if (IsEditing ())
          {
-            var newSscale:Number = mEditorWorldZoomScale * (scaleIn ? 2.0 : 0.5);
+            var newSscale:Number = mEntityContainerZoomScale * (scaleIn ? 2.0 : 0.5);
             if (int (newSscale * 32.0) <= 1)
             {
                newSscale = 1.0 / 32.0;
@@ -1724,8 +1725,8 @@ package editor.entity.dialog {
                reachLimit = true;
             }
             
-            mEditorWorldZoomScale = newSscale;
-            mEditorWorldZoomScaleChangedSpeed = (mEditorWorldZoomScale - mEditorWorld.GetEntityContainer ().scaleX) * 0.03;
+            mEntityContainerZoomScale = newSscale;
+            mEntityContainerZoomScaleChangedSpeed = (mEntityContainerZoomScale - mEntityContainer.scaleX) * 0.03;
             
             //UpdateBackgroundAndWorldPosition ();
             
@@ -1740,8 +1741,8 @@ package editor.entity.dialog {
       
       public function GetEditorWorldZoomScale ():Number
       {
-         //return mEditorWorld.GetEntityContainer ().GetZoomScale ();
-         return mEditorWorld.GetEntityContainer ().scaleX;
+         //return mEntityContainer.GetZoomScale ();
+         return mEntityContainer.scaleX;
       }
       
       private function SetDesignPlayer (newPlayer:Viewer):void
@@ -1800,12 +1801,12 @@ package editor.entity.dialog {
       
       //private function GetWorldDefine ():WorldDefine
       //{
-      //   return DataFormat.EditorWorld2WorldDefine ( mEditorWorld );
+      //   return DataFormat.EditorWorld2WorldDefine ( EditorContext.GetCurrentWorld () );
       //}
       
       private function GetWorldBinaryData ():ByteArray
       {
-         var byteArray:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine ( mEditorWorld ));
+         var byteArray:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine ( EditorContext.GetCurrentWorld () ));
          byteArray.position = 0;
          
          return byteArray;
@@ -1814,9 +1815,9 @@ package editor.entity.dialog {
       private function GetViewportSize ():Point
       {
          /*
-         var viewerUiFlags:int = mEditorWorld.GetViewerUiFlags ();
-         var viewportWidth:int = mEditorWorld.GetViewportWidth ();
-         var viewportHeight:int = mEditorWorld.GetViewportHeight ();
+         var viewerUiFlags:int = EditorContext.GetCurrentWorld ().GetViewerUiFlags ();
+         var viewportWidth:int = EditorContext.GetCurrentWorld ().GetViewportWidth ();
+         var viewportHeight:int = EditorContext.GetCurrentWorld ().GetViewportHeight ();
          
          //if ((viewerUiFlags & Define.PlayerUiFlag_UseDefaultSkin) != 0)
          if ((viewerUiFlags & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin)
@@ -2044,9 +2045,9 @@ package editor.entity.dialog {
       
       public function OnFinishedCCatEditing ():void
       {
-         if (mEditorWorld.GetCollisionCategoryManager ().IsChanged ())
+         if (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().IsChanged ())
          {
-            mEditorWorld.GetCollisionCategoryManager ().SetChanged (false);
+            EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().SetChanged (false);
             CreateUndoPoint ("Modify collision categories");
          }
          
@@ -2056,9 +2057,9 @@ package editor.entity.dialog {
       
       public function OnFinishedFunctionEditing ():void
       {
-         if (mEditorWorld.GetCodeLibManager ().IsChanged ())
+         if (EditorContext.GetCurrentWorld ().GetCodeLibManager ().IsChanged ())
          {
-            mEditorWorld.GetCodeLibManager ().SetChanged (false);
+            EditorContext.GetCurrentWorld ().GetCodeLibManager ().SetChanged (false);
             CreateUndoPoint ("Modify functions");
          }
          
@@ -2139,7 +2140,7 @@ package editor.entity.dialog {
       protected function RetrieveShapePhysicsProperties (shape:EntityShape, values:Object):void
       {        
          values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
-         values.mCollisionCategoryListDataProvider =  mEditorWorld.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
+         values.mCollisionCategoryListDataProvider =  EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
          values.mCollisionCategoryListSelectedIndex = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
          
          values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
@@ -2152,9 +2153,9 @@ package editor.entity.dialog {
          values.mFriction = ValueAdjuster.Number2Precision (shape.mFriction, 6);
          values.mRestitution = ValueAdjuster.Number2Precision (shape.mRestitution, 6);
          
-         values.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_LinearVelocityMagnitude (shape.GetLinearVelocityMagnitude ()), 6);
-         values.mLinearVelocityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_RotationDegrees (shape.GetLinearVelocityAngle ()), 6);
-         values.mAngularVelocity = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_AngularVelocity (shape.GetAngularVelocity ()), 6);
+         values.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (shape.GetLinearVelocityMagnitude ()), 6);
+         values.mLinearVelocityAngle = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees (shape.GetLinearVelocityAngle ()), 6);
+         values.mAngularVelocity = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_AngularVelocity (shape.GetAngularVelocity ()), 6);
          values.mLinearDamping = ValueAdjuster.Number2Precision (shape.GetLinearDamping (), 6);
          values.mAngularDamping = ValueAdjuster.Number2Precision (shape.GetAngularDamping (), 6);
          values.mAllowSleeping = shape.IsAllowSleeping ();
@@ -2169,7 +2170,7 @@ package editor.entity.dialog {
          if (EditorContext.HasSettingDialogOpened ())
             return;
          
-         //var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         //var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          //if (selectedEntities == null || selectedEntities.length != 1)
          //   return;
          if (mMainSelectedEntity == null)
@@ -2180,9 +2181,9 @@ package editor.entity.dialog {
          
          var values:Object = new Object ();
          
-         values.mPosX = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_PositionX (entity.GetPositionX ()), 12);
-         values.mPosY = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_PositionY (entity.GetPositionY ()), 12);
-         values.mAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_RotationRadians (entity.GetRotation ()) * Define.kRadians2Degrees, 6);
+         values.mPosX = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (entity.GetPositionX ()), 12);
+         values.mPosY = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (entity.GetPositionY ()), 12);
+         values.mAngle = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_RotationRadians (entity.GetRotation ()) * Define.kRadians2Degrees, 6);
          
          values.mIsVisible = entity.IsVisible ();
          values.mAlpha = entity.GetAlpha ();
@@ -2198,7 +2199,7 @@ package editor.entity.dialog {
                values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
                values.mEventId = event_handler.GetEventId ();
                values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (null);
-               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
                
                if (entity is EntityEventHandler_Timer)
                {
@@ -2257,7 +2258,7 @@ package editor.entity.dialog {
                
                values.mCodeSnippetName = condition.GetCodeSnippetName ();
                values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
-               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
                
                ShowConditionSettingDialog (values, ConfirmSettingEntityProperties);
             }
@@ -2268,7 +2269,7 @@ package editor.entity.dialog {
                
                values.mCodeSnippetName = action.GetCodeSnippetName ();
                values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);
-               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
                
                ShowActionSettingDialog (values, ConfirmSettingEntityProperties);
             }
@@ -2278,7 +2279,7 @@ package editor.entity.dialog {
                
                values.mCodeSnippetName = entityFilter.GetCodeSnippetName ();
                values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (null);
-               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
                
                ShowEntityFilterSettingDialog (values, ConfirmSettingEntityProperties);
             }
@@ -2288,7 +2289,7 @@ package editor.entity.dialog {
                
                values.mCodeSnippetName = pairFilter.GetCodeSnippetName ();
                values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (null);
-               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
                
                ShowEntityPairFilterSettingDialog (values, ConfirmSettingEntityProperties);
             }
@@ -2334,7 +2335,7 @@ package editor.entity.dialog {
                if (entity is EntityVectorShapeCircle)
                {
                   //values.mRadius = (entity as EntityVectorShapeCircle).GetRadius();
-                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length ((entity as EntityVectorShapeCircle).GetRadius()), 6);
+                  values.mRadius = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length ((entity as EntityVectorShapeCircle).GetRadius()), 6);
                   
                   values.mAppearanceType = (entity as EntityVectorShapeCircle).GetAppearanceType();
                   values.mAppearanceTypeListSelectedIndex = (entity as EntityVectorShapeCircle).GetAppearanceType();
@@ -2343,8 +2344,8 @@ package editor.entity.dialog {
                }
                else if (entity is EntityVectorShapeRectangle)
                {
-                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
-                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEntityContainer.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEntityContainer.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
                   values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
                   
                   ShowShapeRectangleSettingDialog (values, ConfirmSettingEntityProperties);
@@ -2379,8 +2380,8 @@ package editor.entity.dialog {
                   values.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap ();
                   values.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
                   
-                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
-                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEntityContainer.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEntityContainer.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
                   
                   if (entity is EntityVectorShapeTextButton)
                   {
@@ -2405,7 +2406,7 @@ package editor.entity.dialog {
                }
                else if (entity is EntityVectorShapeGravityController)
                {
-                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length ((entity as EntityVectorShapeCircle).GetRadius()), 6);
+                  values.mRadius = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length ((entity as EntityVectorShapeCircle).GetRadius()), 6);
                   
                   // removed from v1.05
                   /////values.mIsInteractive = (vectorShape as EntityVectorShapeGravityController).IsInteractive ();
@@ -2413,10 +2414,10 @@ package editor.entity.dialog {
                   
                   values.mInteractiveConditions = (vectorShape as EntityVectorShapeGravityController).mInteractiveConditions;
                   
-                  values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetMaximalGravityAcceleration ()), 6);
+                  values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetMaximalGravityAcceleration ()), 6);
                   
-                  values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ()), 6);
-                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_RotationDegrees ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAngle ()), 6);
+                  values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ()), 6);
+                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAngle ()), 6);
                   
                   ShowShapeGravityControllerSettingDialog (values, ConfirmSettingEntityProperties);
                }
@@ -2455,8 +2456,8 @@ package editor.entity.dialog {
             
             jointValues.mCollideConnected = joint.mCollideConnected;
             
-            jointValues.mPosX = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_PositionX (joint.GetPositionX ()), 12);
-            jointValues.mPosY = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_PositionY (joint.GetPositionY ()), 12);
+            jointValues.mPosX = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (joint.GetPositionX ()), 12);
+            jointValues.mPosY = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (joint.GetPositionY ()), 12);
             jointValues.mAngle = ValueAdjuster.Number2Precision (joint.GetRotation () * Define.kRadians2Degrees, 6);
             
             jointValues.mIsVisible = joint.IsVisible ();
@@ -2464,7 +2465,7 @@ package editor.entity.dialog {
             jointValues.mIsEnabled = joint.IsEnabled ();
             
             //>>from v1.02
-            jointValues.mShapeListDataProvider = mEditorWorld.GetEntityContainer ().GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, true, "[Auto Select]");
+            jointValues.mShapeListDataProvider = mEntityContainer.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, true, "[Auto Select]");
             jointValues.mShapeList1SelectedIndex = EntityContainer.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape1Index (), jointValues.mShapeListDataProvider);
             jointValues.mShapeList2SelectedIndex = EntityContainer.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape2Index (), jointValues.mShapeListDataProvider);
             jointValues.mAnchorIndex = jointAnchor.GetAnchorIndex (); // hinge will modify it below
@@ -2479,8 +2480,8 @@ package editor.entity.dialog {
                jointValues.mAnchorIndex = -1; // to make both shape select lists selectable
                
                var hinge:EntityJointHinge = joint as EntityJointHinge;
-               var lowerAngle:Number = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_RotationDegrees (hinge.GetLowerLimit ());
-               var upperAngle:Number = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_RotationDegrees (hinge.GetUpperLimit ());
+               var lowerAngle:Number = mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees (hinge.GetLowerLimit ());
+               var upperAngle:Number = mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees (hinge.GetUpperLimit ());
                if (lowerAngle > upperAngle)
                {
                   var tempAngle:Number = lowerAngle;
@@ -2492,11 +2493,11 @@ package editor.entity.dialog {
                jointValues.mLowerAngle = ValueAdjuster.Number2Precision (lowerAngle, 6);
                jointValues.mUpperAngle = ValueAdjuster.Number2Precision (upperAngle, 6);
                jointValues.mEnableMotor = hinge.mEnableMotor;
-               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_RotationDegrees (hinge.mMotorSpeed), 6);
+               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees (hinge.mMotorSpeed), 6);
                jointValues.mBackAndForth = hinge.mBackAndForth;
                
                //>>from v1.04
-               jointValues.mMaxMotorTorque = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Torque (hinge.GetMaxMotorTorque ()), 6);
+               jointValues.mMaxMotorTorque = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Torque (hinge.GetMaxMotorTorque ()), 6);
                //<<
                
                ShowHingeSettingDialog (values, ConfirmSettingEntityProperties);
@@ -2506,14 +2507,14 @@ package editor.entity.dialog {
                var slider:EntityJointSlider = joint as EntityJointSlider;
                
                jointValues.mEnableLimit = slider.IsLimitsEnabled ();
-               jointValues.mLowerTranslation = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length (slider.GetLowerLimit ()), 6);
-               jointValues.mUpperTranslation = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length (slider.GetUpperLimit ()), 6);
+               jointValues.mLowerTranslation = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (slider.GetLowerLimit ()), 6);
+               jointValues.mUpperTranslation = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (slider.GetUpperLimit ()), 6);
                jointValues.mEnableMotor = slider.mEnableMotor;
-               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_LinearVelocityMagnitude (slider.mMotorSpeed), 6);
+               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (slider.mMotorSpeed), 6);
                jointValues.mBackAndForth = slider.mBackAndForth;
                
                //>>from v1.04
-               jointValues.mMaxMotorForce = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_ForceMagnitude (slider.GetMaxMotorForce ()), 6);
+               jointValues.mMaxMotorForce = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_ForceMagnitude (slider.GetMaxMotorForce ()), 6);
                //<<
                
                ShowSliderSettingDialog (values, ConfirmSettingEntityProperties);
@@ -2529,8 +2530,8 @@ package editor.entity.dialog {
                //from v1.08
                jointValues.mFrequencyDeterminedManner = spring.GetFrequencyDeterminedManner ();
                jointValues.mFrequency = ValueAdjuster.Number2Precision (spring.GetFrequency (), 6);
-               jointValues.mSpringConstant = ValueAdjuster.Number2Precision (spring.GetSpringConstant () * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length (1.0) / mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_ForceMagnitude (1.0), 6);
-               jointValues.mBreakExtendedLength = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length (spring.GetBreakExtendedLength ()), 6);
+               jointValues.mSpringConstant = ValueAdjuster.Number2Precision (spring.GetSpringConstant () * mEntityContainer.GetCoordinateSystem ().D2P_Length (1.0) / mEntityContainer.GetCoordinateSystem ().D2P_ForceMagnitude (1.0), 6);
+               jointValues.mBreakExtendedLength = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (spring.GetBreakExtendedLength ()), 6);
                //<<
                
                ShowSpringSettingDialog (values, ConfirmSettingEntityProperties);
@@ -2540,7 +2541,7 @@ package editor.entity.dialog {
                var distance:EntityJointDistance = joint as EntityJointDistance;
                
                //from v1.08
-               jointValues.mBreakDeltaLength = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Length (distance.GetBreakDeltaLength ()), 6);
+               jointValues.mBreakDeltaLength = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (distance.GetBreakDeltaLength ()), 6);
                //<<
                
                ShowDistanceSettingDialog (values, ConfirmSettingEntityProperties);
@@ -2587,36 +2588,36 @@ package editor.entity.dialog {
                switch (powerSource.GetPowerSourceType ())
                {
                   case Define.PowerSource_Torque:
-                     values.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_Torque (values.mPowerMagnitude);
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_Torque (values.mPowerMagnitude);
                      values.mPowerLabel = "Step Torque";
                      break;
                   case Define.PowerSource_LinearImpusle:
-                     values.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_ImpulseMagnitude (values.mPowerMagnitude);
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_ImpulseMagnitude (values.mPowerMagnitude);
                      values.mPowerLabel = "Step Linear Impulse";
                      break;
                   case Define.PowerSource_AngularImpulse:
-                     values.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_AngularImpulse (values.mPowerMagnitude);
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_AngularImpulse (values.mPowerMagnitude);
                      values.mPowerLabel = "Step Angular Impulse";
                      break;
                   case Define.PowerSource_AngularAcceleration:
-                     values.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_AngularAcceleration (values.mPowerMagnitude);
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_AngularAcceleration (values.mPowerMagnitude);
                      values.mPowerLabel = "Step Angular Acceleration";
                      break;
                   case Define.PowerSource_AngularVelocity:
-                     values.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_AngularVelocity (values.mPowerMagnitude);
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_AngularVelocity (values.mPowerMagnitude);
                      values.mPowerLabel = "Step Angular Velocity";
                      break;
                   //case Define.PowerSource_LinearAcceleration:
-                  //   values.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (values.mPowerMagnitude);
+                  //   values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (values.mPowerMagnitude);
                   //   values.mPowerLabel = "Step Linear Acceleration";
                   //   break;
                   //case Define.PowerSource_LinearVelocity:
-                  //   values.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_LinearVelocityMagnitude (values.mPowerMagnitude);
+                  //   values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (values.mPowerMagnitude);
                   //   values.mPowerLabel = "Step Linear Velocity";
                   //   break;
                   case Define.PowerSource_Force:
                   default:
-                     values.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_ForceMagnitude (values.mPowerMagnitude);
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_ForceMagnitude (values.mPowerMagnitude);
                      values.mPowerLabel = "Step Force";
                      break;
                }
@@ -2639,11 +2640,11 @@ package editor.entity.dialog {
       //   
       //   var values:Object = new Object ();
       //   
-      //   values.mAuthorName = mEditorWorld.GetEntityContainer ().GetAuthorName ();
-      //   values.mAuthorHomepage = mEditorWorld.GetEntityContainer ().GetAuthorHomepage ();
+      //   values.mAuthorName = mEntityContainer.GetAuthorName ();
+      //   values.mAuthorHomepage = mEntityContainer.GetAuthorHomepage ();
       //   
       //   //>>from v1.02
-      //   values.mShareSourceCode = mEditorWorld.GetEntityContainer ().IsShareSourceCode ();
+      //   values.mShareSourceCode = mEntityContainer.IsShareSourceCode ();
       //   //<<
       //   
       //   ShowWorldSettingDialog (values, SetWorldProperties);
@@ -2660,10 +2661,10 @@ package editor.entity.dialog {
          try
          {
             // ...
-            var width:int = mEditorWorld.GetViewportWidth ();
-            var height:int = mEditorWorld.GetViewportHeight ();
-            //var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
-            var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
+            var width:int = EditorContext.GetCurrentWorld ().GetViewportWidth ();
+            var height:int = EditorContext.GetCurrentWorld ().GetViewportHeight ();
+            //var showPlayBar:Boolean = (EditorContext.GetCurrentWorld ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+            var showPlayBar:Boolean = (EditorContext.GetCurrentWorld ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
             var heightWithPlayBar:int = (showPlayBar ? height + Define.DefaultPlayerSkinPlayBarHeight : height);
             
             var fileFormatVersionString:String = DataFormat3.GetVersionHexString (Version.VersionNumber);
@@ -2672,16 +2673,16 @@ package editor.entity.dialog {
             
             //========== source code ========== 
          
-            values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+            values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (EditorContext.GetCurrentWorld ()));
             
             //=========== play code ========== 
          
             // before v1.55, depreciated now
-            //var playcode:String = DataFormat.WorldDefine2HexString (DataFormat.EditorWorld2WorldDefine (mEditorWorld)); 
+            //var playcode:String = DataFormat.WorldDefine2HexString (DataFormat.EditorWorld2WorldDefine (EditorContext.GetCurrentWorld ())); 
             //values.mHexString = playcode;
             
             // new one, from v1.55
-            var playcodeBase64:String = DataFormat.WorldDefine2PlayCode_Base64 (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+            var playcodeBase64:String = DataFormat.WorldDefine2PlayCode_Base64 (DataFormat.EditorWorld2WorldDefine (EditorContext.GetCurrentWorld ()));
             
             values.mHexString = DataFormat3.CreateForumEmbedCode (fileFormatVersionString, width, height, showPlayBar, playcodeBase64);
             
@@ -2835,12 +2836,12 @@ package editor.entity.dialog {
       
       public function ViewToWorld (point:Point):Point
       {
-         return DisplayObjectUtil.LocalToLocal (this, mEditorWorld.GetEntityContainer (), point);
+         return DisplayObjectUtil.LocalToLocal (this, mEntityContainer, point);
       }
       
       public function WorldToView (point:Point):Point
       {
-         return DisplayObjectUtil.LocalToLocal (mEditorWorld.GetEntityContainer (), this, point);
+         return DisplayObjectUtil.LocalToLocal (mEntityContainer, this, point);
       }
       
       
@@ -2997,8 +2998,8 @@ package editor.entity.dialog {
          CheckModifierKeys (event);
          _isZeroMove = true;
          
-         //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
-         var worldPoint:Point = mEditorWorld.GetEntityContainer ().globalToLocal (new Point (Math.round(event.stageX), Math.round (event.stageY)));
+         //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, EditorContext.GetCurrentWorld (), new Point (event.localX, event.localY) );
+         var worldPoint:Point = mEntityContainer.globalToLocal (new Point (Math.round(event.stageX), Math.round (event.stageY)));
          
          if (IsCreating ())
          {
@@ -3010,7 +3011,7 @@ package editor.entity.dialog {
          
          if (IsEditing ())
          {
-            var entityArray:Array = mEditorWorld.GetEntityContainer ().GetEntitiesAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
+            var entityArray:Array = mEntityContainer.GetEntitiesAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
             
          // move scene
             
@@ -3025,22 +3026,22 @@ package editor.entity.dialog {
             }
             
          // vertex controllers
-            var vertexControllers:Array = mEditorWorld.GetEntityContainer ().GetVertexControllersAtPoint (worldPoint.x, worldPoint.y);
+            var vertexControllers:Array = mEntityContainer.GetVertexControllersAtPoint (worldPoint.x, worldPoint.y);
             
             if (vertexControllers.length > 0)
             {
-               mEditorWorld.GetEntityContainer ().SetSelectedVertexController (vertexControllers[0]);
+               mEntityContainer.SetSelectedVertexController (vertexControllers[0]);
                SetCurrentEditMode (new ModeMoveSelectedVertexControllers (this, vertexControllers[0]));
                mCurrentEditMode.OnMouseDown (worldPoint.x, worldPoint.y);
                
                return;
             }
             
-            mEditorWorld.GetEntityContainer ().SetSelectedVertexController (null);
+            mEntityContainer.SetSelectedVertexController (null);
             
          // create / break logic link
             
-            var linkable:Linkable = mEditorWorld.GetEntityContainer ().GetFirstLinkablesAtPoint (worldPoint.x, worldPoint.y);
+            var linkable:Linkable = mEntityContainer.GetFirstLinkablesAtPoint (worldPoint.x, worldPoint.y);
             if (linkable != null && linkable.CanStartCreatingLink (worldPoint.x, worldPoint.y))
             {
                SetCurrentEditMode (new ModeCreateEntityLink (this, linkable));
@@ -3055,7 +3056,7 @@ package editor.entity.dialog {
             
             // move selecteds, first time
             {
-               if (mEditorWorld.GetEntityContainer ().AreSelectedEntitiesContainingPoint (worldPoint.x, worldPoint.y))
+               if (mEntityContainer.AreSelectedEntitiesContainingPoint (worldPoint.x, worldPoint.y))
                {
                   StartMouseEditMode (worldPoint.x, worldPoint.y);
                    
@@ -3082,7 +3083,7 @@ package editor.entity.dialog {
             
             // move selecteds, 2nd time
             {
-               if (mEditorWorld.GetEntityContainer ().AreSelectedEntitiesContainingPoint (worldPoint.x, worldPoint.y))
+               if (mEntityContainer.AreSelectedEntitiesContainingPoint (worldPoint.x, worldPoint.y))
                {
                   StartMouseEditMode (worldPoint.x, worldPoint.y);
                    
@@ -3094,16 +3095,16 @@ package editor.entity.dialog {
             }
             
             if (_mouseEventCtrlDown || mCookieModeEnabled)
-               mLastSelectedEntities = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+               mLastSelectedEntities = mEntityContainer.GetSelectedEntities ();
             else
             {
-               mEditorWorld.GetEntityContainer ().ClearSelectedEntities ();
+               mEntityContainer.ClearSelectedEntities ();
                OnSelectedEntitiesChanged ();
             }
             
             // region select
             {
-               //var entityArray:Array = mEditorWorld.GetEntityContainer ().GetEntityAtPoint (worldPoint.x, worldPoint.y, null);
+               //var entityArray:Array = mEntityContainer.GetEntityAtPoint (worldPoint.x, worldPoint.y, null);
                if (entityArray.length == 0)
                {
                   //_isZeroMove = false;
@@ -3142,8 +3143,8 @@ package editor.entity.dialog {
             mCursorCreating.y = viewPoint.y;
          }
          
-         //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
-         var worldPoint:Point = mEditorWorld.GetEntityContainer ().globalToLocal (new Point (Math.round(event.stageX), Math.round (event.stageY)));
+         //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, EditorContext.GetCurrentWorld (), new Point (event.localX, event.localY) );
+         var worldPoint:Point = mEntityContainer.globalToLocal (new Point (Math.round(event.stageX), Math.round (event.stageY)));
          
          if (IsCreating ())
          {
@@ -3168,8 +3169,8 @@ package editor.entity.dialog {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
-         var worldPoint:Point = mEditorWorld.GetEntityContainer ().globalToLocal (new Point (Math.round(event.stageX), Math.round (event.stageY)));
+         //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, EditorContext.GetCurrentWorld (), new Point (event.localX, event.localY) );
+         var worldPoint:Point = mEntityContainer.globalToLocal (new Point (Math.round(event.stageX), Math.round (event.stageY)));
          
          if (IsCreating ())
          {
@@ -3186,13 +3187,13 @@ package editor.entity.dialog {
          {
             if ( _isZeroMove && ! (mCurrentEditMode is ModeRegionSelectEntities) )
             {
-               var vertexControllerArray:Array = mEditorWorld.GetEntityContainer ().GetSelectedVertexControllers ();
+               var vertexControllerArray:Array = mEntityContainer.GetSelectedVertexControllers ();
                if (vertexControllerArray.length > 0 && vertexControllerArray [0].ContainsPoint (worldPoint.x, worldPoint.y))
                {
                }
                else
                {
-                  var entityArray:Array = mEditorWorld.GetEntityContainer ().GetEntitiesAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
+                  var entityArray:Array = mEntityContainer.GetEntitiesAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
                   var entity:Entity;
                   
                   // point select, ctrl down
@@ -3221,7 +3222,7 @@ package editor.entity.dialog {
             
             if (_isZeroMove && (! _mouseEventCtrlDown) && mCookieModeEnabled)
             {
-               mEditorWorld.GetEntityContainer ().ClearSelectedEntities ();
+               mEntityContainer.ClearSelectedEntities ();
                OnSelectedEntitiesChanged ();
             }
          }
@@ -3318,7 +3319,7 @@ package editor.entity.dialog {
                   //}
                   //else
                   {
-                     mEditorWorld.GetEntityContainer ().ClearSelectedEntities ();
+                     mEntityContainer.ClearSelectedEntities ();
                      OnSelectedEntitiesChanged ();
                   }
                   break;
@@ -3429,7 +3430,7 @@ package editor.entity.dialog {
       
       public function DestroyEntity (entity:Entity):void
       {
-         mEditorWorld.GetEntityContainer ().DestroyEntity (entity);
+         mEntityContainer.DestroyEntity (entity);
          
          CalSelectedEntitiesCenterPoint ();
       }
@@ -3452,7 +3453,7 @@ package editor.entity.dialog {
          
          radius = Point.distance (centerPoint, edgePoint);
          
-         var circle:EntityVectorShapeCircle = mEditorWorld.GetEntityContainer ().CreateEntityVectorShapeCircle ();
+         var circle:EntityVectorShapeCircle = mEntityContainer.CreateEntityVectorShapeCircle ();
          if (circle == null)
             return null;
          
@@ -3482,7 +3483,7 @@ package editor.entity.dialog {
          var halfWidth :Number = (startPoint.x - endPoint.x) * 0.5; if (halfWidth  < 0) halfWidth  = - halfWidth;
          var halfHeight:Number = (startPoint.y - endPoint.y) * 0.5; if (halfHeight < 0) halfHeight = - halfHeight;
          
-         var rect:EntityVectorShapeRectangle = mEditorWorld.GetEntityContainer ().CreateEntityVectorShapeRectangle ();
+         var rect:EntityVectorShapeRectangle = mEntityContainer.CreateEntityVectorShapeRectangle ();
          if (rect == null)
             return null;
          
@@ -3504,7 +3505,7 @@ package editor.entity.dialog {
       
       public function CreatePolygon (filledColor:uint, isStatic:Boolean):EntityVectorShapePolygon
       {
-         var polygon:EntityVectorShapePolygon = mEditorWorld.GetEntityContainer ().CreateEntityVectorShapePolygon ();
+         var polygon:EntityVectorShapePolygon = mEntityContainer.CreateEntityVectorShapePolygon ();
          if (polygon == null)
             return null;
          
@@ -3523,7 +3524,7 @@ package editor.entity.dialog {
       
       public function CreatePolyline (filledColor:uint, isStatic:Boolean):EntityVectorShapePolyline
       {
-         var polyline:EntityVectorShapePolyline = mEditorWorld.GetEntityContainer ().CreateEntityVectorShapePolyline ();
+         var polyline:EntityVectorShapePolyline = mEntityContainer.CreateEntityVectorShapePolyline ();
          if (polyline == null)
             return null;
          
@@ -3541,7 +3542,7 @@ package editor.entity.dialog {
       
       public function CreateHinge ():EntityJointHinge
       {
-         var hinge:EntityJointHinge = mEditorWorld.GetEntityContainer ().CreateEntityJointHinge ();
+         var hinge:EntityJointHinge = mEntityContainer.CreateEntityJointHinge ();
          if (hinge == null)
             return null;
             
@@ -3552,7 +3553,7 @@ package editor.entity.dialog {
       
       public function CreateDistance ():EntityJointDistance
       {
-         var distaneJoint:EntityJointDistance = mEditorWorld.GetEntityContainer ().CreateEntityJointDistance ();
+         var distaneJoint:EntityJointDistance = mEntityContainer.CreateEntityJointDistance ();
          if (distaneJoint == null)
             return null;
          
@@ -3563,7 +3564,7 @@ package editor.entity.dialog {
       
       public function CreateSlider ():EntityJointSlider
       {
-         var slider:EntityJointSlider = mEditorWorld.GetEntityContainer ().CreateEntityJointSlider ();
+         var slider:EntityJointSlider = mEntityContainer.CreateEntityJointSlider ();
          if (slider == null)
             return null;
          
@@ -3574,7 +3575,7 @@ package editor.entity.dialog {
       
       public function CreateSpring ():EntityJointSpring
       {
-         var spring:EntityJointSpring = mEditorWorld.GetEntityContainer ().CreateEntityJointSpring ();
+         var spring:EntityJointSpring = mEntityContainer.CreateEntityJointSpring ();
          if (spring == null)
             return null;
          
@@ -3585,7 +3586,7 @@ package editor.entity.dialog {
       
       public function CreateWeldJoint ():EntityJointWeld
       {
-         var weld:EntityJointWeld = mEditorWorld.GetEntityContainer ().CreateEntityJointWeld ();
+         var weld:EntityJointWeld = mEntityContainer.CreateEntityJointWeld ();
          if (weld == null)
             return null;
          
@@ -3596,7 +3597,7 @@ package editor.entity.dialog {
       
       public function CreateDummyJoint ():EntityJointDummy
       {
-         var dummy:EntityJointDummy = mEditorWorld.GetEntityContainer ().CreateEntityJointDummy ();
+         var dummy:EntityJointDummy = mEntityContainer.CreateEntityJointDummy ();
          if (dummy == null)
             return null;
          
@@ -3613,7 +3614,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var shapeText:EntityVectorShapeText = mEditorWorld.GetEntityContainer ().CreateEntityVectorShapeText ();
+            var shapeText:EntityVectorShapeText = mEntityContainer.CreateEntityVectorShapeText ();
             if (shapeText == null)
                return null;
             
@@ -3642,7 +3643,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var button:EntityVectorShapeTextButton = mEditorWorld.GetEntityContainer ().CreateEntityVectorShapeTextButton ();
+            var button:EntityVectorShapeTextButton = mEntityContainer.CreateEntityVectorShapeTextButton ();
             if (button == null)
                return null;
             
@@ -3664,7 +3665,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var imageModule:EntityShapeImageModule = mEditorWorld.GetEntityContainer ().CreateEntityShapeImageModule ();
+            var imageModule:EntityShapeImageModule = mEntityContainer.CreateEntityShapeImageModule ();
             if (imageModule == null)
                return null;
             
@@ -3684,7 +3685,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var imageModuleButton:EntityShapeImageModuleButton = mEditorWorld.GetEntityContainer ().CreateEntityShapeImageModuleButton ();
+            var imageModuleButton:EntityShapeImageModuleButton = mEntityContainer.CreateEntityShapeImageModuleButton ();
             if (imageModuleButton == null)
                return null;
             
@@ -3704,7 +3705,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var gController:EntityVectorShapeGravityController = mEditorWorld.GetEntityContainer ().CreateEntityVectorShapeGravityController ();
+            var gController:EntityVectorShapeGravityController = mEntityContainer.CreateEntityVectorShapeGravityController ();
             if (gController == null)
                return null;
             
@@ -3728,7 +3729,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var camera:EntityUtilityCamera = mEditorWorld.GetEntityContainer ().CreateEntityUtilityCamera ();
+            var camera:EntityUtilityCamera = mEntityContainer.CreateEntityUtilityCamera ();
             if (camera == null)
                return null;
             
@@ -3746,7 +3747,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var power_source:EntityUtilityPowerSource = mEditorWorld.GetEntityContainer ().CreateEntityUtilityPowerSource ();
+            var power_source:EntityUtilityPowerSource = mEntityContainer.CreateEntityUtilityPowerSource ();
             if (power_source == null)
                return null;
             
@@ -3766,7 +3767,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var condition:EntityBasicCondition = mEditorWorld.GetEntityContainer ().CreateEntityCondition ();
+            var condition:EntityBasicCondition = mEntityContainer.CreateEntityCondition ();
             if (condition == null)
                return null;
             
@@ -3784,7 +3785,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var condition_door:EntityConditionDoor = mEditorWorld.GetEntityContainer ().CreateEntityConditionDoor ();
+            var condition_door:EntityConditionDoor = mEntityContainer.CreateEntityConditionDoor ();
             if (condition_door == null)
                return null;
             
@@ -3802,7 +3803,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var task:EntityTask = mEditorWorld.GetEntityContainer ().CreateEntityTask ();
+            var task:EntityTask = mEntityContainer.CreateEntityTask ();
             if (task == null)
                return null;
             
@@ -3822,7 +3823,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var entity_assigner:EntityInputEntityAssigner = mEditorWorld.GetEntityContainer ().CreateEntityInputEntityAssigner ();
+            var entity_assigner:EntityInputEntityAssigner = mEntityContainer.CreateEntityInputEntityAssigner ();
             if (entity_assigner == null)
                return null;
             
@@ -3841,7 +3842,7 @@ package editor.entity.dialog {
             return null;
          }
          
-         var entity_pair_assigner:EntityInputEntityPairAssigner = mEditorWorld.GetEntityContainer ().CreateEntityInputEntityPairAssigner ();
+         var entity_pair_assigner:EntityInputEntityPairAssigner = mEntityContainer.CreateEntityInputEntityPairAssigner ();
          if (entity_pair_assigner == null)
             return null;
          
@@ -3859,7 +3860,7 @@ package editor.entity.dialog {
             return null;
          }
          
-         var entity_region_selector:EntityInputEntityRegionSelector = mEditorWorld.GetEntityContainer ().CreateEntityInputEntityRegionSelector ();
+         var entity_region_selector:EntityInputEntityRegionSelector = mEntityContainer.CreateEntityInputEntityRegionSelector ();
          if (entity_region_selector == null)
             return null;
          
@@ -3877,7 +3878,7 @@ package editor.entity.dialog {
             return null;
          }
          
-         var entity_filter:EntityInputEntityScriptFilter = mEditorWorld.GetEntityContainer ().CreateEntityInputEntityScriptFilter ();
+         var entity_filter:EntityInputEntityScriptFilter = mEntityContainer.CreateEntityInputEntityScriptFilter ();
          if (entity_filter == null)
             return null;
          
@@ -3895,7 +3896,7 @@ package editor.entity.dialog {
             return null;
          }
          
-         var entity_pair_filter:EntityInputEntityPairScriptFilter = mEditorWorld.GetEntityContainer ().CreateEntityInputEntityPairScriptFilter ();
+         var entity_pair_filter:EntityInputEntityPairScriptFilter = mEntityContainer.CreateEntityInputEntityPairScriptFilter ();
          if (entity_pair_filter == null)
             return null;
          
@@ -3917,11 +3918,11 @@ package editor.entity.dialog {
             switch (options.mDefaultEventId)
             {
                case CoreEventIds.ID_OnWorldTimer:
-                  handler = mEditorWorld.GetEntityContainer ().CreateEntityEventHandler_Timer (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEntityContainer.CreateEntityEventHandler_Timer (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
                case CoreEventIds.ID_OnEntityTimer:
                case CoreEventIds.ID_OnEntityPairTimer:
-                  handler = mEditorWorld.GetEntityContainer ().CreateEntityEventHandler_TimerWithPrePostHandling (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEntityContainer.CreateEntityEventHandler_TimerWithPrePostHandling (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
                case CoreEventIds.ID_OnPhysicsShapeMouseDown:
                case CoreEventIds.ID_OnPhysicsShapeMouseUp:
@@ -3935,31 +3936,31 @@ package editor.entity.dialog {
                case CoreEventIds.ID_OnWorldMouseDown:
                case CoreEventIds.ID_OnWorldMouseUp:
                case CoreEventIds.ID_OnWorldMouseMove:
-                  handler = mEditorWorld.GetEntityContainer ().CreateEntityEventHandler_Mouse (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEntityContainer.CreateEntityEventHandler_Mouse (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
                case CoreEventIds.ID_OnWorldKeyDown:
                case CoreEventIds.ID_OnWorldKeyUp:
                case CoreEventIds.ID_OnWorldKeyHold:
-                  handler = mEditorWorld.GetEntityContainer ().CreateEntityEventHandler_Keyboard (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEntityContainer.CreateEntityEventHandler_Keyboard (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
                case CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting:
                case CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting:
                case CoreEventIds.ID_OnTwoPhysicsShapesEndContacting:
-                  handler = mEditorWorld.GetEntityContainer ().CreateEntityEventHandler_Contact (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEntityContainer.CreateEntityEventHandler_Contact (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
                case CoreEventIds.ID_OnJointReachLowerLimit:
                case CoreEventIds.ID_OnJointReachUpperLimit:
-                  handler = mEditorWorld.GetEntityContainer ().CreateEntityEventHandler_JointReachLimit (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEntityContainer.CreateEntityEventHandler_JointReachLimit (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
                case CoreEventIds.ID_OnSequencedModuleLoopToEnd:
-                  handler = mEditorWorld.GetEntityContainer ().CreateEntityEventHandler_ModuleLoopToEnd (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEntityContainer.CreateEntityEventHandler_ModuleLoopToEnd (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
                case CoreEventIds.ID_OnGameActivated:
                case CoreEventIds.ID_OnGameDeactivated:
-                  handler = mEditorWorld.GetEntityContainer ().CreateEntityEventHandler_GameLostOrGotFocus (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEntityContainer.CreateEntityEventHandler_GameLostOrGotFocus (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
                default:
-                  handler = mEditorWorld.GetEntityContainer ().CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEntityContainer.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
             }
             
@@ -3980,7 +3981,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var action:EntityAction = mEditorWorld.GetEntityContainer ().CreateEntityAction ();
+            var action:EntityAction = mEntityContainer.CreateEntityAction ();
             if (action == null)
                return null;
             
@@ -4006,16 +4007,16 @@ package editor.entity.dialog {
          mLastSelectedEntity = entity;
          
          
-         if (mLastSelectedEntity != null && mEditorWorld != null && mEditorWorld.GetEntityContainer ().IsEntitySelected (mLastSelectedEntity))
+         if (mLastSelectedEntity != null && EditorContext.GetCurrentWorld () != null && mEntityContainer.IsEntitySelected (mLastSelectedEntity))
          {
             mLastSelectedEntity.SetInternalComponentsVisible (true);
-            //mLastSelectedEntity.SetInternalComponentsVisible (mEditorWorld.GetEntityContainer ().GetNumSelectedEntities () == 1);
+            //mLastSelectedEntity.SetInternalComponentsVisible (mEntityContainer.GetNumSelectedEntities () == 1);
             
             mMainSelectedEntity = mLastSelectedEntity;
          }
          else
          {
-            mMainSelectedEntity = mEditorWorld == null ? null : mEditorWorld.GetEntityContainer ().GetMainSelectedEntity ();
+            mMainSelectedEntity = EditorContext.GetCurrentWorld () == null ? null : mEntityContainer.GetMainSelectedEntity ();
          }
          
          UpdateUiButtonsEnabledStatus ();
@@ -4029,19 +4030,19 @@ package editor.entity.dialog {
          if (entity == null)
             return;
          
-         mEditorWorld.GetEntityContainer ().ClearSelectedEntities ();
+         mEntityContainer.ClearSelectedEntities ();
          UpdateSelectedEntityInfo ();
          
-         if (mEditorWorld.GetEntityContainer ().GetSelectedEntities ().length != 1 || mEditorWorld.GetEntityContainer ().GetSelectedEntities () [0] != entity)
-            mEditorWorld.GetEntityContainer ().SetSelectedEntity (entity);
+         if (mEntityContainer.GetSelectedEntities ().length != 1 || mEntityContainer.GetSelectedEntities () [0] != entity)
+            mEntityContainer.SetSelectedEntity (entity);
          
-         if (mEditorWorld.GetEntityContainer ().GetSelectedEntities ().length != 1)
+         if (mEntityContainer.GetSelectedEntities ().length != 1)
             return;
          
          SetLastSelectedEntities (entity);
          
          if ((! mCookieModeEnabled))
-            mEditorWorld.GetEntityContainer ().SelectGluedEntitiesOfSelectedEntities ();
+            mEntityContainer.SelectGluedEntitiesOfSelectedEntities ();
          
          //CalSelectedEntitiesCenterPoint ();
          OnSelectedEntitiesChanged ();
@@ -4049,9 +4050,9 @@ package editor.entity.dialog {
       
       public function ToggleEntitySelected (entity:Entity):void
       {
-         mEditorWorld.GetEntityContainer ().ToggleEntitySelected (entity);
+         mEntityContainer.ToggleEntitySelected (entity);
          
-         if (mEditorWorld.GetEntityContainer ().IsEntitySelected (entity))
+         if (mEntityContainer.IsEntitySelected (entity))
          {
             if (mLastSelectedEntity != null)
                mLastSelectedEntity.SetInternalComponentsVisible (false);
@@ -4066,14 +4067,14 @@ package editor.entity.dialog {
          SetLastSelectedEntities (entity);
          
          // to make selecting part of a glued possible
-         // mEditorWorld.GetEntityContainer ().SelectGluedEntitiesOfSelectedEntities ();
+         // mEntityContainer.SelectGluedEntitiesOfSelectedEntities ();
          
          CalSelectedEntitiesCenterPoint ();
       }
       
       public function RegionSelectEntities (left:Number, top:Number, right:Number, bottom:Number):void
       {
-         SelectedEntities (mEditorWorld.GetEntityContainer ().GetEntitiesIntersectWithRegion (left, top, right, bottom), true, ! mCookieModeEnabled);
+         SelectedEntities (mEntityContainer.GetEntitiesIntersectWithRegion (left, top, right, bottom), true, ! mCookieModeEnabled);
       }
       
       public function SelectedEntities (entities:Array, clearOlds:Boolean, selectBorthers:Boolean):void
@@ -4082,26 +4083,26 @@ package editor.entity.dialog {
          /*
          if (clearOlds)
          {
-            mEditorWorld.GetEntityContainer ().ClearSelectedEntities ();
+            mEntityContainer.ClearSelectedEntities ();
          }
          
          if (_mouseEventCtrlDown || mCookieModeEnabled)
          {
             if (mLastSelectedEntities != null)
-               mEditorWorld.GetEntityContainer ().SelectEntities (mLastSelectedEntities);
+               mEntityContainer.SelectEntities (mLastSelectedEntities);
             
-            //mEditorWorld.GetEntityContainer ().SelectEntities (entities);
+            //mEntityContainer.SelectEntities (entities);
             for (var i:int = 0; i < entities.length; ++ i)
             {
-               mEditorWorld.GetEntityContainer ().ToggleEntitySelected (entities [i]);
+               mEntityContainer.ToggleEntitySelected (entities [i]);
             }
          }
          else
-            mEditorWorld.GetEntityContainer ().SelectEntities (entities);
+            mEntityContainer.SelectEntities (entities);
          
          if (selectBorthers)
          {
-            mEditorWorld.GetEntityContainer ().SelectGluedEntitiesOfSelectedEntities ();
+            mEntityContainer.SelectGluedEntitiesOfSelectedEntities ();
          }
          
          OnSelectedEntitiesChanged ();
@@ -4111,19 +4112,19 @@ package editor.entity.dialog {
          
          if (selectBorthers)
          {
-            entities = mEditorWorld.GetEntityContainer ().GetAllGluedEntities (entities);
+            entities = mEntityContainer.GetAllGluedEntities (entities);
          }
          
          if ((_mouseEventCtrlDown || mCookieModeEnabled) && (mLastSelectedEntities != null))
          {
-            if (mEditorWorld.GetEntityContainer ().SelectEntitiesByToggleTwoEntityArrays (mLastSelectedEntities, entities))
+            if (mEntityContainer.SelectEntitiesByToggleTwoEntityArrays (mLastSelectedEntities, entities))
             {
                OnSelectedEntitiesChanged ();
             }
          }
          else
          {
-            if (mEditorWorld.GetEntityContainer ().SetSelectedEntities (entities, clearOlds))
+            if (mEntityContainer.SetSelectedEntities (entities, clearOlds))
             {
                OnSelectedEntitiesChanged ();
             }
@@ -4134,7 +4135,7 @@ package editor.entity.dialog {
       {
          CalSelectedEntitiesCenterPoint ();
          
-         var selecteds:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selecteds:Array = mEntityContainer.GetSelectedEntities ();
          if (selecteds.length > 0)
          {
             SetLastSelectedEntities (selecteds [0]);
@@ -4160,7 +4161,7 @@ package editor.entity.dialog {
          var centerX:Number = 0;
          var centerY:Number = 0;
          
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          var count:uint = 0;
          
          for (var i:uint = 0; i < selectedEntities.length; ++ i)
@@ -4249,7 +4250,7 @@ package editor.entity.dialog {
          if (byMouse && ! IsEntityMouseMoveEnabled () )
             return;
          
-         mEditorWorld.GetEntityContainer ().MoveSelectedEntities (offsetX, offsetY, updateSelectionProxy);
+         mEntityContainer.MoveSelectedEntities (offsetX, offsetY, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
          
@@ -4266,7 +4267,7 @@ package editor.entity.dialog {
          if (byMouse && ! IsEntityMouseRotateEnabled () )
             return;
          
-         mEditorWorld.GetEntityContainer ().RotateSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), dAngle, updateSelectionProxy);
+         mEntityContainer.RotateSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), dAngle, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
          
@@ -4282,7 +4283,7 @@ package editor.entity.dialog {
          if (byMouse && ! IsEntityMouseScaleEnabled () )
             return;
          
-         mEditorWorld.GetEntityContainer ().ScaleSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), ratio, updateSelectionProxy);
+         mEntityContainer.ScaleSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), ratio, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
          
@@ -4294,7 +4295,7 @@ package editor.entity.dialog {
       
       public function DeleteSelectedEntities ():void
       {
-         if (mEditorWorld.GetEntityContainer ().DeleteSelectedEntities ())
+         if (mEntityContainer.DeleteSelectedEntities ())
          {
             CreateUndoPoint ("Delete");
             
@@ -4304,7 +4305,7 @@ package editor.entity.dialog {
       
       public function CloneSelectedEntities ():void
       {
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          
          var clonedable:Boolean = false;
          for (var i:int = 0; i < selectedEntities.length; ++ i)
@@ -4318,9 +4319,9 @@ package editor.entity.dialog {
          if (! clonedable)
             return;
          
-         mEditorWorld.GetEntityContainer ().CloneSelectedEntities (Define.BodyCloneOffsetX, Define.BodyCloneOffsetY);
+         mEntityContainer.CloneSelectedEntities (Define.BodyCloneOffsetX, Define.BodyCloneOffsetY);
          
-         selectedEntities = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         selectedEntities = mEntityContainer.GetSelectedEntities ();
          if (selectedEntities.length == 1)
          {
             SetLastSelectedEntities (selectedEntities [0]);
@@ -4333,7 +4334,7 @@ package editor.entity.dialog {
       
       public function FlipSelectedEntitiesHorizontally ():void
       {
-         mEditorWorld.GetEntityContainer ().FlipSelectedEntitiesHorizontally (GetSelectedEntitiesCenterX ());
+         mEntityContainer.FlipSelectedEntitiesHorizontally (GetSelectedEntitiesCenterX ());
          
          CreateUndoPoint ("Horizontal flip");
          
@@ -4342,7 +4343,7 @@ package editor.entity.dialog {
       
       public function FlipSelectedEntitiesVertically ():void
       {
-         mEditorWorld.GetEntityContainer ().FlipSelectedEntitiesVertically (GetSelectedEntitiesCenterY ());
+         mEntityContainer.FlipSelectedEntitiesVertically (GetSelectedEntitiesCenterY ());
          
          CreateUndoPoint ("Vertical flip");
          
@@ -4351,14 +4352,14 @@ package editor.entity.dialog {
       
       public function GlueSelectedEntities ():void
       {
-         mEditorWorld.GetEntityContainer ().GlueSelectedEntities ();
+         mEntityContainer.GlueSelectedEntities ();
          
          CreateUndoPoint ("Make brothers");
       }
       
       public function BreakApartSelectedEntities ():void
       {
-         mEditorWorld.GetEntityContainer ().BreakApartSelectedEntities ();
+         mEntityContainer.BreakApartSelectedEntities ();
          
          CreateUndoPoint ("Break brothers");
       }
@@ -4371,10 +4372,10 @@ package editor.entity.dialog {
          {
             if (resetScene)
             {
-               SetEditorWorld (new editor.world.World ());
+               EditorContext.GetEditorApp ().SetWorld (new editor.world.World ());
                mViewCenterWorldX = DefaultWorldWidth * 0.5;
                mViewCenterWorldY = DefaultWorldHeight * 0.5;
-               mEditorWorldZoomScale = 1.0;
+               mEntityContainerZoomScale = 1.0;
                
                mShowAllEntityLinks = false;
                mShowAllEntityIds = false;
@@ -4386,7 +4387,7 @@ package editor.entity.dialog {
             }
             else
             {
-               mEditorWorld.GetEntityContainer ().DestroyAllEntities ();
+               mEntityContainer.DestroyAllEntities ();
             }
             
             CreateUndoPoint ("Clear world");
@@ -4426,7 +4427,7 @@ package editor.entity.dialog {
       
       public function MoveSelectedEntitiesToTop ():void
       {
-         mEditorWorld.GetEntityContainer ().MoveSelectedEntitiesToTop ();
+         mEntityContainer.MoveSelectedEntitiesToTop ();
          
          CreateUndoPoint ("Move entities to the most top layer");
          
@@ -4435,7 +4436,7 @@ package editor.entity.dialog {
       
       public function MoveSelectedEntitiesToBottom ():void
       {
-         mEditorWorld.GetEntityContainer ().MoveSelectedEntitiesToBottom ();
+         mEntityContainer.MoveSelectedEntitiesToBottom ();
          
          CreateUndoPoint ("Move entities to the most bottom layer");
          
@@ -4448,7 +4449,7 @@ package editor.entity.dialog {
          // if no circle found, set the first joint anchor as target position,
          // 
          
-         var entities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var entities:Array = mEntityContainer.GetSelectedEntities ();
          var entity:Entity;
          var i:int;
          var centerX:Number;
@@ -4513,7 +4514,7 @@ package editor.entity.dialog {
       
       public function RoundPositionForSelectedEntities ():void
       {
-         var entities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var entities:Array = mEntityContainer.GetSelectedEntities ();
          var entity:Entity;
          var i:int;
          var posX:Number;
@@ -4536,9 +4537,9 @@ package editor.entity.dialog {
       
       public function MoveSelectedVertexControllers (offsetX:Number, offsetY:Number):void
       {
-         if (mEditorWorld.GetEntityContainer ().GetSelectedVertexControllers ().length > 0)
+         if (mEntityContainer.GetSelectedVertexControllers ().length > 0)
          {
-            mEditorWorld.GetEntityContainer ().MoveSelectedVertexControllers (offsetX, offsetY);
+            mEntityContainer.MoveSelectedVertexControllers (offsetX, offsetY);
          }
          
          CalSelectedEntitiesCenterPoint ();
@@ -4546,9 +4547,9 @@ package editor.entity.dialog {
       
       public function DeleteSelectedVertexController ():void
       {
-         if (mEditorWorld.GetEntityContainer ().GetSelectedVertexControllers ().length > 0)
+         if (mEntityContainer.GetSelectedVertexControllers ().length > 0)
          {
-            mEditorWorld.GetEntityContainer ().DeleteSelectedVertexControllers ();
+            mEntityContainer.DeleteSelectedVertexControllers ();
             
             CreateUndoPoint ("Delete a vertex");
             
@@ -4558,9 +4559,9 @@ package editor.entity.dialog {
       
       public function InsertVertexController ():void
       {
-         if (mEditorWorld.GetEntityContainer ().GetSelectedVertexControllers ().length > 0)
+         if (mEntityContainer.GetSelectedVertexControllers ().length > 0)
          {
-            mEditorWorld.GetEntityContainer ().InsertVertexControllerBeforeSelectedVertexControllers ();
+            mEntityContainer.InsertVertexControllerBeforeSelectedVertexControllers ();
             
             CreateUndoPoint ("Insert a vertex");
             
@@ -4578,16 +4579,16 @@ package editor.entity.dialog {
       
       public function StartSettingEntityProperties ():void
       {
-         mLastSessionVariableSpaceModifiedTimes = mEditorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
-         mLastGlobalVariableSpaceModifiedTimes = mEditorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
-         mLastEntityVariableSpaceModifiedTimes = mEditorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
+         mLastSessionVariableSpaceModifiedTimes = EditorContext.GetCurrentWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
+         mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+         mLastEntityVariableSpaceModifiedTimes = EditorContext.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
       }
       
       public function CancelSettingEntityProperties ():void
       {
-         var sessionVariableSpaceModified:Boolean = mEditorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
-         var globalVariableSpaceModified:Boolean = mEditorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
-         var entityVariableSpaceModified:Boolean = mEditorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes () > mLastEntityVariableSpaceModifiedTimes;
+         var sessionVariableSpaceModified:Boolean = EditorContext.GetCurrentWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
+         var globalVariableSpaceModified:Boolean = EditorContext.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
+         var entityVariableSpaceModified:Boolean = EditorContext.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes () > mLastEntityVariableSpaceModifiedTimes;
          
          if (sessionVariableSpaceModified || globalVariableSpaceModified || entityVariableSpaceModified)
          {
@@ -4634,9 +4635,9 @@ package editor.entity.dialog {
             params.mLinearVelocityMagnitude = -params.mLinearVelocityMagnitude;
             params.mLinearVelocityAngle = 360.0 - params.mLinearVelocityAngle;
          }
-         shape.SetLinearVelocityMagnitude (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
-         shape.SetLinearVelocityAngle (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
-         shape.SetAngularVelocity (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
+         shape.SetLinearVelocityMagnitude (mEntityContainer.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
+         shape.SetLinearVelocityAngle (mEntityContainer.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
+         shape.SetAngularVelocity (mEntityContainer.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
          shape.SetLinearDamping (params. mLinearDamping);
          shape.SetAngularDamping (params.mAngularDamping);
          shape.SetAllowSleeping (params.mAllowSleeping);
@@ -4645,7 +4646,7 @@ package editor.entity.dialog {
       
       public function ConfirmSettingEntityProperties (params:Object):void
       {
-         //var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         //var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          //if (selectedEntities == null || selectedEntities.length != 1)
          //   return;
          if (mMainSelectedEntity == null)
@@ -4654,17 +4655,17 @@ package editor.entity.dialog {
          //var entity:Entity = selectedEntities [0] as Entity;
          var entity:Entity = mMainSelectedEntity;
          
-         var newPosX:Number = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_PositionX (params.mPosX);
-         var newPosY:Number = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_PositionY (params.mPosY);
-         if (! mEditorWorld.GetEntityContainer ().IsInfiniteSceneSize ())
+         var newPosX:Number = mEntityContainer.GetCoordinateSystem ().P2D_PositionX (params.mPosX);
+         var newPosY:Number = mEntityContainer.GetCoordinateSystem ().P2D_PositionY (params.mPosY);
+         if (! mEntityContainer.IsInfiniteSceneSize ())
          {
             //todo: seems this is not essential
-            newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetEntityContainer ().GetWorldLeft () - Define.WorldFieldMargin, mEditorWorld.GetEntityContainer ().GetWorldRight () + Define.WorldFieldMargin);
-            newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetEntityContainer ().GetWorldTop () - Define.WorldFieldMargin, mEditorWorld.GetEntityContainer ().GetWorldBottom () + Define.WorldFieldMargin);
+            newPosX = MathUtil.GetClipValue (newPosX, mEntityContainer.GetWorldLeft () - Define.WorldFieldMargin, mEntityContainer.GetWorldRight () + Define.WorldFieldMargin);
+            newPosY = MathUtil.GetClipValue (newPosY, mEntityContainer.GetWorldTop () - Define.WorldFieldMargin, mEntityContainer.GetWorldBottom () + Define.WorldFieldMargin);
          }
          
          entity.SetPosition (newPosX, newPosY);
-         entity.SetRotation (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
+         entity.SetRotation (mEntityContainer.GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
          entity.SetVisible (params.mIsVisible);
          entity.SetAlpha (params.mAlpha);
          entity.SetEnabled (params.mIsEnabled);
@@ -4681,7 +4682,7 @@ package editor.entity.dialog {
                
                code_snippet = event_handler.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               code_snippet.PhysicsValues2DisplayValues (mEntityContainer.GetCoordinateSystem ());
                
                if (entity is EntityEventHandler_Timer)
                {
@@ -4696,11 +4697,11 @@ package editor.entity.dialog {
                      
                      var pre_code_snippet:CodeSnippet = timer_event_handler_withPrePostHandling.GetPreCodeSnippet ();
                      pre_code_snippet.AssignFunctionCallings (params.mReturnPreFunctionCallings);
-                     pre_code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+                     pre_code_snippet.PhysicsValues2DisplayValues (mEntityContainer.GetCoordinateSystem ());
                      
                      var post_code_snippet:CodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ();
                      post_code_snippet.AssignFunctionCallings (params.mReturnPostFunctionCallings);
-                     post_code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+                     post_code_snippet.PhysicsValues2DisplayValues (mEntityContainer.GetCoordinateSystem ());
                   }
                }
                else if (entity is EntityEventHandler_Keyboard)
@@ -4748,7 +4749,7 @@ package editor.entity.dialog {
                
                code_snippet = condition.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               code_snippet.PhysicsValues2DisplayValues (mEntityContainer.GetCoordinateSystem ());
             }
             else if (entity is EntityAction)
             {
@@ -4758,7 +4759,7 @@ package editor.entity.dialog {
                
                code_snippet = action.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               code_snippet.PhysicsValues2DisplayValues (mEntityContainer.GetCoordinateSystem ());
             }
             else if (entity is EntityInputEntityScriptFilter)
             {
@@ -4768,7 +4769,7 @@ package editor.entity.dialog {
                
                code_snippet = entityFilter.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               code_snippet.PhysicsValues2DisplayValues (mEntityContainer.GetCoordinateSystem ());
             }
             else if (entity is EntityInputEntityPairScriptFilter)
             {
@@ -4778,7 +4779,7 @@ package editor.entity.dialog {
                
                code_snippet = pairFilter.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ());
+               code_snippet.PhysicsValues2DisplayValues (mEntityContainer.GetCoordinateSystem ());
             }
             else if (entity is EntityConditionDoor)
             {
@@ -4816,13 +4817,13 @@ package editor.entity.dialog {
                
                if (entity is EntityVectorShapeCircle)
                {
-                  (vectorShape as EntityVectorShapeCircle).SetRadius (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (params.mRadius));
+                  (vectorShape as EntityVectorShapeCircle).SetRadius (mEntityContainer.GetCoordinateSystem ().P2D_Length (params.mRadius));
                   (vectorShape as EntityVectorShapeCircle).SetAppearanceType (params.mAppearanceType);
                }
                else if (entity is EntityVectorShapeRectangle)
                {
-                  (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (params.mWidth));
-                  (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEntityContainer.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEntityContainer.GetCoordinateSystem ().P2D_Length (params.mHeight));
                   (vectorShape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
                }
                else if (entity is EntityVectorShapePolygon)
@@ -4869,12 +4870,12 @@ package editor.entity.dialog {
                   (vectorShape as EntityVectorShapeText).SetBold (params.mIsBold);
                   (vectorShape as EntityVectorShapeText).SetItalic (params.mIsItalic);
                   
-                  (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (params.mWidth));
-                  (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mEntityContainer.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mEntityContainer.GetCoordinateSystem ().P2D_Length (params.mHeight));
                }
                else if (entity is EntityVectorShapeGravityController)
                {
-                  (vectorShape as EntityVectorShapeCircle).SetRadius (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (params.mRadius));
+                  (vectorShape as EntityVectorShapeCircle).SetRadius (mEntityContainer.GetCoordinateSystem ().P2D_Length (params.mRadius));
                   
                   //(vectorShape as EntityVectorShapeGravityController).SetInteractive (params.mIsInteractive);
                   (vectorShape as EntityVectorShapeGravityController).SetInteractiveZones (params.mInteractiveZones);
@@ -4887,9 +4888,9 @@ package editor.entity.dialog {
                      params.mInitialGravityAngle = 360.0 - params.mInitialGravityAngle;
                   }
                   
-                  (vectorShape as EntityVectorShapeGravityController).SetMaximalGravityAcceleration (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mMaximalGravityAcceleration));
-                  (vectorShape as EntityVectorShapeGravityController).SetInitialGravityAcceleration (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mInitialGravityAcceleration));
-                  (vectorShape as EntityVectorShapeGravityController).SetInitialGravityAngle (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationDegrees (params.mInitialGravityAngle));
+                  (vectorShape as EntityVectorShapeGravityController).SetMaximalGravityAcceleration (mEntityContainer.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mMaximalGravityAcceleration));
+                  (vectorShape as EntityVectorShapeGravityController).SetInitialGravityAcceleration (mEntityContainer.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mInitialGravityAcceleration));
+                  (vectorShape as EntityVectorShapeGravityController).SetInitialGravityAngle (mEntityContainer.GetCoordinateSystem ().P2D_RotationDegrees (params.mInitialGravityAngle));
                }
             }
             
@@ -4939,15 +4940,15 @@ package editor.entity.dialog {
             
             joint.mCollideConnected = jointParams.mCollideConnected;
             
-            newPosX = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_PositionX (jointParams.mPosX);
-            newPosY = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_PositionY (jointParams.mPosY);
-            if (! mEditorWorld.GetEntityContainer ().IsInfiniteSceneSize ())
+            newPosX = mEntityContainer.GetCoordinateSystem ().P2D_PositionX (jointParams.mPosX);
+            newPosY = mEntityContainer.GetCoordinateSystem ().P2D_PositionY (jointParams.mPosY);
+            if (! mEntityContainer.IsInfiniteSceneSize ())
             {
-               newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetEntityContainer ().GetWorldLeft (), mEditorWorld.GetEntityContainer ().GetWorldRight ());
-               newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetEntityContainer ().GetWorldTop (), mEditorWorld.GetEntityContainer ().GetWorldBottom ());
+               newPosX = MathUtil.GetClipValue (newPosX, mEntityContainer.GetWorldLeft (), mEntityContainer.GetWorldRight ());
+               newPosY = MathUtil.GetClipValue (newPosY, mEntityContainer.GetWorldTop (), mEntityContainer.GetWorldBottom ());
             }
             joint.SetPosition (newPosX, newPosY);
-            joint.SetRotation (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationRadians (jointParams.mAngle * Define.kDegrees2Radians));
+            joint.SetRotation (mEntityContainer.GetCoordinateSystem ().P2D_RotationRadians (jointParams.mAngle * Define.kDegrees2Radians));
             joint.SetVisible (jointParams.mIsVisible);
             joint.SetAlpha (jointParams.mAlpha);
             joint.SetEnabled (jointParams.mIsEnabled);
@@ -4966,13 +4967,13 @@ package editor.entity.dialog {
                var hinge:EntityJointHinge = joint as EntityJointHinge;
                
                hinge.SetLimitsEnabled (jointParams.mEnableLimit);
-               hinge.SetLimits (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mLowerAngle), mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mUpperAngle));
+               hinge.SetLimits (mEntityContainer.GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mLowerAngle), mEntityContainer.GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mUpperAngle));
                hinge.mEnableMotor = jointParams.mEnableMotor;
-               hinge.mMotorSpeed = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mMotorSpeed);
+               hinge.mMotorSpeed = mEntityContainer.GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mMotorSpeed);
                hinge.mBackAndForth = jointParams.mBackAndForth;
                
                //>>from v1.04
-               hinge.SetMaxMotorTorque (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Torque (jointParams.mMaxMotorTorque));
+               hinge.SetMaxMotorTorque (mEntityContainer.GetCoordinateSystem ().P2D_Torque (jointParams.mMaxMotorTorque));
                //<<
                
                // 
@@ -4983,13 +4984,13 @@ package editor.entity.dialog {
                var slider:EntityJointSlider = joint as EntityJointSlider;
                
                slider.SetLimitsEnabled (jointParams.mEnableLimit);
-               slider.SetLimits (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (jointParams.mLowerTranslation), mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (jointParams.mUpperTranslation));
+               slider.SetLimits (mEntityContainer.GetCoordinateSystem ().P2D_Length (jointParams.mLowerTranslation), mEntityContainer.GetCoordinateSystem ().P2D_Length (jointParams.mUpperTranslation));
                slider.mEnableMotor = jointParams.mEnableMotor;
-               slider.mMotorSpeed = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_LinearVelocityMagnitude (jointParams.mMotorSpeed);
+               slider.mMotorSpeed = mEntityContainer.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (jointParams.mMotorSpeed);
                slider.mBackAndForth = jointParams.mBackAndForth;
                
                //>>from v1.04
-               slider.SetMaxMotorForce (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_ForceMagnitude (jointParams.mMaxMotorForce));
+               slider.SetMaxMotorForce (mEntityContainer.GetCoordinateSystem ().P2D_ForceMagnitude (jointParams.mMaxMotorForce));
                //<<
                
                // 
@@ -5007,8 +5008,8 @@ package editor.entity.dialog {
                //from v1.08
                spring.SetFrequencyDeterminedManner (jointParams.mFrequencyDeterminedManner);
                spring.SetFrequency (jointParams.mFrequency);
-               spring.SetSpringConstant (jointParams.mSpringConstant * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (1.0) / mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_ForceMagnitude (1.0));
-               spring.SetBreakExtendedLength (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (jointParams.mBreakExtendedLength));
+               spring.SetSpringConstant (jointParams.mSpringConstant * mEntityContainer.GetCoordinateSystem ().P2D_Length (1.0) / mEntityContainer.GetCoordinateSystem ().P2D_ForceMagnitude (1.0));
+               spring.SetBreakExtendedLength (mEntityContainer.GetCoordinateSystem ().P2D_Length (jointParams.mBreakExtendedLength));
                //<<
                
                // 
@@ -5020,7 +5021,7 @@ package editor.entity.dialog {
                var distance:EntityJointDistance = joint as EntityJointDistance;
                
                //from v1.08
-               distance.SetBreakDeltaLength (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (jointParams.mBreakDeltaLength));
+               distance.SetBreakDeltaLength (mEntityContainer.GetCoordinateSystem ().P2D_Length (jointParams.mBreakDeltaLength));
                //<<
                
                // 
@@ -5069,29 +5070,29 @@ package editor.entity.dialog {
                switch (powerSource.GetPowerSourceType ())
                {
                   case Define.PowerSource_Torque:
-                     params.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Torque (params.mPowerMagnitude);
+                     params.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().P2D_Torque (params.mPowerMagnitude);
                      break;
                   case Define.PowerSource_LinearImpusle:
-                     params.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_ImpulseMagnitude (params.mPowerMagnitude);
+                     params.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().P2D_ImpulseMagnitude (params.mPowerMagnitude);
                      break;
                   case Define.PowerSource_AngularImpulse:
-                     params.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_AngularImpulse (params.mPowerMagnitude);
+                     params.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().P2D_AngularImpulse (params.mPowerMagnitude);
                      break;
                   case Define.PowerSource_AngularAcceleration:
-                     params.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_AngularAcceleration (params.mPowerMagnitude);
+                     params.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().P2D_AngularAcceleration (params.mPowerMagnitude);
                      break;
                   case Define.PowerSource_AngularVelocity:
-                     params.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_AngularVelocity (params.mPowerMagnitude);
+                     params.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().P2D_AngularVelocity (params.mPowerMagnitude);
                      break;
                   //case Define.PowerSource_LinearAcceleration:
-                  //   params.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mPowerMagnitude);
+                  //   params.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mPowerMagnitude);
                   //   break;
                   //case Define.PowerSource_LinearVelocity:
-                  //   params.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mPowerMagnitude);
+                  //   params.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mPowerMagnitude);
                   //   break;
                   case Define.PowerSource_Force:
                   default:
-                     params.mPowerMagnitude = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_ForceMagnitude (params.mPowerMagnitude);
+                     params.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().P2D_ForceMagnitude (params.mPowerMagnitude);
                      break;
                }
                powerSource.SetPowerMagnitude (params.mPowerMagnitude);
@@ -5112,7 +5113,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyEntityCommonProperties (params:Object):void
       {
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          var entity:Entity;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
@@ -5122,7 +5123,7 @@ package editor.entity.dialog {
             if (entity != null)
             {
                if (params.mToModifyAngle)
-                  entity.SetRotation (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
+                  entity.SetRotation (mEntityContainer.GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
                if (params.mToModifyAlpha)
                   entity.SetAlpha (params.mAlpha);
                if (params.mToModifyVisible)
@@ -5136,7 +5137,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapeCircleProperties (params:Object):void
       {
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          var circle:EntityVectorShapeCircle;
          
          var numCircles:int = 0;
@@ -5152,7 +5153,7 @@ package editor.entity.dialog {
                if (params.mToModifyAppearanceType)
                   circle.SetAppearanceType (params.mAppearanceType);
                if (params.mToModifyRadius)
-                  circle.SetRadius (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (params.mRadius));
+                  circle.SetRadius (mEntityContainer.GetCoordinateSystem ().P2D_Length (params.mRadius));
                
                circle.UpdateAppearance ();
                circle.UpdateSelectionProxy ();
@@ -5165,7 +5166,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapeRectangleProperties (params:Object):void
       {
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          var rect:EntityVectorShapeRectangle;
          
          var numRectangles:int = 0;
@@ -5181,9 +5182,9 @@ package editor.entity.dialog {
                if (params.mToModifyRoundCorners)
                   rect.SetRoundCorners (params.mIsRoundCorners);
                if (params.mToModifyWidth)
-                  rect.SetHalfWidth (0.5 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  rect.SetHalfWidth (0.5 * mEntityContainer.GetCoordinateSystem ().P2D_Length (params.mWidth));
                if (params.mToModifyHeight)
-                  rect.SetHalfHeight (0.5 * mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  rect.SetHalfHeight (0.5 * mEntityContainer.GetCoordinateSystem ().P2D_Length (params.mHeight));
             
                rect.UpdateAppearance ();
                rect.UpdateSelectionProxy ();
@@ -5197,7 +5198,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapePolylineProperties (params:Object):void
       {
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          var polyline:EntityVectorShapePolyline;
          
          var numPolylines:int = 0;
@@ -5228,7 +5229,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapeAppearanceProperties (params:Object):void
       {
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          
          var numShapes:int = 0;
          
@@ -5271,7 +5272,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapePhysicsProperties (params:Object):void
       {
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          
          var numShapes:int = 0;
          
@@ -5308,11 +5309,11 @@ package editor.entity.dialog {
                
                // velocity
                if (params.mToModifyLinearVelocityMagnitude)
-                  shape.SetLinearVelocityMagnitude (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
+                  shape.SetLinearVelocityMagnitude (mEntityContainer.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
                if (params.mToModifyLinearVelocityAngle)
-                  shape.SetLinearVelocityAngle (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
+                  shape.SetLinearVelocityAngle (mEntityContainer.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
                if (params.mToModifyAngularVelocity)
-                  shape.SetAngularVelocity (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
+                  shape.SetAngularVelocity (mEntityContainer.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
                
                // fixture
                if (params.mToModifyDensity)
@@ -5330,7 +5331,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyJointCollideConnectedsProperty (params:Object):void
       {
-         var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
          var joint:EntityJoint;
          var anchor:SubEntityJointAnchor;
          
@@ -5361,20 +5362,20 @@ package editor.entity.dialog {
       {
          var info:Object = new Object ();
          
-         info.mShareSoureCode = mEditorWorld.IsShareSourceCode ();
-         info.mPermitPublishing = mEditorWorld.IsPermitPublishing ();
-         info.mAuthorName = mEditorWorld.GetAuthorName ();
-         info.mAuthorHomepage = mEditorWorld.GetAuthorHomepage ();
+         info.mShareSoureCode = EditorContext.GetCurrentWorld ().IsShareSourceCode ();
+         info.mPermitPublishing = EditorContext.GetCurrentWorld ().IsPermitPublishing ();
+         info.mAuthorName = EditorContext.GetCurrentWorld ().GetAuthorName ();
+         info.mAuthorHomepage = EditorContext.GetCurrentWorld ().GetAuthorHomepage ();
          
          return info;
       }
       
       public function SetCurrentWorldDesignInfo (info:Object):void
       {
-         mEditorWorld.SetShareSourceCode (info.mShareSoureCode);
-         mEditorWorld.SetPermitPublishing (info.mPermitPublishing);
-         mEditorWorld.SetAuthorName (info.mAuthorName);
-         mEditorWorld.SetAuthorHomepage (info.mAuthorHomepage);
+         EditorContext.GetCurrentWorld ().SetShareSourceCode (info.mShareSoureCode);
+         EditorContext.GetCurrentWorld ().SetPermitPublishing (info.mPermitPublishing);
+         EditorContext.GetCurrentWorld ().SetAuthorName (info.mAuthorName);
+         EditorContext.GetCurrentWorld ().SetAuthorHomepage (info.mAuthorHomepage);
          
          CreateUndoPoint ("Author info is modified");
       }
@@ -5383,17 +5384,17 @@ package editor.entity.dialog {
       {
          var info:Object = new Object ();
          
-         info.mIsRightHand = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().IsRightHand ();
-         info.mScale = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().GetScale ();
-         info.mOriginX = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().GetOriginX ();
-         info.mOroginY = mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().GetOriginY ();
+         info.mIsRightHand = mEntityContainer.GetCoordinateSystem ().IsRightHand ();
+         info.mScale = mEntityContainer.GetCoordinateSystem ().GetScale ();
+         info.mOriginX = mEntityContainer.GetCoordinateSystem ().GetOriginX ();
+         info.mOroginY = mEntityContainer.GetCoordinateSystem ().GetOriginY ();
          
          return info;
       }
       
       public function SetCurrentWorldCoordinateSystemInfo (info:Object):void
       {
-         mEditorWorld.GetEntityContainer ().RebuildCoordinateSystem (
+         mEntityContainer.RebuildCoordinateSystem (
                   info.mOriginX,
                   info.mOroginY,
                   info.mScale,
@@ -5409,16 +5410,16 @@ package editor.entity.dialog {
       {
          var info:Object = new Object ();
          
-         info.mIsPauseOnFocusLost = mEditorWorld.IsPauseOnFocusLost ();
-         info.mIsCiRulesEnabled = mEditorWorld.GetEntityContainer ().IsCiRulesEnabled ();
+         info.mIsPauseOnFocusLost = EditorContext.GetCurrentWorld ().IsPauseOnFocusLost ();
+         info.mIsCiRulesEnabled = mEntityContainer.IsCiRulesEnabled ();
          
          return info;
       }
       
       public function SetCurrentWorldLevelRulesInfo (info:Object):void
       {  
-         mEditorWorld.SetPauseOnFocusLost (info.mIsPauseOnFocusLost);
-         mEditorWorld.GetEntityContainer ().SetCiRulesEnabled (info.mIsCiRulesEnabled);
+         EditorContext.GetCurrentWorld ().SetPauseOnFocusLost (info.mIsPauseOnFocusLost);
+         mEntityContainer.SetCiRulesEnabled (info.mIsCiRulesEnabled);
          
          CreateUndoPoint ("World rules are changed");
       }
@@ -5427,31 +5428,31 @@ package editor.entity.dialog {
       {
          var info:Object = new Object ();
          
-         info.mPreferredFPS = mEditorWorld.GetEntityContainer ().GetPreferredFPS ();
-         info.mPhysicsSimulationEnabled = mEditorWorld.GetEntityContainer ().IsPhysicsSimulationEnabled ();
-         info.mPhysicsSimulationStepTimeLength = mEditorWorld.GetEntityContainer ().GetPhysicsSimulationStepTimeLength ();
-         info.mVelocityIterations = mEditorWorld.GetEntityContainer ().GetPhysicsSimulationVelocityIterations ();
-         info.mPositionIterations = mEditorWorld.GetEntityContainer ().GetPhysicsSimulationPositionIterations ();
-         info.mCheckTimeOfImpact = mEditorWorld.GetEntityContainer ().IsCheckTimeOfImpact ();
-         info.mInitialSpeedX = mEditorWorld.GetEntityContainer ().GetInitialSpeedX ();
-         info.mAutoSleepingEnabled = mEditorWorld.GetEntityContainer ().IsAutoSleepingEnabled ();
-         info.mDefaultGravityAccelerationMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (mEditorWorld.GetEntityContainer ().GetDefaultGravityAccelerationMagnitude ()), 6);
-         info.mDefaultGravityAccelerationAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().D2P_RotationDegrees (mEditorWorld.GetEntityContainer ().GetDefaultGravityAccelerationAngle ()), 6);
+         info.mPreferredFPS = mEntityContainer.GetPreferredFPS ();
+         info.mPhysicsSimulationEnabled = mEntityContainer.IsPhysicsSimulationEnabled ();
+         info.mPhysicsSimulationStepTimeLength = mEntityContainer.GetPhysicsSimulationStepTimeLength ();
+         info.mVelocityIterations = mEntityContainer.GetPhysicsSimulationVelocityIterations ();
+         info.mPositionIterations = mEntityContainer.GetPhysicsSimulationPositionIterations ();
+         info.mCheckTimeOfImpact = mEntityContainer.IsCheckTimeOfImpact ();
+         info.mInitialSpeedX = mEntityContainer.GetInitialSpeedX ();
+         info.mAutoSleepingEnabled = mEntityContainer.IsAutoSleepingEnabled ();
+         info.mDefaultGravityAccelerationMagnitude = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (mEntityContainer.GetDefaultGravityAccelerationMagnitude ()), 6);
+         info.mDefaultGravityAccelerationAngle = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees (mEntityContainer.GetDefaultGravityAccelerationAngle ()), 6);
          
          return info;
       }
       
       public function SetCurrentWorldPhysicsInfo (info:Object):void
       {
-         mEditorWorld.GetEntityContainer ().SetPreferredFPS (info.mPreferredFPS);
-         mEditorWorld.GetEntityContainer ().SetPhysicsSimulationEnabled (info.mPhysicsSimulationEnabled);
-         mEditorWorld.GetEntityContainer ().SetPhysicsSimulationStepTimeLength (info.mPhysicsSimulationStepTimeLength);
-         mEditorWorld.GetEntityContainer ().SetPhysicsSimulationIterations (info.mVelocityIterations, info.mPositionIterations);
-         mEditorWorld.GetEntityContainer ().SetCheckTimeOfImpact (info.mCheckTimeOfImpact);
-         mEditorWorld.GetEntityContainer ().SetInitialSpeedX (info.mInitialSpeedX);
-         mEditorWorld.GetEntityContainer ().SetAutoSleepingEnabled (info.mAutoSleepingEnabled);
-         mEditorWorld.GetEntityContainer ().SetDefaultGravityAccelerationMagnitude (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (info.mDefaultGravityAccelerationMagnitude));
-         mEditorWorld.GetEntityContainer ().SetDefaultGravityAccelerationAngle (mEditorWorld.GetEntityContainer ().GetCoordinateSystem ().P2D_RotationDegrees (info.mDefaultGravityAccelerationAngle));
+         mEntityContainer.SetPreferredFPS (info.mPreferredFPS);
+         mEntityContainer.SetPhysicsSimulationEnabled (info.mPhysicsSimulationEnabled);
+         mEntityContainer.SetPhysicsSimulationStepTimeLength (info.mPhysicsSimulationStepTimeLength);
+         mEntityContainer.SetPhysicsSimulationIterations (info.mVelocityIterations, info.mPositionIterations);
+         mEntityContainer.SetCheckTimeOfImpact (info.mCheckTimeOfImpact);
+         mEntityContainer.SetInitialSpeedX (info.mInitialSpeedX);
+         mEntityContainer.SetAutoSleepingEnabled (info.mAutoSleepingEnabled);
+         mEntityContainer.SetDefaultGravityAccelerationMagnitude (mEntityContainer.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (info.mDefaultGravityAccelerationMagnitude));
+         mEntityContainer.SetDefaultGravityAccelerationAngle (mEntityContainer.GetCoordinateSystem ().P2D_RotationDegrees (info.mDefaultGravityAccelerationAngle));
          
          CreateUndoPoint ("World physics settings are changed");
       }
@@ -5460,43 +5461,43 @@ package editor.entity.dialog {
       {
          var info:Object = new Object ();
          
-         info.mIsInfiniteSceneSize = mEditorWorld.GetEntityContainer ().IsInfiniteSceneSize ();
-         info.mWorldLeft = mEditorWorld.GetEntityContainer ().GetWorldLeft ();
-         info.mWorldTop = mEditorWorld.GetEntityContainer ().GetWorldTop ();
-         info.mWorldWidth = mEditorWorld.GetEntityContainer ().GetWorldWidth ();
-         info.mWorldHeight = mEditorWorld.GetEntityContainer ().GetWorldHeight ();
+         info.mIsInfiniteSceneSize = mEntityContainer.IsInfiniteSceneSize ();
+         info.mWorldLeft = mEntityContainer.GetWorldLeft ();
+         info.mWorldTop = mEntityContainer.GetWorldTop ();
+         info.mWorldWidth = mEntityContainer.GetWorldWidth ();
+         info.mWorldHeight = mEntityContainer.GetWorldHeight ();
          
-         info.mBackgroundColor = mEditorWorld.GetEntityContainer ().GetBackgroundColor ();
-         info.mBorderColor = mEditorWorld.GetEntityContainer ().GetBorderColor ();
-         info.mIsBuildBorder = mEditorWorld.GetEntityContainer ().IsBuildBorder ();
-         info.mIsBorderAtTopLayer = mEditorWorld.GetEntityContainer ().IsBorderAtTopLayer ();
-         info.mWorldBorderLeftThickness = mEditorWorld.GetEntityContainer ().GetWorldBorderLeftThickness ();
-         info.mWorldBorderTopThickness = mEditorWorld.GetEntityContainer ().GetWorldBorderTopThickness ();
-         info.mWorldBorderRightThickness  = mEditorWorld.GetEntityContainer ().GetWorldBorderRightThickness ();
-         info.mWorldBorderBottomThickness = mEditorWorld.GetEntityContainer ().GetWorldBorderBottomThickness ();
+         info.mBackgroundColor = mEntityContainer.GetBackgroundColor ();
+         info.mBorderColor = mEntityContainer.GetBorderColor ();
+         info.mIsBuildBorder = mEntityContainer.IsBuildBorder ();
+         info.mIsBorderAtTopLayer = mEntityContainer.IsBorderAtTopLayer ();
+         info.mWorldBorderLeftThickness = mEntityContainer.GetWorldBorderLeftThickness ();
+         info.mWorldBorderTopThickness = mEntityContainer.GetWorldBorderTopThickness ();
+         info.mWorldBorderRightThickness  = mEntityContainer.GetWorldBorderRightThickness ();
+         info.mWorldBorderBottomThickness = mEntityContainer.GetWorldBorderBottomThickness ();
          
-         info.mViewportWidth = mEditorWorld.GetViewportWidth ();
-         info.mViewportHeight = mEditorWorld.GetViewportHeight ();
+         info.mViewportWidth = EditorContext.GetCurrentWorld ().GetViewportWidth ();
+         info.mViewportHeight = EditorContext.GetCurrentWorld ().GetViewportHeight ();
          
          return info;
       }
       
       public function SetCurrentWorldAppearanceInfo (info:Object):void
       {
-         mEditorWorld.GetEntityContainer ().SetInfiniteSceneSize (info.mIsInfiniteSceneSize);
-         mEditorWorld.GetEntityContainer ().SetWorldLeft (info.mWorldLeft);
-         mEditorWorld.GetEntityContainer ().SetWorldTop (info.mWorldTop);
-         mEditorWorld.GetEntityContainer ().SetWorldWidth (info.mWorldWidth);
-         mEditorWorld.GetEntityContainer ().SetWorldHeight (info.mWorldHeight);
+         mEntityContainer.SetInfiniteSceneSize (info.mIsInfiniteSceneSize);
+         mEntityContainer.SetWorldLeft (info.mWorldLeft);
+         mEntityContainer.SetWorldTop (info.mWorldTop);
+         mEntityContainer.SetWorldWidth (info.mWorldWidth);
+         mEntityContainer.SetWorldHeight (info.mWorldHeight);
          
-         mEditorWorld.GetEntityContainer ().SetBackgroundColor (info.mBackgroundColor);
-         mEditorWorld.GetEntityContainer ().SetBorderColor (info.mBorderColor);
-         mEditorWorld.GetEntityContainer ().SetBuildBorder (info.mIsBuildBorder);
-         mEditorWorld.GetEntityContainer ().SetBorderAtTopLayer (info.mIsBorderAtTopLayer);
-         mEditorWorld.GetEntityContainer ().SetWorldBorderLeftThickness (info.mWorldBorderLeftThickness);
-         mEditorWorld.GetEntityContainer ().SetWorldBorderTopThickness (info.mWorldBorderTopThickness);
-         mEditorWorld.GetEntityContainer ().SetWorldBorderRightThickness (info.mWorldBorderRightThickness);
-         mEditorWorld.GetEntityContainer ().SetWorldBorderBottomThickness (info.mWorldBorderBottomThickness);
+         mEntityContainer.SetBackgroundColor (info.mBackgroundColor);
+         mEntityContainer.SetBorderColor (info.mBorderColor);
+         mEntityContainer.SetBuildBorder (info.mIsBuildBorder);
+         mEntityContainer.SetBorderAtTopLayer (info.mIsBorderAtTopLayer);
+         mEntityContainer.SetWorldBorderLeftThickness (info.mWorldBorderLeftThickness);
+         mEntityContainer.SetWorldBorderTopThickness (info.mWorldBorderTopThickness);
+         mEntityContainer.SetWorldBorderRightThickness (info.mWorldBorderRightThickness);
+         mEntityContainer.SetWorldBorderBottomThickness (info.mWorldBorderBottomThickness);
          
          UpdateChildComponents ();
          
@@ -5507,28 +5508,28 @@ package editor.entity.dialog {
       {
          var info:Object = new Object ();
          
-         info.mViewerUiFlags = mEditorWorld.GetViewerUiFlags ();
-         info.mPlayBarColor = mEditorWorld.GetPlayBarColor ();
+         info.mViewerUiFlags = EditorContext.GetCurrentWorld ().GetViewerUiFlags ();
+         info.mPlayBarColor = EditorContext.GetCurrentWorld ().GetPlayBarColor ();
          
-         info.mViewportWidth = mEditorWorld.GetViewportWidth ();
-         info.mViewportHeight = mEditorWorld.GetViewportHeight ();
+         info.mViewportWidth = EditorContext.GetCurrentWorld ().GetViewportWidth ();
+         info.mViewportHeight = EditorContext.GetCurrentWorld ().GetViewportHeight ();
          
-         info.mCameraRotatingEnabled = mEditorWorld.GetEntityContainer ().IsCameraRotatingEnabled ();
+         info.mCameraRotatingEnabled = mEntityContainer.IsCameraRotatingEnabled ();
          
          return info;
       }
       
       public function SetViewportInfo (info:Object):void
       {
-         mEditorWorld.SetViewerUiFlags (info.mViewerUiFlags);
-         mEditorWorld.SetPlayBarColor (info.mPlayBarColor);
+         EditorContext.GetCurrentWorld ().SetViewerUiFlags (info.mViewerUiFlags);
+         EditorContext.GetCurrentWorld ().SetPlayBarColor (info.mPlayBarColor);
          
-         mEditorWorld.SetViewportWidth (info.mViewportWidth);
-         mEditorWorld.SetViewportHeight (info.mViewportHeight);
+         EditorContext.GetCurrentWorld ().SetViewportWidth (info.mViewportWidth);
+         EditorContext.GetCurrentWorld ().SetViewportHeight (info.mViewportHeight);
          
-         mEditorWorld.GetEntityContainer ().SetCameraRotatingEnabled (info.mCameraRotatingEnabled);
+         mEntityContainer.SetCameraRotatingEnabled (info.mCameraRotatingEnabled);
          
-         mEditorWorld.ValidateViewportSize ();
+         EditorContext.GetCurrentWorld ().ValidateViewportSize ();
          
          CreateUndoPoint ("World appearance is changed");
       }
@@ -5539,10 +5540,10 @@ package editor.entity.dialog {
       
       public function MoveWorldScene (dx:Number, dy:Number):void
       {
-         var sceneLeft  :int = mEditorWorld.GetEntityContainer ().GetWorldLeft ();
-         var sceneTop   :int = mEditorWorld.GetEntityContainer ().GetWorldTop ();
-         var sceneRight :int = sceneLeft + mEditorWorld.GetEntityContainer ().GetWorldWidth ();
-         var sceneBottom:int = sceneTop  + mEditorWorld.GetEntityContainer ().GetWorldHeight ();
+         var sceneLeft  :int = mEntityContainer.GetWorldLeft ();
+         var sceneTop   :int = mEntityContainer.GetWorldTop ();
+         var sceneRight :int = sceneLeft + mEntityContainer.GetWorldWidth ();
+         var sceneBottom:int = sceneTop  + mEntityContainer.GetWorldHeight ();
          
          mViewCenterWorldX -= dx;
          mViewCenterWorldY -= dy;
@@ -5556,15 +5557,15 @@ package editor.entity.dialog {
          
          for each (var entityId:int in entityIds)
          {
-            if (entityId < 0 || entityId >= mEditorWorld.GetEntityContainer ().GetNumEntities ())
+            if (entityId < 0 || entityId >= mEntityContainer.GetNumEntities ())
                continue;
             
-            var entity:Entity = mEditorWorld.GetEntityContainer ().GetEntityByCreationId (entityId);
+            var entity:Entity = mEntityContainer.GetEntityByCreationId (entityId);
             
             var posX:Number = entity.GetPositionX ();
             var posY:Number = entity.GetPositionY ();
             
-            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld.GetEntityContainer (), this, new Point (posX, posY) );
+            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (posX, posY) );
             if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
                posX = mViewCenterWorldX;
             if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
@@ -5597,15 +5598,15 @@ package editor.entity.dialog {
          
          for each (var entityId:int in entityIds)
          {
-            if (entityId < 0 || entityId >= mEditorWorld.GetEntityContainer ().GetNumEntities ())
+            if (entityId < 0 || entityId >= mEntityContainer.GetNumEntities ())
                continue;
             
-            var entity:Entity = mEditorWorld.GetEntityContainer ().GetEntityByCreationId (entityId);
+            var entity:Entity = mEntityContainer.GetEntityByCreationId (entityId);
             
             var posX:Number = entity.GetPositionX ();
             var posY:Number = entity.GetPositionY ();
             
-            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld.GetEntityContainer (), this, new Point (posX, posY) );
+            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (posX, posY) );
             if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
                posX = mViewCenterWorldX;
             if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
@@ -5647,7 +5648,7 @@ package editor.entity.dialog {
       {
          var newWorld:editor.world.World = null;
          
-         DestroyEditorWorld ();
+         EditorContext.GetEditorApp ().CloseWorld ();
          
          try
          {
@@ -5707,7 +5708,7 @@ package editor.entity.dialog {
             
             newWorld = DataFormat.WorldDefine2EditorWorld (newWorldDefine);
             
-            SetEditorWorld (newWorld);
+            EditorContext.GetEditorApp ().SetWorld (newWorld);
             
             //mWorldHistoryManager.ClearHistories ();
             
@@ -5724,7 +5725,7 @@ package editor.entity.dialog {
             
             RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             
-            //SetEditorWorld (new editor.world.World ());
+            //EditorContext.GetEditorApp ().SetWorld (new editor.world.World ());
             
             //Alert.show("Sorry, loading error!", "Error");
             
@@ -5738,10 +5739,10 @@ package editor.entity.dialog {
          
          try
          {
-            var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mEditorWorld);
+            var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (EditorContext.GetCurrentWorld ());
             newWorld = DataFormat.WorldDefine2EditorWorld (worldDefine);
             
-            var selectedEntities:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+            var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
             
             if (selectedEntities.length == 0)
                return;
@@ -5755,7 +5756,7 @@ package editor.entity.dialog {
                //trace ("selectedEntities[i] = " + selectedEntities[i]);
                //trace ("selectedEntities[i].parent = " + selectedEntities[i].parent);
                
-               index = mEditorWorld.GetEntityContainer ().GetEntityCreationId (selectedEntities[i]);
+               index = mEntityContainer.GetEntityCreationId (selectedEntities[i]);
                entity = newWorld.GetEntityContainer ().GetEntityByCreationId (index);
                
                entity = entity.GetMainEntity ();
@@ -5882,8 +5883,8 @@ package editor.entity.dialog {
          
          try
          {
-            var oldEntitiesCount:int = mEditorWorld.GetEntityContainer ().GetNumEntities ();
-            var oldCategoriesCount:int = mEditorWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
+            var oldEntitiesCount:int = mEntityContainer.GetNumEntities ();
+            var oldCategoriesCount:int = EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
             
             var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
             
@@ -5893,18 +5894,18 @@ package editor.entity.dialog {
             if (oldCategoriesCount + worldDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
                return;
             
-            DataFormat.WorldDefine2EditorWorld (worldDefine, true, mEditorWorld, mergeVariablesWithSameNames);
+            DataFormat.WorldDefine2EditorWorld (worldDefine, true, EditorContext.GetCurrentWorld (), mergeVariablesWithSameNames);
             
-            if (mEditorWorld.GetCodeLibManager ().IsChanged ())
+            if (EditorContext.GetCurrentWorld ().GetCodeLibManager ().IsChanged ())
             {
-               mEditorWorld.GetCodeLibManager ().UpdateFunctionMenu ();
-               mEditorWorld.GetCodeLibManager ().SetChanged (false)
+               EditorContext.GetCurrentWorld ().GetCodeLibManager ().UpdateFunctionMenu ();
+               EditorContext.GetCurrentWorld ().GetCodeLibManager ().SetChanged (false)
             }
             
-            if (oldEntitiesCount == mEditorWorld.GetEntityContainer ().numChildren)
+            if (oldEntitiesCount == mEntityContainer.numChildren)
                return;
             
-            mEditorWorld.GetEntityContainer ().ClearSelectedEntities ();
+            mEntityContainer.ClearSelectedEntities ();
             
             var i:int;
             var j:int;
@@ -5914,12 +5915,12 @@ package editor.entity.dialog {
             var centerY:Number = 0;
             var numSelecteds:int = 0;
             
-            var newEntitiesCount:int = mEditorWorld.GetEntityContainer ().GetNumEntities ();
+            var newEntitiesCount:int = mEntityContainer.GetNumEntities ();
             
             var entitiesToSelect:Array = new Array ();
             for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
             {
-               entities = (mEditorWorld.GetEntityContainer ().GetEntityByCreationId (i) as Entity).GetSelectableEntities ();
+               entities = (mEntityContainer.GetEntityByCreationId (i) as Entity).GetSelectableEntities ();
                entitiesToSelect = entitiesToSelect.concat (entities);
                
                for (j = 0; j < entities.length; ++ j)
@@ -5966,7 +5967,7 @@ package editor.entity.dialog {
       
       public function CreateUndoPoint (description:String, editActions:Array = null, targetEntity:Entity = null, tryCreateDelayedUndoPoints:Boolean = true):void
       {
-         if (mEditorWorld == null)
+         if (EditorContext.GetCurrentWorld () == null)
             return;
          
          if (tryCreateDelayedUndoPoints)
@@ -5979,26 +5980,26 @@ package editor.entity.dialog {
          var object:Object = new Object ();
          worldState.mUserData = object;
          
-         object.mWorldDefine = DataFormat.EditorWorld2WorldDefine (mEditorWorld);
+         object.mWorldDefine = DataFormat.EditorWorld2WorldDefine (EditorContext.GetCurrentWorld ());
          
-         var entityArray:Array = mEditorWorld.GetEntityContainer ().GetSelectedEntities ();
+         var entityArray:Array = mEntityContainer.GetSelectedEntities ();
          
          object.mSelectedEntityCreationIds = new Array (entityArray.length);
          object.mMainSelectedEntityId = -1;
          object.mSelectedVertexControllerId = -1;
          object.mViewCenterWorldX = mViewCenterWorldX;
          object.mViewCenterWorldY = mViewCenterWorldY;
-         //object.mEditorWorldZoomScale = mEditorWorldZoomScale;
+         //object.mEntityContainerZoomScale = mEntityContainerZoomScale;
          
          for (var i:int = 0; i < entityArray.length; ++ i)
          {
             var entity:Entity = entityArray [i] as Entity;
-            object.mSelectedEntityCreationIds [i] = mEditorWorld.GetEntityContainer ().GetEntityCreationId (entity);
+            object.mSelectedEntityCreationIds [i] = mEntityContainer.GetEntityCreationId (entity);
             if (entity.AreInternalComponentsVisible ())
             {
                object.mMainSelectedEntityId = object.mSelectedEntityCreationIds [i];
                
-               var vertexControllerArray:Array = mEditorWorld.GetEntityContainer ().GetSelectedVertexControllers ();
+               var vertexControllerArray:Array = mEntityContainer.GetSelectedVertexControllers ();
                if (vertexControllerArray.length > 0)
                   object.mSelectedVertexControllerId = entity.GetVertexControllerIndex (vertexControllerArray [0]);
             }
@@ -6016,7 +6017,7 @@ package editor.entity.dialog {
          }
          else
          {
-            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld.GetEntityContainer (), mFloatingMessageLayer, new Point (targetEntity.GetLinkPointX (), targetEntity.GetLinkPointY ()));
+            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, mFloatingMessageLayer, new Point (targetEntity.GetLinkPointX (), targetEntity.GetLinkPointY ()));
             
             msgX = viewPoint.x;
             msgY = viewPoint.y;
@@ -6038,19 +6039,19 @@ package editor.entity.dialog {
          
          var object:Object = worldState.mUserData;
          
-         var currentWorld:Number = mEditorWorldZoomScale;
+         var currentWorld:Number = mEntityContainerZoomScale;
          
          var newEditorWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (object.mWorldDefine, false);
-         SetEditorWorld (newEditorWorld);
+         EditorContext.GetEditorApp ().SetWorld (newEditorWorld);
          
          mViewCenterWorldX = object.mViewCenterWorldX;
          mViewCenterWorldY = object.mViewCenterWorldY;
          
-         //mEditorWorldZoomScale = object.mEditorWorldZoomScale;
-         mEditorWorldZoomScale = currentWorld;
-         mEditorWorld.GetEntityContainer ().SetZoomScale (mEditorWorldZoomScale);
+         //mEntityContainerZoomScale = object.mEntityContainerZoomScale;
+         mEntityContainerZoomScale = currentWorld;
+         mEntityContainer.SetZoomScale (mEntityContainerZoomScale);
          
-         var numEntities:int = mEditorWorld.GetEntityContainer ().GetNumEntities ();
+         var numEntities:int = mEntityContainer.GetNumEntities ();
          var entityId:int;
          var entity:Entity;
          
@@ -6059,8 +6060,8 @@ package editor.entity.dialog {
             entityId = object.mSelectedEntityCreationIds [i];
             if (entityId >= 0 && entityId < numEntities)
             {
-               entity = mEditorWorld.GetEntityContainer ().GetEntityByCreationId (entityId);
-               mEditorWorld.GetEntityContainer ().SelectEntity (entity);
+               entity = mEntityContainer.GetEntityByCreationId (entityId);
+               mEntityContainer.SelectEntity (entity);
                
                if (entityId == object.mMainSelectedEntityId)
                {
@@ -6071,7 +6072,7 @@ package editor.entity.dialog {
                   {
                      var vertexController:VertexController = entity.GetVertexControllerByIndex (object.mSelectedVertexControllerId);
                      if (vertexController != null)
-                        mEditorWorld.GetEntityContainer ().SetSelectedVertexController (vertexController);
+                        mEntityContainer.SetSelectedVertexController (vertexController);
                   }
                }
             }
@@ -6082,7 +6083,7 @@ package editor.entity.dialog {
       
       public function Undo ():void
       {
-         if (mEditorWorld == null)
+         if (EditorContext.GetCurrentWorld () == null)
             return;
          
          TryCreateDelayedUndoPoint ();
@@ -6106,7 +6107,7 @@ package editor.entity.dialog {
       
       public function Redo ():void
       {
-         if (mEditorWorld == null)
+         if (EditorContext.GetCurrentWorld () == null)
             return;
          
          var worldState:WorldState = mWorldHistoryManager.RedoHistory ();
@@ -6154,7 +6155,7 @@ package editor.entity.dialog {
          {
             so = SharedObject.getLocal(kQuickSaveFileName);
             
-            var designDataForEditing:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+            var designDataForEditing:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (EditorContext.GetCurrentWorld ()));
             designDataForEditing.compress ();
             designDataForEditing.position = 0;
             
@@ -6243,7 +6244,7 @@ package editor.entity.dialog {
             
             //mWorldHistoryManager.ClearHistories ();
             
-            SetEditorWorld (newEditorWorld);
+            EditorContext.GetEditorApp ().SetWorld (newEditorWorld);
             
             CreateUndoPoint ("Quick save data is loaed");
             
@@ -6267,13 +6268,13 @@ package editor.entity.dialog {
          
          var urlParams:Object = GetFlashParams ();
          
-         var viewportWidth:int = mEditorWorld.GetViewportWidth ();
-         var viewportHeight:int = mEditorWorld.GetViewportHeight ();
-         //var showPlayBar:Boolean = (mEditorWorld.GetEntityContainer ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
-         var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
+         var viewportWidth:int = EditorContext.GetCurrentWorld ().GetViewportWidth ();
+         var viewportHeight:int = EditorContext.GetCurrentWorld ().GetViewportHeight ();
+         //var showPlayBar:Boolean = (mEntityContainer.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+         var showPlayBar:Boolean = (EditorContext.GetCurrentWorld ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
          var heightWithPlayBar:int = (showPlayBar ? viewportHeight + Define.DefaultPlayerSkinPlayBarHeight : viewportHeight);
 
-         var levelData:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+         var levelData:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (EditorContext.GetCurrentWorld ()));
          levelData.compress ();
 
          var values:Object = new Object ();
@@ -6353,11 +6354,11 @@ package editor.entity.dialog {
          if (params.mRootUrl == null || params.mAuthorName == null || params.mSlotID == null)
             return;
          
-         var designDataForEditing:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+         var designDataForEditing:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (EditorContext.GetCurrentWorld ()));
          designDataForEditing.compress ();
          designDataForEditing.position = 0;
          
-         var designDataForPlaying:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+         var designDataForPlaying:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (EditorContext.GetCurrentWorld ()));
          designDataForPlaying.compress ();
          designDataForPlaying.position = 0;
          
@@ -6366,11 +6367,11 @@ package editor.entity.dialog {
          designDataAll.writeInt (Version.VersionNumber);
          
          //>> from v1.07 (in fact, the code added in v0110 r003)
-         var shareSourceCode:Boolean = mEditorWorld.IsShareSourceCode ();
-         designDataAll.writeShort (mEditorWorld.GetViewportWidth ()); // view width
-         designDataAll.writeShort (mEditorWorld.GetViewportHeight ()); // view height
-         //designDataAll.writeByte  ((mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
-         designDataAll.writeByte  ((mEditorWorld.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin ? 1 : 0);
+         var shareSourceCode:Boolean = EditorContext.GetCurrentWorld ().IsShareSourceCode ();
+         designDataAll.writeShort (EditorContext.GetCurrentWorld ().GetViewportWidth ()); // view width
+         designDataAll.writeShort (EditorContext.GetCurrentWorld ().GetViewportHeight ()); // view height
+         //designDataAll.writeByte  ((EditorContext.GetCurrentWorld ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
+         designDataAll.writeByte  ((EditorContext.GetCurrentWorld ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin ? 1 : 0);
          designDataAll.writeByte  (shareSourceCode ? 1 : 0); // share source code?
          //<<
          
@@ -6583,7 +6584,7 @@ package editor.entity.dialog {
          }
          else
          {
-            DestroyEditorWorld ();
+            EditorContext.GetEditorApp ().CloseWorld ();
             
             try
             {
@@ -6605,7 +6606,7 @@ package editor.entity.dialog {
                
                //mWorldHistoryManager.ClearHistories ();
                
-               SetEditorWorld (newEditorWorld);
+               EditorContext.GetEditorApp ().SetWorld (newEditorWorld);
                
                CreateUndoPoint ("Online data is loaded");
                

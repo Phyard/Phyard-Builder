@@ -16,8 +16,6 @@ package editor {
    
    import editor.world.World;
    
-   import editor.entity.dialog.WorldView;
-   
    import editor.entity.Entity;
    
    import editor.asset.Asset;

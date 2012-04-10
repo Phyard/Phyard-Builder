@@ -373,7 +373,7 @@
                               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off"
                               horizontalGap="0" verticalGap="0" borderThickness="1">
-                        <!--entity:WorldView id="MainView" height="100%" width="100%" /-->
+                        <entity:WorldView id="MainView" height="100%" width="100%" />
                      </mx:Box>
                   </mx:Box>
                   <mx:Box id="Box_StatusInfoBar" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" height="19" width="100%"
@@ -484,27 +484,16 @@
                stage.addEventListener (MouseEvent.MOUSE_UP, CheckMouseHoldStatus);
             }
             
-            private var MainView:WorldView = null;
-            
             private function CheckMouseHoldStatus (event:MouseEvent):void
             {
                EditorContext.SetMouseButtonHold (event.buttonDown);
-            }
-            
-            public function GetCurrentSceneEditPanel ():WorldView
-            {
-               return MainView;
             }
             
             private function InitApp ():void
             {
                EditorContext.sEditorApp = this;
                
-               MainView = new WorldView ();
-               MainView.percentWidth = 100;
-               MainView.percentHeight = 100;
-               Box_Scenes.addChild (MainView);
-               MainView.SetEditorWorld (new World (), true);
+               SetWorld (new World (), true);
                
             //===================================================================================================
                
@@ -2316,6 +2305,55 @@
             public function Dummy ():void
             {
                new WorldPlugin (); // to make mxmlc include WorldPlugin, so the all player.* package, ...
+            }
+
+
+
+
+
+//========================================================================================
+// new ui
+//========================================================================================
+
+            public function SetWorld (world:World, firstTime:Boolean = false):void
+            {
+               EditorContext.BuildNewSingleton (world);
+               
+               //MainView = new WorldView ();
+               //MainView.percentWidth = 100;
+               //MainView.percentHeight = 100;
+               //Box_Scenes.addChild (MainView);
+               MainView.SetEntityContainer (world.GetEntityContainer (), firstTime);
+            }
+            
+            public function CloseWorld ():void
+            {
+               EditorContext.DestroySingleton ();
+               
+               //if (MainView != null)
+               //{
+               //   MainView.SetEntityContainer (null);
+               //   Box_Scenes.removeChild (MainView);
+               //}
+            }
+            
+            //private var MainView:WorldView = null;
+            
+            public function GetCurrentSceneEditPanel ():WorldView
+            {
+               return MainView;
+            }
+
+            public function NewWorld ():void
+            {
+            }
+            
+            public function LoadWorld ():void
+            {
+            }
+            
+            public function SaveWorld ():void
+            {
             }
             
         ]]>

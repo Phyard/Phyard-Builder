@@ -6237,7 +6237,7 @@ package editor {
             mEditorWorld.ConvertRegisterVariablesToGlobalVariables ();
             
             // ...
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Convert register variables succeeded", EffectMessagePopup.kBgColor_OK));
+            CreateUndoPoint ("Register variables are converted.");
          }
          catch (error:Error)
          {

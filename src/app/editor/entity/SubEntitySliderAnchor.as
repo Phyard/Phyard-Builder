@@ -59,11 +59,9 @@ package editor.entity {
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle (GetPositionX (), GetPositionY (), mRadius, GetRotation ());
       }
       
-      override public function SetInternalComponentsVisible (visible:Boolean):void
+      override public function SetControlPointsVisible (controlPointsVisible:Boolean):void
       {
-         super.SetInternalComponentsVisible (visible);
-         
-         (GetMainAsset () as Entity).SetInternalComponentsVisible (visible);
+         (GetMainAsset () as Entity).SetControlPointsVisible (controlPointsVisible);
       }
       
    }

@@ -185,8 +185,6 @@ package editor.entity {
          mControlPoints = null;
          if (mControlPointsContainer.parent != null) // should be this
             mControlPointsContainer.parent.removeChild (mControlPointsContainer);
-            
-         mAssetManager.UnregisterShownControlPointsOfAsset (this);
       }
       
       override public function OnSoloControlPointSelected (controlPoint:ControlPoint):void
@@ -228,10 +226,10 @@ package editor.entity {
             UpdateAppearance ();
          }
          
-         if (actionDone)
-         {
-            NotifyModifiedForReferers ();
-         }
+         //if (actionDone)
+         //{
+         //   NotifyModifiedForReferers ();
+         //}
       }
 
       override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void

@@ -99,6 +99,8 @@ package editor.entity {
          UpdateJointPosition ();
          
          UpdateAppearance ();
+         
+         UpdateControlPoints ();
       }
       
       public function UpdateJointPosition ():void

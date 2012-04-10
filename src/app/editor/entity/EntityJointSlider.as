@@ -2,11 +2,14 @@
 package editor.entity {
    
    import flash.display.Sprite;
+   import flash.geom.Point;
    
    import com.tapirgames.util.GraphicsUtil;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
+   
+   import editor.asset.ControlPoint;
    
    import common.Define;
    
@@ -101,54 +104,32 @@ package editor.entity {
          SetRotation (Math.atan2 (mAnchor2.y - mAnchor1.y, mAnchor2.x - mAnchor1.x));
       }
       
-      override public function UpdateAppearance ():void
+      private function GetHalfLength ():Number
       {
-         var x1:Number = mAnchor1.x;
-         var y1:Number = mAnchor1.y;
-         var x2:Number = mAnchor2.x;
-         var y2:Number = mAnchor2.y;
+         var x1:Number = mAnchor1.GetPositionX ();
+         var y1:Number = mAnchor1.GetPositionY ();
+         var x2:Number = mAnchor2.GetPositionX ();
+         var y2:Number = mAnchor2.GetPositionY ();
          
          var dx:Number = x2 - x1;
          var dy:Number = y2 - y1;
          var distance:Number = Math.sqrt (dx * dx + dy * dy);
-         var halfDistancle:Number = 0.5 * distance;
          
-         GraphicsUtil.ClearAndDrawLine (this, - halfDistancle, 0, distance, 0, 0x0, 0);
+         return 0.5 * distance;
+      }
+      
+      override public function UpdateAppearance ():void
+      {
+         var halfDistancle:Number = GetHalfLength ();
          
-         
-         if (distance < 0.01)
-            return;
-         
-         
-         //var lowerX:Number = x2 - mLowerTranslation * dx / distance;
-         //var lowerY:Number = y2 - mLowerTranslation * dy / distance;
-         //var upperX:Number = x2 - mUpperTranslation * dx / distance;
-         //var upperY:Number = y2 - mUpperTranslation * dy / distance;
-         
-         //GraphicsUtil.DrawLine (this, lowerX, lowerY, upperX, upperY, 0x808080, 5);
+         GraphicsUtil.ClearAndDrawLine (this, -halfDistancle, 0, halfDistancle + halfDistancle, 0, 0x0, 0);
          
          if ( IsLimitsEnabled () )
             GraphicsUtil.DrawLine (this,halfDistancle +  mLowerTranslation, 0, halfDistancle + mUpperTranslation, 0, 0x808080, 5);
-         
-         //var dxHalfHeight:Number = - mRangeBarHalfHeight * dy / distance;
-         //var dyHalfHeight:Number =   mRangeBarHalfHeight * dx / distance;
-         
-         if (mVertexControllerLower != null)
-         {
-            mVertexControllerLower.SetPosition (halfDistancle + mLowerTranslation, 0);
-            mVertexControllerLower.UpdateSelectionProxy ();
             
-            mVertexControllerLower.SetSelectable (IsLimitsEnabled ());
-            mVertexControllerLower.visible = IsLimitsEnabled ();
-         }
-         
-         if (mVertexControllerUpper != null)
+         if (AreControlPointsVisible ())
          {
-            mVertexControllerUpper.SetPosition (halfDistancle + mUpperTranslation, 0);
-            mVertexControllerUpper.UpdateSelectionProxy ();
-            
-            mVertexControllerUpper.SetSelectable (IsLimitsEnabled ());
-            mVertexControllerUpper.visible = IsLimitsEnabled ();
+            addChild (mControlPointsContainer);
          }
       }
       
@@ -227,6 +208,99 @@ package editor.entity {
       override public function GetSubAssets ():Array
       {
          return [mAnchor1, mAnchor2];
+      }
+      
+//=============================================================
+//   control points
+//=============================================================
+      
+      protected var mControlPointsContainer:Sprite = new Sprite ();
+      protected var mControlPoints:Array = null;
+      
+      override public function GetControlPointContainer ():Sprite
+      {
+         return mControlPointsContainer; // to override
+      }
+      
+      override protected function UpdateControlPoints_Internal ():void
+      {
+         if (mControlPoints == null)
+            return;
+         
+         var halfDistancle:Number = GetHalfLength ();
+         
+         var cpLower:ControlPoint = mControlPoints [0];
+         cpLower.SetPosition (halfDistancle + mLowerTranslation, 0);
+         cpLower.Refresh ();
+         var cpUpper:ControlPoint = mControlPoints[1];
+         cpUpper.SetPosition (halfDistancle + mUpperTranslation, 0);
+         cpUpper.Refresh ();
+      }
+      
+      override protected function RebuildControlPoints ():void
+      {
+         if (mControlPoints != null)
+            DestroyControlPoints ();
+         
+         if (! IsLimitsEnabled ())
+            return;
+         
+         addChild (mControlPointsContainer);
+         
+         var halfDistancle:Number = GetHalfLength ();
+         
+         var cpLower:ControlPoint = new ControlPoint (this, 0);
+         cpLower.SetPosition (halfDistancle + mLowerTranslation, 0);
+         cpLower.Refresh ();
+         var cpUpper:ControlPoint = new ControlPoint (this, 1);
+         cpUpper.SetPosition (halfDistancle + mUpperTranslation, 0);
+         cpUpper.Refresh ();
+
+         mControlPoints = new Array (2);
+         mControlPoints [0] = cpLower;
+         mControlPoints [1] = cpUpper;
+         
+         mAssetManager.RegisterShownControlPoints (mControlPoints);
+      }
+      
+      override protected function DestroyControlPoints ():void
+      {
+         for (var i:int = mControlPoints.length - 1; i >= 0; -- i)
+         {
+            (mControlPoints [i] as ControlPoint).Destroy ();
+         }
+         
+         mControlPoints = null;
+         if (mControlPointsContainer.parent != null) // should be this
+            mControlPointsContainer.parent.removeChild (mControlPointsContainer);
+      }
+
+      override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
+      {
+         var localDisplayment:Point = ManagerToAsset (new Point (dx, dy), false); 
+         
+         var halfDistancle:Number = GetHalfLength ();
+         
+         if (controlPoint.GetIndex () == 0)
+         {
+            mLowerTranslation = mLowerTranslation + localDisplayment.x;
+            if (mLowerTranslation > 0)
+               mLowerTranslation = 0;
+            
+            controlPoint.SetPosition (halfDistancle + mLowerTranslation, 0);
+            controlPoint.Refresh (done);
+         }
+         else if (controlPoint.GetIndex () == 1)
+         {
+            mUpperTranslation = mUpperTranslation + localDisplayment.x;
+            if (mUpperTranslation < 0)
+               mUpperTranslation = 0;
+            
+            controlPoint.SetPosition (halfDistancle + mUpperTranslation, 0);
+            controlPoint.Refresh (done);
+         }
+         
+         UpdateAppearance ();
       }
       
       

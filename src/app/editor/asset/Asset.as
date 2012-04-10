@@ -612,21 +612,21 @@ package editor.asset {
          return mControlPointsVisible;
       }
       
-      final public function SetControlPointsVisible (controlPointsVisible:Boolean):void
+      public function SetControlPointsVisible (controlPointsVisible:Boolean):void
       {
          if (mControlPointsVisible != controlPointsVisible)
          {
             mControlPointsVisible = controlPointsVisible;
             
+            if (mAssetManager != null)
+               mAssetManager.UnregisterShownControlPointsOfAsset (this);
+               
             if (mControlPointsVisible)
             {
                RebuildControlPoints ();
             }
             else
             {
-               if (mAssetManager != null)
-                  mAssetManager.UnregisterShownControlPointsOfAsset (this);
-               
                DestroyControlPoints ();
             }
          }

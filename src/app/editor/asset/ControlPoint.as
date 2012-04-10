@@ -131,10 +131,13 @@ package editor.asset {
          
       }
       
-      public function Refresh ():void
+      public function Refresh (ipdateSelectionProxy:Boolean = true):void
       {
          RebuildAppearance ();
-         RebuildSelectionProxy ();
+         if (ipdateSelectionProxy)
+         {
+            RebuildSelectionProxy ();
+         }
       }
       
       public function Destroy ():void

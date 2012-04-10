@@ -639,8 +639,6 @@ package editor.image {
          mControlPoints = null;
          if (mControlPointsContainer.parent != null) // should be this
             mControlPointsContainer.parent.removeChild (mControlPointsContainer);
-            
-         mAssetManager.UnregisterShownControlPointsOfAsset (this);
       }
       
       override public function OnSoloControlPointSelected (controlPoint:ControlPoint):void

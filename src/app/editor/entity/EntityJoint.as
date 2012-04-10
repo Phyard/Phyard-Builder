@@ -5,7 +5,7 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
@@ -18,14 +18,14 @@ package editor.entity {
    {
       public var mCollideConnected:Boolean = false;
       
-      private var mConnectedShape1:Sprite = null; //EntityShape = null; // also can be mWorld
+      private var mConnectedShape1:Sprite = null; //EntityShape = null; // also can be mEntityContainer
       private var mConnectedShape2:Sprite = null; //EntityShape = null;
       
       protected var mIsBreakable:Boolean = false;
       
-      public function EntityJoint (world:World)
+      public function EntityJoint (container:EntityContainer)
       {
-         super (world);
+         super (container);
       }
       
       override public function GetVisibleAlpha ():Number
@@ -36,29 +36,29 @@ package editor.entity {
       public function SetConnectedShape1Index (index:int):void
       {
          if (index == Define.EntityId_Ground)
-            mConnectedShape1 = mWorld;
+            mConnectedShape1 = mEntityContainer;
          else
-            mConnectedShape1 = mWorld.GetEntityByCreationId (index);
+            mConnectedShape1 = mEntityContainer.GetEntityByCreationId (index);
       }
       
       public function SetConnectedShape2Index (index:int):void
       {
          
          if (index == Define.EntityId_Ground)
-            mConnectedShape2 = mWorld;
+            mConnectedShape2 = mEntityContainer;
          else
-            mConnectedShape2 = mWorld.GetEntityByCreationId (index);
+            mConnectedShape2 = mEntityContainer.GetEntityByCreationId (index);
       }
       
       public function GetConnectedShape1Index ():int
       {
          if (mConnectedShape1 == null)
             return Define.EntityId_None;
-         else if (mConnectedShape1 == mWorld)
+         else if (mConnectedShape1 == mEntityContainer)
             return Define.EntityId_Ground;
          else
          {
-            var id:int = mWorld.GetEntityCreationId (mConnectedShape1 as Entity);
+            var id:int = mEntityContainer.GetEntityCreationId (mConnectedShape1 as Entity);
             
             if (id >= 0)
                return id;
@@ -72,11 +72,11 @@ package editor.entity {
       {
          if (mConnectedShape2 == null)
             return Define.EntityId_None;
-         else if (mConnectedShape2 == mWorld)
+         else if (mConnectedShape2 == mEntityContainer)
             return Define.EntityId_Ground;
          else
          {
-            var id:int = mWorld.GetEntityCreationId (mConnectedShape2 as Entity);
+            var id:int = mEntityContainer.GetEntityCreationId (mConnectedShape2 as Entity);
             
             if (id >= 0)
                return id;

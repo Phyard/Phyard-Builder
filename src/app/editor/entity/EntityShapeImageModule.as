@@ -14,7 +14,7 @@ package editor.entity {
 
    import com.tapirgames.util.GraphicsUtil;
 
-   import editor.world.World;
+   import editor.world.EntityContainer;
 
    import editor.selection.SelectionProxy;
    
@@ -23,6 +23,8 @@ package editor.entity {
 
    import editor.image.AssetImageModule;
    import editor.image.AssetImageNullModule;
+   
+   import editor.EditorContext;
 
    import common.Define;
    import common.Transform2D;
@@ -43,9 +45,9 @@ package editor.entity {
 //
 //====================================================================
 
-      public function EntityShapeImageModule (world:World)
+      public function EntityShapeImageModule (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          SetAssetImageModule (null);
          
@@ -92,7 +94,7 @@ package editor.entity {
       // for loading
       public function SetAssetImageModuleByIndex (index:int):void
       {
-         SetAssetImageModule (mWorld.GetImageModuleByIndex (index));
+         SetAssetImageModule (EditorContext.GetCurrentWorld ().GetImageModuleByIndex (index));
       }
       
 //=============================================================
@@ -185,14 +187,14 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyGeneral ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyGeneral ();
             mSelectionProxy.SetUserData (this);
          }
          
          mSelectionProxy.Rebuild (GetPositionX (), GetPositionY (), 0.0);
          mAssetImageModule.BuildImageModuleSelectionProxy (mSelectionProxy, 
-               //new Transform2D (0.0, 0.0, 1.0, false, GetRotation ()), mWorld.GetZoomScale ());
-               new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mWorld.GetZoomScale () * GetScale ());
+               //new Transform2D (0.0, 0.0, 1.0, false, GetRotation ()), mEntityContainer.GetZoomScale ());
+               new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mEntityContainer.GetZoomScale () * GetScale ());
       }
 
 //====================================================================
@@ -202,7 +204,7 @@ package editor.entity {
       // to override
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityShapeImageModule (mWorld);
+         return new EntityShapeImageModule (mEntityContainer);
       }
 
       // to override

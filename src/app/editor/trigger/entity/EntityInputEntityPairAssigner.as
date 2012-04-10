@@ -18,7 +18,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -48,9 +48,9 @@ package editor.trigger.entity {
       protected var mInputEntities1:Array = new Array ();
       protected var mInputEntities2:Array = new Array ();
       
-      public function EntityInputEntityPairAssigner (world:World)
+      public function EntityInputEntityPairAssigner (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          mSelectorLayer = new Sprite ();
          mSelectorLayer.x = 0;
@@ -105,8 +105,8 @@ package editor.trigger.entity {
          }
          else
          {
-            var ids1:Array = mWorld.EntityArray2EntityCreationIdArray (mInputEntities1);
-            var ids2:Array = mWorld.EntityArray2EntityCreationIdArray (mInputEntities2);
+            var ids1:Array = mEntityContainer.EntityArray2EntityCreationIdArray (mInputEntities1);
+            var ids2:Array = mEntityContainer.EntityArray2EntityCreationIdArray (mInputEntities2);
             return "(" + (ids1 == null ? "" : ids1.toString ()) + ")-(" + (ids2 == null ? "" : ids2.toString ()) + ")";
          }
       }
@@ -225,8 +225,8 @@ package editor.trigger.entity {
                
                for (i = 0; i < num; ++ i)
                {
-                  mInputEntities1.push (mWorld.GetEntityByCreationId (inputEntityCreationIds1 [i]));
-                  mInputEntities2.push (mWorld.GetEntityByCreationId (inputEntityCreationIds2 [i]));
+                  mInputEntities1.push (mEntityContainer.GetEntityByCreationId (inputEntityCreationIds1 [i]));
+                  mInputEntities2.push (mEntityContainer.GetEntityByCreationId (inputEntityCreationIds2 [i]));
                }
             }
          }
@@ -235,13 +235,13 @@ package editor.trigger.entity {
             num = inputEntityCreationIds1.length;
             for (i = 0; i < num; ++ i)
             {
-               mInputEntities1.push (mWorld.GetEntityByCreationId (inputEntityCreationIds1 [i]));
+               mInputEntities1.push (mEntityContainer.GetEntityByCreationId (inputEntityCreationIds1 [i]));
             }
             
             num = inputEntityCreationIds2.length;
             for (i = 0; i < num; ++ i)
             {
-               mInputEntities2.push (mWorld.GetEntityByCreationId (inputEntityCreationIds2 [i]));
+               mInputEntities2.push (mEntityContainer.GetEntityByCreationId (inputEntityCreationIds2 [i]));
             }
          }
          
@@ -319,8 +319,8 @@ package editor.trigger.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (mBorderThickness * mWorld.GetZoomScale () < 3)
-               mBorderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (mBorderThickness * mEntityContainer.GetZoomScale () < 3)
+               mBorderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
          
          var background:Shape = new Shape ();
@@ -346,7 +346,7 @@ package editor.trigger.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyCircle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyCircle ();
             mSelectionProxy.SetUserData (this);
             
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
@@ -466,8 +466,8 @@ package editor.trigger.entity {
          var selector:InputEntitySelector;
          var line:Shape;
          
-         var offset_x:Number = kOffsetX2 / mWorld.GetZoomScale ();
-         var offset_y:Number = kOffsetY2 / mWorld.GetZoomScale ();
+         var offset_x:Number = kOffsetX2 / mEntityContainer.GetZoomScale ();
+         var offset_y:Number = kOffsetY2 / mEntityContainer.GetZoomScale ();
          
          switch (mEntityPairAssignerType)
          {
@@ -486,7 +486,7 @@ package editor.trigger.entity {
                var selectorId:int = 0;
                for (i = 0; i < mInputEntitySelectors.length; i += 2)
                {
-                  selector = new InputEntitySelector_Single (mWorld, this, 0, selectorId, OnSelectEntity, OnClearEntities);
+                  selector = new InputEntitySelector_Single (mEntityContainer, this, 0, selectorId, OnSelectEntity, OnClearEntities);
                   mInputEntitySelectors [i] = selector;
                   selector.x = - offset_x;
                   selector.y = pair_y;
@@ -494,7 +494,7 @@ package editor.trigger.entity {
                   selector.UpdateAppearance ();
                   selector.UpdateSelectionProxy ();
                   
-                  selector = new InputEntitySelector_Single (mWorld, this, 1, selectorId, OnSelectEntity, OnClearEntities);
+                  selector = new InputEntitySelector_Single (mEntityContainer, this, 1, selectorId, OnSelectEntity, OnClearEntities);
                   mInputEntitySelectors [i+1] = selector;
                   selector.x = offset_x;
                   selector.y = pair_y;
@@ -519,11 +519,11 @@ package editor.trigger.entity {
                
                if (mEntityPairAssignerType == Define.EntityPairAssignerType_ManyToMany || mEntityPairAssignerType == Define.EntityPairAssignerType_ManyToAny)
                {
-                  selector = new InputEntitySelector_Many (mWorld, this, 0, 0, OnSelectEntity, OnClearEntities);
+                  selector = new InputEntitySelector_Many (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
                }
                else
                {
-                  selector = new InputEntitySelector_Any (mWorld, this);
+                  selector = new InputEntitySelector_Any (mEntityContainer, this);
                }
                
                mInputEntitySelectors [0] = selector;
@@ -535,11 +535,11 @@ package editor.trigger.entity {
                
                if (mEntityPairAssignerType == Define.EntityPairAssignerType_ManyToMany || mEntityPairAssignerType == Define.EntityPairAssignerType_AnyToMany)
                {
-                  selector = new InputEntitySelector_Many (mWorld, this, 1, 0, OnSelectEntity, OnClearEntities);
+                  selector = new InputEntitySelector_Many (mEntityContainer, this, 1, 0, OnSelectEntity, OnClearEntities);
                }
                else
                {
-                  selector = new InputEntitySelector_Any (mWorld, this);
+                  selector = new InputEntitySelector_Any (mEntityContainer, this);
                }
                
                mInputEntitySelectors [1] = selector;
@@ -557,7 +557,7 @@ package editor.trigger.entity {
             case Define.EntityPairAssignerType_BothInMany:
             {
                mInputEntitySelectors = new Array (1);
-               selector = new InputEntitySelector_Many (mWorld, this, 0, 0, OnSelectEntity, OnClearEntities);
+               selector = new InputEntitySelector_Many (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
                mInputEntitySelectors [0] = selector;
                selector.x = 0;
                selector.y = 0;
@@ -624,7 +624,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityInputEntityPairAssigner (mWorld);
+         return new EntityInputEntityPairAssigner (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
@@ -874,7 +874,7 @@ package editor.trigger.entity {
       
       override public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
       {
-         var local_point:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (worldDisplayX, worldDisplayY));
+         var local_point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (worldDisplayX, worldDisplayY));
          
          return GetLinkZoneId (local_point.x, local_point.y) >= 0;
       }

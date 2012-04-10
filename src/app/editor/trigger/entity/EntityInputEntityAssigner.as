@@ -18,7 +18,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -43,9 +43,9 @@ package editor.trigger.entity {
       protected var mEntityAssignerType:int = Define.EntityAssignerType_Many;
       protected var mInputEntities:Array;
       
-      public function EntityInputEntityAssigner (world:World)
+      public function EntityInputEntityAssigner (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          mSelectorLayer = new Sprite ();
          mSelectorLayer.x = 0;
@@ -65,7 +65,7 @@ package editor.trigger.entity {
       
       override public function GetInfoText ():String
       {
-         return mWorld.EntityArray2EntityCreationIdArray (mInputEntities).toString ();
+         return mEntityContainer.EntityArray2EntityCreationIdArray (mInputEntities).toString ();
       }
       
       public function GetSelectorType ():int
@@ -118,7 +118,7 @@ package editor.trigger.entity {
             var num:int = entityCreationIds.length;
             for (var i:int = 0; i < num; ++ i)
             {
-               mInputEntities.push (mWorld.GetEntityByCreationId (entityCreationIds [i]));
+               mInputEntities.push (mEntityContainer.GetEntityByCreationId (entityCreationIds [i]));
             }
          }
       }
@@ -154,8 +154,8 @@ package editor.trigger.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (mBorderThickness * mWorld.GetZoomScale () < 3)
-               mBorderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (mBorderThickness * mEntityContainer.GetZoomScale () < 3)
+               mBorderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
          
          var background:Shape = new Shape ();
@@ -179,7 +179,7 @@ package editor.trigger.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyCircle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyCircle ();
             mSelectionProxy.SetUserData (this);
             
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
@@ -298,11 +298,11 @@ package editor.trigger.entity {
          DestroyInternalComponents ();
          
          if (mEntityAssignerType == Define.EntityAssignerType_Single)
-            mInputEntitySelector = new InputEntitySelector_Single (mWorld, this, 0, 0, OnSelectEntity, OnClearEntities);
+            mInputEntitySelector = new InputEntitySelector_Single (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
          else if (mEntityAssignerType == Define.EntityAssignerType_Any)
-            mInputEntitySelector = new InputEntitySelector_Any (mWorld, this);
+            mInputEntitySelector = new InputEntitySelector_Any (mEntityContainer, this);
          else
-            mInputEntitySelector = new InputEntitySelector_Many (mWorld, this, 0, 0, OnSelectEntity, OnClearEntities);
+            mInputEntitySelector = new InputEntitySelector_Many (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
             
          mInputEntitySelector.UpdateAppearance ();
          mSelectorLayer.addChild (mInputEntitySelector);
@@ -340,7 +340,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityInputEntityAssigner (mWorld);
+         return new EntityInputEntityAssigner (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
@@ -491,7 +491,7 @@ package editor.trigger.entity {
       
       override public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
       {
-         var local_point:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (worldDisplayX, worldDisplayY));
+         var local_point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (worldDisplayX, worldDisplayY));
          
          return GetLinkZoneId (local_point.x, local_point.y) >= 0;
       }

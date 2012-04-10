@@ -3,11 +3,13 @@ package editor.entity {
 
    import flash.display.Sprite;
 
-   import editor.world.World;
+   import editor.world.EntityContainer;
 
    import editor.selection.SelectionProxy;
    
    import editor.ccat.CollisionCategory;
+   
+   import editor.EditorContext;
 
    import common.Define;
 
@@ -74,9 +76,9 @@ package editor.entity {
 //
 //====================================================================
 
-      public function EntityShape (world:World)
+      public function EntityShape (container:EntityContainer)
       {
-         super (world);
+         super (container);
       }
 
       override public function GetVisibleAlpha ():Number
@@ -345,7 +347,7 @@ package editor.entity {
 
       public function GetCollisionCategoryIndex ():int
       {
-         var index:int = mWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (mCollisionCategory);
+         var index:int = EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (mCollisionCategory);
 
          if (index == Define.CCatId_Hidden)
             mCollisionCategory = null;
@@ -355,7 +357,7 @@ package editor.entity {
 
       public function SetCollisionCategoryIndex (index:int):void
       {
-         mCollisionCategory = mWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (index);
+         mCollisionCategory = EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryByIndex (index);
       }
 
    }

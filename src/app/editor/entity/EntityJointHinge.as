@@ -5,7 +5,7 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
@@ -30,12 +30,12 @@ package editor.entity {
       
       protected var mMaxMotorTorque:Number = Define.DefaultHingeMotorTorque; // v1.04
       
-      public function EntityJointHinge (world:World)
+      public function EntityJointHinge (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
-         mAnchor = new SubEntityHingeAnchor (world, this);
-         world.addChild (mAnchor);
+         mAnchor = new SubEntityHingeAnchor (container, this);
+         mEntityContainer.addChild (mAnchor);
       }
       
       override public function GetTypeName ():String
@@ -94,7 +94,7 @@ package editor.entity {
       
       override public function Destroy ():void
       {
-         mWorld.DestroyEntity (mAnchor);
+         mEntityContainer.DestroyEntity (mAnchor);
          
          super.Destroy ();
       }
@@ -141,7 +141,7 @@ package editor.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityJointHinge (mWorld);
+         return new EntityJointHinge (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

@@ -8,7 +8,7 @@ package editor.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
 
-   import editor.world.World;
+   import editor.world.EntityContainer;
 
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
@@ -34,13 +34,13 @@ package editor.entity {
 
       private var mInteractiveZonesParams:Array = null;
 
-      public function EntityVectorShapeGravityController (world:World)
+      public function EntityVectorShapeGravityController (container:EntityContainer)
       {
-         super (world);
+         super (container);
 
-         mMaximalGravityAcceleration = mWorld.GetDefaultGravityAccelerationMagnitude ();
+         mMaximalGravityAcceleration = mEntityContainer.GetDefaultGravityAccelerationMagnitude ();
          mInitialGravityAcceleration = mMaximalGravityAcceleration;
-         mInitialGravityAngle = mWorld.GetDefaultGravityAccelerationAngle ();
+         mInitialGravityAngle = mEntityContainer.GetDefaultGravityAccelerationAngle ();
       }
 
       override public function GetVisibleAlpha ():Number
@@ -174,7 +174,7 @@ package editor.entity {
             var borderColor:uint = Define.BorderColorSelectedObject;
             var borderSize :int  = 3;
 
-            borderSize /= mWorld.GetZoomScale ();
+            borderSize /= mEntityContainer.GetZoomScale ();
 
             GraphicsUtil.DrawCircle (this, 0, 0, radius_1b, borderColor, borderSize, false);
          }
@@ -250,7 +250,7 @@ package editor.entity {
       // only one gc most in a scene
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityVectorShapeGravityController (mWorld);
+         return new EntityVectorShapeGravityController (mEntityContainer);
       }
 
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

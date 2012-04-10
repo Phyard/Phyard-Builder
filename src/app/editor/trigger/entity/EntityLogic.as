@@ -4,7 +4,7 @@ package editor.trigger.entity {
    import flash.display.Sprite;
    
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionProxy;
    
@@ -45,9 +45,9 @@ package editor.trigger.entity {
 //   
 //====================================================================
       
-      public function EntityLogic (world:World)
+      public function EntityLogic (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          alpha = 0.78;
       }

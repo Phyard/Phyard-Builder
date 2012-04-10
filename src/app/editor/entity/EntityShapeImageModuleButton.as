@@ -14,7 +14,7 @@ package editor.entity {
 
    import com.tapirgames.util.GraphicsUtil;
 
-   import editor.world.World;
+   import editor.world.EntityContainer;
 
    import editor.selection.SelectionProxy;
    
@@ -23,6 +23,8 @@ package editor.entity {
 
    import editor.image.AssetImageModule;
    import editor.image.AssetImageNullModule;
+   
+   import editor.EditorContext;
 
    import common.Define;
    import common.Transform2D;
@@ -45,9 +47,9 @@ package editor.entity {
 //
 //====================================================================
 
-      public function EntityShapeImageModuleButton (world:World)
+      public function EntityShapeImageModuleButton (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          SetAssetImageModuleForMouseUp (null);
          SetAssetImageModuleForMouseOver (null);
@@ -96,7 +98,7 @@ package editor.entity {
       // for loading
       public function SetAssetImageModuleForMouseUpByIndex (index:int):void
       {
-         SetAssetImageModuleForMouseUp (mWorld.GetImageModuleByIndex (index));
+         SetAssetImageModuleForMouseUp (EditorContext.GetCurrentWorld ().GetImageModuleByIndex (index));
       }
       
       // over .
@@ -127,7 +129,7 @@ package editor.entity {
       // for loading
       public function SetAssetImageModuleForMouseOverByIndex (index:int):void
       {
-         SetAssetImageModuleForMouseOver (mWorld.GetImageModuleByIndex (index));
+         SetAssetImageModuleForMouseOver (EditorContext.GetCurrentWorld ().GetImageModuleByIndex (index));
       }
       
       // down .
@@ -158,7 +160,7 @@ package editor.entity {
       // for loading
       public function SetAssetImageModuleForMouseDownByIndex (index:int):void
       {
-         SetAssetImageModuleForMouseDown (mWorld.GetImageModuleByIndex (index));
+         SetAssetImageModuleForMouseDown (EditorContext.GetCurrentWorld ().GetImageModuleByIndex (index));
       }
       
 //=============================================================
@@ -276,14 +278,14 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyGeneral ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyGeneral ();
             mSelectionProxy.SetUserData (this);
          }
          
          mSelectionProxy.Rebuild (GetPositionX (), GetPositionY (), 0.0);
          mAssetImageModuleForMouseUp.BuildImageModuleSelectionProxy (mSelectionProxy, 
-               //new Transform2D (0.0, 0.0, 1.0, false, GetRotation ()), mWorld.GetZoomScale ());
-               new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mWorld.GetZoomScale () * GetScale ());
+               //new Transform2D (0.0, 0.0, 1.0, false, GetRotation ()), mEntityContainer.GetZoomScale ());
+               new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mEntityContainer.GetZoomScale () * GetScale ());
       }
 
 //====================================================================
@@ -293,7 +295,7 @@ package editor.entity {
       // to override
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityShapeImageModuleButton (mWorld);
+         return new EntityShapeImageModuleButton (mEntityContainer);
       }
 
       // to override

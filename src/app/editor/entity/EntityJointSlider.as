@@ -5,7 +5,7 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
@@ -28,14 +28,14 @@ package editor.entity {
       
       private var mRangeBarHalfHeight:Number = 3;
       
-      public function EntityJointSlider (world:World)
+      public function EntityJointSlider (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
-         mAnchor1 = new SubEntitySliderAnchor (world, this, 0);
-         world.addChild (mAnchor1);
-         mAnchor2 = new SubEntitySliderAnchor (world, this, 1);
-         world.addChild (mAnchor2);
+         mAnchor1 = new SubEntitySliderAnchor (container, this, 0);
+         mEntityContainer.addChild (mAnchor1);
+         mAnchor2 = new SubEntitySliderAnchor (container, this, 1);
+         mEntityContainer.addChild (mAnchor2);
          
          SetVisible (false);
          mAnchor1.SetVisible (false);
@@ -91,8 +91,8 @@ package editor.entity {
       {
          SetInternalComponentsVisible (false);
          
-         mWorld.DestroyEntity (mAnchor1);
-         mWorld.DestroyEntity (mAnchor2);
+         mEntityContainer.DestroyEntity (mAnchor1);
+         mEntityContainer.DestroyEntity (mAnchor2);
          
          super.Destroy ();
       }
@@ -196,7 +196,7 @@ package editor.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityJointSlider (mWorld);
+         return new EntityJointSlider (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
@@ -274,13 +274,13 @@ package editor.entity {
          {
             if (mVertexControllerLower == null)
             {
-               mVertexControllerLower = new VertexController (mWorld, this);
+               mVertexControllerLower = new VertexController (mEntityContainer, this);
                addChild (mVertexControllerLower);
             }
             
             if (mVertexControllerUpper == null)
             {
-               mVertexControllerUpper = new VertexController (mWorld, this);
+               mVertexControllerUpper = new VertexController (mEntityContainer, this);
                addChild (mVertexControllerUpper);
             }
             

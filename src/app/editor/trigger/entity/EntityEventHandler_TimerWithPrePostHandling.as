@@ -1,7 +1,7 @@
 
 package editor.trigger.entity {
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -13,6 +13,8 @@ package editor.trigger.entity {
    import editor.trigger.VariableDefinition;
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.CodeSnippet;
+   
+   import editor.EditorContext;
    
    import editor.Resource;
    
@@ -28,15 +30,15 @@ package editor.trigger.entity {
       protected var mPostEventHandlerDefinition:FunctionDefinition;
       protected var mPostCodeSnippet:CodeSnippet;
       
-      public function EntityEventHandler_TimerWithPrePostHandling (world:World, defaultEventId:int, potientialEventIds:Array = null)
+      public function EntityEventHandler_TimerWithPrePostHandling (container:EntityContainer, defaultEventId:int, potientialEventIds:Array = null)
       {
-         super (world, defaultEventId, potientialEventIds);
+         super (container, defaultEventId, potientialEventIds);
          
-         mPreEventHandlerDefinition  = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
+         mPreEventHandlerDefinition  = new FunctionDefinition (EditorContext.GetCurrentWorld ().GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
          mPreEventHandlerDefinition.SetLocalVariableSpace (mEventHandlerDefinition.GetLocalVariableSpace ());
          mPreCodeSnippet = new CodeSnippet (mPreEventHandlerDefinition);
          
-         mPostEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
+         mPostEventHandlerDefinition = new FunctionDefinition (EditorContext.GetCurrentWorld ().GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
          mPostEventHandlerDefinition.SetLocalVariableSpace (mEventHandlerDefinition.GetLocalVariableSpace ());
          mPostCodeSnippet = new CodeSnippet (mPostEventHandlerDefinition);
       }
@@ -65,7 +67,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityEventHandler_TimerWithPrePostHandling (mWorld, mEventId);
+         return new EntityEventHandler_TimerWithPrePostHandling (mEntityContainer, mEventId);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

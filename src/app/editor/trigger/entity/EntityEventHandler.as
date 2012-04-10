@@ -14,7 +14,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -26,6 +26,8 @@ package editor.trigger.entity {
    import editor.trigger.VariableDefinition;
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.CodeSnippet;
+   
+   import editor.EditorContext;
    
    import editor.Resource;
    
@@ -51,16 +53,16 @@ package editor.trigger.entity {
       
       protected var mExternalActionEntity:EntityAction = null;
       
-      public function EntityEventHandler (world:World, defaultEventId:int, potientialEventIds:Array = null)
+      public function EntityEventHandler (container:EntityContainer, defaultEventId:int, potientialEventIds:Array = null)
       {
-         super (world);
+         super (container);
          
          doubleClickEnabled = true;
          addEventListener(MouseEvent.DOUBLE_CLICK, OnMouseDoubleClick);
          
          mEventId = defaultEventId;
          
-         mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId));
+         mEventHandlerDefinition = new FunctionDefinition (EditorContext.GetCurrentWorld ().GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId));
          
          mCodeSnippet = new CodeSnippet (mEventHandlerDefinition);
          mBackgroundColor = 0xB0B0FF;
@@ -116,7 +118,7 @@ package editor.trigger.entity {
          {
             mEventId = eventId;
             
-            mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
+            mEventHandlerDefinition = new FunctionDefinition (EditorContext.GetCurrentWorld ().GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
             
             mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
             
@@ -142,7 +144,7 @@ package editor.trigger.entity {
       
       public function SetInputConditionByCreationId (inputConditionEntityCreationId:int, inputConditionTargetValue:int):void
       {
-         var condition:ICondition = mWorld.GetEntityByCreationId (inputConditionEntityCreationId) as ICondition;
+         var condition:ICondition = mEntityContainer.GetEntityByCreationId (inputConditionEntityCreationId) as ICondition;
          
          if (condition != null)
          {
@@ -180,7 +182,7 @@ package editor.trigger.entity {
             var num:int = assignerCreationIds.length;
             for (var i:int = 0; i < num; ++ i)
             {
-               mEntityAssignerList.push (mWorld.GetEntityByCreationId (assignerCreationIds [i]));
+               mEntityAssignerList.push (mEntityContainer.GetEntityByCreationId (assignerCreationIds [i]));
             }
          }
       }
@@ -197,7 +199,7 @@ package editor.trigger.entity {
       
       public function SetExternalActionByCreationId (actionCreationId:int):void
       {
-         mExternalActionEntity = mWorld.GetEntityByCreationId (actionCreationId) as EntityAction;
+         mExternalActionEntity = mEntityContainer.GetEntityByCreationId (actionCreationId) as EntityAction;
       }
       
       override public function ValidateEntityLinks ():void
@@ -235,7 +237,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityEventHandler (mWorld, mEventId);
+         return new EntityEventHandler (mEntityContainer, mEventId);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
@@ -270,7 +272,7 @@ package editor.trigger.entity {
          
          if (toEntity is ICondition)
          {
-            var point:Point = DisplayObjectUtil.LocalToLocal (mWorld, toEntity as Entity, new Point (toWorldDisplayX, toWorldDisplayY));
+            var point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, toEntity as Entity, new Point (toWorldDisplayX, toWorldDisplayY));
             var zone_id:int = (toEntity as EntityLogic).GetLinkZoneId (point.x, point.y);
             var target_value:int = (toEntity as ICondition).GetTargetValueByLinkZoneId (zone_id);
             

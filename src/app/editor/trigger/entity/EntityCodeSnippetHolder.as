@@ -12,7 +12,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -29,9 +29,9 @@ package editor.trigger.entity {
    {
       protected var mCodeSnippet:CodeSnippet;
       
-      public function EntityCodeSnippetHolder (world:World)
+      public function EntityCodeSnippetHolder (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          // child class must create a valid CodeSnippet
          //mCodeSnippet = new CodeSnippet (new FunctionDefinition ());

@@ -8,7 +8,7 @@ package editor.entity {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
 
-   import editor.world.World;
+   import editor.world.EntityContainer;
 
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
@@ -36,9 +36,9 @@ package editor.entity {
       private var mMinY:Number;
       private var mMaxY:Number;
 
-      public function EntityVectorShapePolyline (world:World)
+      public function EntityVectorShapePolyline (container:EntityContainer)
       {
-         super (world);
+         super (container);
       }
 
       override public function GetTypeName ():String
@@ -48,7 +48,7 @@ package editor.entity {
 
       override public function GetInfoText ():String
       {
-         var vertexController:VertexController = mWorld.GetTheOnlySelectedVertexControllers ();
+         var vertexController:VertexController = mEntityContainer.GetTheOnlySelectedVertexControllers ();
          if (vertexController == null)
             return super.GetInfoText ();
 
@@ -76,8 +76,8 @@ package editor.entity {
          if ( IsSelected () )
          {
             bgColor = Define.BorderColorSelectedObject;
-            if (curveThickness * mWorld.GetZoomScale () < 3)
-               curveThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (curveThickness * mEntityContainer.GetZoomScale () < 3)
+               curveThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
 
          SetVisibleInEditor (mVisibleInEditor); //  recal alpha
@@ -89,7 +89,7 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyGeneral ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyGeneral ();
             mSelectionProxy.SetUserData (this);
 
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
@@ -98,8 +98,8 @@ package editor.entity {
          (mSelectionProxy as SelectionProxy).Rebuild (GetPositionX (), GetPositionY (), GetRotation ());
 
          var thickness:Number = GetCurveThickness ();
-         if (thickness * mWorld.GetZoomScale () < 5)
-            thickness = 5 / mWorld.GetZoomScale ();
+         if (thickness * mEntityContainer.GetZoomScale () < 5)
+            thickness = 5 / mEntityContainer.GetZoomScale ();
 
          var halfThickness:Number = thickness * 0.5;
 
@@ -388,7 +388,7 @@ package editor.entity {
 
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityVectorShapePolyline (mWorld);
+         return new EntityVectorShapePolyline (mEntityContainer);
       }
 
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
@@ -465,7 +465,7 @@ package editor.entity {
 
             for (i = 0; i < mVertexPoints.length; ++ i)
             {
-               vertexController = new VertexController (mWorld, this);
+               vertexController = new VertexController (mEntityContainer, this);
                mVertexControllers [i] = vertexController;
                addChild (vertexController);
             }
@@ -571,7 +571,7 @@ package editor.entity {
 
             if (mVertexPoints.length <= 2)
             {
-               mWorld.DestroyEntity (this);
+               mEntityContainer.DestroyEntity (this);
             }
             else
             {

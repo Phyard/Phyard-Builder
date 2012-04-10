@@ -12,7 +12,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -30,9 +30,9 @@ package editor.trigger.entity {
    
    public class EntityInputEntityRegionSelector extends EntityIconInsider implements IEntityLimiter 
    {
-      public function EntityInputEntityRegionSelector (world:World)
+      public function EntityInputEntityRegionSelector (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          mIconBitmap = new Resource.IconInputEntityRegionSelector ();
          mBackgroundColor = 0xFFC000;
@@ -53,7 +53,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityInputEntityRegionSelector (mWorld);
+         return new EntityInputEntityRegionSelector (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

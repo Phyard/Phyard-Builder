@@ -12,7 +12,7 @@ package editor.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
@@ -30,9 +30,9 @@ package editor.entity {
       private var mCameraWidth:uint = 600;
       private var mCameraHeight:uint = 600;
       
-      public function EntityUtilityCamera (world:World)
+      public function EntityUtilityCamera (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          SetVisible (false);
          
@@ -99,8 +99,8 @@ package editor.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (borderThickness * mWorld.GetZoomScale () < 3)
-               borderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (borderThickness * mEntityContainer.GetZoomScale () < 3)
+               borderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
             
             //GraphicsUtil.DrawRect (mBackgroundShape, - mCameraWidth * 0.5, - mCameraHeight * 0.5, mCameraWidth, mCameraHeight, borderColor, borderThickness, false, filledColor);
          }
@@ -112,7 +112,7 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyRectangle ();
             mSelectionProxy.SetUserData (this);
          }
          
@@ -126,7 +126,7 @@ package editor.entity {
       // only one gc most in a scene
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityUtilityCamera (mWorld);
+         return new EntityUtilityCamera (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

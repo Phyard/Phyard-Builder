@@ -8,7 +8,7 @@ package editor.entity {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
 
-   import editor.world.World;
+   import editor.world.EntityContainer;
 
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
@@ -29,9 +29,9 @@ package editor.entity {
       // ...
       protected var mEnableVertexControllers:Boolean = true;
 
-      public function EntityVectorShapeRectangle (world:World)
+      public function EntityVectorShapeRectangle (container:EntityContainer)
       {
-         super (world);
+         super (container);
 
          SetHalfWidth (0);
          SetHalfHeight (0);
@@ -47,7 +47,7 @@ package editor.entity {
 
       override public function GetInfoText ():String
       {
-         var vertexController:VertexController = mWorld.GetTheOnlySelectedVertexControllers ();
+         var vertexController:VertexController = mEntityContainer.GetTheOnlySelectedVertexControllers ();
          if (vertexController == null)
             return super.GetInfoText ();
 
@@ -85,8 +85,8 @@ package editor.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (borderThickness * mWorld.GetZoomScale () < 3)
-               borderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (borderThickness * mEntityContainer.GetZoomScale () < 3)
+               borderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
 
          SetVisibleInEditor (mVisibleInEditor); //  recal alpha
@@ -104,7 +104,7 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyRectangle ();
             mSelectionProxy.SetUserData (this);
 
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
@@ -206,7 +206,7 @@ package editor.entity {
 
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityVectorShapeRectangle (mWorld);
+         return new EntityVectorShapeRectangle (mEntityContainer);
       }
 
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
@@ -280,25 +280,25 @@ package editor.entity {
 
             if (mVertexController0 == null)
             {
-               mVertexController0 = new VertexController (mWorld, this);
+               mVertexController0 = new VertexController (mEntityContainer, this);
                addChild (mVertexController0);
             }
 
             if (mVertexController1 == null)
             {
-               mVertexController1 = new VertexController (mWorld, this);
+               mVertexController1 = new VertexController (mEntityContainer, this);
                addChild (mVertexController1);
             }
 
             if (mVertexController2 == null)
             {
-               mVertexController2 = new VertexController (mWorld, this);
+               mVertexController2 = new VertexController (mEntityContainer, this);
                addChild (mVertexController2);
             }
 
             if (mVertexController3 == null)
             {
-               mVertexController3 = new VertexController (mWorld, this);
+               mVertexController3 = new VertexController (mEntityContainer, this);
                addChild (mVertexController3);
             }
 
@@ -402,7 +402,7 @@ package editor.entity {
          if (vertexController2 == null)
             return;
 
-         var worldVertex2Pos:Point = DisplayObjectUtil.LocalToLocal (this, mWorld, new Point ( vertexController2.GetPositionX (), vertexController2.GetPositionY () ) );
+         var worldVertex2Pos:Point = DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point ( vertexController2.GetPositionX (), vertexController2.GetPositionY () ) );
 
          _DigonalVertexControllerX = worldVertex2Pos.x;
          _DigonalVertexControllerY = worldVertex2Pos.y;
@@ -475,14 +475,14 @@ package editor.entity {
          halfWidth  *= 0.5;
          halfHeight *= 0.5;
 
-         var worldCenterPos:Point = DisplayObjectUtil.LocalToLocal (this, mWorld, new Point ( (x2 + x1) * 0.5, (y2 + y1) * 0.5 ) );
+         var worldCenterPos:Point = DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point ( (x2 + x1) * 0.5, (y2 + y1) * 0.5 ) );
 
          SetPosition (worldCenterPos.x, worldCenterPos.y);
 
          // seems, in SetPosition, flash will slightly adjust the values provided.
          // to make the postion of vertex controller2 uncahnged ...
 
-         var localVertex2Pos:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (_DigonalVertexControllerX, _DigonalVertexControllerY) );
+         var localVertex2Pos:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (_DigonalVertexControllerX, _DigonalVertexControllerY) );
 
          halfWidth  = localVertex2Pos.x;
          halfHeight = localVertex2Pos.y;

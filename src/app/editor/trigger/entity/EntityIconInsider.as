@@ -12,7 +12,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -46,9 +46,9 @@ package editor.trigger.entity {
       //
       protected var mBorderThickness:Number = 1;
       
-      public function EntityIconInsider (world:World)
+      public function EntityIconInsider (container:EntityContainer)
       {
-         super (world);
+         super (container);
       }
       
       override public function UpdateAppearance ():void
@@ -87,8 +87,8 @@ package editor.trigger.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (mBorderThickness * mWorld.GetZoomScale () < 3)
-               mBorderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (mBorderThickness * mEntityContainer.GetZoomScale () < 3)
+               mBorderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
          
          var background:Shape = new Shape ();
@@ -129,7 +129,7 @@ package editor.trigger.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyRectangle ();
             mSelectionProxy.SetUserData (this);
             
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
@@ -162,7 +162,7 @@ package editor.trigger.entity {
       
       override public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
       {
-         var local_point:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (worldDisplayX, worldDisplayY));
+         var local_point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (worldDisplayX, worldDisplayY));
          
          return GetLinkZoneId (local_point.x, local_point.y) >= 0;
       }

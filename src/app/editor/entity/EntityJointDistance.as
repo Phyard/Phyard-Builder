@@ -5,7 +5,7 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
@@ -19,14 +19,14 @@ package editor.entity {
       
       protected var mBreakDeltaLength:Number = 0.00005;
       
-      public function EntityJointDistance (world:World)
+      public function EntityJointDistance (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
-         mAnchor1 = new SubEntityDistanceAnchor (world, this, 0);
-         world.addChild (mAnchor1);
-         mAnchor2 = new SubEntityDistanceAnchor (world, this, 1);
-         world.addChild (mAnchor2);
+         mAnchor1 = new SubEntityDistanceAnchor (container, this, 0);
+         mEntityContainer.addChild (mAnchor1);
+         mAnchor2 = new SubEntityDistanceAnchor (container, this, 1);
+         mEntityContainer.addChild (mAnchor2);
          
          mCollideConnected = true;
       }
@@ -38,8 +38,8 @@ package editor.entity {
       
       override public function Destroy ():void
       {
-         mWorld.DestroyEntity (mAnchor1);
-         mWorld.DestroyEntity (mAnchor2);
+         mEntityContainer.DestroyEntity (mAnchor1);
+         mEntityContainer.DestroyEntity (mAnchor2);
          
          super.Destroy ();
       }
@@ -91,7 +91,7 @@ package editor.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityJointDistance (mWorld);
+         return new EntityJointDistance (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

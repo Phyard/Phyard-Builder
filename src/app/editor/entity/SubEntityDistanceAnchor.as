@@ -5,7 +5,7 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
@@ -16,9 +16,9 @@ package editor.entity {
    {
       private var mRadius:Number = 3;
       
-      public function SubEntityDistanceAnchor (world:World, mainEntity:Entity, anchorIndex:int)
+      public function SubEntityDistanceAnchor (container:EntityContainer, mainEntity:Entity, anchorIndex:int)
       {
-         super (world, mainEntity, anchorIndex);
+         super (container, mainEntity, anchorIndex);
          
          UpdateAppearance ();
       }
@@ -52,7 +52,7 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyCircle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyCircle ();
             mSelectionProxy.SetUserData (this);
          }
          

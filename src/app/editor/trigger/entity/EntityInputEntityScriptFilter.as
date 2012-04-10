@@ -12,7 +12,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -24,17 +24,19 @@ package editor.trigger.entity {
    import editor.trigger.CodeSnippet;
    import editor.trigger.TriggerEngine;
    
+   import editor.EditorContext;
+   
    import common.Define;
    
    import common.trigger.ValueDefine;
    
    public class EntityInputEntityScriptFilter extends EntityCodeSnippetHolder implements IEntityLimiter 
    {
-      public function EntityInputEntityScriptFilter (world:World)
+      public function EntityInputEntityScriptFilter (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
-         mCodeSnippet = new CodeSnippet (new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEntityFilterFunctionDeclaration ()));
+         mCodeSnippet = new CodeSnippet (new FunctionDefinition (EditorContext.GetCurrentWorld ().GetTriggerEngine (), TriggerEngine.GetEntityFilterFunctionDeclaration ()));
          mIconBitmap = new Resource.IconInputEntityScriptFilter ();
          mBackgroundColor = 0xFFC000;
       }
@@ -56,7 +58,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityInputEntityScriptFilter (mWorld);
+         return new EntityInputEntityScriptFilter (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

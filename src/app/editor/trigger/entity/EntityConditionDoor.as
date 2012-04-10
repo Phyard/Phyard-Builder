@@ -18,7 +18,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -54,9 +54,9 @@ package editor.trigger.entity {
       
       protected var mInputConditions:Array = new Array ();
       
-      public function EntityConditionDoor (world:World)
+      public function EntityConditionDoor (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          BuildContextMenu ();
       }
@@ -134,7 +134,7 @@ package editor.trigger.entity {
             var condition:ICondition;
             for (var i:int = 0; i < num; ++ i)
             {
-               condition = mWorld.GetEntityByCreationId (conditionEntityCreationIds [i]) as ICondition;
+               condition = mEntityContainer.GetEntityByCreationId (conditionEntityCreationIds [i]) as ICondition;
                
                if (condition != null)
                   mInputConditions.push (new ConditionAndTargetValue (condition, conditionTargetValues [i]));
@@ -154,8 +154,8 @@ package editor.trigger.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (mBorderThickness * mWorld.GetZoomScale () < 3)
-               mBorderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (mBorderThickness * mEntityContainer.GetZoomScale () < 3)
+               mBorderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
          
          var background:Shape = new Shape ();
@@ -194,7 +194,7 @@ package editor.trigger.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyRectangle ();
             mSelectionProxy.SetUserData (this);
             
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
@@ -211,7 +211,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityConditionDoor (mWorld);
+         return new EntityConditionDoor (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
@@ -320,7 +320,7 @@ package editor.trigger.entity {
       
       override public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
       {
-         var local_point:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (worldDisplayX, worldDisplayY));
+         var local_point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (worldDisplayX, worldDisplayY));
          
          //return local_point.x > 0 || local_point.x < -kBandWidth;
          return local_point.x > 2 || local_point.x < -kBandWidth;
@@ -339,13 +339,13 @@ package editor.trigger.entity {
             var zone_id2:int;
             var target_value:int;
             
-            point2 = DisplayObjectUtil.LocalToLocal (mWorld, (condition as Entity), new Point (toWorldDisplayX, toWorldDisplayY));
+            point2 = DisplayObjectUtil.LocalToLocal (mEntityContainer, (condition as Entity), new Point (toWorldDisplayX, toWorldDisplayY));
             zone_id2 = (condition as EntityLogic).GetLinkZoneId (point2.x, point2.y, false, true);
             target_value = condition.GetTargetValueByLinkZoneId (zone_id2);
             
             if (condition is EntityConditionDoor)
             {
-               point1 = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (fromWorldDisplayX, fromWorldDisplayY));
+               point1 = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (fromWorldDisplayX, fromWorldDisplayY));
                zone_id1 = GetLinkZoneId (point1.x, point1.y, true, false);
                
                if (zone_id1 == ZoneId_In && zone_id2 == ZoneId_Out)
@@ -438,7 +438,7 @@ package editor.trigger.entity {
          
          if (mInputConditions.length > 0)
          {
-            var point1:Point = DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (- kBandWidth - kBandWidth, 0));
+            var point1:Point = DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point (- kBandWidth - kBandWidth, 0));
             for (var i:int = 0; i < mInputConditions.length; ++ i)
             {
                var condition_target:ConditionAndTargetValue = mInputConditions [i] as ConditionAndTargetValue;
@@ -463,7 +463,7 @@ package editor.trigger.entity {
       
       public function GetTargetValueZoneWorldCenter (targetValue:int):Point
       {
-         return DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (kHalfWidth, 0));
+         return DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point (kHalfWidth, 0));
       }
       
    }

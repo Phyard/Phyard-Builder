@@ -8,17 +8,19 @@ package editor.entity {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;
    
+   import editor.EditorContext;
+   
    import common.Define;
    
    public class VertexController extends Sprite 
    {
-      protected var mWorld:World;
+      protected var mEntityContainer:EntityContainer;
       
       protected var mSelectionProxy:SelectionProxy = null;
       
@@ -26,9 +28,9 @@ package editor.entity {
       
       private var mHalfSize:Number = 3.0;
       
-      public function VertexController (world:World, ownerEntity:Entity)
+      public function VertexController (container:EntityContainer, ownerEntity:Entity)
       {
-         mWorld = world;
+         mEntityContainer = container;
          
          mOwnerEntity = ownerEntity;
          
@@ -75,8 +77,8 @@ package editor.entity {
             borderSize  = 1;
          }
          
-         halfSize /= mWorld.GetZoomScale ();
-         borderSize /= mWorld.GetZoomScale ();
+         halfSize /= mEntityContainer.GetZoomScale ();
+         borderSize /= mEntityContainer.GetZoomScale ();
          
          GraphicsUtil.ClearAndDrawRect (this, - halfSize, - halfSize, halfSize + halfSize, halfSize + halfSize, borderColor, borderSize, true, filledColor);
       }
@@ -109,15 +111,14 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            //mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
-            mSelectionProxy = mWorld.mSelectionEngineForVertexes.CreateProxyRectangle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyRectangle ();
             
             mSelectionProxy.SetUserData (this);
          }
          
          var worldPos:Point = GetWorldPosition ();
          var halfSize:Number = mHalfSize;
-         halfSize /= mWorld.GetZoomScale ();
+         halfSize /= mEntityContainer.GetZoomScale ();
          
          (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (worldPos.x, worldPos.y, halfSize, halfSize, GetWorldRotation ());
       }
@@ -136,14 +137,14 @@ package editor.entity {
       
       public function GetWorldPosition ():Point
       {
-         return DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (0, 0))
+         return DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point (0, 0))
       }
       
       public function GetWorldRotation ():Number
       {
          // !!! here this hould be GetOwnerEntity (), temp 
-         var point1:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (0, 0));
-         var point2:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (1, 0));
+         var point1:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (0, 0));
+         var point2:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (1, 0));
          
          return Math.atan2 (point2.y - point1.y, point2.x - point1.x);
       }
@@ -155,8 +156,8 @@ package editor.entity {
       
       public function Move (worldOffsetX:Number, worldOffsetY:Number):void
       {
-         var point1:Point = DisplayObjectUtil.LocalToLocal (mWorld, mOwnerEntity, new Point (0, 0));
-         var point2:Point = DisplayObjectUtil.LocalToLocal (mWorld, mOwnerEntity, new Point (worldOffsetX, worldOffsetY));
+         var point1:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, mOwnerEntity, new Point (0, 0));
+         var point2:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, mOwnerEntity, new Point (worldOffsetX, worldOffsetY));
          
          mOwnerEntity.OnMovingVertexController (this, point2.x - point1.x, point2.y - point1.y);
       }

@@ -10,7 +10,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
@@ -22,9 +22,9 @@ package editor.trigger.entity {
    
    public class InputEntitySelector_Any extends InputEntitySelector 
    {
-      public function InputEntitySelector_Any (world:World, ownerEntity:Entity)
+      public function InputEntitySelector_Any (container:EntityContainer, ownerEntity:Entity)
       {
-         super (world, ownerEntity);
+         super (container, ownerEntity);
       }
       
       override public function UpdateAppearance ():void
@@ -34,8 +34,8 @@ package editor.trigger.entity {
          var text_field:Bitmap;
          text_field = DisplayObjectUtil.CreateCacheDisplayObject (TextFieldEx.CreateTextField ("<font face='Verdana' size='8'>A</font>", false, 0xFFFFFF, 0x0));
          
-         text_field.scaleX = 1.0 / mWorld.GetZoomScale ();
-         text_field.scaleY = 1.0 / mWorld.GetZoomScale ();
+         text_field.scaleX = 1.0 / mEntityContainer.GetZoomScale ();
+         text_field.scaleY = 1.0 / mEntityContainer.GetZoomScale ();
          
          addChild (text_field);
          

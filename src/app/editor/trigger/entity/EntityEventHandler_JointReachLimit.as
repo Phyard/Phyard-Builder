@@ -1,7 +1,7 @@
 
 package editor.trigger.entity {
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -22,9 +22,9 @@ package editor.trigger.entity {
    
    public class EntityEventHandler_JointReachLimit extends EntityEventHandler 
    {
-      public function EntityEventHandler_JointReachLimit (world:World, defaultEventId:int, potientialEventIds:Array = null)
+      public function EntityEventHandler_JointReachLimit (container:EntityContainer, defaultEventId:int, potientialEventIds:Array = null)
       {
-         super (world, defaultEventId, potientialEventIds);
+         super (container, defaultEventId, potientialEventIds);
          
       }
       
@@ -35,7 +35,7 @@ package editor.trigger.entity {
       //   {
       //      mEventId = eventId;
       //      
-      //      mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
+      //      mEventHandlerDefinition = new FunctionDefinition (mEntityContainer.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
       //      
       //      mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
       //      
@@ -49,7 +49,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityEventHandler_JointReachLimit (mWorld, mEventId);
+         return new EntityEventHandler_JointReachLimit (mEntityContainer, mEventId);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

@@ -10,7 +10,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
@@ -91,7 +91,7 @@ package editor.trigger.entity {
       
       override protected function LinkSelectedEntities ():void
       {
-         var entities:Array = mWorld.GetSelectedEntities ();
+         var entities:Array = mEntityContainer.GetSelectedEntities ();
          var entity:Entity;
          var mainEntity:Entity;
          
@@ -109,9 +109,9 @@ package editor.trigger.entity {
       
       protected var mTheSingleEntity:Entity = null;
       
-      public function InputEntitySelector_Single (world:World, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
+      public function InputEntitySelector_Single (container:EntityContainer, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
       {
-         super (world, ownerEntity, inputId, selectorId, onSelectEntity, onClearEntities);
+         super (container, ownerEntity, inputId, selectorId, onSelectEntity, onClearEntities);
       }
       
       override public function UpdateAppearance ():void
@@ -121,8 +121,8 @@ package editor.trigger.entity {
          var text_field:Bitmap;
          text_field = DisplayObjectUtil.CreateCacheDisplayObject (TextFieldEx.CreateTextField ("<font face='Verdana' size='8'>1</font>", false, 0xFFFFFF, 0x0));
          
-         text_field.scaleX = 1.0 / mWorld.GetZoomScale ();
-         text_field.scaleY = 1.0 / mWorld.GetZoomScale ();
+         text_field.scaleX = 1.0 / mEntityContainer.GetZoomScale ();
+         text_field.scaleY = 1.0 / mEntityContainer.GetZoomScale ();
          
          addChild (text_field);
          

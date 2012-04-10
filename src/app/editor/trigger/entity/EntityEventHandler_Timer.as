@@ -1,7 +1,7 @@
 
 package editor.trigger.entity {
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -25,9 +25,9 @@ package editor.trigger.entity {
       protected var mRunningInterval:Number = 120.0; // steps or seconds
       protected var mOnlyRunOnce:Boolean = true;
       
-      public function EntityEventHandler_Timer (world:World, defaultEventId:int, potientialEventIds:Array = null)
+      public function EntityEventHandler_Timer (container:EntityContainer, defaultEventId:int, potientialEventIds:Array = null)
       {
-         super (world, defaultEventId, potientialEventIds);
+         super (container, defaultEventId, potientialEventIds);
       }
       
       public function SetRunningInterval (interval:Number):void
@@ -61,7 +61,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityEventHandler_Timer (mWorld, mEventId);
+         return new EntityEventHandler_Timer (mEntityContainer, mEventId);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

@@ -3,7 +3,7 @@ package editor.entity {
 
    import flash.display.Sprite;
 
-   import editor.world.World;
+   import editor.world.EntityContainer;
 
    import editor.selection.SelectionProxy;
 
@@ -32,9 +32,9 @@ package editor.entity {
 //
 //====================================================================
 
-      public function EntityVectorShape (world:World)
+      public function EntityVectorShape (container:EntityContainer)
       {
-         super (world);
+         super (container);
       }
 
       override public function GetVisibleAlpha ():Number

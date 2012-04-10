@@ -12,7 +12,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -42,9 +42,9 @@ package editor.trigger.entity {
       
       protected var mEntityAssignerList:Array = new Array ();
       
-      public function EntityTask (world:World)
+      public function EntityTask (container:EntityContainer)
       {
-         super (world);
+         super (container);
       }
       
       override public function GetTypeName ():String
@@ -81,7 +81,7 @@ package editor.trigger.entity {
             var num:int = assignerCreationIds.length;
             for (var i:int = 0; i < num; ++ i)
             {
-               mEntityAssignerList.push (mWorld.GetEntityByCreationId (assignerCreationIds [i]));
+               mEntityAssignerList.push (mEntityContainer.GetEntityByCreationId (assignerCreationIds [i]));
             }
          }
       }
@@ -96,8 +96,8 @@ package editor.trigger.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (mBorderThickness * mWorld.GetZoomScale () < 3)
-               mBorderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (mBorderThickness * mEntityContainer.GetZoomScale () < 3)
+               mBorderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
          
          var background:Shape = new Shape ();
@@ -121,7 +121,7 @@ package editor.trigger.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyCircle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyCircle ();
             mSelectionProxy.SetUserData (this);
             
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
@@ -138,7 +138,7 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityTask (mWorld);
+         return new EntityTask (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
@@ -178,7 +178,7 @@ package editor.trigger.entity {
       
       override public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
       {
-         var local_point:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (worldDisplayX, worldDisplayY));
+         var local_point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (worldDisplayX, worldDisplayY));
          
          return local_point.x * local_point.x + local_point.y * local_point.y > kRadius1 * kRadius1;
       }
@@ -256,12 +256,12 @@ package editor.trigger.entity {
       public function GetTargetValueZoneWorldCenter (targetValue:int):Point
       {
          if (targetValue == ValueDefine.TaskStatus_Failed)
-            return DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (mStatusCirclePositionXb [0], mStatusCirclePositionYb [0]));
+            return DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point (mStatusCirclePositionXb [0], mStatusCirclePositionYb [0]));
          
          if (targetValue == ValueDefine.TaskStatus_Successed)
-            return DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (mStatusCirclePositionXb [1], mStatusCirclePositionYb [1]));
+            return DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point (mStatusCirclePositionXb [1], mStatusCirclePositionYb [1]));
          
-         return DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (mStatusCirclePositionXb [2], mStatusCirclePositionYb [2]));
+         return DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point (mStatusCirclePositionXb [2], mStatusCirclePositionYb [2]));
       }
       
    }

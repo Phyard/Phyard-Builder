@@ -12,7 +12,7 @@ package editor.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
@@ -27,9 +27,9 @@ package editor.entity {
       
       private var mMouseOverShape:EntityVectorShape; // not a real entity in world, just use it to store some values.
       
-      public function EntityVectorShapeTextButton (world:World)
+      public function EntityVectorShapeTextButton (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          SetText ("Button");
          SetWordWrap (false);
@@ -88,7 +88,7 @@ package editor.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityVectorShapeTextButton (mWorld);
+         return new EntityVectorShapeTextButton (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

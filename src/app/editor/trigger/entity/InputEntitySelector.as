@@ -14,12 +14,14 @@ package editor.trigger.entity {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyCircle;
+   
+   import editor.EditorContext;
    
    import common.Define;
    
@@ -41,7 +43,7 @@ package editor.trigger.entity {
       
     // ...
       
-      protected var mWorld:World;
+      protected var mEntityContainer:EntityContainer;
       
       protected var mSelectionProxy:SelectionProxy = null;
       
@@ -53,9 +55,9 @@ package editor.trigger.entity {
       protected var mOnSelectEntity:Function = null;
       protected var mOnClearEntities:Function = null;
       
-      public function InputEntitySelector (world:World, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
+      public function InputEntitySelector (container:EntityContainer, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
       {
-         mWorld = world;
+         mEntityContainer = container;
          
          mOwnerEntity = ownerEntity;
          
@@ -107,8 +109,8 @@ package editor.trigger.entity {
             borderSize  = 1;
          }
          
-         halfSize /= mWorld.GetZoomScale ();
-         borderSize /= mWorld.GetZoomScale ();
+         halfSize /= mEntityContainer.GetZoomScale ();
+         borderSize /= mEntityContainer.GetZoomScale ();
          
          GraphicsUtil.ClearAndDrawCircle (this, 0, 0, halfSize, borderColor, borderSize, true, filledColor);
       }
@@ -150,14 +152,14 @@ package editor.trigger.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngineForVertexes.CreateProxyCircle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyCircle ();
             
             mSelectionProxy.SetUserData (this);
          }
          
          var worldPos:Point = GetWorldPosition ();
          var halfSize:Number = kRadius;
-         halfSize /= mWorld.GetZoomScale ();
+         halfSize /= mEntityContainer.GetZoomScale ();
          
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle (worldPos.x, worldPos.y, kRadius, GetWorldRotation ());
       }
@@ -176,14 +178,14 @@ package editor.trigger.entity {
       
       public function GetWorldPosition ():Point
       {
-         return DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (0, 0))
+         return DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point (0, 0))
       }
       
       public function GetWorldRotation ():Number
       {
          // !!! here this hould be GetOwnerEntity (), temp 
-         var point1:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (0, 0));
-         var point2:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (1, 0));
+         var point1:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (0, 0));
+         var point2:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (1, 0));
          
          return Math.atan2 (point2.y - point1.y, point2.x - point1.x);
       }

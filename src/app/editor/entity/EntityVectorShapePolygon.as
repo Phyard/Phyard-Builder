@@ -8,7 +8,7 @@ package editor.entity {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
 
-   import editor.world.World;
+   import editor.world.EntityContainer;
 
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyPolygon;
@@ -31,9 +31,9 @@ package editor.entity {
       private var mMinY:Number;
       private var mMaxY:Number;
 
-      public function EntityVectorShapePolygon (world:World)
+      public function EntityVectorShapePolygon (container:EntityContainer)
       {
-         super (world);
+         super (container);
       }
 
       override public function GetTypeName ():String
@@ -43,7 +43,7 @@ package editor.entity {
 
       override public function GetInfoText ():String
       {
-         var vertexController:VertexController = mWorld.GetTheOnlySelectedVertexControllers ();
+         var vertexController:VertexController = mEntityContainer.GetTheOnlySelectedVertexControllers ();
          if (vertexController == null)
             return super.GetInfoText ();
 
@@ -92,8 +92,8 @@ package editor.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (borderThickness * mWorld.GetZoomScale () < 3)
-               borderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (borderThickness * mEntityContainer.GetZoomScale () < 3)
+               borderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
 
          SetVisibleInEditor (mVisibleInEditor); //  recal alpha
@@ -111,7 +111,7 @@ package editor.entity {
             GraphicsUtil.ClearAndDrawPolygon (this, mLocalPoints, borderColor, borderThickness, drawBg, filledColor);
             
             //this.graphics.clear ();
-            //var bitmapData:flash.display.BitmapData = (mWorld.GetAssetImageManager ().GetAssetByAppearanceId (0) as Object).GetBitmapData ();
+            //var bitmapData:flash.display.BitmapData = (mEntityContainer.GetAssetImageManager ().GetAssetByAppearanceId (0) as Object).GetBitmapData ();
             //this.graphics.beginBitmapFill (bitmapData);
             //GraphicsUtil.DrawPolygon (this, mLocalPoints, borderColor, borderThickness, false);
             //this.graphics.endFill ();
@@ -127,7 +127,7 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyPolygon ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyPolygon ();
             mSelectionProxy.SetUserData (this);
 
             SetInternalComponentsVisible (AreInternalComponentsVisible ());
@@ -369,7 +369,7 @@ package editor.entity {
 
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityVectorShapePolygon (mWorld);
+         return new EntityVectorShapePolygon (mEntityContainer);
       }
 
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
@@ -441,7 +441,7 @@ package editor.entity {
 
             for (i = 0; i < mVertexPoints.length; ++ i)
             {
-               vertexController = new VertexController (mWorld, this);
+               vertexController = new VertexController (mEntityContainer, this);
                mVertexControllers [i] = vertexController;
                addChild (vertexController);
             }
@@ -547,7 +547,7 @@ package editor.entity {
 
             if (mVertexPoints.length <= 3)
             {
-               mWorld.DestroyEntity (this);
+               mEntityContainer.DestroyEntity (this);
             }
             else
             {

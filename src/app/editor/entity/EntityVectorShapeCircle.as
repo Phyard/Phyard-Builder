@@ -5,7 +5,7 @@ package editor.entity {
 
    import com.tapirgames.util.GraphicsUtil;
 
-   import editor.world.World;
+   import editor.world.EntityContainer;
 
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
@@ -26,9 +26,9 @@ package editor.entity {
       // wheel
       protected var mAppearanceType:int = Define.CircleAppearanceType_Ball;
 
-      public function EntityVectorShapeCircle (world:World)
+      public function EntityVectorShapeCircle (container:EntityContainer)
       {
-         super (world);
+         super (container);
 
          SetRadius (0.0);
       }
@@ -43,7 +43,7 @@ package editor.entity {
 
       override public function GetInfoText ():String
       {
-         return super.GetInfoText () + ", radius = " + ValueAdjuster.Number2Precision (mWorld.GetCoordinateSystem ().D2P_Length (GetRadius ()), 6);
+         return super.GetInfoText () + ", radius = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (GetRadius ()), 6);
       }
 
       override public function GetPhysicsShapesCount ():uint
@@ -75,8 +75,8 @@ package editor.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (borderThickness * mWorld.GetZoomScale () < 3)
-               borderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (borderThickness * mEntityContainer.GetZoomScale () < 3)
+               borderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
 
          SetVisibleInEditor (mVisibleInEditor); //  recal alpha
@@ -115,7 +115,7 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyCircle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyCircle ();
             mSelectionProxy.SetUserData (this);
          }
 
@@ -175,7 +175,7 @@ package editor.entity {
 
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityVectorShapeCircle (mWorld);
+         return new EntityVectorShapeCircle (mEntityContainer);
       }
 
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

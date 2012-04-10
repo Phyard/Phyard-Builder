@@ -8,7 +8,6 @@ package editor.entity {
    import com.tapirgames.display.TextFieldEx;
    
    import editor.world.EntityContainer;
-   //import editor.world.World;
    
    import editor.selection.SelectionProxy;
    

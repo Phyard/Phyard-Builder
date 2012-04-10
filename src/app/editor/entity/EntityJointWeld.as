@@ -5,7 +5,7 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
@@ -20,12 +20,12 @@ package editor.entity {
    {
       public var mAnchor:SubEntityWeldAnchor;
       
-      public function EntityJointWeld (world:World)
+      public function EntityJointWeld (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
-         mAnchor = new SubEntityWeldAnchor (world, this);
-         world.addChild (mAnchor);
+         mAnchor = new SubEntityWeldAnchor (container, this);
+         mEntityContainer.addChild (mAnchor);
       }
       
       override public function GetTypeName ():String
@@ -35,7 +35,7 @@ package editor.entity {
       
       override public function Destroy ():void
       {
-         mWorld.DestroyEntity (mAnchor);
+         mEntityContainer.DestroyEntity (mAnchor);
          
          super.Destroy ();
       }
@@ -71,7 +71,7 @@ package editor.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityJointWeld (mWorld);
+         return new EntityJointWeld (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

@@ -12,7 +12,7 @@ package editor.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
@@ -28,9 +28,9 @@ package editor.entity {
       private var mPowerSourceBitmap:Bitmap = null;
       private var mBorderShape:Shape = new Shape ();
       
-      public function EntityUtilityPowerSource (world:World)
+      public function EntityUtilityPowerSource (container:EntityContainer)
       {
-         super (world);
+         super (container);
          
          SetVisible (false);
          
@@ -184,8 +184,8 @@ package editor.entity {
          if ( IsSelected () )
          {
             borderColor = Define.BorderColorSelectedObject;
-            if (borderThickness * mWorld.GetZoomScale () < 3)
-               borderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (borderThickness * mEntityContainer.GetZoomScale () < 3)
+               borderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
          
          GraphicsUtil.DrawRect (mBorderShape, - mPowerSourceBitmap.width * 0.5, - mPowerSourceBitmap.height * 0.5, mPowerSourceBitmap.bitmapData.width, mPowerSourceBitmap.bitmapData.height, borderColor, borderThickness, false, filledColor);
@@ -195,7 +195,7 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
+            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyRectangle ();
             mSelectionProxy.SetUserData (this);
          }
          
@@ -209,7 +209,7 @@ package editor.entity {
       // only one gc most in a scene
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityUtilityPowerSource (mWorld);
+         return new EntityUtilityPowerSource (mEntityContainer);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally

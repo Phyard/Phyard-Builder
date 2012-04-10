@@ -34,6 +34,7 @@ package editor.entity.dialog {
    import editor.asset.AssetManagerPanel;
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
+   import editor.asset.IntentDrag;
    
    import editor.entity.Scene;
    import editor.entity.*;
@@ -65,29 +66,77 @@ package editor.entity.dialog {
       {
       }
       
-      override public function SetCurrentIntent (intent:Intent):void
-      {  
-         TryToCallOnEndCreatingEntityCallback ();
-         
-         super.SetCurrentIntent (intent);
-      }
-      
 //============================================================================
 //   
 //============================================================================
       
       private var mOnEndCreatingEntityCallback:Function = null; // external callback passed by dialog
       
-      public function OnStartCreatingEntity (entityType:String, endCreatingCallback:Function):void
-      {
+      public function OnStartCreatingEntity (entityType:String, params:Object, endCreatingCallback:Function):void
+      {  
          SetCurrentIntent (null);
+         
+         if (mOnEndCreatingEntityCallback != null)
+            OnCreatingCancelled ();
+         
+         if (entityType == null)
+            return;
          
          switch (entityType)
          {
             case "hinge":
                SetCurrentIntent (new IntentPutAsset (
                                  mScene.CreateEntityJointHinge (true), 
-                                 OnPutingCreatingOneAnchorJoint, OnCreatingCancelled));
+                                 OnPutCreatingOneAnchorJoint, OnCreatingCancelled));
+               break;
+            case "weld":
+               SetCurrentIntent (new IntentPutAsset (
+                                 mScene.CreateEntityJointWeld (true), 
+                                 OnPutCreatingOneAnchorJoint, OnCreatingCancelled));
+               break;
+            case "slider":
+               mScene.CreateEntityJointSlider (true)
+               SetCurrentIntent (new IntentDrag (OnDragCreatingTwoAnchorsJoint, OnCreatingCancelled));
+               break;
+            case "distance":
+               mScene.CreateEntityJointDistance (true)
+               SetCurrentIntent (new IntentDrag (OnDragCreatingTwoAnchorsJoint, OnCreatingCancelled));
+               break;
+            case "spring":
+               mScene.CreateEntityJointSpring (true)
+               SetCurrentIntent (new IntentDrag (OnDragCreatingTwoAnchorsJoint, OnCreatingCancelled));
+               break;
+            case "dummy":
+               mScene.CreateEntityJointDummy (true)
+               SetCurrentIntent (new IntentDrag (OnDragCreatingTwoAnchorsJoint, OnCreatingCancelled));
+               break;
+            case "powersource":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityUtilityPowerSource (params.mPowerSourceType, true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "camera":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityUtilityCamera (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "gravity":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityVectorShapeGravityController (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "text":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityVectorShapeText (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "textbutton":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityVectorShapeTextButton (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "imagemodule":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityShapeImageModule (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "imagemodulebutton":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityShapeImageModuleButton (true), 
+                                 OnPutCreating, OnCreatingCancelled));
                break;
             default:
                return;
@@ -109,14 +158,14 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      private function OnCreatingFinished (asset:Asset):void
+      private function OnCreatingFinished ():void
       {
          TryToCallOnEndCreatingEntityCallback ();
          
          OnAssetSelectionsChanged ();
       }
       
-      private function OnCreatingCancelled (asset:Asset = null):void
+      public function OnCreatingCancelled ():void
       {
          TryToCallOnEndCreatingEntityCallback ();
          
@@ -124,30 +173,106 @@ package editor.entity.dialog {
          OnAssetSelectionsChanged ();
       }
       
-      protected function OnPutingCreating (asset:Asset, done:Boolean):void
+      protected function OnDragCreatingTwoAnchorsJoint (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
       {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         if (selectedEntities == null || selectedEntities.length != 1)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         var joint:EntityJoint = selectedEntities [0] as EntityJoint;
+         if (joint is EntityJointSlider)
+         {
+            (joint as EntityJointSlider).GetAnchor1 ().MoveTo (startX, startY);
+            (joint as EntityJointSlider).GetAnchor2 ().MoveTo (endX, endY);
+            if (done)
+            {
+               (joint as EntityJointSlider).GetAnchor1 ().OnTransformIntentDone ();
+               (joint as EntityJointSlider).GetAnchor2 ().OnTransformIntentDone ();
+               mScene.SetSelectedAsset  ((joint as EntityJointSlider).GetAnchor2 ());
+               //mScene.AddAssetSelection ((joint as EntityJointSlider).GetAnchor1 ());
+            }
+         }
+         else if (joint is EntityJointDistance)
+         {
+            (joint as EntityJointDistance).GetAnchor1 ().MoveTo (startX, startY);
+            (joint as EntityJointDistance).GetAnchor2 ().MoveTo (endX, endY);
+            if (done)
+            {
+               (joint as EntityJointDistance).GetAnchor1 ().OnTransformIntentDone ();
+               (joint as EntityJointDistance).GetAnchor2 ().OnTransformIntentDone ();
+               mScene.SetSelectedAsset  ((joint as EntityJointDistance).GetAnchor2 ());
+               //mScene.AddAssetSelection ((joint as EntityJointDistance).GetAnchor1 ());
+            }
+         }
+         else if (joint is EntityJointSpring)
+         {
+            (joint as EntityJointSpring).GetAnchor1 ().MoveTo (startX, startY);
+            (joint as EntityJointSpring).GetAnchor2 ().MoveTo (endX, endY);
+            if (done)
+            {
+               (joint as EntityJointSpring).GetAnchor1 ().OnTransformIntentDone ();
+               (joint as EntityJointSpring).GetAnchor2 ().OnTransformIntentDone ();
+               mScene.SetSelectedAsset  ((joint as EntityJointSpring).GetAnchor2 ());
+               //mScene.AddAssetSelection ((joint as EntityJointSpring).GetAnchor1 ());
+            }
+         }
+         else if (joint is EntityJointDummy)
+         {
+            (joint as EntityJointDummy).GetAnchor1 ().MoveTo (startX, startY);
+            (joint as EntityJointDummy).GetAnchor2 ().MoveTo (endX, endY);
+            if (done)
+            {
+               (joint as EntityJointDummy).GetAnchor1 ().OnTransformIntentDone ();
+               (joint as EntityJointDummy).GetAnchor2 ().OnTransformIntentDone ();
+               mScene.SetSelectedAsset  ((joint as EntityJointDummy).GetAnchor2 ());
+               //mScene.AddAssetSelection ((joint as EntityJointDummy).GetAnchor1 ());
+            }
+         }
+         else
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
          if (done)
          {
-            OnCreatingFinished (asset);
+            OnCreatingFinished ();
          }
       }
       
-      protected function OnPutingCreatingOneAnchorJoint (asset:Asset, done:Boolean):void
+      protected function OnPutCreating (asset:Asset, done:Boolean):void
+      {
+         if (done)
+         {
+            OnCreatingFinished ();
+         }
+      }
+      
+      protected function OnPutCreatingOneAnchorJoint (asset:Asset, done:Boolean):void
       {
          if (asset is EntityJointHinge)
          {
             (asset as EntityJointHinge).GetAnchor ().MoveTo (asset.GetPositionX (), asset.GetPositionY ());
             if (done)
+            {
                (asset as EntityJointHinge).GetAnchor ().OnTransformIntentDone ();
+               mScene.SetSelectedAsset ((asset as EntityJointHinge).GetAnchor ());
+            }
          }
          else if (asset is EntityJointWeld)
          {
             (asset as EntityJointWeld).GetAnchor ().MoveTo (asset.GetPositionX (), asset.GetPositionY ());
             if (done)
+            {
                (asset as EntityJointWeld).GetAnchor ().OnTransformIntentDone ();
+               mScene.SetSelectedAsset ((asset as EntityJointWeld).GetAnchor ());
+            }
          }
          
-         OnPutingCreating (asset, done);
+         OnPutCreating (asset, done);
       }
       
 //============================================================================

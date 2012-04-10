@@ -573,40 +573,20 @@ package editor.entity {
 
          return polyline;
       }
-      
-      public function CreateEntityShapeImageModule ():EntityShapeImageModule
-      {  
-         if (numChildren >= Define.MaxEntitiesCount)
-            return null;
 
-         var imageModule:EntityShapeImageModule = new EntityShapeImageModule (this);
-         addChild (imageModule);
-
-         imageModule.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
-
-         return imageModule;
-      }
-      
-      public function CreateEntityShapeImageModuleButton ():EntityShapeImageModuleButton
-      {
-         if (numChildren >= Define.MaxEntitiesCount)
-            return null;
-
-         var imageModuleButton:EntityShapeImageModuleButton = new EntityShapeImageModuleButton (this);
-         addChild (imageModuleButton);
-
-         imageModuleButton.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
-
-         return imageModuleButton;
-      }
-
-      public function CreateEntityJointDistance ():EntityJointDistance
+      public function CreateEntityJointDistance (selectIt:Boolean = false):EntityJointDistance
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var distaneJoint:EntityJointDistance = new EntityJointDistance (this);
          addChild (distaneJoint);
+         
+         if (selectIt)
+         {
+            distaneJoint.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (distaneJoint);
+         }
 
          return distaneJoint;
       }
@@ -628,101 +608,194 @@ package editor.entity {
          return hinge;
       }
 
-      public function CreateEntityJointSlider ():EntityJointSlider
+      public function CreateEntityJointSlider (selectIt:Boolean = false):EntityJointSlider
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var slider:EntityJointSlider = new EntityJointSlider (this);
          addChild (slider);
+         
+         if (selectIt)
+         {
+            slider.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (slider);
+         }
 
          return slider;
       }
 
-      public function CreateEntityJointSpring ():EntityJointSpring
+      public function CreateEntityJointSpring (selectIt:Boolean = false):EntityJointSpring
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var spring:EntityJointSpring = new EntityJointSpring (this);
          addChild (spring);
+         
+         if (selectIt)
+         {
+            spring.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (spring);
+         }
 
          return spring;
       }
 
-      public function CreateEntityJointWeld():EntityJointWeld
+      public function CreateEntityJointWeld(selectIt:Boolean = false):EntityJointWeld
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var weld:EntityJointWeld = new EntityJointWeld (this);
          addChild (weld);
+         
+         if (selectIt)
+         {
+            weld.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (weld);
+         }
 
          return weld;
       }
 
-      public function CreateEntityJointDummy():EntityJointDummy
+      public function CreateEntityJointDummy(selectIt:Boolean = false):EntityJointDummy
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var dummy:EntityJointDummy = new EntityJointDummy (this);
          addChild (dummy);
+         
+         if (selectIt)
+         {
+            dummy.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (dummy);
+         }
 
          return dummy;
       }
 
-      public function CreateEntityVectorShapeText ():EntityVectorShapeText
+      public function CreateEntityVectorShapeText (selectIt:Boolean = false):EntityVectorShapeText
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var text:EntityVectorShapeText = new EntityVectorShapeText(this);
          addChild (text);
+         
+         if (selectIt)
+         {
+            text.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (text);
+         }
 
          return text;
       }
 
-      public function CreateEntityVectorShapeTextButton ():EntityVectorShapeTextButton
+      public function CreateEntityVectorShapeTextButton (selectIt:Boolean = false):EntityVectorShapeTextButton
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var button:EntityVectorShapeTextButton = new EntityVectorShapeTextButton (this);
          addChild (button);
+         
+         if (selectIt)
+         {
+            button.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (button);
+         }
 
          return button;
       }
+      
+      public function CreateEntityShapeImageModule (selectIt:Boolean = false):EntityShapeImageModule
+      {  
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
 
-      public function CreateEntityVectorShapeGravityController ():EntityVectorShapeGravityController
+         var imageModule:EntityShapeImageModule = new EntityShapeImageModule (this);
+         addChild (imageModule);
+         
+         if (selectIt)
+         {
+            imageModule.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (imageModule);
+         }
+
+         imageModule.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+
+         return imageModule;
+      }
+      
+      public function CreateEntityShapeImageModuleButton (selectIt:Boolean = false):EntityShapeImageModuleButton
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+
+         var imageModuleButton:EntityShapeImageModuleButton = new EntityShapeImageModuleButton (this);
+         addChild (imageModuleButton);
+         
+         if (selectIt)
+         {
+            imageModuleButton.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (imageModuleButton);
+         }
+
+         imageModuleButton.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+
+         return imageModuleButton;
+      }
+
+      public function CreateEntityVectorShapeGravityController (selectIt:Boolean = false):EntityVectorShapeGravityController
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var gController:EntityVectorShapeGravityController = new EntityVectorShapeGravityController(this);
          addChild (gController);
+         
+         if (selectIt)
+         {
+            gController.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (gController);
+         }
 
          return gController;
       }
 
-      public function CreateEntityUtilityCamera ():EntityUtilityCamera
+      public function CreateEntityUtilityCamera (selectIt:Boolean = false):EntityUtilityCamera
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var camera:EntityUtilityCamera = new EntityUtilityCamera(this);
          addChild (camera);
+         
+         if (selectIt)
+         {
+            camera.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (camera);
+         }
 
          return camera;
       }
 
-      public function CreateEntityUtilityPowerSource ():EntityUtilityPowerSource
+      public function CreateEntityUtilityPowerSource (sourceType:int, selectIt:Boolean = false):EntityUtilityPowerSource
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var power_source:EntityUtilityPowerSource = new EntityUtilityPowerSource (this);
+         power_source.SetPowerSourceType (sourceType);
          addChild (power_source);
+         
+         if (selectIt)
+         {
+            power_source.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (power_source);
+         }
 
          return power_source;
       }

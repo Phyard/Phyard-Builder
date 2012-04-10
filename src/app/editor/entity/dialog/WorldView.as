@@ -319,19 +319,10 @@ package editor.entity.dialog {
          mPlayingViewContainer.addChild (mPlayerElementsContainer);
          
          //
-         
          mWorldHistoryManager = new WorldHistoryManager ();
-         SetEditorWorld (new editor.world.World (), true);
-         CreateUndoPoint ("Startup");
-         
-         //
-         UpdateChildComponents ();
          
          //
          BuildContextMenu ();
-         
-         //
-         RegisterNotifyFunctions ();
       }
       
       public function GetEditorWorld ():editor.world.World
@@ -1630,7 +1621,7 @@ package editor.entity.dialog {
          theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
-      private function SetEditorWorld (newEditorWorld:editor.world.World, firstTime:Boolean = false):void
+      public function SetEditorWorld (newEditorWorld:editor.world.World, firstTime:Boolean = false):void
       {
          if (newEditorWorld == null || newEditorWorld == mEditorWorld)
             return;
@@ -1640,9 +1631,9 @@ package editor.entity.dialog {
          DestroyEditorWorld ();
          ClearAccumulatedModificationsByArrowKeys ();
          
-         EditorContext.Cleanup ();
-         
+         EditorContext.BuildNewSingleton (newEditorWorld);
          mEditorWorld = newEditorWorld;
+         
          mEditorWorld.GetCollisionCategoryManager ().SetChanged (false);
          //if (mEditorWorld.GetEntityContainer ().GetFunctionManager ().IsChanged ())
          //{
@@ -1678,7 +1669,19 @@ package editor.entity.dialog {
             CodeLibListDialog.sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (mEditorWorld.GetCodeLibManager ());
          }
          
-         if (! firstTime)
+         if (firstTime)
+         {
+         
+            //
+            UpdateChildComponents ();
+            
+            //
+            RegisterNotifyFunctions ();
+         
+            // 
+            CreateUndoPoint ("Startup");
+         }
+         else
          {
             //
             SetLastSelectedEntities (null);
@@ -5708,7 +5711,7 @@ package editor.entity.dialog {
             
             //mWorldHistoryManager.ClearHistories ();
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading succeeded", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * GetViewWidth ()));
             
             CreateUndoPoint ("Offline loading");
          }
@@ -5725,7 +5728,7 @@ package editor.entity.dialog {
             
             //Alert.show("Sorry, loading error!", "Error");
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading failed", EffectMessagePopup.kBgColor_Error));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
          }
       }
       
@@ -5841,7 +5844,7 @@ package editor.entity.dialog {
             
             System.setClipboard(DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (newWorld)));
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export succeeded", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * GetViewWidth ()));
          }
          catch (error:Error)
          {
@@ -5850,7 +5853,7 @@ package editor.entity.dialog {
             if (Capabilities.isDebugger)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export failed", EffectMessagePopup.kBgColor_Error));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
          }
          //finally // comment off for bug of secureSWF 
          {
@@ -5940,7 +5943,7 @@ package editor.entity.dialog {
             
             UpdateUiButtonsEnabledStatus ();
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import succeeded", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * GetViewWidth ()));
             
             CreateUndoPoint ("Import");
          }
@@ -5950,7 +5953,7 @@ package editor.entity.dialog {
             
             RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
             
             if (Capabilities.isDebugger)
                throw error;
@@ -6019,7 +6022,7 @@ package editor.entity.dialog {
             msgY = viewPoint.y;
          }
          
-         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo point created (" + description + ")", EffectMessagePopup.kBgColor_General));
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo point created (" + description + ")", EffectMessagePopup.kBgColor_General, 0x000000, 0.5 * GetViewWidth ()));
       }
       
       private function RestoreWorld (worldState:WorldState):void
@@ -6088,7 +6091,7 @@ package editor.entity.dialog {
          
          if (worldState == null)
          {
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No undo points available", EffectMessagePopup.kBgColor_General));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No undo points available", EffectMessagePopup.kBgColor_General, 0x000000, 0.5 * GetViewWidth ()));
             return;
          }
          
@@ -6097,7 +6100,7 @@ package editor.entity.dialog {
          worldState = worldState.GetNextWorldState ();
          if (worldState != null) // should not
          {
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo (" + worldState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo (" + worldState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * GetViewWidth ()));
          }
       }
       
@@ -6110,13 +6113,13 @@ package editor.entity.dialog {
          
          if (worldState == null)
          {
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No redo points available", EffectMessagePopup.kBgColor_General));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No redo points available", EffectMessagePopup.kBgColor_General, 0x000000, 0.5 * GetViewWidth ()));
             return;
          }
          
          RestoreWorld (worldState);
          
-         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Redo (" + worldState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK));
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Redo (" + worldState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * GetViewWidth ()));
       }
       
       public var mUndoButtonContextMenu:ContextMenu = new ContextMenu ();
@@ -6186,7 +6189,7 @@ package editor.entity.dialog {
                 //}
             }
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * GetViewWidth ()));
          }
          catch (error:Error)
          {
@@ -6195,7 +6198,7 @@ package editor.entity.dialog {
             if (Capabilities.isDebugger)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save failed", EffectMessagePopup.kBgColor_Error));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
          }
       }
       
@@ -6244,7 +6247,7 @@ package editor.entity.dialog {
             
             CreateUndoPoint ("Quick save data is loaed");
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load succeeded", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * GetViewWidth ()));
          }
          catch (error:Error)
          {
@@ -6253,7 +6256,7 @@ package editor.entity.dialog {
             if (Capabilities.isDebugger)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load failed", EffectMessagePopup.kBgColor_Error));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
          }
       }
       
@@ -6423,7 +6426,7 @@ package editor.entity.dialog {
          loader.load ( request );
          //navigateToURL ( request )
          
-         mOnlineSavingPopup = new EffectMessagePopup ("Saving ... (Please don't close the editor!)", EffectMessagePopup.kBgColor_Special);
+         mOnlineSavingPopup = new EffectMessagePopup ("Saving ... (Please don't close the editor!)", EffectMessagePopup.kBgColor_Special, 0x000000, 0.5 * GetViewWidth ());
          mOnlineSavingPopup.SetAutoFade (false);
          mFloatingMessageLayer.addChild (mOnlineSavingPopup);
       }
@@ -6436,7 +6439,7 @@ package editor.entity.dialog {
       //private function OnOnlineSaveProgress (event:ProgressEvent):void
       //{
       //   if (mOnlineSavingPopup != null)
-      //      mOnlineSavingPopup.Rebuild ("Saving ... (" + Math.floor(100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special);
+      //      mOnlineSavingPopup.Rebuild ("Saving ... (" + Math.floor(100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special, 0x000000, 0.5 * GetViewWidth ());
       //} 
       
       private function OnOnlineSaveError (event:Event):void
@@ -6444,7 +6447,7 @@ package editor.entity.dialog {
          if (mOnlineSavingPopup != null)
             mOnlineSavingPopup.SetAutoFade (true);
          
-         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error));
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
       } 
       
       private function OnOnlineSaveCompleted(event:Event):void 
@@ -6468,13 +6471,13 @@ package editor.entity.dialog {
             
             if (returnCode == Define.k_ReturnCode_Successed)
             {
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save succeeded", EffectMessagePopup.kBgColor_OK));
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * GetViewWidth ()));
             }
             else
             {
                //Alert.show("Some errors in saving! returnCode = " + returnCode + ", returnMessage = " + returnMessage, "Error");
                var errorMessage:String = "Online save failed,  returnCode = " + returnCode + ",  returnMessage = " + returnMessage;
-               mFloatingMessageLayer.addChild (new EffectMessagePopup (errorMessage, EffectMessagePopup.kBgColor_Error));
+               mFloatingMessageLayer.addChild (new EffectMessagePopup (errorMessage, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
             }
          }
          catch (error:Error)
@@ -6486,7 +6489,7 @@ package editor.entity.dialog {
             if (Capabilities.isDebugger)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
          }
       }
       
@@ -6537,7 +6540,7 @@ package editor.entity.dialog {
          
          loader.load ( request );
          
-         mOnlineLoadingPopup = new EffectMessagePopup ("Loading ...", EffectMessagePopup.kBgColor_Special);
+         mOnlineLoadingPopup = new EffectMessagePopup ("Loading ...", EffectMessagePopup.kBgColor_Special, 0x000000, 0.5 * GetViewWidth ());
          mOnlineLoadingPopup.SetAutoFade (false);
          mFloatingMessageLayer.addChild (mOnlineLoadingPopup);
          
@@ -6549,7 +6552,7 @@ package editor.entity.dialog {
       private function OnOnlineLoadProgress (event:ProgressEvent):void
       {
          if (mOnlineLoadingPopup != null)
-            mOnlineLoadingPopup.Rebuild ("Loading ... (" + Math.floor (100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special);
+            mOnlineLoadingPopup.Rebuild ("Loading ... (" + Math.floor (100 * event.bytesLoaded / event.bytesTotal) + "%)", EffectMessagePopup.kBgColor_Special, 0x000000);
       } 
       
       private function OnOnlineLoadError (event:Event):void
@@ -6557,7 +6560,7 @@ package editor.entity.dialog {
          if (mOnlineLoadingPopup != null)
             mOnlineLoadingPopup.SetAutoFade (true);
          
-         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error));
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
       } 
       
       private function OnOnlineLoadCompleted(event:Event):void 
@@ -6576,7 +6579,7 @@ package editor.entity.dialog {
          if (returnCode != Define.k_ReturnCode_Successed)
          {
             //Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, EffectMessagePopup.kBgColor_Error));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
          }
          else
          {
@@ -6607,7 +6610,7 @@ package editor.entity.dialog {
                CreateUndoPoint ("Online data is loaded");
                
                //Alert.show("Loading Succeeded!", "Succeeded");
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load succeeded", EffectMessagePopup.kBgColor_OK));
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * GetViewWidth ()));
             }
             catch (error:Error)
             {
@@ -6618,7 +6621,7 @@ package editor.entity.dialog {
                
                //Alert.show("Sorry, online loading error!", "Error");
                
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error));
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetViewWidth ()));
             }
          }
       }

@@ -191,7 +191,7 @@
             }
             else
             {
-               PopUpManager.addPopUp (assetImageCompositeModuleEditDialog, EditorContext.GetApplication (), false);
+               PopUpManager.addPopUp (assetImageCompositeModuleEditDialog, EditorContext.GetEditorApp (), false);
                PopUpManager.centerPopUp (assetImageCompositeModuleEditDialog);
             }
             

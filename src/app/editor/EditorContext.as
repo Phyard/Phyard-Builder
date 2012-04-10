@@ -40,34 +40,51 @@ package editor {
    
    public class EditorContext
    {
-      // todo, use a singleton instead of static fields
+      internal static var sEditorApp:Editor; 
+      
+      public static function GetEditorApp ():Editor
+      {
+         return EditorContext.sEditorApp;
+      }
+      
+      private static var sEditorContext:EditorContext = null;
+      
+      public static function DestroySingleton ():void
+      {
+         if (sEditorContext != null)
+            sEditorContext.Cleanup ();
+         
+         sEditorContext = null;
+      }
+      
+      public static function BuildNewSingleton (world:World):EditorContext
+      {
+         DestroySingleton ();
+         
+         sEditorContext = new EditorContext (world);
+         
+         return sEditorContext;
+      }
+      
+      public static function GetSingleton ():EditorContext
+      {
+         return sEditorContext;
+      }
       
 //=====================================================================
 //
 //=====================================================================
       
-      //private static var mWorld:World = new World (); // should not be null at any time
-      //
-      //public static function RebuildCurrentWorld ():World
-      //{
-      //   Cleanup ();
-      //   
-      //   mWorld = new World ();
-      //   
-      //   return GetCurrentWorld ();
-      //}
-      //
-      //public static function GetCurrentWorld ():World
-      //{
-      //   return mWorld;
-      //}
+      private static var mWorld:World;
+      
+      public function EditorContext (world:World)
+      {
+         mWorld = world;
+      }
       
       public static function GetCurrentWorld ():World
       {
-         if (mEditorWorldView == null)
-            return null;
-         
-         return mEditorWorldView.GetEditorWorld ();
+         return mWorld;
       }
       
 //=====================================================================
@@ -75,7 +92,7 @@ package editor {
 //=====================================================================
 
       // call this before loading a new world
-      public static function Cleanup ():void
+      public function Cleanup ():void
       {
          SetKeyboardListener (null);
          
@@ -106,9 +123,6 @@ package editor {
          
          mHasSettingDialogOpened = false;
          mHasInputFocused = false;
-         //mEditorWorldView = null;
-         //mCollisionCategoryView = null;
-         //mFunctionEditingView = null;
          
          mSessionVariablesEditingDialogClosedCallBack = null;
          mGlobalVariablesEditingDialogClosedCallBack = null;
@@ -155,18 +169,6 @@ package editor {
          return mDesignFilename;
       }
       
-      
-      private static var mApplication:Application;
-      
-      public static function SetApplication (app:Application):void
-      {
-         mApplication = app;
-      }
-      
-      public static function GetApplication ():Application
-      {
-         return mApplication;
-      }
       
       private static var mIsMouseButtonHold:Boolean = false;
       
@@ -247,31 +249,18 @@ package editor {
       public static function OnOpenDialog ():void
       {
          EditorContext.SetHasSettingDialogOpened (true);
-         mEditorWorldView.StartSettingEntityProperties ();
+         EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().StartSettingEntityProperties ();
       }
       
       public static function OnCloseDialog (checkCustomVariablesModifications:Boolean = false):void
       {
          EditorContext.SetHasSettingDialogOpened (false);
-         mEditorWorldView.stage.focus = mEditorWorldView.stage;
+         EditorContext.GetEditorApp ().stage.focus = EditorContext.GetEditorApp ().stage;
          
          if (checkCustomVariablesModifications)
          {
-            mEditorWorldView.CancelSettingEntityProperties ();
+            EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().CancelSettingEntityProperties ();
          }
-      }
-
-//=====================================================================
-//
-//=====================================================================
-      
-      public static var mEditorWorldView:WorldView = null;
-      //public static var mCollisionCategoryView:CollisionManagerView = null;
-      //public static var mFunctionEditingView:FunctionEditingView = null;
-      
-      public static function GetMainView ():WorldView
-      {
-         return mEditorWorldView;
       }
       
 //=====================================================================
@@ -304,7 +293,7 @@ package editor {
          
          if (mKeyboardListener == null)
          {
-            mEditorWorldView.OnKeyDown (event);
+            EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().OnKeyDown (event);
          }
          else
          {

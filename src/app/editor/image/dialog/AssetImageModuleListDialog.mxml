@@ -59,7 +59,7 @@
             }
             else
             {
-               PopUpManager.addPopUp (sAssetImageModuleListDialog, EditorContext.GetApplication (), OnModulePicked != null);
+               PopUpManager.addPopUp (sAssetImageModuleListDialog, EditorContext.GetEditorApp (), OnModulePicked != null);
                PopUpManager.centerPopUp (sAssetImageModuleListDialog);
             }
             

@@ -369,11 +369,11 @@
                            <mx:Button id="Button_ZoomIn" click="ZoomIn ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/zoom-in.png')" disabledIcon="@Embed('../res/edit/zoom-in-disabled.png')" />
                         <mx:HBox width="3" backgroundColor="0xE0E0E0" height="100%"/>
                      </mx:Box>
-                     <mx:Box direction="horizontal" borderStyle="solid" height="100%" width="100%"
+                     <mx:Box id="Box_Scenes" direction="horizontal" borderStyle="solid" height="100%" width="100%"
                               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off"
                               horizontalGap="0" verticalGap="0" borderThickness="1">
-                        <entity:WorldView id="MainView" height="100%" width="100%" />
+                        <!--entity:WorldView id="MainView" height="100%" width="100%" /-->
                      </mx:Box>
                   </mx:Box>
                   <mx:Box id="Box_StatusInfoBar" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" height="19" width="100%"
@@ -418,40 +418,10 @@
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Label id="Label_EntityPhysicsPosition" text="" minWidth="116"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                     <!--
-                     <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
-                     <mx:Label text="Map" click="ShowMiniMap ();"/>
-                     -->
                   </mx:Box>
                </mx:Box>
-               <!--
-               <mx:TabNavigator id="Box_EditPanel" width="256" height="100%" creationPolicy="all" textAlign="center">
-                  <mx:Box label="Entity Properties" toolTip="Entity Properties" direction="vertical" borderStyle="solid" width="100%" height="100%"
-                           paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
-                           horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
-                  </mx:Box>
-                  <mx:Box label="Histories" toolTip="Histories" direction="vertical" borderStyle="solid" width="100%" height="100%"
-                           paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
-                           horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
-                  </mx:Box>
-               </mx:TabNavigator>
-               -->
             </mx:HBox>
          </mx:HBox>
-         <!--mx:HBox id="CCatDesignView" backgroundColor="0xE0E0E0" borderStyle="solid" height="100%" width="100%"
-                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
-                  horizontalGap="0" verticalGap="0" borderThickness="0"
-                  >
-            <panel:CollisionManagerView id="CollisionManagerView" width="100%" height="100%"/>
-         </mx:HBox-->
-         <!--mx:HBox id="FunctionDesignView" backgroundColor="0xE0E0E0" borderStyle="solid" height="100%" width="100%"
-                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
-                  horizontalGap="0" verticalGap="0" borderThickness="0"
-                  >
-            <panel:FunctionEditingView id="FunctionEditingView" width="100%" height="100%"/>
-         </mx:HBox-->
       </mx:ViewStack>
 
    </mx:VBox>
@@ -493,6 +463,7 @@
             import com.tapirgames.util.DisplayObjectUtil;
             import com.tapirgames.util.UrlUtil;
             import editor.entity.dialog.WorldView;
+            import editor.world.World;
             import editor.display.dialog.*;
             import editor.EditorContext;
             import editor.trigger.Lists;
@@ -513,15 +484,29 @@
                stage.addEventListener (MouseEvent.MOUSE_UP, CheckMouseHoldStatus);
             }
             
+            private var MainView:WorldView = null;
+            
             private function CheckMouseHoldStatus (event:MouseEvent):void
             {
                EditorContext.SetMouseButtonHold (event.buttonDown);
             }
             
+            public function GetCurrentSceneEditPanel ():WorldView
+            {
+               return MainView;
+            }
+            
             private function InitApp ():void
             {
-            //===================================================================================================
+               EditorContext.sEditorApp = this;
                
+               MainView = new WorldView ();
+               MainView.percentWidth = 100;
+               MainView.percentHeight = 100;
+               Box_Scenes.addChild (MainView);
+               MainView.SetEditorWorld (new World (), true);
+               
+            //===================================================================================================
                
                if (flash.external.ExternalInterface.available)
                {
@@ -544,12 +529,6 @@
                }
                
             //===================================================================================================
-               
-               EditorContext.SetApplication (this)
-               
-               EditorContext.mEditorWorldView = MainView;
-               //EditorContext.mCollisionCategoryView = CollisionManagerView;
-               //EditorContext.mFunctionEditingView = FunctionEditingView;
                
                addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
                
@@ -1438,8 +1417,8 @@
                EditorContext.OnOpenDialog ();
                
                var settingDialog:DesignInfoSettingDialog = new DesignInfoSettingDialog ();
-               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldDesignInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldDesignInfo);
+               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldDesignInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldDesignInfo);
                settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
@@ -1450,8 +1429,8 @@
                EditorContext.OnOpenDialog ();
                
                var settingDialog:WorldLevelRulesSettingDialog = new WorldLevelRulesSettingDialog ();
-               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldLevelRulesInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldLevelRulesInfo);
+               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldLevelRulesInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldLevelRulesInfo);
                settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
@@ -1462,8 +1441,8 @@
                EditorContext.OnOpenDialog ();
                
                var settingDialog:WorldCoordinateSystemSettingDialog = new WorldCoordinateSystemSettingDialog ();
-               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldCoordinateSystemInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldCoordinateSystemInfo);
+               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldCoordinateSystemInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldCoordinateSystemInfo);
                settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
@@ -1474,8 +1453,8 @@
                EditorContext.OnOpenDialog ();
                
                var settingDialog:WorldPhysicsSettingDialog = new WorldPhysicsSettingDialog ();
-               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldPhysicsyInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldPhysicsInfo);
+               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldPhysicsyInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldPhysicsInfo);
                settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
@@ -1486,8 +1465,8 @@
                EditorContext.OnOpenDialog ();
                
                var settingDialog:WorldAppearanceSettingDialog = new WorldAppearanceSettingDialog ();
-               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldAppearanceInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldAppearanceInfo);
+               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldAppearanceInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldAppearanceInfo);
                settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
@@ -1498,8 +1477,8 @@
                EditorContext.OnOpenDialog ();
                
                var settingDialog:ViewportSettingDialog = new ViewportSettingDialog ();
-               settingDialog.SetValues (EditorContext.mEditorWorldView.GetViewportInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetViewportInfo);
+               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetViewportInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetViewportInfo);
                settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);

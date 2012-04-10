@@ -68,7 +68,7 @@
             }
             else
             {
-               PopUpManager.addPopUp (sCollisionCategoryListDialog, EditorContext.GetApplication (), OnCCatPicked != null);
+               PopUpManager.addPopUp (sCollisionCategoryListDialog, EditorContext.GetEditorApp (), OnCCatPicked != null);
                PopUpManager.centerPopUp (sCollisionCategoryListDialog);
             }
             

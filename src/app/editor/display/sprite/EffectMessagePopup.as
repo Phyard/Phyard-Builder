@@ -9,8 +9,6 @@ package editor.display.sprite {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.EditorContext;
-   
    public class EffectMessagePopup extends EditingEffect 
    {
       
@@ -66,18 +64,14 @@ package editor.display.sprite {
       internal var mTargetX:Number;
       internal var mTargetY:Number;
       
-      public function EffectMessagePopup (text:String, bgColor:uint, textColor:uint = 0x0):void
+      public function EffectMessagePopup (text:String, bgColor:uint, textColor:uint, initialX:Number):void
       {
          Rebuild (text, bgColor, textColor);
          
          mTargetX = kLeftestX;
          mTargetY = kToppestY;
          
-         if (EditorContext.mEditorWorldView == null)
-            x = 300;
-         else
-            x = 0.5 * EditorContext.mEditorWorldView.GetViewWidth ();
-         x -= 0.5 * width;
+         x = initialX - 0.5 * width;
          y = kToppestY;
          
          mAutoFade = true;

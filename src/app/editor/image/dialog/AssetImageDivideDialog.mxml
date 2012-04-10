@@ -65,7 +65,7 @@
             }
             else
             {
-               PopUpManager.addPopUp (assetImageDivideDialog, EditorContext.GetApplication (), false);
+               PopUpManager.addPopUp (assetImageDivideDialog, EditorContext.GetEditorApp (), false);
                PopUpManager.centerPopUp (assetImageDivideDialog);
             }
             

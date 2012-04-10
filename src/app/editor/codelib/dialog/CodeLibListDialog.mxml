@@ -75,7 +75,7 @@
             }
             else
             {
-               PopUpManager.addPopUp (sCodeLibListDialog, EditorContext.GetApplication (), OnCCatPicked != null);
+               PopUpManager.addPopUp (sCodeLibListDialog, EditorContext.GetEditorApp (), OnCCatPicked != null);
                PopUpManager.centerPopUp (sCodeLibListDialog);
             }
             
@@ -173,7 +173,7 @@
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
                settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, EditorContext.GetApplication (), true);
+               PopUpManager.addPopUp (settingDialog, EditorContext.GetEditorApp (), true);
                PopUpManager.centerPopUp (settingDialog);
             }
          

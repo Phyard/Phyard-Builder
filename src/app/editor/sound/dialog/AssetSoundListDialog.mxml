@@ -54,7 +54,7 @@
             }
             else
             {
-               PopUpManager.addPopUp (sAssetSoundListDialog, EditorContext.GetApplication (), OnSoundPicked != null);
+               PopUpManager.addPopUp (sAssetSoundListDialog, EditorContext.GetEditorApp (), OnSoundPicked != null);
                PopUpManager.centerPopUp (sAssetSoundListDialog);
             }
             

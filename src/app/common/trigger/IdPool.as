@@ -78,6 +78,7 @@ package common.trigger {
    // the ids less than 8196 will be reserved for official core apis
 
       public static const CoreApiId_0:int = 0; //
+      public static const CoreApiId_1:int = 1; //
 
       public static const CoreApiId_10:int = 10; //
       public static const CoreApiId_11:int = 11; //
@@ -115,6 +116,8 @@ package common.trigger {
       public static const CoreApiId_73:int = 73; //
       public static const CoreApiId_74:int = 74; //
       public static const CoreApiId_75:int = 75; //
+      public static const CoreApiId_76:int = 76; //
+      public static const CoreApiId_77:int = 77; //
 
       public static const CoreApiId_79:int = 79; //
       public static const CoreApiId_80:int = 80; //

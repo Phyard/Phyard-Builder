@@ -45,10 +45,11 @@ package player.trigger {
 
       public static function Initialize ():void
       {
-         if (Compile::Is_Debugging)
-         {
+         //if (Compile::Is_Debugging)
+         //{
             RegisterCoreFunction (CoreFunctionIds.ID_ForDebug,                     ForDebug);
-         }
+            RegisterCoreFunction (CoreFunctionIds.ID_GetDebugString,               GetDebugString);
+         //}
 
       // some specail
 
@@ -77,6 +78,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_GetTimeZone,                      GetTimeZone);
          RegisterCoreFunction (CoreFunctionIds.ID_IsKeyHold,                        IsKeyHold);
          RegisterCoreFunction (CoreFunctionIds.ID_SetMouseVisible,                  SetMouseVisible);
+         RegisterCoreFunction (CoreFunctionIds.ID_IsAccelerometerSupported,                  IsAccelerometerSupported);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetAccelerationVector,                     GetAccelerationVector);
 
       // string
 
@@ -530,6 +533,14 @@ package player.trigger {
       {
       }
 
+      public static function GetDebugString (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         if (Global._GetDebugString != null)
+         {
+            valueTarget.AssignValueObject (Global._GetDebugString ());
+         }
+      }
+
    //*******************************************************************
    // system / time
    //*******************************************************************
@@ -627,6 +638,24 @@ package player.trigger {
          var visible:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
          Global.GetCurrentWorld ().SetMouseVisible (visible);
+      }
+
+      public static function IsAccelerometerSupported(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.Viewer_IsAccelerometerSupported != null && Global.Viewer_IsAccelerometerSupported ());
+      }
+
+      public static function GetAccelerationVector (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var vector3d:Array = Global.Viewer_GetAcceleration ();
+
+         valueTarget.AssignValueObject (vector3d [0] as Number);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (vector3d [1] as Number);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (vector3d [2] as Number);
       }
 
    //*******************************************************************
@@ -2371,8 +2400,8 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var cat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
-         numParticles = Global.GetCurrentWorld ().CreateExplosion (null, worldX, worldY, cat, numParticles, 
-                     lifeSteps * Global.GetCurrentWorld ().GetPhysicsSimulationStepTimeLength (), 
+         numParticles = Global.GetCurrentWorld ().CreateExplosion (null, worldX, worldY, cat, numParticles,
+                     lifeSteps * Global.GetCurrentWorld ().GetPhysicsSimulationStepTimeLength (),
                      density, restitution, speed, 1.0, color, visible);
 
          valueTarget.AssignValueObject (numParticles);

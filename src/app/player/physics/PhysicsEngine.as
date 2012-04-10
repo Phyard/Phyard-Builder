@@ -128,6 +128,12 @@ package player.physics {
       
       public function Update (escapedTime:Number):void
       {
+         if (mGravityChanged)
+         {
+            WakeUpAllBodies ();
+            mGravityChanged = false;
+         }
+         
          if (mPhysicsSimulationEnabled)
          {
             _b2World.Step (escapedTime, mVelocityIterations, mPositionIterations);
@@ -169,11 +175,14 @@ package player.physics {
          _b2World.SetGravity (gravity);
       }
       
+      private var mGravityChanged:Boolean = false;
       public function SetGravityByVector (gx:Number, gy:Number):void
       {
          var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (gx, gy);
          
          _b2World.SetGravity (gravity);
+         
+         mGravityChanged = true;
       }
       
       public function WakeUpAllBodies ():void

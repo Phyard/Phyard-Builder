@@ -190,6 +190,7 @@ package viewer {
       
       private static var mGeolocationClass:Object = null;
       private static var mAccelerometerClass:Object = null;
+         private static var mAccelerometer:Object; //flash.sensors.Accelerometer;
       private static var mMultitouchClass:Object = null;
       
       private static var mPlatformCapabilitiesChecked:Boolean = false;
@@ -270,6 +271,11 @@ package viewer {
                {
                   mAccelerometerClass = null;
                }
+               else
+               {
+                  mAccelerometer = new mAccelerometerClass ();
+                  mAccelerometer.addEventListener("update", OnAccelerationUpdate); //AccelerometerEvent.UPDATE, onUpdate)
+               } 
             }
                
             //if ((! mIsMobileDevice) && mAccelerometerClass != null)
@@ -300,6 +306,51 @@ package viewer {
                throw error;
             }
          }
+      }
+      
+      private static var mAccelerationX:Number = 0.0;
+      private static var mAccelerationY:Number = 1.0;
+      private static var mAccelerationZ:Number = 0.0;
+      
+      private static function IsAccelerometerSupported ():Boolean
+      {
+         return mAccelerometerClass != null;
+      }
+      
+      private static function GetAcceleration (valuesToFill:Array = null):Array
+      {
+         if (valuesToFill == null)
+            valuesToFill = new Array (3);
+         
+         valuesToFill [0] = mAccelerationX;
+         valuesToFill [1] = mAccelerationY;
+         valuesToFill [2] = mAccelerationZ;
+         
+         return valuesToFill;
+      }
+      
+      private static function OnAccelerationUpdate (event:Object):void // AccelerometerEvent):void
+      {
+         mAccelerationX = - event.accelerationX; // why?
+         mAccelerationY = event.accelerationY;
+         mAccelerationZ = event.accelerationZ;
+      }
+      
+      private static function GetDebugString ():String
+      {
+         if (ApplicationDomain.currentDomain.hasDefinition ("flash.sensors.Accelerometer"))
+         {
+            var accelerometerClass:Object = ApplicationDomain.currentDomain.getDefinition ("flash.sensors.Accelerometer") as Class;
+            var info:String = "acc class: " + accelerometerClass;
+            if (accelerometerClass != null)
+            {
+               info = info + "\nsupported: " + mAccelerometerClass.isSupported;
+            }
+            
+            return info;
+         }
+                  
+         return "null";
       }
 
 //======================================================================
@@ -882,7 +933,10 @@ package viewer {
                GetZoomScale : mSkin.GetZoomScale,
                SetZoomScale : mSkin.SetZoomScale,
                IsSoundEnabled : mSkin.IsSoundEnabled,
-               SetSoundEnabled : mSkin.SetSoundEnabled
+               SetSoundEnabled : mSkin.SetSoundEnabled,
+               IsAccelerometerSupported: IsAccelerometerSupported,
+               GetAcceleration: GetAcceleration,
+               GetDebugString: GetDebugString
             });
 
             // ...
@@ -1030,8 +1084,14 @@ package viewer {
             mSkin.NotifyStarted ();
          }
 
-         mSkin.SetLevelFinishedDialogVisible (mWorldDesignProperties.IsLevelSuccessed ());
+         var levelSucceeded:Boolean = mWorldDesignProperties.IsLevelSuccessed ();
+         mSkin.SetLevelFinishedDialogVisible (levelSucceeded);
          mSkin.Update (mStepTimeSpan.GetLastSpan ());
+         
+         if (levelSucceeded && mParamsFromContainer.OnLevelFinished)
+         {
+            mParamsFromContainer.OnLevelFinished ();
+         }
       }
 
 //======================================================================

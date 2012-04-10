@@ -7,6 +7,7 @@ package common.trigger {
    // the id < 8196 will be reserved for officeial core apis
 
       public static const ID_ForDebug:int                    = IdPool.CoreApiId_0; //
+      public static const ID_GetDebugString:int              = IdPool.CoreApiId_1; //
 
    // some specail
 
@@ -52,6 +53,8 @@ package common.trigger {
       public static const ID_IsKeyHold:int                        = IdPool.CoreApiId_72; //
       public static const ID_Design_IsMouseButtonHold:int                  = IdPool.CoreApiId_603;
       public static const ID_SetMouseVisible:int                        = IdPool.CoreApiId_75; // from v1.56
+      public static const ID_IsAccelerometerSupported:int                        = IdPool.CoreApiId_76; // from v1.60
+      public static const ID_GetAccelerationVector:int                        = IdPool.CoreApiId_77; // from v1.60
 
    // string
 

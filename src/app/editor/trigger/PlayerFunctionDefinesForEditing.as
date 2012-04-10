@@ -107,6 +107,12 @@ package editor.trigger {
                              new VariableDefinitionArray ("Array"),
                           ]
                        );
+            RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetDebugString, sGlobalMenuGroup, "GetDebugString", null, null,
+                          null,
+                          [
+                             new VariableDefinitionString ("Debug String"),
+                          ]
+                       );
          }
 
       // special predefieds for internal using
@@ -214,7 +220,7 @@ package editor.trigger {
                      true
                   );
 
-      // system / time
+      // system
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetProgramMilliseconds, system_package, "Get Program Milliseconds", null, null,
                      null,
@@ -269,6 +275,20 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Visible?"),
                      ],
                      null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsAccelerometerSupported, system_package, "Is Accelerometer Supported", null, null,
+                     null,
+                     [
+                        new VariableDefinitionBoolean ("Supported?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetAccelerationVector, system_package, "Get Acceleration Vector", null, null,
+                     null,
+                     [
+                        new VariableDefinitionNumber ("Acceleration X"),
+                        new VariableDefinitionNumber ("Acceleration Y"),
+                        new VariableDefinitionNumber ("Acceleration Z"),
+                     ]
                   );
 
       // string

@@ -76,6 +76,9 @@ package player.design
       public static var UI_SetZoomScale:Function;
       public static var UI_IsSoundEnabled:Function;
       public static var UI_SetSoundEnabled:Function;
+      public static var Viewer_IsAccelerometerSupported;
+      public static var Viewer_GetAcceleration;
+      public static var _GetDebugString;
       
 //==============================================================================
 // static values

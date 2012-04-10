@@ -85,6 +85,10 @@ package plugin
                Global.UI_IsSoundEnabled = params.IsSoundEnabled as Function; // from v1.59
                Global.UI_SetSoundEnabled = params.SetSoundEnabled as Function; // from v1.59
                
+               Global.Viewer_IsAccelerometerSupported = params.IsAccelerometerSupported; // from v1.60
+               Global.Viewer_GetAcceleration = params.GetAcceleration as Function; // from v1.60
+               Global._GetDebugString = params.GetDebugString as Function; // from v1.60
+               
                break;
             default:
             {

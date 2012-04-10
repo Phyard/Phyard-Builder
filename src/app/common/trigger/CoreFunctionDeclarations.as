@@ -17,8 +17,8 @@ package common.trigger {
 
       // ...
 
-         if (Compile::Is_Debugging)
-         {
+         //if (Compile::Is_Debugging)
+         //{
             RegisterCoreDeclaration (CoreFunctionIds.ID_ForDebug,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
@@ -38,7 +38,13 @@ package common.trigger {
                      ]
                   );
 
-         }
+            RegisterCoreDeclaration (CoreFunctionIds.ID_GetDebugString,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ]
+                  );
+         //}
 
       // special,       some predefineds for internal using
 
@@ -194,6 +200,20 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ],
                      null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_IsAccelerometerSupported,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetAccelerationVector,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ]
                   );
 
       // string

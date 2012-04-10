@@ -284,8 +284,6 @@ package editor.image.dialog {
          if (pos != null)
             moduleInstance.SetPosition (pos.x, pos.y);
          
-         moduleInstance.UpdateAppearance ();
-         
          if (done)
          {
             if (shapeModule.IsValid ())
@@ -299,6 +297,8 @@ package editor.image.dialog {
                OnCreatingCancelled (moduleInstance);
             }
          }
+         
+         moduleInstance.UpdateAppearance ();
       }
       
       public function OnClickCreateButton (event:MouseEvent):void
@@ -736,6 +736,7 @@ package editor.image.dialog {
                   
                   if (vectorShape is VectorShapeCircle)
                   {
+
                      var circleShape:VectorShapeCircle = areaVectorShape as VectorShapeCircle;
                      
                      circleShape.SetRadius (MathUtil.ParseNumber (mTextInputCircleRadius.text, 1.0, Define.kFloatEpsilon, Number.MAX_VALUE));

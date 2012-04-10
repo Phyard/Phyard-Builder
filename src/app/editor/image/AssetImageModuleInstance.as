@@ -543,6 +543,7 @@ package editor.image {
          
          mAssetImageModule.BuildImageModuleAppearance (this);
          
+         /*
          if (IsSelected () && (! IsSequenceModuleFrame ()))
          {
             alpha = 0.5;
@@ -555,7 +556,8 @@ package editor.image {
             
             addChild (shape);
          }
-            
+         */
+         
          if (AreControlPointsVisible ())
          {
             addChild (mControlPointsContainer);
@@ -668,8 +670,6 @@ package editor.image {
             var localAssetDisplayment:Point = new Point (result.mAssetPosLocalAdjustX, result.mAssetPosLocalAdjustY);
             var globalAssetDisplayment:Point = AssetToManager (localAssetDisplayment, false);
             SetPosition (GetPositionX () + globalAssetDisplayment.x, GetPositionY () + globalAssetDisplayment.y);
-            
-            UpdateAppearance ();
 
             if (actionDone)
             {
@@ -681,6 +681,8 @@ package editor.image {
                   OnSoloControlPointSelected (mControlPoints [selectedControlPointIndex] as ControlPoint);
                }
             }
+            
+            UpdateAppearance ();
          }
          
          if (actionDone)

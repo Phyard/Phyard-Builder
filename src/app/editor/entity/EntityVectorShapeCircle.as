@@ -2,6 +2,7 @@
 package editor.entity {
 
    import flash.display.Sprite;
+   import flash.display.Shape;
 
    import com.tapirgames.util.GraphicsUtil;
 
@@ -31,6 +32,7 @@ package editor.entity {
          super (container, mVectorShapeCircle);
 
          SetRadius (0.0);
+         SetFilledColor (Define.ColorMovableObject);
       }
 
       override public function GetTypeName ():String
@@ -51,42 +53,13 @@ package editor.entity {
          return IsPhysicsEnabled () ? 1 : 0;
       }
 
-      /*
       override public function UpdateAppearance ():void
       {
-         var filledColor:uint = GetFilledColor ();
-         var borderColor:uint = GetBorderColor ();
-         var drawBg:Boolean = IsDrawBackground ();
-         var drawBorder:Boolean = IsDrawBorder ();
-         var borderThickness:Number = GetBorderThickness ();
-
-         if (mAiType >= 0)
-         {
-            filledColor =  Define.GetShapeFilledColor (mAiType);
-            borderColor = Define.ColorObjectBorder;
-            drawBg = true;
-         }
-
-         if ( ! drawBorder)
-         {
-            drawBg = true;
-            borderThickness = -1;
-         }
-
-         if ( IsSelected () )
-         {
-            borderColor = Define.BorderColorSelectedObject;
-            if (borderThickness * mEntityContainer.GetZoomScale () < 3)
-               borderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
-         }
-
-         SetVisibleForEditing (mVisibleForEditing); //  recal alpha
+         super.UpdateAppearance ();
 
          var visualRadius:Number = GetRadius () + 0.5; // be consistent with player
 
-         GraphicsUtil.ClearAndDrawCircle (this, 0, 0, visualRadius, borderColor,
-                                                            borderThickness, drawBg, filledColor);
-
+         var decoShape:Shape = null;
          if (mAppearanceType == Define.CircleAppearanceType_Ball)
          {
             var pos:Number;
@@ -96,37 +69,34 @@ package editor.entity {
                pos = (GetRadius () * 0.66) - 1;// * 0.707 - 1;
             if (pos < 0) pos = 0;
 
-            var invertFilledColor:uint = GraphicsUtil.GetInvertColor_b (filledColor);
-            GraphicsUtil.DrawEllipse (this, pos, 0, 1, 1, invertFilledColor, 1, true, invertFilledColor);
+            var invertFilledColor:uint = GraphicsUtil.GetInvertColor_b (GetFilledColor ());
+            
+            decoShape = new Shape ();
+            GraphicsUtil.DrawEllipse (decoShape, pos, 0, 1, 1, invertFilledColor, 1, true, invertFilledColor);
+            
          }
          else if (mAppearanceType == Define.CircleAppearanceType_Column)
          {
             var radius2:Number = GetRadius () * 0.5;
-            GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, filledColor);
-            GraphicsUtil.DrawLine (this, radius2, 0, visualRadius, 0, borderColor, 1);
+            
+            decoShape = new Shape ();
+            GraphicsUtil.DrawEllipse (decoShape, - radius2, - radius2, radius2 + radius2, radius2 + radius2, GetBorderColor (), 1, false, GetFilledColor ());
+            GraphicsUtil.DrawLine (decoShape, radius2, 0, visualRadius, 0, GetBorderColor (), 1);
          }
 
          if (Define.IsBombShape (GetAiType ()))
          {
-            GraphicsUtil.DrawEllipse (this, - GetRadius () * 0.5, - GetRadius () * 0.5, GetRadius (), GetRadius (), 0x808080, 0, true, 0x808080);
+            if (decoShape == null)
+               decoShape = new Shape ();
+            GraphicsUtil.DrawEllipse (decoShape, - GetRadius () * 0.5, - GetRadius () * 0.5, GetRadius (), GetRadius (), 0x808080, 0, true, 0x808080);
          }
-      }
-
-      override public function UpdateSelectionProxy ():void
-      {
-         if (mSelectionProxy == null)
+         
+         if (decoShape != null)
          {
-            mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyCircle ();
-            mSelectionProxy.SetUserData (this);
+            this.addChild (decoShape);
          }
-
-         var borderThickness:Number = GetBorderThickness ();
-         if ( ! IsDrawBorder () )
-            borderThickness = 0;
-
-         (mSelectionProxy as SelectionProxyCircle).RebuildCircle (GetPositionX (), GetPositionY (), GetRadius () + borderThickness * 0.5, GetRotation ());
       }
-      */
+
 
       public function SetRadius (radius:Number, validate:Boolean = true):void
       {
@@ -189,22 +159,6 @@ package editor.entity {
          cirlce.SetRadius ( GetRadius () );
          cirlce.SetAppearanceType ( GetAppearanceType () );
       }
-
-
-//====================================================================
-//   move, rotate, scale
-//====================================================================
-      /*
-      override public function ScaleSelf (ratio:Number):void
-      {
-         var radius:Number = GetRadius () * ratio;
-      //trace ("ratio = " + ratio + ", radius = " + radius);
-
-         SetRadius (radius);
-      }
-      */
-
-
 
    }
 }

@@ -89,19 +89,19 @@ package editor.entity.dialog {
          switch (entityType)
          {
             case "RectangleShape":
-               mScene.CreateEntityVectorShapeRectangle (true);
+               mScene.CreateEntityVectorShapeRectangle (params.mAiType, true);
                SetCurrentIntent (new IntentDrag (OnDragCreatingShape, OnCreatingCancelled));
                break;
             case "CircleShape":
-               mScene.CreateEntityVectorShapeCircle (true);
+               mScene.CreateEntityVectorShapeCircle (params.mAiType, true);
                SetCurrentIntent (new IntentDrag (OnDragCreatingShape, OnCreatingCancelled));
                break;
             case "PolygonShape":
-               mScene.CreateEntityVectorShapePolygon (true);
+               mScene.CreateEntityVectorShapePolygon (params.mAiType, true);
                SetCurrentIntent (new IntentTaps (this, OnCreatingShape, OnTapsCreatingShape, OnCreatingCancelled));
                break;
             case "PolylineShape":
-               mScene.CreateEntityVectorShapePolyline (true);
+               mScene.CreateEntityVectorShapePolyline (params.mAiType, true);
                SetCurrentIntent (new IntentTaps (this, OnCreatingShape, OnTapsCreatingShape, OnCreatingCancelled));
                break;
             case "HingeJoint":
@@ -324,8 +324,6 @@ package editor.entity.dialog {
          if (pos != null)
             vectorShapeEntity.SetPosition (pos.x, pos.y);
          
-         vectorShapeEntity.UpdateAppearance ();
-         
          if (done)
          {
             if (vectorShapeEntity.IsValid ())
@@ -339,75 +337,9 @@ package editor.entity.dialog {
                OnCreatingCancelled ();
             }
          }
+         
+         vectorShapeEntity.UpdateAppearance ();
       }
-      
-      /*
-      protected function OnDragCreatingRectangle (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
-      {
-         var selectedEntities:Array = mScene.GetSelectedAssets ();
-         if (selectedEntities == null || selectedEntities.length != 1)
-         {
-            OnCreatingCancelled ();
-            return;
-         }
-         
-         var rect:EntityVectorShapeRectangle = selectedEntities [0] as EntityVectorShapeRectangle;
-         if (rect == null)
-         {
-            OnCreatingCancelled ();
-            return;
-         }
-         
-         var centerX:Number = 0.5 * (startX + endX);
-         var centerY:Number = 0.5 * (startY + endY);
-         var halfWidth :Number = Math.abs (0.5 * (startX - endX));
-         var halfHeight:Number = Math.abs (0.5 * (startY - endY));
-         
-         rect.MoveTo (centerX, centerY);
-         rect.SetHalfWidth  (halfWidth, false);
-         rect.SetHalfHeight (halfHeight, false);
-         rect.UpdateAppearance ();
-         
-         if (done)
-         {
-            rect.OnTransformIntentDone ();
-
-            OnCreatingFinished ();
-         }
-      }
-      
-      protected function OnDragCreatingCircle (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
-      {
-         var selectedEntities:Array = mScene.GetSelectedAssets ();
-         if (selectedEntities == null || selectedEntities.length != 1)
-         {
-            OnCreatingCancelled ();
-            return;
-         }
-         
-         var circle:EntityVectorShapeCircle = selectedEntities [0] as EntityVectorShapeCircle;
-         if (circle == null)
-         {
-            OnCreatingCancelled ();
-            return;
-         }
-         
-         var dx:Number = endX - startX;
-         var dy:Number = endY - startY;
-         var radius:Number = Math.sqrt (dx * dx + dy * dy);
-         
-         circle.MoveTo (startX, startY);
-         circle.SetRadius  (radius);
-         circle.UpdateAppearance ();
-         
-         if (done)
-         {
-            circle.OnTransformIntentDone ();
-
-            OnCreatingFinished ();
-         }
-      }
-      */
       
       protected function OnDragCreatingTwoAnchorsJoint (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
       {

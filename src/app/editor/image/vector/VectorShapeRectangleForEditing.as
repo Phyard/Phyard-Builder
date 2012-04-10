@@ -2,6 +2,7 @@ package editor.image.vector
 {
    import flash.display.DisplayObject;
    import flash.display.Shape;
+   import flash.display.Sprite;
    import flash.geom.Point;
 
    import com.tapirgames.util.GraphicsUtil;
@@ -48,7 +49,7 @@ package editor.image.vector
          return OnCreatingRectangle (this, points);
       }
 
-      public static function CreateRectangleSprite (rectangle:VectorShapeRectangle, bodyTextureModule:AssetImageBitmapModule = null, bodyTextureTransform:Transform2D = null):DisplayObject
+      public static function CreateRectangleSprite (rectangle:VectorShapeRectangle, isSelected:Boolean, bodyTextureModule:AssetImageBitmapModule = null, bodyTextureTransform:Transform2D = null):DisplayObject
       {
          var filledColor:uint = rectangle.GetBodyColor ();
          var borderColor:uint = rectangle.GetBorderColor ();
@@ -61,7 +62,7 @@ package editor.image.vector
             drawBg = true;
             borderThickness = -1;
          }
-
+         
          var visualHalfWidth:Number = rectangle.GetHalfWidth () + 0.5; // be consistent with player
          var visualHalfHeight:Number = rectangle.GetHalfHeight () + 0.5; // be consistent with player
          
@@ -71,12 +72,28 @@ package editor.image.vector
                                         bodyTextureModule == null ? null : bodyTextureModule.GetBitmapData (),
                                         bodyTextureTransform == null ? null : bodyTextureTransform.ToMatrix ());
 
-         return rectSprite;
+         if (isSelected)
+         {
+            var blueShape:Shape = new Shape ();
+            GraphicsUtil.ClearAndDrawRect (blueShape, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, 
+                                           0x0000FF, -1, true, 0x0000FF, rectangle.IsRoundCorners (), false, 1.0);
+            blueShape.alpha = 0.5;
+            
+            var contianer:Sprite = new Sprite ();
+            contianer.addChild (rectSprite);
+            contianer.addChild (blueShape);
+            
+            return contianer;
+         }
+         else
+         {
+            return rectSprite;
+         }
       }
 
-      public function CreateSprite ():DisplayObject
+      public function CreateSprite (isSelected:Boolean = false):DisplayObject
       {
-         return CreateRectangleSprite (this, GetBodyTextureModule () as AssetImageBitmapModule, GetBodyTextureTransform ());
+         return CreateRectangleSprite (this, isSelected, GetBodyTextureModule () as AssetImageBitmapModule, GetBodyTextureTransform ());
       }
 
       public static function BuildRectangleSelectionProxy (rectangle:VectorShapeRectangle, selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void

@@ -522,12 +522,13 @@ package editor.entity {
 //   create and destroy entities
 //=================================================================================
 
-      public function CreateEntityVectorShapeCircle (selectIt:Boolean = false):EntityVectorShapeCircle
+      public function CreateEntityVectorShapeCircle (aiType:int=Define.ShapeAiType_Unknown, selectIt:Boolean = false):EntityVectorShapeCircle
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var circle:EntityVectorShapeCircle = new EntityVectorShapeCircle (this);
+         circle.SetAiType (aiType);
          addChild (circle);
 
          circle.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
@@ -541,12 +542,13 @@ package editor.entity {
          return circle;
       }
 
-      public function CreateEntityVectorShapeRectangle (selectIt:Boolean = false):EntityVectorShapeRectangle
+      public function CreateEntityVectorShapeRectangle (aiType:int=Define.ShapeAiType_Unknown, selectIt:Boolean = false):EntityVectorShapeRectangle
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var rect:EntityVectorShapeRectangle = new EntityVectorShapeRectangle (this);
+         rect.SetAiType (aiType);
          addChild (rect);
 
          rect.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
@@ -560,12 +562,13 @@ package editor.entity {
          return rect;
       }
 
-      public function CreateEntityVectorShapePolygon (selectIt:Boolean = false):EntityVectorShapePolygon
+      public function CreateEntityVectorShapePolygon (aiType:int=Define.ShapeAiType_Unknown, selectIt:Boolean = false):EntityVectorShapePolygon
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var polygon:EntityVectorShapePolygon = new EntityVectorShapePolygon (this);
+         polygon.SetAiType (aiType);
          addChild (polygon);
 
          polygon.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
@@ -579,12 +582,13 @@ package editor.entity {
          return polygon;
       }
 
-      public function CreateEntityVectorShapePolyline (selectIt:Boolean = false):EntityVectorShapePolyline
+      public function CreateEntityVectorShapePolyline (aiType:int=Define.ShapeAiType_Unknown, selectIt:Boolean = false):EntityVectorShapePolyline
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var polyline:EntityVectorShapePolyline = new EntityVectorShapePolyline (this);
+         polyline.SetAiType (aiType);
          addChild (polyline);
 
          polyline.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));

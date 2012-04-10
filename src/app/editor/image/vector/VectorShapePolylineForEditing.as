@@ -65,14 +65,14 @@ package editor.image.vector
          return new Point (centerX, centerY);
       }
 
-      public function CreateSprite ():DisplayObject
+      public function CreateSprite (isSelected:Boolean = false):DisplayObject
       {
          var bgColor:uint = GetBodyColor ();
          var curveThickness:Number = GetPathThickness ();
 
          var polylineSprite:Shape = new Shape ();
-         GraphicsUtil.ClearAndDrawPolyline (polylineSprite, GraphicsUtil.DeepClonePointArray (mLocalVertexPoints), bgColor, curveThickness, IsRoundEnds (), IsClosed ());
-
+         GraphicsUtil.ClearAndDrawPolyline (polylineSprite, GraphicsUtil.DeepClonePointArray (mLocalVertexPoints), isSelected ? 0x0000FF : bgColor, curveThickness, IsRoundEnds (), IsClosed ());
+         
          return polylineSprite;
       }
 

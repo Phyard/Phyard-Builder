@@ -2,14 +2,17 @@
 package editor.entity {
 
    import flash.display.DisplayObject;
+   import flash.display.Shape;
    import flash.display.Sprite;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
 
    import com.tapirgames.util.GraphicsUtil;
    
    import editor.selection.SelectionProxy;
-
-   import editor.image.AssetImageShapeModule;
+   
+   import editor.asset.ControlPoint;
+   import editor.asset.ControlPointModifyResult;
    
    import editor.image.vector.*;
    import common.shape.*;
@@ -93,9 +96,37 @@ package editor.entity {
          while (numChildren > 0)
             removeChildAt (0);
          GraphicsUtil.Clear (this);
+
+         if (mAiType >= 0)
+         {
+            SetFilledColor (Define.GetShapeFilledColor (mAiType));
+            SetBorderColor (Define.ColorObjectBorder);
+            SetDrawBackground (true);
+         }
          
-         var shapeSprite:DisplayObject = (mVectorShape as VectorShapeForEditing).CreateSprite ();
+         var shapeSprite:DisplayObject = (mVectorShape as VectorShapeForEditing).CreateSprite (IsSelected ());
          addChild (shapeSprite);
+         
+         SetVisibleForEditing (mVisibleForEditing); //  recal alpha
+         
+         /*
+         if (IsSelected ())
+         {
+            var shape:Shape = new Shape ();
+            shape.alpha = 0.5;
+            
+            var rectangle:Rectangle = this.getBounds (this);
+            GraphicsUtil.DrawRect (shape, rectangle.left, rectangle.top, rectangle.width, rectangle.height,
+                                       0x0000FF, -1, true, 0xC0C0FF, false);
+            
+            addChild (shape);
+         }
+         */
+            
+         if (AreControlPointsVisible ())
+         {
+            addChild (mControlPointsContainer);
+         }
       }
 
       override public function UpdateSelectionProxy ():void
@@ -108,6 +139,119 @@ package editor.entity {
          
          mSelectionProxy.Rebuild (GetPositionX (), GetPositionY (), 0.0);
          (mVectorShape as VectorShapeForEditing).BuildSelectionProxy (mSelectionProxy, new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mEntityContainer.GetScale () * GetScale ());
+      }
+      
+//=============================================================
+//   control points
+//=============================================================
+      
+      protected var mControlPointsContainer:Sprite = new Sprite ();
+      protected var mControlPoints:Array = null;
+      
+      override public function GetControlPointContainer ():Sprite
+      {
+         return mControlPointsContainer; // to override
+      }
+      
+      override protected function UpdateControlPoints_Internal ():void
+      {
+         if (mControlPoints == null)
+            return;
+         
+         for each (var cp:ControlPoint in mControlPoints)
+         {
+            cp.Refresh ();
+         }
+      }
+      
+      override protected function RebuildControlPoints ():void
+      {
+         if (mControlPoints != null)
+            DestroyControlPoints ();
+         
+         addChild (mControlPointsContainer);
+         mControlPoints = (mVectorShape as VectorShapeForEditing).CreateControlPointsForAsset (this);
+         
+         mAssetManager.RegisterShownControlPoints (mControlPoints);
+      }
+      
+      override protected function DestroyControlPoints ():void
+      {
+         for (var i:int = mControlPoints.length - 1; i >= 0; -- i)
+         {
+            (mControlPoints [i] as ControlPoint).Destroy ();
+         }
+         
+         mControlPoints = null;
+         if (mControlPointsContainer.parent != null) // should be this
+            mControlPointsContainer.parent.removeChild (mControlPointsContainer);
+            
+         mAssetManager.UnregisterShownControlPointsOfAsset (this);
+      }
+      
+      override public function OnSoloControlPointSelected (controlPoint:ControlPoint):void
+      {
+         super.OnSoloControlPointSelected (controlPoint);
+         
+         var secondarySelectedControlPointIndex:int = (mVectorShape as VectorShapeForEditing).GetSecondarySelectedControlPointId (controlPoint.GetIndex ());
+         if (secondarySelectedControlPointIndex >= 0 && mControlPoints != null && secondarySelectedControlPointIndex < mControlPoints.length)
+         {
+            (mControlPoints [secondarySelectedControlPointIndex] as ControlPoint).SetSelectedLevel (ControlPoint.SelectedLevel_Secondary);
+         }
+      }
+      
+      protected function OnControlPointsModified (result:ControlPointModifyResult, actionDone:Boolean):void
+      {
+         if (result == null)
+            return;
+         
+         if (result.mToDeleteAsset)
+         {
+         }
+         else
+         {
+            var localAssetDisplayment:Point = new Point (result.mAssetPosLocalAdjustX, result.mAssetPosLocalAdjustY);
+            var globalAssetDisplayment:Point = AssetToManager (localAssetDisplayment, false);
+            SetPosition (GetPositionX () + globalAssetDisplayment.x, GetPositionY () + globalAssetDisplayment.y);
+
+            if (actionDone)
+            {
+               UpdateSelectionProxy ();
+               RebuildControlPoints ();
+               var selectedControlPointIndex:int = result.mNewSelectedControlPointIndex;
+               if (selectedControlPointIndex >= 0 && selectedControlPointIndex < mControlPoints.length)
+               {
+                  OnSoloControlPointSelected (mControlPoints [selectedControlPointIndex] as ControlPoint);
+               }
+            }
+            
+            UpdateAppearance ();
+         }
+         
+         if (actionDone)
+         {
+            NotifyModifiedForReferers ();
+         }
+      }
+
+      override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
+      {
+         var localDisplayment:Point = ManagerToAsset (new Point (dx, dy), false); 
+         
+         var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).OnMoveControlPoint (mControlPoints, controlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
+         OnControlPointsModified (result, done);
+      }
+
+      override public function DeleteControlPoint (controlPoint:ControlPoint):void
+      {
+         var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).DeleteControlPoint (mControlPoints, controlPoint.GetIndex ());
+         OnControlPointsModified (result, true);
+      }
+
+      override public function InsertControlPointBefore (controlPoint:ControlPoint):void
+      {
+         var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).InsertControlPointBefore (mControlPoints, controlPoint.GetIndex ());
+         OnControlPointsModified (result, true);
       }
 
 //====================================================================

@@ -1,8 +1,10 @@
 package editor.image.vector
 {
    import flash.display.DisplayObject;
+   import flash.display.Sprite;
    import flash.display.Shape;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
 
    import com.tapirgames.util.GraphicsUtil;
 
@@ -44,6 +46,13 @@ package editor.image.vector
             if (mMaxLocalY < point.y)
                mMaxLocalY = point.y;
          }
+      }
+      
+      override public function SetLocalVertexPoints (points:Array):void
+      {
+         super.SetLocalVertexPoints (points);
+         
+         UpdateMinMaxXYs ();
       }
 
       public function OnCreating (points:Array):Point
@@ -92,7 +101,7 @@ package editor.image.vector
          return new Point (centerX, centerY);
       }
 
-      public function CreateSprite ():DisplayObject
+      public function CreateSprite (isSelected:Boolean = false):DisplayObject
       {
          var filledColor:uint = GetBodyColor ();
          var borderColor:uint = GetBorderColor ();
@@ -119,7 +128,7 @@ package editor.image.vector
          {
             var point1:Point = vertexPoints [0] as Point;
             var point2:Point = vertexPoints [1] as Point;
-            GraphicsUtil.ClearAndDrawLine (polygonSprite, point1.x, point1.y, point2.x, point2.y, borderColor, borderThickness);
+            GraphicsUtil.ClearAndDrawLine (polygonSprite, point1.x, point1.y, point2.x, point2.y, isSelected ? 0x0000FF : borderColor, borderThickness);
          }
          else if (numVertexes >= 3)
          {
@@ -129,6 +138,33 @@ package editor.image.vector
             GraphicsUtil.ClearAndDrawPolygon (polygonSprite, vertexPoints, borderColor, borderThickness, drawBg, filledColor, 
                                               bitmapModule == null ? null : bitmapModule.GetBitmapData (),
                                               bitmapTransform == null ? null : bitmapTransform.ToMatrix ());
+
+            if (isSelected || (! mPhysicsBuildable))
+            {
+               var contianer:Sprite = new Sprite ();
+               contianer.addChild (polygonSprite);
+
+               if (isSelected)
+               {
+                  var blueShape:Shape = new Shape ();
+                  GraphicsUtil.ClearAndDrawPolygon (blueShape, vertexPoints, 0x0000FF, -1, true, 0x0000FF);
+                  blueShape.alpha = 0.5;
+                  contianer.addChild (blueShape);
+               }
+               
+               if (! mPhysicsBuildable)
+               {
+                  var rectangle:Rectangle = polygonSprite.getBounds (polygonSprite);
+                  
+                  var redShape:Shape = new Shape ();
+                  GraphicsUtil.ClearAndDrawRect (redShape, rectangle.left, rectangle.top, rectangle.width, rectangle.height, 
+                                                 0xFF0000, 3, false, 0xFF00000);
+                  redShape.alpha = 0.5;
+                  contianer.addChild (redShape);
+               }
+               
+               return contianer;
+            }
          }
 
          return polygonSprite;
@@ -264,7 +300,11 @@ package editor.image.vector
 
       public function OnMoveControlPoint (controlPoints:Array, movedControlPointIndex:int, dx:Number, dy:Number):ControlPointModifyResult
       {
-         return OnMovePolyControlPoint (mLocalVertexPoints, controlPoints, movedControlPointIndex, dx, dy);
+         var r:ControlPointModifyResult = OnMovePolyControlPoint (mLocalVertexPoints, controlPoints, movedControlPointIndex, dx, dy);
+         
+         UpdateMinMaxXYs ();
+         
+         return r;
       }
 
       public static function OnDeletePolyControlPoint (controlPoints:Array, localVertexPoints:Array, toDeleteControlPointIndex:int, minNumPoints:int):ControlPointModifyResult
@@ -302,7 +342,11 @@ package editor.image.vector
 
       public function DeleteControlPoint (controlPoints:Array, toDeleteControlPointIndex:int):ControlPointModifyResult
       {
-         return OnDeletePolyControlPoint (controlPoints, mLocalVertexPoints, toDeleteControlPointIndex, 3);
+         var r:ControlPointModifyResult = OnDeletePolyControlPoint (controlPoints, mLocalVertexPoints, toDeleteControlPointIndex, 3);
+         
+         UpdateMinMaxXYs ();
+         
+         return r;
       }
 
       public static function OnInsertPloyControlPointBefore (controlPoints:Array, localVertexPoints:Array, insertBeforeControlPointIndex:int):ControlPointModifyResult
@@ -343,7 +387,11 @@ package editor.image.vector
 
       public function InsertControlPointBefore (controlPoints:Array, insertBeforeControlPointIndex:int):ControlPointModifyResult
       {
-         return OnInsertPloyControlPointBefore (controlPoints, mLocalVertexPoints, insertBeforeControlPointIndex);
+         var r:ControlPointModifyResult = OnInsertPloyControlPointBefore (controlPoints, mLocalVertexPoints, insertBeforeControlPointIndex);
+         
+         UpdateMinMaxXYs ();
+         
+         return r;
       }
    }
 }

@@ -30,11 +30,11 @@ package editor.image.vector
          return VectorShapeRectangleForEditing.OnCreatingRectangle (this, points);
       }
       
-      public function CreateSprite ():DisplayObject
+      public function CreateSprite (isSelected:Boolean = false):DisplayObject
       {
          var container:Sprite = new Sprite ();
          
-         var background:DisplayObject = VectorShapeRectangleForEditing.CreateRectangleSprite (this);
+         var background:DisplayObject = VectorShapeRectangleForEditing.CreateRectangleSprite (this, isSelected);
          container.addChild (background);
          
          
@@ -62,6 +62,11 @@ package editor.image.vector
          textBitmap.x = - textBitmap.width  * 0.5;
          textBitmap.y = - textBitmap.height * 0.5;
          container.addChild (textBitmap);
+         
+         if (isSelected)
+         {
+            // todo
+         }
          
          return container;
       }

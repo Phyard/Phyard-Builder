@@ -1,6 +1,7 @@
 package editor.image.vector
 {
    import flash.display.DisplayObject;
+   import flash.display.Sprite;
    import flash.display.Shape;
    import flash.geom.Point;
 
@@ -43,7 +44,7 @@ package editor.image.vector
          return new Point (posX, posY);
       }
 
-      public function CreateSprite ():DisplayObject
+      public function CreateSprite (isSelected:Boolean = false):DisplayObject
       {
          var filledColor:uint = GetBodyColor ();
          var borderColor:uint = GetBorderColor ();
@@ -68,7 +69,23 @@ package editor.image.vector
                                                             bitmapModule == null ? null : bitmapModule.GetBitmapData (),
                                                             bitmapTransform == null ? null : bitmapTransform.ToMatrix ());
 
-         return circleSprite;
+         if (isSelected)
+         {
+            var blueShape:Shape = new Shape ();
+            GraphicsUtil.ClearAndDrawCircle (blueShape, 0, 0, visualRadius, 0x0000FF,
+                                                               -1, true, 0x0000FF);
+            blueShape.alpha = 0.5;
+            
+            var contianer:Sprite = new Sprite ();
+            contianer.addChild (circleSprite);
+            contianer.addChild (blueShape);
+            
+            return contianer;
+         }
+         else
+         {
+            return circleSprite;
+         }
       }
 
       public function BuildSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void

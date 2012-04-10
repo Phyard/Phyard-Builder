@@ -5,10 +5,6 @@ package editor.trigger {
 
    import editor.display.control.ModulePickButton;
 
-   import editor.world.World;
-   import editor.entity.WorldEntity;
-   import editor.entity.Entity;
-
    import editor.image.AssetImageModule;
 
    import common.trigger.ValueTypeDefine;

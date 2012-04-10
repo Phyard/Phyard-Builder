@@ -9,7 +9,7 @@ package editor.entity {
       
       protected var mSubIndex:int = -1;
       
-      public function WorldSubEntity (world:World, mainEntity:Entity = null, subIndex:int = -1)
+      public function WorldSubEntity (world:World, mainEntity:Entity, subIndex:int = -1)
       {
          super (world);
          
@@ -24,7 +24,7 @@ package editor.entity {
       
       override public function GetMainEntity ():Entity
       {
-         return mMainEntity == null ? this : mMainEntity;
+         return mMainEntity;
       }
       
       override public function GetSubIndex ():int

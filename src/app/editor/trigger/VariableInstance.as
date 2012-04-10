@@ -21,11 +21,13 @@ package editor.trigger {
       private var mVariableDefinition:VariableDefinition;
       
    // only valid when mVariableDefinition == null
-      private var mValuetype:int = ValueTypeDefine.ValueType_Void; 
+      private var mValuetype:int = ValueTypeDefine.ValueType_Void;
       private var mName:String = null;
       
       // used in VariableSpace.CreateVariableInstance () and GetNullVariableInstance ()
-      public function VariableInstance (variableSpace:VariableSpace, id:int, variableDefinition:VariableDefinition, valueType:int = ValueTypeDefine.ValueType_Void, variableName:String = null, intialValue:Object = null)
+      public function VariableInstance (variableSpace:VariableSpace, id:int, variableDefinition:VariableDefinition, 
+                        valueType:int=0, /*ValueTypeDefine.ValueType_Void,*/ // shit, mxmlc bug 
+                        variableName:String = null, intialValue:Object = null)
       {
          mVariableSpace = variableSpace;
          SetIndex (id);

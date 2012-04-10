@@ -181,19 +181,19 @@ package editor.asset {
          return this;
       }
       
-      public function GetSelectableAssets ():Array
-      {
-         return [this];
-      }
-      
       public function GetSubAssets ():Array
       {
          return [];
       }
       
-      public function GetSubIndex ():int
+      //public function GetSubIndex ():int
+      //{
+      //   return -1;
+      //}
+      
+      public function GetSelectableAssets ():Array
       {
-         return -1;
+         return [this];
       }
       
 //=================================================================================

@@ -40,6 +40,35 @@ package editor {
    
    public class EditorContext
    {
+      // todo, use a singleton instead of static fields
+      
+//=====================================================================
+//
+//=====================================================================
+      
+      //private static var mWorld:World = new World (); // should not be null at any time
+      //
+      //public static function RebuildCurrentWorld ():World
+      //{
+      //   Cleanup ();
+      //   
+      //   mWorld = new World ();
+      //   
+      //   return GetCurrentWorld ();
+      //}
+      //
+      //public static function GetCurrentWorld ():World
+      //{
+      //   return mWorld;
+      //}
+      
+      public static function GetCurrentWorld ():World
+      {
+         if (mEditorWorldView == null)
+            return null;
+         
+         return mEditorWorldView.GetEditorWorld ();
+      }
       
 //=====================================================================
 //
@@ -240,6 +269,11 @@ package editor {
       //public static var mCollisionCategoryView:CollisionManagerView = null;
       //public static var mFunctionEditingView:FunctionEditingView = null;
       
+      public static function GetMainView ():WorldView
+      {
+         return mEditorWorldView;
+      }
+      
 //=====================================================================
 //   key listener
 //=====================================================================
@@ -288,23 +322,6 @@ package editor {
       public static function GetKeyboardListener ():KeyboardListener
       {
          return mKeyboardListener;
-      }
-      
-//=====================================================================
-//
-//=====================================================================
-      
-      public static function GetMainView ():WorldView
-      {
-         return mEditorWorldView;
-      }
-      
-      public static function GetCurrentWorld ():World
-      {
-         if (mEditorWorldView == null)
-            return null;
-         
-         return mEditorWorldView.GetEditorWorld ();
       }
       
 //=====================================================================

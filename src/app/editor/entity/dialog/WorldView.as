@@ -167,6 +167,10 @@ package editor.entity.dialog {
    import editor.undo.WorldHistoryManager;
    import editor.undo.WorldState;
    
+   import editor.world.EntityContainer;
+   
+   import editor.ccat.CollisionCategoryManager;
+   
    import editor.trigger.entity.Linkable;
    
    import editor.trigger.Filters;
@@ -849,7 +853,7 @@ package editor.entity.dialog {
          {
             for (i = mEditingEffectLayer.numChildren - 1; i >= 0; -- i)
             {
-               effect = mEditingEffectLayer.getChildAt (i) as EditingEffect
+               effect = mEditingEffectLayer.getChildAt (i) as EditingEffect;
                if (effect != null)
                {
                   effect.Update ();
@@ -859,7 +863,7 @@ package editor.entity.dialog {
          
          for (i = mFloatingMessageLayer.numChildren - 1; i >= 0; -- i)
          {
-            effect = mFloatingMessageLayer.getChildAt (i) as EditingEffect
+            effect = mFloatingMessageLayer.getChildAt (i) as EditingEffect;
             if (effect != null)
             {
                effect.Update ();
@@ -1463,7 +1467,8 @@ package editor.entity.dialog {
             {
                ++ numEntities;
                
-               if (entity is EntityVectorShape)
+               //if (entity is EntityVectorShape)
+               if (entity is EntityShape)
                {
                   ++ numShapes;
                   
@@ -2131,8 +2136,8 @@ package editor.entity.dialog {
       protected function RetrieveShapePhysicsProperties (shape:EntityShape, values:Object):void
       {        
          values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
-         values.mCollisionCategoryListDataProvider =  mEditorWorld.GetCollisionCategoryListDataProvider ();
-         values.mCollisionCategoryListSelectedIndex = editor.world.World.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
+         values.mCollisionCategoryListDataProvider =  mEditorWorld.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
+         values.mCollisionCategoryListSelectedIndex = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
          
          values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
          values.mIsSensor = shape.mIsSensor;
@@ -2457,8 +2462,8 @@ package editor.entity.dialog {
             
             //>>from v1.02
             jointValues.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, true, "[Auto Select]");
-            jointValues.mShapeList1SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape1Index (), jointValues.mShapeListDataProvider);
-            jointValues.mShapeList2SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape2Index (), jointValues.mShapeListDataProvider);
+            jointValues.mShapeList1SelectedIndex = EntityContainer.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape1Index (), jointValues.mShapeListDataProvider);
+            jointValues.mShapeList2SelectedIndex = EntityContainer.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape2Index (), jointValues.mShapeListDataProvider);
             jointValues.mAnchorIndex = jointAnchor.GetAnchorIndex (); // hinge will modify it below
             //<<
             

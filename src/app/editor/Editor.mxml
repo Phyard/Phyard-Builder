@@ -1230,66 +1230,6 @@
 // 
 //========================================================================================
             
-            /*
-            private function OnShowEntityEditView ():void
-            {
-               Button_ShowEntityEditView.selected = true;
-               //Button_ShowCCatEditView.selected = false;
-               Button_ShowFunctionEditView.selected = false;
-               
-               //if (ViewStack_EditView.selectedChild == CCatDesignView)
-               //{
-               //   MainView.OnFinishedCCatEditing ();
-               //}
-               //else 
-               if (ViewStack_EditView.selectedChild == FunctionDesignView)
-               {
-                  MainView.OnFinishedFunctionEditing ();
-               }
-               
-               ViewStack_EditView.selectedChild = EntityDesignView;
-               
-               EditorContext.SetKeyboardListener (MainView);
-               ViewStack_ViewEditCommands.selectedChild = Box_EntityEditViewCommands;
-            }
-            */
-            
-            /*
-            private function OnShowCCatEditView ():void
-            {
-               Button_ShowEntityEditView.selected = false;
-               //Button_ShowCCatEditView.selected = true;
-               Button_ShowFunctionEditView.selected = false;
-               
-               ViewStack_EditView.selectedChild = CCatDesignView;
-               ViewStack_ViewEditCommands.selectedChild = Box_CCatEditViewCommands;
-               
-               EditorContext.SetKeyboardListener (CollisionManagerView);
-               CollisionManagerView.SetCollisionManager (EditorContext.mEditorWorldView.GetEditorWorld ().GetCollisionManager ());
-            }
-            */
-            
-            /*
-            private function OnShowFunctionEditView ():void
-            {
-               Button_ShowEntityEditView.selected = false;
-               //Button_ShowCCatEditView.selected = false;
-               Button_ShowFunctionEditView.selected = true;
-               
-               ViewStack_EditView.selectedChild = FunctionDesignView;
-               
-               EditorContext.SetKeyboardListener (FunctionEditingView);
-               ViewStack_ViewEditCommands.selectedChild = Box_FunctionEditViewCommands;
-               
-               EditorContext.SetKeyboardListener (FunctionEditingView);
-               FunctionEditingView.SetFunctionManager (EditorContext.mEditorWorldView.GetEditorWorld ().GetFunctionManager ());
-            }
-            */
-            
-//========================================================================================
-// 
-//========================================================================================
-            
             private function OnClickTutorialLink (event:Event):void
             {
                UrlUtil.PopupPage (Define.EditingTutorialUrl);

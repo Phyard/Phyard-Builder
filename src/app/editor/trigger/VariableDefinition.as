@@ -133,10 +133,11 @@ package editor.trigger {
       
       public static function ValidateValueObject_Entity (valueObject:Object):Object
       {
-         var world:World = EditorContext.GetCurrentWorld (); // in loading stage, it would be null
+         //var world:World = EditorContext.GetCurrentWorld (); // in loading stage, it would be null
          
          var entity:WorldEntity = valueObject as WorldEntity;
-         if (entity != null && (entity.GetWorld () != world || entity.GetCreationOrderId () < 0))
+         //if (entity != null && (entity.GetWorld () != world || entity.GetCreationOrderId () < 0))
+         if (entity != null && entity.GetCreationOrderId () < 0)
             entity = null;
          
          return entity;
@@ -144,7 +145,7 @@ package editor.trigger {
       
       public static function ValidateValueObject_CollisiontCategory (valueObject:Object):Object
       {
-         var world:World = EditorContext.GetCurrentWorld (); // in loading stage, it would be null
+         //var world:World = EditorContext.GetCurrentWorld (); // in loading stage, it would be null
          
          var category:CollisionCategory = valueObject as CollisionCategory;
          if (category != null && category.GetAppearanceLayerId () < 0)

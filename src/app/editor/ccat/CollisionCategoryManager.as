@@ -288,6 +288,47 @@ package editor.ccat {
          
          return changed;
       }
+
+//=================================================================================
+//   queries
+//=================================================================================
+
+      public function GetCollisionCategoryListDataProvider (isForPureCustomFunction:Boolean = false):Array
+      {
+         var list:Array = new Array ();
+
+         list.push ({label:"-1:{Hidden Category}", mCategoryIndex:Define.CCatId_Hidden});
+
+         if (! isForPureCustomFunction)
+         {
+            var child:Object;
+            var category:CollisionCategory;
+            var numCats:int = GetNumCollisionCategories ();
+
+            for (var i:int = 0; i < numCats; ++ i)
+            {
+               category = GetCollisionCategoryByIndex (i);
+
+               var item:Object = new Object ();
+               item.label = i + ": " + category.GetCategoryName ();
+               item.mCategoryIndex = category.GetAppearanceLayerId ();
+               list.push (item);
+            }
+         }
+
+         return list;
+      }
+
+      public static function CollisionCategoryIndex2SelectListSelectedIndex (categoryIndex:int, dataProvider:Array):int
+      {
+         for (var i:int = 0; i < dataProvider.length; ++ i)
+         {
+            if (dataProvider[i].mCategoryIndex == categoryIndex)
+               return i;
+         }
+
+         return CollisionCategoryIndex2SelectListSelectedIndex (Define.CCatId_Hidden, dataProvider);
+      }
       
 //=============================================
 // for undo point

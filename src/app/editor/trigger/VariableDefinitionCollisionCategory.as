@@ -9,6 +9,8 @@ package editor.trigger {
    
    import editor.EditorContext;
    
+   import editor.ccat.CollisionCategoryManager;
+   
    import common.trigger.ValueTypeDefine;
    
    import common.Define;
@@ -56,14 +58,14 @@ package editor.trigger {
       override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var world:World = EditorContext.GetCurrentWorld ();
-         var category_list:Array = world.GetCollisionCategoryListDataProvider (isForPureCustomFunction);
+         var category_list:Array = world.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider (isForPureCustomFunction);
          
          var category:CollisionCategory = valueSourceDirect.GetValueObject () as CollisionCategory;
          var sel_index:int = -1;
          var category_index:int = -1;
          if (category != null)
             category_index = category.GetAppearanceLayerId ();
-         sel_index = World.CollisionCategoryIndex2SelectListSelectedIndex (category_index, category_list);
+         sel_index = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (category_index, category_list);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = category_list;

@@ -93,8 +93,6 @@ package editor.world {
    {
       public var mSelectionEngineForVertexes:SelectionEngine; // used within package
 
-      public var mBrothersManager:BrothersManager;
-
       //public var mCollisionManager:CollisionManager;
       public var mCollisionCategoryManager:CollisionCategoryManager;
 
@@ -123,8 +121,6 @@ package editor.world {
          
          //mSelectionEngineForVertexes = new SelectionEngine ();
          mSelectionEngineForVertexes = mSelectionEngine;
-
-         mBrothersManager = new BrothersManager ();
 
          //mCollisionManager = new CollisionManager ();
          mCollisionCategoryManager = new CollisionCategoryManager ();
@@ -176,14 +172,6 @@ package editor.world {
 
       override public function DestroyEntity (entity:Entity):void
       {
-      // friends
-
-
-
-      // brothers
-
-         mBrothersManager.OnDestroyEntity (entity);
-
       // ...
 
          super.DestroyEntity (entity);
@@ -1489,240 +1477,6 @@ package editor.world {
       }
 
 //=================================================================================
-//   queries
-//=================================================================================
-
-      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, includeGround:Boolean = false, nullEntityLable:String = null, isForPureCustomFunction:Boolean = false):Array
-      {
-         var list:Array = new Array ();
-
-         if (includeGround)
-            list.push({label:Define.EntityId_Ground + ":{Ground}", mEntityIndex:Define.EntityId_Ground});
-
-         if (nullEntityLable == null)
-            nullEntityLable = "(null)";
-
-         list.push({label:Define.EntityId_None + ":" + nullEntityLable, mEntityIndex:Define.EntityId_None});
-
-         if (! isForPureCustomFunction)
-         {
-            var entity:Entity;
-
-            var numEntities:int = mEntitiesSortedByCreationId.length;
-            if (numEntities != numChildren)
-               trace ("!!! numEntities != numChildren");
-
-            for (var i:int = 0; i < numEntities; ++ i)
-            {
-               entity = mEntitiesSortedByCreationId [i] as Entity;
-
-               if ( filterFunc == null || filterFunc (entity) )
-               {
-                  var item:Object = new Object ();
-                  item.label = i + ": " + entity.GetTypeName ();
-                  item.mEntityIndex = entity.GetCreationOrderId ();
-                  list.push (item);
-               }
-            }
-         }
-
-         return list;
-      }
-
-      public static function EntityIndex2SelectListSelectedIndex (entityIndex:int, dataProvider:Array):int
-      {
-         for (var i:int = 0; i < dataProvider.length; ++ i)
-         {
-            if (dataProvider[i].mEntityIndex == entityIndex)
-               return i;
-         }
-
-         return EntityIndex2SelectListSelectedIndex (Define.EntityId_None, dataProvider);
-      }
-
-      public function GetCollisionCategoryListDataProvider (isForPureCustomFunction:Boolean = false):Array
-      {
-         var list:Array = new Array ();
-
-         list.push ({label:"-1:{Hidden Category}", mCategoryIndex:Define.CCatId_Hidden});
-
-         if (! isForPureCustomFunction)
-         {
-            var child:Object;
-            var category:CollisionCategory;
-            var numCats:int = mCollisionCategoryManager.GetNumCollisionCategories ();
-
-            for (var i:int = 0; i < numCats; ++ i)
-            {
-               category = mCollisionCategoryManager.GetCollisionCategoryByIndex (i);
-
-               var item:Object = new Object ();
-               item.label = i + ": " + category.GetCategoryName ();
-               item.mCategoryIndex = category.GetAppearanceLayerId ();
-               list.push (item);
-            }
-         }
-
-         return list;
-      }
-
-      public static function CollisionCategoryIndex2SelectListSelectedIndex (categoryIndex:int, dataProvider:Array):int
-      {
-         for (var i:int = 0; i < dataProvider.length; ++ i)
-         {
-            if (dataProvider[i].mCategoryIndex == categoryIndex)
-               return i;
-         }
-
-         return CollisionCategoryIndex2SelectListSelectedIndex (Define.CCatId_Hidden, dataProvider);
-      }
-
-//=================================================================================
-//   brothers
-//=================================================================================
-
-      public function GetBrotherGroups ():Array
-      {
-         return mBrothersManager.mBrotherGroupArray;
-      }
-
-      public function GlueEntities (entities:Array):void
-      {
-         mBrothersManager.MakeBrothers (entities);
-      }
-
-      public function GlueEntitiesByCreationIds (entityIndices:Array):void
-      {
-         var entities:Array = new Array (entityIndices.length);
-
-         for (var i:int = 0; i < entityIndices.length; ++ i)
-         {
-            entities [i] = GetEntityByCreationId (entityIndices [i]);
-         }
-
-         mBrothersManager.MakeBrothers (entities);
-      }
-
-      public function GlueSelectedEntities ():void
-      {
-         var entityArray:Array = GetSelectedEntities ();
-
-         GlueEntities (entityArray);
-      }
-
-      public function BreakApartSelectedEntities ():void
-      {
-         var entityArray:Array = GetSelectedEntities ();
-
-         mBrothersManager.BreakApartBrothers (entityArray);
-      }
-
-      public function GetGluedEntitiesWithEntity (entity:Entity):Array
-      {
-         var brothers:Array = mBrothersManager.GetBrothersOfEntity (entity);
-         return brothers == null ? new Array () : brothers;
-      }
-      
-      public function GetAllGluedEntities (entities:Array):Array
-      {
-         var allGluedEntities:Array = new Array ();
-         
-         var entity:Entity;
-         var brothers:Array;
-         var actionId:int = Entity.GetNextActionId ();
-         var brotherGroups:Array = new Array ();
-         
-         for each (entity in entities)
-         {
-            if (entity.GetCurrentActionId () < actionId)
-            {
-               entity.SetCurrentActionId (actionId);
-               allGluedEntities.push (entity);
-            }
-            
-            brothers = entity.GetBrothers ();
-
-            if (brothers != null)
-            {
-               if (brotherGroups.indexOf (brothers) < 0)
-                  brotherGroups.push (brothers);
-            }
-         }
-         
-         for each (brothers in brotherGroups)
-         {
-            for each (entity in brothers)
-            {
-               if (entity.GetCurrentActionId () < actionId)
-               {
-                  entity.SetCurrentActionId (actionId);
-                  allGluedEntities.push (entity);
-               }
-            }
-         }
-         
-         return allGluedEntities;
-      }
-
-      public function SelectGluedEntitiesOfSelectedEntities ():void
-      {
-         var brotherGroups:Array = new Array ();
-         var entityId:int;
-         var brothers:Array;
-         var groupId:int;
-         var index:int;
-         var entity:Entity;
-
-         var selectedEntities:Array = GetSelectedEntities ();
-
-         for (entityId = 0; entityId < selectedEntities.length; ++ entityId)
-         {
-            brothers = selectedEntities [entityId].GetBrothers ();
-
-            if (brothers != null)
-            {
-               index = brotherGroups.indexOf (brothers);
-               if (index < 0)
-                  brotherGroups.push (brothers);
-            }
-         }
-
-         for (groupId = 0; groupId < brotherGroups.length; ++ groupId)
-         {
-            brothers = brotherGroups [groupId];
-
-            for (entityId = 0; entityId < brothers.length; ++ entityId)
-            {
-               entity = brothers [entityId] as Entity;
-
-               //if ( ! IsEntitySelected (entity) )
-               if ( ! entity.IsSelected () )  // not formal, but fast
-               {
-                  SelectEntity (entity);
-               }
-            }
-         }
-      }
-
-//=================================================================================
-//   friends
-//=================================================================================
-
-
-      public function MakeFrinedsBetweenSelectedEntities ():void
-      {
-      }
-
-      public function BreakFriendsWithSelectedEntities ():void
-      {
-      }
-
-      public function BreakFriendsBwtweenSelectedEntities ():void
-      {
-
-      }
-
-//=================================================================================
 //   collision categories
 //=================================================================================
 
@@ -1766,41 +1520,6 @@ package editor.world {
       public function GetCodeLibManager ():CodeLibManager
       {
          return mCodeLibManager
-      }
-
-//=================================================================================
-//   draw links
-//=================================================================================
-
-      private static function SortEntitiesByDrawLinksOrder (entity1:Entity, entity2:Entity):int
-      {
-         var drawLinksOrder1:int = entity1.GetDrawLinksOrder ();
-         var drawLinksOrder2:int = entity2.GetDrawLinksOrder ();
-
-         if (drawLinksOrder1 < drawLinksOrder2)
-            return -1;
-         else if (drawLinksOrder1 > drawLinksOrder2)
-            return 1;
-         else
-            return 0;
-      }
-
-      public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean):void
-      {
-         var entityArray:Array = mEntitiesSortedByCreationId.concat ();
-         entityArray.sort (SortEntitiesByDrawLinksOrder);
-
-         var entity:Entity;
-         var i:int;
-         var numEntities:int = entityArray.length;
-         for (i = 0; i < numEntities; ++ i)
-         {
-            entity = entityArray [i];
-            if (entity != null)
-            {
-               entity.DrawEntityLinks (canvasSprite, forceDraw);
-            }
-         }
       }
 
 //=================================================================================
@@ -1938,15 +1657,6 @@ package editor.world {
             return null;
          
          return mAssetSoundManager.GetAssetByAppearanceId (soundIndex) as AssetSound;
-      }
-
-//=================================================================================
-//   debug info
-//=================================================================================
-
-      public function RepaintContactsInLastRegionSelecting (container:Sprite):void
-      {
-         mSelectionEngine.RepaintContactsInLastRegionSelecting (container);
       }
    }
 }

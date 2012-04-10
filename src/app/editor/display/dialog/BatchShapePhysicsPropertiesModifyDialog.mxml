@@ -148,7 +148,7 @@
 
          private function OnInitPanel ():void
          {
-            SelectList_CollisionCategory.dataProvider = EditorContext.GetCurrentWorld ().GetCollisionCategoryListDataProvider ();
+            SelectList_CollisionCategory.dataProvider = EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
             SelectList_CollisionCategory.selectedIndex = 0;
          }
 

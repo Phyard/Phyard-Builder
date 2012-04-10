@@ -235,7 +235,7 @@ package editor.ccat {
          return GetLinkZoneId (local_point.x, local_point.y) >= 0;
       }
       
-      public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toAsset:Asset, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
+      public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
       {
          return false; // this is not done by category. It is finished by category manamger.
       }

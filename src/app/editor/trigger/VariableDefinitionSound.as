@@ -5,10 +5,6 @@ package editor.trigger {
 
    import editor.display.control.SoundPickButton;
 
-   import editor.world.World;
-   import editor.entity.WorldEntity;
-   import editor.entity.Entity;
-
    import editor.sound.AssetSound;
 
    import common.trigger.ValueTypeDefine;

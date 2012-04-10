@@ -3,10 +3,6 @@ package editor.trigger {
    import mx.core.UIComponent;
    import mx.controls.Label;
    
-   import editor.world.World;
-   import editor.entity.WorldEntity;
-   import editor.entity.Entity;
-   
    import common.trigger.ValueTypeDefine;
    
    import common.Define;

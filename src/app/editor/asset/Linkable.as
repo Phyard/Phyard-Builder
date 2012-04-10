@@ -5,6 +5,6 @@ package editor.asset {
    {
       function GetLinkZoneId (localX:Number, localY:Number, checkActiveZones:Boolean = true, checkPassiveZones:Boolean = true):int;
       function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean;
-      function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toAsset:Asset, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean;
+      function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean;
    }
 }

@@ -525,6 +525,20 @@ package editor.entity {
          return this;
       }
       
+      public function GetSubEntities ():Array
+      {
+         //return [this]; // maybe be not a good idea
+         
+         // after add GetSelectableEntities, the more reasonable implementation is used now.
+         
+         return []; // if use this, be careful! Many need to modify.
+      }
+      
+      public function GetSubIndex ():int
+      {
+         return -1;
+      }
+
       public function GetSelectableEntities ():Array
       {
          // currently, only joints have sub entities.
@@ -538,20 +552,6 @@ package editor.entity {
          }
          
          return selectableEntities;
-      }
-      
-      public function GetSubEntities ():Array
-      {
-         //return [this]; // maybe be not a good idea
-         
-         // after add GetSelectableEntities, the more reasonable implementation is used now.
-         
-         return []; // if use this, be careful! Many need to modify.
-      }
-      
-      public function GetSubIndex ():int
-      {
-         return -1;
       }
       
 //====================================================================

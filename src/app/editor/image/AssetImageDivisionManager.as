@@ -138,10 +138,10 @@ package editor.image {
          if (selectIt)
             SetSelectedAsset (imageDivision);
          
-         if (pureModuleManager != null) // in loading stage, EditorContext.GetCurrentWorld () is null
+         if (pureModuleManager != null) // in loading stage, EditorContext.GetEditorApp ().GetWorld () is null
             pureModuleManager.CreateImagePureModule (imageDivision, selectIt);
          else
-            EditorContext.GetCurrentWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (imageDivision, selectIt);
+            EditorContext.GetEditorApp ().GetWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (imageDivision, selectIt);
          
          return imageDivision;
       }

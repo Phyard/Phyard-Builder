@@ -347,7 +347,7 @@ package editor.entity {
 
       public function GetCollisionCategoryIndex ():int
       {
-         var index:int = EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (mCollisionCategory);
+         var index:int = EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (mCollisionCategory);
 
          if (index == Define.CCatId_Hidden)
             mCollisionCategory = null;
@@ -357,7 +357,7 @@ package editor.entity {
 
       public function SetCollisionCategoryIndex (index:int):void
       {
-         mCollisionCategory = EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryByIndex (index);
+         mCollisionCategory = EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryByIndex (index);
       }
 
    }

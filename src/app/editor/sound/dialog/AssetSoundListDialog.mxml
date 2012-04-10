@@ -58,7 +58,7 @@
                PopUpManager.centerPopUp (sAssetSoundListDialog);
             }
             
-            sAssetSoundListDialog.GetAssetSoundListingPanel ().SetAssetSoundManager (EditorContext.GetCurrentWorld ().GetAssetSoundManager ());
+            sAssetSoundListDialog.GetAssetSoundListingPanel ().SetAssetSoundManager (EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ());
             
             if (OnSoundPicked != null)
             {
@@ -122,7 +122,7 @@
          
          private function StopAllSounds ():void
          {
-            EditorContext.GetCurrentWorld ().GetAssetSoundManager ().StopAllSounds ();
+            EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ().StopAllSounds ();
             SoundMixer.stopAll ();
          }
          

@@ -98,7 +98,7 @@ package editor.entity {
       // for loading
       public function SetAssetImageModuleForMouseUpByIndex (index:int):void
       {
-         SetAssetImageModuleForMouseUp (EditorContext.GetCurrentWorld ().GetImageModuleByIndex (index));
+         SetAssetImageModuleForMouseUp (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));
       }
       
       // over .
@@ -129,7 +129,7 @@ package editor.entity {
       // for loading
       public function SetAssetImageModuleForMouseOverByIndex (index:int):void
       {
-         SetAssetImageModuleForMouseOver (EditorContext.GetCurrentWorld ().GetImageModuleByIndex (index));
+         SetAssetImageModuleForMouseOver (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));
       }
       
       // down .
@@ -160,7 +160,7 @@ package editor.entity {
       // for loading
       public function SetAssetImageModuleForMouseDownByIndex (index:int):void
       {
-         SetAssetImageModuleForMouseDown (EditorContext.GetCurrentWorld ().GetImageModuleByIndex (index));
+         SetAssetImageModuleForMouseDown (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));
       }
       
 //=============================================================

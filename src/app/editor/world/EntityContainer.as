@@ -621,7 +621,7 @@ package editor.world {
          var circle:EntityVectorShapeCircle = new EntityVectorShapeCircle (this);
          addChild (circle);
 
-         circle.SetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         circle.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
 
          return circle;
       }
@@ -634,7 +634,7 @@ package editor.world {
          var rect:EntityVectorShapeRectangle = new EntityVectorShapeRectangle (this);
          addChild (rect);
 
-         rect.SetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         rect.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
 
          return rect;
       }
@@ -647,7 +647,7 @@ package editor.world {
          var polygon:EntityVectorShapePolygon = new EntityVectorShapePolygon (this);
          addChild (polygon);
 
-         polygon.SetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         polygon.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
 
          return polygon;
       }
@@ -660,7 +660,7 @@ package editor.world {
          var polyline:EntityVectorShapePolyline = new EntityVectorShapePolyline (this);
          addChild (polyline);
 
-         polyline.SetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         polyline.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
 
          return polyline;
       }
@@ -673,7 +673,7 @@ package editor.world {
          var imageModule:EntityShapeImageModule = new EntityShapeImageModule (this);
          addChild (imageModule);
 
-         imageModule.SetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         imageModule.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
 
          return imageModule;
       }
@@ -686,7 +686,7 @@ package editor.world {
          var imageModuleButton:EntityShapeImageModuleButton = new EntityShapeImageModuleButton (this);
          addChild (imageModuleButton);
 
-         imageModuleButton.SetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         imageModuleButton.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
 
          return imageModuleButton;
       }

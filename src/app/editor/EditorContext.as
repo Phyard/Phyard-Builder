@@ -45,24 +45,7 @@ package editor {
          return EditorContext.sEditorApp;
       }
       
-      private static var sEditorContext:EditorContext = null;
-      
-      public static function DestroySingleton ():void
-      {
-         if (sEditorContext != null)
-            sEditorContext.Cleanup ();
-         
-         sEditorContext = null;
-      }
-      
-      public static function BuildNewSingleton (world:World):EditorContext
-      {
-         DestroySingleton ();
-         
-         sEditorContext = new EditorContext (world);
-         
-         return sEditorContext;
-      }
+      internal static var sEditorContext:EditorContext = null; //
       
       public static function GetSingleton ():EditorContext
       {
@@ -73,16 +56,8 @@ package editor {
 //
 //=====================================================================
       
-      private static var mWorld:World;
-      
-      public function EditorContext (world:World)
+      public function EditorContext ()
       {
-         mWorld = world;
-      }
-      
-      public static function GetCurrentWorld ():World
-      {
-         return mWorld;
       }
       
 //=====================================================================
@@ -351,7 +326,7 @@ package editor {
          {
             var codeSnippet:CodeSnippet =  new CodeSnippet (ownerFunctionDefinition);
             codeSnippet.AssignFunctionCallings (copiedCallings);
-            codeSnippet.PhysicsValues2DisplayValues (GetCurrentWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            codeSnippet.PhysicsValues2DisplayValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
             
             EditorContext.mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
          }
@@ -368,7 +343,7 @@ package editor {
             mCopiedCodeSnippet.ValidateCallings ();
             
             var codeSnippet:CodeSnippet = EditorContext.mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
-            codeSnippet.DisplayValues2PhysicsValues (GetCurrentWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            codeSnippet.DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
             
             return codeSnippet;
          }

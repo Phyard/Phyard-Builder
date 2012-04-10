@@ -247,7 +247,7 @@ package editor.codelib {
             mFunctionMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
          }
          
-         EditorContext.GetCurrentWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
+         EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
       }
         
 //=====================================================================

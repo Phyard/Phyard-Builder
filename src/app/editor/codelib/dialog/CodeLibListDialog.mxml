@@ -79,7 +79,7 @@
                PopUpManager.centerPopUp (sCodeLibListDialog);
             }
             
-            sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (EditorContext.GetCurrentWorld ().GetCodeLibManager ());
+            sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager ());
             
             if (OnCCatPicked != null)
             {

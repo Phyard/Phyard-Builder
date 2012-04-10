@@ -491,9 +491,7 @@
             
             private function InitApp ():void
             {
-               EditorContext.sEditorApp = this;
-               
-               SetWorld (new World (), true);
+               Init ();
                
             //===================================================================================================
                
@@ -2314,21 +2312,50 @@
 //========================================================================================
 // new ui
 //========================================================================================
+   
+   //========================================================================================
+   // flow
+   //========================================================================================
+   
+            private function Init ():void
+            {
+               EditorContext.sEditorApp = this;
+               
+               SetWorld (new World (), true);
+            }
+   
+   //========================================================================================
+   // world IO
+   //========================================================================================
 
+            private var mWorld:World = null;
+            
+            public function GetWorld ():World
+            {
+               return mWorld;
+            }
+            
             public function SetWorld (world:World, firstTime:Boolean = false):void
             {
-               EditorContext.BuildNewSingleton (world);
+               EditorContext.sEditorContext = new EditorContext ();
                
-               //MainView = new WorldView ();
-               //MainView.percentWidth = 100;
-               //MainView.percentHeight = 100;
-               //Box_Scenes.addChild (MainView);
-               MainView.SetEntityContainer (world.GetEntityContainer (), firstTime);
+               mWorld = world;
+               
+               if (mWorld != null)
+               {
+                  //MainView = new WorldView ();
+                  //MainView.percentWidth = 100;
+                  //MainView.percentHeight = 100;
+                  //Box_Scenes.addChild (MainView);
+                  MainView.SetEntityContainer (world.GetEntityContainer (), firstTime);
+               }
             }
             
             public function CloseWorld ():void
             {
-               EditorContext.DestroySingleton ();
+               EditorContext.sEditorContext = null;
+               
+               mWorld = null;
                
                //if (MainView != null)
                //{

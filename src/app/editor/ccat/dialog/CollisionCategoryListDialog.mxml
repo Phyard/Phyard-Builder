@@ -72,7 +72,7 @@
                PopUpManager.centerPopUp (sCollisionCategoryListDialog);
             }
             
-            sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().SetCollisionCategoryManager (EditorContext.GetCurrentWorld ().GetCollisionCategoryManager ());
+            sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ());
             
             if (OnCCatPicked != null)
             {

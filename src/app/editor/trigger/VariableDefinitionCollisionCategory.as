@@ -57,7 +57,7 @@ package editor.trigger {
       
       override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
-         var world:World = EditorContext.GetCurrentWorld ();
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
          var category_list:Array = world.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider (isForPureCustomFunction);
          
          var category:CollisionCategory = valueSourceDirect.GetValueObject () as CollisionCategory;
@@ -84,7 +84,7 @@ package editor.trigger {
                valueSourceDirect.SetValueObject (null);
             else
             {
-               var world:World = EditorContext.GetCurrentWorld ();
+               var world:World = EditorContext.GetEditorApp ().GetWorld ();
                var category_index:int = combo_box.selectedItem.mCategoryIndex;
                if (category_index < 0)
                   valueSourceDirect.SetValueObject (null);

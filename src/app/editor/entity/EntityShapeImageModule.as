@@ -94,7 +94,7 @@ package editor.entity {
       // for loading
       public function SetAssetImageModuleByIndex (index:int):void
       {
-         SetAssetImageModule (EditorContext.GetCurrentWorld ().GetImageModuleByIndex (index));
+         SetAssetImageModule (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));
       }
       
 //=============================================================

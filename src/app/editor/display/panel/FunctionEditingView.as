@@ -405,7 +405,7 @@ package editor.display.panel {
             
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
             values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
-            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (EditorContext.GetCurrentWorld ().GetCoordinateSystem ());
+            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetCoordinateSystem ());
             
             ShowFunctionSettingDialog (values, ConfirmSettingEntityProperties);
          }
@@ -425,7 +425,7 @@ package editor.display.panel {
             
             var code_snippet:CodeSnippet = aFunction.GetCodeSnippet ();
             code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-            code_snippet.PhysicsValues2DisplayValues (EditorContext.GetCurrentWorld ().GetCoordinateSystem ());
+            code_snippet.PhysicsValues2DisplayValues (EditorContext.GetEditorApp ().GetWorld ().GetCoordinateSystem ());
          }
       }
       

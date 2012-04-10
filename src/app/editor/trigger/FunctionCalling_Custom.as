@@ -85,7 +85,7 @@ package editor.trigger {
                if (index >= 0)
                   newInputValueSources [i] = mInputValueSources [index];
                else
-                  newInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetCurrentWorld ().GetTriggerEngine ());
+                  newInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
                
                newInputVariableDefinitions [i] = variableDefinition;
             }

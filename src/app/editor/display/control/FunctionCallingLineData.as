@@ -124,7 +124,7 @@ package editor.display.control {
          for (j = 0; j < funcDeclaration.GetNumInputs (); ++ j)
          {
             variableDefinition = funcDeclaration.GetInputParamDefinitionAt (j);
-            valueSource = variableDefinition.GetDefaultValueSource (EditorContext.GetCurrentWorld ().GetTriggerEngine ());
+            valueSource = variableDefinition.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
             initialValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
             currentValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
          }
@@ -226,8 +226,8 @@ package editor.display.control {
                }
                else
                {
-                  newInitialInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetCurrentWorld ().GetTriggerEngine ());
-                  newCurrentInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetCurrentWorld ().GetTriggerEngine ());
+                  newInitialInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+                  newCurrentInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
                }
                
                newInputVariableDefinitions [i] = variableDefinition;

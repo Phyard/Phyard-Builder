@@ -7,6 +7,8 @@ package editor.entity {
    
    import editor.world.EntityContainer;
    
+   import editor.asset.Asset;
+   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
@@ -31,7 +33,7 @@ package editor.entity {
 //   when clone and delete, we need the main entity
 //====================================================================
       
-      override public function GetMainEntity ():Entity
+      override public function GetMainAsset ():Asset
       {
          return mMainEntity;
       }
@@ -42,10 +44,50 @@ package editor.entity {
       }
       
 //====================================================================
+//   transform
+//====================================================================
+      
+      override public function MoveTo (targetX:Number, targetY:Number, intentionDone:Boolean = true):void
+      {
+         super.MoveTo (targetX, targetY, intentionDone);
+         (GetMainAsset () as EntityJoint).NotifyAnchorPositionChanged ();
+      }
+      
+      override public function RotatePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number, intentionDone:Boolean = true):void
+      {
+         super.RotatePositionByCosSin (centerX, centerY, cos, sin, intentionDone);
+         (GetMainAsset () as EntityJoint).NotifyAnchorPositionChanged ();
+      }
+
+      override public function RotateSelf (deltaRotation:Number, intentionDone:Boolean = true):void
+      {
+      }
+      
+      override public function ScalePosition (centerX:Number, centerY:Number, s:Number, intentionDone:Boolean = true):void
+      {
+         super.ScalePosition (centerX, centerY, s, intentionDone);
+         (GetMainAsset () as EntityJoint).NotifyAnchorPositionChanged ();
+      }
+      
+      override public function ScaleSelfTo (targetScale:Number, intentionDone:Boolean = true):void
+      {
+      }
+      
+      override public function FlipPosition (planeX:Number, intentionDone:Boolean = true):void
+      {
+         super.FlipPosition (planeX, intentionDone);
+         (GetMainAsset () as EntityJoint).NotifyAnchorPositionChanged ();
+      }
+      
+      override public function FlipSelf (intentionDone:Boolean = true):void
+      {
+      }
+      
+//====================================================================
 //   when clone and delete, we need the main entity
 //====================================================================
       
-      override public function GetVisibleAlpha ():Number
+      override public function GetVisibleAlphaForEditing ():Number
       {
          return 0.70;
       }
@@ -55,44 +97,6 @@ package editor.entity {
          //return mAnchorIndex;
          return GetSubIndex ();
       }
-      
-      override public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.Move (offsetX, offsetY, updateSelectionProxy);
-         
-         (GetMainEntity () as EntityJoint).NotifyAnchorPositionChanged ();
-      }
-      
-      override public function Rotate (centerX:Number, centerY:Number, dRadians:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.Rotate (centerX, centerY, dRadians, updateSelectionProxy);
-         
-         (GetMainEntity () as EntityJoint).NotifyAnchorPositionChanged ();
-      }
-      
-      override public function Scale (centerX:Number, centerY:Number, ratio:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.Scale (centerX, centerY, ratio, updateSelectionProxy);
-         
-         (GetMainEntity () as EntityJoint).NotifyAnchorPositionChanged ();
-      }
-      
-      
-      override public function FlipHorizontally (mirrorX:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.FlipHorizontally (mirrorX, updateSelectionProxy);
-         
-         GetMainEntity ().UpdateAppearance ();
-      }
-      
-      override public function FlipVertically (mirrorY:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.FlipVertically (mirrorY, updateSelectionProxy);
-         
-         GetMainEntity ().UpdateAppearance ();
-      }
-      
-      
       
    }
 }

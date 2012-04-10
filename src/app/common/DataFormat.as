@@ -204,7 +204,7 @@ package common {
             //<<
          }
          
-         var numEntities:int = editorWorld.GetEntityContainer ().GetNumEntities ();
+         var numEntities:int = editorWorld.GetEntityContainer ().GetNumAssets ();
          var appearId:int;
          var createId:int;
          var editorEntity:Entity;
@@ -212,7 +212,7 @@ package common {
          
          for (createId = 0; createId < numEntities; ++ createId)
          {
-            editorEntity = editorWorld.GetEntityContainer ().GetEntityByCreationId (createId);
+            editorEntity = editorWorld.GetEntityContainer ().GetAssetByCreationId (createId) as Entity;
             
             var entityDefine:Object = new Object ();
             
@@ -279,7 +279,7 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicTask;
                   
                   var task:EntityTask = editorEntity as EntityTask;
-                  entityIndexArray = editorWorld.GetEntityContainer ().EntityArray2EntityCreationIdArray (task.GetEntityAssigners ());
+                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (task.GetEntityAssigners ());
                   
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                }
@@ -298,7 +298,7 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicInputEntityAssigner;
                   
                   var entityAssigner:EntityInputEntityAssigner = editorEntity as EntityInputEntityAssigner;
-                  entityIndexArray = editorWorld.GetEntityContainer ().EntityArray2EntityCreationIdArray (entityAssigner.GetInputEntities ());
+                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (entityAssigner.GetInputEntities ());
                   
                   entityDefine.mSelectorType = entityAssigner.GetSelectorType ();
                   entityDefine.mNumEntities = entityIndexArray == null ? 0 : entityIndexArray.length;
@@ -313,12 +313,12 @@ package common {
                   entityDefine.mPairingType = pairAssigner.GetPairingType ();
                   
                   var pairEntities:Array = pairAssigner.GetInputPairEntities ();
-                  entityIndexArray = editorWorld.GetEntityContainer ().EntityArray2EntityCreationIdArray (pairEntities [0]);
+                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (pairEntities [0]);
                   
                   entityDefine.mNumEntities1 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds1 = entityIndexArray;
                   
-                  entityIndexArray = editorWorld.GetEntityContainer ().EntityArray2EntityCreationIdArray (pairEntities [1]);
+                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (pairEntities [1]);
                   
                   entityDefine.mNumEntities2 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds2 = entityIndexArray;
@@ -328,17 +328,17 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicEventHandler;
                   
                   var eventHandler:EntityEventHandler = editorEntity as EntityEventHandler;
-                  entityIndexArray = editorWorld.GetEntityContainer ().EntityArray2EntityCreationIdArray (eventHandler.GetEntityAssigners ());
+                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (eventHandler.GetEntityAssigners ());
                   
                   entityDefine.mEventId = eventHandler.GetEventId ();
                   
-                  entityDefine.mInputConditionEntityCreationId = editorWorld.GetEntityContainer ().GetEntityCreationId (eventHandler.GetInputConditionEntity () as Entity);
+                  entityDefine.mInputConditionEntityCreationId = editorWorld.GetEntityContainer ().GetAssetCreationId (eventHandler.GetInputConditionEntity () as Entity);
                   entityDefine.mInputConditionTargetValue = eventHandler.GetInputConditionTargetValue ();
                   
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                   
                   //>>v1.08
-                  entityDefine.mExternalActionEntityCreationId = editorWorld.GetEntityContainer ().GetEntityCreationId (eventHandler.GetExternalAction ());
+                  entityDefine.mExternalActionEntityCreationId = editorWorld.GetEntityContainer ().GetAssetCreationId (eventHandler.GetExternalAction ());
                   
                   if (editorEntity is EntityEventHandler_Timer)
                   {
@@ -628,7 +628,7 @@ package common {
                   var hinge:EntityJointHinge = editorEntity as EntityJointHinge;
                   
                   entityDefine.mEntityType = Define.EntityType_JointHinge;
-                  entityDefine.mAnchorEntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( hinge.GetAnchor () );
+                  entityDefine.mAnchorEntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( hinge.GetAnchor () );
                   
                   entityDefine.mEnableLimits = hinge.IsLimitsEnabled ();
                   entityDefine.mLowerAngle = hinge.GetLowerLimit ();
@@ -646,8 +646,8 @@ package common {
                   var slider:EntityJointSlider = editorEntity as EntityJointSlider;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSlider;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( slider.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( slider.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( slider.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( slider.GetAnchor2 () );
                   
                   entityDefine.mEnableLimits = slider.IsLimitsEnabled ();
                   entityDefine.mLowerTranslation = slider.GetLowerLimit ();
@@ -665,8 +665,8 @@ package common {
                   var distanceJoint:EntityJointDistance = editorEntity as EntityJointDistance;
                   
                   entityDefine.mEntityType = Define.EntityType_JointDistance;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( distanceJoint.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( distanceJoint.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( distanceJoint.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( distanceJoint.GetAnchor2 () );
                   
                   //>>from v1.08
                   entityDefine.mBreakDeltaLength = distanceJoint.GetBreakDeltaLength ();
@@ -677,8 +677,8 @@ package common {
                   var spring:EntityJointSpring = editorEntity as EntityJointSpring;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSpring;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( spring.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( spring.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( spring.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( spring.GetAnchor2 () );
                   
                   entityDefine.mStaticLengthRatio = spring.GetStaticLengthRatio ();
                   //entityDefine.mFrequencyHz = spring.GetFrequencyHz ();
@@ -697,15 +697,15 @@ package common {
                   var weld:EntityJointWeld = editorEntity as EntityJointWeld;
                   
                   entityDefine.mEntityType = Define.EntityType_JointWeld;
-                  entityDefine.mAnchorEntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( weld.GetAnchor () );
+                  entityDefine.mAnchorEntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( weld.GetAnchor () );
                }
                else if (editorEntity is EntityJointDummy)
                {
                   var dummy:EntityJointDummy = editorEntity as EntityJointDummy;
                   
                   entityDefine.mEntityType = Define.EntityType_JointDummy;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( dummy.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetEntityCreationId ( dummy.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( dummy.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( dummy.GetAnchor2 () );
                }
                
                if (joint != null)
@@ -733,7 +733,7 @@ package common {
          
          for (appearId = 0; appearId < numEntities; ++ appearId)
          {
-            editorEntity = editorWorld.GetEntityContainer ().GetEntityByAppearanceId (appearId);
+            editorEntity = editorWorld.GetEntityContainer ().GetAssetByAppearanceId (appearId);
             worldDefine.mEntityAppearanceOrder.push (editorEntity.GetCreationOrderId ());
          }
          
@@ -759,7 +759,7 @@ package common {
             }
             if (brotherGroup.length < 2)
             {
-               trace ("one entity group, id = " + editorWorld.GetEntityContainer ().GetEntityCreationId (brotherGroup [brotherId] as Entity));
+               trace ("one entity group, id = " + editorWorld.GetEntityContainer ().GetAssetCreationId (brotherGroup [brotherId] as Entity));
                continue;
             }
             
@@ -767,7 +767,7 @@ package common {
             for (brotherId = 0; brotherId < brotherGroup.length; ++ brotherId)
             {
                editorEntity = brotherGroup [brotherId] as Entity;
-               brotherIDs [brotherId] = editorWorld.GetEntityContainer ().GetEntityCreationId (editorEntity);
+               brotherIDs [brotherId] = editorWorld.GetEntityContainer ().GetAssetCreationId (editorEntity);
             }
             worldDefine.mBrotherGroupDefines.push (brotherIDs);
          }
@@ -1548,7 +1548,7 @@ package common {
          
          // entities
          
-         var beginningEntityIndex:int = editorWorld.GetEntityContainer ().GetNumEntities ();
+         var beginningEntityIndex:int = editorWorld.GetEntityContainer ().GetNumAssets ();
          
          var appearId:int;
          var createId:int;
@@ -1563,7 +1563,7 @@ package common {
          
          var numEntities:int = worldDefine.mEntityDefines.length;
          
-         editorWorld.GetEntityContainer ().SetCreationEntityArrayLocked (true);
+         editorWorld.GetEntityContainer ().SetCreationAssetArrayLocked (true);
          
          EditorContext.mPauseCreateShapeProxy = true;
          
@@ -2083,7 +2083,7 @@ package common {
          }
          //<<<
          
-         editorWorld.GetEntityContainer ().SetCreationEntityArrayLocked (false);
+         editorWorld.GetEntityContainer ().SetCreationAssetArrayLocked (false);
          
          //>>> add entities by creation id order
          // from version 0x0107)
@@ -2092,7 +2092,7 @@ package common {
             entityDefine = worldDefine.mEntityDefines [createId];
             entity = entityDefine.mEntity;
             
-            editorWorld.GetEntityContainer ().AddEntityToCreationArray (entity);
+            editorWorld.GetEntityContainer ().AddAssetToCreationArray (entity);
          }
          //<<<
          
@@ -2208,7 +2208,7 @@ package common {
                entity.UpdateAppearance ();
                entity.UpdateSelectionProxy ();
                
-               entity.GetMainEntity ().UpdateAppearance ();
+               entity.GetMainAsset ().UpdateAppearance ();
                
                //editorWorld.GetEntityContainer ().addChildAt (entity, appearId);
             }

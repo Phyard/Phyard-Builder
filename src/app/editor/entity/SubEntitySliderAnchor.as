@@ -61,16 +61,11 @@ package editor.entity {
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle (GetPositionX (), GetPositionY (), mRadius, GetRotation ());
       }
       
-      override public function NotifySelectedChanged (selected:Boolean):void
-      {
-         super.NotifySelectedChanged (selected);
-      }
-      
       override public function SetInternalComponentsVisible (visible:Boolean):void
       {
          super.SetInternalComponentsVisible (visible);
          
-         GetMainEntity ().SetInternalComponentsVisible (visible);
+         (GetMainAsset () as Entity).SetInternalComponentsVisible (visible);
       }
       
    }

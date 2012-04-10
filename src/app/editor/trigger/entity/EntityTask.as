@@ -81,7 +81,7 @@ package editor.trigger.entity {
             var num:int = assignerCreationIds.length;
             for (var i:int = 0; i < num; ++ i)
             {
-               mEntityAssignerList.push (mEntityContainer.GetEntityByCreationId (assignerCreationIds [i]));
+               mEntityAssignerList.push (mEntityContainer.GetAssetByCreationId (assignerCreationIds [i]));
             }
          }
       }

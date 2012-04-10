@@ -79,7 +79,7 @@ package editor.entity {
                borderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
 
-         SetVisibleInEditor (mVisibleInEditor); //  recal alpha
+         SetVisibleForEditing (mVisibleForEditing); //  recal alpha
 
          var visualRadius:Number = mRadius + 0.5; // be consistent with player
 
@@ -191,7 +191,7 @@ package editor.entity {
 //====================================================================
 //   move, rotate, scale
 //====================================================================
-
+      /*
       override public function ScaleSelf (ratio:Number):void
       {
          var radius:Number = mRadius * ratio;
@@ -199,6 +199,7 @@ package editor.entity {
 
          SetRadius (radius);
       }
+      */
 
 
 

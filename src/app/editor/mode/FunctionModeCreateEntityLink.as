@@ -94,7 +94,7 @@ package editor.mode {
          
          for (i = 0; i < entities.length; ++ i)
          {
-            entity = (entities [i] as Entity).GetMainEntity ();
+            entity = (entities [i] as Entity).GetMainAsset ();
             if (! (entity is Linkable) )
             {
                created = mFromLinkable.TryToCreateLink (mFromWorldDisplayX, mFromWorldDisplayY, entity, endX, endY);

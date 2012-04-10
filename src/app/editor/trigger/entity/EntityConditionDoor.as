@@ -134,7 +134,7 @@ package editor.trigger.entity {
             var condition:ICondition;
             for (var i:int = 0; i < num; ++ i)
             {
-               condition = mEntityContainer.GetEntityByCreationId (conditionEntityCreationIds [i]) as ICondition;
+               condition = mEntityContainer.GetAssetByCreationId (conditionEntityCreationIds [i]) as ICondition;
                
                if (condition != null)
                   mInputConditions.push (new ConditionAndTargetValue (condition, conditionTargetValues [i]));

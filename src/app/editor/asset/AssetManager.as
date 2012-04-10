@@ -222,7 +222,7 @@ package editor.asset {
       
       //============= 3 basic ones
       
-      public function ClearAssetSelections ():void
+      public function CancelAllAssetSelections ():void
       {
          mSelectionList.ClearSelectedAssets ();
          
@@ -237,7 +237,7 @@ package editor.asset {
          }
       }
       
-      public function RemoveAssetSelection (asset:Asset):void
+      public function CancelAssetSelection (asset:Asset):void
       {
          if (asset != null)
          {
@@ -278,14 +278,14 @@ package editor.asset {
          }
       }
       
-      public function RemoveAssetSelections (assetArray:Array):void
+      public function CancelAssetSelections (assetArray:Array):void
       {
          if (assetArray == null)
             return;
          
          for (var i:uint = 0; i < assetArray.length; ++ i)
          {
-            RemoveAssetSelection (assetArray[i] as Asset);
+            CancelAssetSelection (assetArray[i] as Asset);
          }
       }
       
@@ -301,7 +301,7 @@ package editor.asset {
          {
             if (mSelectionList.GetNumSelectedAssets () > 0)
             {
-               ClearAssetSelections ();
+               CancelAllAssetSelections ();
                
                return true;
             }
@@ -371,7 +371,7 @@ package editor.asset {
       public function ToggleAssetSelected (asset:Asset):void
       {
          if ( IsAssetSelected (asset) )
-            RemoveAssetSelection (asset);
+            CancelAssetSelection (asset);
          else
             AddAssetSelection (asset);
       }
@@ -517,11 +517,13 @@ package editor.asset {
          var linkable:Linkable = null;
          for (var i:uint = 0; i < objectArray.length; ++ i)
          {
-            if (objectArray [i] is Linkable) // && objectArray [i] is DisplayObject)
+            var obj:Object = objectArray [i];
+            
+            if (obj is Linkable)
             {
-               if ( (! (objectArray [i] is Asset)) || (objectArray [i] as Asset).IsVisibleForEditing ())
+               if ( (! (obj is Asset)) || (obj as Asset).IsVisibleForEditing ())
                {
-                  linkable = objectArray [i] as Linkable;
+                  linkable = obj as Linkable;
                   if (linkable.CanStartCreatingLink (displayX, displayY))
                      return linkable;
                   else
@@ -568,7 +570,7 @@ package editor.asset {
             ++ count;
          }
          
-         if (assetArray.length > 0)
+         if (count > 0)
          {
             NotifyModifiedForReferers ();
          }
@@ -1147,7 +1149,7 @@ package editor.asset {
             return -1;
          
          // for speed, commented off
-         //if (asset.GetContainer () != this)
+         //if (asset.GetAssetManager () != this)
          //   return -1;
          
          return asset.GetAppearanceLayerId ();
@@ -1159,7 +1161,7 @@ package editor.asset {
             return -1;
          
          // for speed, commented off
-         //if (asset.GetContainer () != this)
+         //if (asset.GetAssetManager () != this)
          //   return -1;
          
          return asset.GetCreationOrderId ();

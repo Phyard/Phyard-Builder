@@ -65,7 +65,7 @@ package editor.trigger.entity {
       
       override public function GetInfoText ():String
       {
-         return mEntityContainer.EntityArray2EntityCreationIdArray (mInputEntities).toString ();
+         return mEntityContainer.AssetArray2AssetCreationIdArray (mInputEntities).toString ();
       }
       
       public function GetSelectorType ():int
@@ -79,7 +79,7 @@ package editor.trigger.entity {
          //var main_entity:Entity;
          //for (var i:int = 0; i < mInputEntities.length; ++ i)
          //{
-         //   main_entity = (mInputEntities [i] as Entity).GetMainEntity ();
+         //   main_entity = (mInputEntities [i] as Entity).GetMainAsset ();
          //   if (main_entity != null && entities.indexOf (main_entity) < 0)
          //   {
          //      entities.push (main_entity);
@@ -118,7 +118,7 @@ package editor.trigger.entity {
             var num:int = entityCreationIds.length;
             for (var i:int = 0; i < num; ++ i)
             {
-               mInputEntities.push (mEntityContainer.GetEntityByCreationId (entityCreationIds [i]));
+               mInputEntities.push (mEntityContainer.GetAssetByCreationId (entityCreationIds [i]));
             }
          }
       }
@@ -188,6 +188,8 @@ package editor.trigger.entity {
          var borderThickness:Number = mBorderThickness;
          
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle(GetPositionX (), GetPositionY (), kRadius2, GetRotation ());
+         
+         UpdateInternalComponents ();
       }
       
       
@@ -325,12 +327,11 @@ package editor.trigger.entity {
             mSelectorLayer.removeChildAt (0);
       }
       
-      protected function UpdateInternalComponents (updateSelectionProxy:Boolean = true):void
+      protected function UpdateInternalComponents ():void
       {
          if (mInputEntitySelector != null)
          {
-            if (updateSelectionProxy)
-               mInputEntitySelector.UpdateSelectionProxy ();
+            mInputEntitySelector.UpdateSelectionProxy ();
          }
       }
       
@@ -441,31 +442,6 @@ package editor.trigger.entity {
                (mInputEntitySelector as InputEntitySelector_Single).DrawEntityLinkLine (canvasSprite, mInputEntities [0]);
             }
          }
-      }
-      
-//====================================================================
-//   move, rotate, scale
-//====================================================================
-      
-      override public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.Move (offsetX, offsetY, updateSelectionProxy);
-         
-         UpdateInternalComponents (updateSelectionProxy);
-      }
-      
-      override public function Rotate (centerX:Number, centerY:Number, dRadians:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.Rotate (centerX, centerY, dRadians, updateSelectionProxy);
-         
-         UpdateInternalComponents (updateSelectionProxy);
-      }
-      
-      override public function Scale (centerX:Number, centerY:Number, ratio:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.Scale (centerX, centerY, ratio, updateSelectionProxy);
-         
-         UpdateInternalComponents (updateSelectionProxy);
       }
       
 //====================================================================

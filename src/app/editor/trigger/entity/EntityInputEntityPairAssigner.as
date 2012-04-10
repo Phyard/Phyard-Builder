@@ -105,8 +105,8 @@ package editor.trigger.entity {
          }
          else
          {
-            var ids1:Array = mEntityContainer.EntityArray2EntityCreationIdArray (mInputEntities1);
-            var ids2:Array = mEntityContainer.EntityArray2EntityCreationIdArray (mInputEntities2);
+            var ids1:Array = mEntityContainer.AssetArray2AssetCreationIdArray (mInputEntities1);
+            var ids2:Array = mEntityContainer.AssetArray2AssetCreationIdArray (mInputEntities2);
             return "(" + (ids1 == null ? "" : ids1.toString ()) + ")-(" + (ids2 == null ? "" : ids2.toString ()) + ")";
          }
       }
@@ -127,12 +127,12 @@ package editor.trigger.entity {
       //         
       //         if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
       //         {
-      //            main_entity = entity == null ? null : entity.GetMainEntity ();
+      //            main_entity = entity == null ? null : entity.GetMainAsset ();
       //            entities.push (main_entity);
       //         }
       //         else if (entity != null)
       //         {
-      //            main_entity = entity.GetMainEntity ();
+      //            main_entity = entity.GetMainAsset ();
       //            if (entities.indexOf (main_entity) < 0)
       //            {
       //               entities.push (main_entity);
@@ -160,12 +160,12 @@ package editor.trigger.entity {
       //         
       //         if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
       //         {
-      //            main_entity = entity == null ? null : entity.GetMainEntity ();
+      //            main_entity = entity == null ? null : entity.GetMainAsset ();
       //            entities.push (main_entity);
       //         }
       //         else if (entity != null)
       //         {
-      //            main_entity = entity.GetMainEntity ();
+      //            main_entity = entity.GetMainAssety ();
       //            if (entities.indexOf (main_entity) < 0)
       //            {
       //               entities.push (main_entity);
@@ -225,8 +225,8 @@ package editor.trigger.entity {
                
                for (i = 0; i < num; ++ i)
                {
-                  mInputEntities1.push (mEntityContainer.GetEntityByCreationId (inputEntityCreationIds1 [i]));
-                  mInputEntities2.push (mEntityContainer.GetEntityByCreationId (inputEntityCreationIds2 [i]));
+                  mInputEntities1.push (mEntityContainer.GetAssetByCreationId (inputEntityCreationIds1 [i]));
+                  mInputEntities2.push (mEntityContainer.GetAssetByCreationId (inputEntityCreationIds2 [i]));
                }
             }
          }
@@ -235,13 +235,13 @@ package editor.trigger.entity {
             num = inputEntityCreationIds1.length;
             for (i = 0; i < num; ++ i)
             {
-               mInputEntities1.push (mEntityContainer.GetEntityByCreationId (inputEntityCreationIds1 [i]));
+               mInputEntities1.push (mEntityContainer.GetAssetByCreationId (inputEntityCreationIds1 [i]));
             }
             
             num = inputEntityCreationIds2.length;
             for (i = 0; i < num; ++ i)
             {
-               mInputEntities2.push (mEntityContainer.GetEntityByCreationId (inputEntityCreationIds2 [i]));
+               mInputEntities2.push (mEntityContainer.GetAssetByCreationId (inputEntityCreationIds2 [i]));
             }
          }
          
@@ -355,6 +355,8 @@ package editor.trigger.entity {
          var borderThickness:Number = mBorderThickness;
          
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle(GetPositionX (), GetPositionY (), kRadius2, GetRotation ());
+         
+         UpdateInternalComponents ();
       }
       
 //==============================================================================================================
@@ -576,7 +578,7 @@ package editor.trigger.entity {
          if (mInputEntitySelectors != null)
          {
             GraphicsUtil.DrawLine (mSelectorLayer, 0, (kOffsetY - kRadius2), 0, - ( (mInputEntitySelectors.length - 1) >> 1) * offset_y, 0x0, 0);
-            UpdateInternalComponents (true);
+            UpdateInternalComponents ();
          }
       }
       
@@ -604,9 +606,9 @@ package editor.trigger.entity {
             mSelectorLayer.removeChildAt (0);
       }
       
-      protected function UpdateInternalComponents (updateSelectionProxy:Boolean = true):void
+      protected function UpdateInternalComponents ():void
       {
-         if (mInputEntitySelectors != null && updateSelectionProxy)
+         if (mInputEntitySelectors != null)
          {
             var selector:InputEntitySelector;
             for (var i:int = 0; i < mInputEntitySelectors.length; ++ i)
@@ -824,31 +826,6 @@ package editor.trigger.entity {
                (mInputEntitySelectors [1] as InputEntitySelector_Many).DrawEntityLinks (canvasSprite, mInputEntities2);
             }
          }
-      }
-      
-//====================================================================
-//   move, rotate, scale
-//====================================================================
-      
-      override public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.Move (offsetX, offsetY, updateSelectionProxy);
-         
-         UpdateInternalComponents (updateSelectionProxy);
-      }
-      
-      override public function Rotate (centerX:Number, centerY:Number, dRadians:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.Rotate (centerX, centerY, dRadians, updateSelectionProxy);
-         
-         UpdateInternalComponents (updateSelectionProxy);
-      }
-      
-      override public function Scale (centerX:Number, centerY:Number, ratio:Number, updateSelectionProxy:Boolean = true):void
-      {
-         super.Scale (centerX, centerY, ratio, updateSelectionProxy);
-         
-         UpdateInternalComponents (updateSelectionProxy);
       }
       
 //====================================================================

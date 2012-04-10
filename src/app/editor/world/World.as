@@ -138,6 +138,7 @@ package editor.world {
       //override 
       public function Destroy ():void
       {
+         mEntityContainer.Destroy ();
          //mCollisionManager.Destroy ();
          mCollisionCategoryManager.Destroy ();
          mCodeLibManager.Destroy ();
@@ -153,6 +154,7 @@ package editor.world {
       //override 
       public function DestroyAllEntities ():void
       {
+         mEntityContainer..DestroyAllAssets ();
          //mCollisionManager.DestroyAllEntities ();
          mCollisionCategoryManager.DestroyAllAssets ();
          mCodeLibManager.DestroyAllAssets ();
@@ -164,13 +166,6 @@ package editor.world {
 
       //   super.DestroyAllEntities ();
       }
-
-      //override public function DestroyEntity (entity:Entity):void
-      //{
-      //// ...
-      //
-      //   super.DestroyEntity (entity);
-      //}
 
 //=================================================================================
 //   settings

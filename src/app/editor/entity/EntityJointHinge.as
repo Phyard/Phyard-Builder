@@ -94,7 +94,7 @@ package editor.entity {
       
       override public function Destroy ():void
       {
-         mEntityContainer.DestroyEntity (mAnchor);
+         mEntityContainer.DestroyAsset (mAnchor);
          
          super.Destroy ();
       }
@@ -113,7 +113,7 @@ package editor.entity {
 //====================================================================
 //   flip
 //====================================================================
-      
+      /*
       override public function FlipSelfHorizontally ():void
       {
          //super.FlipSelfHorizontally ();
@@ -124,6 +124,14 @@ package editor.entity {
       override public function FlipSelfVertically ():void
       {
          //super.FlipSelfVertically ();
+         
+         FlipParams ();
+      }
+      */
+      
+      override public function FlipSelf (intentionDone:Boolean = true):void
+      {
+         super.FlipSelf (intentionDone);
          
          FlipParams ();
       }
@@ -166,7 +174,7 @@ package editor.entity {
          newAnchor.UpdateSelectionProxy ();
       }
       
-      override public function GetSubEntities ():Array
+      override public function GetSubAssets ():Array
       {
          return [mAnchor];
       }

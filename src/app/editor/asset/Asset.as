@@ -163,15 +163,18 @@ package editor.asset {
       {
       }
       
-      public function SetSelectable (selectable:Boolean):void
-      {
-         if (mSelectionProxy != null)
-            mSelectionProxy.SetSelectable (selectable);
-      }
+      //public function SetSelectable (selectable:Boolean):void
+      //{
+      //   if (mSelectionProxy != null)
+      //      mSelectionProxy.SetSelectable (selectable);
+      //}
       
 //====================================================================
 //   main entity
 //====================================================================
+      
+      // when clone and delete, we need the main entity.
+      // after cloned, we need select new selectable sub entities
       
       // todo: the main asset should be learned from google bigtable entity group.
       // no SubEntity class is needed.
@@ -186,10 +189,10 @@ package editor.asset {
          return [];
       }
       
-      //public function GetSubIndex ():int
-      //{
-      //   return -1;
-      //}
+      public function GetSubIndex ():int
+      {
+         return -1;
+      }
       
       public function GetSelectableAssets ():Array
       {
@@ -344,15 +347,9 @@ package editor.asset {
 //   move / rotate / scale / flip
 //====================================================================
       
-      public function Move (offsetX:Number, offsetY:Number, intentionDone:Boolean = true):void
+      final public function Move (offsetX:Number, offsetY:Number, intentionDone:Boolean = true):void
       {
-         SetPosition (GetPositionX () + offsetX, GetPositionY () + offsetY);
-         
-         if (intentionDone)
-         {
-            UpdateSelectionProxy ();
-            UpdateControlPoints ();
-         }
+         MoveTo (GetPositionX () + offsetX, GetPositionY () + offsetY, intentionDone);
       }
       
       public function MoveBodyTexture (offsetX:Number, offsetY:Number, intentionDone:Boolean = true):void
@@ -371,7 +368,7 @@ package editor.asset {
          }
       }
       
-      public function RotatePosition (centerX:Number, centerY:Number, deltaRotation:Number, intentionDone:Boolean = true):void
+      final public function RotatePosition (centerX:Number, centerY:Number, deltaRotation:Number, intentionDone:Boolean = true):void
       {
          RotatePositionByCosSin (centerX, centerY, Math.cos (deltaRotation), Math.sin (deltaRotation), intentionDone);
       }
@@ -410,22 +407,12 @@ package editor.asset {
          }
       }
       
+      //RotateSelfTo seems not essential
+      
       public function RotateBodyTextureSelf (deltaRotation:Number, intentionDone:Boolean = true):void
       {
          // to override
       }
-      
-      // generally, don't use this function
-      //public function RotateSelfTo (targetRotation:Number, intentionDone:Boolean = true):void
-      //{
-      //   SetRotation (targetRotation);
-      //   
-      //   if (intentionDone)
-      //   {
-      //      UpdateSelectionProxy ();
-      //      UpdateControlPoints ();
-      //   }
-      //}
       
       public function ScalePosition (centerX:Number, centerY:Number, s:Number, intentionDone:Boolean = true):void
       {
@@ -448,18 +435,9 @@ package editor.asset {
          // to override
       }
       
-      public function ScaleSelf (s:Number, intentionDone:Boolean = true):void
-      {
-         if (s < 0)
-            s = -s;
-         
-         SetScale (GetScale () * s);
-         
-         if (intentionDone)
-         {
-            UpdateSelectionProxy ();
-            UpdateControlPoints ();
-         }
+      final public function ScaleSelf (s:Number, intentionDone:Boolean = true):void
+      {  
+         ScaleSelfTo (GetScale () * s, intentionDone);
       }
       
       public function ScaleBodyTextureSelf (s:Number, intentionDone:Boolean = true):void
@@ -469,6 +447,9 @@ package editor.asset {
       
       public function ScaleSelfTo (targetScale:Number, intentionDone:Boolean = true):void
       {
+         if (targetScale < 0)
+            targetScale = - targetScale;
+         
          SetScale (targetScale);
          
          if (intentionDone)
@@ -545,12 +526,22 @@ package editor.asset {
       {
          mVisibleForEditing = visibleForEditing;
          
-         alpha = mVisibleForEditing ? 1.0 : 0.33; // new a GetNormalAlpha ()
+         alpha = mVisibleForEditing ? GetVisibleAlphaForEditing () : GetInvisibleAlphaForEditing ();
       }
       
       public function IsVisibleForEditing ():Boolean
       {
          return mVisibleForEditing;
+      }
+      
+      public function GetVisibleAlphaForEditing ():Number
+      {
+         return 1.0;
+      }
+      
+      public function GetInvisibleAlphaForEditing ():Number
+      {
+         return 0.2;
       }
       
 //====================================================================
@@ -653,21 +644,6 @@ package editor.asset {
 //====================================================================
 //   draw entity links
 //====================================================================
-      
-      public static const DrawLinksOrder_Normal:int = 10;
-      public static const DrawLinksOrder_Logic:int = 20;
-      public static const DrawLinksOrder_Task:int = 30;
-      public static const DrawLinksOrder_EventHandler:int = 50;
-      
-      public function GetDrawLinksOrder ():int
-      {
-         return DrawLinksOrder_Normal;
-      }
-      
-      public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
-      {
-         // to override
-      }
       
       public function GetLinkPointX ():Number
       {

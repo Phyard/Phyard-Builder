@@ -70,11 +70,11 @@ package editor.trigger.entity {
          BuildContextMenu ();
       }
       
-      public function SetSelectable (selectable:Boolean):void
-      {
-         if (mSelectionProxy != null)
-            mSelectionProxy.SetSelectable (selectable);
-      }
+      //public function SetSelectable (selectable:Boolean):void
+      //{
+      //   if (mSelectionProxy != null)
+      //      mSelectionProxy.SetSelectable (selectable);
+      //}
       
       public function GetOwnerEntity ():Entity
       {

@@ -96,7 +96,7 @@ package editor.entity {
                borderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
 
-         SetVisibleInEditor (mVisibleInEditor); //  recal alpha
+         SetVisibleForEditing (mVisibleForEditing); //  recal alpha
 
          if (GetVertexPointsCount () == 1)
          {
@@ -547,7 +547,7 @@ package editor.entity {
 
             if (mVertexPoints.length <= 3)
             {
-               mEntityContainer.DestroyEntity (this);
+               mEntityContainer.DestroyAsset (this);
             }
             else
             {
@@ -617,7 +617,7 @@ package editor.entity {
 //====================================================================
 //   move, rotate, scale
 //====================================================================
-
+      /*
       override public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
       {
          super.Move (offsetX, offsetY, false);
@@ -722,6 +722,6 @@ package editor.entity {
       override public function FlipSelfVertically ():void
       {
       }
-
+      */
    }
 }

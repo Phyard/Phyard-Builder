@@ -219,7 +219,7 @@ package editor.trigger {
                }
                else
                {
-                  valueSourceDirect.SetValueObject (world.GetEntityContainer ().GetEntityByCreationId (entity_index));
+                  valueSourceDirect.SetValueObject (world.GetEntityContainer ().GetAssetByCreationId (entity_index));
                }
             }
          }

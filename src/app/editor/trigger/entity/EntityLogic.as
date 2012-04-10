@@ -31,7 +31,7 @@ package editor.trigger.entity {
          }
       }
       
-      override public function GetVisibleAlpha ():Number
+      override public function GetVisibleAlphaForEditing ():Number
       {
          return 0.78;
       }
@@ -73,22 +73,18 @@ package editor.trigger.entity {
       }
       
 //====================================================================
-//   move, rotate, scale, flip
+//   transform
 //====================================================================
       
-      override public function RotateSelf (dRadians:Number):void
+      override public function RotateSelf (deltaRotation:Number, intentionDone:Boolean = true):void
       {
       }
       
-      override public function ScaleSelf (ratio:Number):void
+      override public function ScaleSelfTo (targetScale:Number, intentionDone:Boolean = true):void
       {
       }
       
-      override public function FlipSelfHorizontally ():void
-      {
-      }
-      
-      override public function FlipSelfVertically ():void
+      override public function FlipSelf (intentionDone:Boolean = true):void
       {
       }
       

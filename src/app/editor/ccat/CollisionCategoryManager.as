@@ -116,7 +116,7 @@ package editor.ccat {
       
       public function GetCollisionCategoryByIndex (index:int):CollisionCategory
       {
-         // GetEntityByAppearanceId or GetEntityByCreationId?
+         // GetAssetByAppearanceId or GetAssetByCreationId?
          return GetAssetByAppearanceId (index) as CollisionCategory;
       }
       

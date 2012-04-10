@@ -80,7 +80,7 @@ package editor.entity {
                curveThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
 
-         SetVisibleInEditor (mVisibleInEditor); //  recal alpha
+         SetVisibleForEditing (mVisibleForEditing); //  recal alpha
 
          GraphicsUtil.ClearAndDrawPolyline (this, mLocalPoints, bgColor, curveThickness, IsRoundEnds (), IsClosed ());
       }
@@ -571,7 +571,7 @@ package editor.entity {
 
             if (mVertexPoints.length <= 2)
             {
-               mEntityContainer.DestroyEntity (this);
+               mEntityContainer.DestroyAsset (this);
             }
             else
             {
@@ -642,7 +642,7 @@ package editor.entity {
 //====================================================================
 //   move, rotate, scale
 //====================================================================
-
+      /*
       override public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
       {
          super.Move (offsetX, offsetY, false);
@@ -747,6 +747,7 @@ package editor.entity {
       override public function FlipSelfVertically ():void
       {
       }
+      */
 
 //====================================================================
 //   entity links

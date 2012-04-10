@@ -144,7 +144,7 @@ package editor.trigger.entity {
       
       public function SetInputConditionByCreationId (inputConditionEntityCreationId:int, inputConditionTargetValue:int):void
       {
-         var condition:ICondition = mEntityContainer.GetEntityByCreationId (inputConditionEntityCreationId) as ICondition;
+         var condition:ICondition = mEntityContainer.GetAssetByCreationId (inputConditionEntityCreationId) as ICondition;
          
          if (condition != null)
          {
@@ -182,7 +182,7 @@ package editor.trigger.entity {
             var num:int = assignerCreationIds.length;
             for (var i:int = 0; i < num; ++ i)
             {
-               mEntityAssignerList.push (mEntityContainer.GetEntityByCreationId (assignerCreationIds [i]));
+               mEntityAssignerList.push (mEntityContainer.GetAssetByCreationId (assignerCreationIds [i]));
             }
          }
       }
@@ -199,7 +199,7 @@ package editor.trigger.entity {
       
       public function SetExternalActionByCreationId (actionCreationId:int):void
       {
-         mExternalActionEntity = mEntityContainer.GetEntityByCreationId (actionCreationId) as EntityAction;
+         mExternalActionEntity = mEntityContainer.GetAssetByCreationId (actionCreationId) as EntityAction;
       }
       
       override public function ValidateEntityLinks ():void

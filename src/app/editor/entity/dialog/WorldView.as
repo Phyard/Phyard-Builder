@@ -700,7 +700,7 @@ package editor.entity.dialog {
             return;
          }
          
-         var mainEntity:Entity = mMainSelectedEntity.GetMainEntity ();
+         var mainEntity:Entity = mMainSelectedEntity.GetMainAsset ();
          var typeName:String = mMainSelectedEntity.GetTypeName ();
          var infoText:String = mMainSelectedEntity.GetInfoText ();
          
@@ -711,9 +711,9 @@ package editor.entity.dialog {
          
          if (mainEntity != mMainSelectedEntity)
          {
-            infoText = " (of &lt;" + mEntityContainer.GetEntityCreationId (mainEntity) + "&gt; " + mainEntity.GetTypeName () + ")" + infoText;
+            infoText = " (of &lt;" + mEntityContainer.GetAssetCreationId (mainEntity) + "&gt; " + mainEntity.GetTypeName () + ")" + infoText;
          }
-         infoText = "<b>&lt;" + mEntityContainer.GetEntityCreationId (mMainSelectedEntity) + "&gt; " + mMainSelectedEntity.GetTypeName () + infoText;
+         infoText = "<b>&lt;" + mEntityContainer.GetAssetCreationId (mMainSelectedEntity) + "&gt; " + mMainSelectedEntity.GetTypeName () + infoText;
          
          StatusBar_SetMainSelectedEntityInfo (infoText);
       }
@@ -1406,7 +1406,7 @@ package editor.entity.dialog {
       private function UpdateUiButtonsEnabledStatus ():void
       {
       // edit
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          
          //mButtonSetting.enabled = selectedEntities.length == 1 && IsEntitySettingable (selectedEntities[0]);
          mButtonSetting.enabled = mLastSelectedEntity != null && IsEntitySettingable (mLastSelectedEntity);
@@ -1435,11 +1435,6 @@ package editor.entity.dialog {
             
             mButtonClone.enabled = clonedable;
          }
-         
-      // creat ...
-         
-         //mButtonCreateGravityController.enabled = mEntityContainer.GetNumEntities (Filters.IsGravityControllerEntity) == 0;
-         //mButtonCreateCamera           .enabled = mEntityContainer.GetNumEntities (Filters.IsCameraEntity) == 0;
          
       // file ...
          
@@ -2176,7 +2171,7 @@ package editor.entity.dialog {
          if (EditorContext.HasSettingDialogOpened ())
             return;
          
-         //var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         //var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          //if (selectedEntities == null || selectedEntities.length != 1)
          //   return;
          if (mMainSelectedEntity == null)
@@ -2455,7 +2450,7 @@ package editor.entity.dialog {
          else if (entity is SubEntityJointAnchor)
          {
             var jointAnchor:SubEntityJointAnchor = entity as SubEntityJointAnchor;
-            var joint:EntityJoint = entity.GetMainEntity () as EntityJoint;
+            var joint:EntityJoint = entity.GetMainAsset () as EntityJoint;
             
             var jointValues:Object = new Object ();
             values.mJointValues = jointValues;
@@ -3017,7 +3012,7 @@ package editor.entity.dialog {
          
          if (IsEditing ())
          {
-            var entityArray:Array = mEntityContainer.GetEntitiesAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
+            var entityArray:Array = mEntityContainer.GetAssetsAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
             
          // move scene
             
@@ -3032,7 +3027,7 @@ package editor.entity.dialog {
             }
             
          // vertex controllers
-            var vertexControllers:Array = mEntityContainer.GetVertexControllersAtPoint (worldPoint.x, worldPoint.y);
+            var vertexControllers:Array = mEntityContainer.GetControlPointsAtPoint (worldPoint.x, worldPoint.y);
             
             if (vertexControllers.length > 0)
             {
@@ -3101,7 +3096,7 @@ package editor.entity.dialog {
             }
             
             if (_mouseEventCtrlDown || mCookieModeEnabled)
-               mLastSelectedEntities = mEntityContainer.GetSelectedEntities ();
+               mLastSelectedEntities = mEntityContainer.GetSelectedAssets ();
             else
             {
                mEntityContainer.ClearSelectedEntities ();
@@ -3199,7 +3194,7 @@ package editor.entity.dialog {
                }
                else
                {
-                  var entityArray:Array = mEntityContainer.GetEntitiesAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
+                  var entityArray:Array = mEntityContainer.GetAssetsAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
                   var entity:Entity;
                   
                   // point select, ctrl down
@@ -3436,7 +3431,7 @@ package editor.entity.dialog {
       
       public function DestroyEntity (entity:Entity):void
       {
-         mEntityContainer.DestroyEntity (entity);
+         mEntityContainer.DestroyAsset (entity);
          
          CalSelectedEntitiesCenterPoint ();
       }
@@ -4039,10 +4034,10 @@ package editor.entity.dialog {
          mEntityContainer.ClearSelectedEntities ();
          UpdateSelectedEntityInfo ();
          
-         if (mEntityContainer.GetSelectedEntities ().length != 1 || mEntityContainer.GetSelectedEntities () [0] != entity)
+         if (mEntityContainer.GetSelectedAssets ().length != 1 || mEntityContainer.GetSelectedAssets () [0] != entity)
             mEntityContainer.SetSelectedEntity (entity);
          
-         if (mEntityContainer.GetSelectedEntities ().length != 1)
+         if (mEntityContainer.GetSelectedAssets ().length != 1)
             return;
          
          SetLastSelectedEntities (entity);
@@ -4080,7 +4075,7 @@ package editor.entity.dialog {
       
       public function RegionSelectEntities (left:Number, top:Number, right:Number, bottom:Number):void
       {
-         SelectedEntities (mEntityContainer.GetEntitiesIntersectWithRegion (left, top, right, bottom), true, ! mCookieModeEnabled);
+         SelectedEntities (mEntityContainer.GetAssetsIntersectWithRegion (left, top, right, bottom), true, ! mCookieModeEnabled);
       }
       
       public function SelectedEntities (entities:Array, clearOlds:Boolean, selectBorthers:Boolean):void
@@ -4141,7 +4136,7 @@ package editor.entity.dialog {
       {
          CalSelectedEntitiesCenterPoint ();
          
-         var selecteds:Array = mEntityContainer.GetSelectedEntities ();
+         var selecteds:Array = mEntityContainer.GetSelectedAssets ();
          if (selecteds.length > 0)
          {
             SetLastSelectedEntities (selecteds [0]);
@@ -4152,12 +4147,12 @@ package editor.entity.dialog {
          }
       }
       
-      public function GetSelectedEntitiesCenterX ():Number
+      public function GetSelectedAssetsCenterX ():Number
       {
          return _SelectedEntitiesCenterPoint.x;
       }
       
-      public function GetSelectedEntitiesCenterY ():Number
+      public function GetSelectedAssetsCenterY ():Number
       {
          return _SelectedEntitiesCenterPoint.y;
       }
@@ -4167,7 +4162,7 @@ package editor.entity.dialog {
          var centerX:Number = 0;
          var centerY:Number = 0;
          
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          var count:uint = 0;
          
          for (var i:uint = 0; i < selectedEntities.length; ++ i)
@@ -4273,7 +4268,7 @@ package editor.entity.dialog {
          if (byMouse && ! IsEntityMouseRotateEnabled () )
             return;
          
-         mEntityContainer.RotateSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), dAngle, updateSelectionProxy);
+         mEntityContainer.RotateSelectedEntities (GetSelectedAssetsCenterX (), GetSelectedAssetsCenterY (), dAngle, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
          
@@ -4289,7 +4284,7 @@ package editor.entity.dialog {
          if (byMouse && ! IsEntityMouseScaleEnabled () )
             return;
          
-         mEntityContainer.ScaleSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), ratio, updateSelectionProxy);
+         mEntityContainer.ScaleSelectedEntities (GetSelectedAssetsCenterX (), GetSelectedAssetsCenterY (), ratio, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
          
@@ -4301,7 +4296,7 @@ package editor.entity.dialog {
       
       public function DeleteSelectedEntities ():void
       {
-         if (mEntityContainer.DeleteSelectedEntities ())
+         if (mEntityContainer.DeleteSelectedAssets ())
          {
             CreateUndoPoint ("Delete");
             
@@ -4311,7 +4306,7 @@ package editor.entity.dialog {
       
       public function CloneSelectedEntities ():void
       {
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          
          var clonedable:Boolean = false;
          for (var i:int = 0; i < selectedEntities.length; ++ i)
@@ -4327,7 +4322,7 @@ package editor.entity.dialog {
          
          mEntityContainer.CloneSelectedEntities (Define.BodyCloneOffsetX, Define.BodyCloneOffsetY);
          
-         selectedEntities = mEntityContainer.GetSelectedEntities ();
+         selectedEntities = mEntityContainer.GetSelectedAssets ();
          if (selectedEntities.length == 1)
          {
             SetLastSelectedEntities (selectedEntities [0]);
@@ -4340,7 +4335,7 @@ package editor.entity.dialog {
       
       public function FlipSelectedEntitiesHorizontally ():void
       {
-         mEntityContainer.FlipSelectedEntitiesHorizontally (GetSelectedEntitiesCenterX ());
+         mEntityContainer.FlipSelectedEntitiesHorizontally (GetSelectedAssetsCenterX ());
          
          CreateUndoPoint ("Horizontal flip");
          
@@ -4349,7 +4344,7 @@ package editor.entity.dialog {
       
       public function FlipSelectedEntitiesVertically ():void
       {
-         mEntityContainer.FlipSelectedEntitiesVertically (GetSelectedEntitiesCenterY ());
+         mEntityContainer.FlipSelectedEntitiesVertically (GetSelectedAssetsCenterY ());
          
          CreateUndoPoint ("Vertical flip");
          
@@ -4433,7 +4428,7 @@ package editor.entity.dialog {
       
       public function MoveSelectedEntitiesToTop ():void
       {
-         mEntityContainer.MoveSelectedEntitiesToTop ();
+         mEntityContainer.MoveSelectedAssetsToTop ();
          
          CreateUndoPoint ("Move entities to the most top layer");
          
@@ -4442,7 +4437,7 @@ package editor.entity.dialog {
       
       public function MoveSelectedEntitiesToBottom ():void
       {
-         mEntityContainer.MoveSelectedEntitiesToBottom ();
+         mEntityContainer.MoveSelectedAssetsToBottom ();
          
          CreateUndoPoint ("Move entities to the most bottom layer");
          
@@ -4455,7 +4450,7 @@ package editor.entity.dialog {
          // if no circle found, set the first joint anchor as target position,
          // 
          
-         var entities:Array = mEntityContainer.GetSelectedEntities ();
+         var entities:Array = mEntityContainer.GetSelectedAssets ();
          var entity:Entity;
          var i:int;
          var centerX:Number;
@@ -4520,7 +4515,7 @@ package editor.entity.dialog {
       
       public function RoundPositionForSelectedEntities ():void
       {
-         var entities:Array = mEntityContainer.GetSelectedEntities ();
+         var entities:Array = mEntityContainer.GetSelectedAssets ();
          var entity:Entity;
          var i:int;
          var posX:Number;
@@ -4609,7 +4604,7 @@ package editor.entity.dialog {
       
       public function ConfirmSettingEntityProperties (params:Object):void
       {
-         //var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         //var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          //if (selectedEntities == null || selectedEntities.length != 1)
          //   return;
          if (mMainSelectedEntity == null)
@@ -4897,7 +4892,7 @@ package editor.entity.dialog {
          else if (entity is SubEntityJointAnchor)
          {
             var jointAnchor:SubEntityJointAnchor = entity as SubEntityJointAnchor;
-            var joint:EntityJoint = jointAnchor.GetMainEntity () as EntityJoint;
+            var joint:EntityJoint = jointAnchor.GetMainAsset () as EntityJoint;
             
             var jointParams:Object = params.mJointValues;
             
@@ -5007,7 +5002,7 @@ package editor.entity.dialog {
                dummy.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
             }
             
-            jointAnchor.GetMainEntity ().UpdateAppearance ();
+            jointAnchor.GetMainAsset ().UpdateAppearance ();
             jointAnchor.UpdateSelectionProxy ();
          }
          else if (entity is EntityUtility)
@@ -5076,7 +5071,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyEntityCommonProperties (params:Object):void
       {
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          var entity:Entity;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
@@ -5100,7 +5095,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapeCircleProperties (params:Object):void
       {
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          var circle:EntityVectorShapeCircle;
          
          var numCircles:int = 0;
@@ -5129,7 +5124,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapeRectangleProperties (params:Object):void
       {
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          var rect:EntityVectorShapeRectangle;
          
          var numRectangles:int = 0;
@@ -5161,7 +5156,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapePolylineProperties (params:Object):void
       {
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          var polyline:EntityVectorShapePolyline;
          
          var numPolylines:int = 0;
@@ -5192,7 +5187,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapeAppearanceProperties (params:Object):void
       {
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          
          var numShapes:int = 0;
          
@@ -5235,7 +5230,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyShapePhysicsProperties (params:Object):void
       {
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          
          var numShapes:int = 0;
          
@@ -5294,7 +5289,7 @@ package editor.entity.dialog {
       
       public function OnBatchModifyJointCollideConnectedsProperty (params:Object):void
       {
-         var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+         var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
          var joint:EntityJoint;
          var anchor:SubEntityJointAnchor;
          
@@ -5304,7 +5299,7 @@ package editor.entity.dialog {
             
             if (anchor != null)
             {
-               joint = anchor.GetMainEntity () as EntityJoint;
+               joint = anchor.GetMainAsset () as EntityJoint;
                
                if (joint != null)
                {
@@ -5520,10 +5515,10 @@ package editor.entity.dialog {
          
          for each (var entityId:int in entityIds)
          {
-            if (entityId < 0 || entityId >= mEntityContainer.GetNumEntities ())
+            if (entityId < 0 || entityId >= mEntityContainer.GetNumAssets ())
                continue;
             
-            var entity:Entity = mEntityContainer.GetEntityByCreationId (entityId);
+            var entity:Entity = mEntityContainer.GetAssetByCreationId (entityId) as Entity;
             
             var posX:Number = entity.GetPositionX ();
             var posY:Number = entity.GetPositionY ();
@@ -5561,10 +5556,10 @@ package editor.entity.dialog {
          
          for each (var entityId:int in entityIds)
          {
-            if (entityId < 0 || entityId >= mEntityContainer.GetNumEntities ())
+            if (entityId < 0 || entityId >= mEntityContainer.GetNumAssets ())
                continue;
             
-            var entity:Entity = mEntityContainer.GetEntityByCreationId (entityId);
+            var entity:Entity = mEntityContainer.GetAssetByCreationId (entityId) as Entity;
             
             var posX:Number = entity.GetPositionX ();
             var posY:Number = entity.GetPositionY ();
@@ -5583,7 +5578,7 @@ package editor.entity.dialog {
             
             //if (entity is EntityJoint)
             //{
-            //   var subEntities:Array = (entity as EntityJoint).GetSubEntities ();
+            //   var subEntities:Array = (entity as EntityJoint).GetSubAssets ();
             //   for each (var subEntity:Entity in subEntities)
             //   {
             //      entites.push (subEntity);
@@ -5593,7 +5588,7 @@ package editor.entity.dialog {
             //{
             //   entites.push (entity);
             //}
-            var selectableEntites:Array =  entity.GetSelectableEntities ();
+            var selectableEntites:Array =  entity.GetSelectableAssets ();
             for each (var selectableEntity:Entity in selectableEntites)
             {
                 entites.push (selectableEntity);
@@ -5705,7 +5700,7 @@ package editor.entity.dialog {
             var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (EditorContext.GetEditorApp ().GetWorld ());
             newWorld = DataFormat.WorldDefine2EditorWorld (worldDefine);
             
-            var selectedEntities:Array = mEntityContainer.GetSelectedEntities ();
+            var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
             
             if (selectedEntities.length == 0)
                return;
@@ -5719,37 +5714,37 @@ package editor.entity.dialog {
                //trace ("selectedEntities[i] = " + selectedEntities[i]);
                //trace ("selectedEntities[i].parent = " + selectedEntities[i].parent);
                
-               index = mEntityContainer.GetEntityCreationId (selectedEntities[i]);
-               entity = newWorld.GetEntityContainer ().GetEntityByCreationId (index);
+               index = mEntityContainer.GetAssetCreationId (selectedEntities[i]);
+               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (index) as Entity;
                
-               entity = entity.GetMainEntity ();
+               entity = entity.GetMainAsset ();
                newWorld.GetEntityContainer ().SelectEntity (entity);
-               newWorld.GetEntityContainer ().SelectEntities (entity.GetSelectableEntities ());
+               newWorld.GetEntityContainer ().SelectEntities (entity.GetSelectableAssets ());
             }
             
             i = 0;
-            //numEntities = newWorld.GetEntityContainer ().GetNumEntities (); // this is bug
-            while (i < newWorld.GetEntityContainer ().GetNumEntities ()) // numEntities)
+            //numEntities = newWorld.GetEntityContainer ().GetNumAssets (); // this is bug
+            while (i < newWorld.GetEntityContainer ().GetNumAssets ()) // numEntities)
             {
-               entity = newWorld.GetEntityContainer ().GetEntityByCreationId (i);
+               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity;
                if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
                {
                   ++ i;
                }
                else
                {
-                  newWorld.GetEntityContainer ().DestroyEntity (entity);
+                  newWorld.GetEntityContainer ().DestroyAsset (entity);
                }
             }
             
             /*
             var cm:CollisionCManager = newWorld.GetCollisionManager ();
             var ccId:int;
-            numEntities = newWorld.GetEntityContainer ().GetNumEntities ();
+            numEntities = newWorld.GetEntityContainer ().GetNumAssets ();
             
             for (i = 0; i < numEntities; ++ i)
             {
-               entity = newWorld.GetEntityContainer ().GetEntityByCreationId (i);
+               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity;
                if (entity is EntityVectorShape)
                {
                   ccId = (entity as EntityVectorShape).GetCollisionCategoryIndex ();
@@ -5775,13 +5770,13 @@ package editor.entity.dialog {
             */
             
             var cm:CollisionCategoryManager = newWorld.GetCollisionCategoryManager ();
-            cm.ClearAssetSelections ();
+            cm.CancelAllAssetSelections ();
             var ccId:int;
-            numEntities = newWorld.GetEntityContainer ().GetNumEntities ();
+            numEntities = newWorld.GetEntityContainer ().GetNumAssets ();
             
             for (i = 0; i < numEntities; ++ i)
             {
-               entity = newWorld.GetEntityContainer ().GetEntityByCreationId (i);
+               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity;
                if (entity is EntityVectorShape)
                {
                   ccId = (entity as EntityVectorShape).GetCollisionCategoryIndex ();
@@ -5846,7 +5841,7 @@ package editor.entity.dialog {
          
          try
          {
-            var oldEntitiesCount:int = mEntityContainer.GetNumEntities ();
+            var oldEntitiesCount:int = mEntityContainer.GetNumAssets ();
             var oldCategoriesCount:int = EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
             
             var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
@@ -5878,12 +5873,12 @@ package editor.entity.dialog {
             var centerY:Number = 0;
             var numSelecteds:int = 0;
             
-            var newEntitiesCount:int = mEntityContainer.GetNumEntities ();
+            var newEntitiesCount:int = mEntityContainer.GetNumAssets ();
             
             var entitiesToSelect:Array = new Array ();
             for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
             {
-               entities = (mEntityContainer.GetEntityByCreationId (i) as Entity).GetSelectableEntities ();
+               entities = (mEntityContainer.GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
                entitiesToSelect = entitiesToSelect.concat (entities);
                
                for (j = 0; j < entities.length; ++ j)
@@ -5945,7 +5940,7 @@ package editor.entity.dialog {
          
          object.mWorldDefine = DataFormat.EditorWorld2WorldDefine (EditorContext.GetEditorApp ().GetWorld ());
          
-         var entityArray:Array = mEntityContainer.GetSelectedEntities ();
+         var entityArray:Array = mEntityContainer.GetSelectedAssets ();
          
          object.mSelectedEntityCreationIds = new Array (entityArray.length);
          object.mMainSelectedEntityId = -1;
@@ -5957,7 +5952,7 @@ package editor.entity.dialog {
          for (var i:int = 0; i < entityArray.length; ++ i)
          {
             var entity:Entity = entityArray [i] as Entity;
-            object.mSelectedEntityCreationIds [i] = mEntityContainer.GetEntityCreationId (entity);
+            object.mSelectedEntityCreationIds [i] = mEntityContainer.GetAssetCreationId (entity);
             if (entity.AreInternalComponentsVisible ())
             {
                object.mMainSelectedEntityId = object.mSelectedEntityCreationIds [i];
@@ -6014,7 +6009,7 @@ package editor.entity.dialog {
          mEntityContainerZoomScale = currentWorld;
          mEntityContainer.SetZoomScale (mEntityContainerZoomScale);
          
-         var numEntities:int = mEntityContainer.GetNumEntities ();
+         var numEntities:int = mEntityContainer.GetNumAssets ();
          var entityId:int;
          var entity:Entity;
          
@@ -6023,7 +6018,7 @@ package editor.entity.dialog {
             entityId = object.mSelectedEntityCreationIds [i];
             if (entityId >= 0 && entityId < numEntities)
             {
-               entity = mEntityContainer.GetEntityByCreationId (entityId);
+               entity = mEntityContainer.GetAssetByCreationId (entityId) as Entity;
                mEntityContainer.SelectEntity (entity);
                
                if (entityId == object.mMainSelectedEntityId)

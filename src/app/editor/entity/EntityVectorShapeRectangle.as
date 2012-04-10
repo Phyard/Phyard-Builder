@@ -89,7 +89,7 @@ package editor.entity {
                borderThickness  = 3.0 / mEntityContainer.GetZoomScale ();
          }
 
-         SetVisibleInEditor (mVisibleInEditor); //  recal alpha
+         SetVisibleForEditing (mVisibleForEditing); //  recal alpha
 
          var visualHalfWidth:Number = mHalfWidth + 0.5;
          var visualHalfHeight:Number = mHalfHeight + 0.5;
@@ -506,7 +506,7 @@ package editor.entity {
 //====================================================================
 //   move, rotate, scale
 //====================================================================
-
+      /*
       override public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
       {
          super.Move (offsetX, offsetY, updateSelectionProxy);
@@ -560,7 +560,7 @@ package editor.entity {
 
          UpdateVertexControllers (true);
       }
-
+      */
 
    }
 }

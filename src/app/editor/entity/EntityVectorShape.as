@@ -37,7 +37,7 @@ package editor.entity {
          super (container);
       }
 
-      override public function GetVisibleAlpha ():Number
+      override public function GetVisibleAlphaForEditing ():Number
       {
          return 0.39 + GetTransparency () * 0.01 * 0.40;
       }

@@ -508,7 +508,7 @@ package editor.asset {
                if (event.ctrlKey)
                   DeleteSelectedControlPoints ();
                //else
-               //   DeleteSelectedEntities ();
+               //   DeleteSelectedAssets ();
                break;
             case Keyboard.INSERT:
                if (event.ctrlKey)
@@ -584,7 +584,7 @@ package editor.asset {
          {
             if (! mIsCtrlDownOnMouseDown)
             {
-               mAssetManager.ClearAssetSelections ();
+               mAssetManager.CancelAllAssetSelections ();
          
                OnAssetSelectionsChanged ();
             }

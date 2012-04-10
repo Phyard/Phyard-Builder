@@ -91,13 +91,13 @@ package editor.trigger.entity {
       
       override protected function LinkSelectedEntities ():void
       {
-         var entities:Array = mEntityContainer.GetSelectedEntities ();
+         var entities:Array = mEntityContainer.GetSelectedAssets ();
          var entity:Entity;
          var mainEntity:Entity;
          
          for each (entity in entities)
          {
-            mainEntity = entity.GetMainEntity ();
+            mainEntity = entity.GetMainAsset () as Entity;
             if (LinkEntity (mainEntity))
                break
          }

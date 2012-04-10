@@ -73,7 +73,7 @@ package editor.trigger.entity {
       
       override protected function LinkSelectedEntities ():void
       {
-         var entities:Array = mEntityContainer.GetSelectedEntities ();
+         var entities:Array = mEntityContainer.GetSelectedAssets ();
          var entity:Entity;
          
          var mainEntities:Array = new Array ();
@@ -81,7 +81,7 @@ package editor.trigger.entity {
          
          for each (entity in entities)
          {
-            mainEntity = entity.GetMainEntity ();
+            mainEntity = entity.GetMainAsset () as Entity;
             if (mainEntities.indexOf (mainEntity) < 0)
             {
                mainEntities.push (mainEntity);

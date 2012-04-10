@@ -28,7 +28,7 @@ package editor.entity {
          super (container);
       }
       
-      override public function GetVisibleAlpha ():Number
+      override public function GetVisibleAlphaForEditing ():Number
       {
          return 0.70;
       }
@@ -38,7 +38,7 @@ package editor.entity {
          if (index == Define.EntityId_Ground)
             mConnectedShape1 = mEntityContainer;
          else
-            mConnectedShape1 = mEntityContainer.GetEntityByCreationId (index);
+            mConnectedShape1 = mEntityContainer.GetAssetByCreationId (index);
       }
       
       public function SetConnectedShape2Index (index:int):void
@@ -47,7 +47,7 @@ package editor.entity {
          if (index == Define.EntityId_Ground)
             mConnectedShape2 = mEntityContainer;
          else
-            mConnectedShape2 = mEntityContainer.GetEntityByCreationId (index);
+            mConnectedShape2 = mEntityContainer.GetAssetByCreationId (index);
       }
       
       public function GetConnectedShape1Index ():int
@@ -58,7 +58,7 @@ package editor.entity {
             return Define.EntityId_Ground;
          else
          {
-            var id:int = mEntityContainer.GetEntityCreationId (mConnectedShape1 as Entity);
+            var id:int = mEntityContainer.GetAssetCreationId (mConnectedShape1 as Entity);
             
             if (id >= 0)
                return id;
@@ -76,7 +76,7 @@ package editor.entity {
             return Define.EntityId_Ground;
          else
          {
-            var id:int = mEntityContainer.GetEntityCreationId (mConnectedShape2 as Entity);
+            var id:int = mEntityContainer.GetAssetCreationId (mConnectedShape2 as Entity);
             
             if (id >= 0)
                return id;
@@ -106,6 +106,22 @@ package editor.entity {
       public function UpdateJointPosition ():void
       {
          
+      }
+      
+//====================================================================
+//   transform
+//====================================================================
+      
+      override public function RotateSelf (deltaRotation:Number, intentionDone:Boolean = true):void
+      {
+      }
+      
+      override public function ScaleSelfTo (targetScale:Number, intentionDone:Boolean = true):void
+      {
+      }
+      
+      override public function FlipSelf (intentionDone:Boolean = true):void
+      {
       }
       
 //====================================================================

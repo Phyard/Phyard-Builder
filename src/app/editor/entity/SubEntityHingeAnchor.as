@@ -64,20 +64,21 @@ package editor.entity {
 //====================================================================
 //   flip
 //====================================================================
-      
+      /*
       override public function FlipHorizontally (mirrorX:Number, updateSelectionProxy:Boolean = true):void
       {
          super.FlipHorizontally (mirrorX, updateSelectionProxy);
          
-         GetMainEntity ().FlipHorizontally (mirrorX);
+         GetMainAsset ().FlipHorizontally (mirrorX);
       }
       
       override public function FlipVertically (mirrorY:Number, updateSelectionProxy:Boolean = true):void
       {
          super.FlipVertically (mirrorY, updateSelectionProxy);
          
-         GetMainEntity ().FlipVertically (mirrorY);
+         GetMainAsset ().FlipVertically (mirrorY);
       }
+      */
       
    }
 }

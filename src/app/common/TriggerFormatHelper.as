@@ -98,7 +98,7 @@ package common {
             {
                conditionAndValue = conditionAndTargetValueArray [i] as ConditionAndTargetValue;
                
-               indexes [i] = editorWorld.GetEntityContainer ().GetEntityCreationId (conditionAndValue.mConditionEntity as Entity);
+               indexes [i] = editorWorld.GetEntityContainer ().GetAssetCreationId (conditionAndValue.mConditionEntity as Entity);
                values [i] = conditionAndValue.mTargetValue;
             }
             
@@ -276,7 +276,7 @@ package common {
                }
                else
                {
-                  return editorWorld.GetEntityContainer ().GetEntityCreationId (entity);
+                  return editorWorld.GetEntityContainer ().GetAssetCreationId (entity);
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
@@ -639,7 +639,7 @@ package common {
                }
                else
                {
-                  return editorWorld.GetEntityContainer ().GetEntityByCreationId (entityIndex);
+                  return editorWorld.GetEntityContainer ().GetAssetByCreationId (entityIndex);
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:

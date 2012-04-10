@@ -58,8 +58,8 @@ package editor.entity {
       
       override public function Destroy ():void
       {
-         mEntityContainer.DestroyEntity (mAnchor1);
-         mEntityContainer.DestroyEntity (mAnchor2);
+         mEntityContainer.DestroyAsset (mAnchor1);
+         mEntityContainer.DestroyAsset (mAnchor2);
          
          super.Destroy ();
       }
@@ -307,7 +307,7 @@ package editor.entity {
          newAnchor2.UpdateSelectionProxy ();
       }
       
-      override public function GetSubEntities ():Array
+      override public function GetSubAssets ():Array
       {
          return [mAnchor1, mAnchor2];
       }

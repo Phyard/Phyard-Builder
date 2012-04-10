@@ -221,7 +221,7 @@ package editor.entity {
 //=============================================================
 //   temp. When Entity is extended from Asset, remove these
 //=============================================================
-      
+      /*
       override public function RotateSelf (dRadians:Number):void
       {
          if (IsFlipped ())
@@ -248,6 +248,7 @@ package editor.entity {
          FlipSelfHorizontally ();
          RotateSelf (Math.PI);
       }
+      */
       
 //=============================================================
 //   

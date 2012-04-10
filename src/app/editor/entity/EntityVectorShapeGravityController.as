@@ -43,7 +43,7 @@ package editor.entity {
          mInitialGravityAngle = mEntityContainer.GetDefaultGravityAccelerationAngle ();
       }
 
-      override public function GetVisibleAlpha ():Number
+      override public function GetVisibleAlphaForEditing ():Number
       {
          return 0.70;
       }
@@ -264,21 +264,6 @@ package editor.entity {
          gravityController.SetInitialGravityAcceleration (GetInitialGravityAcceleration ());
          gravityController.SetMaximalGravityAcceleration (GetMaximalGravityAcceleration ());
          gravityController.SetInitialGravityAngle (GetInitialGravityAngle ());
-      }
-
-//====================================================================
-//   flip
-//====================================================================
-
-      override public function FlipSelfHorizontally ():void
-      {
-         //SetRotation (Math.PI + Math.PI - GetRotation () );
-         SetRotation (Math.PI - (GetRotation () - Math.PI * 0.5) + Math.PI * 0.5 );
-      }
-
-      override public function FlipSelfVertically ():void
-      {
-         SetRotation (Math.PI + Math.PI - (GetRotation () - Math.PI * 0.5) + Math.PI * 0.5 );
       }
 
 //====================================================================

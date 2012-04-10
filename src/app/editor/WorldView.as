@@ -89,7 +89,7 @@ package editor {
    import editor.mode.ModeCreateEntityLink;
    
    import editor.runtime.Runtime;
-   import editor.runtime.KeyboardListener;
+   import editor.core.KeyboardListener;
    
    import editor.display.sprite.CursorCrossingLine;
    import editor.display.sprite.EditingEffect

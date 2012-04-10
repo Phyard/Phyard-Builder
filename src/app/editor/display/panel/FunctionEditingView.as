@@ -33,7 +33,7 @@ package editor.display.panel {
    import com.tapirgames.util.DisplayObjectUtil;
    
    import editor.runtime.Runtime;
-   import editor.runtime.KeyboardListener;
+   import editor.core.KeyboardListener;
    
    import editor.entity.Entity;
    

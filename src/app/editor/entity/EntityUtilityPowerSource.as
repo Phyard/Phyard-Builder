@@ -17,7 +17,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   import editor.runtime.Resource;
+   import editor.Resource;
    
    import common.Define;
    import common.KeyCodes;

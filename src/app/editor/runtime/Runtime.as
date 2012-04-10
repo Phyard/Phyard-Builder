@@ -17,12 +17,12 @@ package editor.runtime {
    import editor.world.World;
    
    import editor.WorldView;
-   //import editor.display.panel.CollisionManagerView;
-   //import editor.display.panel.FunctionEditingView;
    
    import editor.entity.Entity;
    
    import editor.asset.Asset;
+   
+   import editor.core.KeyboardListener;
    
    import editor.image.dialog.AssetImageModuleListDialog;
    import editor.image.AssetImageModule;

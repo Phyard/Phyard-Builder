@@ -15,7 +15,7 @@ package editor.display.control {
    
    import com.tapirgames.util.DisplayObjectUtil;
    
-   import editor.runtime.Resource;
+   import editor.Resource;
    
    import common.KeyCodes;
 

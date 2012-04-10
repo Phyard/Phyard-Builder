@@ -1,4 +1,4 @@
-package editor.runtime
+package editor.core
 {
    import flash.events.KeyboardEvent;
    

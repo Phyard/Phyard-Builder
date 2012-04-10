@@ -18,7 +18,7 @@ package editor.trigger.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   import editor.runtime.Resource;
+   import editor.Resource;
    
    import editor.trigger.FunctionDefinition;
    import editor.trigger.CodeSnippet;

@@ -28,7 +28,7 @@ package editor.asset {
    import com.tapirgames.util.DisplayObjectUtil;
    
    import editor.runtime.Runtime;
-   import editor.runtime.KeyboardListener;
+   import editor.core.KeyboardListener;
    
    import common.Define;
    import common.Version;

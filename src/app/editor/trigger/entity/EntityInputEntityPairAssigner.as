@@ -456,7 +456,7 @@ package editor.trigger.entity {
             
             CreateInternalComponents ();
             
-            InputEntitySelector.NotifyEntityLinksModified ();
+            mEntityContainer.NotifyEntityLinksModified ();
          }
       }
       

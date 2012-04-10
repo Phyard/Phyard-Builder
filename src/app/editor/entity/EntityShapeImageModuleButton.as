@@ -314,9 +314,9 @@ package editor.entity {
       
       public function ChangeToCurrentAssetImageModule ():void
       {
-         SetAssetImageModuleForMouseUp (AssetImageModule.mCurrentAssetImageModule);
-         SetAssetImageModuleForMouseOver (AssetImageModule.mCurrentAssetImageModule);
-         SetAssetImageModuleForMouseDown (AssetImageModule.mCurrentAssetImageModule);
+         SetAssetImageModuleForMouseUp (EditorContext.GetSingleton ().mCurrentAssetImageModule);
+         SetAssetImageModuleForMouseOver (EditorContext.GetSingleton ().mCurrentAssetImageModule);
+         SetAssetImageModuleForMouseDown (EditorContext.GetSingleton ().mCurrentAssetImageModule);
          
          UpdateAppearance ();
          UpdateSelectionProxy ();

@@ -291,7 +291,7 @@ package editor.trigger.entity {
             DestroyInternalComponents ();
             RebuildEntityArray ();
             CreateInternalComponents ();
-            InputEntitySelector.NotifyEntityLinksModified ();
+            mEntityContainer.NotifyEntityLinksModified ();
          }
       }
       

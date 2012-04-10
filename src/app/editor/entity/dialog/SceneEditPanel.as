@@ -82,13 +82,12 @@ package editor.entity.dialog {
       {
          SetCurrentIntent (null);
          
-      trace ("entityType = " + entityType);
          switch (entityType)
          {
             case "hinge":
                SetCurrentIntent (new IntentPutAsset (
                                  mScene.CreateEntityJointHinge (true), 
-                                 OnPutingCreating, OnCreatingCancelled));
+                                 OnPutingCreatingOneAnchorJoint, OnCreatingCancelled));
                break;
             default:
                return;
@@ -133,6 +132,24 @@ package editor.entity.dialog {
          }
       }
       
+      protected function OnPutingCreatingOneAnchorJoint (asset:Asset, done:Boolean):void
+      {
+         if (asset is EntityJointHinge)
+         {
+            (asset as EntityJointHinge).GetAnchor ().MoveTo (asset.GetPositionX (), asset.GetPositionY ());
+            if (done)
+               (asset as EntityJointHinge).GetAnchor ().OnTransformIntentDone ();
+         }
+         else if (asset is EntityJointWeld)
+         {
+            (asset as EntityJointWeld).GetAnchor ().MoveTo (asset.GetPositionX (), asset.GetPositionY ());
+            if (done)
+               (asset as EntityJointWeld).GetAnchor ().OnTransformIntentDone ();
+         }
+         
+         OnPutingCreating (asset, done);
+      }
+      
 //============================================================================
 //   
 //============================================================================
@@ -141,7 +158,7 @@ package editor.entity.dialog {
       
       private function OpenAssetSettingDialog ():void
       {
-         if (EditorContext.HasSettingDialogOpened ())
+         if (EditorContext.GetSingleton ().HasSettingDialogOpened ())
             return;
          
          var selectedAssets:Array = mScene.GetSelectedAssets ();

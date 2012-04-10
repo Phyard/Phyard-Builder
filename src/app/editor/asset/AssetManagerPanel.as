@@ -28,12 +28,11 @@ package editor.asset {
    import com.tapirgames.util.DisplayObjectUtil;
    
    import editor.EditorContext;
-   import editor.core.KeyboardListener;
    
    import common.Define;
    import common.Version;
    
-   public class AssetManagerPanel extends UIComponent implements KeyboardListener
+   public class AssetManagerPanel extends UIComponent
    {
       protected var mBackgroundLayer:Sprite;
       protected var mAssetLinksLayer:Sprite;
@@ -165,7 +164,7 @@ package editor.asset {
          
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
-         //stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+         addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
       }
       
       private var mContentMaskSprite:Shape = null;
@@ -303,7 +302,6 @@ package editor.asset {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         EditorContext.SetKeyboardListener (this);
          stage.focus = this;
          
          if (mAssetManager == null)
@@ -494,31 +492,19 @@ package editor.asset {
          }
       }
       
-      public function OnKeyDown (event:KeyboardEvent):void
+      final public function OnKeyDown (event:KeyboardEvent):void
       {
-         switch (event.keyCode)
-         {
-            case Keyboard.ESCAPE:
-               SetCurrentIntent (null);
-               break;
-            //case Keyboard.SPACE:
-            //   OpenEntitySettingDialog ();
-            //   break;
-            case Keyboard.DELETE:
-               if (event.ctrlKey)
-                  DeleteSelectedControlPoints ();
-               //else
-               //   DeleteSelectedAssets ();
-               break;
-            case Keyboard.INSERT:
-               if (event.ctrlKey)
-                  InsertVertexController ();
-               //else
-               //   CloneSelectedEntities ();
-               break;
-            default:
-               break;
-         }
+         if (OnKeyDownInternal (event.keyCode))
+            return;
+         
+         EditorContext.GetSingleton ().OnKeyDownDefault (event.keyCode);
+         event.stopPropagation ();
+      }
+      
+      // return true to indicate handled successfully
+      protected function OnKeyDownInternal (keyCode:int):Boolean
+      {
+         return false;
       }
       
 //=================================================================================

@@ -240,7 +240,7 @@ package editor.entity {
       
       public function ChangeToCurrentAssetImageModule ():void
       {
-         SetAssetImageModule (AssetImageModule.mCurrentAssetImageModule);
+         SetAssetImageModule (EditorContext.GetSingleton ().mCurrentAssetImageModule);
          UpdateAppearance ();
          UpdateSelectionProxy ();
       }

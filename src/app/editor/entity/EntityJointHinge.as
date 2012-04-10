@@ -127,9 +127,9 @@ package editor.entity {
       }
       */
       
-      override public function FlipSelf (intentionDone:Boolean = true):void
+      override public function FlipSelf (/*intentionDone:Boolean = true*/):void
       {
-         super.FlipSelf (intentionDone);
+         super.FlipSelf (/*intentionDone*/);
          
          FlipParams ();
       }

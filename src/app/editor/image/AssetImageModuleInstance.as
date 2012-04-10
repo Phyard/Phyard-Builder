@@ -35,6 +35,8 @@ package editor.image {
    
    import editor.image.vector.VectorShapeForEditing;
    
+   import editor.EditorContext;
+   
    import common.shape.*;
    
    import common.Transform2D;
@@ -216,7 +218,14 @@ package editor.image {
          }
       }
       
-      override public function MoveBodyTexture (offsetX:Number, offsetY:Number, intentionDone:Boolean = true):void
+      override public function OnTransformIntentDone ():void
+      {
+         super.OnTransformIntentDone ();
+         
+         NotifyModifiedForReferers ();
+      }
+      
+      override public function MoveBodyTexture (offsetX:Number, offsetY:Number/*, intentionDone:Boolean = true*/):void
       {
          var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
          
@@ -241,14 +250,16 @@ package editor.image {
             
             UpdateAppearance ();
             
+            /*
             if (intentionDone)
             {
                NotifyModifiedForReferers ();
             }
+            */
          }
       }
       
-      override public function ScaleBodyTexturePosition (centerX:Number, centerY:Number, s:Number, intentionDone:Boolean = true):void
+      override public function ScaleBodyTexturePosition (centerX:Number, centerY:Number, s:Number/*, intentionDone:Boolean = true*/):void
       {
          var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
          
@@ -277,14 +288,16 @@ package editor.image {
             
             UpdateAppearance ();
             
+            /*
             if (intentionDone)
             {
                NotifyModifiedForReferers ();
             }
+            */
          }
       }
       
-      override public function ScaleBodyTextureSelf (s:Number, intentionDone:Boolean = true):void
+      override public function ScaleBodyTextureSelf (s:Number/*, intentionDone:Boolean = true*/):void
       {
          var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
          
@@ -302,14 +315,16 @@ package editor.image {
             
             UpdateAppearance ();
             
+            /*
             if (intentionDone)
             {
                NotifyModifiedForReferers ();
             }
+            */
          }
       }
       
-      override public function RotateBodyTexturePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number, intentionDone:Boolean = true):void
+      override public function RotateBodyTexturePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number/*, intentionDone:Boolean = true*/):void
       {
          var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
          
@@ -338,14 +353,16 @@ package editor.image {
             
             UpdateAppearance ();
             
+            /*
             if (intentionDone)
             {
                NotifyModifiedForReferers ();
             }
+            */
          }
       }
       
-      override public function RotateBodyTextureSelf (deltaRotation:Number, intentionDone:Boolean = true):void
+      override public function RotateBodyTextureSelf (deltaRotation:Number/*, intentionDone:Boolean = true*/):void
       {
          var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
          
@@ -360,14 +377,16 @@ package editor.image {
             
             UpdateAppearance ();
             
+            /*
             if (intentionDone)
             {
                NotifyModifiedForReferers ();
             }
+            */
          }
       }
       
-      override public function FlipBodyTexturePosition (planeX:Number, intentionDone:Boolean = true):void
+      override public function FlipBodyTexturePosition (planeX:Number/*, intentionDone:Boolean = true*/):void
       {
          var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
          
@@ -391,14 +410,16 @@ package editor.image {
             
             UpdateAppearance ();
             
+            /*
             if (intentionDone)
             {
                NotifyModifiedForReferers ();
             }
+            */
          }
       }
       
-      override public function FlipBodyTextureSelf (intentionDone:Boolean = true):void
+      override public function FlipBodyTextureSelf (/*intentionDone:Boolean = true*/):void
       {
          var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
          
@@ -413,10 +434,12 @@ package editor.image {
             
             UpdateAppearance ();
             
+            /*
             if (intentionDone)
             {
                NotifyModifiedForReferers ();
             }
+            */
          }
       }
       
@@ -719,7 +742,7 @@ package editor.image {
       
       private function OnContextMenuEvent_RebuildFromCurrentModule (event:ContextMenuEvent):void
       {
-         RebuildFromModule (AssetImageModule.mCurrentAssetImageModule);
+         RebuildFromModule (EditorContext.GetSingleton ().mCurrentAssetImageModule);
       }
       
       public function RebuildFromModule (module:AssetImageModule):void

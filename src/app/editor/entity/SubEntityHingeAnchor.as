@@ -49,6 +49,7 @@ package editor.entity {
       
       override public function UpdateSelectionProxy ():void
       {
+trace ("UpdateSelectionProxy");
          if (mSelectionProxy == null)
          {
             mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyCircle ();

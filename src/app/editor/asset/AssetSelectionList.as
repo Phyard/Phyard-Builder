@@ -5,6 +5,8 @@ package editor.asset {
    
    import editor.asset.Asset;
    
+   import editor.EditorContext;
+   
    public class AssetSelectionList 
    {  
       private var mSelectedAssets:Array = new Array ();
@@ -82,7 +84,7 @@ package editor.asset {
          }
          
          var asset:Asset;
-         var actionId:int = Asset.GetNextActionId ();
+         var actionId:int = ++ EditorContext.mNextActionId;
          
          var assetsToSelect:Array = new Array ();
          for each (asset in assetArray)

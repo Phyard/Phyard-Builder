@@ -11,6 +11,8 @@ package editor {
    import flash.media.SoundMixer;
    
    import mx.core.Application;
+   import mx.core.UIComponent;
+   import mx.managers.PopUpManager;
    
    import com.tapirgames.util.UrlUtil;
    
@@ -19,8 +21,6 @@ package editor {
    import editor.entity.Entity;
    
    import editor.asset.Asset;
-   
-   import editor.core.KeyboardListener;
    
    import editor.image.dialog.AssetImageModuleListDialog;
    import editor.image.AssetImageModule;
@@ -42,9 +42,9 @@ package editor {
 //=====================================================================
 // static methods
 //=====================================================================
-
+      
    //=====================================================================
-   // app
+   // singleton
    //=====================================================================
 
       internal static var sEditorApp:Editor; // set by editor app
@@ -54,12 +54,29 @@ package editor {
          return EditorContext.sEditorApp;
       }
       
+      internal static var sEditorContext:EditorContext = null; // lifecycle is the same as app.mWorld
+      
+      public static function GetSingleton ():EditorContext
+      {
+         return sEditorContext;
+      }
+      
    //=====================================================================
    //
    //=====================================================================
       
       // used in loading editor world
       public static var mPauseCreateShapeProxy:Boolean = false;
+
+      // for code editing
+      public static var mLongerCodeEditorMenuBar:Boolean = false;
+      public static var mPoemCodingFormat:Boolean = false;
+      
+      // for some special optimizaitons. Another possible good mehtod: use bit masks to ...
+      public static var mNextActionId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
+      
+      // for ResizableTitleWindow
+      public static var mIsMouseButtonHold:Boolean = false;
       
    //=====================================================================
    // sound
@@ -112,81 +129,46 @@ package editor {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
       
-   //=====================================================================
-   // singleton
-   //=====================================================================
-      
-      internal static var sEditorContext:EditorContext = null; //
-      
-      public static function GetSingleton ():EditorContext
-      {
-         return sEditorContext;
-      }
-      
 //=====================================================================
 // non-static methods
 //=====================================================================
       
-   //=====================================================================
-   // 
-   //=====================================================================
-      /*
-      // call this before loading a new world
-      public function Cleanup ():void
+      public function EditorContext ()
       {
-         SetKeyboardListener (null);
+         mNextActionId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
          
-         Asset.mNextActionId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
-         Entity.mNextActionId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
-         if (AssetImageModuleListDialog.sAssetImageModuleListDialog != null)
-         {
+         mIsMouseButtonHold = false;
+      }
+      
+      public function Cleanup ():void
+      {  
+         if (mAssetImageModuleListDialog != null)
             AssetImageModuleListDialog.HideAssetImageModuleListDialog ();
-            AssetImageModuleListDialog.sAssetImageModuleListDialog = null;
-         }
-         AssetImageModule.mCurrentAssetImageModule = null;
-         if (AssetSoundListDialog.sAssetSoundListDialog != null)
-         {
+         
+         if (mAssetSoundListDialog != null)
             AssetSoundListDialog.HideAssetSoundListDialog ();
-            AssetSoundListDialog.sAssetSoundListDialog = null;
-         }
-         if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
-         {
+         
+         if (mCollisionCategoryListDialog != null)
             CollisionCategoryListDialog.HideCollisionCategoryListDialog ();
-            CollisionCategoryListDialog.sCollisionCategoryListDialog = null;
-         }
-         if (CodeLibListDialog.sCodeLibListDialog != null)
-         {
+         
+         if (mCodeLibListDialog != null)
             CodeLibListDialog.HideCodeLibListDialog ();
-            CodeLibListDialog.sCodeLibListDialog = null;
-         }
-         InputEntitySelector.sNotifyEntityLinksModified = null;
          
-         mHasSettingDialogOpened = false;
-         mHasInputFocused = false;
-         
-         mSessionVariablesEditingDialogClosedCallBack = null;
-         mGlobalVariablesEditingDialogClosedCallBack = null;
-         mEntityVariablesEditingDialogClosedCallBack = null;
-         mLocalVariablesEditingDialogClosedCallBack = null;
-         mInputVariablesEditingDialogClosedCallBack = null;
-         mOutputVariablesEditingDialogClosedCallBack = null;
-         
-         // ...
          StopAllSounds ();
       }
-      */
+      
    //=====================================================================
-   //
+   // file name
    //=====================================================================
       
-      private static var mDesignFilename:String  = null;
+      private var mDesignFilename:String  = null;
       
-      public static function SetRecommandDesignFilename (filename:String):void
+      public function SetRecommandDesignFilename (filename:String):void
       {
          mDesignFilename = filename;
       }
       
-      public static function GetTimeStringInFilename ():String
+      public function GetTimeStringInFilename ():String
       {
          var date:Date = new Date ();
          return "[" 
@@ -199,7 +181,7 @@ package editor {
                + "]";
       }
       
-      public static function GetRecommandDesignFilename ():String
+      public function GetRecommandDesignFilename ():String
       {
          if (mDesignFilename == null)
          {
@@ -209,75 +191,20 @@ package editor {
          return mDesignFilename;
       }
       
-      
-      private static var mIsMouseButtonHold:Boolean = false;
-      
-      public static function SetMouseButtonHold (hold:Boolean):void
-      {
-         mIsMouseButtonHold = hold;
-      }
-      
-      public static function IsMouseButtonHold ():Boolean
-      {
-         return mIsMouseButtonHold;
-      }
-      
    //=====================================================================
-   //
+   //   key event
    //=====================================================================
       
-      private static var mHasSettingDialogOpened:Boolean = false;
-      
-      public static function SetHasSettingDialogOpened (opened:Boolean):void
+      // this is the default
+      public function OnKeyDownDefault (keyCode:int):void
       {
-         mHasSettingDialogOpened = opened;
-      }
-      
-      public static function HasSettingDialogOpened ():Boolean
-      {
-         return mHasSettingDialogOpened;
-      }
-      
-      private static var mHasInputFocused:Boolean = false;
-      
-      public static function SetHasInputFocused (has:Boolean):void
-      {
-         mHasInputFocused = has;
-      }
-      
-      public static function HasInputFocused ():Boolean
-      {
-         return mHasInputFocused;
-      }
-      
-//=====================================================================
-//
-//=====================================================================static
-      
-      public static function OnOpenDialog ():void
-      {
-         EditorContext.SetHasSettingDialogOpened (true);
-         EditorContext.GetSingleton ().StartSettingEntityProperties ();
-      }
-      
-      public static function OnCloseDialog (checkCustomVariablesModifications:Boolean = false):void
-      {
-         EditorContext.SetHasSettingDialogOpened (false);
-         EditorContext.GetEditorApp ().stage.focus = EditorContext.GetEditorApp ().stage;
+         if (HasSettingDialogOpened ())
+            return;
          
-         if (checkCustomVariablesModifications)
-         {
-            EditorContext.GetSingleton ().CancelSettingEntityProperties ();
-         }
-      }
-      
-//=====================================================================
-//   key listener
-//=====================================================================
-      
-      public static function OnKeyDown (event:KeyboardEvent):void
-      {
-         switch (event.keyCode)
+         if (HasInputFocused ())
+            return;
+         
+         switch (keyCode)
          {
             case Keyboard.F3:
                AssetImageModuleListDialog.ShowAssetImageModuleListDialog ();
@@ -292,41 +219,79 @@ package editor {
                CodeLibListDialog.ShowCodeLibListDialog ();
                break;
          }
-            
-         if (HasSettingDialogOpened ())
-            return;
-         
-         if (HasInputFocused ())
-            return;
-         
-         if (mKeyboardListener == null)
-         {
-            EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().OnKeyDown (event);
-         }
-         else
-         {
-            mKeyboardListener.OnKeyDown (event);
-         }
       }
       
-      private static var mKeyboardListener:KeyboardListener = null;
+   //=====================================================================
+   //
+   //=====================================================================
       
-      public static function SetKeyboardListener (keyboardListener:KeyboardListener):void
+      public var mCurrentAssetImageModule:AssetImageModule = null;
+      
+      public var mAssetImageModuleListDialog:AssetImageModuleListDialog = null;      
+      public var mAssetSoundListDialog:AssetSoundListDialog = null;
+      public var mCollisionCategoryListDialog:CollisionCategoryListDialog = null;
+      public var mCodeLibListDialog:CodeLibListDialog  = null;
+      
+   //=====================================================================
+   //
+   //=====================================================================
+      
+      private var mHasSettingDialogOpened:Boolean = false;
+      
+      public function SetHasSettingDialogOpened (opened:Boolean):void
       {
-         mKeyboardListener = keyboardListener;
+         mHasSettingDialogOpened = opened;
       }
       
-      public static function GetKeyboardListener ():KeyboardListener
+      public function HasSettingDialogOpened ():Boolean
       {
-         return mKeyboardListener;
+         return mHasSettingDialogOpened;
       }
       
-//=====================================================================
-//
-//=====================================================================
+      private var mHasInputFocused:Boolean = false;
       
-      public static var mLongerCodeEditorMenuBar:Boolean = false;
-      public static var mPoemCodingFormat:Boolean = false;
+      public function SetHasInputFocused (has:Boolean):void
+      {
+         mHasInputFocused = has;
+      }
+      
+      public function HasInputFocused ():Boolean
+      {
+         return mHasInputFocused;
+      }
+      
+      public function OnOpenModalDialog ():void
+      {
+         SetHasSettingDialogOpened (true);
+         EditorContext.GetSingleton ().StartSettingEntityProperties ();
+      }
+      
+      public function OnCloseModalDialog (checkCustomVariablesModifications:Boolean = false):void
+      {
+         SetHasSettingDialogOpened (false);
+         
+         if (checkCustomVariablesModifications)
+         {
+            EditorContext.GetSingleton ().CancelSettingEntityProperties ();
+         }
+      }
+      
+      public function OpenSettingsDialog (DialigClass:Class, initialValues:Object, onConfirmFunc:Function):void
+      {
+         OnOpenModalDialog ();
+         
+         var settingDialog:Object = new DialigClass ();
+         settingDialog.SetValues (initialValues);
+         settingDialog.SetConfirmFunc (onConfirmFunc);
+         settingDialog.SetCloseFunc (OnCloseModalDialog);
+         
+         PopUpManager.addPopUp (settingDialog as UIComponent, sEditorApp, true);
+         PopUpManager.centerPopUp (settingDialog as UIComponent);
+      }
+      
+   //=====================================================================
+   //
+   //=====================================================================
       
       public var mSessionVariablesEditingDialogClosedCallBack:Function = null;
       public var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
@@ -429,6 +394,8 @@ package editor {
             message = message + ") are modified";
          }
       }
+      
+      
 
    }
    

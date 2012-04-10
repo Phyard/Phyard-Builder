@@ -12,6 +12,8 @@ package editor.asset {
    
    import editor.core.EditorObject;
    
+   import editor.EditorContext;
+   
    import common.CoordinateSystem;
    
    import common.Define;
@@ -267,7 +269,7 @@ package editor.asset {
          
          var asset:Asset;
          var brothers:Array;
-         var actionId:int = Asset.GetNextActionId ();
+         var actionId:int = ++ EditorContext.mNextActionId;
          var brotherGroups:Array = new Array ();
          
          for each (asset in assets)
@@ -452,13 +454,13 @@ package editor.asset {
          var actionId1:int;
          var actionId2:int;
 
-         actionId1 = Asset.GetNextActionId ();
+         actionId1 = ++ EditorContext.mNextActionId;
          for each (asset in newSelections)
          {
             asset.SetCurrentActionId (actionId1);
          }
          
-         actionId2 = Asset.GetNextActionId ();
+         actionId2 = ++ EditorContext.mNextActionId;
          for each (asset in oldSelections)
          {
             if (asset.GetCurrentActionId () < actionId1)
@@ -721,9 +723,14 @@ package editor.asset {
             asset = assetArray [i] as Asset;
             
             if (moveBodyTexture)
-               asset.MoveBodyTexture (offsetX, offsetY, updateSelectionProxy);
+               asset.MoveBodyTexture (offsetX, offsetY/*, updateSelectionProxy*/);
             else
-               asset.Move (offsetX, offsetY, updateSelectionProxy);
+               asset.Move (offsetX, offsetY/*, updateSelectionProxy*/);
+            
+            if (updateSelectionProxy)
+            {
+               asset.OnTransformIntentDone ();
+            }
          }
          
          if (updateSelectionProxy && assetArray.length > 0)
@@ -740,7 +747,7 @@ package editor.asset {
          
          var cos:Number = Math.cos (deltaRot);
          var sin:Number = Math.sin (deltaRot);
-         var updateSelectionProxyWhenRotatePosition:Boolean = updateSelectionProxy && (! rotateSelf);
+         //var updateSelectionProxyWhenRotatePosition:Boolean = updateSelectionProxy && (! rotateSelf);
          
          for (var i:int = 0; i < assetArray.length; ++ i)
          {
@@ -749,17 +756,22 @@ package editor.asset {
             if (rotatePosition)
             {
                if (rotateBodyTexture)
-                  asset.RotateBodyTexturePositionByCosSin (centerX, centerY, cos, sin, updateSelectionProxyWhenRotatePosition);
+                  asset.RotateBodyTexturePositionByCosSin (centerX, centerY, cos, sin/*, updateSelectionProxyWhenRotatePosition*/);
                else
-                  asset.RotatePositionByCosSin (centerX, centerY, cos, sin, updateSelectionProxyWhenRotatePosition);
+                  asset.RotatePositionByCosSin (centerX, centerY, cos, sin/*, updateSelectionProxyWhenRotatePosition*/);
             }
             
             if (rotateSelf)
             {
                if (rotateBodyTexture)
-                  asset.RotateBodyTextureSelf (deltaRot, updateSelectionProxy);
+                  asset.RotateBodyTextureSelf (deltaRot/*, updateSelectionProxy*/);
                else
-                  asset.RotateSelf (deltaRot, updateSelectionProxy);
+                  asset.RotateSelf (deltaRot/*, updateSelectionProxy*/);
+            }
+            
+            if (updateSelectionProxy)
+            {
+               asset.OnTransformIntentDone ();
             }
          }
          
@@ -775,7 +787,7 @@ package editor.asset {
          
          var asset:Asset;
          
-         var updateSelectionProxyWhenScalePosition:Boolean = updateSelectionProxy && (! scaleSelf);
+         //var updateSelectionProxyWhenScalePosition:Boolean = updateSelectionProxy && (! scaleSelf);
          
          for (var i:int = 0; i < assetArray.length; ++ i)
          {
@@ -784,17 +796,22 @@ package editor.asset {
             if (scalePosition)
             {
                if (scaleBodyTexture)
-                  asset.ScaleBodyTexturePosition (centerX, centerY, s, updateSelectionProxyWhenScalePosition);
+                  asset.ScaleBodyTexturePosition (centerX, centerY, s/*, updateSelectionProxyWhenScalePosition*/);
                else
-                  asset.ScalePosition (centerX, centerY, s, updateSelectionProxyWhenScalePosition);
+                  asset.ScalePosition (centerX, centerY, s/*, updateSelectionProxyWhenScalePosition*/);
             }
             
             if (scaleSelf)
             {
                if (scaleBodyTexture)
-                  asset.ScaleBodyTextureSelf (s, updateSelectionProxy);
+                  asset.ScaleBodyTextureSelf (s/*, updateSelectionProxy*/);
                else
-                  asset.ScaleSelf (s, updateSelectionProxy);
+                  asset.ScaleSelf (s/*, updateSelectionProxy*/);
+            }
+            
+            if (updateSelectionProxy)
+            {
+               asset.OnTransformIntentDone ();
             }
          }
          
@@ -810,7 +827,7 @@ package editor.asset {
          
          var asset:Asset;
          
-         var updateSelectionProxyWhenScalePosition:Boolean = updateSelectionProxy && (! flipSelf);
+         //var updateSelectionProxyWhenScalePosition:Boolean = updateSelectionProxy && (! flipSelf);
          
          for (var i:int = 0; i < assetArray.length; ++ i)
          {
@@ -819,17 +836,22 @@ package editor.asset {
             if (flipPosition)
             {
                if (flipBodyTexture)
-                  asset.FlipBodyTexturePosition (planeX, updateSelectionProxyWhenScalePosition);
+                  asset.FlipBodyTexturePosition (planeX/*, updateSelectionProxyWhenScalePosition*/);
                else
-                  asset.FlipPosition (planeX, updateSelectionProxyWhenScalePosition);
+                  asset.FlipPosition (planeX/*, updateSelectionProxyWhenScalePosition*/);
             }
             
             if (flipSelf)
             {
                if (flipBodyTexture)
-                  asset.FlipBodyTextureSelf (updateSelectionProxy);
+                  asset.FlipBodyTextureSelf (/*updateSelectionProxy*/);
                else
-                  asset.FlipSelf (updateSelectionProxy);
+                  asset.FlipSelf (/*updateSelectionProxy*/);
+            }
+            
+            if (updateSelectionProxy)
+            {
+               asset.OnTransformIntentDone ();
             }
          }
          

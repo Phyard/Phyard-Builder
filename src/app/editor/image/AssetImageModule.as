@@ -35,6 +35,8 @@ package editor.image {
    
    import editor.asset.Asset;
    import editor.asset.AssetManager;
+   
+   import editor.EditorContext;
 
    import common.Transform2D;
    
@@ -48,13 +50,6 @@ package editor.image {
       public static const ImageModuleType_PureModule:int = 1;
       public static const ImageModuleType_AssembledModule:int = 2;
       public static const ImageModuleType_SequencedModule:int = 3;
-      
-      public static var mCurrentAssetImageModule:AssetImageModule = null;
-         
-      public static function SetCurrentModule (module:AssetImageModule):void
-      {
-         mCurrentAssetImageModule = module;
-      }
       
 //=============================================================
 //   
@@ -85,9 +80,9 @@ package editor.image {
       {
          super.Destroy ();
          
-         if (mCurrentAssetImageModule == this)
+         if (EditorContext.GetSingleton ().mCurrentAssetImageModule == this)
          {
-            SetCurrentModule (null);
+            EditorContext.GetSingleton ().mCurrentAssetImageModule = null;
          }
       }
       
@@ -97,7 +92,7 @@ package editor.image {
       
       public function OnMouseDown (event:MouseEvent):void
       {
-         SetCurrentModule (this);
+         EditorContext.GetSingleton ().mCurrentAssetImageModule = this;
       }
       
 //=============================================================
@@ -199,7 +194,7 @@ package editor.image {
       
       private function OnContextMenuEvent_SetAsCurrentModule (event:ContextMenuEvent):void
       {
-         SetCurrentModule (this);
+         EditorContext.GetSingleton ().mCurrentAssetImageModule = this;
       }
       
   }

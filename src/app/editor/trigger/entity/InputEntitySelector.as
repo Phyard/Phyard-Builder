@@ -29,14 +29,6 @@ package editor.trigger.entity {
    {
       public static const kRadius:Number = 5.0;
       
-      public static var sNotifyEntityLinksModified:Function = null;
-      
-      public static function NotifyEntityLinksModified ():void
-      {
-         if (sNotifyEntityLinksModified != null)
-            sNotifyEntityLinksModified ();
-      }
-      
 //=================================================================================================
 //   
 //=================================================================================================
@@ -280,14 +272,14 @@ package editor.trigger.entity {
             if (mOnClearEntities != null)
             {
                if (mOnClearEntities (mParamId, mSelectorId))
-                  NotifyEntityLinksModified ();
+                  mEntityContainer.NotifyEntityLinksModified ();
             }
          }
          else if (event.target == mContextMenuItem_AppendSelecteds)
          {
             LinkSelectedEntities ();
             
-            NotifyEntityLinksModified ();
+            mEntityContainer.NotifyEntityLinksModified ();
          }
       }
       

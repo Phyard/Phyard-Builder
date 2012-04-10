@@ -30,7 +30,7 @@
          <mx:Button id="Button_SettingFunction" toolTip="Edit Code Snippet" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/function/command-setting.png')" disabledIcon="@Embed('../../../res/function/command-setting-disabled.png')" />
          <mx:Spacer width="30"/>
          <mx:Label id="Label_FunctionAssetName" text="Name:" textAlign="right"/>
-         <mx:TextInput id="Text_FunctionAssetName" text="" width="200" enter="stage.focus = panelCodeLibList;" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
+         <mx:TextInput id="Text_FunctionAssetName" text="" width="200" enter="stage.focus = panelCodeLibList;" focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);"/>
          <mx:Spacer width="100%"/>
       </mx:HBox>
       <mx:VBox id="Box_CCatListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
@@ -55,58 +55,55 @@
          import mx.controls.ToolTip;
          import mx.controls.Button;
          
-         import editor.display.dialog.FunctionEditDialog;
          import editor.EditorContext;
 
       // static functions
          
-         public static var sCodeLibListDialog:CodeLibListDialog = null;
          public static function ShowCodeLibListDialog (OnCCatPicked:Function = null):void
          {
-         trace ("ShowCodeLibListDialog");
-            if (sCodeLibListDialog == null)
+            if (EditorContext.GetSingleton ().mCodeLibListDialog == null)
             {
-               sCodeLibListDialog = new CodeLibListDialog ();
+               EditorContext.GetSingleton ().mCodeLibListDialog = new CodeLibListDialog ();
             }
             
-            if (sCodeLibListDialog.parent != null) // OnCCatPicked must be null
+            if (EditorContext.GetSingleton ().mCodeLibListDialog.parent != null) // OnCCatPicked must be null
             {
-               PopUpManager.bringToFront (sCodeLibListDialog);
+               PopUpManager.bringToFront (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
             else
             {
-               PopUpManager.addPopUp (sCodeLibListDialog, EditorContext.GetEditorApp (), OnCCatPicked != null);
-               PopUpManager.centerPopUp (sCodeLibListDialog);
+               PopUpManager.addPopUp (EditorContext.GetSingleton ().mCodeLibListDialog, EditorContext.GetEditorApp (), OnCCatPicked != null);
+               PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
             
-            sCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager ());
+            EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager ());
             
             if (OnCCatPicked != null)
             {
-               sCodeLibListDialog.mInPickingMode = true;
+               EditorContext.GetSingleton ().mCodeLibListDialog.mInPickingMode = true;
                
-               sCodeLibListDialog.GetCodeLibListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
+               EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
             }
          }
          
          public static function HideCodeLibListDialog ():void
          {
-            if (sCodeLibListDialog.mInPickingMode)
+            if (EditorContext.GetSingleton ().mCodeLibListDialog.mInPickingMode)
             {
                EndPickingMode ();
             }
             else
             {
-               PopUpManager.removePopUp (sCodeLibListDialog);
+               PopUpManager.removePopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
             
          }
          
          public static function StartPickingMode (OnCCatPicked:Function):void
          {
-            if (sCodeLibListDialog != null)
+            if (EditorContext.GetSingleton ().mCodeLibListDialog != null)
             {
-               PopUpManager.removePopUp (sCodeLibListDialog);
+               PopUpManager.removePopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
             
             ShowCodeLibListDialog (OnCCatPicked);
@@ -114,13 +111,13 @@
          
          public static function EndPickingMode ():void
          {
-            if (sCodeLibListDialog != null)
+            if (EditorContext.GetSingleton ().mCodeLibListDialog != null)
             {
-               sCodeLibListDialog.mInPickingMode = false;
+               EditorContext.GetSingleton ().mCodeLibListDialog.mInPickingMode = false;
                
-               PopUpManager.removePopUp(sCodeLibListDialog);
+               PopUpManager.removePopUp(EditorContext.GetSingleton ().mCodeLibListDialog);
             
-               sCodeLibListDialog.GetCodeLibListPanel ().ExitPickAssetIntent ();
+               EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().ExitPickAssetIntent ();
             }
          }
          
@@ -137,9 +134,6 @@
          
          private function InitDialog ():void
          {
-            // setting dialogs
-            panelCodeLibList.ShowFunctionSettingDialog = ShowFunctionSettingDialog;
-            
             // 
             panelCodeLibList.mButtonCreatePureFunction = Button_CreatePureFunction;
             panelCodeLibList.mButtonCreateDirtyFunction = Button_CreateDirtyFunction;
@@ -165,17 +159,6 @@
             
       //==========================================================
             
-            private function ShowFunctionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:FunctionEditDialog = new FunctionEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, EditorContext.GetEditorApp (), true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
          
      ]]>
    </mx:Script>

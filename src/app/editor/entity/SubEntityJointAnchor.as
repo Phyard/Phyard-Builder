@@ -45,39 +45,39 @@ package editor.entity {
 //   transform
 //====================================================================
       
-      override public function MoveTo (targetX:Number, targetY:Number, intentionDone:Boolean = true):void
+      override public function MoveTo (targetX:Number, targetY:Number/*, intentionDone:Boolean = true*/):void
       {
-         super.MoveTo (targetX, targetY, intentionDone);
+         super.MoveTo (targetX, targetY/*, intentionDone*/);
          (GetMainAsset () as EntityJoint).NotifyAnchorPositionChanged ();
       }
       
-      override public function RotatePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number, intentionDone:Boolean = true):void
+      override public function RotatePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number/*, intentionDone:Boolean = true*/):void
       {
-         super.RotatePositionByCosSin (centerX, centerY, cos, sin, intentionDone);
+         super.RotatePositionByCosSin (centerX, centerY, cos, sin/*, intentionDone*/);
          (GetMainAsset () as EntityJoint).NotifyAnchorPositionChanged ();
       }
 
-      override public function RotateSelf (deltaRotation:Number, intentionDone:Boolean = true):void
+      override public function RotateSelf (deltaRotation:Number/*, intentionDone:Boolean = true*/):void
       {
       }
       
-      override public function ScalePosition (centerX:Number, centerY:Number, s:Number, intentionDone:Boolean = true):void
+      override public function ScalePosition (centerX:Number, centerY:Number, s:Number/*, intentionDone:Boolean = true*/):void
       {
-         super.ScalePosition (centerX, centerY, s, intentionDone);
+         super.ScalePosition (centerX, centerY, s/*, intentionDone*/);
          (GetMainAsset () as EntityJoint).NotifyAnchorPositionChanged ();
       }
       
-      override public function ScaleSelfTo (targetScale:Number, intentionDone:Boolean = true):void
+      override public function ScaleSelfTo (targetScale:Number/*, intentionDone:Boolean = true*/):void
       {
       }
       
-      override public function FlipPosition (planeX:Number, intentionDone:Boolean = true):void
+      override public function FlipPosition (planeX:Number/*, intentionDone:Boolean = true*/):void
       {
-         super.FlipPosition (planeX, intentionDone);
+         super.FlipPosition (planeX/*, intentionDone*/);
          (GetMainAsset () as EntityJoint).NotifyAnchorPositionChanged ();
       }
       
-      override public function FlipSelf (intentionDone:Boolean = true):void
+      override public function FlipSelf (/*intentionDone:Boolean = true*/):void
       {
       }
       

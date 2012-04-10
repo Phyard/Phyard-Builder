@@ -25,6 +25,8 @@ package editor.image {
    import editor.image.vector.VectorShapePolylineForEditing;
    import editor.image.vector.VectorShapeTextForEditing;
    
+   import editor.EditorContext;
+   
    import common.CoordinateSystem;
    
    import common.Define;
@@ -240,7 +242,7 @@ package editor.image {
 
       public function OnContextMenuEvent_CreateImageModuleInstanceAtIndex (index:int):void
       {
-         CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true, index);
+         CreateImageModuleInstance (EditorContext.GetSingleton ().mCurrentAssetImageModule, true, index);
          
          NotifyChangedForPanel ();
       }
@@ -258,7 +260,7 @@ package editor.image {
       
       //private function OnContextMenuEvent_CreateImageModuleInstance (event:ContextMenuEvent):void
       //{
-      //   CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true);
+      //   CreateImageModuleInstance (EditorContext.GetSingleton ().mCurrentAssetImageModule, true);
       //   
       //   NotifyChangedForPanel ();
       //}

@@ -11,9 +11,10 @@
          usePreloader="true"
          percentWidth="100"
          percentHeight="100"
+         scriptTimeLimit="60"
          creationComplete="InitApp ();"
          enterFrame="UpdateApp ();" 
-         scriptTimeLimit="60"
+         keyDown="OnKeyDown (event);"
          >
    
    <mx:Style source="editor.css"/>
@@ -27,6 +28,7 @@
       </mx:HBox>
       <mx:ViewStack id="ViewStack_ViewEditCommands" borderStyle="none" creationPolicy="all" width="100%">
          <mx:HBox id="Box_EntityEditViewCommands" backgroundColor="0xD0D0D0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+            <mx:Button label="ccat" click="ShowCollisionCategoryListDialog ();" />
             <mx:Spacer width="100%"/>
             <mx:HBox id="Box_EntityEditViewCommands_1" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                <mx:Spacer width="5"/>
@@ -71,41 +73,6 @@
             </mx:HBox>
             <mx:Spacer width="100%"/>
          </mx:HBox>
-         <!--mx:HBox id="Box_CCatEditViewCommands" backgroundColor="0xD0D0D0" verticalAlign="middle" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
-            <mx:Spacer width="100%"/>
-            <mx:Button id="Button_CreateCollisionCategory" toolTip="New Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../res/collision/create-category-disabled.png')" selectedDisabledIcon="@Embed('../res/collision/create-category-disabled.png')" upIcon="@Embed('../res/collision/create-category.png')" downIcon="@Embed('../res/collision/create-category-sel.png')" overIcon="@Embed('../res/collision/create-category.png')" selectedUpIcon="@Embed('../res/collision/create-category-sel.png')" selectedOverIcon="@Embed('../res/collision/create-category-sel.png')" selectedDownIcon="@Embed('../res/collision/create-category.png')"   />
-            <mx:Spacer width="20"/>
-            <mx:Button id="Button_DeleteCollisionCategory" toolTip="Delete Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-delete.png')" disabledIcon="@Embed('../res/command/command-delete-disabled.png')" />
-            <mx:Spacer width="36"/>
-            <mx:HBox backgroundColor="0xFFFFFF" verticalAlign="middle"
-                     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-                     horizontalScrollPolicy="off" verticalScrollPolicy="off"
-                     horizontalGap="0" verticalGap="0" borderThickness="0">
-               <mx:Spacer width="3"/>
-               <mx:CheckBox id="CheckBox_CollisionCategory_HarmoniousCategory" label="Harmonious Category"/>
-               <mx:Spacer width="6"/>
-               <mx:CheckBox id="CheckBox_CollisionCategory_DefaultCategory" label="Default Category"/>
-            </mx:HBox>
-            <mx:Spacer width="6"/>
-            <mx:Label id="Label_CollisionCategoryName" text="Name:" textAlign="right"/>
-            <mx:TextInput id="Text_CollisionCategoryName" text="" width="200"/>
-            <mx:Spacer width="100%"/>
-         </mx:HBox-->
-         <!--mx:HBox id="Box_FunctionEditViewCommands" backgroundColor="0xD0D0D0" verticalAlign="middle" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="1" verticalGap="0" borderStyle="solid" borderThickness="0">
-            <mx:Spacer width="100%"/>
-            <mx:Button id="Button_CreatePackage" visible="false" toolTip="New Package" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../res/function/create-package-disabled.png')" selectedDisabledIcon="@Embed('../res/function/create-package-disabled.png')" upIcon="@Embed('../res/function/create-package.png')" downIcon="@Embed('../res/function/create-package-sel.png')" overIcon="@Embed('../res/function/create-package.png')" selectedUpIcon="@Embed('../res/function/create-package-sel.png')" selectedOverIcon="@Embed('../res/function/create-package-sel.png')" selectedDownIcon="@Embed('../res/function/create-package.png')"   />
-            <mx:Button id="Button_CreateClass" visible="false" toolTip="New Class" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../res/function/create-class-disabled.png')" selectedDisabledIcon="@Embed('../res/function/create-class-disabled.png')" upIcon="@Embed('../res/function/create-class.png')" downIcon="@Embed('../res/function/create-class-sel.png')" overIcon="@Embed('../res/function/create-class.png')" selectedUpIcon="@Embed('../res/function/create-class-sel.png')" selectedOverIcon="@Embed('../res/function/create-class-sel.png')" selectedDownIcon="@Embed('../res/function/create-class.png')"   />
-            <mx:Button id="Button_CreatePureFunction" toolTip="New Pure Function" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../res/function/create-function-disabled.png')" upIcon="@Embed('../res/function/create-function-pure.png')" downIcon="@Embed('../res/function/create-function-pure-sel.png')" overIcon="@Embed('../res/function/create-function-pure.png')" selectedUpIcon="@Embed('../res/function/create-function-pure-sel.png')" selectedOverIcon="@Embed('../res/function/create-function-pure-sel.png')" selectedDownIcon="@Embed('../res/function/create-function-pure.png')"   />
-            <mx:Button id="Button_CreateDirtyFunction" toolTip="New Design-Dependent Function" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../res/function/create-function-disabled.png')" upIcon="@Embed('../res/function/create-function-dirty.png')" downIcon="@Embed('../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../res/function/create-function-dirty.png')"   />
-            <mx:Spacer width="30"/>
-            <mx:Button id="Button_DeleteFunctionEntity" toolTip="Delete" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-delete.png')" disabledIcon="@Embed('../res/command/command-delete-disabled.png')" />
-            <mx:Spacer width="30"/>
-            <mx:Button id="Button_SettingFunction" toolTip="Edit Code Snippet" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('../res/function/command-setting.png')" disabledIcon="@Embed('../res/function/command-setting-disabled.png')" />
-            <mx:Spacer width="30"/>
-            <mx:Label id="Label_FunctionEntityName" text="Name:" textAlign="right"/>
-            <mx:TextInput id="Text_FunctionEntityName" text="" width="200" enter="stage.focus = panelSceneEdit;" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
-            <mx:Spacer width="100%"/>
-         </mx:HBox-->
       </mx:ViewStack>
       <mx:HBox id="Box_SwitchViewCommands" backgroundColor="0xA0A0A0" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
          <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-info.png')" />
@@ -301,7 +268,7 @@
                            <mx:Spacer width="3"/>
                            <mx:Label id="Label_GoToEntity" text="Go To Entity#" textAlign="right" click="SelectNewEntitiesWithoutBrothers ();"/>
                         </mx:HBox>
-                        <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="GoToTheSpecifiedEntity();" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
+                        <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="GoToTheSpecifiedEntity();" focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);"/>
                         <mx:Spacer width="100%" />
                         <mx:Spacer width="16"/>
                         <mx:Label text="Show:"/>
@@ -415,6 +382,9 @@
 
   <mx:Script><![CDATA[
       
+      import flash.events.KeyboardEvent;
+      import flash.ui.Keyboard;
+      
       import mx.controls.Button;
       
       import editor.world.World;
@@ -427,9 +397,7 @@
       {
          EditorContext.sEditorApp = this;
          
-         InitWorld ();
-         
-         InitScenes ();
+         NewWorld ();
       }
       
       private function UpdateApp ():void
@@ -443,18 +411,15 @@
    
       private var mWorld:World = null;
 
-      private function InitWorld ():void
-      {
-         NewWorld ();
-      }
-      
       public function GetWorld ():World
       {
          return mWorld;
       }
       
-      public function SetWorld (world:World, firstTime:Boolean = false):void
+      public function SetWorld (world:World):void
       {
+         CloseWorld ();
+         
          EditorContext.sEditorContext = new EditorContext ();
          
          mWorld = world;
@@ -468,19 +433,15 @@
 
          mWorld = null;
          
+         if (EditorContext.sEditorContext != null)
+            EditorContext.sEditorContext.Cleanup ();
+         
          EditorContext.sEditorContext = null;
-      }
-      
-      //private var panelSceneEdit:SceneEditPanel = null;
-      
-      public function GetCurrentSceneEditPanel ():SceneEditPanel
-      {
-         return panelSceneEdit;
       }
    
       public function NewWorld ():void
       {
-         SetWorld (new World (), true);
+         SetWorld (new World ());
       }
       
       public function LoadWorld ():void
@@ -494,6 +455,46 @@
    //========================================================================================
    // event handlers
    //========================================================================================
+      
+      private function OnKeyDown (event:KeyboardEvent):void
+      {
+         if (EditorContext.GetSingleton () != null)
+         {
+            EditorContext.GetSingleton ().OnKeyDownDefault (event.keyCode);
+         }
+      }
+      
+      private function ShowCollisionCategoryListDialog ():void
+      {
+         if (EditorContext.GetSingleton () != null)
+         {
+            EditorContext.GetSingleton ().OnKeyDownDefault (Keyboard.F5);
+         }
+      }
+   
+      private function ShowCodeLibListDialog ():void
+      {
+         if (EditorContext.GetSingleton () != null)
+         {
+            EditorContext.GetSingleton ().OnKeyDownDefault (Keyboard.F6);
+         }
+      }
+   
+      private function ShowAssetImageModuleListDialog ():void
+      {
+         if (EditorContext.GetSingleton () != null)
+         {
+            EditorContext.GetSingleton ().OnKeyDownDefault (Keyboard.F3);
+         }
+      }
+   
+      private function ShowAssetSoundListDialog ():void
+      {
+         if (EditorContext.GetSingleton () != null)
+         {
+            EditorContext.GetSingleton ().OnKeyDownDefault (Keyboard.F4);
+         }
+      }
       
       private function OnClicLoadWorldButton ():void
       {
@@ -518,10 +519,12 @@
 //========================================================================================
 // scene
 //========================================================================================
-
-      private function InitScenes ():void
+      
+      //private var panelSceneEdit:SceneEditPanel = null;
+      
+      public function GetCurrentSceneEditPanel ():SceneEditPanel
       {
-         
+         return panelSceneEdit;
       }
       
       private function CreateScenePanels ():void

@@ -76,15 +76,15 @@ package editor.trigger.entity {
 //   transform
 //====================================================================
       
-      override public function RotateSelf (deltaRotation:Number, intentionDone:Boolean = true):void
+      override public function RotateSelf (deltaRotation:Number/*, intentionDone:Boolean = true*/):void
       {
       }
       
-      override public function ScaleSelfTo (targetScale:Number, intentionDone:Boolean = true):void
+      override public function ScaleSelfTo (targetScale:Number/*, intentionDone:Boolean = true*/):void
       {
       }
       
-      override public function FlipSelf (intentionDone:Boolean = true):void
+      override public function FlipSelf (/*intentionDone:Boolean = true*/):void
       {
       }
       

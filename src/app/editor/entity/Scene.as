@@ -1552,6 +1552,11 @@ package editor.entity {
             }
          }
       }
+      
+      public function NotifyEntityLinksModified ():void
+      {
+         // todo
+      }
 
 //=================================================================================
 //   debug info

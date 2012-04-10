@@ -64,7 +64,7 @@ package editor.display.container
          }
          else if (mInDragging)
          {
-            if (EditorContext.IsMouseButtonHold ())
+            if (EditorContext.mIsMouseButtonHold)
             {
                var dx:Number = mouseX - mDraggingFromX;
                var dy:Number = mouseY - mDraggingFromY;

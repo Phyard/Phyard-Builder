@@ -347,33 +347,41 @@ package editor.asset {
 //   move / rotate / scale / flip
 //====================================================================
       
-      final public function Move (offsetX:Number, offsetY:Number, intentionDone:Boolean = true):void
+      public function OnTransformIntentDone ():void
       {
-         MoveTo (GetPositionX () + offsetX, GetPositionY () + offsetY, intentionDone);
+         UpdateSelectionProxy ();
+         UpdateControlPoints ();
       }
       
-      public function MoveBodyTexture (offsetX:Number, offsetY:Number, intentionDone:Boolean = true):void
+      final public function Move (offsetX:Number, offsetY:Number/*, intentionDone:Boolean = true*/):void
+      {
+         MoveTo (GetPositionX () + offsetX, GetPositionY () + offsetY/*, intentionDone*/);
+      }
+      
+      public function MoveBodyTexture (offsetX:Number, offsetY:Number/*, intentionDone:Boolean = true*/):void
       {
          // to override
       }
       
-      public function MoveTo (targetX:Number, targetY:Number, intentionDone:Boolean = true):void
+      public function MoveTo (targetX:Number, targetY:Number/*, intentionDone:Boolean = true*/):void
       {
          SetPosition (targetX, targetY);
          
+         /*
          if (intentionDone)
          {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+         */
       }
       
-      final public function RotatePosition (centerX:Number, centerY:Number, deltaRotation:Number, intentionDone:Boolean = true):void
+      final public function RotatePosition (centerX:Number, centerY:Number, deltaRotation:Number/*, intentionDone:Boolean = true*/):void
       {
-         RotatePositionByCosSin (centerX, centerY, Math.cos (deltaRotation), Math.sin (deltaRotation), intentionDone);
+         RotatePositionByCosSin (centerX, centerY, Math.cos (deltaRotation), Math.sin (deltaRotation)/*, intentionDone*/);
       }
       
-      public function RotatePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number, intentionDone:Boolean = true):void
+      public function RotatePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number/*, intentionDone:Boolean = true*/):void
       {
          var offsetX:Number = GetPositionX () - centerX;
          var offsetY:Number = GetPositionY () - centerY;
@@ -381,40 +389,44 @@ package editor.asset {
          var newOffsetY:Number = offsetX * sin + offsetY * cos;
          SetPosition (centerX + newOffsetX, centerY + newOffsetY);
          
+         /*
          if (intentionDone)
          {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+         */
       }
       
-      public function RotateBodyTexturePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number, intentionDone:Boolean = true):void
+      public function RotateBodyTexturePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number/*, intentionDone:Boolean = true*/):void
       {
          // to override
       }
       
-      public function RotateSelf (deltaRotation:Number, intentionDone:Boolean = true):void
+      public function RotateSelf (deltaRotation:Number/*, intentionDone:Boolean = true*/):void
       {
          if (IsFlipped ())
             deltaRotation = - deltaRotation;
          
          SetRotation (GetRotation () + deltaRotation);
          
+         /*
          if (intentionDone)
          {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+         */
       }
       
       //RotateSelfTo seems not essential
       
-      public function RotateBodyTextureSelf (deltaRotation:Number, intentionDone:Boolean = true):void
+      public function RotateBodyTextureSelf (deltaRotation:Number/*, intentionDone:Boolean = true*/):void
       {
          // to override
       }
       
-      public function ScalePosition (centerX:Number, centerY:Number, s:Number, intentionDone:Boolean = true):void
+      public function ScalePosition (centerX:Number, centerY:Number, s:Number/*, intentionDone:Boolean = true*/):void
       {
          if (s < 0)
             s = -s;
@@ -423,70 +435,78 @@ package editor.asset {
          var offsetY:Number = GetPositionY () - centerY;
          SetPosition (centerX + s * offsetX, centerY + s * offsetY);
          
+         /*
          if (intentionDone)
          {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+         */
       }
       
-      public function ScaleBodyTexturePosition (centerX:Number, centerY:Number, s:Number, intentionDone:Boolean = true):void
+      public function ScaleBodyTexturePosition (centerX:Number, centerY:Number, s:Number/*, intentionDone:Boolean = true*/):void
       {
          // to override
       }
       
-      final public function ScaleSelf (s:Number, intentionDone:Boolean = true):void
+      final public function ScaleSelf (s:Number/*, intentionDone:Boolean = true*/):void
       {  
-         ScaleSelfTo (GetScale () * s, intentionDone);
+         ScaleSelfTo (GetScale () * s/*, intentionDone*/);
       }
       
-      public function ScaleBodyTextureSelf (s:Number, intentionDone:Boolean = true):void
+      public function ScaleBodyTextureSelf (s:Number/*, intentionDone:Boolean = true*/):void
       {
          // to override
       }
       
-      public function ScaleSelfTo (targetScale:Number, intentionDone:Boolean = true):void
+      public function ScaleSelfTo (targetScale:Number/*, intentionDone:Boolean = true*/):void
       {
          if (targetScale < 0)
             targetScale = - targetScale;
          
          SetScale (targetScale);
          
+         /*
          if (intentionDone)
          {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+         */
       }
       
-      public function FlipPosition (planeX:Number, intentionDone:Boolean = true):void
+      public function FlipPosition (planeX:Number/*, intentionDone:Boolean = true*/):void
       {
          SetPosition (planeX + planeX - GetPositionX (), GetPositionY ());
          
+         /*
          if (intentionDone)
          {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+         */
       }
       
-      public function FlipBodyTexturePosition (planeX:Number, intentionDone:Boolean = true):void
+      public function FlipBodyTexturePosition (planeX:Number/*, intentionDone:Boolean = true*/):void
       {
          // to override
       }
       
-      public function FlipSelf (intentionDone:Boolean = true):void
+      public function FlipSelf (/*intentionDone:Boolean = true*/):void
       {
          SetFlipped (! IsFlipped ());
          
+         /*
          if (intentionDone)
          {
             UpdateSelectionProxy ();
             UpdateControlPoints ();
          }
+         */
       }
       
-      public function FlipBodyTextureSelf (intentionDone:Boolean = true):void
+      public function FlipBodyTextureSelf (/*intentionDone:Boolean = true*/):void
       {
          // to override
       }
@@ -708,15 +728,6 @@ package editor.asset {
 //====================================================================
 //   do convenience for some actions 
 //====================================================================
-      
-      // another possible good mehtod: use bit masks to ...
-      
-      public static var mNextActionId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
-      
-      public static function GetNextActionId ():int
-      {
-         return ++ mNextActionId;
-      }
       
       private var mActionId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
       public function SetCurrentActionId (actionId:int):void

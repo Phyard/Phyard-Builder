@@ -39,53 +39,52 @@
 
       // static functions
          
-         public static var sAssetSoundListDialog:AssetSoundListDialog = null;
          public static function ShowAssetSoundListDialog (OnSoundPicked:Function = null):void
          {
-            if (sAssetSoundListDialog == null)
+            if (EditorContext.GetSingleton ().mAssetSoundListDialog == null)
             {
-               sAssetSoundListDialog = new AssetSoundListDialog ();
-               sAssetSoundListDialog.SetAllowedResizingModeBits (ResizingMode_Bottom);
+               EditorContext.GetSingleton ().mAssetSoundListDialog = new AssetSoundListDialog ();
+               EditorContext.GetSingleton ().mAssetSoundListDialog.SetAllowedResizingModeBits (ResizingMode_Bottom);
             }
             
-            if (sAssetSoundListDialog.parent != null) // OnSoundPicked must be null
+            if (EditorContext.GetSingleton ().mAssetSoundListDialog.parent != null) // OnSoundPicked must be null
             {
-               PopUpManager.bringToFront (sAssetSoundListDialog);
+               PopUpManager.bringToFront (EditorContext.GetSingleton ().mAssetSoundListDialog);
             }
             else
             {
-               PopUpManager.addPopUp (sAssetSoundListDialog, EditorContext.GetEditorApp (), OnSoundPicked != null);
-               PopUpManager.centerPopUp (sAssetSoundListDialog);
+               PopUpManager.addPopUp (EditorContext.GetSingleton ().mAssetSoundListDialog, EditorContext.GetEditorApp (), OnSoundPicked != null);
+               PopUpManager.centerPopUp (EditorContext.GetSingleton ().mAssetSoundListDialog);
             }
             
-            sAssetSoundListDialog.GetAssetSoundListPanel ().SetAssetSoundManager (EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ());
+            EditorContext.GetSingleton ().mAssetSoundListDialog.GetAssetSoundListPanel ().SetAssetSoundManager (EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ());
             
             if (OnSoundPicked != null)
             {
-               sAssetSoundListDialog.mInPickingMode = true;
+               EditorContext.GetSingleton ().mAssetSoundListDialog.mInPickingMode = true;
                
-               sAssetSoundListDialog.GetAssetSoundListPanel ().EnterPickAssetIntent (OnSoundPicked, EndPickingMode);
+               EditorContext.GetSingleton ().mAssetSoundListDialog.GetAssetSoundListPanel ().EnterPickAssetIntent (OnSoundPicked, EndPickingMode);
             }
          }
          
          public static function HideAssetSoundListDialog ():void
          {
-            if (sAssetSoundListDialog.mInPickingMode)
+            if (EditorContext.GetSingleton ().mAssetSoundListDialog.mInPickingMode)
             {
                EndPickingMode ();
             }
             else
             {
-               PopUpManager.removePopUp (sAssetSoundListDialog);
+               PopUpManager.removePopUp (EditorContext.GetSingleton ().mAssetSoundListDialog);
             }
             
          }
          
          public static function StartPickingMode (OnSoundPicked:Function):void
          {
-            if (sAssetSoundListDialog != null)
+            if (EditorContext.GetSingleton ().mAssetSoundListDialog != null)
             {
-               PopUpManager.removePopUp (sAssetSoundListDialog);
+               PopUpManager.removePopUp (EditorContext.GetSingleton ().mAssetSoundListDialog);
             }
             
             ShowAssetSoundListDialog (OnSoundPicked);
@@ -93,13 +92,13 @@
          
          public static function EndPickingMode ():void
          {
-            if (sAssetSoundListDialog != null)
+            if (EditorContext.GetSingleton ().mAssetSoundListDialog != null)
             {
-               sAssetSoundListDialog.mInPickingMode = false;
+               EditorContext.GetSingleton ().mAssetSoundListDialog.mInPickingMode = false;
                
-               PopUpManager.removePopUp(sAssetSoundListDialog);
+               PopUpManager.removePopUp(EditorContext.GetSingleton ().mAssetSoundListDialog);
             
-               sAssetSoundListDialog.GetAssetSoundListPanel ().ExitPickAssetIntent ();
+               EditorContext.GetSingleton ().mAssetSoundListDialog.GetAssetSoundListPanel ().ExitPickAssetIntent ();
             }
          }
          

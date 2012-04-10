@@ -53,53 +53,51 @@
 
       // static functions
          
-         public static var sCollisionCategoryListDialog:CollisionCategoryListDialog = null;
          public static function ShowCollisionCategoryListDialog (OnCCatPicked:Function = null):void
          {
-         trace ("ShowCollisionCategoryListDialog");
-            if (sCollisionCategoryListDialog == null)
+            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog == null)
             {
-               sCollisionCategoryListDialog = new CollisionCategoryListDialog ();
+               EditorContext.GetSingleton ().mCollisionCategoryListDialog = new CollisionCategoryListDialog ();
             }
             
-            if (sCollisionCategoryListDialog.parent != null) // OnCCatPicked must be null
+            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.parent != null) // OnCCatPicked must be null
             {
-               PopUpManager.bringToFront (sCollisionCategoryListDialog);
+               PopUpManager.bringToFront (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
             }
             else
             {
-               PopUpManager.addPopUp (sCollisionCategoryListDialog, EditorContext.GetEditorApp (), OnCCatPicked != null);
-               PopUpManager.centerPopUp (sCollisionCategoryListDialog);
+               PopUpManager.addPopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog, EditorContext.GetEditorApp (), OnCCatPicked != null);
+               PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
             }
             
-            sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ());
+            EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ());
             
             if (OnCCatPicked != null)
             {
-               sCollisionCategoryListDialog.mInPickingModet = true;
+               EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingModet = true;
                
-               sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
+               EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
             }
          }
          
          public static function HideCollisionCategoryListDialog ():void
          {
-            if (sCollisionCategoryListDialog.mInPickingModet)
+            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingModet)
             {
                EndPickingMode ();
             }
             else
             {
-               PopUpManager.removePopUp (sCollisionCategoryListDialog);
+               PopUpManager.removePopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
             }
             
          }
          
          public static function StartPickingMode (OnCCatPicked:Function):void
          {
-            if (sCollisionCategoryListDialog != null)
+            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog != null)
             {
-               PopUpManager.removePopUp (sCollisionCategoryListDialog);
+               PopUpManager.removePopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
             }
             
             ShowCollisionCategoryListDialog (OnCCatPicked);
@@ -107,13 +105,13 @@
          
          public static function EndPickingMode ():void
          {
-            if (sCollisionCategoryListDialog != null)
+            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog != null)
             {
-               sCollisionCategoryListDialog.mInPickingModet = false;
+               EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingModet = false;
                
-               PopUpManager.removePopUp(sCollisionCategoryListDialog);
+               PopUpManager.removePopUp(EditorContext.GetSingleton ().mCollisionCategoryListDialog);
             
-               sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().ExitPickAssetIntent ();
+               EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().ExitPickAssetIntent ();
             }
          }
          

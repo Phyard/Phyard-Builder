@@ -55,6 +55,8 @@ package editor.image.dialog {
    import editor.core.EditorObject;
    import editor.core.ReferPair;
    
+   import editor.EditorContext;
+   
    import common.shape.*;
    import common.Define;
    import common.Version;
@@ -319,7 +321,7 @@ package editor.image.dialog {
          {
             case mButtonCreateGeneralModuleInstance:
                SetCurrentIntent (new IntentPutAsset (
-                                 mAssetImageModuleInstanceManager.CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true), 
+                                 mAssetImageModuleInstanceManager.CreateImageModuleInstance (EditorContext.GetSingleton ().mCurrentAssetImageModule, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
             case mButtonCreateShapeBoxInstance:

@@ -179,6 +179,10 @@ package editor.entity.dialog {
    //import editor.display.panel.FunctionEditingView;
    import editor.codelib.dialog.CodeLibListDialog;
    
+   import editor.asset.Asset;
+   import editor.asset.AssetManager;
+   import editor.asset.AssetManagerPanel;
+   
    import player.world.World;
    
    import viewer.Viewer;
@@ -197,7 +201,7 @@ package editor.entity.dialog {
    
    //import misc.Analytics;
    
-   public class WorldView extends UIComponent implements KeyboardListener
+   public class WorldView extends AssetManagerPanel // UIComponent implements KeyboardListener
    {
       public static const DefaultWorldWidth:int = Define.DefaultWorldWidth; 
       public static const DefaultWorldHeight:int = Define.DefaultWorldHeight;
@@ -1627,6 +1631,8 @@ package editor.entity.dialog {
       
       public function SetEntityContainer (container:EntityContainer, firstTime:Boolean = false):void
       {
+         super.SetAssetManager (container);
+         
          if (container == mEntityContainer)
             return;
          
@@ -4572,49 +4578,6 @@ package editor.entity.dialog {
 //=================================================================================
 //   set properties
 //=================================================================================
-      
-      private var mLastSessionVariableSpaceModifiedTimes:int = 0;
-      private var mLastGlobalVariableSpaceModifiedTimes:int = 0;
-      private var mLastEntityVariableSpaceModifiedTimes:int = 0;
-      
-      public function StartSettingEntityProperties ():void
-      {
-         mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
-         mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
-         mLastEntityVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
-      }
-      
-      public function CancelSettingEntityProperties ():void
-      {
-         var sessionVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
-         var globalVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
-         var entityVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes () > mLastEntityVariableSpaceModifiedTimes;
-         
-         if (sessionVariableSpaceModified || globalVariableSpaceModified || entityVariableSpaceModified)
-         {
-            var message:String = "Custom variables (";
-            
-            var first:Boolean = true;
-            if (sessionVariableSpaceModified)
-            {
-               message = message + "session";
-               first = false;
-            }
-            if (globalVariableSpaceModified)
-            {
-               message = message + (first ? "global" : (entityVariableSpaceModified ? ", global" : "and global"));
-               first = false;
-            }
-            if (entityVariableSpaceModified)
-            {
-               message = message + (first ? "entity property" : "and entity property");
-               first = false;
-            }
-            
-            message = message + ") are modified";
-         }
-      }
-      
       
       protected function UpdateShapePhysicsProperties (shape:EntityShape, params:Object):void
       {        

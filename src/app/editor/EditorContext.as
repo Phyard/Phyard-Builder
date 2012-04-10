@@ -40,19 +40,81 @@ package editor {
    {
       
 //=====================================================================
-// app
+// static methods
 //=====================================================================
 
-      internal static var sEditorApp:Editor; 
+   //=====================================================================
+   // app
+   //=====================================================================
+
+      internal static var sEditorApp:Editor; // set by editor app
       
       public static function GetEditorApp ():Editor
       {
          return EditorContext.sEditorApp;
       }
       
-//=====================================================================
-// singleton
-//=====================================================================
+   //=====================================================================
+   //
+   //=====================================================================
+      
+      // used in loading editor world
+      public static var mPauseCreateShapeProxy:Boolean = false;
+      
+   //=====================================================================
+   // sound
+   //=====================================================================
+      
+      private static var mSoundVolume:Number = 0.5;
+      
+      public static function GetSoundVolume ():Number
+      {
+         return mSoundVolume;
+      }
+      
+      public static function SetSoundVolume (volume:Number):void
+      {
+         if (volume < 0)
+            volume = 0;
+         if (volume > 1.0)
+            volume = 1.0;
+         
+         mSoundVolume = volume;
+      }
+      
+      public static function StopAllSounds ():void
+      {
+         SoundMixer.stopAll ();
+      }
+      
+   //=====================================================================
+   //
+   //=====================================================================
+
+      public static function GetVersionString ():String
+      {
+         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
+         
+         return majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16);
+      }
+
+      public static function GetAboutContextMenuItem ():ContextMenuItem
+      {
+         var menuItemAbout:ContextMenuItem = new ContextMenuItem("About Phyard Builder v" + GetVersionString (), true);
+         menuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
+         
+         return menuItemAbout;
+      }
+      
+      private static function OnAbout (event:ContextMenuEvent):void
+      {
+         UrlUtil.PopupPage (Define.AboutUrl);
+      }
+      
+   //=====================================================================
+   // singleton
+   //=====================================================================
       
       internal static var sEditorContext:EditorContext = null; //
       
@@ -62,16 +124,12 @@ package editor {
       }
       
 //=====================================================================
-//
+// non-static methods
 //=====================================================================
       
-      public function EditorContext ()
-      {
-      }
-      
-//=====================================================================
-//
-//=====================================================================
+   //=====================================================================
+   // 
+   //=====================================================================
 
       // call this before loading a new world
       public function Cleanup ():void
@@ -117,9 +175,9 @@ package editor {
          StopAllSounds ();
       }
    
-//=====================================================================
-//
-//=====================================================================
+   //=====================================================================
+   //
+   //=====================================================================
       
       private static var mDesignFilename:String  = null;
       
@@ -164,41 +222,9 @@ package editor {
          return mIsMouseButtonHold;
       }
       
-//=====================================================================
-//
-//=====================================================================
-
-      public static function GetVersionString ():String
-      {
-         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
-         
-         return majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16);
-      }
-
-      public static function GetAboutContextMenuItem ():ContextMenuItem
-      {
-         var menuItemAbout:ContextMenuItem = new ContextMenuItem("About Phyard Builder v" + GetVersionString (), true);
-         menuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
-         
-         return menuItemAbout;
-      }
-      
-      private static function OnAbout (event:ContextMenuEvent):void
-      {
-         UrlUtil.PopupPage (Define.AboutUrl);
-      }
-      
-//=====================================================================
-//
-//=====================================================================
-      
-      // used in loading editor world
-      public static var mPauseCreateShapeProxy:Boolean = false;
-      
-//=====================================================================
-//
-//=====================================================================
+   //=====================================================================
+   //
+   //=====================================================================
       
       private static var mHasSettingDialogOpened:Boolean = false;
       
@@ -231,7 +257,7 @@ package editor {
       public static function OnOpenDialog ():void
       {
          EditorContext.SetHasSettingDialogOpened (true);
-         EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().StartSettingEntityProperties ();
+         EditorContext.GetSingleton ().StartSettingEntityProperties ();
       }
       
       public static function OnCloseDialog (checkCustomVariablesModifications:Boolean = false):void
@@ -241,7 +267,7 @@ package editor {
          
          if (checkCustomVariablesModifications)
          {
-            EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().CancelSettingEntityProperties ();
+            EditorContext.GetSingleton ().CancelSettingEntityProperties ();
          }
       }
       
@@ -362,26 +388,46 @@ package editor {
 // sound
 //=====================================================================
       
-      private static var mSoundVolume:Number = 0.5;
+      private var mLastSessionVariableSpaceModifiedTimes:int = 0;
+      private var mLastGlobalVariableSpaceModifiedTimes:int = 0;
+      private var mLastEntityVariableSpaceModifiedTimes:int = 0;
       
-      public static function GetSoundVolume ():Number
+      public function StartSettingEntityProperties ():void
       {
-         return mSoundVolume;
+         mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
+         mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+         mLastEntityVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
       }
       
-      public static function SetSoundVolume (volume:Number):void
+      public function CancelSettingEntityProperties ():void
       {
-         if (volume < 0)
-            volume = 0;
-         if (volume > 1.0)
-            volume = 1.0;
+         var sessionVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
+         var globalVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
+         var entityVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes () > mLastEntityVariableSpaceModifiedTimes;
          
-         mSoundVolume = volume;
-      }
-      
-      public static function StopAllSounds ():void
-      {
-         SoundMixer.stopAll ();
+         if (sessionVariableSpaceModified || globalVariableSpaceModified || entityVariableSpaceModified)
+         {
+            var message:String = "Custom variables (";
+            
+            var first:Boolean = true;
+            if (sessionVariableSpaceModified)
+            {
+               message = message + "session";
+               first = false;
+            }
+            if (globalVariableSpaceModified)
+            {
+               message = message + (first ? "global" : (entityVariableSpaceModified ? ", global" : "and global"));
+               first = false;
+            }
+            if (entityVariableSpaceModified)
+            {
+               message = message + (first ? "entity property" : "and entity property");
+               first = false;
+            }
+            
+            message = message + ") are modified";
+         }
       }
 
    }

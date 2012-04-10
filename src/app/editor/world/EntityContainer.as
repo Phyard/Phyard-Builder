@@ -68,12 +68,15 @@ package editor.world {
    
    import editor.EditorContext;
    
+   import editor.asset.Asset;
+   import editor.asset.AssetManager;
+   
    import common.CoordinateSystem;
    
    import common.Define;
    import common.ValueAdjuster;
    
-   public class EntityContainer extends Sprite 
+   public class EntityContainer extends Sprite // AssetManager; //Sprite 
    {
       public var mCoordinateSystem:CoordinateSystem;
       

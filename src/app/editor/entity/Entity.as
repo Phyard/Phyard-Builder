@@ -13,12 +13,14 @@ package editor.entity {
    
    import editor.core.EditorObject;
    
+   import editor.asset.Asset;
+   
    import common.Define;
    import common.ValueAdjuster;
    import common.Transform2D;
    
    //todo: extends from Asset (or merge Asset and EditorObject)
-   public class Entity extends EditorObject// Sprite
+   public class Entity extends EditorObject // Asset //EditorObject// Sprite
    {
       protected var mEntityContainer:EntityContainer;
       protected var mAppearanceLayerId:int = -1;
@@ -44,6 +46,8 @@ package editor.entity {
       
       public function Entity (container:EntityContainer)
       {
+         //super (container);
+         
          mEntityContainer = container;
          
          if (mEntityContainer != null) // at some special cases, mEntityContainer is null

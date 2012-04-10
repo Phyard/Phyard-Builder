@@ -21,21 +21,23 @@
 
       <mx:HBox id="Box_DesignCommands" backgroundColor="0xA0A0A0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
          <mx:Spacer width="2"/>
-         <mx:Button id="Button_OpenDesign" toolTip="Open Design" click="OnClicLoadDesignButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-open.png')" />
-         <mx:Button id="Button_SaveDesign" toolTip="Save Design" click="OnClicSaveDesignButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-save.png')" />
+         <mx:Button id="Button_OpenDesign" toolTip="Open Design" click="OnClicLoadWorldButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-open.png')" />
+         <mx:Button id="Button_SaveDesign" toolTip="Save Design" click="OnClicSaveWorldButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-save.png')" />
       </mx:HBox>
       <mx:ViewStack id="ViewStack_ViewEditCommands" borderStyle="none" creationPolicy="all" width="100%">
          <mx:HBox id="Box_EntityEditViewCommands" backgroundColor="0xD0D0D0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
             <mx:Spacer width="100%"/>
             <mx:HBox id="Box_EntityEditViewCommands_1" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                <mx:Spacer width="5"/>
-               <mx:Button id="Button_NewDesign" toolTip="New Design" click="OnClickNewDesignButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-new.png')" />
-               <mx:Button id="Button_ConfigDesign" toolTip="Config Design" click="OnClickConfigDesignButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-config.png')" />
+               <mx:Button id="Button_NewDesign" toolTip="New Design" click="OnClickClearSceneButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-new.png')" />
+               <mx:Button id="Button_ConfigDesign" toolTip="Config Design" click="OnClickConfigSceneButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-config.png')" />
                <mx:Spacer width="10"/>
                <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-clone.png')" disabledIcon="@Embed('../res/command/command-clone-disabled.png')" />
                <mx:Button id="Button_Delete" toolTip="(D) Delete Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-delete.png')" disabledIcon="@Embed('../res/command/command-delete-disabled.png')" />
+               <!--
                <mx:Button id="Button_FlipH" toolTip="(X) Flip Selected(s) Horizontally" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-flip-x.png')" disabledIcon="@Embed('../res/command/command-flip-x-disabled.png')" />
                <mx:Button id="Button_FlipV" toolTip="(Y) Flip Selected(s) Vertically" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-flip-y.png')" disabledIcon="@Embed('../res/command/command-flip-y-disabled.png')" />
+               -->
                <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-to-top.png')" disabledIcon="@Embed('../res/command/command-to-top-disabled.png')" />
                <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-to-bottom.png')" disabledIcon="@Embed('../res/command/command-to-bottom-disabled.png')" />
                <mx:Spacer width="10"/>
@@ -54,9 +56,11 @@
             <mx:HBox id="Box_EntityEditViewCommands_2" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                <mx:Spacer width="10"/>
                <mx:Button id="Button_MouseMoveScene" selected="false" toolTip="Move Scene Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../res/command/command-move-scene-sel.png')" />
+               <!--
                <mx:Button id="Button_MouseMove" selected="true" toolTip="Move Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../res/command/command-move.png')" selectedDownIcon="@Embed('../res/command/command-move-sel.png')" selectedOverIcon="@Embed('../res/command/command-move-sel.png')" selectedUpIcon="@Embed('../res/command/command-move-sel.png')" />
                <mx:Button id="Button_MouseRotate" toolTip="Rotate Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../res/command/command-rotate.png')" selectedDownIcon="@Embed('../res/command/command-rotate-sel.png')" selectedOverIcon="@Embed('../res/command/command-rotate-sel.png')" selectedUpIcon="@Embed('../res/command/command-rotate-sel.png')" />
                <mx:Button id="Button_MouseScale" toolTip="Scale Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../res/command/command-scale.png')" selectedDownIcon="@Embed('../res/command/command-scale-sel.png')" selectedOverIcon="@Embed('../res/command/command-scale-sel.png')" selectedUpIcon="@Embed('../res/command/command-scale-sel.png')" />
+               -->
                <mx:Spacer width="10"/>
                <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../res/command/command-cookie-mode-sel.png')" />
                <mx:Spacer width="10"/>
@@ -103,8 +107,8 @@
          </mx:HBox-->
       </mx:ViewStack>
       <mx:HBox id="Box_SwitchViewCommands" backgroundColor="0xA0A0A0" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
-         <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="ShowDesignInfoSettingDialog ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-info.png')" />
-         <mx:Button id="Button_CollisionCategoryHelp" toolTip="Editing Help" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" click="OnClickTutorialLink(event)" />
+         <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-info.png')" />
+         <mx:Button id="Button_CollisionCategoryHelp" toolTip="Editing Help" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" click="OnClickOpenLinksButton()" />
          <!--mx:Button id="Button_ShowEntityEditView" toggle="true" selected="true" toolTip="Game Scene View" click="OnShowEntityEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('../res/file/design-edit-entities.png')" downIcon="@Embed('../res/file/design-edit-entities-sel.png')" overIcon="@Embed('../res/file/design-edit-entities.png')" selectedUpIcon="@Embed('../res/file/design-edit-entities-sel.png')" selectedOverIcon="@Embed('../res/file/design-edit-entities-sel.png')" selectedDownIcon="@Embed('../res/file/design-edit-entities.png')"   /-->
          <!--mx:Button id="Button_ShowCCatEditView" toggle="true" selected="false" toolTip="Collision Category View" click="OnShowCCatEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('../res/file/design-edit-ccats.png')" downIcon="@Embed('../res/file/design-edit-ccats-sel.png')" overIcon="@Embed('../res/file/design-edit-ccats.png')" selectedUpIcon="@Embed('../res/file/design-edit-ccats-sel.png')" selectedOverIcon="@Embed('../res/file/design-edit-ccats-sel.png')" selectedDownIcon="@Embed('../res/file/design-edit-ccats.png')"   /-->
          <!--mx:Button id="Button_ShowFunctionEditView" toggle="true" selected="false" toolTip="Code Library View" click="OnShowFunctionEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('../res/file/design-edit-functions.png')" downIcon="@Embed('../res/file/design-edit-functions-sel.png')" overIcon="@Embed('../res/file/design-edit-functions.png')" selectedUpIcon="@Embed('../res/file/design-edit-functions-sel.png')" selectedOverIcon="@Embed('../res/file/design-edit-functions-sel.png')" selectedDownIcon="@Embed('../res/file/design-edit-functions.png')"   /-->
@@ -142,31 +146,7 @@
                         <mx:Button id="Button_CreatePolyline" click="ViewStack_CiShapes.selectedChild=CiShapePolylinePanel;" toolTip="Create Polyline" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polyline.png')" downIcon="@Embed('../res/create/polyline-sel.png')" overIcon="@Embed('../res/create/polyline.png')" selectedUpIcon="@Embed('../res/create/polyline-sel.png')" selectedOverIcon="@Embed('../res/create/polyline-sel.png')" selectedDownIcon="@Embed('../res/create/polyline.png')"   />
                      </mx:Tile>
                      <mx:Spacer height="5"/>
-                     <!--
-                     <mx:HBox id="Box_ShapeInitialProperties" horizontalAlign="center" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="1">
-                        <mx:Spacer width="100%"/>
-                        <mx:VBox horizontalAlign="left" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="2" horizontalGap="0" verticalGap="0" borderStyle="none" borderThickness="0">
-                           <mx:CheckBox id="CheckBox_EnablePhysics" click="EditorContext.mShape_EnablePhysics=CheckBox_EnablePhysics.selected;" label="Physics" selected="true"/>
-                           <mx:Canvas borderStyle="none" width="100%">
-                              <mx:ColorPicker id="ColorPicker_BackgroundColor" x="29" y="13" change="EditorContext.mShape_BackgroundColor=ColorPicker_BackgroundColor.selectedColor" showTextField="true" selectedColor="0x5555FF"/>
-                              <mx:ColorPicker id="ColorPicker_BorderColor" x="16" y="2" change="EditorContext.mShape_BorderColor=ColorPicker_BorderColor.selectedColor" showTextField="true" selectedColor="0xFF000000"/>
-                           </mx:Canvas>
-                        </mx:VBox>
-                        <mx:Spacer width="100%"/>
-                     </mx:HBox>
-                     -->
                      <mx:Spacer height="5"/>
-                     <!--
-                     <mx:HBox verticalAlign="middle" height="18" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="1">
-                        <mx:Spacer width="100%"/>
-                        <mx:Button id="Button_CI_Box" click="Button_CI_Box.selected=true; Button_CI_Ball.selected=false; Button_CI_Polygon.selected=false; Button_CI_Polyline.selected=false; ViewStack_CiShapes.selectedChild=CiShapeRectagelePanel;" toolTip="Create C.I. Boxes" selected="true" focusEnabled="false" fontSize="8" width="16" height="16" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/small-box.png')" downIcon="@Embed('../res/create/small-box-sel.png')" overIcon="@Embed('../res/create/small-box.png')" selectedUpIcon="@Embed('../res/create/small-box-sel.png')" selectedOverIcon="@Embed('../res/create/small-box-sel.png')" selectedDownIcon="@Embed('../res/create/small-box.png')"   />
-                        <mx:Button id="Button_CI_Ball" click="Button_CI_Box.selected=false; Button_CI_Ball.selected=true; Button_CI_Polygon.selected=false; Button_CI_Polyline.selected=false; ViewStack_CiShapes.selectedChild=CiShapeCirclePanel;" toolTip="Create C.I. Balls" focusEnabled="false" fontSize="8" width="16" height="16" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/small-ball.png')" downIcon="@Embed('../res/create/small-ball-sel.png')" overIcon="@Embed('../res/create/small-ball.png')" selectedUpIcon="@Embed('../res/create/small-ball-sel.png')" selectedOverIcon="@Embed('../res/create/small-ball-sel.png')" selectedDownIcon="@Embed('../res/create/small-ball.png')"   />
-                        <mx:Button id="Button_CI_Polygon" click="Button_CI_Box.selected=false; Button_CI_Ball.selected=false; Button_CI_Polygon.selected=true; Button_CI_Polyline.selected=false; ViewStack_CiShapes.selectedChild=CiShapePolygonPanel;" toolTip="Create C.I. Polygons" focusEnabled="false" fontSize="8" width="16" height="16" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/small-polygon.png')" downIcon="@Embed('../res/create/small-polygon-sel.png')" overIcon="@Embed('../res/create/small-polygon.png')" selectedUpIcon="@Embed('../res/create/small-polygon-sel.png')" selectedOverIcon="@Embed('../res/create/small-polygon-sel.png')" selectedDownIcon="@Embed('../res/create/small-polygon.png')"   />
-                        <mx:Button id="Button_CI_Polyline" click="Button_CI_Box.selected=false; Button_CI_Ball.selected=false; Button_CI_Polygon.selected=false; Button_CI_Polyline.selected=true; ViewStack_CiShapes.selectedChild=CiShapePolylinePanel;" toolTip="Create C.I. Polylines" focusEnabled="false" fontSize="8" width="16" height="16" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/small-polyline.png')" downIcon="@Embed('../res/create/small-polyline-sel.png')" overIcon="@Embed('../res/create/small-polyline.png')" selectedUpIcon="@Embed('../res/create/small-polyline-sel.png')" selectedOverIcon="@Embed('../res/create/small-polyline-sel.png')" selectedDownIcon="@Embed('../res/create/small-polyline.png')"   />
-                        <mx:Spacer width="100%"/>
-                     </mx:HBox>
-                     <mx:Spacer height="2"/>
-                     -->
                      <mx:HBox horizontalAlign="center" height="51" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
                         <mx:ViewStack id="ViewStack_CiShapes" borderStyle="none" creationPolicy="all" width="100%" height="49">
                            <mx:Tile id="CiShapeRectagelePanel" direction="horizontal" borderStyle="none" width="100%" height="100%"
@@ -315,18 +295,6 @@
                      </mx:VBox>
                      
                   </mx:Box>
-                  <!--mx:Box icon="@Embed('../res/create/create-panel-preset.png')" toolTip="More Predefined Components (Empty now, what do you want?)" direction="vertical" borderStyle="solid" width="83" height="100%"
-                           paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
-                           horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
-                     <mx:Text selectable="false" width="100%">
-                        <mx:text>
-                           This panel is for predefined components. It is empty now. What do you want here?
-                        </mx:text>
-                     </mx:Text>
-
-                     <mx:Spacer height="10"/>
-                     <mx:Spacer height="100%"/>
-                  </mx:Box-->
                </mx:TabNavigator>
                <mx:Box direction="vertical" borderStyle="solid" height="100%"  width="100%"
                   paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
@@ -341,9 +309,9 @@
                               horizontalGap="0" verticalGap="0" borderThickness="0">
                         <mx:HBox backgroundColor="0xE0E0E0" height="100%" verticalAlign="middle">
                            <mx:Spacer width="3"/>
-                           <mx:Label id="Label_GoToEntity" text="Go To Entity#" textAlign="right" click="SelectNewEntitiesWithoutBrothers (null);"/>
+                           <mx:Label id="Label_GoToEntity" text="Go To Entity#" textAlign="right" click="SelectNewEntitiesWithoutBrothers ();"/>
                         </mx:HBox>
-                        <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnGoToEntity();" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
+                        <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="GoToTheSpecifiedEntity();" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
                         <mx:Spacer width="100%" />
                         <mx:Spacer width="16"/>
                         <mx:Label text="Show:"/>
@@ -373,8 +341,20 @@
                               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off"
                               horizontalGap="0" verticalGap="0" borderThickness="1">
-                        <entity:WorldView id="MainView" height="100%" width="100%" />
+                        <entity:SceneEditPanel id="MainView" height="100%" width="100%" />
                      </mx:Box>
+                  <!--mx:Box icon="@Embed('../res/create/create-panel-preset.png')" toolTip="More Predefined Components (Empty now, what do you want?)" direction="vertical" borderStyle="solid" width="83" height="100%"
+                           paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
+                           horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
+                     <mx:Text selectable="false" width="100%">
+                        <mx:text>
+                           This panel is for predefined components. It is empty now. What do you want here?
+                        </mx:text>
+                     </mx:Text>
+
+                     <mx:Spacer height="10"/>
+                     <mx:Spacer height="100%"/>
+                  </mx:Box-->
                   </mx:Box>
                   <mx:Box id="Box_StatusInfoBar" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" height="19" width="100%"
                               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
@@ -443,1947 +423,178 @@
       </root>
    </mx:XML>
 
-  <mx:Script>
-        <![CDATA[
-            
-            import flash.display.InteractiveObject;
-            import flash.events.TextEvent;
-            import flash.events.ContextMenuEvent;
-            import flash.ui.ContextMenu;
-            import flash.ui.ContextMenuItem;
-            import mx.managers.PopUpManager;
-            import mx.events.FlexEvent;
-            import mx.events.MenuEvent;
-            import flash.events.KeyboardEvent;
-            import mx.events.IndexChangedEvent;
-            import mx.controls.Menu;
-            import mx.controls.ToolTip;
-            import mx.controls.Button;
-            
-            import com.tapirgames.util.DisplayObjectUtil;
-            import com.tapirgames.util.UrlUtil;
-            import editor.entity.dialog.WorldView;
-            import editor.world.World;
-            import editor.display.dialog.*;
-            import editor.EditorContext;
-            import editor.trigger.Lists;
-            import common.Define;
-            import common.ValueAdjuster;
-            
-            private function DesignNotSaved ():Boolean
-            {
-               return true;
-            }
-            
-            private function OnAddedToStage (event:Event):void 
-            {
-               stage.addEventListener (KeyboardEvent.KEY_DOWN, EditorContext.OnKeyDown);
-               
-               stage.addEventListener (MouseEvent.MOUSE_DOWN, CheckMouseHoldStatus);
-               stage.addEventListener (MouseEvent.MOUSE_MOVE, CheckMouseHoldStatus);
-               stage.addEventListener (MouseEvent.MOUSE_UP, CheckMouseHoldStatus);
-            }
-            
-            private function CheckMouseHoldStatus (event:MouseEvent):void
-            {
-               EditorContext.SetMouseButtonHold (event.buttonDown);
-            }
-            
-            private function InitApp ():void
-            {
-               Init ();
-               
-            //===================================================================================================
-               
-               if (flash.external.ExternalInterface.available)
-               {
-                   try
-                   {
-                       flash.external.ExternalInterface.addCallback("DesignNotSaved", DesignNotSaved);
-                   }
-                   catch (error:SecurityError)
-                   {
-                      trace ("A SecurityError occurred: " + error.message + "\n");
-                   }
-                   catch (error:Error)
-                   {
-                      trace ("An Error occurred: " + error.message + "\n");
-                   }
-               }
-               else
-               {
-                   trace ("External interface is not available for this container.");
-               }
-               
-            //===================================================================================================
-               
-               addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
-               
-            //===================================================================================================
-               
-               ToolTip.maxWidth = 800;
-               
-            //===================================================================================================
-               
-               //SelectList_WorldScale.dataProvider = Lists.mWorldPresetScaleList;
-               //SelectList_WorldScale.selectedIndex = Lists.SelectedValue2SelectedIndex (Lists.mWorldPresetScaleList, 1.0);
-               //SelectList_WorldScale.rowCount = Lists.mWorldPresetScaleList.length;
-               
-            //===================================================================================================
-               
-               //MainView.mStatusMessageBar = StatusMessageBar;
-               MainView.SetCustomTriggerButtons (mCustomTriggerdButtons);
-               
-               //--------------------
-               
-               MainView.mButtonCreateBoxStatic      = Button_CreateBox_Static;
-               MainView.mButtonCreateBoxMovable      = Button_CreateBox_Movable;
-               MainView.mButtonCreateBoxBreakable      = Button_CreateBox_Breakable;
-               MainView.mButtonCreateBoxInfected      = Button_CreateBox_Infected;
-               MainView.mButtonCreateBoxUninfected      = Button_CreateBox_Uninfected;
-               MainView.mButtonCreateBoxDontinfect      = Button_CreateBox_Dontinfect;
-               MainView.mButtonCreateBoxBomb     = Button_CreateBox_Bomb;
-               
-               MainView.mButtonCreateBallStatic     = Button_CreateBall_Static;
-               MainView.mButtonCreateBallMovable     = Button_CreateBall_Movable;
-               MainView.mButtonCreateBallBreakable     = Button_CreateBall_Breakable;
-               MainView.mButtonCreateBallInfected     = Button_CreateBall_Infected;
-               MainView.mButtonCreateBallUninfected     = Button_CreateBall_Uninfected;
-               MainView.mButtonCreateBallDontInfect     = Button_CreateBall_DontInfect;
-               MainView.mButtonCreateBallBomb     = Button_CreateBall_Bomb;
-               
-               MainView.mButtonCreatePolygonStatic     = Button_CreatePolygon_Static;
-               MainView.mButtonCreatePolygonMovable    = Button_CreatePolygon_Movable;
-               MainView.mButtonCreatePolygonBreakable     = Button_CreatePolygon_Breakable;
-               MainView.mButtonCreatePolygonInfected     = Button_CreatePolygon_Infected;
-               MainView.mButtonCreatePolygonUninfected     = Button_CreatePolygon_Uninfected;
-               MainView.mButtonCreatePolygonDontinfect     = Button_CreatePolygon_Dontinfect;
-               
-               MainView.mButtonCreatePolylineStatic     = Button_CreatePolyline_Static;
-               MainView.mButtonCreatePolylineMovable    = Button_CreatePolyline_Movable;
-               MainView.mButtonCreatePolylineBreakable     = Button_CreatePolyline_Breakable;
-               MainView.mButtonCreatePolylineInfected     = Button_CreatePolyline_Infected;
-               MainView.mButtonCreatePolylineUninfected     = Button_CreatePolyline_Uninfected;
-               MainView.mButtonCreatePolylineDontinfect     = Button_CreatePolyline_Dontinfect;
-               
-               MainView.mButtonCreateModuleShape = Button_CreateModuleShape;
-               MainView.mButtonCreateModuleButtonShape = Button_CreateModuleShapeButton;
-               
-               MainView.mButtonCreateJointHinge  = Button_CreateJoint_Hinge
-               MainView.mButtonCreateJointSlider = Button_CreateJoint_Slider;
-               MainView.mButtonCreateJointDistance = Button_CreateJoint_Distance;
-               MainView.mButtonCreateJointSpring = Button_CreateJoint_Spring;
-               MainView.mButtonCreateJointWeld = Button_CreateJoint_Weld;
-               //MainView.mButtonCreateJointHingeSlider = Button_CreateJoint_HingeSlider;
-               MainView.mButtonCreateJointDummy = Button_CreateJoint_Dummy;
-               
-               MainView.mButtonCreateText = Button_CreateText;
-               MainView.mButtonCreateGravityController = Button_CreateGravityController;
-               MainView.mButtonCreateBall = Button_CreateBall;
-               MainView.mButtonCreateBox = Button_CreateBox;
-               MainView.mButtonCreatePolygon = Button_CreatePolygon;
-               MainView.mButtonCreatePolyline = Button_CreatePolyline;
-               MainView.mButtonCreateCamera = Button_CreateCamera;
-               MainView.mButtonCreateTextButton = Button_CreateTextButton;
-               
-               MainView.mButtonCreateLinearForce = Button_CreateLinearForce;
-               MainView.mButtonCreateAngularForce = Button_CreateAngularForce;
-               MainView.mButtonCreateLinearImpulse = Button_CreateLinearImpulse;
-               MainView.mButtonCreateAngularImpulse = Button_CreateAngularImpulse;
-               //MainView.mButtonCreateAngularAcceleration = Button_CreateAngularAcceleration;
-               //MainView.mButtonCreateAngularVelocity = Button_CreateAngularVelocity;
-               //MainView.mButtonCreateLinearAcceleration = Button_CreateLinearAcceleration;
-               //MainView.mButtonCreateLinearVelocity = Button_CreateLinearVelocity;
-               
-               MainView.mButtonCreateCondition = Button_CreateCondition;
-               MainView.mButtonCreateConditionDoor = Button_CreateConditionDoor;
-               MainView.mButtonCreateTask = Button_CreateTask;
-               MainView.mButtonCreateEntityAssigner = Button_CreateInputEntityAssigner;
-               MainView.mButtonCreateEntityPairAssigner = Button_CreateInputEntityPairAssigner;
-               //MainView.mButtonCreateEntityRegionSelector = Button_CreateInputEntityRegionSelector;
-               MainView.mButtonCreateEntityFilter = Button_CreateInputEntityScriptFilter;
-               MainView.mButtonCreateEntityPairFilter = Button_CreateInputEntityPairScriptFilter;
+  <mx:Script><![CDATA[
 
-               MainView.mButtonCreateAction = Button_CreateAction;
-               MainView.mButtonCreateEventHandler0 = Button_CreateEventHandler0;
-               MainView.mButtonCreateEventHandler1 = Button_CreateEventHandler1;
-               MainView.mButtonCreateEventHandler2 = Button_CreateEventHandler2;
-               MainView.mButtonCreateEventHandler3 = Button_CreateEventHandler3
-               MainView.mButtonCreateEventHandler5 = Button_CreateEventHandler5;
-               MainView.mButtonCreateEventHandler6 = Button_CreateEventHandler6;
-               MainView.mButtonCreateEventHandler7 = Button_CreateEventHandler7;
-               MainView.mButtonCreateEventHandler8 = Button_CreateEventHandler8;
-               MainView.mButtonCreateEventHandler59 = Button_CreateEventHandler59;
-               MainView.mButtonCreateEventHandler50 = Button_CreateEventHandler50;
-               MainView.mButtonCreateEventHandler51 = Button_CreateEventHandler51;
-               MainView.mButtonCreateEventHandler52 = Button_CreateEventHandler52;
-               MainView.mButtonCreateEventHandler53 = Button_CreateEventHandler53
-               MainView.mButtonCreateEventHandler56 = Button_CreateEventHandler56;
-               MainView.mButtonCreateEventHandler57 = Button_CreateEventHandler57;
-               MainView.mButtonCreateEventHandler58 = Button_CreateEventHandler58;
-               MainView.mButtonCreateEventHandler66 = Button_CreateEventHandler66;
-               MainView.mButtonCreateEventHandler67 = Button_CreateEventHandler67;
-               
-               Button_CreateBox_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBox_Movable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBox_Breakable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBox_Infected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBox_Uninfected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBox_Dontinfect.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBox_Bomb.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
-               Button_CreateBall_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBall_Movable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBall_Breakable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBall_Infected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBall_Uninfected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBall_DontInfect.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBall_Bomb.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
-               Button_CreatePolygon_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolygon_Movable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolygon_Breakable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolygon_Infected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolygon_Uninfected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolygon_Dontinfect.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
-               Button_CreatePolyline_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolyline_Movable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolyline_Breakable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolyline_Infected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolyline_Uninfected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolyline_Dontinfect.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
-               Button_CreateModuleShape.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateModuleShapeButton.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
-               Button_CreateJoint_Hinge.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateJoint_Slider.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateJoint_Distance.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateJoint_Spring.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateJoint_Weld.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateJoint_HingeSlider.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateJoint_Dummy.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
-               Button_CreateText.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateGravityController.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBall.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateBox.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolygon.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreatePolyline.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateCamera.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateTextButton.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
-               Button_CreateLinearForce.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateAngularForce.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateLinearImpulse.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateAngularImpulse.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateAngularAcceleration.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateAngularVelocity.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateLinearAcceleration.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateLinearVelocity.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
-               Button_CreateCondition.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateConditionDoor.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateTask.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateInputEntityAssigner.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateInputEntityPairAssigner.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateInputEntityRegionSelector.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateInputEntityScriptFilter.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateInputEntityPairScriptFilter.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateAction.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler0.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler1.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler2.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler3.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler5.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler6.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler7.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler8.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler59.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler50.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler51.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler52.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler53.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler56.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler57.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler58.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler66.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateEventHandler67.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
-               MainView.mButtonClone = Button_Clone;
-               MainView.mButtonDelete = Button_Delete;
-               MainView.mButtonFlipH = Button_FlipH;
-               MainView.mButtonFlipV = Button_FlipV;
-               MainView.mButtonGlue = Button_Glue;
-               MainView.mButtonBreakApart = Button_BreakApart;
-               MainView.mButtonSetting = Button_Setting;
-               MainView.mButtonMoveToTop = Button_MoveToTop;
-               MainView.mButtonMoveToBottom = Button_MoveToBottom;
-               MainView.mButtonUndo = Button_Undo;
-               MainView.mButtonRedo = Button_Redo;
-               MainView.mButtonMouseCookieMode = Button_MouseCookieMode;
-               MainView.mButtonMouseMoveScene = Button_MouseMoveScene;
-               MainView.mButtonMouseMove = Button_MouseMove;
-               MainView.mButtonMouseRotate = Button_MouseRotate;
-               MainView.mButtonMouseScale = Button_MouseScale;
-               
-               MainView.mButtonNewDesign = Button_NewDesign;
-               //MainView.mButtonSaveWorld = Button_SaveDesign;
-               //MainView.mButtonLoadWorld = Button_OpenDesign;
-               
-               MainView.mButtonShowEntityIds = CheckBox_ShowEntityIDs;
-               MainView.mButtonShowLinks = CheckBox_ShowLinks;
-               
-               MainView.mButtonHideInvisibleEntities = CheckBox_HideInvisibleEntities;
-               MainView.mButtonHideShapesAndJoints = CheckBox_HideShapesAndJoints;
-               MainView.mButtonHideTriggers = CheckBox_HideTriggers;
-               
-               MainView.mButton_Play = Button_Play;
-               MainView.mButton_Stop = Button_Stop;
-               
-               // ...
-               
-            //===================================================================================================
-               
-               Button_Clone.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_Delete.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_FlipH.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_FlipV.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_Glue.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_BreakApart.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_Setting.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_MoveToTop.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_MoveToBottom.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_Undo.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_Redo.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_MouseCookieMode.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_MouseMoveScene.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_MouseMove.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_MouseRotate.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_MouseScale.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               
-               //Button_SaveDesign.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               //Button_OpenDesign.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               
-               CheckBox_ShowEntityIDs.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               CheckBox_ShowLinks.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               
-               CheckBox_HideInvisibleEntities.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               CheckBox_HideShapesAndJoints.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               CheckBox_HideTriggers.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               
-               Button_Play.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_Stop.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               
-               MainView.ShowShapeRectangleSettingDialog = ShowShapeRectangleSettingDialog;
-               MainView.ShowShapeCircleSettingDialog = ShowShapeCircleSettingDialog;
-               MainView.ShowShapePolygonSettingDialog = ShowShapePolygonSettingDialog;
-               MainView.ShowShapePolylineSettingDialog = ShowShapePolylineSettingDialog;
-               MainView.ShowShapeImageModuleSettingDialog = ShowShapeImageModuleSettingDialog;
-               MainView.ShowShapeImageModuleButtonSettingDialog = ShowShapeImageModuleButtonSettingDialog;
-               
-               MainView.ShowShapeTextSettingDialog = ShowShapeTextSettingDialog;
-               MainView.ShowShapeTextButtonSettingDialog = ShowShapeTextButtonSettingDialog;
-               MainView.ShowShapeGravityControllerSettingDialog = ShowShapeGravityControllerSettingDialog;
-               
-               MainView.ShowHingeSettingDialog = ShowHingeSettingDialog;
-               MainView.ShowSliderSettingDialog = ShowSliderSettingDialog;
-               MainView.ShowSpringSettingDialog = ShowSpringSettingDialog;
-               MainView.ShowDistanceSettingDialog = ShowDistanceSettingDialog;
-               MainView.ShowWeldSettingDialog = ShowWeldSettingDialog;
-               MainView.ShowDummySettingDialog = ShowDummySettingDialog;
-               
-               MainView.ShowCameraSettingDialog = ShowCameraSettingDialog;
-               MainView.ShowPowerSourceSettingDialog = ShowPowerSourceSettingDialog;
-               
-               //MainView.ShowWorldSettingDialog = ShowWorldSettingDialog;
-               MainView.ShowWorldSavingDialog = ShowWorldSavingDialog;
-               MainView.ShowWorldLoadingDialog = ShowWorldLoadingDialog;
-               MainView.ShowWorldQuickLoadingDialog = ShowWorldQuickLoadingDialog;
-               MainView.ShowExportSwfFileDialog = ShowExportSwfFileDialog;
-               
-               MainView.ShowPlayCodeLoadingDialog = ShowPlayCodeLoadingDialog;
-               MainView.ShowImportSourceCodeDialog = ShowImportSourceCodeDialog;
-               
-               MainView.ShowEditorCustomCommandSettingDialog = ShowEditorCustomCommandSettingDialog;
-               
-               MainView.ShowConditionSettingDialog = ShowConditionSettingDialog;
-               MainView.ShowActionSettingDialog = ShowActionSettingDialog;
-               MainView.ShowEntityPairFilterSettingDialog = ShowEntityPairFilterSettingDialog;
-               MainView.ShowEntityFilterSettingDialog = ShowEntityFilterSettingDialog;
-               MainView.ShowEntityAssignerSettingDialog = ShowEntityAssignerSettingDialog;
-               MainView.ShowEntityPairAssignerSettingDialog = ShowEntityPairAssignerSettingDialog;
-               MainView.ShowEventHandlerSettingDialog = ShowEventHandlerSettingDialog;
-               MainView.ShowTimerEventHandlerSettingDialog = ShowTimerEventHandlerSettingDialog;
-               MainView.ShowTimerEventHandlerWithPreAndPostHandlingSettingDialog = ShowTimerEventHandlerWithPreAndPostHandlingSettingDialog;
-               MainView.ShowKeyboardEventHandlerSettingDialog = ShowKeyboardEventHandlerSettingDialog;
-               MainView.ShowMouseEventHandlerSettingDialog = ShowMouseEventHandlerSettingDialog;
-               MainView.ShowContactEventHandlerSettingDialog = ShowContactEventHandlerSettingDialog;
-               MainView.ShowJointReachLimitEventHandlerSettingDialog = ShowJointReachLimitEventHandlerSettingDialog;
-               MainView.ShowGameLostOrGotFocusEventHandlerSettingDialog = ShowGameLostOrGotFocusEventHandlerSettingDialog;
-               
-               MainView.ShowConditionDoorSettingDialog = ShowConditionDoorSettingDialog;
-               MainView.ShowTaskSettingDialog = ShowTaskSettingDialog;
-               MainView.ShowConditionSettingDialog = ShowConditionSettingDialog;
-               MainView.ShowActionSettingDialog = ShowActionSettingDialog;
-               MainView.ShowEventHandlerSettingDialog = ShowEventHandlerSettingDialog;
-               MainView.ShowTimerEventHandlerSettingDialog = ShowTimerEventHandlerSettingDialog;
-               MainView.ShowKeyboardEventHandlerSettingDialog = ShowKeyboardEventHandlerSettingDialog;
-               MainView.ShowMouseEventHandlerSettingDialog = ShowMouseEventHandlerSettingDialog;
-               
-               MainView.StatusBar_SetMainSelectedEntityInfo = StatusBar_SetMainSelectedEntityInfo;
-               MainView.StatusBar_SetMainDisplayPosition = StatusBar_SetMainDisplayPosition
-               MainView.StatusBar_SetMainPhysicsPosition = StatusBar_SetMainPhysicsPosition;
-               MainView.StatusBar_SetRunningSteps = StatusBar_SetRunningSteps;
-               MainView.StatusBar_SetRunningFPS = StatusBar_SetRunningFPS;
-            
-               MainView.OnPlayingStarted = OnPlayingStarted;
-               MainView.OnPlayingStopped = OnPlayingStopped;
-               
-               MainView.NotifyEditingScaleChanged = UpdateZoomScaleLabelText;
-               
-            //===================================================================================================
-               
-               DisplayObjectUtil.AppendContextMenuItem (Button_MouseMove, "Move Accurately ...", ShowDialog_MoveSelectedEntitiesAccurately);
-               
-               DisplayObjectUtil.AppendContextMenuItem (Button_MouseRotate, "Rotate Accurately ...", ShowDialog_RotateSelectedEntitiesAccurately);
-               
-               DisplayObjectUtil.AppendContextMenuItem (Button_MouseScale, "Scale Accurately ...", ShowDialog_ScaleSelectedEntitiesAccurately);
-               
-               DisplayObjectUtil.AppendContextMenuItem (Button_MouseMoveScene, "Move Scene Accurately ...", ShowDialog_MoveSceneAccurately);
-               
-               DisplayObjectUtil.AppendContextMenuItem (Label_GoToEntity, "Select New (without Brothers)", SelectNewEntitiesWithoutBrothers);
-               DisplayObjectUtil.AppendContextMenuItem (Label_GoToEntity, "Select New (with Brothers)", SelectNewEntitiesWithBrothers);
-               DisplayObjectUtil.AppendContextMenuItem (Label_GoToEntity, "Select More (without Brothers)", SelectMoreEntitiesWithoutBrothers);
-               DisplayObjectUtil.AppendContextMenuItem (Label_GoToEntity, "Select More (with Brothers)", SelectMoreEntitiesWithBrothers);
-               
-            //===================================================================================================
-               
-               //DisplayObjectUtil.AppendContextMenuItem (Button_NewDesign, "Clear All Entities", ClearAllEntities);
-               //DisplayObjectUtil.AppendContextMenuItem (Button_NewDesign, "Clear All Entities and Reset Scene", ClearAllEntitiesAndResetScene);
-               
-               //DisplayObjectUtil.AppendContextMenuItem (Button_OpenDesign, "Load Lastest Version Online ...", OnLoadSourceCodeOnline);
-               
-               //DisplayObjectUtil.AppendContextMenuItem (Button_SaveDesign, "Save Online ...", ShowWorldOnlineSavingDialog);
-               
-            //===================================================================================================
-               
-               mEntityCommonContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Entity Common Basic Properties ...", ShowModifyEntityCommonDialog);
-               
-               mShapePhysicsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Physics Properties ...", ShowModifyShapePhysicsDialog, true);
-               mShapeAppearanceContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Appearance Properties ...", ShowModifyShapeAppearanceDialog);
-               mShapeCircleContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Circle Special Properties ...", ShowModifyShapeCircleDialog);
-               mShapeRectangleContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Rectangle Special Properties ...", ShowModifyShapeRectangleDialog);
-               mShapePolylineContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Polyline Special Properties ...", ShowModifyShapePolylineDialog);
-               //mShapePhysicsFlagsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Flags ...", ShowModifyShapeFlagsDialog, true);
-               //mShapePhysicsCCatContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Collision Categories ...", ShowModifyShapeCollisionCategoryDialog);
-               //mShapePhysicsVelocityContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Velocities ...", ShowModifyShapeVelocityDialog);
-               //mShapePhysicsFixtureContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Other Physics Properties ...", ShowModifyShapeFixtureDialog);
-               
-               mJointCollideConnectedsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Joint \"Collide Connecteds\" Property ...", ShowModifyJointCollideConnectedsDialog, true);
-               
-               MainView.SetBatchSettingMenuItemsEnabled = SetBatchSettingMenuItemsEnabled;
-               
-            //===================================================================================================
-               
-               Button_Undo.contextMenu = MainView.mUndoButtonContextMenu;
-               Button_Undo.contextMenu.hideBuiltInItems ();
-               
-               Button_Redo.contextMenu = MainView.mRedoButtonContextMenu;
-               Button_Redo.contextMenu.hideBuiltInItems ();
-               
-         //===============================================================================================================
-         //  Collision Manager
-         //===============================================================================================================
-               /*
-               // 
-               CollisionManagerView.mButtonCreateCollisionCategory = Button_CreateCollisionCategory;
-               
-               Button_CreateCollisionCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnCreateButtonClick);
-               
-               CollisionManagerView.mButtonDelete = Button_DeleteCollisionCategory;
-               
-               CollisionManagerView.mCheckBoxHarmoniousCategory = CheckBox_CollisionCategory_HarmoniousCategory;
-               CollisionManagerView.mCheckBoxDefaultCategory = CheckBox_CollisionCategory_DefaultCategory;
-               
-               Button_DeleteCollisionCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
-               CheckBox_CollisionCategory_HarmoniousCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
-               CheckBox_CollisionCategory_DefaultCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
-               
-               CollisionManagerView.mLabelName = Label_CollisionCategoryName;
-               CollisionManagerView.mTextInputName = Text_CollisionCategoryName;
-               
-               Text_CollisionCategoryName.addEventListener (FlexEvent.ENTER, CollisionManagerView.OnTextInputEnter);
-               */
-         //===============================================================================================================
-         //  Function Manager
-         //===============================================================================================================
-               
-               /*
-               // setting dialogs
-               FunctionEditingView.ShowFunctionSettingDialog = ShowFunctionSettingDialog;
-               
-               // 
-               FunctionEditingView.mButtonCreatePureFunction = Button_CreatePureFunction;
-               FunctionEditingView.mButtonCreateDirtyFunction = Button_CreateDirtyFunction;
-               FunctionEditingView.mButtonCreatePackage = Button_CreatePackage;
-               FunctionEditingView.mButtonCreateClass = Button_CreateClass;
-               
-               Button_CreatePureFunction.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnCreateButtonClick);
-               Button_CreateDirtyFunction.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnCreateButtonClick);
-               Button_CreatePackage.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnCreateButtonClick);
-               Button_CreateClass.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnCreateButtonClick);
-               
-               FunctionEditingView.mButtonDelete = Button_DeleteFunctionEntity;
-               FunctionEditingView.mButtonSetting = Button_SettingFunction;
-               
-               Button_DeleteFunctionEntity.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnEditButtonClick);
-               Button_SettingFunction.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnEditButtonClick);
-               
-               FunctionEditingView.mLabelName = Label_FunctionEntityName;
-               FunctionEditingView.mTextInputName = Text_FunctionEntityName;
-               
-               Text_FunctionEntityName.addEventListener (FlexEvent.ENTER, FunctionEditingView.OnTextInputEnter);
-               */
-            }
-            
-            private var mCustomTriggerdButtons:Array = new Array ();
-            private function OnCustomTriggerButtonCreated (event:FlexEvent):void
-            {
-               if (event.target is mx.controls.Button)
-               {
-                  mCustomTriggerdButtons.push (event.target);
-                  
-                  DisplayObjectUtil.AppendContextMenuItem (event.target as InteractiveObject, "Load / Replace ...", MainView.OnClickEditorCustomCommand);
-               }
-            }
-            
-            private function ShowMiniMap ():void
-            {
-            }
-            
+      import editor.world.World;
+   
 //========================================================================================
-// drop menus
-//========================================================================================
-            
-            private var mConfigDesignMenu:Menu = null;
-            private function OnClickConfigDesignButton ():void
-            {
-               if (mConfigDesignMenu == null)
-               {
-                  mConfigDesignMenu = Menu.createMenu(Button_ConfigDesign, ConfigDesignMenuData, false);
-                  mConfigDesignMenu.labelField="@label";
-                  mConfigDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedConfigDesignMemu);
-               }
-               
-               var point:Point = Button_ConfigDesign.localToGlobal (new Point (0, Button_ConfigDesign.height));
-               
-               mConfigDesignMenu.show(point.x, point.y);
-            }
-            
-            private function OnSelectedConfigDesignMemu (event:MenuEvent):void
-            {
-               if (event.item.@data == "general")
-               {
-                  ShowLevelRulesEditDialog ();
-               }
-               else if (event.item.@data == "coordinate")
-               {
-                  ShowCoordinateSystemEditDialog ();
-               }
-               else if (event.item.@data == "physics")
-               {
-                  ShowWorldPhysicsEditDialog ();
-               }
-               else if (event.item.@data == "appearance")
-               {
-                  ShowWorldAppearanceEditDialog ();
-               }
-               else if (event.item.@data == "viewport")
-               {
-                  ShowViewportEditDialog ();
-               }
-            }
-            
-            private var mNewDesignMenu:Menu = null;
-            private function OnClickNewDesignButton ():void
-            {
-               if (mNewDesignMenu == null)
-               {
-                  mNewDesignMenu = Menu.createMenu(Button_NewDesign, NewDesignMenuData, false);
-                  mNewDesignMenu.labelField="@label";
-                  mNewDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedNewDesignMemu);
-               }
-               
-               var point:Point = Button_NewDesign.localToGlobal (new Point (0, Button_NewDesign.height));
-               
-               mNewDesignMenu.show(point.x, point.y);
-            }
-            
-            private function OnSelectedNewDesignMemu (event:MenuEvent):void
-            {
-               if (event.item.@data == "clear_all")
-               {
-                  MainView.ClearAllEntities (true, false);
-               }
-               else if (event.item.@data == "clear_all_and_reset")
-               {
-                  MainView.ClearAllEntities (true, true);
-               }
-            }
-            
-            private var mSaveDesignMenu:Menu = null;
-            private function OnClicSaveDesignButton ():void
-            {
-               if (mSaveDesignMenu == null)
-               {
-                  var xml:XML = <SaveDesignMenuData />;
-                  if (MainView.IsOnlineEditing ())
-                  {
-                     xml.appendChild (<menuitem label="Save Online ..." data="save_online"/>);
-                  }
-                  xml.appendChild (<menuitem label="Save Offline (xml) ..." data="save_offline"/>);
-                  //xml.appendChild (<menuitem label="Save Local ..." data="save_local"/>);
-                  //xml.appendChild (<menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/>);
-                  xml.appendChild (<menuitem label="Export Selected Entities to System Clipborad" data="export_selected_entities"/>);
-                  //xml.appendChild (<menuitem label="Export All Functions to System Clipborad" data="export_all_functions"/>);
-                  
-                  mSaveDesignMenu = Menu.createMenu(Button_SaveDesign, xml, false);
-                  mSaveDesignMenu.labelField="@label";
-                  mSaveDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedSaveDesignMemu);
-               }
-               
-               var point:Point = Button_SaveDesign.localToGlobal (new Point (0, Button_SaveDesign.height));
-               
-               mSaveDesignMenu.show(point.x, point.y);
-            }
-            
-            private function OnSelectedSaveDesignMemu (event:MenuEvent):void
-            {
-               if (event.item.@data == "save_online")
-               {
-                  ShowWorldOnlineSavingDialog ();
-               }
-               else if (event.item.@data == "save_offline")
-               {
-                  MainView.OpenWorldSavingDialog ();
-               }
-               else if (event.item.@data == "save_local")
-               {
-               }
-               else if (event.item.@data == "save_cookie")
-               {
-                  MainView.QuickSave ();
-               }
-               else if (event.item.@data  == "export_selected_entities")
-               {
-                  MainView.ExportSelectedsToSystemMemory ();
-               }
-               else if (event.item.@data  == "export_all_functions")
-               {
-                  MainView.ExportSelectedsToSystemMemory ();
-               }
-            }
-            
-            private var mLoadDesignMenu:Menu = null;
-            private function OnClicLoadDesignButton ():void
-            {
-               if (mLoadDesignMenu == null)
-               {
-                  var xml:XML = <SaveDesignMenuData />;
-                  if (MainView.IsOnlineEditing ())
-                  {
-                     xml.appendChild (<menuitem label="Load Online ..." data="load_online"/>);
-                  }
-                  xml.appendChild (<menuitem label="Load Offline (xml) ..." data="load_offline"/>);
-                  //xml.appendChild (<menuitem label="Load Local ..." data="load_local"/>);
-                  //xml.appendChild (<menuitem label="Quick Load ..." data="load_quick"/>);
-                  xml.appendChild (<menuitem label="Import ..." data="import"/>);
-                  //xml.appendChild (<menuitem label="Import Functions Only ..." data="import_functions"/>);
-                  
-                  mLoadDesignMenu = Menu.createMenu(Button_OpenDesign, xml, false);
-                  mLoadDesignMenu.labelField="@label";
-                  mLoadDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedLoadDesignMemu);
-               }
-               
-               var point:Point = Button_OpenDesign.localToGlobal (new Point (0, Button_OpenDesign.height));
-               
-               mLoadDesignMenu.show(point.x, point.y);
-            }
-            
-            private function OnSelectedLoadDesignMemu (event:MenuEvent):void
-            {
-               if (event.item.@data == "load_online")
-               {
-                  MainView.OnlineLoad ();
-               }
-               else if (event.item.@data == "load_offline")
-               {
-                  MainView.OpenWorldLoadingDialog ();
-               }
-               else if (event.item.@data == "load_local")
-               {
-               }
-               else if (event.item.@data == "load_quick")
-               {
-                  MainView.QuickLoad ();
-               }
-               else if (event.item.@data  == "import")
-               {
-                  MainView.OpenImportSourceCodeDialog (false);
-               }
-               else if (event.item.@data == "import_functions")
-               {
-                  MainView.OpenImportSourceCodeDialog (true);
-               }
-            }
-            
-//========================================================================================
-// play / stop
-//========================================================================================
-            
-            public function OnPlayingStarted ():void
-            {
-               Button_Play.enabled = false;
-               Button_Stop.enabled = true;
-               
-               Box_WordView.removeChild (Box_CustomCommands);
-               Box_WordView.validateNow ();
-               
-               Box_SwitchViewCommands.enabled = false;
-               Box_DesignCommands.enabled = false;
-               Box_EntityEditViewCommands_1.enabled = false;
-               Box_EntityEditViewCommands_2.enabled = false;
-               Box_CreateCommands.enabled = false;
-               
-               ViewStack_WorldInfo.selectedChild = Box_PlayingWorldInfo;
-               
-               Button_PlayFaster.enabled = MainView.PlayFaster (0)
-               Button_PlaySlower.enabled = MainView.PlaySlower (0);
-               UpdatePlaySpeedxLableText ();
-               UpdatePlayButtons ();
-               
-               MainView.SetOnSpeedChangedFunction (UpdatePlaySpeedxLableText);
-               MainView.SetOnPlayStatusChangedFunction (UpdatePlayButtons);
-            }
-            
-            public function OnPlayingStopped ():void
-            {
-               Button_Play.enabled = true;
-               Button_Stop.enabled = false;
-               
-               Box_WordView.addChildAt (Box_CustomCommands, 0);
-               Box_WordView.validateNow ();
-               
-               Box_SwitchViewCommands.enabled = true;
-               Box_DesignCommands.enabled = true
-               Box_EntityEditViewCommands_1.enabled = true;
-               Box_EntityEditViewCommands_2.enabled = true;
-               Box_CreateCommands.enabled = true;
-               
-               ViewStack_WorldInfo.selectedChild = Box_EditingWorldInfo;
-            }
-            
-            private function ToggleMaskPlayerField ():void
-            {
-               MainView.SetMaskViewerField (! MainView.IsMaskViewerField ());
-               
-               CheckBox_MaskViewerField.setStyle ("color", MainView.IsMaskViewerField () ? "0x000000" : "0x808080");
-            }
-            
-//========================================================================================
-// 
-//========================================================================================
-            
-            private function OnClickTutorialLink (event:Event):void
-            {
-               UrlUtil.PopupPage (Define.EditingTutorialUrl);
-            }
-            
-            private function OnClickShowcasesLink (event:Event):void
-            {
-               UrlUtil.PopupPage (Define.ShowcasesUrl);
-            }
-            
-            private function OnClickLogo (event:Event):void
-            {
-               UrlUtil.PopupPage (Define.AboutUrl);
-            }
-            
-            private function OnClickAbout (event:Event):void
-            {
-               UrlUtil.PopupPage (Define.AboutUrl);
-            }
-
-//========================================================================================
-// 
-//========================================================================================
-            
-            private function GetEntityIdsFromInputText (text:String):Array
-            {
-               if (text == null)
-                  return null;
-               
-               var idStrs:Array = text.split (/\s+/);
-               if (idStrs == null || idStrs.length == 0)
-                  return null;
-               
-               var entityIds:Array = new Array ();
-               for each (var idStr:String in idStrs)
-               {
-                  var entityId:Number = parseInt (idStr);
-                  if (! isNaN (entityId))
-                  {
-                     entityIds.push (int(entityId));
-                  }
-               }
-               
-               if (entityIds.length == 0)
-                  return null;
-               
-               return entityIds;
-            }
-            
-            private function OnGoToEntity ():void
-            {
-               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               if (ids != null)
-                  MainView.GoToEntity (ids);
-               
-               stage.focus = MainView;
-            }
-            
-            private function SelectNewEntitiesWithoutBrothers (event:ContextMenuEvent):void
-            {
-               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               if (ids != null)
-                  MainView.SelectEntityByIds (ids, true, false);
-               
-               stage.focus = MainView;
-            }
-            
-            private function SelectNewEntitiesWithBrothers (event:ContextMenuEvent):void
-            {
-               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               if (ids != null)
-                  MainView.SelectEntityByIds (ids, true, true);
-               
-               stage.focus = MainView;
-            }
-            
-            private function SelectMoreEntitiesWithoutBrothers (event:ContextMenuEvent):void
-            {
-               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               if (ids != null)
-                  MainView.SelectEntityByIds (ids, false, false);
-               
-               stage.focus = MainView;
-            }
-            
-            private function SelectMoreEntitiesWithBrothers (event:ContextMenuEvent):void
-            {
-               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               if (ids != null)
-                  MainView.SelectEntityByIds (ids, false, true);
-               
-               stage.focus = MainView;
-            }
-            
-            private function StatusBar_SetMainSelectedEntityInfo (info:String):void
-            {
-               Label_MainSelectedEntityInfo.htmlText = info;
-            }
-            
-            private function StatusBar_SetMainDisplayPosition (info:String):void
-            {
-               Label_EntityDisplayPosition.htmlText = info;
-            }
-            
-            private function StatusBar_SetMainPhysicsPosition (info:String):void
-            {
-               Label_EntityPhysicsPosition.htmlText = info;
-            }
-            
-            public function ZoomIn ():void
-            {
-               if (MainView.ScaleEditorWorld (true))
-               {
-                  Button_ZoomIn.enabled = false;
-               }
-               
-               Button_ZoomOut.enabled = true;
-            }
-            
-            public function ZoomOut ():void
-            {
-               if (MainView.ScaleEditorWorld (false))
-               {
-                  Button_ZoomOut.enabled = false;
-               }
-               
-               Button_ZoomIn.enabled = true;
-            }
-            
-            private function UpdateZoomScaleLabelText ():void
-            {
-               var label:String = ValueAdjuster.Number2PrecisionString (MainView.GetEditorWorldZoomScale (), 3);;
-               if (label.charAt (0) == "0")
-                  label = label.substr (1);
-               Label_ZoomScale.text = label;
-            }
-            
-     //===========================================
-            
-            private function StatusBar_SetRunningSteps (info:String):void
-            {
-               Label_RunningSteps.htmlText = info;
-            }
-            
-            private function StatusBar_SetRunningFPS (info:String):void
-            {
-               Label_RunningFps.htmlText = info;
-            }
-            
-            public function PlayFaster ():void
-            {
-               Button_PlayFaster.enabled = MainView.PlayFaster (1);
-               
-               Button_PlaySlower.enabled = true;
-               UpdatePlaySpeedxLableText ();
-            }
-            
-            public function PlaySlower ():void
-            {
-               Button_PlaySlower.enabled = MainView.PlaySlower (1);
-               
-               Button_PlayFaster.enabled = true;
-               UpdatePlaySpeedxLableText ();
-            }
-            
-            public function UpdatePlaySpeedxLableText ():void
-            {
-               Label_PlaySpeed.text = "Speed X" + MainView.GetPlayingSpeedX ();
-            }
-            
-            public function PlayOneStep ():void
-            {
-               MainView.PlayOneStep ();
-            }
-            
-            public function PlayToggleStartPause ():void
-            {
-               if (MainView.IsPlayingPaused ())
-               {
-                  MainView.PlayRun ();
-               }
-               else
-               {
-                  MainView.PlayPause ();
-               }
-            }
-            
-            public function PlayRestart ():void
-            {
-               MainView.PlayRestart ();
-            }
-            
-            public function UpdatePlayButtons ():void
-            {
-               Button_PlayRestart.enabled = (! MainView.IsPlayingPaused ()) || MainView.GetPlayingSimulatedSteps () > 0;
-               Button_PlayOneStep.enabled = MainView.IsPlayingPaused ();
-               ViewStack_PlayRunPause.selectedChild = (MainView.IsPlayingPaused () ? Box_PlayRun : Box_PlayPause);
-            }
-            
-//========================================================================================
-// 
-//========================================================================================
-            
-            private function ShowDesignInfoSettingDialog():void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:DesignInfoSettingDialog = new DesignInfoSettingDialog ();
-               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldDesignInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldDesignInfo);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowLevelRulesEditDialog ():void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:WorldLevelRulesSettingDialog = new WorldLevelRulesSettingDialog ();
-               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldLevelRulesInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldLevelRulesInfo);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowCoordinateSystemEditDialog ():void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:WorldCoordinateSystemSettingDialog = new WorldCoordinateSystemSettingDialog ();
-               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldCoordinateSystemInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldCoordinateSystemInfo);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowWorldPhysicsEditDialog ():void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:WorldPhysicsSettingDialog = new WorldPhysicsSettingDialog ();
-               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldPhysicsyInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldPhysicsInfo);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowWorldAppearanceEditDialog ():void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:WorldAppearanceSettingDialog = new WorldAppearanceSettingDialog ();
-               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetCurrentWorldAppearanceInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetCurrentWorldAppearanceInfo);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowViewportEditDialog ():void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:ViewportSettingDialog = new ViewportSettingDialog ();
-               settingDialog.SetValues (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().GetViewportInfo ());
-               settingDialog.SetConfirmFunc (EditorContext.GetEditorApp ().GetCurrentSceneEditPanel ().SetViewportInfo);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-//========================================================================================
-// 
-//========================================================================================
-            
-            private function ShowShapeRectangleSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               if ( Define.IsBombShape (initialValues.mAiType) )
-               {
-                  var settingBombDialog:ShapeRectangleBombSettingDialog = new ShapeRectangleBombSettingDialog ();
-                  settingBombDialog.SetValues (initialValues);
-                  settingBombDialog.SetConfirmFunc (onConfirmFunc);
-                  settingBombDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-                  PopUpManager.addPopUp (settingBombDialog, MainView, true);
-                  PopUpManager.centerPopUp (settingBombDialog);
-               }
-               else
-               {
-                  var settingDialog:ShapeRectangleSettingDialog = new ShapeRectangleSettingDialog ();
-                  settingDialog.SetValues (initialValues);
-                  settingDialog.SetConfirmFunc (onConfirmFunc);
-                  settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-                  PopUpManager.addPopUp (settingDialog, MainView, true);
-                  PopUpManager.centerPopUp (settingDialog);
-               }
-            }
-            
-            private function ShowShapeCircleSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               if ( Define.IsBombShape (initialValues.mAiType) )
-               {
-                  var settingBombDialog:ShapeCircleBombSettingDialog = new ShapeCircleBombSettingDialog ();
-                  settingBombDialog.SetValues (initialValues);
-                  settingBombDialog.SetConfirmFunc (onConfirmFunc);
-                  settingBombDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-                  PopUpManager.addPopUp (settingBombDialog, MainView, true);
-                  PopUpManager.centerPopUp (settingBombDialog);
-               }
-               else
-               {
-                  var settingDialog:ShapeCircleSettingDialog = new ShapeCircleSettingDialog ();
-                  settingDialog.SetValues (initialValues);
-                  settingDialog.SetConfirmFunc (onConfirmFunc);
-                  settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-                  PopUpManager.addPopUp (settingDialog, MainView, true);
-                  PopUpManager.centerPopUp (settingDialog);
-               }
-            }
-            
-            private function ShowShapePolygonSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:ShapePolygonSettingDialog = new ShapePolygonSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowShapePolylineSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:ShapePolylineSettingDialog = new ShapePolylineSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowShapeImageModuleSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:ShapeImageModuleSettingDialog = new ShapeImageModuleSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowShapeImageModuleButtonSettingDialog(initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:ShapeImageModuleButtonSettingDialog = new ShapeImageModuleButtonSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowShapeTextSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:ShapeTextSettingDialog = new ShapeTextSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowShapeTextButtonSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:ShapeTextButtonSettingDialog = new ShapeTextButtonSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowShapeGravityControllerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:ShapeGravityControllerSettingDialog = new ShapeGravityControllerSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowHingeSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:JointHingeSettingDialog = new JointHingeSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowSliderSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:JointSliderSettingDialog = new JointSliderSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowSpringSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:JointSpringSettingDialog = new JointSpringSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowDistanceSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:JointDistanceSettingDialog = new JointDistanceSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowWeldSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:JointWeldSettingDialog = new JointWeldSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowDummySettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:JointDummySettingDialog = new JointDummySettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowCameraSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:UtilityCameraSettingDialog = new UtilityCameraSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowPowerSourceSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:UtilityPowerSourceSettingDialog = new UtilityPowerSourceSettingDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            
-            private function ShowEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicEventHandlerEditDialog = new LogicEventHandlerEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowTimerEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicTimerEventHandlerEditDialog = new LogicTimerEventHandlerEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowTimerEventHandlerWithPreAndPostHandlingSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicTimerEventHandlerWithPrePostHandlingEditDialog = new LogicTimerEventHandlerWithPrePostHandlingEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowKeyboardEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicKeyboardEventHandlerEditDialog = new LogicKeyboardEventHandlerEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowMouseEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicMouseEventHandlerEditDialog = new LogicMouseEventHandlerEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowContactEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicShapeContactEventHandlerEditDialog = new LogicShapeContactEventHandlerEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowJointReachLimitEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicJointReachLimitEventHandlerEditDialog = new LogicJointReachLimitEventHandlerEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowGameLostOrGotFocusEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicGameLostOrGotFocusEventHandlerEditDialog = new LogicGameLostOrGotFocusEventHandlerEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowActionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicActionEditDialog = new LogicActionEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowConditionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicConditionEditDialog = new LogicConditionEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowEntityFilterSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicEntityFilterEditDialog = new LogicEntityFilterEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowEntityPairFilterSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicEntityPairFilterEditDialog = new LogicEntityPairFilterEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowConditionDoorSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicConditionDoorEditDialog = new LogicConditionDoorEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowTaskSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicTaskEditDialog = new LogicTaskEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowEntityAssignerSettingDialog(initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicEntityAssignerEditDialog = new LogicEntityAssignerEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            private function ShowEntityPairAssignerSettingDialog(initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:LogicEntityPairAssignerEditDialog = new LogicEntityPairAssignerEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-            //private function ShowWorldSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            //{
-            //   EditorContext.OnOpenDialog ();
-            //   
-            //   var settingDialog:WorldSettingDialog = new WorldSettingDialog ();
-            //   PopUpManager.addPopUp (settingDialog, MainView, true);
-            //   PopUpManager.centerPopUp (settingDialog);
-            //   settingDialog.SetValues (initialValues);
-            //   settingDialog.SetConfirmFunc (onConfirmFunc);
-            //   settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            //}
-            
-            private function ShowExportSwfFileDialog (initialValues:Object):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:WorldSaveAsSwfDialog = new WorldSaveAsSwfDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetValues (initialValues);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowWorldSavingDialog (initialValues:Object):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:WorldSavingDialog = new WorldSavingDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetValues (initialValues);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowWorldLoadingDialog (onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:WorldLoadingDialog = new WorldLoadingDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowWorldQuickLoadingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:WorldQuickLoadingDialog = new WorldQuickLoadingDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetValues (initialValues);
-               dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowPlayCodeLoadingDialog (onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:PlayCodeLoadingDialog = new PlayCodeLoadingDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowImportSourceCodeDialog (onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:WorldImportDialog = new WorldImportDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-//========================================================================================
-// 
-//========================================================================================
-            
-            private var mEntityCommonContextMenuItem:ContextMenuItem;
-            
-            private var mShapePhysicsContextMenuItem:ContextMenuItem;
-            private var mShapeAppearanceContextMenuItem:ContextMenuItem;
-            private var mShapeCircleContextMenuItem:ContextMenuItem;
-            private var mShapeRectangleContextMenuItem:ContextMenuItem;
-            private var mShapePolylineContextMenuItem:ContextMenuItem;
-            //private var mShapePhysicsFlagsContextMenuItem:ContextMenuItem;
-            //private var mShapePhysicsCCatContextMenuItem:ContextMenuItem;
-            //private var mShapePhysicsVelocityContextMenuItem:ContextMenuItem;
-            //private var mShapePhysicsFixtureContextMenuItem:ContextMenuItem;
-            
-            private var mJointCollideConnectedsContextMenuItem:ContextMenuItem;
-            
-            private function SetBatchSettingMenuItemsEnabled (
-                              entityCommonEnabled:Boolean,
-                              
-                              shapePhysicsEnabled:Boolean,
-                              shapeAppearanceEnabled:Boolean,
-                              shapeCircleEmabled:Boolean,
-                              shapeRectangleEmabled:Boolean,
-                              shapePolylineEmabled:Boolean,
-                              //shapePhysicsFlagsEnabled:Boolean,
-                              //shapePhysicsCCatEnabled:Boolean,
-                              //shapePhysicsVelocityEnabled:Boolean,
-                              //shapePhysicsFixtureEnabled:Boolean,
-                              
-                              jointCollideConnectedsEnabled:Boolean
-                        ):void
-            {
-               mEntityCommonContextMenuItem.enabled = entityCommonEnabled;
-               
-               mShapePhysicsContextMenuItem.enabled = shapePhysicsEnabled;
-               mShapeAppearanceContextMenuItem.enabled = shapeAppearanceEnabled;
-               mShapeCircleContextMenuItem.enabled = shapeCircleEmabled;
-               mShapeRectangleContextMenuItem.enabled = shapeRectangleEmabled;
-               mShapePolylineContextMenuItem.enabled = shapePolylineEmabled;
-               //mShapePhysicsFlagsContextMenuItem.enabled = shapePhysicsFlagsEnabled;
-               //mShapePhysicsCCatContextMenuItem.enabled = shapePhysicsCCatEnabled;
-               //mShapePhysicsVelocityContextMenuItem.enabled = shapePhysicsVelocityEnabled;
-               //mShapePhysicsFixtureContextMenuItem.enabled = shapePhysicsFixtureEnabled;
-               
-               mJointCollideConnectedsContextMenuItem.enabled = jointCollideConnectedsEnabled;
-            }
-            
-            private function ShowModifyEntityCommonDialog (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:BatchEntityCommonPropertyModifyDialog = new BatchEntityCommonPropertyModifyDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyEntityCommonProperties);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowModifyShapeCircleDialog (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:BatchShapeCirclePropertiesModifyDialog = new BatchShapeCirclePropertiesModifyDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyShapeCircleProperties);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowModifyShapeRectangleDialog (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:BatchShapeRectanglePropertiesModifyDialog = new BatchShapeRectanglePropertiesModifyDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyShapeRectangleProperties);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowModifyShapePolylineDialog (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:BatchShapePolylinePropertiesModifyDialog = new BatchShapePolylinePropertiesModifyDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePolylineProperties);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowModifyShapeAppearanceDialog (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:BatchShapeAppearancePropertiesModifyDialog = new BatchShapeAppearancePropertiesModifyDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyShapeAppearanceProperties);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function ShowModifyShapePhysicsDialog (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:BatchShapePhysicsPropertiesModifyDialog = new BatchShapePhysicsPropertiesModifyDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsProperties);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            //private function ShowModifyShapeFlagsDialog (event:ContextMenuEvent):void
-            //{
-            //   EditorContext.OnOpenDialog ();
-            //   
-            //   var dialog:BatchShapePhysicsFlagsModifyDialog = new BatchShapePhysicsFlagsModifyDialog ();
-            //   PopUpManager.addPopUp (dialog, MainView, true);
-            //   PopUpManager.centerPopUp (dialog);
-            //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFlags);
-            //   dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            //}
-            //
-            //private function ShowModifyShapeCollisionCategoryDialog (event:ContextMenuEvent):void
-            //{
-            //   EditorContext.OnOpenDialog ();
-            //   
-            //   var dialog:BatchShapePhysicsCollisionCategoryModifyDialog = new BatchShapePhysicsCollisionCategoryModifyDialog ();
-            //   PopUpManager.addPopUp (dialog, MainView, true);
-            //   PopUpManager.centerPopUp (dialog);
-            //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsCollisionCategory);
-            //   dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            //}
-            //
-            //private function ShowModifyShapeVelocityDialog (event:ContextMenuEvent):void
-            //{
-            //   EditorContext.OnOpenDialog ();
-            //   
-            //   var dialog:BatchShapePhysicsVelocityModifyDialog = new BatchShapePhysicsVelocityModifyDialog ();
-            //   PopUpManager.addPopUp (dialog, MainView, true);
-            //   PopUpManager.centerPopUp (dialog);
-            //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsVelocity);
-            //   dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            //}
-            //
-            //private function ShowModifyShapeFixtureDialog (event:ContextMenuEvent):void
-            //{
-            //   EditorContext.OnOpenDialog ();
-            //   
-            //   var dialog:BatchShapePhysicsFixtureModifyDialog = new BatchShapePhysicsFixtureModifyDialog ();
-            //   PopUpManager.addPopUp (dialog, MainView, true);
-            //   PopUpManager.centerPopUp (dialog);
-            //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFixture);
-            //   dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            //}
-            
-            private function ShowModifyJointCollideConnectedsDialog  (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:BatchJointCollideConnectedsModifyDialog = new BatchJointCollideConnectedsModifyDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyJointCollideConnectedsProperty);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-//========================================================================================
-// 
-//========================================================================================
-            
-            private function ShowDialog_MoveSelectedEntitiesAccurately (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:AccurateMoveDialog = new AccurateMoveDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (OnMoveSelectedEntitiesAccurately);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function OnMoveSelectedEntitiesAccurately (params:Object):void
-            {
-               MainView.MoveSelectedEntities (params.mOffsetX, params.mOffsetY, true, false);
-            }
-            
-            private function ShowDialog_RotateSelectedEntitiesAccurately (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:AccurateRotateDialog = new AccurateRotateDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (OnRotateSelectedEntitiesAccurately);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function OnRotateSelectedEntitiesAccurately (params:Object):void
-            {
-               MainView.RotateSelectedEntities (params.mRotationAngle * Define.kDegrees2Radians, true, false);
-            }
-            
-            private function ShowDialog_ScaleSelectedEntitiesAccurately (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:AccurateScaleDialog = new AccurateScaleDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (OnScaleSelectedEntitiesAccurately);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function OnScaleSelectedEntitiesAccurately (params:Object):void
-            {
-               if (params.mScaleRatio >= 0)
-                  MainView.ScaleSelectedEntities (params.mScaleRatio, true, false);
-            }
-            
-            private function ShowDialog_MoveSceneAccurately (event:ContextMenuEvent):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:AccurateMoveDialog = new AccurateMoveDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (OnMoveSceneAccurately);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            private function OnMoveSceneAccurately (params:Object):void
-            {
-               MainView.MoveWorldScene (params.mOffsetX, params.mOffsetY);
-            }
-            
-            private function ShowWorldOnlineSavingDialog (/*event:ContextMenuEvent*/):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:WorldOnlineSavingDialog = new WorldOnlineSavingDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnlineSave);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-            //private function OnSaveSourceCodeOnline (event:ContextMenuEvent):void
-            //{
-            //   MainView.OnlineSave ();
-            //}
-            
-            //private function OnLoadSourceCodeOnline (event:ContextMenuEvent):void
-            //{
-            //   MainView.OnlineLoad ();
-            //}
-            
-            //private function ClearAllEntities (event:ContextMenuEvent):void
-            //{
-            //   MainView.ClearAllEntities (true, false);
-            //}
-            //
-            //private function ClearAllEntitiesAndResetScene (event:ContextMenuEvent):void
-            //{
-            //   MainView.ClearAllEntities (true, true);
-            //}
-            
-//========================================================================================
-// 
-//========================================================================================
-            
-            private function ShowEditorCustomCommandSettingDialog (onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var dialog:EditorCustomCommandSettingDialog = new EditorCustomCommandSettingDialog ();
-               PopUpManager.addPopUp (dialog, MainView, true);
-               
-               PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
-            }
-            
-//========================================================================================
-// code lib view
-//========================================================================================
-            
-            private function ShowFunctionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               EditorContext.OnOpenDialog ();
-               
-               var settingDialog:FunctionEditDialog = new FunctionEditDialog ();
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-            }
-            
-//========================================================================================
-// as a plugin
-//========================================================================================
-            
-            public function SetParamsFromUniEditor (params:Object):void
-            {
-               if (params != null)
-               {
-                  // params.mUniEditorCallback
-                  // mQuickLoadCallback
-                  
-                  if (params.mUniEditorCallback != null)
-                     MainView.SetUniEditorCallback (params.mUniEditorCallback);
-               }
-            }
-            
-//========================================================================================
-// make sure editor.swf includes the follow classes
-//========================================================================================
-            
-            import player.WorldPlugin;
-            
-            public function Dummy ():void
-            {
-               new WorldPlugin (); // to make mxmlc include WorldPlugin, so the all player.* package, ...
-            }
-
-
-
-
-
-//========================================================================================
-// new ui
+// app
 //========================================================================================
    
-   //========================================================================================
-   // flow
-   //========================================================================================
+      private function InitApp ():void
+      {
+         EditorContext.sEditorApp = this;
+         
+         SetWorld (new World (), true);
+      }
    
-            private function Init ():void
-            {
-               EditorContext.sEditorApp = this;
-               
-               SetWorld (new World (), true);
-            }
+//========================================================================================
+// world
+//========================================================================================
    
    //========================================================================================
    // world IO
    //========================================================================================
 
-            private var mWorld:World = null;
-            
-            public function GetWorld ():World
-            {
-               return mWorld;
-            }
-            
-            public function SetWorld (world:World, firstTime:Boolean = false):void
-            {
-               EditorContext.sEditorContext = new EditorContext ();
-               
-               mWorld = world;
-               
-               if (mWorld != null)
-               {
-                  //MainView = new WorldView ();
-                  //MainView.percentWidth = 100;
-                  //MainView.percentHeight = 100;
-                  //Box_Scenes.addChild (MainView);
-                  MainView.SetEntityContainer (world.GetEntityContainer (), firstTime);
-               }
-            }
-            
-            public function CloseWorld ():void
-            {
-               EditorContext.sEditorContext = null;
-               
-               mWorld = null;
-               
-               //if (MainView != null)
-               //{
-               //   MainView.SetEntityContainer (null);
-               //   Box_Scenes.removeChild (MainView);
-               //}
-            }
-            
-            //private var MainView:WorldView = null;
-            
-            public function GetCurrentSceneEditPanel ():WorldView
-            {
-               return MainView;
-            }
+      private var mWorld:World = null;
+      
+      public function GetWorld ():World
+      {
+         return mWorld;
+      }
+      
+      public function SetWorld (world:World, firstTime:Boolean = false):void
+      {
+         EditorContext.sEditorContext = new EditorContext ();
+         
+         mWorld = world;
+         
+         if (mWorld != null)
+         {
+            //MainView = new SceneEditPanel ();
+            //MainView.percentWidth = 100;
+            //MainView.percentHeight = 100;
+            //Box_Scenes.addChild (MainView);
+         //   MainView.SetEntityContainer (world.GetEntityContainer (), firstTime);
+         }
+      }
+      
+      public function CloseWorld ():void
+      {
+         EditorContext.sEditorContext = null;
+         
+         mWorld = null;
+         
+         //if (MainView != null)
+         //{
+         //   MainView.SetEntityContainer (null);
+         //   Box_Scenes.removeChild (MainView);
+         //}
+      }
+      
+      //private var MainView:SceneEditPanel = null;
+      
+      public function GetCurrentSceneEditPanel ():SceneEditPanel
+      {
+         return MainView;
+      }
 
-            public function NewWorld ():void
-            {
-            }
-            
-            public function LoadWorld ():void
-            {
-            }
-            
-            public function SaveWorld ():void
-            {
-            }
-            
-        ]]>
-   </mx:Script>
+      public function NewWorld ():void
+      {
+      }
+      
+      public function LoadWorld ():void
+      {
+      }
+      
+      public function SaveWorld ():void
+      {
+      }
+      
+   //========================================================================================
+   // event handlers
+   //========================================================================================
+      
+      private function OnClicLoadWorldButton ():void
+      {
+         
+      }
+      
+      private function OnClicSaveWorldButton ():void
+      {
+         
+      }
+      
+      private function OnClickConfigWorldButton ():void
+      {
+         
+      }
+      
+      private function OnClickOpenLinksButton ():void
+      {
+         
+      }
+
+//========================================================================================
+// scene
+//========================================================================================
+   
+
+      
+   //========================================================================================
+   // event handlers
+   //========================================================================================
+      
+      private function OnClickClearSceneButton ():void
+      {
+         
+      }
+      
+      private function OnClickConfigSceneButton ():void
+      {
+         
+      }
+      
+      private function SelectNewEntitiesWithoutBrothers ():void
+      {
+         
+      }
+      
+      private function GoToTheSpecifiedEntity ():void
+      {
+         
+      }
+      
+      private function ZoomOut ():void
+      {
+         
+      }
+      
+      private function ZoomIn ():void
+      {
+         
+      }
+      
+      private function PlaySlower ():void
+      {
+         
+      }
+      
+      private function PlayFaster ():void
+      {
+         
+      }
+      
+      private function PlayRestart ():void
+      {
+         
+      }
+      
+      private function PlayToggleStartPause ():void
+      {
+         
+      }
+      
+      private function PlayOneStep ():void
+      {
+         
+      }
+      
+      private function ToggleMaskPlayerField ():void
+      {
+         
+      }
+
+   ]]></mx:Script>
 </mx:Application>
 

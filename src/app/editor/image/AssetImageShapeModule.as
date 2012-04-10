@@ -43,6 +43,15 @@ package editor.image {
          mIsValid = false;
       }
       
+      override public function ToCodeString ():String
+      {
+         return "A Shape";
+      }
+       
+//=============================================================
+//   
+//=============================================================
+      
       public function GetVectorShape ():VectorShapeForEditing
       {
          return mVectorShape;
@@ -52,15 +61,6 @@ package editor.image {
       {
          return (mVectorShape as VectorShape).IsValid ();
       }
-      
-      override public function ToCodeString ():String
-      {
-         return "A Shape";
-      }
-       
-//=============================================================
-//   
-//=============================================================
       
       // return position
       public function OnCreating (points:Array):Point

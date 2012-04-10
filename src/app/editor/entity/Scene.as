@@ -560,7 +560,7 @@ package editor.entity {
          return rect;
       }
 
-      public function CreateEntityVectorShapePolygon ():EntityVectorShapePolygon
+      public function CreateEntityVectorShapePolygon (selectIt:Boolean = false):EntityVectorShapePolygon
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
@@ -569,11 +569,17 @@ package editor.entity {
          addChild (polygon);
 
          polygon.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
-
+         
+         if (selectIt)
+         {
+            polygon.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (polygon);
+         }
+         
          return polygon;
       }
 
-      public function CreateEntityVectorShapePolyline ():EntityVectorShapePolyline
+      public function CreateEntityVectorShapePolyline (selectIt:Boolean = false):EntityVectorShapePolyline
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
@@ -582,7 +588,13 @@ package editor.entity {
          addChild (polyline);
 
          polyline.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
-
+         
+         if (selectIt)
+         {
+            polyline.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (polyline);
+         }
+         
          return polyline;
       }
 

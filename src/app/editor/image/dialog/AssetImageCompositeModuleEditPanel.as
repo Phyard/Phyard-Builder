@@ -246,17 +246,17 @@ package editor.image.dialog {
          points [0] = new Point (startX, startY);
          points [1] = new Point (endX, endY);
          
-         OnCreatingShapeMouleInstacne (points, done);
+         OnCreatingShapeMoudleInstacne (points, done);
       }
       
       protected function OnTapsCreatingShapeMouleInstacne (points:Array, currentX:Number, currentY:Number, isHoldMouse:Boolean):void
       {
          points.push (new Point (currentX, currentY));
          
-         OnCreatingShapeMouleInstacne (points, false);
+         OnCreatingShapeMoudleInstacne (points, false);
       }
       
-      protected function OnCreatingShapeMouleInstacne (points:Array, done:Boolean):void
+      protected function OnCreatingShapeMoudleInstacne (points:Array, done:Boolean):void
       {
          var selectedModuleInstacnes:Array = mAssetImageModuleInstanceManager.GetSelectedAssets ();
          if (selectedModuleInstacnes == null || selectedModuleInstacnes.length != 1)
@@ -334,11 +334,11 @@ package editor.image.dialog {
                break;
             case mButtonCreateShapePolygonInstance:
                mAssetImageModuleInstanceManager.CreateImageShapePolygonModuleInstance (true);
-               SetCurrentIntent (new IntentTaps (this, OnCreatingShapeMouleInstacne, OnTapsCreatingShapeMouleInstacne, OnCreatingCancelled));
+               SetCurrentIntent (new IntentTaps (this, OnCreatingShapeMoudleInstacne, OnTapsCreatingShapeMouleInstacne, OnCreatingCancelled));
                break;
             case mButtonCreateShapePolylineInstance:
                mAssetImageModuleInstanceManager.CreateImageShapePolylineModuleInstance (true);
-               SetCurrentIntent (new IntentTaps (this, OnCreatingShapeMouleInstacne, OnTapsCreatingShapeMouleInstacne, OnCreatingCancelled));
+               SetCurrentIntent (new IntentTaps (this, OnCreatingShapeMoudleInstacne, OnTapsCreatingShapeMouleInstacne, OnCreatingCancelled));
                break;
             case mButtonCreateShapeTextInstance:
                SetCurrentIntent (new IntentPutAsset (

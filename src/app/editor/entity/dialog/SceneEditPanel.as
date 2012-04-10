@@ -90,15 +90,19 @@ package editor.entity.dialog {
          {
             case "RectangleShape":
                mScene.CreateEntityVectorShapeRectangle (true);
-               SetCurrentIntent (new IntentDrag (OnDragCreatingRectangle, OnCreatingCancelled));
+               SetCurrentIntent (new IntentDrag (OnDragCreatingShape, OnCreatingCancelled));
                break;
             case "CircleShape":
                mScene.CreateEntityVectorShapeCircle (true);
-               SetCurrentIntent (new IntentDrag (OnDragCreatingCircle, OnCreatingCancelled));
+               SetCurrentIntent (new IntentDrag (OnDragCreatingShape, OnCreatingCancelled));
                break;
             case "PolygonShape":
+               mScene.CreateEntityVectorShapePolygon (true);
+               SetCurrentIntent (new IntentTaps (this, OnCreatingShape, OnTapsCreatingShape, OnCreatingCancelled));
                break;
             case "PolylineShape":
+               mScene.CreateEntityVectorShapePolyline (true);
+               SetCurrentIntent (new IntentTaps (this, OnCreatingShape, OnTapsCreatingShape, OnCreatingCancelled));
                break;
             case "HingeJoint":
                SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityJointHinge (true), 
@@ -284,6 +288,60 @@ package editor.entity.dialog {
          OnAssetSelectionsChanged ();
       }
       
+      protected function OnDragCreatingShape (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
+      {
+         var points:Array = new Array (2);
+         points [0] = new Point (startX, startY);
+         points [1] = new Point (endX, endY);
+         
+         OnCreatingShape (points, done);
+      }
+      
+      protected function OnTapsCreatingShape (points:Array, currentX:Number, currentY:Number, isHoldMouse:Boolean):void
+      {
+         points.push (new Point (currentX, currentY));
+         
+         OnCreatingShape (points, false);
+      }
+      
+      protected function OnCreatingShape (points:Array, done:Boolean):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         if (selectedEntities == null || selectedEntities.length != 1)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         var vectorShapeEntity:EntityVectorShape = selectedEntities [0] as EntityVectorShape;
+         if (vectorShapeEntity == null)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         var pos:Point = vectorShapeEntity.OnCreating (points);
+         if (pos != null)
+            vectorShapeEntity.SetPosition (pos.x, pos.y);
+         
+         vectorShapeEntity.UpdateAppearance ();
+         
+         if (done)
+         {
+            if (vectorShapeEntity.IsValid ())
+            {
+               vectorShapeEntity.UpdateSelectionProxy ();
+               
+               OnCreatingFinished ();
+            }
+            else
+            {
+               OnCreatingCancelled ();
+            }
+         }
+      }
+      
+      /*
       protected function OnDragCreatingRectangle (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
       {
          var selectedEntities:Array = mScene.GetSelectedAssets ();
@@ -349,6 +407,7 @@ package editor.entity.dialog {
             OnCreatingFinished ();
          }
       }
+      */
       
       protected function OnDragCreatingTwoAnchorsJoint (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
       {

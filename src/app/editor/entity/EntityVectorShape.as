@@ -3,6 +3,7 @@ package editor.entity {
 
    import flash.display.DisplayObject;
    import flash.display.Sprite;
+   import flash.geom.Point;
 
    import com.tapirgames.util.GraphicsUtil;
    
@@ -61,6 +62,26 @@ package editor.entity {
       override public function IsBasicVectorShapeEntity ():Boolean
       {
          return true;
+      }
+      
+//====================================================================
+//   
+//====================================================================
+      
+      public function GetVectorShape ():VectorShapeForEditing
+      {
+         return mVectorShape as VectorShapeForEditing;
+      }
+      
+      public function IsValid ():Boolean
+      {
+         return mVectorShape.IsValid ();
+      }
+      
+      // return position
+      public function OnCreating (points:Array):Point
+      {
+         return (mVectorShape as VectorShapeForEditing).OnCreating (points);
       }
 
 //====================================================================

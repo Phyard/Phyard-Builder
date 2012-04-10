@@ -14,7 +14,7 @@ package editor.entity {
    
    import common.Define;
    
-   public class EntityUtility extends WorldEntity 
+   public class EntityUtility extends Entity 
    {
       public function EntityUtility (world:World)
       {

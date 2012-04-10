@@ -6,8 +6,7 @@ package editor.trigger {
    import mx.containers.HBox;
    
    import editor.world.World;
-   import editor.entity.WorldEntity;
-   //import editor.entity.EntityCollisionCategory;
+   import editor.entity.Entity;
    import editor.ccat.CollisionCategory;
    
    import editor.image.AssetImageModule;
@@ -135,7 +134,7 @@ package editor.trigger {
       {
          //var world:World = EditorContext.GetCurrentWorld (); // in loading stage, it would be null
          
-         var entity:WorldEntity = valueObject as WorldEntity;
+         var entity:Entity = valueObject as Entity;
          //if (entity != null && (entity.GetWorld () != world || entity.GetCreationOrderId () < 0))
          if (entity != null && entity.GetCreationOrderId () < 0)
             entity = null;

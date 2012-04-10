@@ -62,6 +62,12 @@ package editor.entity {
          return mEntityContainer;
       }
       
+      //temp
+      //public function get mWorld ():editor.world.World
+      //{
+      //   return mEntityContainer as editor.world.World;
+      //}
+      
       public function IsUtilityEntity ():Boolean
       {
          return false;

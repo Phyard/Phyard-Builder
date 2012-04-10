@@ -4,7 +4,6 @@ package editor.trigger {
    import mx.controls.ComboBox;
    
    import editor.world.World;
-   import editor.entity.WorldEntity;
    import editor.entity.Entity;
    import editor.world.EntityContainer;
    
@@ -45,7 +44,7 @@ package editor.trigger {
          }
       }
       
-      private static const sDefaultValidClasses:Array = [WorldEntity];
+      private static const sDefaultValidClasses:Array = [Entity];
       
       public function GetValidClasses ():Array
       {
@@ -172,7 +171,7 @@ package editor.trigger {
          var world:World = EditorContext.GetCurrentWorld ();
          var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (IsValidEntity, mGroundSelectable, null, isForPureCustomFunction);
          
-         var entity:WorldEntity = valueSourceDirect.GetValueObject () as WorldEntity;
+         var entity:Entity = valueSourceDirect.GetValueObject () as Entity;
          var sel_index:int = -1;
          var entity_index:int = Define.EntityId_None;
          

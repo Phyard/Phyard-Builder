@@ -12,7 +12,7 @@ package editor.entity {
    
    import common.Define;
    
-   public class SubEntityJointAnchor extends WorldEntity 
+   public class SubEntityJointAnchor extends Entity 
    {
       protected var mMainEntity:Entity;
       

@@ -9,11 +9,10 @@ package editor.trigger.entity {
    import editor.selection.SelectionProxy;
    
    import editor.entity.Entity;
-   import editor.entity.WorldEntity;
    
    import common.Define;
    
-   public class EntityLogic extends WorldEntity implements Linkable
+   public class EntityLogic extends Entity implements Linkable
    {
       public static function ValidateLinkedEntities (entities:Array):void
       {

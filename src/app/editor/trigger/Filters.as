@@ -31,7 +31,7 @@ package editor.trigger {
    // can apply SetTask?
 
       public static const sTaskEntityClasses:Array  = [
-                  WorldEntity,
+                  Entity,
             ];
 
       // object can be an Entity subclass.prototype or a subclass instance

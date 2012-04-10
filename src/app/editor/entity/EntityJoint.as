@@ -14,7 +14,7 @@ package editor.entity {
    
    import common.Define;
    
-   public class EntityJoint extends WorldEntity 
+   public class EntityJoint extends Entity 
    {
       public var mCollideConnected:Boolean = false;
       

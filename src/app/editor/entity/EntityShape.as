@@ -11,7 +11,7 @@ package editor.entity {
 
    import common.Define;
 
-   public class EntityShape extends WorldEntity
+   public class EntityShape extends Entity
    {
       // physics
         // some physics properties may be specified for shapes instead of bodies.

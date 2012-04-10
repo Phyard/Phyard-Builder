@@ -16,7 +16,6 @@ package editor.trigger.entity {
    
    import editor.world.World;
    import editor.entity.Entity;
-   import editor.entity.WorldEntity;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
@@ -311,7 +310,7 @@ package editor.trigger.entity {
       
       protected function LinkEntity (toEntity:Entity):Boolean
       {
-         if ( (toEntity is WorldEntity) && (! (toEntity is EntityLogic)) )
+         if ( (toEntity != null) && (! (toEntity is EntityLogic)) )
          {
             if (mOnSelectEntity != null)
             {

@@ -47,7 +47,7 @@ package editor.image {
    {  
       protected var mAssetImageModuleInstanceManager:AssetImageModuleInstanceManager;
       
-      protected var mAssetImageModule:AssetImageModule = null; // must be null
+      protected var mAssetImageModule:AssetImageModule = null;
       
       protected var mAssetImageModuleInstanceForListingPeer:AssetImageModuleInstanceForListing;
       

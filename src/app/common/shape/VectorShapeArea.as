@@ -45,6 +45,9 @@ package common.shape
 
       public function SetBorderThickness (thickness:Number):void
       {
+         if (thickness < 0)
+            thickness = 0;
+         
          mBorderThickness = thickness;
       }
 

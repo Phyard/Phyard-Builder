@@ -10,33 +10,36 @@ package editor.entity {
 
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
-
-
-
+   
+   import editor.image.vector.*;
+   import common.shape.*;
+   
    import common.Define;
 
-   public class EntityVectorShapePolyline extends EntityVectorShape
+   public class EntityVectorShapePolyline extends EntityVectorShapePath
    {
    // geom
 
-      public var mVertexPoints:Array = new Array (); // in world coordinate
+      //public var mVertexPoints:Array = new Array (); // in world coordinate
+      //
+      //public var mLocalPoints:Array = new Array (); // in local coordinate
+      //
+      // moved to EntityVectorShapePath now.
+      //protected var mCurveThickness:uint = 1;
+      //
+      //protected var mIsRoundEnds:Boolean = true; // v1.08
+      //
+      //protected var mIsClosed:Boolean = false; // v1.57
+      protected var mVectorShapePolyline:VectorShapePolylineForEditing = new VectorShapePolylineForEditing ();
 
-      public var mLocalPoints:Array = new Array (); // in local coordinate
-
-      protected var mCurveThickness:uint = 1;
-
-      protected var mIsRoundEnds:Boolean = true; // v1.08
-
-      protected var mIsClosed:Boolean = false; // v1.57
-
-      private var mMinX:Number;
-      private var mMaxX:Number;
-      private var mMinY:Number;
-      private var mMaxY:Number;
+      //private var mMinX:Number;
+      //private var mMaxX:Number;
+      //private var mMinY:Number;
+      //private var mMaxY:Number;
 
       public function EntityVectorShapePolyline (container:Scene)
       {
-         super (container);
+         super (container, mVectorShapePolyline);
       }
 
       override public function GetTypeName ():String
@@ -46,6 +49,8 @@ package editor.entity {
 
       override public function GetInfoText ():String
       {
+         return super.GetInfoText ();
+         /*
          var vertexController:VertexController = mEntityContainer.GetTheOnlySelectedVertexControllers ();
          if (vertexController == null)
             return super.GetInfoText ();
@@ -53,10 +58,13 @@ package editor.entity {
          var vertexIndex:int = GetVertexControllerIndex (vertexController);
 
          return super.GetInfoText () + ", vertex#" + vertexIndex + " is selected.";
+         */
       }
 
       override public function GetPhysicsShapesCount ():uint
       {
+         return 1;
+         /*
          if ( ! IsPhysicsEnabled () )
             return 0;
 
@@ -64,8 +72,10 @@ package editor.entity {
             return 0;
 
          return mLocalPoints.length * 2 - 1;
+         */
       }
 
+      /*
       override public function UpdateAppearance ():void
       {
          var bgColor:uint = GetFilledColor ();
@@ -154,6 +164,7 @@ package editor.entity {
             mSelectionProxy.AddPhysicsShapes (mPhysicsShapesLayer);
          }
       }
+      */
 
       override public function OnWorldZoomScaleChanged ():void
       {
@@ -163,38 +174,38 @@ package editor.entity {
       }
 
 //====================================================================
-//   curve
+//   curve, moved to EntityVectorShapePath now
 //====================================================================
 
-      public function SetCurveThickness (thickness:uint):void
-      {
-         mCurveThickness = thickness;
-      }
-
-      public function GetCurveThickness ():uint
-      {
-         return mCurveThickness;
-      }
-
-      public function SetRoundEnds (roundEnds:Boolean):void
-      {
-         mIsRoundEnds = roundEnds;
-      }
-
-      public function IsRoundEnds ():Boolean
-      {
-         return mIsClosed || mIsRoundEnds;
-      }
-
-      public function SetClosed (closed:Boolean):void
-      {
-         mIsClosed = closed;
-      }
-
-      public function IsClosed ():Boolean
-      {
-         return mIsClosed;
-      }
+      //public function SetCurveThickness (thickness:uint):void
+      //{
+      //   mCurveThickness = thickness;
+      //}
+      //
+      //public function GetCurveThickness ():uint
+      //{
+      //   return mCurveThickness;
+      //}
+      //
+      //public function SetRoundEnds (roundEnds:Boolean):void
+      //{
+      //   mIsRoundEnds = roundEnds;
+      //}
+      //
+      //public function IsRoundEnds ():Boolean
+      //{
+      //   return mIsClosed || mIsRoundEnds;
+      //}
+      //
+      //public function SetClosed (closed:Boolean):void
+      //{
+      //   mIsClosed = closed;
+      //}
+      //
+      //public function IsClosed ():Boolean
+      //{
+      //   return mIsClosed;
+      //}
 
 //====================================================================
 //   vertex
@@ -202,9 +213,45 @@ package editor.entity {
 
       public function GetVertexPointsCount ():int
       {
-         return mVertexPoints.length;
+         //return mVertexPoints.length;
+         return mVectorShapePolyline.GetVertexPointsCount ();
       }
 
+      public function GetLocalVertexPoints ():Array
+      {
+         //var points:Array = new Array (mLocalPoints.length);
+         //
+         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         //{
+         //   points [i] = new Point (mLocalPoints[i].x, mLocalPoints[i].y);
+         //}
+         //
+         //return points;
+         
+         return mVectorShapePolyline.GetLocalVertexPoints ();
+      }
+
+      public function SetLocalVertexPoints (points:Array):void
+      {
+         //if (mLocalPoints.length != points.length)
+         //{
+         //   mLocalPoints = new Array (points.length);
+         //   for (i = 0; i < mLocalPoints.length; ++ i)
+         //      mLocalPoints [i] = new Point ();
+         //}
+         //
+         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         //{
+         //   mLocalPoints [i].x =  points [i].x;
+         //   mLocalPoints [i].y =  points [i].y;
+         //}
+         //
+         //SynchronizeWithLocalPoints ();
+         
+         mVectorShapePolyline.SetLocalVertexPoints (points);
+      }
+
+      /*
       public function GetVertexPointAt (index:uint):Point
       {
          if (index >= mVertexPoints.length)
@@ -254,36 +301,6 @@ package editor.entity {
             return null;
 
          return new Point (mLocalPoints[index].x, mLocalPoints[index].y);
-      }
-
-      public function GetLocalVertexPoints ():Array
-      {
-         var points:Array = new Array (mLocalPoints.length);
-
-         for (var i:int = 0; i < mLocalPoints.length; ++ i)
-         {
-            points [i] = new Point (mLocalPoints[i].x, mLocalPoints[i].y);
-         }
-
-         return points;
-      }
-
-      public function SetLocalVertexPoints (points:Array):void
-      {
-         if (mLocalPoints.length != points.length)
-         {
-            mLocalPoints = new Array (points.length);
-            for (i = 0; i < mLocalPoints.length; ++ i)
-               mLocalPoints [i] = new Point ();
-         }
-
-         for (var i:int = 0; i < mLocalPoints.length; ++ i)
-         {
-            mLocalPoints [i].x =  points [i].x;
-            mLocalPoints [i].y =  points [i].y;
-         }
-
-         SynchronizeWithLocalPoints ();
       }
 
       public function SynchronizeWithWorldPoints ():void
@@ -379,6 +396,7 @@ package editor.entity {
                mMaxY = mLocalPoints [i].y;
          }
       }
+      */
 
 //====================================================================
 //   clone
@@ -399,20 +417,21 @@ package editor.entity {
          polyline.SetRoundEnds (IsRoundEnds ());
          polyline.SetClosed (IsClosed ());
 
-         for (var i:int = 0; i < mLocalPoints.length; ++ i)
-         {
-            polyline.mLocalPoints.push (new Point (mLocalPoints [i].x, mLocalPoints[i].y));
-         }
+         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         //{
+         //   polyline.mLocalPoints.push (new Point (mLocalPoints [i].x, mLocalPoints[i].y));
+         //}
+         polyline.SetLocalVertexPoints (GetLocalVertexPoints ());
 
-         polyline.SynchronizeWithLocalPoints ();
-         polyline.UpdateSelectionProxy ();
+         //polyline.SynchronizeWithLocalPoints ();
+         //polyline.UpdateSelectionProxy ();
       }
 
 
 //========================================================================
 // vertex controllers
 //========================================================================
-
+      /*
       private var mVertexControllers:Array = null;
 
       override public function GetVertexControllerIndex (vertexController:VertexController):int
@@ -618,11 +637,13 @@ package editor.entity {
 
          return beforeVertexController;
       }
+      */
 
 //====================================================================
 //  SetRotation / SetPosition
 //====================================================================
 
+      /*
       override public function SetPosition (posX:Number, posY:Number):void
       {
          super.SetPosition (posX, posY);
@@ -636,6 +657,7 @@ package editor.entity {
 
          SynchronizeWithLocalPoints ();
       }
+      */
 
 //====================================================================
 //   move, rotate, scale
@@ -751,6 +773,7 @@ package editor.entity {
 //   entity links
 //====================================================================
 
+      /*
       override public function GetLinkPointX ():Number
       {
          var index2:int = Math.round (mVertexPoints.length / 2);
@@ -772,6 +795,7 @@ package editor.entity {
          else
             return 0.5 * ((mVertexPoints [index1] as Point).y + (mVertexPoints [index2] as Point).y);
       }
+      */
 
    }
 }

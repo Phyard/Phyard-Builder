@@ -10,28 +10,31 @@ package editor.entity {
 
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyPolygon;
-
-
-
+   
+   import editor.image.vector.*;
+   import common.shape.*;
+   
    import common.Define;
 
    public class EntityVectorShapePolygon extends EntityVectorShape
    {
    // geom
 
-      public var mVertexPoints:Array = new Array (); // in world coordinate
-
-      public var mLocalPoints:Array = new Array (); // in local coordinate
-
-      private var mIsValid:Boolean = true;
-      private var mMinX:Number;
-      private var mMaxX:Number;
-      private var mMinY:Number;
-      private var mMaxY:Number;
+      //public var mVertexPoints:Array = new Array (); // in world coordinate
+      //
+      //public var mLocalPoints:Array = new Array (); // in local coordinate
+      //
+      //private var mIsValid:Boolean = true;
+      //private var mMinX:Number;
+      //private var mMaxX:Number;
+      //private var mMinY:Number;
+      //private var mMaxY:Number;
+      
+      protected var mVectorShapePolygon:VectorShapePolygonForEditing = new VectorShapePolygonForEditing ();
 
       public function EntityVectorShapePolygon (container:Scene)
       {
-         super (container);
+         super (container, mVectorShapePolygon);
       }
 
       override public function GetTypeName ():String
@@ -41,6 +44,9 @@ package editor.entity {
 
       override public function GetInfoText ():String
       {
+         return super.GetInfoText ();
+         
+         /*
          var vertexController:VertexController = mEntityContainer.GetTheOnlySelectedVertexControllers ();
          if (vertexController == null)
             return super.GetInfoText ();
@@ -48,10 +54,13 @@ package editor.entity {
          var vertexIndex:int = GetVertexControllerIndex (vertexController);
 
          return super.GetInfoText () + ", vertex#" + vertexIndex + " is selected.";
+         */
       }
 
       override public function GetPhysicsShapesCount ():uint
       {
+         return 1;
+         /*
          if ( ! IsPhysicsEnabled () )
             return 0;
 
@@ -64,8 +73,10 @@ package editor.entity {
             count += mLocalPoints.length * 2;
 
          return count;
+         */
       }
 
+      /*
       override public function UpdateAppearance ():void
       {
          var filledColor:uint = GetFilledColor ();
@@ -173,6 +184,7 @@ package editor.entity {
             mSelectionProxy.AddPhysicsShapes (mPhysicsShapesLayer);
          }
       }
+      */
 
 
 
@@ -182,9 +194,45 @@ package editor.entity {
 
       public function GetVertexPointsCount ():int
       {
-         return mVertexPoints.length;
+         //return mVertexPoints.length;
+         return mVectorShapePolygon.GetVertexPointsCount ();
       }
 
+      public function GetLocalVertexPoints ():Array
+      {
+         //var points:Array = new Array (mLocalPoints.length);
+         //
+         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         //{
+         //   points [i] = new Point (mLocalPoints[i].x, mLocalPoints[i].y);
+         //}
+         //
+         //return points;
+         
+         return mVectorShapePolygon.GetLocalVertexPoints ();
+      }
+
+      public function SetLocalVertexPoints (points:Array):void
+      {
+         //if (mLocalPoints.length != points.length)
+         //{
+         //   mLocalPoints = new Array (points.length);
+         //   for (i = 0; i < mLocalPoints.length; ++ i)
+         //      mLocalPoints [i] = new Point ();
+         //}
+         //
+         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         //{
+         //   mLocalPoints [i].x =  points [i].x;
+         //   mLocalPoints [i].y =  points [i].y;
+         //}
+         //
+         //SynchronizeWithLocalPoints ();
+         
+         mVectorShapePolygon.SetLocalVertexPoints (points);
+      }
+
+      /*
       public function GetVertexPointAt (index:uint):Point
       {
          if (index >= mVertexPoints.length)
@@ -235,37 +283,7 @@ package editor.entity {
 
          return new Point (mLocalPoints[index].x, mLocalPoints[index].y);
       }
-
-      public function GetLocalVertexPoints ():Array
-      {
-         var points:Array = new Array (mLocalPoints.length);
-
-         for (var i:int = 0; i < mLocalPoints.length; ++ i)
-         {
-            points [i] = new Point (mLocalPoints[i].x, mLocalPoints[i].y);
-         }
-
-         return points;
-      }
-
-      public function SetLocalVertexPoints (points:Array):void
-      {
-         if (mLocalPoints.length != points.length)
-         {
-            mLocalPoints = new Array (points.length);
-            for (i = 0; i < mLocalPoints.length; ++ i)
-               mLocalPoints [i] = new Point ();
-         }
-
-         for (var i:int = 0; i < mLocalPoints.length; ++ i)
-         {
-            mLocalPoints [i].x =  points [i].x;
-            mLocalPoints [i].y =  points [i].y;
-         }
-
-         SynchronizeWithLocalPoints ();
-      }
-
+      
       public function SynchronizeWithWorldPoints ():void
       {
          var centerX:Number = 0;
@@ -360,6 +378,7 @@ package editor.entity {
                mMaxY = mLocalPoints [i].y;
          }
       }
+      */
 
 //====================================================================
 //   clone
@@ -376,19 +395,20 @@ package editor.entity {
 
          var polygon:EntityVectorShapePolygon = entity as EntityVectorShapePolygon;
 
-         for (var i:int = 0; i < mLocalPoints.length; ++ i)
-         {
-            polygon.mLocalPoints.push (new Point (mLocalPoints [i].x, mLocalPoints[i].y));
-         }
+         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         //{
+         //   polygon.mLocalPoints.push (new Point (mLocalPoints [i].x, mLocalPoints[i].y));
+         //}
+         polygon.SetLocalVertexPoints (GetLocalVertexPoints ());
 
-         polygon.SynchronizeWithLocalPoints ();
+         //polygon.SynchronizeWithLocalPoints ();
       }
 
 
 //========================================================================
 // vertex controllers
 //========================================================================
-
+      /*
       private var mVertexControllers:Array = null;
 
       override public function GetVertexControllerIndex (vertexController:VertexController):int
@@ -593,11 +613,12 @@ package editor.entity {
 
          return beforeVertexController;
       }
+      */
 
 //====================================================================
 //  SetRotation / SetPosition
 //====================================================================
-
+      /*
       override public function SetPosition (posX:Number, posY:Number):void
       {
          super.SetPosition (posX, posY);
@@ -611,6 +632,7 @@ package editor.entity {
 
          SynchronizeWithLocalPoints ();
       }
+      */
 
 //====================================================================
 //   move, rotate, scale

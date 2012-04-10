@@ -7,18 +7,20 @@ package editor.entity {
 
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
-
-
-
+   
+   import editor.image.vector.*;
+   import common.shape.*;
+   
    import common.Define;
    import common.ValueAdjuster;
    import common.Config;
 
-   public class EntityVectorShapeCircle extends EntityVectorShape
+   public class EntityVectorShapeCircle extends EntityVectorShapeArea
    {
    // geom
 
-      public var mRadius:Number;
+      //public var mRadius:Number;
+      protected var mVectorShapeCircle:VectorShapeCircleForEditing = new VectorShapeCircleForEditing ();
 
       // ball
       // wheel
@@ -26,7 +28,7 @@ package editor.entity {
 
       public function EntityVectorShapeCircle (container:Scene)
       {
-         super (container);
+         super (container, mVectorShapeCircle);
 
          SetRadius (0.0);
       }
@@ -49,6 +51,7 @@ package editor.entity {
          return IsPhysicsEnabled () ? 1 : 0;
       }
 
+      /*
       override public function UpdateAppearance ():void
       {
          var filledColor:uint = GetFilledColor ();
@@ -79,7 +82,7 @@ package editor.entity {
 
          SetVisibleForEditing (mVisibleForEditing); //  recal alpha
 
-         var visualRadius:Number = mRadius + 0.5; // be consistent with player
+         var visualRadius:Number = GetRadius () + 0.5; // be consistent with player
 
          GraphicsUtil.ClearAndDrawCircle (this, 0, 0, visualRadius, borderColor,
                                                             borderThickness, drawBg, filledColor);
@@ -88,9 +91,9 @@ package editor.entity {
          {
             var pos:Number;
             if (Define.IsBombShape (GetAiType ()))
-               pos = mRadius * 0.75;// * 0.707;
+               pos = GetRadius () * 0.75;// * 0.707;
             else
-               pos = (mRadius * 0.66) - 1;// * 0.707 - 1;
+               pos = (GetRadius () * 0.66) - 1;// * 0.707 - 1;
             if (pos < 0) pos = 0;
 
             var invertFilledColor:uint = GraphicsUtil.GetInvertColor_b (filledColor);
@@ -98,14 +101,14 @@ package editor.entity {
          }
          else if (mAppearanceType == Define.CircleAppearanceType_Column)
          {
-            var radius2:Number = mRadius * 0.5;
+            var radius2:Number = GetRadius () * 0.5;
             GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, filledColor);
             GraphicsUtil.DrawLine (this, radius2, 0, visualRadius, 0, borderColor, 1);
          }
 
          if (Define.IsBombShape (GetAiType ()))
          {
-            GraphicsUtil.DrawEllipse (this, - mRadius * 0.5, - mRadius * 0.5, mRadius, mRadius, 0x808080, 0, true, 0x808080);
+            GraphicsUtil.DrawEllipse (this, - GetRadius () * 0.5, - GetRadius () * 0.5, GetRadius (), GetRadius (), 0x808080, 0, true, 0x808080);
          }
       }
 
@@ -123,7 +126,7 @@ package editor.entity {
 
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle (GetPositionX (), GetPositionY (), GetRadius () + borderThickness * 0.5, GetRotation ());
       }
-
+      */
 
       public function SetRadius (radius:Number, validate:Boolean = true):void
       {
@@ -141,18 +144,20 @@ package editor.entity {
          if (radius < 0)
             radius = 0;
 
-         //mRadius = Math.round (radius);
-         //>> from 1.02
-         mRadius = radius;
-         //<<
+         ////mRadius = Math.round (radius);
+         ////>> from 1.02
+         //mRadius = radius;
+         ////<<
+         mVectorShapeCircle.SetRadius (radius);
 
-         UpdateAppearance ();
-         UpdateSelectionProxy ();
+         //UpdateAppearance ();
+         //UpdateSelectionProxy ();
       }
 
       public function GetRadius ():Number
       {
-         return mRadius;
+         //return mRadius;
+         return mVectorShapeCircle.GetRadius ();
       }
 
       public function SetAppearanceType (appearanceType:int):void
@@ -192,7 +197,7 @@ package editor.entity {
       /*
       override public function ScaleSelf (ratio:Number):void
       {
-         var radius:Number = mRadius * ratio;
+         var radius:Number = GetRadius () * ratio;
       //trace ("ratio = " + ratio + ", radius = " + radius);
 
          SetRadius (radius);

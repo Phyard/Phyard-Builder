@@ -156,12 +156,12 @@ package editor.entity {
          var lightInteractiveBackgroundColor:uint = GraphicsUtil.BlendColor (Define.kInteractiveColor, 0xFFFFFF, 0.75);
 
          var radius_0b:Number = Define.GravityControllerZeroRegionRadius;
-         if (radius_0b > mRadius)
-            radius_0b = mRadius;
-         var radius_1a:Number = mRadius - Define.GravityControllerOneRegionThinkness;
+         if (radius_0b > GetRadius ())
+            radius_0b = GetRadius ();
+         var radius_1a:Number = GetRadius () - Define.GravityControllerOneRegionThinkness;
          if (radius_1a < radius_0b)
             radius_1a = radius_0b;
-         var radius_1b:Number = mRadius;
+         var radius_1b:Number = GetRadius ();
          if (radius_1b < radius_1a)
             radius_1b = radius_1a;
 
@@ -183,7 +183,7 @@ package editor.entity {
          if (mInteractiveZonesParams == null)
             UpdateInteractiveZonesParams ();
 
-         var outerRadius:Number = mRadius - Define.GravityControllerZeroRegionRadius;
+         var outerRadius:Number = GetRadius () - Define.GravityControllerZeroRegionRadius;
          if (outerRadius < Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius)
             outerRadius = Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius;
 
@@ -214,7 +214,7 @@ package editor.entity {
          {
             gx0 = 0;
             gy0 = 0;
-            acceleration = mRadius * mInitialGravityAcceleration / mMaximalGravityAcceleration;
+            acceleration = GetRadius () * mInitialGravityAcceleration / mMaximalGravityAcceleration;
             gx1 = acceleration * Math.cos (direction);
             gy1 = acceleration * Math.sin (direction);
          }
@@ -230,7 +230,7 @@ package editor.entity {
          if (mInteractiveZonesParams == null)
             mInteractiveZonesParams = new Array (Define.GravityController_InteractiveZonesCount);
 
-         var outerRadius:Number = mRadius - Define.GravityControllerZeroRegionRadius;
+         var outerRadius:Number = GetRadius () - Define.GravityControllerZeroRegionRadius;
          if (outerRadius < Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius)
             outerRadius = Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius;
 

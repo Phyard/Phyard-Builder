@@ -10,27 +10,28 @@ package editor.entity {
 
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
-
-   import editor.image.AssetImageShapeModule;
+   
    import editor.image.vector.*;
+   import common.shape.*;
 
    import common.Define;
 
-   public class EntityVectorShapeRectangle extends EntityVectorShape
+   public class EntityVectorShapeRectangle extends EntityVectorShapeArea
    {
    // geom
 
-      public var mHalfWidth:Number;
-      public var mHalfHeight:Number;
-
-      protected var mRoundCorners:Boolean = false;
+      //public var mHalfWidth:Number;
+      //public var mHalfHeight:Number;
+      //
+      //protected var mRoundCorners:Boolean = false;
+      protected var mVectorShapeRectangle:VectorShapeRectangleForEditing = new VectorShapeRectangleForEditing ();
 
       // ...
       protected var mEnableVertexControllers:Boolean = true;
 
       public function EntityVectorShapeRectangle (container:Scene)
       {
-         super (container);
+         super (container, mVectorShapeRectangle);
 
          SetHalfWidth (0);
          SetHalfHeight (0);
@@ -60,6 +61,7 @@ package editor.entity {
          return IsPhysicsEnabled () ? 1 : 0;
       }
 
+      /*
       override public function UpdateAppearance ():void
       {
          var filledColor:uint = GetFilledColor ();
@@ -90,10 +92,10 @@ package editor.entity {
 
          SetVisibleForEditing (mVisibleForEditing); //  recal alpha
 
-         var visualHalfWidth:Number = mHalfWidth + 0.5;
-         var visualHalfHeight:Number = mHalfHeight + 0.5;
+         var visualHalfWidth:Number = GetHalfWidth () + 0.5;
+         var visualHalfHeight:Number = GetHalfHeight () + 0.5;
 
-         GraphicsUtil.ClearAndDrawRect (this, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, borderColor, borderThickness, drawBg, filledColor, mRoundCorners);
+         GraphicsUtil.ClearAndDrawRect (this, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, borderColor, borderThickness, drawBg, filledColor, IsRoundCorners ());
 
          if (mAiType == Define.ShapeAiType_Bomb)
             GraphicsUtil.DrawRect (this, - visualHalfWidth * 0.5, - visualHalfHeight * 0.5, visualHalfWidth, visualHalfHeight, 0x808080, 0, true, 0x808080);
@@ -128,6 +130,7 @@ package editor.entity {
             mSelectionProxy.AddPhysicsShapes (mPhysicsShapesLayer);
          }
       }
+      */
 
 
       public function SetHalfWidth (halfWidth:Number, validate:Boolean = true):void
@@ -137,8 +140,8 @@ package editor.entity {
             var minHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MinBombSquareSideLength * 0.5 : Define.MinRectSideLength * 0.5;
             var maxHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MaxBombSquareSideLength * 0.5 : Define.MaxRectSideLength * 0.5;
 
-            if (halfWidth * mHalfHeight * 4 > Define.MaxRectArea)
-               halfWidth = Define.MaxRectArea / (mHalfHeight * 4);
+            if (halfWidth * GetHalfHeight () * 4 > Define.MaxRectArea)
+               halfWidth = Define.MaxRectArea / (GetHalfHeight () * 4);
 
             if (halfWidth > maxHalfWidth)
                halfWidth = maxHalfWidth;
@@ -146,7 +149,8 @@ package editor.entity {
                halfWidth = minHalfWidth;
          }
 
-         mHalfWidth = halfWidth;
+         //mHalfWidth = halfWidth;
+         mVectorShapeRectangle.SetHalfWidth (halfWidth);
       }
 
       public function SetHalfHeight (halfHeight:Number, validate:Boolean = true):void
@@ -156,8 +160,8 @@ package editor.entity {
             var minHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MinBombSquareSideLength * 0.5 : Define.MinRectSideLength * 0.5;
             var maxHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MaxBombSquareSideLength * 0.5 : Define.MaxRectSideLength * 0.5;
 
-            if (halfHeight * mHalfWidth * 4 > Define.MaxRectArea)
-               halfHeight = Define.MaxRectArea / (mHalfWidth * 4);
+            if (halfHeight * GetHalfWidth () * 4 > Define.MaxRectArea)
+               halfHeight = Define.MaxRectArea / (GetHalfWidth () * 4);
 
             if (halfHeight > maxHalfWidth)
                halfHeight = maxHalfWidth;
@@ -165,27 +169,32 @@ package editor.entity {
                halfHeight = minHalfWidth;
          }
 
-         mHalfHeight = halfHeight;
+         //mHalfHeight = halfHeight;
+         mVectorShapeRectangle.SetHalfHeight (halfHeight);
       }
 
       public function GetHalfWidth ():Number
       {
-         return mHalfWidth;
+         //return mHalfWidth;
+         return mVectorShapeRectangle.GetHalfWidth ();
       }
 
       public function GetHalfHeight ():Number
       {
-         return mHalfHeight;
+         //return mHalfHeight;
+         return mVectorShapeRectangle.GetHalfHeight ();
       }
 
       public function SetRoundCorners (round:Boolean):void
       {
-         mRoundCorners = round;
+         //mRoundCorners = round;
+         mVectorShapeRectangle.SetRoundCorners (round);
       }
 
       public function IsRoundCorners ():Boolean
       {
-         return mRoundCorners;
+         //return mRoundCorners;
+         return mVectorShapeRectangle.IsRoundCorners ();
       }
 
 //====================================================================
@@ -529,8 +538,8 @@ package editor.entity {
 
       override public function ScaleSelf (ratio:Number):void
       {
-         var halfWidth:Number  = mHalfWidth * ratio;
-         var halfHeight:Number = mHalfHeight * ratio;
+         var halfWidth:Number  = GetHalfWidth () * ratio;
+         var halfHeight:Number = GetHalfHeight () * ratio;
 
          //if (halfWidth < Define.MinRectSideLength)
          //   halfWidth =  Define.MinRectSideLength;

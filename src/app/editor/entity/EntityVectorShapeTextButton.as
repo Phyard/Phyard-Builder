@@ -15,7 +15,8 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   
+   import editor.image.vector.*;
+   import common.shape.*;
    
    import common.Define;
    
@@ -42,7 +43,7 @@ package editor.entity {
          SetBorderColor (Define.ColorTextButtonBorder);
          SetBorderThickness (2);
          
-         mMouseOverShape = new EntityVectorShape (null);
+         mMouseOverShape = new EntityVectorShapeArea (null, new VectorShapeRectangleForEditing ());
          
          mMouseOverShape.SetDrawBorder (true);
          mMouseOverShape.SetDrawBackground (true);

@@ -124,7 +124,7 @@ package editor.entity {
          var textField:TextFieldEx;
          
          if (mWordWrap && (! mAdaptiveBackgroundSize))
-            textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor, true, mHalfWidth * 2 - 10 - mBorderThickness);
+            textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor, true, GetHalfWidth () * 2 - 10 - GetBorderThickness ());
          else
             textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor);
             

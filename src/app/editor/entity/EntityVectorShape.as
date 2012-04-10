@@ -1,10 +1,19 @@
 
 package editor.entity {
 
+   import flash.display.DisplayObject;
    import flash.display.Sprite;
 
+   import com.tapirgames.util.GraphicsUtil;
+   
    import editor.selection.SelectionProxy;
 
+   import editor.image.AssetImageShapeModule;
+   
+   import editor.image.vector.*;
+   import common.shape.*;
+
+   import common.Transform2D;
    import common.Define;
 
    public class EntityVectorShape extends EntityShape
@@ -15,24 +24,28 @@ package editor.entity {
 
    // appearance
 
-      protected var mDrawBorder:Boolean = true;
-      protected var mDrawBackground:Boolean = true;
-
-      protected var mBorderColor:uint = Define.BorderColorUnselectedObject;
-      protected var mBorderThickness:uint = 1; // from v1.04
-      protected var mBorderTransparency:uint = 100; // from v1.05
-
-      protected var mFilledColor:uint = 0xFFFFFF;
-
-      protected var mTransparency:uint = 100; // from v1.04
+      //protected var mDrawBorder:Boolean = true;
+      //protected var mDrawBackground:Boolean = true;
+      //
+      //protected var mBorderColor:uint = Define.BorderColorUnselectedObject;
+      //protected var mBorderThickness:uint = 1; // from v1.04
+      //protected var mBorderTransparency:uint = 100; // from v1.05
+      //
+      //protected var mFilledColor:uint = 0xFFFFFF;
+      //
+      //protected var mTransparency:uint = 100; // from v1.04
+      
+      protected var mVectorShape:VectorShape;
 
 //====================================================================
 //
 //====================================================================
 
-      public function EntityVectorShape (container:Scene)
+      public function EntityVectorShape (container:Scene, vectorShape:VectorShape)
       {
          super (container);
+         
+         mVectorShape = vectorShape;
       }
 
       override public function GetVisibleAlphaForEditing ():Number
@@ -48,6 +61,32 @@ package editor.entity {
       override public function IsBasicVectorShapeEntity ():Boolean
       {
          return true;
+      }
+
+//====================================================================
+//   appearacne and selection proxy
+//====================================================================
+      
+      override public function UpdateAppearance ():void
+      {
+         while (numChildren > 0)
+            removeChildAt (0);
+         GraphicsUtil.Clear (this);
+         
+         var shapeSprite:DisplayObject = (mVectorShape as VectorShapeForEditing).CreateSprite ();
+         addChild (shapeSprite);
+      }
+
+      override public function UpdateSelectionProxy ():void
+      {
+         if (mSelectionProxy == null)
+         {
+            mSelectionProxy = mAssetManager.GetSelectionEngine ().CreateProxyGeneral ();
+            mSelectionProxy.SetUserData (this);
+         }
+         
+         mSelectionProxy.Rebuild (GetPositionX (), GetPositionY (), 0.0);
+         (mVectorShape as VectorShapeForEditing).BuildSelectionProxy (mSelectionProxy, new Transform2D (0.0, 0.0, GetScale (), IsFlipped (), GetRotation ()), mEntityContainer.GetScale () * GetScale ());
       }
 
 //====================================================================
@@ -73,8 +112,8 @@ package editor.entity {
          shape.SetBorderColor ( GetBorderColor () );
          shape.SetDrawBorder ( IsDrawBorder () );
          shape.SetDrawBackground ( IsDrawBackground () );
-         shape.SetBorderThickness (mBorderThickness);
-         shape.SetTransparency (mTransparency);
+         shape.SetBorderThickness (GetBorderThickness ());
+         shape.SetTransparency (GetTransparency ());
          shape.SetBorderTransparency (GetBorderTransparency ());
 
          //shape.SetHollow (IsHollow ());
@@ -101,80 +140,89 @@ package editor.entity {
 
       public function SetDrawBackground (draw:Boolean):void
       {
-         mDrawBackground = draw;
+         //mDrawBackground = draw;
+         mVectorShape.SetDrawBackground (draw);
       }
 
       public function IsDrawBackground ():Boolean
       {
-         return mDrawBackground;
+         //return mDrawBackground;
+         return mVectorShape.IsDrawBackground ();
       }
 
       public function SetFilledColor (color:uint):void
       {
-         mFilledColor = color;
+         //mFilledColor = color;
+         mVectorShape.SetBodyColor (color);
       }
 
       public function GetFilledColor ():uint
       {
-         return mFilledColor;
-      }
-
-      public function SetDrawBorder (draw:Boolean):void
-      {
-         var needUpdateArrearance:Boolean = (mDrawBorder != draw);
-
-         mDrawBorder = draw;
-
-         //if (needUpdateArrearance)
-         //   UpdateAppearance ();
-      }
-
-      public function IsDrawBorder ():Boolean
-      {
-         return mDrawBorder;
-      }
-
-      public function SetBorderColor (color:uint):void
-      {
-         mBorderColor = color;
-      }
-
-      public function GetBorderColor ():uint
-      {
-         return mBorderColor;
-      }
-
-      public function SetBorderThickness (thinkness:uint):void
-      {
-         mBorderThickness = thinkness;
-      }
-
-      public function GetBorderThickness ():Number
-      {
-         if (mBorderThickness < 0)
-            return 0;
-
-         return mBorderThickness;
+         //return mFilledColor;
+         return mVectorShape.GetBodyColor ();
       }
 
       public function SetTransparency (transparency:uint):void
       {
-         mTransparency = transparency;
+         //mTransparency = transparency;
+         mVectorShape.SetBodyOpacity100 (transparency);
       }
 
       public function GetTransparency ():uint
       {
-         return mTransparency;
+         //return mTransparency;
+         return mVectorShape.GetBodyOpacity100 ();
+      }
+
+      public function SetDrawBorder (draw:Boolean):void
+      {
+         //mDrawBorder = draw;
+         // to override
+      }
+
+      public function IsDrawBorder ():Boolean
+      {
+         //return mDrawBorder;
+         return true; // to override
+      }
+
+      public function SetBorderColor (color:uint):void
+      {
+         //mBorderColor = color;
+         // to override
+      }
+
+      public function GetBorderColor ():uint
+      {
+         //return mBorderColor;
+         return Define.BorderColorUnselectedObject; // to override
+      }
+
+      public function SetBorderThickness (thinkness:uint):void
+      {
+         //mBorderThickness = thinkness;
+         // to override
+      }
+
+      public function GetBorderThickness ():Number
+      {
+         //if (mBorderThickness < 0)
+         //   return 0;
+         //
+         //return mBorderThickness;
+         return 1; // to override
       }
 
       public function SetBorderTransparency (transparency:uint):void
       {
-         mBorderTransparency = transparency;
+         //mBorderTransparency = transparency;
+         // to override
       }
 
       public function GetBorderTransparency ():uint
       {
-         return mBorderTransparency;
+         //return mBorderTransparency;
+         return 100; // to override
       }
 
 //======================================================

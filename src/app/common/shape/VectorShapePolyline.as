@@ -14,6 +14,11 @@ package common.shape
 
       protected var mLocalVertexPoints:Array = new Array (); // should not be null, at lesst 2 points
 
+      public function GetVertexPointsCount ():int
+      {
+         return mLocalVertexPoints.length;
+      }
+
       public function GetLocalVertexPoints ():Array
       {
          //return mLocalVertexPoints;

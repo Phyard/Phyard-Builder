@@ -331,7 +331,9 @@ package viewer {
       
       private static function OnAccelerationUpdate (event:Object):void // AccelerometerEvent):void
       {
-         mAccelerationX = - event.accelerationX; // why?
+         // seems the value excludes the contribution of gravity
+         
+         mAccelerationX = event.accelerationX;
          mAccelerationY = event.accelerationY;
          mAccelerationZ = event.accelerationZ;
       }

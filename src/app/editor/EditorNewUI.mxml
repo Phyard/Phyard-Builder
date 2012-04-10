@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+         xmlns:mx="http://www.adobe.com/2006/mxml" 
+         xmlns:entity="editor.entity.dialog.*"  
+         styleName = "plain" 
+         layout="absolute" 
+         width ="100%"
+         height="100%"
+         borderStyle="solid"
+         borderThickness="1"
+         usePreloader="true"
+         percentWidth="100"
+         percentHeight="100"
+         creationComplete="InitApp ();"
+         enterFrame="UpdateApp ();" 
+         scriptTimeLimit="60"
+         >
+   
+   <mx:Style source="editor.css"/>
+
+   <mx:ApplicationControlBar backgroundColor="0xA0A0A0" dock="true" paddingTop="1" paddingBottom="1" verticalAlign="bottom">
+
+      <mx:HBox verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
+         <mx:Spacer width="2"/>
+         <mx:Button id="Button_OpenDesign" toolTip="Open Design" click="OnClicLoadWorldButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-open.png')" />
+         <mx:Button id="Button_SaveDesign" toolTip="Save Design" click="OnClicSaveWorldButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-save.png')" />
+      </mx:HBox>
+      <mx:HBox backgroundColor="0xD0D0D0" width="100%" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+         <mx:Spacer width="100%"/>
+         <mx:Button label="Scenes" />
+         <mx:Spacer width="100%"/>
+         <mx:Button label="Collision Categories" />
+         <mx:Spacer width="100%"/>
+         <mx:Button label="Code Library" />
+         <mx:Spacer width="100%"/>
+         <mx:Button label="Image Modules" />
+         <mx:Spacer width="100%"/>
+         <mx:Button label="Sound Assets" />
+         <mx:Spacer width="100%"/>
+      </mx:HBox>
+      <mx:HBox borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
+         <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-info.png')" />
+         <mx:Button id="Button_CollisionCategoryHelp" toolTip="Editing Help" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" click="OnClickOpenLinksButton()" />
+         <mx:Spacer width="2"/>
+      </mx:HBox>
+
+   </mx:ApplicationControlBar>
+
+
+   <mx:HBox width="100%" height="100%" backgroundColor="0xE0E0E0" borderStyle="solid"
+         paddingTop="8" paddingLeft="0" paddingRight="0" paddingBottom="0" 
+         horizontalScrollPolicy="off" verticalScrollPolicy="off"
+         horizontalGap="0" verticalGap="0" borderThickness="0"
+         >
+      <mx:VBox width="158" height="100%">
+         <mx:TabNavigator id="Box_CreateCommands" width="100%" backgroundColor="0xE0E0E0" creationPolicy="all" textAlign="center">
+            <mx:VBox icon="@Embed('../res/create/create-panel-normal.png')" toolTip="General Components" borderStyle="solid" width="100%" height="100%"
+                     paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
+                     horizontalGap="0" horizontalAlign="center" verticalGap="0" verticalScrollPolicy="off">
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateBox" click="ViewStack_CiShapes.selectedChild=CiShapeRectagelePanel;" toolTip="Create Rectangle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/box.png')" downIcon="@Embed('../res/create/box-sel.png')" overIcon="@Embed('../res/create/box.png')" selectedUpIcon="@Embed('../res/create/box-sel.png')" selectedOverIcon="@Embed('../res/create/box-sel.png')" selectedDownIcon="@Embed('../res/create/box.png')"   />
+                  <mx:Button id="Button_CreateBall" click="ViewStack_CiShapes.selectedChild=CiShapeCirclePanel;" toolTip="Create Circle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/ball.png')" downIcon="@Embed('../res/create/ball-sel.png')" overIcon="@Embed('../res/create/ball.png')" selectedUpIcon="@Embed('../res/create/ball-sel.png')" selectedOverIcon="@Embed('../res/create/ball-sel.png')" selectedDownIcon="@Embed('../res/create/ball.png')"   />
+                  <mx:Button id="Button_CreatePolygon" click="ViewStack_CiShapes.selectedChild=CiShapePolygonPanel;" toolTip="Create Polygon" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polygon.png')" downIcon="@Embed('../res/create/polygon-sel.png')" overIcon="@Embed('../res/create/polygon.png')" selectedUpIcon="@Embed('../res/create/polygon-sel.png')" selectedOverIcon="@Embed('../res/create/polygon-sel.png')" selectedDownIcon="@Embed('../res/create/polygon.png')"   />
+                  <mx:Button id="Button_CreatePolyline" click="ViewStack_CiShapes.selectedChild=CiShapePolylinePanel;" toolTip="Create Polyline" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polyline.png')" downIcon="@Embed('../res/create/polyline-sel.png')" overIcon="@Embed('../res/create/polyline.png')" selectedUpIcon="@Embed('../res/create/polyline-sel.png')" selectedOverIcon="@Embed('../res/create/polyline-sel.png')" selectedDownIcon="@Embed('../res/create/polyline.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="5"/>
+               <mx:ViewStack id="ViewStack_CiShapes" borderStyle="none" creationPolicy="all" width="100%">
+                  <mx:HBox id="CiShapeRectagelePanel" width="100%" horizontalGap="1" verticalGap="1">
+                     <mx:Spacer width="100%" />
+                     <mx:Button id="Button_CreateBox_Static" toolTip="Create C.I. Static Rectangle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/box_static.png')" downIcon="@Embed('../res/create/box-sel_static.png')" overIcon="@Embed('../res/create/box_static.png')" selectedUpIcon="@Embed('../res/create/box-sel_static.png')" selectedOverIcon="@Embed('../res/create/box-sel_static.png')" selectedDownIcon="@Embed('../res/create/box_static.png')"   />
+                     <mx:Button id="Button_CreateBox_Movable" toolTip="Create C.I. Moveable Rectangle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/box_movable.png')" downIcon="@Embed('../res/create/box-sel_movable.png')" overIcon="@Embed('../res/create/box_movable.png')" selectedUpIcon="@Embed('../res/create/box-sel_movable.png')" selectedOverIcon="@Embed('../res/create/box-sel_movable.png')" selectedDownIcon="@Embed('../res/create/box_movable.png')"   />
+                     <mx:Button id="Button_CreateBox_Breakable" toolTip="Create C.I. Breakable Rectangle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/box_breakable.png')" downIcon="@Embed('../res/create/box-sel_breakable.png')" overIcon="@Embed('../res/create/box_breakable.png')" selectedUpIcon="@Embed('../res/create/box-sel_breakable.png')" selectedOverIcon="@Embed('../res/create/box-sel_breakable.png')" selectedDownIcon="@Embed('../res/create/box_breakable.png')"   />
+                     <mx:Button id="Button_CreateBox_Infected" toolTip="Create C.I. Infected Rectangle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/box_infected.png')" downIcon="@Embed('../res/create/box-sel_infected.png')" overIcon="@Embed('../res/create/box_infected.png')" selectedUpIcon="@Embed('../res/create/box-sel_infected.png')" selectedOverIcon="@Embed('../res/create/box-sel_infected.png')" selectedDownIcon="@Embed('../res/create/box_infected.png')"   />
+                     <mx:Button id="Button_CreateBox_Uninfected" toolTip="Create C.I. Uninfected Rectangle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/box_uninfected.png')" downIcon="@Embed('../res/create/box-sel_uninfected.png')" overIcon="@Embed('../res/create/box_uninfected.png')" selectedUpIcon="@Embed('../res/create/box-sel_uninfected.png')" selectedOverIcon="@Embed('../res/create/box-sel_uninfected.png')" selectedDownIcon="@Embed('../res/create/box_uninfected.png')"   />
+                     <mx:Button id="Button_CreateBox_Dontinfect" toolTip="Create C.I. &quot;Don't Infect Me&quot; Rectangle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/box_dontinfect.png')" downIcon="@Embed('../res/create/box-sel_dontinfect.png')" overIcon="@Embed('../res/create/box_dontinfect.png')" selectedUpIcon="@Embed('../res/create/box-sel_dontinfect.png')" selectedOverIcon="@Embed('../res/create/box-sel_dontinfect.png')" selectedDownIcon="@Embed('../res/create/box_dontinfect.png')"   />
+                     <mx:Spacer width="100%" />
+                  </mx:HBox>
+                  <mx:HBox id="CiShapeCirclePanel" width="100%" horizontalGap="1" verticalGap="1">
+                     <mx:Spacer width="100%" />
+                     <mx:Button id="Button_CreateBall_Static" toolTip="Create C.I. Static Circle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/ball_static.png')" downIcon="@Embed('../res/create/ball-sel_static.png')" overIcon="@Embed('../res/create/ball_static.png')" selectedUpIcon="@Embed('../res/create/ball-sel_static.png')" selectedOverIcon="@Embed('../res/create/ball-sel_static.png')" selectedDownIcon="@Embed('../res/create/ball_static.png')"   />
+                     <mx:Button id="Button_CreateBall_Movable" toolTip="Create C.I. Moveable Circle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/ball_movable.png')" downIcon="@Embed('../res/create/ball-sel_movable.png')" overIcon="@Embed('../res/create/ball_movable.png')" selectedUpIcon="@Embed('../res/create/ball-sel_movable.png')" selectedOverIcon="@Embed('../res/create/ball-sel_movable.png')" selectedDownIcon="@Embed('../res/create/ball_movable.png')"   />
+                     <mx:Button id="Button_CreateBall_Breakable" toolTip="Create C.I. Breakable Circle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/ball_breakable.png')" downIcon="@Embed('../res/create/ball-sel_breakable.png')" overIcon="@Embed('../res/create/ball_breakable.png')" selectedUpIcon="@Embed('../res/create/ball-sel_breakable.png')" selectedOverIcon="@Embed('../res/create/ball-sel_breakable.png')" selectedDownIcon="@Embed('../res/create/ball_breakable.png')"   />
+                     <mx:Button id="Button_CreateBall_Infected" toolTip="Create C.I. Infected Circle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/ball_infected.png')" downIcon="@Embed('../res/create/ball-sel_infected.png')" overIcon="@Embed('../res/create/ball_infected.png')" selectedUpIcon="@Embed('../res/create/ball-sel_infected.png')" selectedOverIcon="@Embed('../res/create/ball-sel_infected.png')" selectedDownIcon="@Embed('../res/create/ball_infected.png')"   />
+                     <mx:Button id="Button_CreateBall_Uninfected" toolTip="Create C.I. Uninfected Circle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/ball_uninfected.png')" downIcon="@Embed('../res/create/ball-sel_uninfected.png')" overIcon="@Embed('../res/create/ball_uninfected.png')" selectedUpIcon="@Embed('../res/create/ball-sel_uninfected.png')" selectedOverIcon="@Embed('../res/create/ball-sel_uninfected.png')" selectedDownIcon="@Embed('../res/create/ball_uninfected.png')"   />
+                     <mx:Button id="Button_CreateBall_DontInfect" toolTip="Create C.I. &quot;Don't Infect Me&quot; Circle" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/ball_dontinfect.png')" downIcon="@Embed('../res/create/ball-sel_dontinfect.png')" overIcon="@Embed('../res/create/ball_dontinfect.png')" selectedUpIcon="@Embed('../res/create/ball-sel_dontinfect.png')" selectedOverIcon="@Embed('../res/create/ball-sel_dontinfect.png')" selectedDownIcon="@Embed('../res/create/ball_dontinfect.png')"   />
+                     <mx:Spacer width="100%" />
+                  </mx:HBox>
+                  <mx:HBox id="CiShapePolygonPanel" width="100%" horizontalGap="1" verticalGap="1">
+                     <mx:Spacer width="100%" />
+                     <mx:Button id="Button_CreatePolygon_Static" toolTip="Create C.I. Static Polygon" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polygon_static.png')" downIcon="@Embed('../res/create/polygon-sel_static.png')" overIcon="@Embed('../res/create/polygon_static.png')" selectedUpIcon="@Embed('../res/create/polygon-sel_static.png')" selectedOverIcon="@Embed('../res/create/polygon-sel_static.png')" selectedDownIcon="@Embed('../res/create/polygon_static.png')"   />
+                     <mx:Button id="Button_CreatePolygon_Movable" toolTip="Create C.I. Moveable Polygon" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polygon_movable.png')" downIcon="@Embed('../res/create/polygon-sel_movable.png')" overIcon="@Embed('../res/create/polygon_movable.png')" selectedUpIcon="@Embed('../res/create/polygon-sel_movable.png')" selectedOverIcon="@Embed('../res/create/polygon-sel_movable.png')" selectedDownIcon="@Embed('../res/create/polygon_movable.png')"   />
+                     <mx:Button id="Button_CreatePolygon_Breakable" toolTip="Create C.I. Breakable Polygon" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polygon_breakable.png')" downIcon="@Embed('../res/create/polygon-sel_breakable.png')" overIcon="@Embed('../res/create/polygon_breakable.png')" selectedUpIcon="@Embed('../res/create/polygon-sel_breakable.png')" selectedOverIcon="@Embed('../res/create/polygon-sel_breakable.png')" selectedDownIcon="@Embed('../res/create/polygon_breakable.png')"   />
+                     <mx:Button id="Button_CreatePolygon_Infected" toolTip="Create C.I. Infected Polygon" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polygon_infected.png')" downIcon="@Embed('../res/create/polygon-sel_infected.png')" overIcon="@Embed('../res/create/polygon_infected.png')" selectedUpIcon="@Embed('../res/create/polygon-sel_infected.png')" selectedOverIcon="@Embed('../res/create/polygon-sel_infected.png')" selectedDownIcon="@Embed('../res/create/polygon_infected.png')"   />
+                     <mx:Button id="Button_CreatePolygon_Uninfected" toolTip="Create C.I. Uninfected Polygon" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polygon_uninfected.png')" downIcon="@Embed('../res/create/polygon-sel_uninfected.png')" overIcon="@Embed('../res/create/polygon_uninfected.png')" selectedUpIcon="@Embed('../res/create/polygon-sel_uninfected.png')" selectedOverIcon="@Embed('../res/create/polygon-sel_uninfected.png')" selectedDownIcon="@Embed('../res/create/polygon_uninfected.png')"   />
+                     <mx:Button id="Button_CreatePolygon_Dontinfect" toolTip="Create C.I. &quot;Don't Infect Me&quot; Polygon" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polygon_dontinfect.png')" downIcon="@Embed('../res/create/polygon-sel_dontinfect.png')" overIcon="@Embed('../res/create/polygon_dontinfect.png')" selectedUpIcon="@Embed('../res/create/polygon-sel_dontinfect.png')" selectedOverIcon="@Embed('../res/create/polygon-sel_dontinfect.png')" selectedDownIcon="@Embed('../res/create/polygon_dontinfect.png')"   />
+                     <mx:Spacer width="100%" />
+                  </mx:HBox>
+                  <mx:HBox id="CiShapePolylinePanel" width="100%" horizontalGap="1" verticalGap="1">
+                     <mx:Spacer width="100%" />
+                     <mx:Button id="Button_CreatePolyline_Static" toolTip="Create C.I. Static Polyline" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polyline_static.png')" downIcon="@Embed('../res/create/polyline-sel_static.png')" overIcon="@Embed('../res/create/polyline_static.png')" selectedUpIcon="@Embed('../res/create/polyline-sel_static.png')" selectedOverIcon="@Embed('../res/create/polyline-sel_static.png')" selectedDownIcon="@Embed('../res/create/polyline_static.png')"   />
+                     <mx:Button id="Button_CreatePolyline_Movable" toolTip="Create C.I. Moveable Polyline" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polyline_movable.png')" downIcon="@Embed('../res/create/polyline-sel_movable.png')" overIcon="@Embed('../res/create/polyline_movable.png')" selectedUpIcon="@Embed('../res/create/polyline-sel_movable.png')" selectedOverIcon="@Embed('../res/create/polyline-sel_movable.png')" selectedDownIcon="@Embed('../res/create/polyline_movable.png')"   />
+                     <mx:Button id="Button_CreatePolyline_Breakable" toolTip="Create C.I. Breakable Polyline" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polyline_breakable.png')" downIcon="@Embed('../res/create/polyline-sel_breakable.png')" overIcon="@Embed('../res/create/polyline_breakable.png')" selectedUpIcon="@Embed('../res/create/polyline-sel_breakable.png')" selectedOverIcon="@Embed('../res/create/polyline-sel_breakable.png')" selectedDownIcon="@Embed('../res/create/polyline_breakable.png')"   />
+                     <mx:Button id="Button_CreatePolyline_Infected" toolTip="Create C.I. Infected Polyline" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polyline_infected.png')" downIcon="@Embed('../res/create/polyline-sel_infected.png')" overIcon="@Embed('../res/create/polyline_infected.png')" selectedUpIcon="@Embed('../res/create/polyline-sel_infected.png')" selectedOverIcon="@Embed('../res/create/polyline-sel_infected.png')" selectedDownIcon="@Embed('../res/create/polyline_infected.png')"   />
+                     <mx:Button id="Button_CreatePolyline_Uninfected" toolTip="Create C.I. Uninfected Polyline" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polyline_uninfected.png')" downIcon="@Embed('../res/create/polyline-sel_uninfected.png')" overIcon="@Embed('../res/create/polyline_uninfected.png')" selectedUpIcon="@Embed('../res/create/polyline-sel_uninfected.png')" selectedOverIcon="@Embed('../res/create/polyline-sel_uninfected.png')" selectedDownIcon="@Embed('../res/create/polyline_uninfected.png')"   />
+                     <mx:Button id="Button_CreatePolyline_Dontinfect" toolTip="Create C.I. &quot;Don't Infect Me&quot; Polyline" focusEnabled="false" fontSize="8" width="23" height="23" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/polyline_dontinfect.png')" downIcon="@Embed('../res/create/polyline-sel_dontinfect.png')" overIcon="@Embed('../res/create/polyline_dontinfect.png')" selectedUpIcon="@Embed('../res/create/polyline-sel_dontinfect.png')" selectedOverIcon="@Embed('../res/create/polyline-sel_dontinfect.png')" selectedDownIcon="@Embed('../res/create/polyline_dontinfect.png')"   />
+                     <mx:Spacer width="100%" />
+                  </mx:HBox>
+               </mx:ViewStack>
+               <mx:Spacer height="10"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateJoint_Hinge" click="OnClickCreateEntityButton (&quot;hinge&quot;, Button_CreateJoint_Hinge);" toolTip="Create Hinge Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_hinge.png')" downIcon="@Embed('../res/create/joint-sel_hinge.png')" overIcon="@Embed('../res/create/joint_hinge.png')" selectedUpIcon="@Embed('../res/create/joint-sel_hinge.png')" selectedOverIcon="@Embed('../res/create/joint-sel_hinge.png')" selectedDownIcon="@Embed('../res/create/joint_hinge.png')"   />
+                  <mx:Button id="Button_CreateJoint_Slider" toolTip="Create Slider Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_slider.png')" downIcon="@Embed('../res/create/joint-sel_slider.png')" overIcon="@Embed('../res/create/joint_slider.png')" selectedUpIcon="@Embed('../res/create/joint-sel_slider.png')" selectedOverIcon="@Embed('../res/create/joint-sel_slider.png')" selectedDownIcon="@Embed('../res/create/joint_slider.png')"   />
+                  <mx:Button id="Button_CreateJoint_Distance" toolTip="Create Distance Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_distance.png')" downIcon="@Embed('../res/create/joint-sel_distance.png')" overIcon="@Embed('../res/create/joint_distance.png')" selectedUpIcon="@Embed('../res/create/joint-sel_distance.png')" selectedOverIcon="@Embed('../res/create/joint-sel_distance.png')" selectedDownIcon="@Embed('../res/create/joint_distance.png')"   />
+                  <mx:Button id="Button_CreateJoint_Spring" toolTip="Create Spring Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_spring.png')" downIcon="@Embed('../res/create/joint-sel_spring.png')" overIcon="@Embed('../res/create/joint_spring.png')" selectedUpIcon="@Embed('../res/create/joint-sel_spring.png')" selectedOverIcon="@Embed('../res/create/joint-sel_spring.png')" selectedDownIcon="@Embed('../res/create/joint_spring.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="1"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateJoint_Weld" toolTip="Create Weld Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_weld.png')" downIcon="@Embed('../res/create/joint-sel_weld.png')" overIcon="@Embed('../res/create/joint_weld.png')" selectedUpIcon="@Embed('../res/create/joint-sel_weld.png')" selectedOverIcon="@Embed('../res/create/joint-sel_weld.png')" selectedDownIcon="@Embed('../res/create/joint_weld.png')"   />
+                  <mx:Button id="Button_CreateJoint_Dummy" toolTip="Create Dummy Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_dummy.png')" downIcon="@Embed('../res/create/joint-sel_dummy.png')" overIcon="@Embed('../res/create/joint_dummy.png')" selectedUpIcon="@Embed('../res/create/joint-sel_dummy.png')" selectedOverIcon="@Embed('../res/create/joint-sel_dummy.png')" selectedDownIcon="@Embed('../res/create/joint_dummy.png')"   />
+                  <!--
+                  <mx:Button id="Button_CreateJoint_HingeSlider" toolTip="Create Slider Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_hinge_slider.png')" downIcon="@Embed('../res/create/joint-sel_hinge_slider.png')" overIcon="@Embed('../res/create/joint_hinge_slider.png')" selectedUpIcon="@Embed('../res/create/joint-sel_hinge_slider.png')" selectedOverIcon="@Embed('../res/create/joint-sel_hinge_slider.png')" selectedDownIcon="@Embed('../res/create/joint_hinge_slider.png')"   />
+                  -->
+                  <mx:Spacer width="36" />
+                  <mx:Spacer width="36" />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="10"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateLinearForce" toolTip="Create Force Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/force-linear.png')" downIcon="@Embed('../res/create/force-linear-sel.png')" overIcon="@Embed('../res/create/force-linear.png')" selectedUpIcon="@Embed('../res/create/force-linear-sel.png')" selectedOverIcon="@Embed('../res/create/force-linear-sel.png')" selectedDownIcon="@Embed('../res/create/force-linear.png')"   />
+                  <mx:Button id="Button_CreateAngularForce" toolTip="Create Torque Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/force-angular.png')" downIcon="@Embed('../res/create/force-angular-sel.png')" overIcon="@Embed('../res/create/force-angular.png')" selectedUpIcon="@Embed('../res/create/force-angular-sel.png')" selectedOverIcon="@Embed('../res/create/force-angular-sel.png')" selectedDownIcon="@Embed('../res/create/force-angular.png')"   />
+                  <mx:Button id="Button_CreateLinearImpulse" toolTip="Create Linear Impulse Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/impulse-linear.png')" downIcon="@Embed('../res/create/impulse-linear-sel.png')" overIcon="@Embed('../res/create/impulse-linear.png')" selectedUpIcon="@Embed('../res/create/impulse-linear-sel.png')" selectedOverIcon="@Embed('../res/create/impulse-linear-sel.png')" selectedDownIcon="@Embed('../res/create/impulse-linear.png')"   />
+                  <mx:Button id="Button_CreateAngularImpulse" toolTip="Create Angular Impulse Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/impulse-angular.png')" downIcon="@Embed('../res/create/impulse-angular-sel.png')" overIcon="@Embed('../res/create/impulse-angular.png')" selectedUpIcon="@Embed('../res/create/impulse-angular-sel.png')" selectedOverIcon="@Embed('../res/create/impulse-angular-sel.png')" selectedDownIcon="@Embed('../res/create/impulse-angular.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="10"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateBox_Bomb" toolTip="Create Bomb Box" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/box_bomb.png')" downIcon="@Embed('../res/create/box-sel_bomb.png')" overIcon="@Embed('../res/create/box_bomb.png')" selectedUpIcon="@Embed('../res/create/box-sel_bomb.png')" selectedOverIcon="@Embed('../res/create/box-sel_bomb.png')" selectedDownIcon="@Embed('../res/create/box_bomb.png')"   />
+                  <mx:Button id="Button_CreateBall_Bomb" toolTip="Create Bomb Ball" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/ball_bomb.png')" downIcon="@Embed('../res/create/ball-sel_bomb.png')" overIcon="@Embed('../res/create/ball_bomb.png')" selectedUpIcon="@Embed('../res/create/ball-sel_bomb.png')" selectedOverIcon="@Embed('../res/create/ball-sel_bomb.png')" selectedDownIcon="@Embed('../res/create/ball_bomb.png')"   />
+                  <mx:Button id="Button_CreateCamera" toolTip="Create Camera" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('../res/create/camera-disabled.png')"  upIcon="@Embed('../res/create/camera.png')" downIcon="@Embed('../res/create/camera-sel.png')" overIcon="@Embed('../res/create/camera.png')" selectedUpIcon="@Embed('../res/create/camera-sel.png')" selectedOverIcon="@Embed('../res/create/camera-sel.png')" selectedDownIcon="@Embed('../res/create/camera.png')"   />
+                  <mx:Button id="Button_CreateGravityController" toolTip="Create Gravity Controller" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('../res/create/gravity-controller-disabled.png')" selectedDisabledIcon="@Embed('../res/create/gravity-controller-disabled.png')" upIcon="@Embed('../res/create/gravity-controller.png')" downIcon="@Embed('../res/create/gravity-controller-sel.png')" overIcon="@Embed('../res/create/gravity-controller.png')" selectedUpIcon="@Embed('../res/create/gravity-controller-sel.png')" selectedOverIcon="@Embed('../res/create/gravity-controller-sel.png')" selectedDownIcon="@Embed('../res/create/gravity-controller.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="1"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateText" toolTip="Create Text" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/text.png')" downIcon="@Embed('../res/create/text-sel.png')" overIcon="@Embed('../res/create/text.png')" selectedUpIcon="@Embed('../res/create/text-sel.png')" selectedOverIcon="@Embed('../res/create/text-sel.png')" selectedDownIcon="@Embed('../res/create/text.png')"   />
+                  <mx:Button id="Button_CreateTextButton" toolTip="Create Text Button" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/text-button.png')" downIcon="@Embed('../res/create/text-button-sel.png')" overIcon="@Embed('../res/create/text-button.png')" selectedUpIcon="@Embed('../res/create/text-button-sel.png')" selectedOverIcon="@Embed('../res/create/text-button-sel.png')" selectedDownIcon="@Embed('../res/create/text-button.png')"   />
+                  <mx:Button id="Button_CreateModuleShape" toolTip="Create Module Shape" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/module-shape.png')" downIcon="@Embed('../res/create/module-shape-sel.png')" overIcon="@Embed('../res/create/module-shape.png')" selectedUpIcon="@Embed('../res/create/module-shape-sel.png')" selectedOverIcon="@Embed('../res/create/module-shape-sel.png')" selectedDownIcon="@Embed('../res/create/module-shape.png')"   />
+                  <mx:Button id="Button_CreateModuleShapeButton" toolTip="Create Module Button" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/module-shape-button.png')" downIcon="@Embed('../res/create/module-shape-button-sel.png')" overIcon="@Embed('../res/create/module-shape-button.png')" selectedUpIcon="@Embed('../res/create/module-shape-button-sel.png')" selectedOverIcon="@Embed('../res/create/module-shape-button-sel.png')" selectedDownIcon="@Embed('../res/create/module-shape-button.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="10" />
+            </mx:VBox>
+            <mx:VBox icon="@Embed('../res/create/create-panel-trigger.png')" toolTip="Trigger Components" borderStyle="solid" width="100%" height="100%"
+                     paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
+                     horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateAction" toolTip="Create Action" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/action.png')" downIcon="@Embed('../res/create/action-sel.png')" overIcon="@Embed('../res/create/action.png')" selectedUpIcon="@Embed('../res/create/action-sel.png')" selectedOverIcon="@Embed('../res/create/action-sel.png')" selectedDownIcon="@Embed('../res/create/action.png')"   />
+                  <mx:Button id="Button_CreateTask" toolTip="Create Task Aggregator" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/task.png')" downIcon="@Embed('../res/create/task-sel.png')" overIcon="@Embed('../res/create/task.png')" selectedUpIcon="@Embed('../res/create/task-sel.png')" selectedOverIcon="@Embed('../res/create/task-sel.png')" selectedDownIcon="@Embed('../res/create/task.png')"   />
+                  <mx:Button id="Button_CreateCondition" toolTip="Create Basic Condition" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/condition.png')" downIcon="@Embed('../res/create/condition-sel.png')" overIcon="@Embed('../res/create/condition.png')" selectedUpIcon="@Embed('../res/create/condition-sel.png')" selectedOverIcon="@Embed('../res/create/condition-sel.png')" selectedDownIcon="@Embed('../res/create/condition.png')"   />
+                  <mx:Button id="Button_CreateConditionDoor" toolTip="Create Condition Gate" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/condition_door.png')" downIcon="@Embed('../res/create/condition_door-sel.png')" overIcon="@Embed('../res/create/condition_door.png')" selectedUpIcon="@Embed('../res/create/condition_door-sel.png')" selectedOverIcon="@Embed('../res/create/condition_door-sel.png')" selectedDownIcon="@Embed('../res/create/condition_door.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="10"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <!--
+                  <mx:Button id="Button_CreateInputEntityRegionSelector" toolTip="Create Input Entity Regions Selector" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/input_entity_region_selector.png')" downIcon="@Embed('../res/create/input_entity_region_selector-sel.png')" overIcon="@Embed('../res/create/input_entity_region_selector.png')" selectedUpIcon="@Embed('../res/create/input_entity_region_selector-sel.png')" selectedOverIcon="@Embed('../res/create/input_entity_region_selector-sel.png')" selectedDownIcon="@Embed('../res/create/input_entity_region_selector.png')"   />
+                  -->
+                  <mx:Button id="Button_CreateInputEntityAssigner" toolTip="Create Input Entity Manual Assigner" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/input_entity_limiter.png')" downIcon="@Embed('../res/create/input_entity_limiter-sel.png')" overIcon="@Embed('../res/create/input_entity_limiter.png')" selectedUpIcon="@Embed('../res/create/input_entity_limiter-sel.png')" selectedOverIcon="@Embed('../res/create/input_entity_limiter-sel.png')" selectedDownIcon="@Embed('../res/create/input_entity_limiter.png')"   />
+                  <mx:Button id="Button_CreateInputEntityPairAssigner" toolTip="Create Input Entity Pair Manual Assigner" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/input_entity_pair_limiter.png')" downIcon="@Embed('../res/create/input_entity_pair_limiter-sel.png')" overIcon="@Embed('../res/create/input_entity_pair_limiter.png')" selectedUpIcon="@Embed('../res/create/input_entity_pair_limiter-sel.png')" selectedOverIcon="@Embed('../res/create/input_entity_pair_limiter-sel.png')" selectedDownIcon="@Embed('../res/create/input_entity_pair_limiter.png')"   />
+                  <mx:Button id="Button_CreateInputEntityScriptFilter" toolTip="Create Input Entity Script Filter" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/input_entity_filter.png')" downIcon="@Embed('../res/create/input_entity_filter-sel.png')" overIcon="@Embed('../res/create/input_entity_filter.png')" selectedUpIcon="@Embed('../res/create/input_entity_filter-sel.png')" selectedOverIcon="@Embed('../res/create/input_entity_filter-sel.png')" selectedDownIcon="@Embed('../res/create/input_entity_filter.png')"   />
+                  <mx:Button id="Button_CreateInputEntityPairScriptFilter" toolTip="Create Input Entity Pair Script Filter" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/input_entity_pair_filter.png')" downIcon="@Embed('../res/create/input_entity_pair_filter-sel.png')" overIcon="@Embed('../res/create/input_entity_pair_filter.png')" selectedUpIcon="@Embed('../res/create/input_entity_pair_filter-sel.png')" selectedOverIcon="@Embed('../res/create/input_entity_pair_filter-sel.png')" selectedDownIcon="@Embed('../res/create/input_entity_pair_filter.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="10"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateEventHandler0" toolTip="Event - Before Level Initializing" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_level_before_initilizing.png')" downIcon="@Embed('../res/create/event_on_level_before_initilizing-sel.png')" overIcon="@Embed('../res/create/event_on_level_before_initilizing.png')" selectedUpIcon="@Embed('../res/create/event_on_level_before_initilizing-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_level_before_initilizing-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_level_before_initilizing.png')"   />
+                  <mx:Button id="Button_CreateEventHandler1" toolTip="Event - After Level Initialized" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_level_after_initilized.png')" downIcon="@Embed('../res/create/event_on_level_after_initilized-sel.png')" overIcon="@Embed('../res/create/event_on_level_after_initilized.png')" selectedUpIcon="@Embed('../res/create/event_on_level_after_initilized-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_level_after_initilized-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_level_after_initilized.png')"   />
+                  <mx:Button id="Button_CreateEventHandler2" toolTip="Event - Before Level Updating" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_level_before_updating.png')" downIcon="@Embed('../res/create/event_on_level_before_updating-sel.png')" overIcon="@Embed('../res/create/event_on_level_before_updating.png')" selectedUpIcon="@Embed('../res/create/event_on_level_before_updating-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_level_before_updating-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_level_before_updating.png')"   />
+                  <mx:Button id="Button_CreateEventHandler3" toolTip="Event - After Level Updated" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_level_after_updated.png')" downIcon="@Embed('../res/create/event_on_level_after_updated-sel.png')" overIcon="@Embed('../res/create/event_on_level_after_updated.png')" selectedUpIcon="@Embed('../res/create/event_on_level_after_updated-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_level_after_updated-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_level_after_updated.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="1"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateEventHandler8" toolTip="Event - Mouse Event (World)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_world_mouse_clicked.png')" downIcon="@Embed('../res/create/event_on_world_mouse_clicked-sel.png')" overIcon="@Embed('../res/create/event_on_world_mouse_clicked.png')" selectedUpIcon="@Embed('../res/create/event_on_world_mouse_clicked-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_world_mouse_clicked-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_world_mouse_clicked.png')"   />
+                  <mx:Button id="Button_CreateEventHandler58" toolTip="Event - Mouse Event (Shape)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_shape_mouse_clicked.png')" downIcon="@Embed('../res/create/event_on_shape_mouse_clicked-sel.png')" overIcon="@Embed('../res/create/event_on_shape_mouse_clicked.png')" selectedUpIcon="@Embed('../res/create/event_on_shape_mouse_clicked-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_shape_mouse_clicked-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_shape_mouse_clicked.png')"   />
+                  <mx:Button id="Button_CreateEventHandler7" toolTip="Event - Keyboard" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_key_down.png')" downIcon="@Embed('../res/create/event_on_key_down-sel.png')" overIcon="@Embed('../res/create/event_on_key_down.png')" selectedUpIcon="@Embed('../res/create/event_on_key_down-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_key_down-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_key_down.png')"   />
+                  <mx:Button id="Button_CreateEventHandler5" toolTip="Event - Joint Reaches Limit" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_joint_reach_upper_limit.png')" downIcon="@Embed('../res/create/event_on_joint_reach_upper_limit-sel.png')" overIcon="@Embed('../res/create/event_on_joint_reach_upper_limit.png')" selectedUpIcon="@Embed('../res/create/event_on_joint_reach_upper_limit-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_joint_reach_upper_limit-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_joint_reach_upper_limit.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="1"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateEventHandler59" toolTip="Event - Entity Created" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_entity_created.png')" downIcon="@Embed('../res/create/event_on_entity_created-sel.png')" overIcon="@Embed('../res/create/event_on_entity_created.png')" selectedUpIcon="@Embed('../res/create/event_on_entity_created-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_entity_created-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_entity_created.png')"   />
+                  <mx:Button id="Button_CreateEventHandler50" toolTip="Event - Entity Initialized" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_entity_initilized.png')" downIcon="@Embed('../res/create/event_on_entity_initilized-sel.png')" overIcon="@Embed('../res/create/event_on_entity_initilized.png')" selectedUpIcon="@Embed('../res/create/event_on_entity_initilized-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_entity_initilized-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_entity_initilized.png')"   />
+                  <mx:Button id="Button_CreateEventHandler51" toolTip="Event - Entity Updated" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_entity_updated.png')" downIcon="@Embed('../res/create/event_on_entity_updated-sel.png')" overIcon="@Embed('../res/create/event_on_entity_updated.png')" selectedUpIcon="@Embed('../res/create/event_on_entity_updated-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_entity_updated-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_entity_updated.png')"   />
+                  <mx:Button id="Button_CreateEventHandler52" toolTip="Event - Entity Destroyed" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_entity_destroyed.png')" downIcon="@Embed('../res/create/event_on_entity_destroyed-sel.png')" overIcon="@Embed('../res/create/event_on_entity_destroyed.png')" selectedUpIcon="@Embed('../res/create/event_on_entity_destroyed-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_entity_destroyed-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_entity_destroyed.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="1"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateEventHandler53" toolTip="Event - 2 Physics Shapes Start Contacting" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_shape_start_contacting.png')" downIcon="@Embed('../res/create/event_on_shape_start_contacting-sel.png')" overIcon="@Embed('../res/create/event_on_shape_start_contacting.png')" selectedUpIcon="@Embed('../res/create/event_on_shape_start_contacting-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_shape_start_contacting-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_shape_start_contacting.png')"   />
+                  <mx:Button id="Button_CreateEventHandler6" toolTip="Event - Timer (World)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_world_timer.png')" downIcon="@Embed('../res/create/event_on_world_timer-sel.png')" overIcon="@Embed('../res/create/event_on_world_timer.png')" selectedUpIcon="@Embed('../res/create/event_on_world_timer-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_world_timer-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_world_timer.png')"   />
+                  <mx:Button id="Button_CreateEventHandler57" toolTip="Event - Timer (Entity)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_entity_timer.png')" downIcon="@Embed('../res/create/event_on_entity_timer-sel.png')" overIcon="@Embed('../res/create/event_on_entity_timer.png')" selectedUpIcon="@Embed('../res/create/event_on_entity_timer-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_entity_timer-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_entity_timer.png')"   />
+                  <mx:Button id="Button_CreateEventHandler56" toolTip="Event - Timer (Entity Pair)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_entity_pair_timer.png')" downIcon="@Embed('../res/create/event_on_entity_pair_timer-sel.png')" overIcon="@Embed('../res/create/event_on_entity_pair_timer.png')" selectedUpIcon="@Embed('../res/create/event_on_entity_pair_timer-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_entity_pair_timer-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_entity_pair_timer.png')"   />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+               <mx:Spacer height="1"/>
+               <mx:HBox width="100%" horizontalGap="1" verticalGap="1">
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateEventHandler67" toolTip="Event - Animation Reaches Sequence End" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_module_loop_to_end.png')" downIcon="@Embed('../res/create/event_on_module_loop_to_end-sel.png')" overIcon="@Embed('../res/create/event_on_module_loop_to_end.png')" selectedUpIcon="@Embed('../res/create/event_on_module_loop_to_end-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_module_loop_to_end-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_module_loop_to_end.png')"   />
+                  <mx:Button id="Button_CreateEventHandler66" toolTip="Event - Game Loses/Gains Focus" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/event_on_game_activated.png')" downIcon="@Embed('../res/create/event_on_game_activated-sel.png')" overIcon="@Embed('../res/create/event_on_game_activated.png')" selectedUpIcon="@Embed('../res/create/event_on_game_activated-sel.png')" selectedOverIcon="@Embed('../res/create/event_on_game_activated-sel.png')" selectedDownIcon="@Embed('../res/create/event_on_game_activated.png')"   />
+                  <mx:Spacer width="36" />
+                  <mx:Spacer width="36" />
+                  <mx:Spacer width="100%" />
+               </mx:HBox>
+            </mx:VBox>
+         </mx:TabNavigator>
+         <mx:VBox width="100%" height="100%">
+            <mx:Label text="Default Values" />
+         </mx:VBox>
+      </mx:VBox>
+      <mx:VBox borderStyle="solid" height="100%" width="100%"
+         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+         horizontalGap="0" verticalGap="0" borderThickness="0" clipContent="true">
+         <mx:HBox width="100%" verticalAlign="middle" horizontalGap="1" >
+            <mx:Button id="Button_Delete" toolTip="(D) Delete Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-delete.png')" disabledIcon="@Embed('../res/command/command-delete-disabled.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-clone.png')" disabledIcon="@Embed('../res/command/command-clone-disabled.png')" />
+            <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-to-top.png')" disabledIcon="@Embed('../res/command/command-to-top-disabled.png')" />
+            <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-to-bottom.png')" disabledIcon="@Embed('../res/command/command-to-bottom-disabled.png')" />
+            <mx:Button id="Button_Glue" toolTip="Attach Entities As Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-brothers-make.png')" disabledIcon="@Embed('../res/command/command-brothers-make-disabled.png')" />
+            <mx:Button id="Button_BreakApart" toolTip="Break Up Attached Entities (Brothers)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-brothers-break.png')" disabledIcon="@Embed('../res/command/command-brothers-break-disabled.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_Setting" toolTip="Set Properties of The Selected" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('../res/command/command-setting.png')" disabledIcon="@Embed('../res/command/command-setting-disabled.png')" />
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="10"/>
+            <mx:Button label="Select Scene" />
+            <mx:Spacer width="10"/>
+            <mx:Spacer width="100%"/>
+            <mx:Button id="Button_NewDesign" toolTip="New Design" click="OnClickClearSceneButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-new.png')" />
+            <mx:Button id="Button_ConfigDesign" toolTip="Config Design" click="OnClickConfigSceneButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-config.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_MouseMoveScene" selected="false" toolTip="Move Scene Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../res/command/command-move-scene-sel.png')" />
+            <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../res/command/command-cookie-mode-sel.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_Undo" toolTip="Undo" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-undo.png')" disabledIcon="@Embed('../res/command/command-undo-disabled.png')" />
+            <mx:Button id="Button_Redo" toolTip="Redo" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-redo.png')" disabledIcon="@Embed('../res/command/command-redo-disabled.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button toolTip="Play" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/play/play-run.png')" disabledIcon="@Embed('../res/play/play-run-disabled.png')" />
+         </mx:HBox>
+         <mx:ViewStack id="ViewStack_Scenes" width="100%" height="100%" creationPolicy="all">
+            <mx:HBox id="Box_Scenes" label="Scene 1" borderStyle="solid" height="100%" width="100%"
+                     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                     horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                     horizontalGap="0" verticalGap="0" borderThickness="1">
+               <entity:SceneEditPanel id="panelSceneEdit" height="100%" width="100%" />
+            </mx:HBox>
+         </mx:ViewStack>
+         <mx:HBox id="Box_StatusInfoBar" borderStyle="solid" width="100%" height="25"
+                     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                     horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
+                     horizontalGap="0" verticalGap="0" borderThickness="1">
+            <mx:ViewStack id="ViewStack_WorldInfo" borderStyle="none" creationPolicy="all" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" height="100%">
+               <mx:HBox id="Box_EditingWorldInfo" borderStyle="none" height="100%" width="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0" horizontalScrollPolicy="off">
+                  <mx:Label id="Label_MainSelectedEntityInfo" text="" width="100%"/>
+                  <mx:Spacer width="100%"/>
+               </mx:HBox>
+               <mx:HBox id="Box_PlayingWorldInfo" verticalAlign="middle" borderStyle="none" height="100%" width="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0" horizontalScrollPolicy="off">
+                  <mx:Label id="Label_RunningFps" text="fps: 30.01" minWidth="76"/>
+                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                  <mx:Label id="Label_RunningSteps" text="step: 100" minWidth="86"/>
+                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                  <mx:Spacer width="100%"/>
+                  <mx:Button id="Button_PlaySlower" click="PlaySlower ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/play-slower.png')" disabledIcon="@Embed('../res/edit/play-slower-disabled.png')"/>
+                  <mx:Label id="Label_PlaySpeed" textAlign="center" text="Speed X2"/>
+                  <mx:Button id="Button_PlayFaster" click="PlayFaster ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/play-faster.png')" disabledIcon="@Embed('../res/edit/play-faster-disabled.png')"/>
+                  <mx:Spacer width="20"/>
+                  <mx:Button id="Button_PlayRestart" click="PlayRestart ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/play-restart.png')" disabledIcon="@Embed('../res/edit/play-restart-disabled.png')" />
+                  <mx:ViewStack id="ViewStack_PlayRunPause" borderStyle="none" creationPolicy="all">
+                     <mx:HBox id="Box_PlayRun" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+                        <mx:Button id="Button_PlayRun" click="PlayToggleStartPause ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/play-start.png')"/>
+                     </mx:HBox>
+                     <mx:HBox id="Box_PlayPause" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+                        <mx:Button id="Button_PlayPause" click="PlayToggleStartPause ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/play-pause.png')"/>
+                     </mx:HBox>
+                  </mx:ViewStack>
+                  <mx:Spacer width="20"/>
+                  <mx:Button id="Button_PlayOneStep" click="PlayOneStep ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/play-one-step.png')" disabledIcon="@Embed('../res/edit/play-one-step-disabled.png')"/>
+                  <mx:Spacer width="100%"/>
+                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                  <mx:Label id="CheckBox_MaskViewerField" text="Mask Player Field" toolTip="Toggle Mask Player Field" focusEnabled="false" color="0x808080" click="ToggleMaskPlayerField ();"/>
+               </mx:HBox>
+            </mx:ViewStack>
+            <mx:Spacer width="1"/>
+            <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+            <mx:Label id="Label_EntityDisplayPosition" text="" minWidth="100"/>
+            <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+            <mx:Label id="Label_EntityPhysicsPosition" text="" minWidth="116"/>
+            <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+            <mx:Button id="Button_ZoomOut" click="ZoomOut ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/zoom-out.png')" disabledIcon="@Embed('../res/edit/zoom-out-disabled.png')" />
+            <mx:Label id="Label_ZoomScale" textAlign="center" text="1.00"/>
+            <mx:Button id="Button_ZoomIn" click="ZoomIn ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/zoom-in.png')" disabledIcon="@Embed('../res/edit/zoom-in-disabled.png')" />
+         </mx:HBox>
+      </mx:VBox>
+      <mx:TabNavigator id="Box_MiscCommands" selectedIndex="1" width="158" height="100%" backgroundColor="0xE0E0E0" creationPolicy="all" horizontalAlign="right" textAlign="center">
+         <mx:VBox icon="@Embed('../res/create/create-panel-trigger.png')" toolTip="History" borderStyle="solid" width="100%" height="100%"
+                  paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
+                  horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
+            <mx:Spacer height="100%" />
+         </mx:VBox>
+         <mx:VBox icon="@Embed('../res/create/create-panel-normal.png')" toolTip="Entity Filters" borderStyle="solid" width="100%" height="100%"
+                  paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
+                  horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
+            <mx:HBox verticalAlign="middle" width="100%">
+               <mx:Label id="Label_GoToEntity" text="Find Entity#" textAlign="right" click="SelectNewEntitiesWithoutBrothers ();"/>
+               <mx:TextInput id="Text_FindEntityId" width="100%" text="" enter="GoToTheSpecifiedEntity();" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
+            </mx:HBox>
+            <mx:Spacer height="3" />
+            <mx:List width="100%" height="100%" />
+            <mx:Spacer height="3" />
+            <mx:Label text="Show:"/>
+               <mx:HBox paddingLeft="20"><mx:CheckBox selected="false" id="CheckBox_ShowEntityIDs" label="IDs" click=";"/></mx:HBox>
+               <mx:HBox paddingLeft="20"><mx:CheckBox selected="false" id="CheckBox_ShowLinks" label="Links" click=";"/></mx:HBox>
+            <mx:Label text="Hide: "/>
+               <mx:HBox paddingLeft="20"><mx:CheckBox selected="false" id="CheckBox_HideInvisibleEntities" label="Invisibles" click=";"/></mx:HBox>
+               <mx:HBox paddingLeft="20"><mx:CheckBox selected="false" id="CheckBox_HideShapesAndJoints" label="Shapes &amp; Joints" click=";"/></mx:HBox>
+               <mx:HBox paddingLeft="20"><mx:CheckBox selected="false" id="CheckBox_HideTriggers" label="Triggers" click=";"/></mx:HBox>
+            <mx:Spacer height="20" />
+         </mx:VBox>
+      </mx:TabNavigator>
+   </mx:HBox>
+
+   <mx:XML id="ConfigDesignMenuData">
+      <root>
+         <menuitem label="General Settings ..." data="general"/>
+         <menuitem label="Simulation Settings ..." data="physics"/>
+         <menuitem label="Config Coordinate System ..." data="coordinate"/>
+         <menuitem label="Config World Appearance ..." data="appearance"/>
+         <menuitem label="Config Viewport ..." data="viewport"/>
+      </root>
+   </mx:XML>
+
+   <mx:XML id="NewDesignMenuData">
+      <root>
+         <menuitem label="Clear All Entities" data="clear_all"/>
+         <menuitem label="Clear All Entities and Reset Scene" data="clear_all_and_reset"/>
+      </root>
+   </mx:XML>
+
+  <mx:Script><![CDATA[
+      
+      import mx.controls.Button;
+      
+      import editor.world.World;
+   
+//========================================================================================
+// app
+//========================================================================================
+   
+      private function InitApp ():void
+      {
+         EditorContext.sEditorApp = this;
+         
+         InitWorld ();
+         
+         InitScenes ();
+      }
+      
+      private function UpdateApp ():void
+      {
+         
+      }
+   
+//========================================================================================
+// world
+//========================================================================================
+   
+      private var mWorld:World = null;
+
+      private function InitWorld ():void
+      {
+         NewWorld ();
+      }
+      
+      public function GetWorld ():World
+      {
+         return mWorld;
+      }
+      
+      public function SetWorld (world:World, firstTime:Boolean = false):void
+      {
+         EditorContext.sEditorContext = new EditorContext ();
+         
+         mWorld = world;
+         
+         CreateScenePanels ();
+      }
+      
+      public function CloseWorld ():void
+      {
+         CloseScenePanels ();
+
+         mWorld = null;
+         
+         EditorContext.sEditorContext = null;
+      }
+      
+      //private var panelSceneEdit:SceneEditPanel = null;
+      
+      public function GetCurrentSceneEditPanel ():SceneEditPanel
+      {
+         return panelSceneEdit;
+      }
+   
+      public function NewWorld ():void
+      {
+         SetWorld (new World (), true);
+      }
+      
+      public function LoadWorld ():void
+      {
+      }
+      
+      public function SaveWorld ():void
+      {
+      }
+      
+   //========================================================================================
+   // event handlers
+   //========================================================================================
+      
+      private function OnClicLoadWorldButton ():void
+      {
+         
+      }
+      
+      private function OnClicSaveWorldButton ():void
+      {
+         
+      }
+      
+      private function OnClickConfigWorldButton ():void
+      {
+         
+      }
+      
+      private function OnClickOpenLinksButton ():void
+      {
+         
+      }
+
+//========================================================================================
+// scene
+//========================================================================================
+
+      private function InitScenes ():void
+      {
+         
+      }
+      
+      private function CreateScenePanels ():void
+      {
+         if (mWorld != null)
+         {
+            //panelSceneEdit = new SceneEditPanel ();
+            //panelSceneEdit.percentWidth = 100;
+            //panelSceneEdit.percentHeight = 100;
+            //Box_Scenes.addChild (panelSceneEdit);
+            panelSceneEdit.SetScene (mWorld.GetEntityContainer ());
+         }
+      }
+      
+      private function CloseScenePanels ():void
+      {  
+         panelSceneEdit.SetScene (null);
+         //Box_Scenes.removeChild (panelSceneEdit);
+      }
+
+   //========================================================================================
+   // event handlers, creating
+   //========================================================================================
+      
+      private var mCurrentSelectedCreateButton:Button = null;
+      
+      private function OnClickCreateEntityButton (entityType:String, button:Button):void
+      {
+         mCurrentSelectedCreateButton = button;
+         mCurrentSelectedCreateButton.selected = true;
+         
+         panelSceneEdit.OnStartCreatingEntity (entityType, OnEndCreating);
+      }
+      
+      private function OnEndCreating ():void
+      {
+         mCurrentSelectedCreateButton.selected = false;
+      }
+
+   //========================================================================================
+   // event handlers, editing
+   //========================================================================================
+      
+      private function OnClickClearSceneButton ():void
+      {
+         
+      }
+      
+      private function OnClickConfigSceneButton ():void
+      {
+         
+      }
+      
+      private function SelectNewEntitiesWithoutBrothers ():void
+      {
+         
+      }
+      
+      private function GoToTheSpecifiedEntity ():void
+      {
+         
+      }
+
+   //========================================================================================
+   // event handlers, playing
+   //========================================================================================
+      
+      private function ZoomOut ():void
+      {
+         
+      }
+      
+      private function ZoomIn ():void
+      {
+         
+      }
+      
+      private function PlaySlower ():void
+      {
+         
+      }
+      
+      private function PlayFaster ():void
+      {
+         
+      }
+      
+      private function PlayRestart ():void
+      {
+         
+      }
+      
+      private function PlayToggleStartPause ():void
+      {
+         
+      }
+      
+      private function PlayOneStep ():void
+      {
+         
+      }
+      
+      private function ToggleMaskPlayerField ():void
+      {
+         
+      }
+
+   ]]></mx:Script>
+</mx:Application>
+

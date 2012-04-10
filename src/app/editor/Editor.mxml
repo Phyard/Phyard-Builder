@@ -12,7 +12,7 @@
          percentWidth="100"
          percentHeight="100"
          creationComplete="InitApp ();"
-         enterFrame="UpdateApp ();"
+         enterFrame="UpdateApp ();" 
          scriptTimeLimit="60"
          >
    
@@ -201,7 +201,7 @@
                             tileWidth="36" tileHeight="36"
                             horizontalGap="1" verticalGap="1"
                             paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
-                        <mx:Button id="Button_CreateJoint_Hinge" toolTip="Create Hinge Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_hinge.png')" downIcon="@Embed('../res/create/joint-sel_hinge.png')" overIcon="@Embed('../res/create/joint_hinge.png')" selectedUpIcon="@Embed('../res/create/joint-sel_hinge.png')" selectedOverIcon="@Embed('../res/create/joint-sel_hinge.png')" selectedDownIcon="@Embed('../res/create/joint_hinge.png')"   />
+                        <mx:Button id="Button_CreateJoint_Hinge" click="OnClickCreateEntityButton (&quot;hinge&quot;, Button_CreateJoint_Hinge);" toolTip="Create Hinge Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_hinge.png')" downIcon="@Embed('../res/create/joint-sel_hinge.png')" overIcon="@Embed('../res/create/joint_hinge.png')" selectedUpIcon="@Embed('../res/create/joint-sel_hinge.png')" selectedOverIcon="@Embed('../res/create/joint-sel_hinge.png')" selectedDownIcon="@Embed('../res/create/joint_hinge.png')"   />
                         <mx:Button id="Button_CreateJoint_Slider" toolTip="Create Slider Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_slider.png')" downIcon="@Embed('../res/create/joint-sel_slider.png')" overIcon="@Embed('../res/create/joint_slider.png')" selectedUpIcon="@Embed('../res/create/joint-sel_slider.png')" selectedOverIcon="@Embed('../res/create/joint-sel_slider.png')" selectedDownIcon="@Embed('../res/create/joint_slider.png')"   />
                         <mx:Button id="Button_CreateJoint_Distance" toolTip="Create Distance Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_distance.png')" downIcon="@Embed('../res/create/joint-sel_distance.png')" overIcon="@Embed('../res/create/joint_distance.png')" selectedUpIcon="@Embed('../res/create/joint-sel_distance.png')" selectedOverIcon="@Embed('../res/create/joint-sel_distance.png')" selectedDownIcon="@Embed('../res/create/joint_distance.png')"   />
                         <mx:Button id="Button_CreateJoint_Spring" toolTip="Create Spring Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/joint_spring.png')" downIcon="@Embed('../res/create/joint-sel_spring.png')" overIcon="@Embed('../res/create/joint_spring.png')" selectedUpIcon="@Embed('../res/create/joint-sel_spring.png')" selectedOverIcon="@Embed('../res/create/joint-sel_spring.png')" selectedDownIcon="@Embed('../res/create/joint_spring.png')"   />
@@ -414,7 +414,9 @@
    </mx:XML>
 
   <mx:Script><![CDATA[
-       
+      
+      import mx.controls.Button;
+      
       import editor.world.World;
    
 //========================================================================================
@@ -440,6 +442,11 @@
 //========================================================================================
    
       private var mWorld:World = null;
+
+      private function InitWorld ():void
+      {
+         NewWorld ();
+      }
       
       public function GetWorld ():World
       {
@@ -452,27 +459,16 @@
          
          mWorld = world;
          
-         if (mWorld != null)
-         {
-            //panelSceneEdit = new SceneEditPanel ();
-            //panelSceneEdit.percentWidth = 100;
-            //panelSceneEdit.percentHeight = 100;
-            //Box_Scenes.addChild (panelSceneEdit);
-         //   panelSceneEdit.SetEntityContainer (world.GetEntityContainer (), firstTime);
-         }
+         CreateScenePanels ();
       }
       
       public function CloseWorld ():void
       {
-         EditorContext.sEditorContext = null;
-         
+         CloseScenePanels ();
+
          mWorld = null;
          
-         //if (panelSceneEdit != null)
-         //{
-         //   panelSceneEdit.SetEntityContainer (null);
-         //   Box_Scenes.removeChild (panelSceneEdit);
-         //}
+         EditorContext.sEditorContext = null;
       }
       
       //private var panelSceneEdit:SceneEditPanel = null;
@@ -481,14 +477,10 @@
       {
          return panelSceneEdit;
       }
-
-      private function InitWorld ():void
-      {
-         SetWorld (new World (), true);
-      }
    
       public function NewWorld ():void
       {
+         SetWorld (new World (), true);
       }
       
       public function LoadWorld ():void
@@ -531,9 +523,46 @@
       {
          
       }
+      
+      private function CreateScenePanels ():void
+      {
+         if (mWorld != null)
+         {
+            //panelSceneEdit = new SceneEditPanel ();
+            //panelSceneEdit.percentWidth = 100;
+            //panelSceneEdit.percentHeight = 100;
+            //Box_Scenes.addChild (panelSceneEdit);
+            panelSceneEdit.SetScene (mWorld.GetEntityContainer ());
+         }
+      }
+      
+      private function CloseScenePanels ():void
+      {  
+         panelSceneEdit.SetScene (null);
+         //Box_Scenes.removeChild (panelSceneEdit);
+      }
 
    //========================================================================================
-   // event handlers
+   // event handlers, creating
+   //========================================================================================
+      
+      private var mCurrentSelectedCreateButton:Button = null;
+      
+      private function OnClickCreateEntityButton (entityType:String, button:Button):void
+      {
+         mCurrentSelectedCreateButton = button;
+         mCurrentSelectedCreateButton.selected = true;
+         
+         panelSceneEdit.OnStartCreatingEntity (entityType, OnEndCreating);
+      }
+      
+      private function OnEndCreating ():void
+      {
+         mCurrentSelectedCreateButton.selected = false;
+      }
+
+   //========================================================================================
+   // event handlers, editing
    //========================================================================================
       
       private function OnClickClearSceneButton ():void
@@ -555,6 +584,10 @@
       {
          
       }
+
+   //========================================================================================
+   // event handlers, playing
+   //========================================================================================
       
       private function ZoomOut ():void
       {

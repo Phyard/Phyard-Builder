@@ -4400,11 +4400,11 @@ package editor.entity.dialog {
             {
                CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().UpdateAssetLinkLines ();
             }
-            //EditorContext.mFunctionEditingView.UpdateEntityLinkLines ();
-            if (CodeLibListDialog.sCodeLibListDialog != null)
-            {
-               CodeLibListDialog.sCodeLibListDialog.GetCodeLibListPanel ().UpdateFriendLinkLines ();
-            }
+            ////EditorContext.mFunctionEditingView.UpdateEntityLinkLines ();
+            //if (CodeLibListDialog.sCodeLibListDialog != null)
+            //{
+            //   CodeLibListDialog.sCodeLibListDialog.GetCodeLibListPanel ().UpdateFriendLinkLines ();
+            //}
             
             EditorContext.SetRecommandDesignFilename (null);
          }

@@ -611,13 +611,19 @@ package editor.entity {
          return distaneJoint;
       }
 
-      public function CreateEntityJointHinge ():EntityJointHinge
+      public function CreateEntityJointHinge (selectIt:Boolean = false):EntityJointHinge
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var hinge:EntityJointHinge = new EntityJointHinge (this);
          addChild (hinge);
+         
+         if (selectIt)
+         {
+            hinge.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (hinge);
+         }
 
          return hinge;
       }

@@ -63,10 +63,6 @@ package editor.codelib.dialog {
 //   
 //============================================================================
       
-      public function UpdateFriendLinkLines ():void
-      {
-      }
-      
       override public function UpdateInterface ():void
       {
          var numSelecteds:int = 0;

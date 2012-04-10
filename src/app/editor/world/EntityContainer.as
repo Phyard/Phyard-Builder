@@ -10,7 +10,6 @@ package editor.world {
    import com.tapirgames.util.Logger;
 
    import editor.entity.Entity;
-   import editor.entity.WorldSubEntity;
 
    import editor.entity.EntityVectorShape;
    import editor.entity.EntityVectorShapeCircle;
@@ -991,7 +990,7 @@ package editor.world {
 
                if (joint.hasOwnProperty ("GetAnchor"))
                {
-                  var anchor:WorldSubEntity = joint.GetAnchor () as WorldSubEntity;
+                  var anchor:SubEntityJointAnchor = joint.GetAnchor () as SubEntityJointAnchor;
                   if (anchor != null)
                   {
                      var index:int = getChildIndex (anchor);
@@ -1003,7 +1002,7 @@ package editor.world {
                {
                   if (joint.hasOwnProperty ("GetAnchor1"))
                   {
-                     var anchor1:WorldSubEntity = joint.GetAnchor1 () as WorldSubEntity;
+                     var anchor1:SubEntityJointAnchor = joint.GetAnchor1 () as SubEntityJointAnchor;
                      if (anchor1 != null)
                      {
                         var index1:int = getChildIndex (anchor1);
@@ -1014,7 +1013,7 @@ package editor.world {
 
                   if (joint.hasOwnProperty ("GetAnchor2"))
                   {
-                     var anchor2:WorldSubEntity = joint.GetAnchor2 () as WorldSubEntity;
+                     var anchor2:SubEntityJointAnchor = joint.GetAnchor2 () as SubEntityJointAnchor;
                      if (anchor2 != null)
                      {
                         var index2:int = getChildIndex (anchor2);

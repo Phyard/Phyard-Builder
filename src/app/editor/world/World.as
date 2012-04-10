@@ -10,7 +10,6 @@ package editor.world {
    import com.tapirgames.util.Logger;
 
    import editor.entity.Entity;
-   import editor.entity.WorldSubEntity;
 
    import editor.entity.EntityVectorShape;
    import editor.entity.EntityVectorShapeCircle;

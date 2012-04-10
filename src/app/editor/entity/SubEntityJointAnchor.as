@@ -12,12 +12,38 @@ package editor.entity {
    
    import common.Define;
    
-   public class SubEntityJointAnchor extends WorldSubEntity 
+   public class SubEntityJointAnchor extends WorldEntity 
    {
+      protected var mMainEntity:Entity;
+      
+      protected var mSubIndex:int = -1;
+      
       public function SubEntityJointAnchor (world:World, mainEntity:Entity, anchorIndex:int)
       {
-         super (world, mainEntity, anchorIndex);
+         super (world);
+         
+         mMainEntity = mainEntity;
+         
+         mSubIndex = anchorIndex;
       }
+      
+//====================================================================
+//   when clone and delete, we need the main entity
+//====================================================================
+      
+      override public function GetMainEntity ():Entity
+      {
+         return mMainEntity;
+      }
+      
+      override public function GetSubIndex ():int
+      {
+         return mSubIndex;
+      }
+      
+//====================================================================
+//   when clone and delete, we need the main entity
+//====================================================================
       
       override public function GetVisibleAlpha ():Number
       {

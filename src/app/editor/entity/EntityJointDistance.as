@@ -13,8 +13,7 @@ package editor.entity {
    
    
    public class EntityJointDistance extends EntityJoint 
-   {
-      
+   {  
       public var mAnchor1:SubEntityDistanceAnchor;
       public var mAnchor2:SubEntityDistanceAnchor;
       

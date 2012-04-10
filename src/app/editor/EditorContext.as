@@ -130,7 +130,7 @@ package editor {
    //=====================================================================
    // 
    //=====================================================================
-
+      /*
       // call this before loading a new world
       public function Cleanup ():void
       {
@@ -174,7 +174,7 @@ package editor {
          // ...
          StopAllSounds ();
       }
-   
+      */
    //=====================================================================
    //
    //=====================================================================
@@ -252,7 +252,7 @@ package editor {
       
 //=====================================================================
 //
-//=====================================================================
+//=====================================================================static
       
       public static function OnOpenDialog ():void
       {
@@ -328,30 +328,30 @@ package editor {
       public static var mLongerCodeEditorMenuBar:Boolean = false;
       public static var mPoemCodingFormat:Boolean = false;
       
-      public static var mSessionVariablesEditingDialogClosedCallBack:Function = null;
-      public static var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
-      public static var mEntityVariablesEditingDialogClosedCallBack:Function = null;
-      public static var mLocalVariablesEditingDialogClosedCallBack:Function = null;
-      public static var mInputVariablesEditingDialogClosedCallBack:Function = null;
-      public static var mOutputVariablesEditingDialogClosedCallBack:Function = null;
+      public var mSessionVariablesEditingDialogClosedCallBack:Function = null;
+      public var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
+      public var mEntityVariablesEditingDialogClosedCallBack:Function = null;
+      public var mLocalVariablesEditingDialogClosedCallBack:Function = null;
+      public var mInputVariablesEditingDialogClosedCallBack:Function = null;
+      public var mOutputVariablesEditingDialogClosedCallBack:Function = null;
       
-//=====================================================================
-//
-//=====================================================================
+   //=====================================================================
+   // todo: use defines instead so that the (static) copied snippet can be used across worlds.
+   //=====================================================================
       
-      private static var mCopiedCodeSnippet:CodeSnippet = null;
+      private var mCopiedCodeSnippet:CodeSnippet = null;
       
-      public static function ClearCopiedCodeSnippet ():void
+      public function ClearCopiedCodeSnippet ():void
       {
-         EditorContext.mCopiedCodeSnippet = null;
+         mCopiedCodeSnippet = null;
       }
       
-      public static function HasCopiedCodeSnippet ():Boolean
+      public function HasCopiedCodeSnippet ():Boolean
       {
-         return EditorContext.mCopiedCodeSnippet != null;
+         return mCopiedCodeSnippet != null;
       }
       
-      public static function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array):void
+      public function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array):void
       {
          if (copiedCallings == null || copiedCallings.length == 0)
          {
@@ -363,11 +363,11 @@ package editor {
             codeSnippet.AssignFunctionCallings (copiedCallings);
             codeSnippet.PhysicsValues2DisplayValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
             
-            EditorContext.mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
+            mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
          }
       }
       
-      public static function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition):CodeSnippet
+      public function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition):CodeSnippet
       {
          if (mCopiedCodeSnippet == null)
          {
@@ -377,16 +377,16 @@ package editor {
          {
             mCopiedCodeSnippet.ValidateCallings ();
             
-            var codeSnippet:CodeSnippet = EditorContext.mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
+            var codeSnippet:CodeSnippet = mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
             codeSnippet.DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
             
             return codeSnippet;
          }
       }
       
-//=====================================================================
-// sound
-//=====================================================================
+   //=====================================================================
+   // hooks to detect if any variable definitions are changed
+   //=====================================================================
       
       private var mLastSessionVariableSpaceModifiedTimes:int = 0;
       private var mLastGlobalVariableSpaceModifiedTimes:int = 0;

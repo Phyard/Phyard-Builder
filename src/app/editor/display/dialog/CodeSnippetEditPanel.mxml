@@ -199,7 +199,7 @@
          {
             var copiedCallings:Array = GetFunctionCallings (ids, false);
 
-            EditorContext.SetCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), copiedCallings);
+            EditorContext.GetSingleton ().SetCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), copiedCallings);
 
             UpdateInterface (false);
          }
@@ -232,7 +232,7 @@
 
          private function PasteCallingsAt (insertAt:int):void
          {
-            var codeSnippet:CodeSnippet = EditorContext.CloneCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition ());
+            var codeSnippet:CodeSnippet = EditorContext.GetSingleton ().CloneCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition ());
 
             if (codeSnippet == null)
                return;
@@ -720,8 +720,8 @@
 
             mCopySelectedMenuItem.enabled = List_Commands.selectedIndices.length > 0;
             mCopyAllMenuItem.enabled = List_Commands.dataProvider.length > 0;
-            mPasteBeforeMenuItem.enabled = EditorContext.HasCopiedCodeSnippet () &&  List_Commands.selectedIndex >= 0 && List_Commands.dataProvider.length > 0;
-            mPasteAfterMenuItem .enabled = EditorContext.HasCopiedCodeSnippet () && (List_Commands.selectedIndex >= 0 || List_Commands.dataProvider.length == 0);
+            mPasteBeforeMenuItem.enabled = EditorContext.GetSingleton ().HasCopiedCodeSnippet () &&  List_Commands.selectedIndex >= 0 && List_Commands.dataProvider.length > 0;
+            mPasteAfterMenuItem.enabled  = EditorContext.GetSingleton ().HasCopiedCodeSnippet () && (List_Commands.selectedIndex >= 0 || List_Commands.dataProvider.length == 0);
             mPasteAfterMenuItem.caption = List_Commands.dataProvider.length == 0 ? "Paste Callings" : "Paste Callings After The Selected";
 
             if (EditorContext.mPoemCodingFormat)
@@ -1890,17 +1890,17 @@
          public function CollectVariableEditingDialogsRelatedInfo ():void
          {
             mLastModifyTimesOfSessionVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.mSessionVariablesEditingDialogClosedCallBack = OnSessionVariablesEditingDialogClosed;
+            EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = OnSessionVariablesEditingDialogClosed;
 
             mLastModifyTimesOfGlobalVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.mGlobalVariablesEditingDialogClosedCallBack = OnGlobalVariablesEditingDialogClosed;
+            EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = OnGlobalVariablesEditingDialogClosed;
 
             mLastModifyTimesOfEntityVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.mEntityVariablesEditingDialogClosedCallBack = OnEntityVariablesEditingDialogClosed;
+            EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = OnEntityVariablesEditingDialogClosed;
 
-            EditorContext.mLocalVariablesEditingDialogClosedCallBack = OnLocalVariablesEditingDialogClosed;
-            EditorContext.mInputVariablesEditingDialogClosedCallBack = OnInputVariablesEditingDialogClosed;
-            EditorContext.mOutputVariablesEditingDialogClosedCallBack = OnOutputVariablesEditingDialogClosed;
+            EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = OnLocalVariablesEditingDialogClosed;
+            EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = OnInputVariablesEditingDialogClosed;
+            EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = OnOutputVariablesEditingDialogClosed;
          }
 
          private function CloseVariableEditingDialogsAndCleanUpRalatedInfo ():void
@@ -1910,12 +1910,12 @@
             EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
 
             // ...
-            EditorContext.mSessionVariablesEditingDialogClosedCallBack = null;
-            EditorContext.mGlobalVariablesEditingDialogClosedCallBack = null;
-            EditorContext.mEntityVariablesEditingDialogClosedCallBack = null;
-            EditorContext.mLocalVariablesEditingDialogClosedCallBack = null;
-            EditorContext.mInputVariablesEditingDialogClosedCallBack = null;
-            EditorContext.mOutputVariablesEditingDialogClosedCallBack = null;
+            EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = null;
+            EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = null;
+            EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = null;
+            EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = null;
+            EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = null;
+            EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = null;
          }
 
       // session variables

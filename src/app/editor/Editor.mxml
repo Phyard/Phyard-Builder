@@ -102,7 +102,7 @@
             <mx:Button id="Button_SettingFunction" toolTip="Edit Code Snippet" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('../res/function/command-setting.png')" disabledIcon="@Embed('../res/function/command-setting-disabled.png')" />
             <mx:Spacer width="30"/>
             <mx:Label id="Label_FunctionEntityName" text="Name:" textAlign="right"/>
-            <mx:TextInput id="Text_FunctionEntityName" text="" width="200" enter="stage.focus = MainView;" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
+            <mx:TextInput id="Text_FunctionEntityName" text="" width="200" enter="stage.focus = panelSceneEdit;" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
             <mx:Spacer width="100%"/>
          </mx:HBox-->
       </mx:ViewStack>
@@ -234,17 +234,6 @@
                         <mx:Button id="Button_CreateModuleShape" toolTip="Create Module Shape" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/module-shape.png')" downIcon="@Embed('../res/create/module-shape-sel.png')" overIcon="@Embed('../res/create/module-shape.png')" selectedUpIcon="@Embed('../res/create/module-shape-sel.png')" selectedOverIcon="@Embed('../res/create/module-shape-sel.png')" selectedDownIcon="@Embed('../res/create/module-shape.png')"   />
                         <mx:Button id="Button_CreateModuleShapeButton" toolTip="Create Module Button" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../res/create/module-shape-button.png')" downIcon="@Embed('../res/create/module-shape-button-sel.png')" overIcon="@Embed('../res/create/module-shape-button.png')" selectedUpIcon="@Embed('../res/create/module-shape-button-sel.png')" selectedOverIcon="@Embed('../res/create/module-shape-button-sel.png')" selectedDownIcon="@Embed('../res/create/module-shape-button.png')"   />
                      </mx:Tile>
-                    <!--
-                     <mx:Spacer height="5"/>
-                     <mx:HBox horizontalAlign="center" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="1">
-                        <mx:Spacer width="100%"/>
-                        <mx:VBox horizontalAlign="left" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="2" horizontalGap="0" verticalGap="0" borderStyle="none" borderThickness="0">
-                           <mx:CheckBox id="CheckBox_CollideConnected" label="Collide"/>
-                           <mx:Label id="Label_CollideConnected" text="Two Shapes" click="CheckBox_CollideConnected.selected = ! CheckBox_CollideConnected.selected" textAlign="right" width="100%"/>
-                        </mx:VBox>
-                        <mx:Spacer width="100%"/>
-                     </mx:HBox>
-                     -->
                      <mx:Spacer height="100%"/>
                   </mx:Box>
                   <mx:Box icon="@Embed('../res/create/create-panel-trigger.png')" toolTip="Trigger Components" direction="vertical" borderStyle="solid" width="83" height="100%"
@@ -341,7 +330,7 @@
                               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off"
                               horizontalGap="0" verticalGap="0" borderThickness="1">
-                        <entity:SceneEditPanel id="MainView" height="100%" width="100%" />
+                        <entity:SceneEditPanel id="panelSceneEdit" height="100%" width="100%" />
                      </mx:Box>
                   <!--mx:Box icon="@Embed('../res/create/create-panel-preset.png')" toolTip="More Predefined Components (Empty now, what do you want?)" direction="vertical" borderStyle="solid" width="83" height="100%"
                            paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
@@ -461,11 +450,11 @@
          
          if (mWorld != null)
          {
-            //MainView = new SceneEditPanel ();
-            //MainView.percentWidth = 100;
-            //MainView.percentHeight = 100;
-            //Box_Scenes.addChild (MainView);
-         //   MainView.SetEntityContainer (world.GetEntityContainer (), firstTime);
+            //panelSceneEdit = new SceneEditPanel ();
+            //panelSceneEdit.percentWidth = 100;
+            //panelSceneEdit.percentHeight = 100;
+            //Box_Scenes.addChild (panelSceneEdit);
+         //   panelSceneEdit.SetEntityContainer (world.GetEntityContainer (), firstTime);
          }
       }
       
@@ -475,18 +464,18 @@
          
          mWorld = null;
          
-         //if (MainView != null)
+         //if (panelSceneEdit != null)
          //{
-         //   MainView.SetEntityContainer (null);
-         //   Box_Scenes.removeChild (MainView);
+         //   panelSceneEdit.SetEntityContainer (null);
+         //   Box_Scenes.removeChild (panelSceneEdit);
          //}
       }
       
-      //private var MainView:SceneEditPanel = null;
+      //private var panelSceneEdit:SceneEditPanel = null;
       
       public function GetCurrentSceneEditPanel ():SceneEditPanel
       {
-         return MainView;
+         return panelSceneEdit;
       }
 
       public function NewWorld ():void

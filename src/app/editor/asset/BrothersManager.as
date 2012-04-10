@@ -1,26 +1,19 @@
-package editor.world {
-   
-   import com.tapirgames.util.Logger;
-   
-   import editor.entity.Entity;
-   import editor.entity.EntityVectorShape;
-   
-   import common.Define;
+package editor.asset {
    
    public class BrothersManager 
    {
-      // if add a member mBrothers to Entity, code will be more efficent.
+      // if add a member mBrothers to Asset, code will be more efficent.
       // meanwhile, need more code in World, would be more bugs.
       
       
       public var mBrotherGroupArray:Array = new Array ();
       
       
-      public function MakeBrothers (entityArray:Array):void
+      public function MakeBrothers (assetArray:Array):void
       {
-         var brothers:Array = entityArray.concat ();
+         var brothers:Array = assetArray.concat ();
          
-         BreakApartBrothers (entityArray);
+         BreakBrothersApart (assetArray);
          
          if (brothers.length <= 1)
             return;
@@ -31,21 +24,21 @@ package editor.world {
          var i:int;
          for (i = 0; i < brothers.length; ++ i)
          {
-            (brothers [i] as Entity).SetBrothers (brothers);
+            (brothers [i] as Asset).SetBrothers (brothers);
          }
       }
       
-      public function BreakApartBrothers (entityArray:Array):void
+      public function BreakBrothersApart (assetArray:Array):void
       {
          var brotherGroupsToBreakApart:Array = new Array ();
-         var entityId:int;
+         var assetId:int;
          var brothers:Array;
          var groupId:int;
          var index:int;
          
-         for (entityId = 0; entityId < entityArray.length; ++ entityId)
+         for (assetId = 0; assetId < assetArray.length; ++ assetId)
          {
-            brothers = entityArray [entityId].GetBrothers ();
+            brothers = (assetArray [assetId] as Asset).GetBrothers ();
             
             if (brothers != null)
             {
@@ -62,44 +55,44 @@ package editor.world {
             index = mBrotherGroupArray.indexOf (brothers);
             if (index < 0)
             {
-               Logger.Assert (false, "brothers not in mBrotherGroupArray");
+               trace ("brothers not in mBrotherGroupArray");
                continue;
             }
             mBrotherGroupArray.splice (index, 1);
             
-            for (entityId = 0; entityId < brothers.length; ++ entityId)
+            for (assetId = 0; assetId < brothers.length; ++ assetId)
             {
-               (brothers [entityId] as Entity).SetBrothers (null);
+               (brothers [assetId] as Asset).SetBrothers (null);
             }
          }
       }
       
-      public function GetBrothersOfEntity (entity:Entity):Array
+      public function GetBrothersOfAsset (asset:Asset):Array
       {
-         return entity.GetBrothers ();
+         return asset.GetBrothers ();
       }
       
-      public function OnDestroyEntity (entity:Entity):void
+      public function OnDestroyAsset (asset:Asset):void
       {
-         var brothers:Array = entity.GetBrothers ();
+         var brothers:Array = asset.GetBrothers ();
          
          if (brothers == null)
             return;
          
-         while (true) // mystery: sometimes, an entity will be put in a brother group more than one times
+         while (true) // mystery: sometimes, an asset will be put in a brother group more than one times
          {
-            var index:int = brothers.indexOf (entity);
+            var index:int = brothers.indexOf (asset);
             
             if (index < 0)
             {
-               //Logger.Assert (false, "entity not in brothers");
+               //Logger.Assert (false, "asset not in brothers");
                //return;
                
                break;
             }
             
             brothers.splice (index, 1);
-            entity.SetBrothers (null);
+            asset.SetBrothers (null);
          }
          
          if (brothers.length == 1)
@@ -113,7 +106,7 @@ package editor.world {
             index = mBrotherGroupArray.indexOf (brothers);
             if (index < 0)
             {
-               Logger.Assert (false, "brothers not in mBrotherGroupArray (GetBrothersOfEntity)");
+               trace ("brothers not in mBrotherGroupArray (GetBrothersOfAsset)");
                return;
             }
             mBrotherGroupArray.splice (index, 1);

@@ -25,6 +25,8 @@ package editor.asset {
       
       public var mSelectionList:AssetSelectionList;
       
+      public var mBrothersManager:BrothersManager;
+      
       protected var mAssetsSortedByCreationId:Array = new Array ();
       
       public function AssetManager ()
@@ -34,6 +36,8 @@ package editor.asset {
          mSelectionEngine = new SelectionEngine ();
          
          mSelectionList = new AssetSelectionList ();
+         
+         mBrothersManager = new BrothersManager ();
       }
       
       public function GetSelectionEngine ():SelectionEngine
@@ -201,6 +205,8 @@ package editor.asset {
       
       public function DestroyAsset (asset:Asset):void
       {
+         mBrothersManager.OnDestroyAsset (asset);
+         
          mSelectionList.RemoveSelectedAsset (asset);
          
          asset.Destroy ();
@@ -213,6 +219,127 @@ package editor.asset {
          if (asset == mCachedLastSelectedAsset)
          {
             mCachedLastSelectedAsset = null;
+         }
+      }
+
+//=================================================================================
+//   brothers (only useful for some certain AssetManagers)
+//=================================================================================
+
+      public function GetBrotherGroups ():Array
+      {
+         return mBrothersManager.mBrotherGroupArray;
+      }
+
+      public function MakeBrothers (assets:Array):void
+      {
+         mBrothersManager.MakeBrothers (assets);
+      }
+
+      public function MakeBrothersByCreationIds (entityIndices:Array):void
+      {
+         var entities:Array = new Array (entityIndices.length);
+
+         for (var i:int = 0; i < entityIndices.length; ++ i)
+         {
+            entities [i] = GetAssetByCreationId (entityIndices [i]);
+         }
+
+         mBrothersManager.MakeBrothers (entities);
+      }
+
+      public function BreakBrothersApart ():void
+      {
+         var assetArray:Array = GetSelectedAssets ();
+
+         mBrothersManager.BreakBrothersApart (assetArray);
+      }
+
+      public function GetBrothersOfAsset (asset:Asset):Array
+      {
+         var brothers:Array = mBrothersManager.GetBrothersOfAsset (asset);
+         return brothers == null ? new Array () : brothers;
+      }
+      
+      public function GetAllBrothersOfAssets (assets:Array):Array
+      {
+         var allGluedAssets:Array = new Array ();
+         
+         var asset:Asset;
+         var brothers:Array;
+         var actionId:int = Asset.GetNextActionId ();
+         var brotherGroups:Array = new Array ();
+         
+         for each (asset in assets)
+         {
+            if (asset.GetCurrentActionId () < actionId)
+            {
+               asset.SetCurrentActionId (actionId);
+               allGluedAssets.push (asset);
+            }
+            
+            brothers = asset.GetBrothers ();
+
+            if (brothers != null)
+            {
+               if (brotherGroups.indexOf (brothers) < 0)
+                  brotherGroups.push (brothers);
+            }
+         }
+         
+         for each (brothers in brotherGroups)
+         {
+            for each (asset in brothers)
+            {
+               if (asset.GetCurrentActionId () < actionId)
+               {
+                  asset.SetCurrentActionId (actionId);
+                  allGluedAssets.push (asset);
+               }
+            }
+         }
+         
+         return allGluedAssets;
+      }
+
+      public function SelectAllBrothersOfSelectedAssets ():void
+      {
+         var brotherGroups:Array = new Array ();
+         var assetId:int;
+         var brothers:Array;
+         var groupId:int;
+         var index:int;
+         var asset:Asset;
+
+         var selectedAssets:Array = GetSelectedAssets ();
+
+         for (assetId = 0; assetId < selectedAssets.length; ++ assetId)
+         {
+            brothers = (selectedAssets [assetId] as Asset).GetBrothers ();
+
+            if (brothers != null)
+            {
+               index = brotherGroups.indexOf (brothers);
+               if (index < 0)
+                  brotherGroups.push (brothers);
+            }
+         }
+
+         for (groupId = 0; groupId < brotherGroups.length; ++ groupId)
+         {
+            brothers = brotherGroups [groupId];
+
+            for (assetId = 0; assetId < brothers.length; ++ assetId)
+            {
+               asset = brothers [assetId] as Asset;
+
+               //if ( ! IsEntitySelected (entity) )
+               if ( ! asset.IsSelected () )  // not formal, but fast
+               {
+                  //SelectAsset (entity);
+                  AddAssetSelection (asset);
+               }
+            }
          }
       }
       

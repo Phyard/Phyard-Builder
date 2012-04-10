@@ -4043,7 +4043,7 @@ package editor.entity.dialog {
          SetLastSelectedEntities (entity);
          
          if ((! mCookieModeEnabled))
-            mEntityContainer.SelectGluedEntitiesOfSelectedEntities ();
+            mEntityContainer.SelectAllBrothersOfSelectedAssets ();
          
          //CalSelectedEntitiesCenterPoint ();
          OnSelectedEntitiesChanged ();
@@ -4068,7 +4068,7 @@ package editor.entity.dialog {
          SetLastSelectedEntities (entity);
          
          // to make selecting part of a glued possible
-         // mEntityContainer.SelectGluedEntitiesOfSelectedEntities ();
+         // mEntityContainer.SelectAllBrothersOfSelectedAssets ();
          
          CalSelectedEntitiesCenterPoint ();
       }
@@ -4103,7 +4103,7 @@ package editor.entity.dialog {
          
          if (selectBorthers)
          {
-            mEntityContainer.SelectGluedEntitiesOfSelectedEntities ();
+            mEntityContainer.SelectAllBrothersOfSelectedAssets ();
          }
          
          OnSelectedEntitiesChanged ();
@@ -4113,7 +4113,7 @@ package editor.entity.dialog {
          
          if (selectBorthers)
          {
-            entities = mEntityContainer.GetAllGluedEntities (entities);
+            entities = mEntityContainer.GetAllBrothersOfAssets (entities);
          }
          
          if ((_mouseEventCtrlDown || mCookieModeEnabled) && (mLastSelectedEntities != null))
@@ -4353,14 +4353,14 @@ package editor.entity.dialog {
       
       public function GlueSelectedEntities ():void
       {
-         mEntityContainer.GlueSelectedEntities ();
+         mEntityContainer.MakeBrothers (mEntityContainer.GetSelectedAssets ());
          
          CreateUndoPoint ("Make brothers");
       }
       
       public function BreakApartSelectedEntities ():void
       {
-         mEntityContainer.BreakApartSelectedEntities ();
+         mEntityContainer.BreakBrothersApart ();
          
          CreateUndoPoint ("Break brothers");
       }

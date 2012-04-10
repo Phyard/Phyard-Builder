@@ -2401,7 +2401,7 @@ package common {
                brotherIds [brotherId] = brotherIds [brotherId];
             }
             
-            editorWorld.GetEntityContainer ().GlueEntitiesByCreationIds (brotherIds);
+            editorWorld.GetEntityContainer ().MakeBrothersByCreationIds (brotherIds);
          }
          
          // important

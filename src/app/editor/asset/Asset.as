@@ -545,6 +545,22 @@ package editor.asset {
       }
       
 //====================================================================
+//   brothers
+//====================================================================
+      
+      private var mBrothers:Array = null;
+      
+      public function GetBrothers ():Array // used only by BorthersManager
+      {
+         return mBrothers;
+      }
+      
+      internal function SetBrothers (brothers:Array):void // used only by BorthersManager
+      {
+         mBrothers = brothers;
+      }
+      
+//====================================================================
 //   selected
 //====================================================================
       

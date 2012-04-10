@@ -212,22 +212,6 @@ package editor.entity {
       }
       
 //====================================================================
-//   brothers
-//====================================================================
-      
-      private var mBrothers:Array = null;
-      
-      public function GetBrothers ():Array // used only by BorthersManager
-      {
-         return mBrothers;
-      }
-      
-      public function SetBrothers (brothers:Array):void // used only by BorthersManager
-      {
-         mBrothers = brothers;
-      }
-      
-//====================================================================
 //   draw entity links
 //====================================================================
       

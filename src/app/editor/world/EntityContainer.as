@@ -78,26 +78,12 @@ package editor.world {
    
    public class EntityContainer extends AssetManager //Sprite 
    {
-      public var mBrothersManager:BrothersManager;
       
       public function EntityContainer ()
       {
          super ();
          
          SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium)
-         
-         mBrothersManager = new BrothersManager ();
-      }
-      
-//=================================================================================
-//   destroy entities
-//=================================================================================
-      
-      override public function DestroyAsset (asset:Asset):void
-      {
-         mBrothersManager.OnDestroyEntity (asset as Entity);
-      
-         super.DestroyAsset (asset);
       }
       
 //================================================================================
@@ -1131,7 +1117,7 @@ package editor.world {
             if (newBrotherGroup.length <= 1)
                return;
 
-            GlueEntities (newBrotherGroup);
+            MakeBrothers (newBrotherGroup);
          }
       }
       
@@ -1505,134 +1491,6 @@ package editor.world {
          }
 
          return EntityIndex2SelectListSelectedIndex (Define.EntityId_None, dataProvider);
-      }      
-
-//=================================================================================
-//   brothers
-//=================================================================================
-
-      public function GetBrotherGroups ():Array
-      {
-         return mBrothersManager.mBrotherGroupArray;
-      }
-
-      public function GlueEntities (entities:Array):void
-      {
-         mBrothersManager.MakeBrothers (entities);
-      }
-
-      public function GlueEntitiesByCreationIds (entityIndices:Array):void
-      {
-         var entities:Array = new Array (entityIndices.length);
-
-         for (var i:int = 0; i < entityIndices.length; ++ i)
-         {
-            entities [i] = GetAssetByCreationId (entityIndices [i]);
-         }
-
-         mBrothersManager.MakeBrothers (entities);
-      }
-
-      public function GlueSelectedEntities ():void
-      {
-         var entityArray:Array = GetSelectedAssets ();
-
-         GlueEntities (entityArray);
-      }
-
-      public function BreakApartSelectedEntities ():void
-      {
-         var entityArray:Array = GetSelectedAssets ();
-
-         mBrothersManager.BreakApartBrothers (entityArray);
-      }
-
-      public function GetGluedEntitiesWithEntity (entity:Entity):Array
-      {
-         var brothers:Array = mBrothersManager.GetBrothersOfEntity (entity);
-         return brothers == null ? new Array () : brothers;
-      }
-      
-      public function GetAllGluedEntities (entities:Array):Array
-      {
-         var allGluedEntities:Array = new Array ();
-         
-         var entity:Entity;
-         var brothers:Array;
-         var actionId:int = Asset.GetNextActionId ();
-         var brotherGroups:Array = new Array ();
-         
-         for each (entity in entities)
-         {
-            if (entity.GetCurrentActionId () < actionId)
-            {
-               entity.SetCurrentActionId (actionId);
-               allGluedEntities.push (entity);
-            }
-            
-            brothers = entity.GetBrothers ();
-
-            if (brothers != null)
-            {
-               if (brotherGroups.indexOf (brothers) < 0)
-                  brotherGroups.push (brothers);
-            }
-         }
-         
-         for each (brothers in brotherGroups)
-         {
-            for each (entity in brothers)
-            {
-               if (entity.GetCurrentActionId () < actionId)
-               {
-                  entity.SetCurrentActionId (actionId);
-                  allGluedEntities.push (entity);
-               }
-            }
-         }
-         
-         return allGluedEntities;
-      }
-
-      public function SelectGluedEntitiesOfSelectedEntities ():void
-      {
-         var brotherGroups:Array = new Array ();
-         var entityId:int;
-         var brothers:Array;
-         var groupId:int;
-         var index:int;
-         var entity:Entity;
-
-         var selectedEntities:Array = GetSelectedAssets ();
-
-         for (entityId = 0; entityId < selectedEntities.length; ++ entityId)
-         {
-            brothers = selectedEntities [entityId].GetBrothers ();
-
-            if (brothers != null)
-            {
-               index = brotherGroups.indexOf (brothers);
-               if (index < 0)
-                  brotherGroups.push (brothers);
-            }
-         }
-
-         for (groupId = 0; groupId < brotherGroups.length; ++ groupId)
-         {
-            brothers = brotherGroups [groupId];
-
-            for (entityId = 0; entityId < brothers.length; ++ entityId)
-            {
-               entity = brothers [entityId] as Entity;
-
-               //if ( ! IsEntitySelected (entity) )
-               if ( ! entity.IsSelected () )  // not formal, but fast
-               {
-                  //SelectAsset (entity);
-                  AddAssetSelection (entity);
-               }
-            }
-         }
       }
 
 //=================================================================================

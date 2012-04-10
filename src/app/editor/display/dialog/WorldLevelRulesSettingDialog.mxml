@@ -10,16 +10,8 @@
        <mx:Grid id="Grid_Settings">
           <mx:GridRow>
              <mx:GridItem>
-                <mx:Label text="Preferred FPS (frames per second):" textAlign="right"/>
-             </mx:GridItem>
-             <mx:GridItem>
-                <mx:TextInput id="Text_PreferredFPS" width="100" />
-                <mx:Label text="(from 10 to 100)"/>
-             </mx:GridItem>
-          </mx:GridRow>
-          <mx:GridRow>
-             <mx:GridItem>
                <mx:CheckBox id="CheckBox_CiRulesEnabled" label="Enable C.I. Rules"/>
+               <mx:Spacer width="76"/>
              </mx:GridItem>
              <mx:GridItem>
                <mx:CheckBox id="CheckBox_PauseOnFocusLost" label="Pause Game When Focus Is Lost"/>
@@ -64,7 +56,6 @@
 
          private function OnInitPanel ():void
          {
-            Text_PreferredFPS.text = "" + mParams.mPreferredFPS;
             CheckBox_PauseOnFocusLost.selected = mParams.mIsPauseOnFocusLost;
             CheckBox_CiRulesEnabled.selected = mParams.mIsCiRulesEnabled;
          }
@@ -81,10 +72,6 @@
 
          private function OnClickOkButton():void
          {  
-            var fps:Number = parseFloat (Text_PreferredFPS.text);
-            if (! isNaN (fps))
-               mParams.mPreferredFPS = fps;
-            
             mParams.mIsPauseOnFocusLost = CheckBox_PauseOnFocusLost.selected;
             mParams.mIsCiRulesEnabled = CheckBox_CiRulesEnabled.selected;
 

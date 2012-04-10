@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Physics Engine Settings" width="600" creationComplete="OnInitPanel()">
+    title="Simulation Settings" width="600" creationComplete="OnInitPanel()">
 
     <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10" horizontalAlign="center">
 
@@ -14,6 +14,15 @@
        </mx:HBox>
       
        <mx:Grid id="Grid_Settings">
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Preferred FPS (frames per second):" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:TextInput id="Text_PreferredFPS" width="100" />
+                <mx:Label text="(from 10 to 100)"/>
+             </mx:GridItem>
+          </mx:GridRow>
           <mx:GridRow>
              <mx:GridItem>
                 <mx:Label text="Enable Physics Simulation:" textAlign="right"/>
@@ -143,6 +152,8 @@
 
          private function OnInitPanel ():void
          {
+            Text_PreferredFPS.text = "" + mParams.mPreferredFPS;
+
             RadioButton_PhysicsSimulationEnabledYes.selected = mParams.mPhysicsSimulationEnabled;
             RadioButton_PhysicsSimulationEnabledNo.selected = (! mParams.mPhysicsSimulationEnabled);
             
@@ -176,7 +187,7 @@
             var enableOtherSettings:Boolean = (! RadioButton_PhysicsSimulationEnabledNo.selected);
             
             var num:int = Grid_Settings.numChildren;
-            for (var i:int = 1; i < num; ++ i)
+            for (var i:int = 2; i < num; ++ i)
             {
                var gridRow:GridRow = Grid_Settings.getChildAt (i) as GridRow;
                if (gridRow != null)
@@ -217,6 +228,10 @@
 
          private function OnClickOkButton():void
          {
+            var fps:Number = parseFloat (Text_PreferredFPS.text);
+            if (! isNaN (fps))
+               mParams.mPreferredFPS = fps;
+            
             mParams.mPhysicsSimulationEnabled = RadioButton_PhysicsSimulationEnabledYes.selected;
             
             var timeStep:Number = parseFloat (Text_StepTimeLength.text);

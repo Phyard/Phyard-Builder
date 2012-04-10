@@ -5376,7 +5376,6 @@ package editor {
       {
          var info:Object = new Object ();
          
-         info.mPreferredFPS = mEditorWorld.GetPreferredFPS ();
          info.mIsPauseOnFocusLost = mEditorWorld.IsPauseOnFocusLost ();
          info.mIsCiRulesEnabled = mEditorWorld.IsCiRulesEnabled ();
          
@@ -5385,7 +5384,6 @@ package editor {
       
       public function SetCurrentWorldLevelRulesInfo (info:Object):void
       {  
-         mEditorWorld.SetPreferredFPS (info.mPreferredFPS);
          mEditorWorld.SetPauseOnFocusLost (info.mIsPauseOnFocusLost);
          mEditorWorld.SetCiRulesEnabled (info.mIsCiRulesEnabled);
          
@@ -5396,6 +5394,7 @@ package editor {
       {
          var info:Object = new Object ();
          
+         info.mPreferredFPS = mEditorWorld.GetPreferredFPS ();
          info.mPhysicsSimulationEnabled = mEditorWorld.IsPhysicsSimulationEnabled ();
          info.mPhysicsSimulationStepTimeLength = mEditorWorld.GetPhysicsSimulationStepTimeLength ();
          info.mVelocityIterations = mEditorWorld.GetPhysicsSimulationVelocityIterations ();
@@ -5411,6 +5410,7 @@ package editor {
       
       public function SetCurrentWorldPhysicsInfo (info:Object):void
       {
+         mEditorWorld.SetPreferredFPS (info.mPreferredFPS);
          mEditorWorld.SetPhysicsSimulationEnabled (info.mPhysicsSimulationEnabled);
          mEditorWorld.SetPhysicsSimulationStepTimeLength (info.mPhysicsSimulationStepTimeLength);
          mEditorWorld.SetPhysicsSimulationIterations (info.mVelocityIterations, info.mPositionIterations);

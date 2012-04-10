@@ -11,7 +11,8 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
 
-
+   import editor.image.AssetImageShapeModule;
+   import editor.image.vector.*;
 
    import common.Define;
 

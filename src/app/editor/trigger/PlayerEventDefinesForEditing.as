@@ -36,7 +36,7 @@ package editor.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldAfterInitialized, "OnLevelEndInitialize", "",
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLWorldBeforeUpdating, "OnLevelBeginUpdate", "",
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeUpdating, "OnLevelBeginUpdate", "",
                     null
                     );
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldAfterUpdated, "OnLevelEndUpdate", "",

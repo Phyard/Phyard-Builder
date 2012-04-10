@@ -170,7 +170,7 @@ package editor {
             
             sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeInitializing] = IconOnBeforeLevelInitializingEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldAfterInitialized  ] = IconOnAfterLevelInitializedEvent;
-            sEventId2IconClass [CoreEventIds.ID_OnLWorldBeforeUpdating   ] = IconOnBeforeLevelUpdatingEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeUpdating    ] = IconOnBeforeLevelUpdatingEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldAfterUpdated      ] = IconOnAfterLevelUpdatedEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting] = IconOnShapeStartContactingEvent;

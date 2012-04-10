@@ -522,7 +522,7 @@ package editor.entity {
 //   create and destroy entities
 //=================================================================================
 
-      public function CreateEntityVectorShapeCircle ():EntityVectorShapeCircle
+      public function CreateEntityVectorShapeCircle (selectIt:Boolean = false):EntityVectorShapeCircle
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
@@ -531,11 +531,17 @@ package editor.entity {
          addChild (circle);
 
          circle.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
-
+         
+         if (selectIt)
+         {
+            circle.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (circle);
+         }
+         
          return circle;
       }
 
-      public function CreateEntityVectorShapeRectangle ():EntityVectorShapeRectangle
+      public function CreateEntityVectorShapeRectangle (selectIt:Boolean = false):EntityVectorShapeRectangle
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
@@ -544,6 +550,12 @@ package editor.entity {
          addChild (rect);
 
          rect.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         
+         if (selectIt)
+         {
+            rect.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (rect);
+         }
 
          return rect;
       }
@@ -782,7 +794,7 @@ package editor.entity {
          return camera;
       }
 
-      public function CreateEntityUtilityPowerSource (sourceType:int, selectIt:Boolean = false):EntityUtilityPowerSource
+      public function CreateEntityUtilityPowerSource (sourceType:int = Define.PowerSource_Force, selectIt:Boolean = false):EntityUtilityPowerSource
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
@@ -800,200 +812,308 @@ package editor.entity {
          return power_source;
       }
 
-      public function CreateEntityCondition ():EntityBasicCondition
+      public function CreateEntityCondition (selectIt:Boolean = false):EntityBasicCondition
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var condition:EntityBasicCondition = new EntityBasicCondition(this);
          addChild (condition);
+         
+         if (selectIt)
+         {
+            condition.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (condition);
+         }
 
          return condition;
       }
 
-      public function CreateEntityConditionDoor ():EntityConditionDoor
+      public function CreateEntityConditionDoor (selectIt:Boolean = false):EntityConditionDoor
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var condition_door:EntityConditionDoor = new EntityConditionDoor(this);
          addChild (condition_door);
+         
+         if (selectIt)
+         {
+            condition_door.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (condition_door);
+         }
 
          return condition_door;
       }
 
-      public function CreateEntityTask ():EntityTask
+      public function CreateEntityTask (selectIt:Boolean = false):EntityTask
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var task:EntityTask = new EntityTask(this);
          addChild (task);
+         
+         if (selectIt)
+         {
+            task.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (task);
+         }
 
          return task;
       }
 
-      public function CreateEntityInputEntityAssigner ():EntityInputEntityAssigner
+      public function CreateEntityInputEntityAssigner (selectIt:Boolean = false):EntityInputEntityAssigner
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var entity_assigner:EntityInputEntityAssigner = new EntityInputEntityAssigner(this);
          addChild (entity_assigner);
+         
+         if (selectIt)
+         {
+            entity_assigner.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (entity_assigner);
+         }
 
          return entity_assigner;
       }
 
-      public function CreateEntityInputEntityPairAssigner ():EntityInputEntityPairAssigner
+      public function CreateEntityInputEntityPairAssigner (selectIt:Boolean = false):EntityInputEntityPairAssigner
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var entity_pair_assigner:EntityInputEntityPairAssigner = new EntityInputEntityPairAssigner(this);
          addChild (entity_pair_assigner);
+         
+         if (selectIt)
+         {
+            entity_pair_assigner.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (entity_pair_assigner);
+         }
 
          return entity_pair_assigner;
       }
 
-      public function CreateEntityInputEntityScriptFilter ():EntityInputEntityScriptFilter
+      public function CreateEntityInputEntityScriptFilter (selectIt:Boolean = false):EntityInputEntityScriptFilter
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var entity_filter:EntityInputEntityScriptFilter = new EntityInputEntityScriptFilter(this);
          addChild (entity_filter);
+         
+         if (selectIt)
+         {
+            entity_filter.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (entity_filter);
+         }
 
          return entity_filter;
       }
 
-      public function CreateEntityInputEntityPairScriptFilter ():EntityInputEntityPairScriptFilter
+      public function CreateEntityInputEntityPairScriptFilter (selectIt:Boolean = false):EntityInputEntityPairScriptFilter
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var entity_pair_filter:EntityInputEntityPairScriptFilter = new EntityInputEntityPairScriptFilter(this);
          addChild (entity_pair_filter);
+         
+         if (selectIt)
+         {
+            entity_pair_filter.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (entity_pair_filter);
+         }
 
          return entity_pair_filter;
       }
 
-      public function CreateEntityInputEntityRegionSelector ():EntityInputEntityRegionSelector
+      public function CreateEntityInputEntityRegionSelector (selectIt:Boolean = false):EntityInputEntityRegionSelector
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var entity_region_selector:EntityInputEntityRegionSelector = new EntityInputEntityRegionSelector(this);
          addChild (entity_region_selector);
+         
+         if (selectIt)
+         {
+            entity_region_selector.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (entity_region_selector);
+         }
 
          return entity_region_selector;
       }
 
-      public function CreateEntityEventHandler (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler
+      public function CreateEntityEventHandler (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var handler:EntityEventHandler = new EntityEventHandler (this, defaultEventId, potientialEventIds);
          addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
 
          return handler;
       }
 
-      public function CreateEntityEventHandler_Timer (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Timer
+      public function CreateEntityEventHandler_Timer (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_Timer
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var handler:EntityEventHandler_Timer = new EntityEventHandler_Timer (this, defaultEventId, potientialEventIds);
          addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
 
          return handler;
       }
 
-      public function CreateEntityEventHandler_TimerWithPrePostHandling (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Timer
+      public function CreateEntityEventHandler_TimerWithPrePostHandling (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_Timer
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var handler:EntityEventHandler_Timer = new EntityEventHandler_TimerWithPrePostHandling (this, defaultEventId, potientialEventIds);
          addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
 
          return handler;
       }
 
-      public function CreateEntityEventHandler_Keyboard (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Keyboard
+      public function CreateEntityEventHandler_Keyboard (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_Keyboard
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var handler:EntityEventHandler_Keyboard = new EntityEventHandler_Keyboard (this, defaultEventId, potientialEventIds);
          addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
 
          return handler;
       }
 
-      public function CreateEntityEventHandler_Mouse (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Mouse
+      public function CreateEntityEventHandler_Mouse (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_Mouse
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var handler:EntityEventHandler_Mouse = new EntityEventHandler_Mouse (this, defaultEventId, potientialEventIds);
          addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
 
          return handler;
       }
 
-      public function CreateEntityEventHandler_Contact (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Contact
+      public function CreateEntityEventHandler_Contact (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_Contact
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var handler:EntityEventHandler_Contact = new EntityEventHandler_Contact (this, defaultEventId, potientialEventIds);
          addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
 
          return handler;
       }
 
-      public function CreateEntityEventHandler_JointReachLimit (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_JointReachLimit
+      public function CreateEntityEventHandler_JointReachLimit (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_JointReachLimit
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var handler:EntityEventHandler_JointReachLimit = new EntityEventHandler_JointReachLimit (this, defaultEventId, potientialEventIds);
          addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
 
          return handler;
       }
       
-      public function CreateEntityEventHandler_ModuleLoopToEnd (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_ModuleLoopToEnd
+      public function CreateEntityEventHandler_ModuleLoopToEnd (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_ModuleLoopToEnd
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var handler:EntityEventHandler_ModuleLoopToEnd = new EntityEventHandler_ModuleLoopToEnd (this, defaultEventId, potientialEventIds);
          addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
 
          return handler;
       }
       
-      public function CreateEntityEventHandler_GameLostOrGotFocus (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_GameLostOrGotFocus
+      public function CreateEntityEventHandler_GameLostOrGotFocus (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_GameLostOrGotFocus
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var handler:EntityEventHandler_GameLostOrGotFocus = new EntityEventHandler_GameLostOrGotFocus (this, defaultEventId, potientialEventIds);
          addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
 
          return handler;
       }
       
-      public function CreateEntityAction ():EntityAction
+      public function CreateEntityAction (selectIt:Boolean = false):EntityAction
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
 
          var action:EntityAction = new EntityAction (this);
          addChild (action);
+         
+         if (selectIt)
+         {
+            action.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (action);
+         }
 
          return action;
       }

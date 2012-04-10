@@ -822,7 +822,7 @@ package player.world {
          // on level to update
          //-----------------------------
 
-            HandleEventById (CoreEventIds.ID_OnLWorldBeforeUpdating);
+            HandleEventById (CoreEventIds.ID_OnWorldBeforeUpdating);
 
          //-----------------------------
          // update physics

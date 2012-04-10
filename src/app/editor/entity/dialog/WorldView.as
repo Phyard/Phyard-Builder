@@ -1314,7 +1314,7 @@ package editor.entity.dialog {
                SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldAfterInitialized, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler2:
-               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLWorldBeforeUpdating, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldBeforeUpdating, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler3:
                SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldAfterUpdated, mPotientialEventIds:null}) );

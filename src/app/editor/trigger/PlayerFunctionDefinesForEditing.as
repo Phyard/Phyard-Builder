@@ -361,7 +361,7 @@ package editor.trigger {
                              new VariableDefinitionString ("The Char"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_GetCharCodeAt, string_package, "Get Char Code At", "@#0 = The Code of ($1)th Char in String($0)", "@#0 = StringCharCodeAt ($0)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_GetCharCodeAt, string_package, "Get Char Code At", "@#0 = The Code of ($1)th Char in String($0)", "@#0 = StringCharCodeAt ($0, $1)",
                      [
                              new VariableDefinitionString ("The String"),
                              new VariableDefinitionNumber ("Char Index", null, {mMinValue: 0}),

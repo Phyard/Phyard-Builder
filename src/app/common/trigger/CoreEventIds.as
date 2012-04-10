@@ -17,7 +17,7 @@ package common.trigger {
 
       public static const ID_OnWorldBeforeInitializing:int = IdPool.EventId_0;
       public static const ID_OnWorldAfterInitialized:int = IdPool.EventId_1;
-      public static const ID_OnLWorldBeforeUpdating:int = IdPool.EventId_2;
+      public static const ID_OnWorldBeforeUpdating:int = IdPool.EventId_2;
       public static const ID_OnWorldAfterUpdated:int = IdPool.EventId_3;
 
       public static const ID_OnWorldTimer:int = IdPool.EventId_50;

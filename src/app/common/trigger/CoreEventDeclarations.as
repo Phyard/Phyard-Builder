@@ -35,7 +35,7 @@ package common.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldAfterInitialized,
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLWorldBeforeUpdating,
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeUpdating,
                     null
                     );
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldAfterUpdated,

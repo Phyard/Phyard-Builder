@@ -35,11 +35,15 @@ package editor.entity.dialog {
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
    import editor.asset.IntentDrag;
+   import editor.asset.IntentTaps;
    
    import editor.entity.Scene;
    import editor.entity.*;
+   import editor.trigger.entity.*;
    
    import editor.EditorContext;
+   
+   import common.trigger.CoreEventIds;
    
    import common.Define;
    import common.Version;
@@ -84,65 +88,172 @@ package editor.entity.dialog {
          
          switch (entityType)
          {
-            case "hinge":
-               SetCurrentIntent (new IntentPutAsset (
-                                 mScene.CreateEntityJointHinge (true), 
+            case "RectangleShape":
+               mScene.CreateEntityVectorShapeRectangle (true);
+               SetCurrentIntent (new IntentDrag (OnDragCreatingRectangle, OnCreatingCancelled));
+               break;
+            case "CircleShape":
+               mScene.CreateEntityVectorShapeCircle (true);
+               SetCurrentIntent (new IntentDrag (OnDragCreatingCircle, OnCreatingCancelled));
+               break;
+            case "PolygonShape":
+               break;
+            case "PolylineShape":
+               break;
+            case "HingeJoint":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityJointHinge (true), 
                                  OnPutCreatingOneAnchorJoint, OnCreatingCancelled));
                break;
-            case "weld":
-               SetCurrentIntent (new IntentPutAsset (
-                                 mScene.CreateEntityJointWeld (true), 
+            case "WeldJoint":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityJointWeld (true), 
                                  OnPutCreatingOneAnchorJoint, OnCreatingCancelled));
                break;
-            case "slider":
-               mScene.CreateEntityJointSlider (true)
+            case "SliderJoint":
+               mScene.CreateEntityJointSlider (true);
                SetCurrentIntent (new IntentDrag (OnDragCreatingTwoAnchorsJoint, OnCreatingCancelled));
                break;
-            case "distance":
-               mScene.CreateEntityJointDistance (true)
+               
+            case "DistanceJoint":
+               mScene.CreateEntityJointDistance (true);
                SetCurrentIntent (new IntentDrag (OnDragCreatingTwoAnchorsJoint, OnCreatingCancelled));
                break;
-            case "spring":
-               mScene.CreateEntityJointSpring (true)
+            case "SpringJoint":
+               mScene.CreateEntityJointSpring (true);
                SetCurrentIntent (new IntentDrag (OnDragCreatingTwoAnchorsJoint, OnCreatingCancelled));
                break;
-            case "dummy":
-               mScene.CreateEntityJointDummy (true)
+            case "DummyJoint":
+               mScene.CreateEntityJointDummy (true);
                SetCurrentIntent (new IntentDrag (OnDragCreatingTwoAnchorsJoint, OnCreatingCancelled));
                break;
-            case "powersource":
+               
+            case "PowerSource":
                SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityUtilityPowerSource (params.mPowerSourceType, true), 
                                  OnPutCreating, OnCreatingCancelled));
                break;
-            case "camera":
+            case "Camera":
                SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityUtilityCamera (true), 
                                  OnPutCreating, OnCreatingCancelled));
                break;
-            case "gravity":
+            case "ForceField":
                SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityVectorShapeGravityController (true), 
                                  OnPutCreating, OnCreatingCancelled));
                break;
-            case "text":
+            case "Text":
                SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityVectorShapeText (true), 
                                  OnPutCreating, OnCreatingCancelled));
                break;
-            case "textbutton":
+            case "TextButton":
                SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityVectorShapeTextButton (true), 
                                  OnPutCreating, OnCreatingCancelled));
                break;
-            case "imagemodule":
+            case "ImageModule":
                SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityShapeImageModule (true), 
                                  OnPutCreating, OnCreatingCancelled));
                break;
-            case "imagemodulebutton":
+            case "ImageModuleButton":
                SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityShapeImageModuleButton (true), 
                                  OnPutCreating, OnCreatingCancelled));
+               break;
+               
+            case "Action":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityAction (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "Task":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityTask(true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "Condition":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityCondition (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "ConditionDoor":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityConditionDoor (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "ManualSelector":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityInputEntityAssigner (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "ManualPairSelector":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityInputEntityPairAssigner (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "ScriptSelector":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityInputEntityScriptFilter (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+            case "ScriptPairSelector":
+               SetCurrentIntent (new IntentPutAsset (mScene.CreateEntityInputEntityPairScriptFilter (true), 
+                                 OnPutCreating, OnCreatingCancelled));
+               break;
+               
+            case "EventHandler":
+               SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (params.mDefaultEventId), OnPutCreating, OnCreatingCancelled));
                break;
             default:
                return;
          }
          
          mOnEndCreatingEntityCallback = endCreatingCallback;
+      }
+         
+      private function CreateNewEventHandler (eventId:int):EntityEventHandler
+      {
+         var handler:EntityEventHandler;
+         
+         switch (eventId)
+         {
+            case CoreEventIds.ID_OnWorldTimer:
+               handler = mScene.CreateEntityEventHandler_Timer (eventId, null, true);
+               break;
+            case CoreEventIds.ID_OnEntityTimer:
+            case CoreEventIds.ID_OnEntityPairTimer:
+               handler = mScene.CreateEntityEventHandler_TimerWithPrePostHandling (eventId, null, true);
+               break;
+            case CoreEventIds.ID_OnPhysicsShapeMouseDown:
+            case CoreEventIds.ID_OnPhysicsShapeMouseUp:
+            case CoreEventIds.ID_OnEntityMouseClick:
+            case CoreEventIds.ID_OnEntityMouseDown:
+            case CoreEventIds.ID_OnEntityMouseUp:
+            case CoreEventIds.ID_OnEntityMouseMove:
+            case CoreEventIds.ID_OnEntityMouseEnter:
+            case CoreEventIds.ID_OnEntityMouseOut:
+            case CoreEventIds.ID_OnWorldMouseClick:
+            case CoreEventIds.ID_OnWorldMouseDown:
+            case CoreEventIds.ID_OnWorldMouseUp:
+            case CoreEventIds.ID_OnWorldMouseMove:
+               handler = mScene.CreateEntityEventHandler_Mouse (eventId, null, true);
+               break;
+            case CoreEventIds.ID_OnWorldKeyDown:
+            case CoreEventIds.ID_OnWorldKeyUp:
+            case CoreEventIds.ID_OnWorldKeyHold:
+               handler = mScene.CreateEntityEventHandler_Keyboard (eventId, null, true);
+               break;
+            case CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting:
+            case CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting:
+            case CoreEventIds.ID_OnTwoPhysicsShapesEndContacting:
+               handler = mScene.CreateEntityEventHandler_Contact (eventId, null, true);
+               break;
+            case CoreEventIds.ID_OnJointReachLowerLimit:
+            case CoreEventIds.ID_OnJointReachUpperLimit:
+               handler = mScene.CreateEntityEventHandler_JointReachLimit (eventId, null, true);
+               break;
+            case CoreEventIds.ID_OnSequencedModuleLoopToEnd:
+               handler = mScene.CreateEntityEventHandler_ModuleLoopToEnd (eventId, null, true);
+               break;
+            case CoreEventIds.ID_OnGameActivated:
+            case CoreEventIds.ID_OnGameDeactivated:
+               handler = mScene.CreateEntityEventHandler_GameLostOrGotFocus (eventId, null, true);
+               break;
+            default:
+            {
+               handler = mScene.CreateEntityEventHandler (eventId, null, true);
+               break;
+            }
+         }
+         
+         return handler;
       }
       
       private function TryToCallOnEndCreatingEntityCallback ():void
@@ -165,12 +276,78 @@ package editor.entity.dialog {
          OnAssetSelectionsChanged ();
       }
       
-      public function OnCreatingCancelled ():void
+      private function OnCreatingCancelled ():void
       {
          TryToCallOnEndCreatingEntityCallback ();
          
          DeleteSelectedAssets ();
          OnAssetSelectionsChanged ();
+      }
+      
+      protected function OnDragCreatingRectangle (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         if (selectedEntities == null || selectedEntities.length != 1)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         var rect:EntityVectorShapeRectangle = selectedEntities [0] as EntityVectorShapeRectangle;
+         if (rect == null)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         var centerX:Number = 0.5 * (startX + endX);
+         var centerY:Number = 0.5 * (startY + endY);
+         var halfWidth :Number = Math.abs (0.5 * (startX - endX));
+         var halfHeight:Number = Math.abs (0.5 * (startY - endY));
+         
+         rect.MoveTo (centerX, centerY);
+         rect.SetHalfWidth  (halfWidth, false);
+         rect.SetHalfHeight (halfHeight, false);
+         rect.UpdateAppearance ();
+         
+         if (done)
+         {
+            rect.OnTransformIntentDone ();
+
+            OnCreatingFinished ();
+         }
+      }
+      
+      protected function OnDragCreatingCircle (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         if (selectedEntities == null || selectedEntities.length != 1)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         var circle:EntityVectorShapeCircle = selectedEntities [0] as EntityVectorShapeCircle;
+         if (circle == null)
+         {
+            OnCreatingCancelled ();
+            return;
+         }
+         
+         var dx:Number = endX - startX;
+         var dy:Number = endY - startY;
+         var radius:Number = Math.sqrt (dx * dx + dy * dy);
+         
+         circle.MoveTo (startX, startY);
+         circle.SetRadius  (radius);
+         circle.UpdateAppearance ();
+         
+         if (done)
+         {
+            circle.OnTransformIntentDone ();
+
+            OnCreatingFinished ();
+         }
       }
       
       protected function OnDragCreatingTwoAnchorsJoint (startX:Number, startY:Number, endX:Number, endY:Number, done:Boolean):void

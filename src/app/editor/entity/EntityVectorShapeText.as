@@ -44,6 +44,8 @@ package editor.entity {
       {
          super (container);
          
+         SetHalfWidth (50);
+         SetHalfHeight (15);
          SetText ("(not set yet)");
          SetDrawBorder (false);
          SetDrawBackground (false);

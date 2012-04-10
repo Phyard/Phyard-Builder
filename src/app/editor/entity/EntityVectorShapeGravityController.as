@@ -36,6 +36,8 @@ package editor.entity {
       {
          super (container);
 
+         SetRadius (50);
+         
          mMaximalGravityAcceleration = mEntityContainer.GetDefaultGravityAccelerationMagnitude ();
          mInitialGravityAcceleration = mMaximalGravityAcceleration;
          mInitialGravityAngle = mEntityContainer.GetDefaultGravityAccelerationAngle ();

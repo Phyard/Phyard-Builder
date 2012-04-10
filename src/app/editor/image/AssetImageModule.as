@@ -133,21 +133,24 @@ package editor.image {
          while (numChildren > 0)
             removeChildAt (0);
          
-         var moduleSize:Number = mAssetImageModuleManager.GetAssetSpriteSize ();
-         var halfModuleSize:Number = 0.5 * moduleSize;
-         GraphicsUtil.ClearAndDrawRect (this, - halfModuleSize, - halfModuleSize, moduleSize, moduleSize,
+         var moduleWidth:Number = mAssetImageModuleManager.GetAssetSpriteWidth ();
+         var moduleHeight:Number = mAssetImageModuleManager.GetAssetSpriteHeight ();
+         var halfMoudleWidth:Number = 0.5 * moduleWidth;
+         var halfMoudleHeight:Number = 0.5 * moduleHeight;
+         GraphicsUtil.ClearAndDrawRect (this, - halfMoudleWidth, - halfMoudleHeight, moduleWidth, moduleHeight,
                                        IsSelected () ? 0x0000FF : 0x0, 0, true, IsSelected () ? 0xC0C0FF : 0xFFFFFF, false);
                                        
          var iconSize:Number = mAssetImageModuleManager.GetModuleIconSize ();
-         var halfIconSize:Number = 0.5 * iconSize;
+         var halfIconWidth:Number = 0.5 * iconSize;
+         var halfIconHeight:Number = 0.5 * iconSize;
 
          var moduleSprite:Sprite = new Sprite ();
          BuildImageModuleAppearance (moduleSprite);
          
          if (moduleSprite.numChildren == 0)
          {
-            GraphicsUtil.DrawLine (this, - halfModuleSize, - halfModuleSize, halfModuleSize, halfModuleSize);
-            GraphicsUtil.DrawLine (this, halfModuleSize, - halfModuleSize,  - halfModuleSize, halfModuleSize);
+            GraphicsUtil.DrawLine (this, - halfMoudleWidth, - halfMoudleHeight, halfMoudleWidth, halfMoudleHeight);
+            GraphicsUtil.DrawLine (this, halfMoudleWidth, - halfMoudleHeight,  - halfMoudleWidth, halfMoudleHeight);
          }
          else
          {
@@ -157,7 +160,8 @@ package editor.image {
             if (spriteBounds.width != 0 || spriteBounds.height != 0)
             {
                var spriteSize:Number = moduleSprite.width > moduleSprite.height ? moduleSprite.width : moduleSprite.height;
-               moduleSprite.scaleX = moduleSprite.scaleY = spriteSize <= iconSize ? 1.0 : Number (iconSize) / Number (spriteSize);
+               moduleSprite.scaleX = spriteSize <= iconSize ? 1.0 : Number (iconSize) / Number (spriteSize);
+               moduleSprite.scaleY = spriteSize <= iconSize ? 1.0 : Number (iconSize) / Number (spriteSize);
                moduleSprite.x = - moduleSprite.scaleX  * (spriteBounds.left + 0.5 * spriteBounds.width);
                moduleSprite.y = - moduleSprite.scaleY  * (spriteBounds.top + 0.5 * spriteBounds.height);
             }
@@ -172,9 +176,9 @@ package editor.image {
             mSelectionProxy.SetUserData (this);
          }
          
-         var moduleSize:Number = mAssetImageModuleManager.GetAssetSpriteSize ();
-         var halfModuleSize:Number = 0.5 * moduleSize;
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (GetPositionX (), GetPositionY (), halfModuleSize, halfModuleSize);
+         var moduleWidth:Number = mAssetImageModuleManager.GetAssetSpriteWidth ();
+         var moduleHeight:Number = mAssetImageModuleManager.GetAssetSpriteHeight ();
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle (GetPositionX (), GetPositionY (), 0.5 * moduleWidth, 0.5 * moduleHeight);
       }
       
 //=============================================================

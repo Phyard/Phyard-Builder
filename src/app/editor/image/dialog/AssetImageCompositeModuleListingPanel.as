@@ -35,6 +35,8 @@ package editor.image.dialog {
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
    
+   import editor.asset.AssetManagerArrayLayout; 
+   
    import editor.image.AssetImageCompositeModuleManager;
    
    import editor.runtime.Runtime;

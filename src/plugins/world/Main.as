@@ -2,7 +2,7 @@ package
 {
    import flash.display.Sprite;
    
-   import plugin.WorldPlugin;
+   import player.WorldPlugin;
    
    public class Main extends Sprite
    {

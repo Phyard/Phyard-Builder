@@ -41,7 +41,7 @@ package editor.display.control {
       
       private function OnClick (event:MouseEvent):void 
       {
-         AssetSoundListDialog.StartPickSound (OnSoundPicked);
+         AssetSoundListDialog.StartPickingMode (OnSoundPicked);
       }
    }
 }

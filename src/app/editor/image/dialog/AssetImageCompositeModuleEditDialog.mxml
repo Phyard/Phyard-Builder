@@ -356,12 +356,12 @@
          
          private function OnClickPickModuleButton ():void
          {
-            AssetImageModuleListDialog.StartPickModule (panelAssetImageCompositeModuleEditing.ChangeModuleForCurrentModuleInstacne);
+            AssetImageModuleListDialog.StartPickingMode (panelAssetImageCompositeModuleEditing.ChangeModuleForCurrentModuleInstacne);
          }
          
          private function OnClickPickTextureModuleButton ():void
          {
-            AssetImageModuleListDialog.StartPickModule (panelAssetImageCompositeModuleEditing.ChangeTextureModuleForCurrentShapeModuleInstacne);
+            AssetImageModuleListDialog.StartPickingMode (panelAssetImageCompositeModuleEditing.ChangeTextureModuleForCurrentShapeModuleInstacne);
          }
          
          private function ChangeModuleInstanceProperties ():void

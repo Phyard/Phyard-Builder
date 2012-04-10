@@ -167,7 +167,7 @@ package editor.image.dialog {
          //
          //mAssetImageModuleInstanceManager.DeleteSelectedAssets ();
          
-         // this one will call RearrangeAssetPositions
+         // this one will call UpdateLayout
          if (mAssetImageModuleInstanceListingPanelPeer != null)
          {
             mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().DeleteSelectedAssets ();
@@ -228,11 +228,11 @@ package editor.image.dialog {
 
          if (mAssetImageModuleInstanceListingPanelPeer != null && mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing () != null)
          {
-            mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().RearrangeAssetPositions (true);
+            mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
          }
       }
       
-      protected function OnPutCreateMouleInstacne (moduleInstance:AssetImageModuleInstance, done:Boolean):void
+      protected function OnPutingCreating (moduleInstance:AssetImageModuleInstance, done:Boolean):void
       {
          if (done)
          {
@@ -322,7 +322,7 @@ package editor.image.dialog {
             case mButtonCreateGeneralModuleInstance:
                SetCurrentIntent (new IntentPutAsset (
                                  mAssetImageModuleInstanceManager.CreateImageModuleInstance (AssetImageModule.mCurrentAssetImageModule, true), 
-                                 OnPutCreateMouleInstacne, OnCreatingCancelled));
+                                 OnPutingCreating, OnCreatingCancelled));
                break;
             case mButtonCreateShapeBoxInstance:
                mAssetImageModuleInstanceManager.CreateImageShapeRectangleModuleInstance (true);
@@ -343,7 +343,7 @@ package editor.image.dialog {
             case mButtonCreateShapeTextInstance:
                SetCurrentIntent (new IntentPutAsset (
                                  mAssetImageModuleInstanceManager.CreateImageShapeTextModuleInstance (true),
-                                 OnPutCreateMouleInstacne, OnCreatingCancelled));
+                                 OnPutingCreating, OnCreatingCancelled));
                break;
             default:
             {

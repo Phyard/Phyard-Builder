@@ -6,6 +6,8 @@ package editor.entity {
    import editor.world.World;
 
    import editor.selection.SelectionProxy;
+   
+   import editor.ccat.CollisionCategory;
 
    import common.Define;
 
@@ -20,7 +22,7 @@ package editor.entity {
       protected var mPhysicsEnabled:Boolean = true;
       public var mIsSensor:Boolean = false;
       // collision category
-      private var mCollisionCategory:EntityCollisionCategory = null;
+      private var mCollisionCategory:CollisionCategory = null;
       //<<
 
       protected var mIsStatic:Boolean = false;
@@ -343,7 +345,7 @@ package editor.entity {
 
       public function GetCollisionCategoryIndex ():int
       {
-         var index:int = mWorld.mCollisionManager.GetCollisionCategoryIndex (mCollisionCategory);
+         var index:int = mWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (mCollisionCategory);
 
          if (index == Define.CCatId_Hidden)
             mCollisionCategory = null;
@@ -353,7 +355,7 @@ package editor.entity {
 
       public function SetCollisionCategoryIndex (index:int):void
       {
-         mCollisionCategory = mWorld.mCollisionManager.GetCollisionCategoryByIndex (index);
+         mCollisionCategory = mWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (index);
       }
 
    }

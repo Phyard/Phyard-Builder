@@ -93,7 +93,7 @@ package editor.image {
          {
             var assetImagePureModuleManager:AssetImagePureModuleManager = pureModule.GetAssetImagePureModuleManager ();
             assetImagePureModuleManager.DestroyAsset (pureModule);
-            assetImagePureModuleManager.RearrangeAssetPositions (true);
+            assetImagePureModuleManager.UpdateLayout (true);
          }
       }
       

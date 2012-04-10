@@ -149,7 +149,7 @@
          <arg line="-library-path=${dir.third-party}/mindjolt_api/MindJoltAPI.swc" />
          <arg line="-library-path=${dir.third-party}/google_analytics/analytics.swc"/>
 
-         <arg line="${dir.build.src}/Editor.mxml" />
+         <arg line="${dir.build.src}/editor/Editor.mxml" />
       </exec>
    </target>
 
@@ -442,6 +442,18 @@
    <target name="release-plugin-packager">
       <antcall target="release-plugin">
          <param name="plugin-name" value="packager" />
+      </antcall>
+   </target>
+
+   <target name="debug-plugin-editor">
+      <antcall target="debug-plugin">
+         <param name="plugin-name" value="editor" />
+      </antcall>
+   </target>
+
+   <target name="release-plugin-editor">
+      <antcall target="release-plugin">
+         <param name="plugin-name" value="editor" />
       </antcall>
    </target>
 

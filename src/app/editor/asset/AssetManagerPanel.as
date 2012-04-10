@@ -35,11 +35,10 @@ package editor.asset {
    
    public class AssetManagerPanel extends UIComponent implements KeyboardListener
    {
-      public var mBackgroundLayer:Sprite;
-      public var mFriendLinksLayer:Sprite;
-      public var mForegroundLayer:Sprite;
-      
+      protected var mBackgroundLayer:Sprite;
+      protected var mAssetLinksLayer:Sprite;
       protected var mAssetManager:AssetManager = null;
+      public var mForegroundLayer:Sprite;
       
       public function AssetManagerPanel ()
       {
@@ -54,8 +53,8 @@ package editor.asset {
          mBackgroundLayer = new Sprite ();
          addChild (mBackgroundLayer);
          
-         mFriendLinksLayer = new Sprite ();
-         addChild (mFriendLinksLayer);
+         mAssetLinksLayer = new Sprite ();
+         addChild (mAssetLinksLayer);
          
          mForegroundLayer = new Sprite ();
          addChild (mForegroundLayer);
@@ -77,7 +76,10 @@ package editor.asset {
          if (mAssetManager != null)
          {
             addChildAt (mAssetManager, getChildIndex (mForegroundLayer));
-            //mAssetManager.SetAssetLinksChangedCallback (UpdateAssetLinkLines);
+            
+            mAssetManager.SetAssetLinksChangedCallback (UpdateAssetLinkLines);
+            
+            UpdateAssetLinkLines ();
          }
          
          BuildContextMenu ();
@@ -88,6 +90,8 @@ package editor.asset {
          if (mAssetManager != null)
          {
             mAssetManager.SetPosition (mAssetManager.x + dx, mAssetManager.y + dy);
+            
+            SynchronizeAssetLinksLayerWithManager ();
          }
       }
       
@@ -101,9 +105,13 @@ package editor.asset {
          return 1.0 / 4.0;
       }
       
-      public function IsZoomSupported ():Boolean
+      public static const kMouseWheelFunction_None:int = 0;
+      public static const kMouseWheelFunction_Zoom:int = 1;
+      public static const kMouseWheelFunction_Scroll:int = 2;
+      
+      public function GetMouseWheelFunction ():int
       {
-         return true;
+         return kMouseWheelFunction_Zoom;
       }
       
       public function ScaleManager (scale:Number):void
@@ -118,6 +126,8 @@ package editor.asset {
                currentScale = GetMaxAllowedScale ();
             
             mAssetManager.SetScale (currentScale);
+            
+            SynchronizeAssetLinksLayerWithManager ();
          }
       }
       
@@ -393,7 +403,7 @@ package editor.asset {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         stage.focus = this;
+         //stage.focus = this;
          
          if (mAssetManager == null)
             return;
@@ -422,7 +432,7 @@ package editor.asset {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         stage.focus = this;
+         //stage.focus = this;
          
          if (mAssetManager == null)
             return;
@@ -461,12 +471,14 @@ package editor.asset {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         stage.focus = this;
+         //stage.focus = this;
          
          if (mAssetManager == null)
             return;
          
-         if (IsZoomSupported () && (! event.ctrlKey))
+         var mouseWheelFunction:int = GetMouseWheelFunction ();
+         
+         if (mouseWheelFunction == kMouseWheelFunction_Zoom && (! event.ctrlKey))
          {
             var oldMouseManagerPoint:Point = new Point (mAssetManager.mouseX, mAssetManager.mouseY);
    
@@ -476,7 +488,7 @@ package editor.asset {
             
             MoveManager (mouseX - newMousePoint.x, mouseY - newMousePoint.y);
          }
-         else
+         else if (mouseWheelFunction == kMouseWheelFunction_Scroll)
          {
             MoveManager (0, 10.0 * event.delta / mAssetManager.GetScale ());
          }
@@ -608,7 +620,7 @@ package editor.asset {
 //   asset scale / rotate / flip handlers
 //=================================================================================
       
-      final protected function SupportScaleRotateFlipTransforms ():Boolean
+      protected function SupportScaleRotateFlipTransforms ():Boolean
       {
          if (mAssetManager == null)
             return false;
@@ -877,6 +889,7 @@ package editor.asset {
          mAssetManager.DeleteSelectedControlPoints ();
          
          UpdateInterface ();
+         UpdateAssetLinkLines ();
       }
       
       protected function InsertVertexController ():void
@@ -887,7 +900,7 @@ package editor.asset {
          mAssetManager.InsertVertexController ();
          
          UpdateInterface ();
-         
+         UpdateAssetLinkLines ();
       }
       
 //=================================================================================
@@ -902,6 +915,7 @@ package editor.asset {
          mAssetManager.DeleteSelectedAssets ();
          
          UpdateInterface ();
+         UpdateAssetLinkLines ();
       }
       
       public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
@@ -912,6 +926,7 @@ package editor.asset {
          mAssetManager.MoveSelectedAssets (moveBodyTexture, offsetX, offsetY, updateSelectionProxy);
          
          UpdateInterface ();
+         UpdateAssetLinkLines ();
       }
       
       public function RotateSelectedAssets (rotateBodyTexture:Boolean, centerX:Number, centerY:Number, r:Number, rotatePosition:Boolean, rotateSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -922,6 +937,7 @@ package editor.asset {
          mAssetManager.RotateSelectedAssets (rotateBodyTexture, updateSelectionProxy, r, rotateSelf, rotatePosition, centerX, centerY);
          
          UpdateInterface ();
+         UpdateAssetLinkLines ();
       }
       
       public function ScaleSelectedAssets (scaleBodyTexture:Boolean, centerX:Number, centerY:Number, s:Number, scalePosition:Boolean, scaleSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -932,6 +948,7 @@ package editor.asset {
          mAssetManager.ScaleSelectedAssets (scaleBodyTexture, updateSelectionProxy, s, scaleSelf, scalePosition, centerX, centerY);
          
          UpdateInterface ();
+         UpdateAssetLinkLines ();
       }
       
       public function FlipSelectedAssets (flipBodyTexture:Boolean, planeX:Number, flipPosition:Boolean, flipSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -942,11 +959,37 @@ package editor.asset {
          mAssetManager.FlipSelectedAssets (flipBodyTexture, updateSelectionProxy, flipSelf, flipPosition, planeX);
          
          UpdateInterface ();
+         UpdateAssetLinkLines ();
       }
+
+//=====================================================================
+// asset links
+//=====================================================================
       
       public function CreateOrBreakLink (startLinkable:Linkable, endManagerX:Number, endManagerY:Number):void
       {
          // ...
+      }
+      
+      public function UpdateAssetLinkLines ():void
+      {
+         // ...
+      }
+      
+      protected function SynchronizeAssetLinksLayerWithManager ():void
+      {
+         if (mAssetManager == null)
+         {
+            mAssetLinksLayer.visible = false;
+            return;
+         }
+         
+         mAssetLinksLayer.visible = true;
+         
+         mAssetLinksLayer.x = mAssetManager.x;
+         mAssetLinksLayer.y = mAssetManager.y;
+         mAssetLinksLayer.scaleX = mAssetManager.scaleX;
+         mAssetLinksLayer.scaleY = mAssetManager.scaleY;
       }
 
 //=====================================================================

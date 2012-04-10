@@ -43,6 +43,14 @@ package editor.asset {
          return mSelectionEngine;
       }
       
+      public function SupportScaleRotateFlipTransforms ():Boolean
+      {
+         if (mAssetManagerLayout != null)
+            return mAssetManagerLayout.SupportScaleRotateFlipTransforms ();
+         
+         return true;
+      }
+      
 //=================================================================================
 //   coordinates
 //=================================================================================
@@ -64,10 +72,58 @@ package editor.asset {
 //   
 //=================================================================================
       
+      protected var mAssetManagerLayout:AssetManagerLayout = null;
+      
+      public function SetLayout (layout:AssetManagerLayout):void
+      {
+         mAssetManagerLayout = layout;
+      }
+      
+      public function UpdateLayout (forcely:Boolean = false):void
+      {
+         if (mAssetManagerLayout != null)
+         {
+            mAssetManagerLayout.DoLayout (forcely);
+         }
+      }
+
+      // recommended
+      public function GetAssetSpriteWidth ():Number
+      {
+         if (mAssetManagerLayout != null)
+            return mAssetManagerLayout.GetAssetSpriteWidth ();
+         
+         return 100;
+      }
+      
+      // recommended
+      public function GetAssetSpriteHeight ():Number
+      {
+         if (mAssetManagerLayout != null)
+            return mAssetManagerLayout.GetAssetSpriteHeight ();
+         
+         return 100;
+      }
+      
+      // recommended
+      public function GetAssetSpriteGap ():Number
+      {
+         if (mAssetManagerLayout != null)
+            return mAssetManagerLayout.GetAssetSpriteGap ();
+         
+         return 10;
+      }
+      
+//=================================================================================
+//   
+//=================================================================================
+      
       public function SetPosition (px:Number, py:Number):void
       {
          x = px;
          y = py;
+         
+         UpdateLayout ();
       }
       
       public function SetScale (s:Number):void
@@ -86,6 +142,8 @@ package editor.asset {
                asset.OnManagerScaleChanged ();
             }
          }
+         
+         UpdateLayout ();
       }
       
       public function GetScale ():Number
@@ -93,13 +151,15 @@ package editor.asset {
          return scaleX;
       }
       
-      protected var mViewWidth:Number;
-      protected var mViewHeight:Number;
+      internal var mViewWidth:Number;
+      internal var mViewHeight:Number;
       
       public function SetViewportSize (parentViewWidth:Number, parentViewHeight:Number):void
       {
          mViewWidth  = parentViewWidth  / this.scaleX;
          mViewHeight = parentViewHeight / this.scaleY;
+         
+         UpdateLayout ();
       }
       
 //=================================================================================
@@ -515,11 +575,16 @@ package editor.asset {
             NotifyModifiedForReferers ();
          }
          
+         UpdateLayout ();
+         
          return count > 0;
       }
       
       public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
       {
+         if (mAssetManagerLayout != null && (! mAssetManagerLayout.SupportMoveSelectedAssets ()) && (! moveBodyTexture))
+            return;
+         
          var assetArray:Array = GetSelectedAssets ();
          
          var asset:Asset;
@@ -1156,7 +1221,7 @@ package editor.asset {
 //   interfaces between manager and UI
 //====================================================================
       
-      private var mAssetLinksChangedCallback:Function = null;
+      protected var mAssetLinksChangedCallback:Function = null;
       
       public function SetAssetLinksChangedCallback (assetLinksChangedCallback:Function):void
       {
@@ -1166,11 +1231,6 @@ package editor.asset {
       public function GetAssetLinksChangedCallback ():Function
       {
          return mAssetLinksChangedCallback;
-      }
-      
-      public function SupportScaleRotateFlipTransforms ():Boolean
-      {
-         return true;
       }
         
 //=====================================================================

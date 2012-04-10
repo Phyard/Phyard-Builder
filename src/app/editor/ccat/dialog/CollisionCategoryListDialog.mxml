@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<container:ResizableTitleWindow xmlns:container="editor.display.container.*"
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:ccat="editor.ccat.dialog.*"
+    title="Collision Category Manager"
+    width="700" height="500"
+    paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+    showCloseButton="true"
+    creationComplete="InitDialog ();"
+    close="HideCollisionCategoryListDialog ();"
+    >
+
+   <mx:VBox backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="100%"
+            horizontalScrollPolicy="off" verticalScrollPolicy="off"
+            horizontalGap="0" verticalGap="0" borderThickness="0"
+            >
+      <mx:HBox id="Box_Commands" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="1" verticalGap="0">
+         <mx:Spacer width="100%"/>
+         <mx:Button id="Button_CreateCollisionCategory" toolTip="New Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/collision/create-category-disabled.png')" selectedDisabledIcon="@Embed('../../../res/collision/create-category-disabled.png')" upIcon="@Embed('../../../res/collision/create-category.png')" downIcon="@Embed('../../../res/collision/create-category-sel.png')" overIcon="@Embed('../../../res/collision/create-category.png')" selectedUpIcon="@Embed('../../../res/collision/create-category-sel.png')" selectedOverIcon="@Embed('../../../res/collision/create-category-sel.png')" selectedDownIcon="@Embed('../../../res/collision/create-category.png')"   />
+         <mx:Spacer width="20"/>
+         <mx:Button id="Button_DeleteCollisionCategory" toolTip="Delete Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
+         <mx:Spacer width="36"/>
+         <mx:HBox backgroundColor="0xFFFFFF" verticalAlign="middle"
+                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                  horizontalGap="0" verticalGap="0" borderThickness="0">
+            <mx:Spacer width="3"/>
+            <mx:CheckBox id="CheckBox_CollisionCategory_HarmoniousCategory" label="Harmonious Category"/>
+            <mx:Spacer width="6"/>
+            <mx:CheckBox id="CheckBox_CollisionCategory_DefaultCategory" label="Default Category"/>
+         </mx:HBox>
+         <mx:Spacer width="6"/>
+         <mx:Label id="Label_CollisionCategoryName" text="Name:" textAlign="right"/>
+         <mx:TextInput id="Text_CollisionCategoryName" text="" width="200"/>
+         <mx:Spacer width="100%"/>
+      </mx:HBox>
+      <mx:VBox id="Box_CCatListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+         <ccat:CollisionCategoryListingPanel id="panelCollisionCategoryListing" width="100%" height="100%"/>
+      </mx:VBox>
+   </mx:VBox>
+
+   <mx:Script>
+      <![CDATA[
+
+         import mx.managers.PopUpManager;
+         import mx.events.FlexEvent;
+         
+         import editor.runtime.Runtime;
+
+      // static functions
+         
+         public static var sCollisionCategoryListDialog:CollisionCategoryListDialog = null;
+         public static function ShowCollisionCategoryListDialog (OnCCatPicked:Function = null):void
+         {
+         trace ("ShowCollisionCategoryListDialog");
+            if (sCollisionCategoryListDialog == null)
+            {
+               sCollisionCategoryListDialog = new CollisionCategoryListDialog ();
+            }
+            
+            if (sCollisionCategoryListDialog.parent != null) // OnCCatPicked must be null
+            {
+               PopUpManager.bringToFront (sCollisionCategoryListDialog);
+            }
+            else
+            {
+               PopUpManager.addPopUp (sCollisionCategoryListDialog, Runtime.GetApplication (), OnCCatPicked != null);
+               PopUpManager.centerPopUp (sCollisionCategoryListDialog);
+            }
+            
+            sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().SetCollisionCategoryManager (Runtime.GetCurrentWorld ().GetCollisionCategoryManager ());
+            
+            if (OnCCatPicked != null)
+            {
+               sCollisionCategoryListDialog.mInPickingModet = true;
+               
+               sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
+            }
+         }
+         
+         public static function HideCollisionCategoryListDialog ():void
+         {
+            if (sCollisionCategoryListDialog.mInPickingModet)
+            {
+               EndPickingMode ();
+            }
+            else
+            {
+               PopUpManager.removePopUp (sCollisionCategoryListDialog);
+            }
+            
+         }
+         
+         public static function StartPickingMode (OnCCatPicked:Function):void
+         {
+            if (sCollisionCategoryListDialog != null)
+            {
+               PopUpManager.removePopUp (sCollisionCategoryListDialog);
+            }
+            
+            ShowCollisionCategoryListDialog (OnCCatPicked);
+         }
+         
+         public static function EndPickingMode ():void
+         {
+            if (sCollisionCategoryListDialog != null)
+            {
+               sCollisionCategoryListDialog.mInPickingModet = false;
+               
+               PopUpManager.removePopUp(sCollisionCategoryListDialog);
+            
+               sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().ExitPickAssetIntent ();
+            }
+         }
+         
+      //======================================================
+         
+         public function GetCollisionCategoryListingPanel ():CollisionCategoryListingPanel
+         {
+            return panelCollisionCategoryListing;
+         }
+         
+      //======================================================
+      
+         internal var mInPickingModet:Boolean = false;
+         
+         private function InitDialog ():void
+         {
+            panelCollisionCategoryListing.mButtonCreateCollisionCategory = Button_CreateCollisionCategory;
+            
+            Button_CreateCollisionCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryListing.OnCreateButtonClick);
+            
+            panelCollisionCategoryListing.mButtonDelete = Button_DeleteCollisionCategory;
+            
+            panelCollisionCategoryListing.mCheckBoxHarmoniousCategory = CheckBox_CollisionCategory_HarmoniousCategory;
+            panelCollisionCategoryListing.mCheckBoxDefaultCategory = CheckBox_CollisionCategory_DefaultCategory;
+            
+            Button_DeleteCollisionCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryListing.OnEditButtonClick);
+            CheckBox_CollisionCategory_HarmoniousCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryListing.OnEditButtonClick);
+            CheckBox_CollisionCategory_DefaultCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryListing.OnEditButtonClick);
+            
+            panelCollisionCategoryListing.mLabelName = Label_CollisionCategoryName;
+            panelCollisionCategoryListing.mTextInputName = Text_CollisionCategoryName;
+            
+            Text_CollisionCategoryName.addEventListener (FlexEvent.ENTER, panelCollisionCategoryListing.OnTextInputEnter);
+         }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</container:ResizableTitleWindow>

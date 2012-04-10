@@ -98,12 +98,12 @@ package common.shape
 
       public function GetBorderOpacity100 ():int
       {
-         return Math.round (GetBorderOpacity () * 100.0 / 255.0);
+         return GetBorderOpacity () * 100 / 255;
       }
 
       public function SetBorderOpacity100 (opacity:int):void
       {
-         SetBorderOpacity (Math.round (opacity * 255.0 / 100.0));
+         SetBorderOpacity (opacity * 255 / 100);
       }
 
 //==============================================

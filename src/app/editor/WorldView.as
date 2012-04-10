@@ -157,10 +157,13 @@ package editor {
    
    import editor.entity.VertexController;
    
-   import editor.entity.EntityCollisionCategory;
+   //import editor.entity.EntityCollisionCategory;
+   import editor.ccat.CollisionCategory;
+   import editor.ccat.CollisionCategoryManager;
+   import editor.ccat.dialog.CollisionCategoryListDialog;
    
    import editor.world.World;
-   import editor.world.CollisionManager;
+   //import editor.world.CollisionManager;
    import editor.undo.WorldHistoryManager;
    import editor.undo.WorldState;
    
@@ -168,9 +171,9 @@ package editor {
    
    import editor.trigger.Filters;
    
-   import editor.sound.dialog.AssetSoundListDialog;
-   import editor.display.panel.CollisionManagerView;
-   import editor.display.panel.FunctionEditingView;
+   //import editor.display.panel.CollisionManagerView;
+   //import editor.display.panel.FunctionEditingView;
+   import editor.codelib.dialog.CodeLibListDialog;
    
    import player.world.World;
    
@@ -1635,12 +1638,18 @@ package editor {
          Runtime.Cleanup ();
          
          mEditorWorld = newEditorWorld;
-         mEditorWorld.GetCollisionManager ().SetChanged (false);
-         if (mEditorWorld.GetFunctionManager ().IsChanged ())
+         mEditorWorld.GetCollisionCategoryManager ().SetChanged (false);
+         //if (mEditorWorld.GetFunctionManager ().IsChanged ())
+         //{
+         //   mEditorWorld.GetFunctionManager ().UpdateFunctionMenu ();
+         //   mEditorWorld.GetFunctionManager ().SetChanged (false)
+         //   mEditorWorld.GetFunctionManager ().SetDelayUpdateFunctionMenu (false)
+         //}
+         if (mEditorWorld.GetCodeLibManager ().IsChanged ())
          {
-            mEditorWorld.GetFunctionManager ().UpdateFunctionMenu ();
-            mEditorWorld.GetFunctionManager ().SetChanged (false)
-            mEditorWorld.GetFunctionManager ().SetDelayUpdateFunctionMenu (false)
+            mEditorWorld.GetCodeLibManager ().UpdateFunctionMenu ();
+            mEditorWorld.GetCodeLibManager ().SetChanged (false)
+            mEditorWorld.GetCodeLibManager ().SetDelayUpdateFunctionMenu (false)
          }
          
          mEditorWorld.scaleX = mEditorWorld.scaleY = mEditorWorldZoomScale = mEditorWorld.GetZoomScale ();
@@ -1650,11 +1659,19 @@ package editor {
          
          mContentLayer.addChild (mEditorWorld);
          
-         if (Runtime.mCollisionCategoryView != null)
-            Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
+         //if (Runtime.mCollisionCategoryView != null)
+         //   Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
+         if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
+         {
+            CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().SetCollisionCategoryManager (mEditorWorld.GetCollisionCategoryManager ());
+         }
          
-         if (Runtime.mFunctionEditingView != null)
-            Runtime.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetFunctionManager ());
+         //if (Runtime.mFunctionEditingView != null)
+         //   Runtime.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetFunctionManager ());
+         if (CodeLibListDialog.sCodeLibListDialog != null)
+         {
+            CodeLibListDialog.sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (mEditorWorld.GetCodeLibManager ());
+         }
          
          if (! firstTime)
          {
@@ -2019,9 +2036,9 @@ package editor {
       
       public function OnFinishedCCatEditing ():void
       {
-         if (mEditorWorld.GetCollisionManager ().IsChanged ())
+         if (mEditorWorld.GetCollisionCategoryManager ().IsChanged ())
          {
-            mEditorWorld.GetCollisionManager ().SetChanged (false);
+            mEditorWorld.GetCollisionCategoryManager ().SetChanged (false);
             CreateUndoPoint ("Modify collision categories");
          }
          
@@ -2031,9 +2048,9 @@ package editor {
       
       public function OnFinishedFunctionEditing ():void
       {
-         if (mEditorWorld.GetFunctionManager ().IsChanged ())
+         if (mEditorWorld.GetCodeLibManager ().IsChanged ())
          {
-            mEditorWorld.GetFunctionManager ().SetChanged (false);
+            mEditorWorld.GetCodeLibManager ().SetChanged (false);
             CreateUndoPoint ("Modify functions");
          }
          
@@ -2073,7 +2090,7 @@ package editor {
       public var ShowImportSourceCodeDialog:Function = null;
       public var ShowExportSwfFileDialog:Function = null;
       
-      public var ShowCollisionGroupManageDialog:Function = null;
+      //public var ShowCollisionGroupManageDialog:Function = null;
       
       public var ShowPlayCodeLoadingDialog:Function = null;
       
@@ -2698,16 +2715,16 @@ package editor {
          ShowWorldLoadingDialog (LoadEditorWorldFromXmlString);
       }
       
-      private function OpenCollisionGroupManageDialog ():void
-      {
-         if (! IsEditing ())
-            return;
-         
-         if (Runtime.HasSettingDialogOpened ())
-            return;
-         
-         ShowCollisionGroupManageDialog (null);
-      }
+      //private function OpenCollisionGroupManageDialog ():void
+      //{
+      //   if (! IsEditing ())
+      //      return;
+      //   
+      //   if (Runtime.HasSettingDialogOpened ())
+      //      return;
+      //   
+      //   ShowCollisionGroupManageDialog (null);
+      //}
       
       //private function OpenPlayCodeLoadingDialog ():void
       //{
@@ -3335,11 +3352,6 @@ package editor {
                case 80: // P
                   if (event.ctrlKey && event.shiftKey)
                      ExportSwfFile ();
-                  break;
-               case 75: // k
-               case 190: // >
-                  if (event.ctrlKey && event.shiftKey)
-                     ConvertOldRegisterVariablesToGlobalVariables ();
                   break;
                case 83: // S
                   if (event.ctrlKey && event.shiftKey)
@@ -4373,8 +4385,16 @@ package editor {
             
             CalSelectedEntitiesCenterPoint ();
             
-            Runtime.mCollisionCategoryView.UpdateFriendLinkLines ();
-            Runtime.mFunctionEditingView.UpdateEntityLinkLines ();
+            //Runtime.mCollisionCategoryView.UpdateFriendLinkLines ();
+            if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
+            {
+               CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().UpdateAssetLinkLines ();
+            }
+            //Runtime.mFunctionEditingView.UpdateEntityLinkLines ();
+            if (CodeLibListDialog.sCodeLibListDialog != null)
+            {
+               CodeLibListDialog.sCodeLibListDialog.GetCodeLibListingPanel ().UpdateFriendLinkLines ();
+            }
             
             Runtime.SetRecommandDesignFilename (null);
          }
@@ -5750,7 +5770,8 @@ package editor {
                }
             }
             
-            var cm:CollisionManager = newWorld.GetCollisionManager ();
+            /*
+            var cm:CollisionCManager = newWorld.GetCollisionManager ();
             var ccId:int;
             numEntities = newWorld.GetNumEntities ();
             
@@ -5777,6 +5798,39 @@ package editor {
                else
                {
                   cm.DestroyEntity (entity);
+               }
+            }
+            */
+            
+            var cm:CollisionCategoryManager = newWorld.GetCollisionCategoryManager ();
+            cm.ClearAssetSelections ();
+            var ccId:int;
+            numEntities = newWorld.GetNumEntities ();
+            
+            for (i = 0; i < numEntities; ++ i)
+            {
+               entity = newWorld.GetEntityByCreationId (i);
+               if (entity is EntityVectorShape)
+               {
+                  ccId = (entity as EntityVectorShape).GetCollisionCategoryIndex ();
+                  if (ccId >= 0)
+                     cm.AddAssetSelection (cm.GetCollisionCategoryByIndex (ccId));
+               }
+            }
+            
+            var ccat:CollisionCategory;
+            ccId = 0;
+            //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
+            while (ccId < cm.GetNumCollisionCategories ()) //numCats)
+            {
+               ccat = cm.GetCollisionCategoryByIndex (ccId);
+               if ( ccat.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+               {
+                  ++ ccId;
+               }
+               else
+               {
+                  cm.DestroyAsset (ccat);
                }
             }
             
@@ -5821,7 +5875,7 @@ package editor {
          try
          {
             var oldEntitiesCount:int = mEditorWorld.GetNumEntities ();
-            var oldCategoriesCount:int = mEditorWorld.GetCollisionManager ().GetNumCollisionCategories ();
+            var oldCategoriesCount:int = mEditorWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
             
             var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
             
@@ -5833,10 +5887,10 @@ package editor {
             
             DataFormat.WorldDefine2EditorWorld (worldDefine, true, mEditorWorld, mergeVariablesWithSameNames);
             
-            if (mEditorWorld.GetFunctionManager ().IsChanged ())
+            if (mEditorWorld.GetCodeLibManager ().IsChanged ())
             {
-               mEditorWorld.GetFunctionManager ().UpdateFunctionMenu ();
-               mEditorWorld.GetFunctionManager ().SetChanged (false)
+               mEditorWorld.GetCodeLibManager ().UpdateFunctionMenu ();
+               mEditorWorld.GetCodeLibManager ().SetChanged (false)
             }
             
             if (oldEntitiesCount == mEditorWorld.numChildren)
@@ -6228,24 +6282,6 @@ package editor {
          values.mViewerHeight = heightWithPlayBar;
          
          ShowExportSwfFileDialog (values);
-      }
-      
-      public function ConvertOldRegisterVariablesToGlobalVariables ():void
-      {
-         try
-         {
-            mEditorWorld.ConvertRegisterVariablesToGlobalVariables ();
-            
-            // ...
-            CreateUndoPoint ("Register variables are converted.");
-         }
-         catch (error:Error)
-         {
-            if (Capabilities.isDebugger)
-               throw error;
-            
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Convert register variables failed", EffectMessagePopup.kBgColor_Error));
-         }
       }
       
 //============================================================================

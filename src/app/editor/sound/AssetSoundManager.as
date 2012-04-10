@@ -22,24 +22,15 @@ package editor.sound {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
-   import editor.asset.AssetManagerListLayout; 
+   import editor.asset.AssetManager;
    
    import common.CoordinateSystem;
    
    import common.Define;
    import common.ValueAdjuster;
    
-   public class AssetSoundManager extends AssetManagerListLayout //AssetManager 
+   public class AssetSoundManager extends AssetManager 
    {
-      
-//==========================================================      
-// 
-//==========================================================      
-
-      override public function GetAssetSpriteHeight ():Number
-      {
-         return 76;
-      }
       
 //==========================================================      
 // 
@@ -55,7 +46,7 @@ package editor.sound {
          if (insertBeforeSelectedThenSelectNew)
             SetSelectedAsset (soundAsset);
          
-         RearrangeAssetPositions (true);
+         UpdateLayout (true);
          
          return soundAsset;
       }

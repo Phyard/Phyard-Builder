@@ -70,20 +70,20 @@
             
             if (OnModulePicked != null)
             {
-               sAssetImageModuleListDialog.mInPickingModule = true;
+               sAssetImageModuleListDialog.mInPickingMode = true;
                
-               sAssetImageModuleListDialog.GetImageListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickModule);
-               sAssetImageModuleListDialog.GetPureModuleListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickModule);
-               sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickModule);
-               sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickModule);
+               sAssetImageModuleListDialog.GetImageListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickingMode);
+               sAssetImageModuleListDialog.GetPureModuleListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickingMode);
+               sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickingMode);
+               sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().EnterPickAssetIntent (OnModulePicked, EndPickingMode);
             }
          }
          
          public static function HideAssetImageModuleListDialog ():void
          {
-            if (sAssetImageModuleListDialog.mInPickingModule)
+            if (sAssetImageModuleListDialog.mInPickingMode)
             {
-               EndPickModule ();
+               EndPickingMode ();
             }
             else
             {
@@ -91,7 +91,7 @@
             }
          }
          
-         public static function StartPickModule (OnModulePicked:Function):void
+         public static function StartPickingMode (OnModulePicked:Function):void
          {
             if (sAssetImageModuleListDialog != null)
             {
@@ -101,11 +101,11 @@
             ShowAssetImageModuleListDialog (OnModulePicked);
          }
          
-         public static function EndPickModule ():void
+         public static function EndPickingMode ():void
          {
             if (sAssetImageModuleListDialog != null)
             {
-               sAssetImageModuleListDialog.mInPickingModule = false;
+               sAssetImageModuleListDialog.mInPickingMode = false;
                
                PopUpManager.removePopUp(sAssetImageModuleListDialog);
             
@@ -140,7 +140,7 @@
          
       //=====================================================================
       
-         internal var mInPickingModule:Boolean = false;
+         internal var mInPickingMode:Boolean = false;
       
          public function InitDialog ():void
          {

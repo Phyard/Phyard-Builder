@@ -5,6 +5,8 @@ package unieditor
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
    import flash.display.Sprite;
+   import flash.display.DisplayObject;
+   import flash.display.DisplayObjectContainer;
    import flash.display.Loader;
    import flash.display.LoaderInfo;
    import flash.system.LoaderContext;
@@ -98,6 +100,7 @@ trace ("realEditorSwfUrl = " + realEditorSwfUrl);
          mRealEditorFileLoader = new Loader ();
             
          mRealEditorFileLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnLoadBuilderSwfComplete);
+         mRealEditorFileLoader.contentLoaderInfo.addEventListener(Event.INIT, OnLoadBuilderSwfInited);
          mRealEditorFileLoader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, OnLoadBuilderSwfProgress);
          mRealEditorFileLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
          mRealEditorFileLoader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
@@ -117,9 +120,14 @@ trace ("realEditorSwfUrl = " + realEditorSwfUrl);
       
       private function OnLoadBuilderSwfComplete (event:Event):void 
       {
-         SetInfoText (null);
+         SetInfoText ("Initializing ...");
          
          addChild (mRealEditorFileLoader);
+      }
+      
+      private function OnLoadBuilderSwfInited(event:Event):void 
+      {
+         SetInfoText (null);
       }
       
       private function OnLoadBuilderSwfProgress (event:ProgressEvent):void

@@ -12,15 +12,15 @@ package editor.image {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
-   import editor.asset.AssetManagerArrayLayout; 
+   import editor.asset.AssetManager;
    
    import common.CoordinateSystem;
    
    import common.Define;
    import common.ValueAdjuster;
    
-   public class AssetImageModuleManager extends AssetManagerArrayLayout
-   {  
+   public class AssetImageModuleManager extends AssetManager
+   {
       public function GetModuleIconSize ():Number
       {
          return 86;

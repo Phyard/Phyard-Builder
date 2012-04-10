@@ -20,25 +20,35 @@ package editor.asset {
    import common.Define;
    import common.ValueAdjuster;
    
-   public class AssetManagerListLayout extends AssetManager 
+   public class AssetManagerListLayout extends AssetManagerLayout 
    {
-//==========================================================      
-// 
-//==========================================================    
+      private var mAssetManager:AssetManager;
+      
+      public function AssetManagerListLayout (assetManager:AssetManager, assetSpriteHeight:Number = 100, assetSpriteGap:Number = 10)
+      {
+         mAssetManager = assetManager;
+         
+         mAssetSpriteHeight = assetSpriteHeight;
+         mAssetSpriteGap = assetSpriteGap;
+      }
 
-      public function GetAssetSpriteWidth ():Number
+      override public function GetAssetSpriteWidth ():Number
       {
-         return (parent == null? 100 : parent.width / scaleX) - 2 * GetAssetSpriteMargin ();
+         return (mAssetManager.parent == null? 100 : mAssetManager.parent.width / mAssetManager.scaleX) - 2 * GetAssetSpriteGap ();
       }
       
-      public function GetAssetSpriteHeight ():Number
+      private var mAssetSpriteHeight:Number = 100;
+      
+      override public function GetAssetSpriteHeight ():Number
       {
-         return 100;
+         return mAssetSpriteHeight;
       }
       
-      public function GetAssetSpriteMargin ():Number
+      private var mAssetSpriteGap:Number = 10;
+      
+      override public function GetAssetSpriteGap ():Number
       {
-         return 10;
+         return mAssetSpriteGap;
       }
       
 //==========================================================      
@@ -50,99 +60,62 @@ package editor.asset {
          return false;
       }
       
+      override public function SupportMoveSelectedAssets ():Boolean
+      {
+         return false;
+      }
+      
 //==========================================================      
 // 
 //==========================================================  
       
-      override public function SetPosition (px:Number, py:Number):void
-      {
-         super.SetPosition (px, py);
-         
-         RearrangeAssetPositions ();
-      }
-      
-      override public function SetScale (s:Number):void
-      {
-         super.SetScale (s);
-         
-         RearrangeAssetPositions ();
-      }
-      
-      override public function SetViewportSize (parentViewWidth:Number, parentViewHeight:Number):void
-      {
-         super.SetViewportSize (parentViewWidth, parentViewHeight);
-         
-         RearrangeAssetPositions ();
-      }
-      
-      override public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
-      {
-         if (moveBodyTexture)
-            super.MoveSelectedAssets (moveBodyTexture, offsetX, offsetY, updateSelectionProxy);
-         //else
-            // temp do nothing
-      }
-      
-      override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
-      {
-         var result:Boolean = super.DeleteSelectedAssets ();
-         
-         RearrangeAssetPositions (true);
-         
-         return result;
-      }
-      
-//========================================================
-// 
-//========================================================
-      
       protected var mContentWidth:Number;
       protected var mContentHeight:Number;
       
-      public function RearrangeAssetPositions (forcely:Boolean = false):void
+      override public function DoLayout (forcely:Boolean = false):void
       {
-         if (parent == null)
+         if (mAssetManager.parent == null)
             return;
          
-         mViewWidth  = parent.width  / this.scaleX;
-         mViewHeight = parent.height / this.scaleY;
+         mAssetManager.mViewWidth  = mAssetManager.parent.width  / mAssetManager.scaleX;
+         mAssetManager.mViewHeight = mAssetManager.parent.height / mAssetManager.scaleY;
          
          var rowHeight:Number = GetAssetSpriteHeight ();
-         var margin:Number = GetAssetSpriteMargin ();
+         var gap:Number = GetAssetSpriteGap ();
          
          if (forcely)
          {
             mContentWidth  = rowHeight;
-            mContentHeight = margin;
+            mContentHeight = gap;
             
-            var numAssets:int = GetNumAssets ();
+            var numAssets:int = mAssetManager.GetNumAssets ();
             for (var i:int = 0; i < numAssets; ++ i)
             {
-               var asset:Asset = GetAssetByAppearanceId (i);
+               var asset:Asset = mAssetManager.GetAssetByAppearanceId (i);
                var boundRect:Rectangle = asset.getBounds (asset);
                
-               asset.SetPosition (- boundRect.left + margin, mContentHeight - boundRect.top);
+               asset.SetPosition (- boundRect.left + gap, mContentHeight - boundRect.top);
                asset.UpdateAppearance ();
                asset.UpdateSelectionProxy ();
                
-               mContentHeight += boundRect.height + margin;
+               mContentHeight += boundRect.height + gap;
             }
             
-            mContentHeight += margin;
+            mContentHeight += gap;
          }
          
-         x = 0;
+         mAssetManager.x = 0;
          
-         if (mContentHeight < mViewHeight)
-            y = 0;
-         else if (y > 0)
-            y = 0;
+         if (mContentHeight < mAssetManager.mViewHeight)
+            mAssetManager.y = 0;
+         else if (mAssetManager.y > 0)
+            mAssetManager.y = 0;
          else
          {
-            var minY:Number = (mViewHeight - mContentHeight) * this.scaleY;
-            if (y < minY)
+            var minY:Number = (mAssetManager.mViewHeight - mContentHeight) * mAssetManager.scaleY;
+            if (mAssetManager.y < minY)
             {
-               y = minY;
+               mAssetManager.y = minY;
             }
          }
       }

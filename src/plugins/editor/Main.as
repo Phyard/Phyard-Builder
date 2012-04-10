@@ -2,23 +2,13 @@ package
 {
    import flash.display.Sprite;
    
-   import Editor;
+   import editor.EditorPlugin;
    
    public class Main extends Sprite
    {
       public static function Call (name:String, params:Object = null):Object 
       {
-         switch (name)
-         {
-            case "NewEditor":
-               var editor:Editor = new Editor ();
-               editor.SetParamsFromUniEditor (params);
-               break;
-            default:
-            {
-               return null;
-            }
-         }
+         return EditorPlugin.Call (name, params);
       }
    }
 }

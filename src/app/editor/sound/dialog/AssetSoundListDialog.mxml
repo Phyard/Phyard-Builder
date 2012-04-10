@@ -62,17 +62,17 @@
             
             if (OnSoundPicked != null)
             {
-               sAssetSoundListDialog.mInPickingSound = true;
+               sAssetSoundListDialog.mInPickingMode = true;
                
-               sAssetSoundListDialog.GetAssetSoundListingPanel ().EnterPickAssetIntent (OnSoundPicked, EndPickSound);
+               sAssetSoundListDialog.GetAssetSoundListingPanel ().EnterPickAssetIntent (OnSoundPicked, EndPickingMode);
             }
          }
          
          public static function HideAssetSoundListDialog ():void
          {
-            if (sAssetSoundListDialog.mInPickingSound)
+            if (sAssetSoundListDialog.mInPickingMode)
             {
-               EndPickSound ();
+               EndPickingMode ();
             }
             else
             {
@@ -81,7 +81,7 @@
             
          }
          
-         public static function StartPickSound (OnSoundPicked:Function):void
+         public static function StartPickingMode (OnSoundPicked:Function):void
          {
             if (sAssetSoundListDialog != null)
             {
@@ -91,11 +91,11 @@
             ShowAssetSoundListDialog (OnSoundPicked);
          }
          
-         public static function EndPickSound ():void
+         public static function EndPickingMode ():void
          {
             if (sAssetSoundListDialog != null)
             {
-               sAssetSoundListDialog.mInPickingSound = false;
+               sAssetSoundListDialog.mInPickingMode = false;
                
                PopUpManager.removePopUp(sAssetSoundListDialog);
             
@@ -112,7 +112,7 @@
          
       //======================================================
       
-         internal var mInPickingSound:Boolean = false;
+         internal var mInPickingMode:Boolean = false;
          
          private function InitDialog ():void
          {

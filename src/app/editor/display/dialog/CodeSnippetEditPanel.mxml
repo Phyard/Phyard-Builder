@@ -580,7 +580,7 @@
             }
             else if (type == FunctionTypeDefine.FunctionType_Custom)
             {
-               func_declaration = Runtime.GetCurrentWorld ().GetFunctionManager().GetFunctionByIndex (id).GetFunctionDeclaration ();
+               func_declaration = Runtime.GetCurrentWorld ().GetCodeLibManager().GetFunctionByIndex (id).GetFunctionDeclaration ();
             }
 
             if (func_declaration == null)

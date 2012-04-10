@@ -31,19 +31,6 @@ package editor.image {
    
    public class AssetImageManager extends AssetImageModuleManager //AssetManager 
    {
-//==========================================================      
-// 
-//==========================================================      
-      
-      override public function GetAssetSpriteSize ():Number
-      {
-         return 100;
-      }
-
-      override public function GetAssetSpriteGap ():Number
-      {
-         return 10;
-      }
       
 //==========================================================      
 // 
@@ -68,7 +55,7 @@ package editor.image {
          if (insertBeforeSelectedThenSelectNew)
             SetSelectedAsset (image);
          
-         RearrangeAssetPositions (true);
+         UpdateLayout (true);
          
          return image;
       }

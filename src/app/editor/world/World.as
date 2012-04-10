@@ -39,7 +39,6 @@ package editor.world {
    import editor.entity.SubEntityJointAnchor;
 
    import editor.trigger.entity.EntityLogic;
-   import editor.trigger.entity.EntityCodeSnippetHolder;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityTask;
@@ -59,18 +58,17 @@ package editor.world {
    import editor.trigger.entity.EntityEventHandler_GameLostOrGotFocus;
    import editor.trigger.entity.EntityAction;
 
-   import editor.trigger.entity.EntityFunctionPackage;
-   import editor.trigger.entity.EntityFunction;
+   //import editor.trigger.entity.EntityFunctionPackage;
+   //import editor.trigger.entity.EntityFunction;
 
    import editor.entity.VertexController;
 
-   import editor.entity.EntityCollisionCategory;
+   //import editor.entity.EntityCollisionCategory;
 
    import editor.selection.SelectionEngine;
 
    import editor.trigger.TriggerEngine;
    import editor.trigger.PlayerFunctionDefinesForEditing;
-   import editor.trigger.CodeSnippet;
 
    import editor.image.AssetImageModule;
    import editor.image.AssetImageNullModule;
@@ -81,6 +79,12 @@ package editor.world {
    
    import editor.sound.AssetSound;
    import editor.sound.AssetSoundManager;
+   
+   import editor.ccat.CollisionCategoryManager;
+   import editor.ccat.CollisionCategory;
+   
+   import editor.codelib.CodeLibManager;
+   import editor.codelib.AssetFunction;
 
    import editor.runtime.Runtime; // temp, to remove
 
@@ -93,11 +97,13 @@ package editor.world {
 
       public var mBrothersManager:BrothersManager;
 
-      public var mCollisionManager:CollisionManager;
+      //public var mCollisionManager:CollisionManager;
+      public var mCollisionCategoryManager:CollisionCategoryManager;
 
       public var mTriggerEngine:TriggerEngine;
 
-      public var mFunctionManager:FunctionManager;
+      //public var mFunctionManager:FunctionManager;
+      public var mCodeLibManager:CodeLibManager;
 
       protected var mAssetImageManager:AssetImageManager;
       protected var mAssetImagePureModuleManager:AssetImagePureModuleManager;
@@ -122,13 +128,15 @@ package editor.world {
 
          mBrothersManager = new BrothersManager ();
 
-         mCollisionManager = new CollisionManager ();
+         //mCollisionManager = new CollisionManager ();
+         mCollisionCategoryManager = new CollisionCategoryManager ();
 
          mTriggerEngine = new TriggerEngine ();
 
-         mFunctionManager = new FunctionManager (this);
+         //mFunctionManager = new FunctionManager (this);
+         mCodeLibManager = new CodeLibManager (this);
 
-         mFunctionManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
+         mCodeLibManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
 
          mAssetImageManager = new AssetImageManager ();
          mAssetImagePureModuleManager = new AssetImagePureModuleManager ();
@@ -139,8 +147,14 @@ package editor.world {
 
       override public function Destroy ():void
       {
-         mCollisionManager.Destroy ();
-         mFunctionManager.Destroy ();
+         //mCollisionManager.Destroy ();
+         mCollisionCategoryManager.Destroy ();
+         mCodeLibManager.Destroy ();
+         mAssetImageManager.Destroy ();
+         mAssetImagePureModuleManager.Destroy ();
+         mAssetImageAssembledModuleManager.Destroy ();
+         mAssetImageSequencedModuleManager.Destroy ();
+         mAssetSoundManager.Destroy ();
 
          super.Destroy ();
 
@@ -150,9 +164,14 @@ package editor.world {
 
       override public function DestroyAllEntities ():void
       {
-         mCollisionManager.DestroyAllEntities ();
-
-         mFunctionManager.DestroyAllEntities ();
+         //mCollisionManager.DestroyAllEntities ();
+         mCollisionCategoryManager.DestroyAllAssets ();
+         mCodeLibManager.DestroyAllAssets ();
+         mAssetImageSequencedModuleManager.DestroyAllAssets ();
+         mAssetImageAssembledModuleManager.DestroyAllAssets ();
+         mAssetImagePureModuleManager.DestroyAllAssets ();
+         mAssetImageManager.DestroyAllAssets ();
+         mAssetSoundManager.DestroyAllAssets ();
 
          super.DestroyAllEntities ();
       }
@@ -988,7 +1007,7 @@ package editor.world {
          var circle:EntityVectorShapeCircle = new EntityVectorShapeCircle (this);
          addChild (circle);
 
-         circle.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
+         circle.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return circle;
       }
@@ -1001,7 +1020,7 @@ package editor.world {
          var rect:EntityVectorShapeRectangle = new EntityVectorShapeRectangle (this);
          addChild (rect);
 
-         rect.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
+         rect.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return rect;
       }
@@ -1014,7 +1033,7 @@ package editor.world {
          var polygon:EntityVectorShapePolygon = new EntityVectorShapePolygon (this);
          addChild (polygon);
 
-         polygon.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
+         polygon.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return polygon;
       }
@@ -1027,7 +1046,7 @@ package editor.world {
          var polyline:EntityVectorShapePolyline = new EntityVectorShapePolyline (this);
          addChild (polyline);
 
-         polyline.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
+         polyline.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return polyline;
       }
@@ -1040,7 +1059,7 @@ package editor.world {
          var imageModule:EntityShapeImageModule = new EntityShapeImageModule (this);
          addChild (imageModule);
 
-         imageModule.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
+         imageModule.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return imageModule;
       }
@@ -1053,7 +1072,7 @@ package editor.world {
          var imageModuleButton:EntityShapeImageModuleButton = new EntityShapeImageModuleButton (this);
          addChild (imageModuleButton);
 
-         imageModuleButton.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
+         imageModuleButton.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return imageModuleButton;
       }
@@ -1532,12 +1551,12 @@ package editor.world {
          if (! isForPureCustomFunction)
          {
             var child:Object;
-            var category:EntityCollisionCategory;
-            var numCats:int = mCollisionManager.GetNumCollisionCategories ();
+            var category:CollisionCategory;
+            var numCats:int = mCollisionCategoryManager.GetNumCollisionCategories ();
 
             for (var i:int = 0; i < numCats; ++ i)
             {
-               category = mCollisionManager.GetCollisionCategoryByIndex (i);
+               category = mCollisionCategoryManager.GetCollisionCategoryByIndex (i);
 
                var item:Object = new Object ();
                item.label = i + ": " + category.GetCategoryName ();
@@ -1709,27 +1728,46 @@ package editor.world {
 //   collision categories
 //=================================================================================
 
-      public function GetCollisionManager ():CollisionManager
+      //public function GetCollisionManager ():CollisionManager
+      //{
+      //   return mCollisionManager;
+      //}
+      //
+      //public function CreateEntityCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
+      //{
+      //   var category1:EntityCollisionCategory = mCollisionManager.GetCollisionCategoryByIndex (categoryIndex1);
+      //   var category2:EntityCollisionCategory = mCollisionManager.GetCollisionCategoryByIndex (categoryIndex2);
+      //
+      //   if (category1 != null && category2 != null)
+      //      mCollisionManager.CreateEntityCollisionCategoryFriendLink (category1, category2);
+      //}
+      
+      public function GetCollisionCategoryManager ():CollisionCategoryManager
       {
-         return mCollisionManager;
+         return mCollisionCategoryManager;
       }
 
-      public function CreateEntityCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
+      public function CreateCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
       {
-         var category1:EntityCollisionCategory = mCollisionManager.GetCollisionCategoryByIndex (categoryIndex1);
-         var category2:EntityCollisionCategory = mCollisionManager.GetCollisionCategoryByIndex (categoryIndex2);
+         var category1:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex1);
+         var category2:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex2);
 
          if (category1 != null && category2 != null)
-            mCollisionManager.CreateEntityCollisionCategoryFriendLink (category1, category2);
+            mCollisionCategoryManager.CreateCollisionCategoryFriendLink (category1, category2);
       }
 
 //=================================================================================
 //   functions
 //=================================================================================
 
-      public function GetFunctionManager ():FunctionManager
+      //public function GetFunctionManager ():FunctionManager
+      //{
+      //   return mFunctionManager;
+      //}
+      
+      public function GetCodeLibManager ():CodeLibManager
       {
-         return mFunctionManager;
+         return mCodeLibManager
       }
 
 //=================================================================================
@@ -1774,54 +1812,6 @@ package editor.world {
       public function GetTriggerEngine ():TriggerEngine
       {
          return mTriggerEngine;
-      }
-      
-      public function ConvertRegisterVariablesToGlobalVariables ():void
-      {
-         var oldNumGlobalVariables:int = mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ();
-         
-         //
-         
-         var variableMapTable:Dictionary = new Dictionary ();
-         var codeSnippet:CodeSnippet;
-         
-         // check script holders
-         
-         var numEntities:int = GetNumEntities ();
-         
-         for (var createId:int = 0; createId < numEntities; ++ createId)
-         {
-            var entity:Entity = GetEntityByCreationId (createId);
-            if (entity is EntityCodeSnippetHolder)
-            {
-               codeSnippet = (entity as EntityCodeSnippetHolder).GetCodeSnippet () as CodeSnippet;
-               if (codeSnippet != null)
-               {
-                  codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
-               }
-            }
-         }
-         
-         // check custom functions
-         
-         var numFunctions:int = GetFunctionManager().GetNumFunctions ();
-         for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
-         {
-            var functionEntity:EntityFunction = GetFunctionManager().GetFunctionByIndex (functionId);
-            
-            codeSnippet = functionEntity.GetCodeSnippet ();
-            if (codeSnippet != null)
-            {
-               codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
-            }
-         }
-         
-         // ...
-         
-         if (oldNumGlobalVariables != mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ())
-         {
-            mTriggerEngine.NotifyGlobalVariableSpaceModified ();
-         }
       }
 
 //=================================================================================

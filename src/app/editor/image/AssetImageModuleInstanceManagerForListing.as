@@ -32,20 +32,6 @@ package editor.image {
 // 
 //==========================================================      
       
-      override public function GetAssetSpriteSize ():Number
-      {
-         return 76;
-      }
-
-      override public function GetAssetSpriteGap ():Number
-      {
-         return 10;
-      }
-      
-//==========================================================      
-// 
-//==========================================================      
-      
       override public function GetModuleIconSize ():Number
       {
          return 66;
@@ -64,7 +50,7 @@ package editor.image {
                mAssetImageCompositeModule.GetModuleInstanceManager().DeleteSelectedAssets (true);
             }
             
-            RearrangeAssetPositions (true);
+            UpdateLayout (true);
             
             return true;
          }
@@ -88,7 +74,7 @@ package editor.image {
          if (selectIt)
             SetSelectedAsset (moduleInstane);
          
-         RearrangeAssetPositions (true);
+         UpdateLayout (true);
          
          return moduleInstane;
       }

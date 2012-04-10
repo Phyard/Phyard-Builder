@@ -44,6 +44,7 @@ package editor.asset {
       
       override protected function Process (finished:Boolean):void
       {
+trace ("mAssetToPut.visible = " + mAssetToPut.visible + ", mAssetToPut.width = " + mAssetToPut.width + ", mAssetToPut.height = " + mAssetToPut.height);
          mAssetToPut.MoveTo (mCurrentX, mCurrentY, finished);
          
          super.Process (finished);

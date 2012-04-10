@@ -17,8 +17,8 @@ package editor.runtime {
    import editor.world.World;
    
    import editor.WorldView;
-   import editor.display.panel.CollisionManagerView;
-   import editor.display.panel.FunctionEditingView;
+   //import editor.display.panel.CollisionManagerView;
+   //import editor.display.panel.FunctionEditingView;
    
    import editor.entity.Entity;
    
@@ -27,6 +27,8 @@ package editor.runtime {
    import editor.image.dialog.AssetImageModuleListDialog;
    import editor.image.AssetImageModule;
    import editor.sound.dialog.AssetSoundListDialog;
+   import editor.ccat.dialog.CollisionCategoryListDialog;
+   import editor.codelib.dialog.CodeLibListDialog;
    
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDefinition;
@@ -55,12 +57,22 @@ package editor.runtime {
             AssetImageModuleListDialog.HideAssetImageModuleListDialog ();
             AssetImageModuleListDialog.sAssetImageModuleListDialog = null;
          }
+         AssetImageModule.mCurrentAssetImageModule = null;
          if (AssetSoundListDialog.sAssetSoundListDialog != null)
          {
             AssetSoundListDialog.HideAssetSoundListDialog ();
             AssetSoundListDialog.sAssetSoundListDialog = null;
          }
-         AssetImageModule.mCurrentAssetImageModule = null;
+         if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
+         {
+            CollisionCategoryListDialog.HideCollisionCategoryListDialog ();
+            CollisionCategoryListDialog.sCollisionCategoryListDialog = null;
+         }
+         if (CodeLibListDialog.sCodeLibListDialog != null)
+         {
+            CodeLibListDialog.HideCodeLibListDialog ();
+            CodeLibListDialog.sCodeLibListDialog = null;
+         }
          InputEntitySelector.sNotifyEntityLinksModified = null;
          
          mHasSettingDialogOpened = false;
@@ -203,9 +215,30 @@ package editor.runtime {
 //
 //=====================================================================
       
+      public static function OnOpenDialog ():void
+      {
+         Runtime.SetHasSettingDialogOpened (true);
+         mEditorWorldView.StartSettingEntityProperties ();
+      }
+      
+      public static function OnCloseDialog (checkCustomVariablesModifications:Boolean = false):void
+      {
+         Runtime.SetHasSettingDialogOpened (false);
+         mEditorWorldView.stage.focus = mEditorWorldView.stage;
+         
+         if (checkCustomVariablesModifications)
+         {
+            mEditorWorldView.CancelSettingEntityProperties ();
+         }
+      }
+
+//=====================================================================
+//
+//=====================================================================
+      
       public static var mEditorWorldView:WorldView = null;
-      public static var mCollisionCategoryView:CollisionManagerView = null;
-      public static var mFunctionEditingView:FunctionEditingView = null;
+      //public static var mCollisionCategoryView:CollisionManagerView = null;
+      //public static var mFunctionEditingView:FunctionEditingView = null;
       
 //=====================================================================
 //   key listener
@@ -220,6 +253,12 @@ package editor.runtime {
                break;
             case Keyboard.F4:
                AssetSoundListDialog.ShowAssetSoundListDialog ();
+               break;
+            case Keyboard.F5:
+               CollisionCategoryListDialog.ShowCollisionCategoryListDialog ();
+               break;
+            case Keyboard.F6:
+               CodeLibListDialog.ShowCodeLibListDialog ();
                break;
          }
             
@@ -254,6 +293,11 @@ package editor.runtime {
 //=====================================================================
 //
 //=====================================================================
+      
+      public static function GetMainView ():WorldView
+      {
+         return mEditorWorldView;
+      }
       
       public static function GetCurrentWorld ():World
       {

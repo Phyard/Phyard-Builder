@@ -35,6 +35,8 @@ package editor.image.dialog {
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
    
+   import editor.asset.AssetManagerArrayLayout; 
+   
    import editor.image.AssetImageModule;
    import editor.image.AssetImageModuleManager;
    
@@ -57,7 +59,8 @@ package editor.image.dialog {
             
             if (mAssetImageModuleManager != null)
             {
-               mAssetImageModuleManager.RearrangeAssetPositions (true);
+               mAssetImageModuleManager.SetLayout (new AssetManagerArrayLayout (mAssetImageModuleManager, mAssetImageModuleManager.GetModuleIconSize () + 16));
+               mAssetImageModuleManager.UpdateLayout (true);
             }
          }
       }

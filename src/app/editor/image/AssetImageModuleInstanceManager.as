@@ -229,7 +229,7 @@ package editor.image {
          AdjustAssetAppearanceOrder (moudleInstance, newIndex);
          moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().AdjustAssetAppearanceOrder (moudleInstance.GetModuleInstaneForListingPeer (), newIndex);
          
-         moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().RearrangeAssetPositions (true);
+         moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
          
          NotifyChangedForPanel ();
       }

@@ -4,7 +4,8 @@ package editor.trigger {
    import mx.controls.ComboBox;
    
    import editor.world.World;
-   import editor.entity.EntityCollisionCategory;
+   //import editor.entity.EntityCollisionCategory;
+   import editor.ccat.CollisionCategory;
    
    import editor.runtime.Runtime;
    
@@ -57,7 +58,7 @@ package editor.trigger {
          var world:World = Runtime.GetCurrentWorld ();
          var category_list:Array = world.GetCollisionCategoryListDataProvider (isForPureCustomFunction);
          
-         var category:EntityCollisionCategory = valueSourceDirect.GetValueObject () as EntityCollisionCategory;
+         var category:CollisionCategory = valueSourceDirect.GetValueObject () as CollisionCategory;
          var sel_index:int = -1;
          var category_index:int = -1;
          if (category != null)
@@ -86,7 +87,7 @@ package editor.trigger {
                if (category_index < 0)
                   valueSourceDirect.SetValueObject (null);
                else
-                  valueSourceDirect.SetValueObject (world.GetCollisionManager ().GetCollisionCategoryByIndex (category_index));
+                  valueSourceDirect.SetValueObject (world.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (category_index));
             }
          }
          

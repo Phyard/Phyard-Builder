@@ -5,7 +5,8 @@ package editor.trigger {
    import common.DataFormat2;
    
    import editor.entity.Entity;
-   import editor.entity.EntityCollisionCategory;
+   //import editor.entity.EntityCollisionCategory;
+   import editor.ccat.CollisionCategory;
    
    public class ValueSource_Direct implements ValueSource
    {
@@ -80,7 +81,7 @@ package editor.trigger {
             {
                return new ValueSource_Direct (null);
             }
-            else if (mValueObject is EntityCollisionCategory)
+            else if (mValueObject is CollisionCategory)
             {
                return new ValueSource_Direct (null);
             }
@@ -97,7 +98,7 @@ package editor.trigger {
             if (entity.GetCreationOrderId () < 0)
                SetValueObject (null)
          }
-         else if (mValueObject is EntityCollisionCategory)
+         else if (mValueObject is CollisionCategory)
          {
             
          }

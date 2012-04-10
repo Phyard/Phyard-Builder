@@ -41,7 +41,7 @@ package editor.display.control {
       
       private function OnClick (event:MouseEvent):void 
       {
-         AssetImageModuleListDialog.StartPickModule (OnModulePicked);
+         AssetImageModuleListDialog.StartPickingMode (OnModulePicked);
       }
    }
 }

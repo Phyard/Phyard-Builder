@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<container:ResizableTitleWindow xmlns:container="editor.display.container.*"
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:codelib="editor.codelib.dialog.*"
+    title="Code Library Manager"
+    width="600" height="500"
+    paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+    showCloseButton="true"
+    creationComplete="InitDialog ();"
+    close="HideCodeLibListDialog ();"
+    >
+
+   <mx:VBox backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="100%"
+            horizontalScrollPolicy="off" verticalScrollPolicy="off"
+            horizontalGap="0" verticalGap="0" borderThickness="0"
+            >
+      <mx:HBox id="Box_Commands" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="1" verticalGap="0">
+         <mx:Spacer width="100%"/>
+         <!--mx:Button id="Button_CreatePackage" visible="false" toolTip="New Package" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-package-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-package-disabled.png')" upIcon="@Embed('../../../res/function/create-package.png')" downIcon="@Embed('../../../res/function/create-package-sel.png')" overIcon="@Embed('../../../res/function/create-package.png')" selectedUpIcon="@Embed('../../../res/function/create-package-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-package-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-package.png')"   /-->
+         <!--mx:Button id="Button_CreateClass" visible="false" toolTip="New Class" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-class-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-class-disabled.png')" upIcon="@Embed('../../../res/function/create-class.png')" downIcon="@Embed('../../../res/function/create-class-sel.png')" overIcon="@Embed('../../../res/function/create-class.png')" selectedUpIcon="@Embed('../../../res/function/create-class-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-class-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-class.png')"   /-->
+         <mx:Button id="Button_CreatePureFunction" toolTip="New Pure Function" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-pure.png')" downIcon="@Embed('../../../res/function/create-function-pure-sel.png')" overIcon="@Embed('../../../res/function/create-function-pure.png')" selectedUpIcon="@Embed('../../../res/function/create-function-pure-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-pure-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-pure.png')"   />
+         <mx:Button id="Button_CreateDirtyFunction" toolTip="New Design-Dependent Function" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
+         <mx:Spacer width="30"/>
+         <mx:Button id="Button_DeleteFunctionAsset" toolTip="Delete" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
+         <mx:Spacer width="30"/>
+         <mx:Button id="Button_SettingFunction" toolTip="Edit Code Snippet" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/function/command-setting.png')" disabledIcon="@Embed('../../../res/function/command-setting-disabled.png')" />
+         <mx:Spacer width="30"/>
+         <mx:Label id="Label_FunctionAssetName" text="Name:" textAlign="right"/>
+         <mx:TextInput id="Text_FunctionAssetName" text="" width="200" enter="stage.focus = panelCodeLibListing;" focusIn="Runtime.SetHasInputFocused (true);" focusOut="Runtime.SetHasInputFocused (false);"/>
+         <mx:Spacer width="100%"/>
+      </mx:HBox>
+      <mx:VBox id="Box_CCatListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+         <codelib:CodeLibListingPanel id="panelCodeLibListing" width="100%" height="100%"/>
+      </mx:VBox>
+   </mx:VBox>
+
+   <mx:Script>
+      <![CDATA[
+
+         import flash.display.InteractiveObject;
+         import flash.events.TextEvent;
+         import flash.events.ContextMenuEvent;
+         import flash.ui.ContextMenu;
+         import flash.ui.ContextMenuItem;
+         import mx.managers.PopUpManager;
+         import mx.events.FlexEvent;
+         import mx.events.MenuEvent;
+         import flash.events.KeyboardEvent;
+         import mx.events.IndexChangedEvent;
+         import mx.controls.Menu;
+         import mx.controls.ToolTip;
+         import mx.controls.Button;
+         
+         import editor.display.dialog.FunctionEditDialog;
+         import editor.runtime.Runtime;
+
+      // static functions
+         
+         public static var sCodeLibListDialog:CodeLibListDialog = null;
+         public static function ShowCodeLibListDialog (OnCCatPicked:Function = null):void
+         {
+         trace ("ShowCodeLibListDialog");
+            if (sCodeLibListDialog == null)
+            {
+               sCodeLibListDialog = new CodeLibListDialog ();
+            }
+            
+            if (sCodeLibListDialog.parent != null) // OnCCatPicked must be null
+            {
+               PopUpManager.bringToFront (sCodeLibListDialog);
+            }
+            else
+            {
+               PopUpManager.addPopUp (sCodeLibListDialog, Runtime.GetApplication (), OnCCatPicked != null);
+               PopUpManager.centerPopUp (sCodeLibListDialog);
+            }
+            
+            sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (Runtime.GetCurrentWorld ().GetCodeLibManager ());
+            
+            if (OnCCatPicked != null)
+            {
+               sCodeLibListDialog.mInPickingMode = true;
+               
+               sCodeLibListDialog.GetCodeLibListingPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
+            }
+         }
+         
+         public static function HideCodeLibListDialog ():void
+         {
+            if (sCodeLibListDialog.mInPickingMode)
+            {
+               EndPickingMode ();
+            }
+            else
+            {
+               PopUpManager.removePopUp (sCodeLibListDialog);
+            }
+            
+         }
+         
+         public static function StartPickingMode (OnCCatPicked:Function):void
+         {
+            if (sCodeLibListDialog != null)
+            {
+               PopUpManager.removePopUp (sCodeLibListDialog);
+            }
+            
+            ShowCodeLibListDialog (OnCCatPicked);
+         }
+         
+         public static function EndPickingMode ():void
+         {
+            if (sCodeLibListDialog != null)
+            {
+               sCodeLibListDialog.mInPickingMode = false;
+               
+               PopUpManager.removePopUp(sCodeLibListDialog);
+            
+               sCodeLibListDialog.GetCodeLibListingPanel ().ExitPickAssetIntent ();
+            }
+         }
+         
+      //======================================================
+         
+         public function GetCodeLibListingPanel ():CodeLibListingPanel
+         {
+            return panelCodeLibListing;
+         }
+         
+      //======================================================
+      
+         internal var mInPickingMode:Boolean = false;
+         
+         private function InitDialog ():void
+         {
+            // setting dialogs
+            panelCodeLibListing.ShowFunctionSettingDialog = ShowFunctionSettingDialog;
+            
+            // 
+            panelCodeLibListing.mButtonCreatePureFunction = Button_CreatePureFunction;
+            panelCodeLibListing.mButtonCreateDirtyFunction = Button_CreateDirtyFunction;
+            //panelCodeLibListing.mButtonCreatePackage = Button_CreatePackage;
+            //panelCodeLibListing.mButtonCreateClass = Button_CreateClass;
+            
+            Button_CreatePureFunction.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnCreateButtonClick);
+            Button_CreateDirtyFunction.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnCreateButtonClick);
+            //Button_CreatePackage.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnCreateButtonClick);
+            //Button_CreateClass.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnCreateButtonClick);
+            
+            panelCodeLibListing.mButtonDelete = Button_DeleteFunctionAsset;
+            panelCodeLibListing.mButtonSetting = Button_SettingFunction;
+            
+            Button_DeleteFunctionAsset.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnEditButtonClick);
+            Button_SettingFunction.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnEditButtonClick);
+            
+            panelCodeLibListing.mLabelName = Label_FunctionAssetName;
+            panelCodeLibListing.mTextInputName = Text_FunctionAssetName;
+            
+            Text_FunctionAssetName.addEventListener (FlexEvent.ENTER, panelCodeLibListing.OnTextInputEnter);
+         }
+            
+      //==========================================================
+            
+            private function ShowFunctionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.OnOpenDialog ();
+               
+               var settingDialog:FunctionEditDialog = new FunctionEditDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, Runtime.GetApplication (), true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</container:ResizableTitleWindow>

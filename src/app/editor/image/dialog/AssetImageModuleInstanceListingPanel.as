@@ -35,6 +35,8 @@ package editor.image.dialog {
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
    
+   import editor.asset.AssetManagerArrayLayout; 
+   
    import editor.image.AssetImageModuleInstanceManagerForListing;
    
    import editor.runtime.Runtime;
@@ -60,6 +62,12 @@ package editor.image.dialog {
          super.SetAssetManager (assetImageModuleInstanceManagerForListing);
           
          mAssetImageModuleInstanceManagerForListing = assetImageModuleInstanceManagerForListing;
+         
+         if (mAssetImageModuleInstanceManagerForListing != null)
+         {
+            mAssetImageModuleInstanceManagerForListing.SetLayout (new AssetManagerArrayLayout (mAssetImageModuleInstanceManagerForListing, mAssetImageModuleInstanceManagerForListing.GetModuleIconSize () + 16));
+            mAssetImageModuleInstanceManagerForListing.UpdateLayout (true);
+         }
       }
       
       protected var mAssetImageCompositeModuleEditingPanelPeer:AssetImageCompositeModuleEditingPanel;
@@ -76,7 +84,7 @@ package editor.image.dialog {
       {
          if (mAssetImageModuleInstanceManagerForListing != null)
          {
-            mAssetImageModuleInstanceManagerForListing.RearrangeAssetPositions (true);
+            mAssetImageModuleInstanceManagerForListing.UpdateLayout (true);
          }
       }
       

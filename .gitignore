@@ -3,3 +3,6 @@
 .release.*
 .release_**/*
 .release_editor
+.classpath
+.project
+

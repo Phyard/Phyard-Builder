@@ -7,7 +7,8 @@ package editor.trigger {
    
    import editor.world.World;
    import editor.entity.WorldEntity;
-   import editor.entity.EntityCollisionCategory;
+   //import editor.entity.EntityCollisionCategory;
+   import editor.ccat.CollisionCategory;
    
    import editor.image.AssetImageModule;
    
@@ -145,7 +146,7 @@ package editor.trigger {
       {
          var world:World = Runtime.GetCurrentWorld (); // in loading stage, it would be null
          
-         var category:EntityCollisionCategory = valueObject as EntityCollisionCategory;
+         var category:CollisionCategory = valueObject as CollisionCategory;
          if (category != null && category.GetAppearanceLayerId () < 0)
             category = null;
          

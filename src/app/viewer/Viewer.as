@@ -331,9 +331,7 @@ package viewer {
       
       private static function OnAccelerationUpdate (event:Object):void // AccelerometerEvent):void
       {
-         // seems the value excludes the contribution of gravity
-         
-         mAccelerationX = event.accelerationX;
+         mAccelerationX = - event.accelerationX; // why?
          mAccelerationY = event.accelerationY;
          mAccelerationZ = event.accelerationZ;
       }
@@ -752,9 +750,9 @@ package viewer {
          {
             mWorldPlugin = mWorldPluginDomain.getDefinition ("Main");
          }
-         else // if (mWorldPluginDomain.hasDefinition ("plugin.WorldPlugin")) // for editor
+         else // if (mWorldPluginDomain.hasDefinition ("player.WorldPlugin")) // for editor
          {
-            mWorldPlugin = mWorldPluginDomain.getDefinition ("plugin.WorldPlugin");
+            mWorldPlugin = mWorldPluginDomain.getDefinition ("player.WorldPlugin");
          }
 
          mWorldPluginProperties = mWorldPlugin.Call ("GetStaticProperties");

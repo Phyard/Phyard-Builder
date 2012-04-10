@@ -33,6 +33,8 @@ package editor.sound.dialog {
    
    import editor.asset.AssetManagerPanel;
    
+   import editor.asset.AssetManagerListLayout; 
+   
    import editor.sound.AssetSound;
    import editor.sound.AssetSoundManager;
    
@@ -55,14 +57,15 @@ package editor.sound.dialog {
             
             if (mAssetSoundManager != null)
             {
-               mAssetSoundManager.RearrangeAssetPositions (true);
+               mAssetSoundManager.SetLayout (new AssetManagerListLayout (mAssetSoundManager, 76));
+               mAssetSoundManager.UpdateLayout (true);
             }
          }
       }
       
-      override public function IsZoomSupported ():Boolean
+      override public function GetMouseWheelFunction ():int
       {
-         return false;
+         return kMouseWheelFunction_Scroll;
       }
       
 //============================================================================

@@ -21,16 +21,40 @@ package editor.asset {
    import common.Define;
    import common.ValueAdjuster;
    
-   public class AssetManagerArrayLayout extends AssetManager 
+   public class AssetManagerArrayLayout extends AssetManagerLayout 
    {
-      public function GetAssetSpriteSize ():Number
+      private var mAssetManager:AssetManager;
+      
+      public function AssetManagerArrayLayout (assetManager:AssetManager, assetSpriteSize:Number = 100, assetSpriteGap:Number = 10)
       {
-         return 100;
+         mAssetManager = assetManager;
+         
+         mAssetSpriteSize = assetSpriteSize;
+         mAssetSpriteGap = assetSpriteGap;
       }
       
-      public function GetAssetSpriteGap ():Number
+      private var mAssetSpriteSize:Number = 100;
+      
+      private function GetAssetSpriteSize ():Number
       {
-         return 10;
+         return mAssetSpriteSize;
+      }
+
+      override public function GetAssetSpriteWidth ():Number
+      {
+         return mAssetSpriteSize;
+      }
+      
+      override public function GetAssetSpriteHeight ():Number
+      {
+         return mAssetSpriteSize;
+      }
+      
+      private var mAssetSpriteGap:Number = 10;
+      
+      override public function GetAssetSpriteGap ():Number
+      {
+         return mAssetSpriteGap;
       }
       
 //========================================================
@@ -42,42 +66,9 @@ package editor.asset {
          return false;
       }
       
-      override public function SetPosition (px:Number, py:Number):void
+      override public function SupportMoveSelectedAssets ():Boolean
       {
-         super.SetPosition (px, py);
-         
-         RearrangeAssetPositions ();
-      }
-      
-      override public function SetScale (s:Number):void
-      {
-         super.SetScale (s);
-         
-         RearrangeAssetPositions ();
-      }
-      
-      override public function SetViewportSize (parentViewWidth:Number, parentViewHeight:Number):void
-      {
-         super.SetViewportSize (parentViewWidth, parentViewHeight);
-         
-         RearrangeAssetPositions ();
-      }
-      
-      override public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
-      {
-         if (moveBodyTexture)
-            super.MoveSelectedAssets (moveBodyTexture, offsetX, offsetY, updateSelectionProxy);
-         //else
-            // temp do nothing
-      }
-      
-      override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
-      {
-         var result:Boolean = super.DeleteSelectedAssets ();
-         
-         RearrangeAssetPositions (true);
-         
-         return result;
+         return false;
       }
       
 //========================================================
@@ -88,16 +79,16 @@ package editor.asset {
       protected var mContentWidth:Number;
       protected var mContentHeight:Number;
       
-      public function RearrangeAssetPositions (forcely:Boolean = false):void
+      override public function DoLayout (forcely:Boolean = false):void
       {
-         if (parent == null)
+         if (mAssetManager.parent == null)
             return;
          
-         mViewWidth  = parent.width  / this.scaleX;
-         mViewHeight = parent.height / this.scaleY;
+         mAssetManager.mViewWidth  = mAssetManager.parent.width  / mAssetManager.scaleX;
+         mAssetManager.mViewHeight = mAssetManager.parent.height / mAssetManager.scaleY;
          
          var cellSize:Number = GetAssetSpriteSize () + GetAssetSpriteGap ();
-         var numCols:int = Math.floor ((mViewWidth - GetAssetSpriteGap ()) / cellSize);
+         var numCols:int = Math.floor ((mAssetManager.mViewWidth - GetAssetSpriteGap ()) / cellSize);
          if (numCols < 1)
             numCols = 1;
          
@@ -110,10 +101,10 @@ package editor.asset {
             
             var col:int = 0;
             var maxRowHeight:Number = 0;
-            var numAssets:int = GetNumAssets ();
+            var numAssets:int = mAssetManager.GetNumAssets ();
             for (var i:int = 0; i < numAssets; ++ i)
             {
-               var asset:Asset = GetAssetByAppearanceId (i);
+               var asset:Asset = mAssetManager.GetAssetByAppearanceId (i);
                var boundRect:Rectangle = asset.getBounds (asset);
                if (boundRect.height > maxRowHeight)
                   maxRowHeight = boundRect.height;
@@ -130,29 +121,29 @@ package editor.asset {
             }
          }
          
-         if (mContentWidth < mViewWidth)
-            x = 0;
-         else if (x > 0)
-            x = 0;
+         if (mContentWidth < mAssetManager.mViewWidth)
+            mAssetManager.x = 0;
+         else if (mAssetManager.x > 0)
+            mAssetManager.x = 0;
          else
          {
-            var minX:Number = (mViewWidth - mContentWidth) * this.scaleX;
-            if (x < minX)
+            var minX:Number = (mAssetManager.mViewWidth - mContentWidth) * mAssetManager.scaleX;
+            if (mAssetManager.x < minX)
             {
-               x = minX;
+               mAssetManager.x = minX;
             }
          }
          
-         if (mContentHeight < mViewHeight)
-            y = 0;
-         else if (y > 0)
-            y = 0;
+         if (mContentHeight < mAssetManager.mViewHeight)
+            mAssetManager.y = 0;
+         else if (mAssetManager.y > 0)
+            mAssetManager.y = 0;
          else
          {
-            var minY:Number = (mViewHeight - mContentHeight) * this.scaleY;
-            if (y < minY)
+            var minY:Number = (mAssetManager.mViewHeight - mContentHeight) * mAssetManager.scaleY;
+            if (mAssetManager.y < minY)
             {
-               y = minY;
+               mAssetManager.y = minY;
             }
          }
       }

@@ -35,7 +35,8 @@ package common {
    import editor.entity.EntityUtilityCamera;
    import editor.entity.EntityUtilityPowerSource;
    
-   import editor.entity.EntityCollisionCategory;
+   //import editor.entity.EntityCollisionCategory;
+   import editor.ccat.CollisionCategory;
    
    import editor.image.AssetImage;
    import editor.image.AssetImageManager;
@@ -89,7 +90,8 @@ package common {
    import editor.trigger.entity.EntityEventHandler_ModuleLoopToEnd;
    import editor.trigger.entity.EntityEventHandler_GameLostOrGotFocus;
    
-   import editor.trigger.entity.EntityFunction;
+   //import editor.trigger.entity.EntityFunction;
+   import editor.codelib.AssetFunction;
    
    import editor.trigger.VariableSpace;
    import editor.trigger.VariableInstance;
@@ -773,11 +775,11 @@ package common {
          //>>fromv1.02
          // collision category
          {
-            var numCats:int = editorWorld.GetCollisionManager ().GetNumCollisionCategories ();
+            var numCats:int = editorWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
             
             for (var ccId:int = 0; ccId < numCats; ++ ccId)
             {
-               var collisionCategory:EntityCollisionCategory = editorWorld.GetCollisionManager ().GetCollisionCategoryByIndex (ccId);
+               var collisionCategory:CollisionCategory = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (ccId);
                
                var ccDefine:Object = new Object ();
                
@@ -789,17 +791,17 @@ package common {
                worldDefine.mCollisionCategoryDefines.push (ccDefine);
             }
             
-            worldDefine.mDefaultCollisionCategoryIndex = editorWorld.GetCollisionManager ().GetCollisionCategoryIndex (editorWorld.GetCollisionManager ().GetDefaultCollisionCategory ());
+            worldDefine.mDefaultCollisionCategoryIndex = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (editorWorld.GetCollisionCategoryManager ().GetDefaultCollisionCategory ());
             
-            var ccFriendPairs:Array = editorWorld.GetCollisionManager ().GetCollisionCategoryFriendPairs ();
+            var ccFriendPairs:Array = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryFriendPairs ();
             for (var pairId:int = 0; pairId < ccFriendPairs.length; ++ pairId)
             {
                var friendPair:Object = ccFriendPairs [pairId];
                
                var pairDefine:Object = new Object ();
                
-               pairDefine.mCollisionCategory1Index = editorWorld.GetCollisionManager ().GetCollisionCategoryIndex (friendPair.mCategory1);
-               pairDefine.mCollisionCategory2Index = editorWorld.GetCollisionManager ().GetCollisionCategoryIndex (friendPair.mCategory2);
+               pairDefine.mCollisionCategory1Index = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory1);
+               pairDefine.mCollisionCategory2Index = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory2);
                
                worldDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
             }
@@ -828,19 +830,19 @@ package common {
             
             // functions 
             
-            var numFunctions:int = editorWorld.GetFunctionManager().GetNumFunctions ();
+            var numFunctions:int = editorWorld.GetCodeLibManager().GetNumFunctions ();
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
             {
-               var functionEntity:EntityFunction = editorWorld.GetFunctionManager().GetFunctionByIndex (functionId);
+               var functionAsset:AssetFunction = editorWorld.GetCodeLibManager().GetFunctionByIndex (functionId);
                
-               functionEntity.GetCodeSnippet ().ValidateCallings ();
-               var functionDefine:FunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, functionEntity.GetCodeSnippet ());
-               functionDefine.mName = functionEntity.GetName ();
-               functionDefine.mPosX = functionEntity.GetPositionX ();
-               functionDefine.mPosY = functionEntity.GetPositionY ();
+               functionAsset.GetCodeSnippet ().ValidateCallings ();
+               var functionDefine:FunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, functionAsset.GetCodeSnippet ());
+               functionDefine.mName = functionAsset.GetName ();
+               functionDefine.mPosX = functionAsset.GetPositionX ();
+               functionDefine.mPosY = functionAsset.GetPositionY ();
                
                //>>v1.56
-               functionDefine.mDesignDependent = functionEntity.IsDesignDependent ();
+               functionDefine.mDesignDependent = functionAsset.IsDesignDependent ();
                //<<
                
                worldDefine.mFunctionDefines.push (functionDefine);
@@ -1388,17 +1390,17 @@ package common {
          
          // collision category
          
-         var beginningCollisionCategoryIndex:int = editorWorld.GetCollisionManager ().GetNumCollisionCategories ();
+         var beginningCollisionCategoryIndex:int = editorWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
          
          //>> from v1.02
          {
-            var collisionCategory:EntityCollisionCategory;
+            var collisionCategory:CollisionCategory;
             
             for (var ccId:int = 0; ccId < worldDefine.mCollisionCategoryDefines.length; ++ ccId)
             {
                var ccDefine:Object = worldDefine.mCollisionCategoryDefines [ccId];
                
-               collisionCategory = editorWorld.GetCollisionManager ().CreateEntityCollisionCategory (ccDefine.mName);
+               collisionCategory = editorWorld.GetCollisionCategoryManager ().CreateCollisionCategory (ccDefine.mName);
                collisionCategory.SetCollideInternally (ccDefine.mCollideInternally);
                
                collisionCategory.SetPosition (ccDefine.mPosX, ccDefine.mPosY);
@@ -1409,9 +1411,9 @@ package common {
             
             if (isCreatingNewWorld)
             {
-               collisionCategory = editorWorld.GetCollisionManager ().GetCollisionCategoryByIndex (worldDefine.mDefaultCollisionCategoryIndex);
+               collisionCategory = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (worldDefine.mDefaultCollisionCategoryIndex);
                if (collisionCategory != null)
-                  collisionCategory.SetDefaultCategory (true);
+                  collisionCategory.SetAsDefaultCategory (true);
             }
             
             for (var pairId:int = 0; pairId < worldDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
@@ -1419,7 +1421,7 @@ package common {
                var pairDefine:Object = worldDefine.mCollisionCategoryFriendLinkDefines [pairId];
                
                //editorWorld.CreateEntityCollisionCategoryFriendLink (pairDefine.mCollisionCategory1Index, pairDefine.mCollisionCategory2Index);
-               editorWorld.CreateEntityCollisionCategoryFriendLink (beginningCollisionCategoryIndex + pairDefine.mCollisionCategory1Index, 
+               editorWorld.CreateCollisionCategoryFriendLink (beginningCollisionCategoryIndex + pairDefine.mCollisionCategory1Index, 
                                                                     beginningCollisionCategoryIndex + pairDefine.mCollisionCategory2Index);
             }
          }
@@ -2126,41 +2128,41 @@ package common {
          
          //>>> load custom functions
          // from v1.53
-         editorWorld.GetFunctionManager().SetDelayUpdateFunctionMenu (true);
-         var beginningCustomFunctionIndex:int = editorWorld.GetFunctionManager().GetNumFunctions ();
+         editorWorld.GetCodeLibManager().SetDelayUpdateFunctionMenu (true);
+         var beginningCustomFunctionIndex:int = editorWorld.GetCodeLibManager().GetNumFunctions ();
          
          var functionId:int;
-         var functionEntity:EntityFunction;
+         var functionAsset:AssetFunction;
          var functionDefine:FunctionDefine;
          
          for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
          {
-            functionEntity = editorWorld.GetFunctionManager ().CreateEntityFunction ();
+            functionAsset = editorWorld.GetCodeLibManager ().CreateFunction ();
             functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
             
             //>>v1.56
-            functionEntity.SetDesignDependent (functionDefine.mDesignDependent);
+            functionAsset.SetDesignDependent (functionDefine.mDesignDependent);
             //<<
             
-            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionEntity.GetCodeSnippet (), functionEntity.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
-            functionEntity.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
+            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
+            functionAsset.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
          }
          
          for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
          {
-            functionEntity = editorWorld.GetFunctionManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
+            functionAsset = editorWorld.GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
             functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
             
-            functionEntity.SetFunctionName (functionDefine.mName);
-            functionEntity.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
+            functionAsset.SetFunctionName (functionDefine.mName);
+            functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
             
-            functionEntity.UpdateAppearance ();
-            functionEntity.UpdateSelectionProxy ();
+            functionAsset.UpdateAppearance ();
+            functionAsset.UpdateSelectionProxy ();
             
             TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionEntity.GetCodeSnippet (), functionEntity.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
+            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
          }
-         editorWorld.GetFunctionManager().SetDelayUpdateFunctionMenu (false);
+         editorWorld.GetCodeLibManager().SetDelayUpdateFunctionMenu (false);
          //<<<
          
          // modify, 2nd round

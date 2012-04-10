@@ -39,20 +39,6 @@ package editor.image {
 // 
 //==========================================================      
       
-      override public function GetAssetSpriteSize ():Number
-      {
-         return 76;
-      }
-
-      override public function GetAssetSpriteGap ():Number
-      {
-         return 10;
-      }
-      
-//==========================================================      
-// 
-//==========================================================      
-      
       override public function GetModuleIconSize ():Number
       {
          return 66;
@@ -72,7 +58,7 @@ package editor.image {
          if (insertBeforeSelectedThenSelectNew)
             SetSelectedAsset (module);
          
-         RearrangeAssetPositions (true);
+         UpdateLayout (true);
          
          return module;
       }
@@ -93,13 +79,10 @@ package editor.image {
          }
       }
       
-      protected var mMenuItemCreateCompositeModule:ContextMenuItem = null;
+      protected var mMenuItemCreateCompositeModule:ContextMenuItem = new ContextMenuItem  (IsSequencedModuleManager () ? "Create New Sequenced Module" : "Create New Assembled Module", true);
 
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         if (mMenuItemCreateCompositeModule == null)
-            mMenuItemCreateCompositeModule = new ContextMenuItem  (IsSequencedModuleManager () ? "Create New Sequenced Module" : "Create New Assembled Module", true);
-         
          mMenuItemCreateCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateCompositeModule);
 
          customMenuItemsStack.push (mMenuItemCreateCompositeModule);

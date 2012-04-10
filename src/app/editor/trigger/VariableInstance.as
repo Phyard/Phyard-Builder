@@ -1,5 +1,7 @@
 package editor.trigger {
    
+   import mx.core.UIComponent;
+   
    import common.trigger.ValueTypeDefine;
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueTargetTypeDefine;
@@ -7,17 +9,6 @@ package editor.trigger {
    
    public class VariableInstance // implements ValueSource, ValueTarget
    {
-   //========================================================================================================
-   // for ConvertRegisterVariablesToGlobalVariables
-   //========================================================================================================
-      
-      public var mCorrespondingGlobalVariable:VariableInstance = null;
-      
-      public function GetCodeStringAsRegisterVariable ():String
-      {
-         return mVariableSpace.GetCodeName () + "[" + mIndex + "]";
-      }
-      
    //========================================================================================================
    //
    //========================================================================================================

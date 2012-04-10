@@ -35,7 +35,7 @@
          
          import mx.managers.PopUpManager;
          
-         import editor.runtime.Runtime;
+         import editor.EditorContext;
 
       // static functions
          
@@ -54,11 +54,11 @@
             }
             else
             {
-               PopUpManager.addPopUp (sAssetSoundListDialog, Runtime.GetApplication (), OnSoundPicked != null);
+               PopUpManager.addPopUp (sAssetSoundListDialog, EditorContext.GetApplication (), OnSoundPicked != null);
                PopUpManager.centerPopUp (sAssetSoundListDialog);
             }
             
-            sAssetSoundListDialog.GetAssetSoundListingPanel ().SetAssetSoundManager (Runtime.GetCurrentWorld ().GetAssetSoundManager ());
+            sAssetSoundListDialog.GetAssetSoundListingPanel ().SetAssetSoundManager (EditorContext.GetCurrentWorld ().GetAssetSoundManager ());
             
             if (OnSoundPicked != null)
             {
@@ -116,20 +116,20 @@
          
          private function InitDialog ():void
          {
-            SliderVolume.value = Runtime.GetSoundVolume ();
+            SliderVolume.value = EditorContext.GetSoundVolume ();
             AdjustVolume ();
          }
          
          private function StopAllSounds ():void
          {
-            Runtime.GetCurrentWorld ().GetAssetSoundManager ().StopAllSounds ();
+            EditorContext.GetCurrentWorld ().GetAssetSoundManager ().StopAllSounds ();
             SoundMixer.stopAll ();
          }
          
          private function AdjustVolume ():void
          {
-            Runtime.SetSoundVolume (SliderVolume.value);
-            SliderVolume.value = Runtime.GetSoundVolume ();
+            EditorContext.SetSoundVolume (SliderVolume.value);
+            SliderVolume.value = EditorContext.GetSoundVolume ();
             var transform:SoundTransform = new SoundTransform();
             transform.volume = SliderVolume.value;
             SoundMixer.soundTransform = transform;

@@ -100,7 +100,7 @@
             <mx:Button id="Button_SettingFunction" toolTip="Edit Code Snippet" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('../res/function/command-setting.png')" disabledIcon="@Embed('../res/function/command-setting-disabled.png')" />
             <mx:Spacer width="30"/>
             <mx:Label id="Label_FunctionEntityName" text="Name:" textAlign="right"/>
-            <mx:TextInput id="Text_FunctionEntityName" text="" width="200" enter="stage.focus = MainView;" focusIn="Runtime.SetHasInputFocused (true);" focusOut="Runtime.SetHasInputFocused (false);"/>
+            <mx:TextInput id="Text_FunctionEntityName" text="" width="200" enter="stage.focus = MainView;" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
             <mx:Spacer width="100%"/>
          </mx:HBox-->
       </mx:ViewStack>
@@ -148,10 +148,10 @@
                      <mx:HBox id="Box_ShapeInitialProperties" horizontalAlign="center" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="1">
                         <mx:Spacer width="100%"/>
                         <mx:VBox horizontalAlign="left" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="2" horizontalGap="0" verticalGap="0" borderStyle="none" borderThickness="0">
-                           <mx:CheckBox id="CheckBox_EnablePhysics" click="Runtime.mShape_EnablePhysics=CheckBox_EnablePhysics.selected;" label="Physics" selected="true"/>
+                           <mx:CheckBox id="CheckBox_EnablePhysics" click="EditorContext.mShape_EnablePhysics=CheckBox_EnablePhysics.selected;" label="Physics" selected="true"/>
                            <mx:Canvas borderStyle="none" width="100%">
-                              <mx:ColorPicker id="ColorPicker_BackgroundColor" x="29" y="13" change="Runtime.mShape_BackgroundColor=ColorPicker_BackgroundColor.selectedColor" showTextField="true" selectedColor="0x5555FF"/>
-                              <mx:ColorPicker id="ColorPicker_BorderColor" x="16" y="2" change="Runtime.mShape_BorderColor=ColorPicker_BorderColor.selectedColor" showTextField="true" selectedColor="0xFF000000"/>
+                              <mx:ColorPicker id="ColorPicker_BackgroundColor" x="29" y="13" change="EditorContext.mShape_BackgroundColor=ColorPicker_BackgroundColor.selectedColor" showTextField="true" selectedColor="0x5555FF"/>
+                              <mx:ColorPicker id="ColorPicker_BorderColor" x="16" y="2" change="EditorContext.mShape_BorderColor=ColorPicker_BorderColor.selectedColor" showTextField="true" selectedColor="0xFF000000"/>
                            </mx:Canvas>
                         </mx:VBox>
                         <mx:Spacer width="100%"/>
@@ -345,7 +345,7 @@
                            <mx:Spacer width="3"/>
                            <mx:Label id="Label_GoToEntity" text="Go To Entity#" textAlign="right" click="SelectNewEntitiesWithoutBrothers (null);"/>
                         </mx:HBox>
-                        <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnGoToEntity();" focusIn="Runtime.SetHasInputFocused (true);" focusOut="Runtime.SetHasInputFocused (false);"/>
+                        <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnGoToEntity();" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
                         <mx:Spacer width="100%" />
                         <mx:Spacer width="16"/>
                         <mx:Label text="Show:"/>
@@ -496,7 +496,7 @@
             import com.tapirgames.util.UrlUtil;
             import editor.WorldView;
             import editor.display.dialog.*;
-            import editor.runtime.Runtime;
+            import editor.EditorContext;
             import editor.trigger.Lists;
             import common.Define;
             import common.ValueAdjuster;
@@ -508,7 +508,7 @@
             
             private function OnAddedToStage (event:Event):void 
             {
-               stage.addEventListener (KeyboardEvent.KEY_DOWN, Runtime.OnKeyDown);
+               stage.addEventListener (KeyboardEvent.KEY_DOWN, EditorContext.OnKeyDown);
                
                stage.addEventListener (MouseEvent.MOUSE_DOWN, CheckMouseHoldStatus);
                stage.addEventListener (MouseEvent.MOUSE_MOVE, CheckMouseHoldStatus);
@@ -517,7 +517,7 @@
             
             private function CheckMouseHoldStatus (event:MouseEvent):void
             {
-               Runtime.SetMouseButtonHold (event.buttonDown);
+               EditorContext.SetMouseButtonHold (event.buttonDown);
             }
             
             private function InitApp ():void
@@ -547,11 +547,11 @@
                
             //===================================================================================================
                
-               Runtime.SetApplication (this)
+               EditorContext.SetApplication (this)
                
-               Runtime.mEditorWorldView = MainView;
-               //Runtime.mCollisionCategoryView = CollisionManagerView;
-               //Runtime.mFunctionEditingView = FunctionEditingView;
+               EditorContext.mEditorWorldView = MainView;
+               //EditorContext.mCollisionCategoryView = CollisionManagerView;
+               //EditorContext.mFunctionEditingView = FunctionEditingView;
                
                addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
                
@@ -1251,7 +1251,7 @@
                
                ViewStack_EditView.selectedChild = EntityDesignView;
                
-               Runtime.SetKeyboardListener (MainView);
+               EditorContext.SetKeyboardListener (MainView);
                ViewStack_ViewEditCommands.selectedChild = Box_EntityEditViewCommands;
             }
             */
@@ -1266,8 +1266,8 @@
                ViewStack_EditView.selectedChild = CCatDesignView;
                ViewStack_ViewEditCommands.selectedChild = Box_CCatEditViewCommands;
                
-               Runtime.SetKeyboardListener (CollisionManagerView);
-               CollisionManagerView.SetCollisionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetCollisionManager ());
+               EditorContext.SetKeyboardListener (CollisionManagerView);
+               CollisionManagerView.SetCollisionManager (EditorContext.mEditorWorldView.GetEditorWorld ().GetCollisionManager ());
             }
             */
             
@@ -1280,11 +1280,11 @@
                
                ViewStack_EditView.selectedChild = FunctionDesignView;
                
-               Runtime.SetKeyboardListener (FunctionEditingView);
+               EditorContext.SetKeyboardListener (FunctionEditingView);
                ViewStack_ViewEditCommands.selectedChild = Box_FunctionEditViewCommands;
                
-               Runtime.SetKeyboardListener (FunctionEditingView);
-               FunctionEditingView.SetFunctionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetFunctionManager ());
+               EditorContext.SetKeyboardListener (FunctionEditingView);
+               FunctionEditingView.SetFunctionManager (EditorContext.mEditorWorldView.GetEditorWorld ().GetFunctionManager ());
             }
             */
             
@@ -1497,72 +1497,72 @@
             
             private function ShowDesignInfoSettingDialog():void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:DesignInfoSettingDialog = new DesignInfoSettingDialog ();
-               settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldDesignInfo ());
-               settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetCurrentWorldDesignInfo);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldDesignInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldDesignInfo);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowLevelRulesEditDialog ():void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:WorldLevelRulesSettingDialog = new WorldLevelRulesSettingDialog ();
-               settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldLevelRulesInfo ());
-               settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetCurrentWorldLevelRulesInfo);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldLevelRulesInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldLevelRulesInfo);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowCoordinateSystemEditDialog ():void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:WorldCoordinateSystemSettingDialog = new WorldCoordinateSystemSettingDialog ();
-               settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldCoordinateSystemInfo ());
-               settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetCurrentWorldCoordinateSystemInfo);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldCoordinateSystemInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldCoordinateSystemInfo);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowWorldPhysicsEditDialog ():void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:WorldPhysicsSettingDialog = new WorldPhysicsSettingDialog ();
-               settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldPhysicsyInfo ());
-               settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetCurrentWorldPhysicsInfo);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldPhysicsyInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldPhysicsInfo);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowWorldAppearanceEditDialog ():void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:WorldAppearanceSettingDialog = new WorldAppearanceSettingDialog ();
-               settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldAppearanceInfo ());
-               settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetCurrentWorldAppearanceInfo);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetValues (EditorContext.mEditorWorldView.GetCurrentWorldAppearanceInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetCurrentWorldAppearanceInfo);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowViewportEditDialog ():void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:ViewportSettingDialog = new ViewportSettingDialog ();
-               settingDialog.SetValues (Runtime.mEditorWorldView.GetViewportInfo ());
-               settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetViewportInfo);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetValues (EditorContext.mEditorWorldView.GetViewportInfo ());
+               settingDialog.SetConfirmFunc (EditorContext.mEditorWorldView.SetViewportInfo);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
@@ -1573,14 +1573,14 @@
             
             private function ShowShapeRectangleSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                if ( Define.IsBombShape (initialValues.mAiType) )
                {
                   var settingBombDialog:ShapeRectangleBombSettingDialog = new ShapeRectangleBombSettingDialog ();
                   settingBombDialog.SetValues (initialValues);
                   settingBombDialog.SetConfirmFunc (onConfirmFunc);
-                  settingBombDialog.SetCloseFunc (Runtime.OnCloseDialog);
+                  settingBombDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                   PopUpManager.addPopUp (settingBombDialog, MainView, true);
                   PopUpManager.centerPopUp (settingBombDialog);
                }
@@ -1589,7 +1589,7 @@
                   var settingDialog:ShapeRectangleSettingDialog = new ShapeRectangleSettingDialog ();
                   settingDialog.SetValues (initialValues);
                   settingDialog.SetConfirmFunc (onConfirmFunc);
-                  settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+                  settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                   PopUpManager.addPopUp (settingDialog, MainView, true);
                   PopUpManager.centerPopUp (settingDialog);
                }
@@ -1597,14 +1597,14 @@
             
             private function ShowShapeCircleSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                if ( Define.IsBombShape (initialValues.mAiType) )
                {
                   var settingBombDialog:ShapeCircleBombSettingDialog = new ShapeCircleBombSettingDialog ();
                   settingBombDialog.SetValues (initialValues);
                   settingBombDialog.SetConfirmFunc (onConfirmFunc);
-                  settingBombDialog.SetCloseFunc (Runtime.OnCloseDialog);
+                  settingBombDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                   PopUpManager.addPopUp (settingBombDialog, MainView, true);
                   PopUpManager.centerPopUp (settingBombDialog);
                }
@@ -1613,7 +1613,7 @@
                   var settingDialog:ShapeCircleSettingDialog = new ShapeCircleSettingDialog ();
                   settingDialog.SetValues (initialValues);
                   settingDialog.SetConfirmFunc (onConfirmFunc);
-                  settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+                  settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                   PopUpManager.addPopUp (settingDialog, MainView, true);
                   PopUpManager.centerPopUp (settingDialog);
                }
@@ -1621,180 +1621,180 @@
             
             private function ShowShapePolygonSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:ShapePolygonSettingDialog = new ShapePolygonSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowShapePolylineSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:ShapePolylineSettingDialog = new ShapePolylineSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowShapeImageModuleSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:ShapeImageModuleSettingDialog = new ShapeImageModuleSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowShapeImageModuleButtonSettingDialog(initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:ShapeImageModuleButtonSettingDialog = new ShapeImageModuleButtonSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowShapeTextSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:ShapeTextSettingDialog = new ShapeTextSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowShapeTextButtonSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:ShapeTextButtonSettingDialog = new ShapeTextButtonSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowShapeGravityControllerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:ShapeGravityControllerSettingDialog = new ShapeGravityControllerSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowHingeSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:JointHingeSettingDialog = new JointHingeSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowSliderSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:JointSliderSettingDialog = new JointSliderSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowSpringSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:JointSpringSettingDialog = new JointSpringSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowDistanceSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:JointDistanceSettingDialog = new JointDistanceSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowWeldSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:JointWeldSettingDialog = new JointWeldSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowDummySettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:JointDummySettingDialog = new JointDummySettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowCameraSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:UtilityCameraSettingDialog = new UtilityCameraSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowPowerSourceSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:UtilityPowerSourceSettingDialog = new UtilityPowerSourceSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
@@ -1802,274 +1802,274 @@
             
             private function ShowEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicEventHandlerEditDialog = new LogicEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowTimerEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicTimerEventHandlerEditDialog = new LogicTimerEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowTimerEventHandlerWithPreAndPostHandlingSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicTimerEventHandlerWithPrePostHandlingEditDialog = new LogicTimerEventHandlerWithPrePostHandlingEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowKeyboardEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicKeyboardEventHandlerEditDialog = new LogicKeyboardEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowMouseEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicMouseEventHandlerEditDialog = new LogicMouseEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowContactEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicShapeContactEventHandlerEditDialog = new LogicShapeContactEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowJointReachLimitEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicJointReachLimitEventHandlerEditDialog = new LogicJointReachLimitEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowGameLostOrGotFocusEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicGameLostOrGotFocusEventHandlerEditDialog = new LogicGameLostOrGotFocusEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowActionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicActionEditDialog = new LogicActionEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowConditionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicConditionEditDialog = new LogicConditionEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowEntityFilterSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicEntityFilterEditDialog = new LogicEntityFilterEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowEntityPairFilterSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicEntityPairFilterEditDialog = new LogicEntityPairFilterEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowConditionDoorSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicConditionDoorEditDialog = new LogicConditionDoorEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowTaskSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicTaskEditDialog = new LogicTaskEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowEntityAssignerSettingDialog(initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicEntityAssignerEditDialog = new LogicEntityAssignerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowEntityPairAssignerSettingDialog(initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:LogicEntityPairAssignerEditDialog = new LogicEntityPairAssignerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
             
             //private function ShowWorldSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             //{
-            //   Runtime.OnOpenDialog ();
+            //   EditorContext.OnOpenDialog ();
             //   
             //   var settingDialog:WorldSettingDialog = new WorldSettingDialog ();
             //   PopUpManager.addPopUp (settingDialog, MainView, true);
             //   PopUpManager.centerPopUp (settingDialog);
             //   settingDialog.SetValues (initialValues);
             //   settingDialog.SetConfirmFunc (onConfirmFunc);
-            //   settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+            //   settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
             //}
             
             private function ShowExportSwfFileDialog (initialValues:Object):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:WorldSaveAsSwfDialog = new WorldSaveAsSwfDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetValues (initialValues);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowWorldSavingDialog (initialValues:Object):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:WorldSavingDialog = new WorldSavingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetValues (initialValues);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowWorldLoadingDialog (onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:WorldLoadingDialog = new WorldLoadingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowWorldQuickLoadingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:WorldQuickLoadingDialog = new WorldQuickLoadingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetValues (initialValues);
                dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowPlayCodeLoadingDialog (onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:PlayCodeLoadingDialog = new PlayCodeLoadingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowImportSourceCodeDialog (onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:WorldImportDialog = new WorldImportDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
 //========================================================================================
@@ -2123,123 +2123,123 @@
             
             private function ShowModifyEntityCommonDialog (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:BatchEntityCommonPropertyModifyDialog = new BatchEntityCommonPropertyModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (MainView.OnBatchModifyEntityCommonProperties);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowModifyShapeCircleDialog (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:BatchShapeCirclePropertiesModifyDialog = new BatchShapeCirclePropertiesModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (MainView.OnBatchModifyShapeCircleProperties);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowModifyShapeRectangleDialog (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:BatchShapeRectanglePropertiesModifyDialog = new BatchShapeRectanglePropertiesModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (MainView.OnBatchModifyShapeRectangleProperties);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowModifyShapePolylineDialog (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:BatchShapePolylinePropertiesModifyDialog = new BatchShapePolylinePropertiesModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (MainView.OnBatchModifyShapePolylineProperties);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowModifyShapeAppearanceDialog (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:BatchShapeAppearancePropertiesModifyDialog = new BatchShapeAppearancePropertiesModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (MainView.OnBatchModifyShapeAppearanceProperties);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function ShowModifyShapePhysicsDialog (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:BatchShapePhysicsPropertiesModifyDialog = new BatchShapePhysicsPropertiesModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsProperties);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             //private function ShowModifyShapeFlagsDialog (event:ContextMenuEvent):void
             //{
-            //   Runtime.OnOpenDialog ();
+            //   EditorContext.OnOpenDialog ();
             //   
             //   var dialog:BatchShapePhysicsFlagsModifyDialog = new BatchShapePhysicsFlagsModifyDialog ();
             //   PopUpManager.addPopUp (dialog, MainView, true);
             //   PopUpManager.centerPopUp (dialog);
             //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFlags);
-            //   dialog.SetCloseFunc (Runtime.OnCloseDialog);
+            //   dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             //}
             //
             //private function ShowModifyShapeCollisionCategoryDialog (event:ContextMenuEvent):void
             //{
-            //   Runtime.OnOpenDialog ();
+            //   EditorContext.OnOpenDialog ();
             //   
             //   var dialog:BatchShapePhysicsCollisionCategoryModifyDialog = new BatchShapePhysicsCollisionCategoryModifyDialog ();
             //   PopUpManager.addPopUp (dialog, MainView, true);
             //   PopUpManager.centerPopUp (dialog);
             //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsCollisionCategory);
-            //   dialog.SetCloseFunc (Runtime.OnCloseDialog);
+            //   dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             //}
             //
             //private function ShowModifyShapeVelocityDialog (event:ContextMenuEvent):void
             //{
-            //   Runtime.OnOpenDialog ();
+            //   EditorContext.OnOpenDialog ();
             //   
             //   var dialog:BatchShapePhysicsVelocityModifyDialog = new BatchShapePhysicsVelocityModifyDialog ();
             //   PopUpManager.addPopUp (dialog, MainView, true);
             //   PopUpManager.centerPopUp (dialog);
             //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsVelocity);
-            //   dialog.SetCloseFunc (Runtime.OnCloseDialog);
+            //   dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             //}
             //
             //private function ShowModifyShapeFixtureDialog (event:ContextMenuEvent):void
             //{
-            //   Runtime.OnOpenDialog ();
+            //   EditorContext.OnOpenDialog ();
             //   
             //   var dialog:BatchShapePhysicsFixtureModifyDialog = new BatchShapePhysicsFixtureModifyDialog ();
             //   PopUpManager.addPopUp (dialog, MainView, true);
             //   PopUpManager.centerPopUp (dialog);
             //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFixture);
-            //   dialog.SetCloseFunc (Runtime.OnCloseDialog);
+            //   dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             //}
             
             private function ShowModifyJointCollideConnectedsDialog  (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:BatchJointCollideConnectedsModifyDialog = new BatchJointCollideConnectedsModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (MainView.OnBatchModifyJointCollideConnectedsProperty);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
 //========================================================================================
@@ -2248,13 +2248,13 @@
             
             private function ShowDialog_MoveSelectedEntitiesAccurately (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:AccurateMoveDialog = new AccurateMoveDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (OnMoveSelectedEntitiesAccurately);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function OnMoveSelectedEntitiesAccurately (params:Object):void
@@ -2264,13 +2264,13 @@
             
             private function ShowDialog_RotateSelectedEntitiesAccurately (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:AccurateRotateDialog = new AccurateRotateDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (OnRotateSelectedEntitiesAccurately);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function OnRotateSelectedEntitiesAccurately (params:Object):void
@@ -2280,13 +2280,13 @@
             
             private function ShowDialog_ScaleSelectedEntitiesAccurately (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:AccurateScaleDialog = new AccurateScaleDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (OnScaleSelectedEntitiesAccurately);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function OnScaleSelectedEntitiesAccurately (params:Object):void
@@ -2297,13 +2297,13 @@
             
             private function ShowDialog_MoveSceneAccurately (event:ContextMenuEvent):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:AccurateMoveDialog = new AccurateMoveDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (OnMoveSceneAccurately);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             private function OnMoveSceneAccurately (params:Object):void
@@ -2313,13 +2313,13 @@
             
             private function ShowWorldOnlineSavingDialog (/*event:ContextMenuEvent*/):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:WorldOnlineSavingDialog = new WorldOnlineSavingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (MainView.OnlineSave);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
             //private function OnSaveSourceCodeOnline (event:ContextMenuEvent):void
@@ -2348,14 +2348,14 @@
             
             private function ShowEditorCustomCommandSettingDialog (onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var dialog:EditorCustomCommandSettingDialog = new EditorCustomCommandSettingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (onConfirmFunc);
-               dialog.SetCloseFunc (Runtime.OnCloseDialog);
+               dialog.SetCloseFunc (EditorContext.OnCloseDialog);
             }
             
 //========================================================================================
@@ -2364,12 +2364,12 @@
             
             private function ShowFunctionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:FunctionEditDialog = new FunctionEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
             }

@@ -52,8 +52,6 @@ package editor.image.dialog {
    
    import editor.display.sprite.CoordinateSprite;
    
-   import editor.runtime.Runtime;
-   
    import editor.core.EditorObject;
    import editor.core.ReferPair;
    

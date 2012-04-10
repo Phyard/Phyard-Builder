@@ -10,8 +10,6 @@ package editor.asset {
    
    import editor.selection.SelectionEngine;
    
-   import editor.runtime.Runtime;
-   
    import common.CoordinateSystem;
    
    import common.Define;

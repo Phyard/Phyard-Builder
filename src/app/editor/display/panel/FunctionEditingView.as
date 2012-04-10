@@ -32,7 +32,7 @@ package editor.display.panel {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    import editor.core.KeyboardListener;
    
    import editor.entity.Entity;
@@ -138,7 +138,7 @@ package editor.display.panel {
          addEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
-         // now put in Runtime
+         // now put in EditorContext
          //stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
       }
       
@@ -209,7 +209,7 @@ package editor.display.panel {
             mCurrentCreateMode = null;
          }
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
          {
             if (mLastSelectedCreateButton != null)
                mLastSelectedCreateButton.selected = false;
@@ -250,7 +250,7 @@ package editor.display.panel {
             mCurrentEditMode = null;
          }
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
          {
             if (mLastSelectedCreateButton != null)
                mLastSelectedCreateButton.selected = false;
@@ -390,7 +390,7 @@ package editor.display.panel {
          if (! IsEditing ())
             return;
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
             return;
          
          var selectedEntities:Array = mFunctionManager.GetSelectedEntities ();
@@ -407,7 +407,7 @@ package editor.display.panel {
             
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
             values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
-            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (Runtime.GetCurrentWorld ().GetCoordinateSystem ());
+            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (EditorContext.GetCurrentWorld ().GetCoordinateSystem ());
             
             ShowFunctionSettingDialog (values, ConfirmSettingEntityProperties);
          }
@@ -427,7 +427,7 @@ package editor.display.panel {
             
             var code_snippet:CodeSnippet = aFunction.GetCodeSnippet ();
             code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-            code_snippet.PhysicsValues2DisplayValues (Runtime.GetCurrentWorld ().GetCoordinateSystem ());
+            code_snippet.PhysicsValues2DisplayValues (EditorContext.GetCurrentWorld ().GetCoordinateSystem ());
          }
       }
       
@@ -523,7 +523,7 @@ package editor.display.panel {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         Runtime.SetKeyboardListener (this);
+         EditorContext.SetKeyboardListener (this);
          stage.focus = this;
          
          if (mFunctionManager == null)
@@ -942,7 +942,7 @@ package editor.display.panel {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
             
-         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
+         theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
    }

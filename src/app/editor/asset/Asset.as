@@ -16,7 +16,7 @@ package editor.asset {
    
    import editor.selection.SelectionProxy;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.Define;
    import common.ValueAdjuster;
@@ -706,7 +706,7 @@ package editor.asset {
          
          BuildContextMenuInternal (theContextMenu.customItems);
          
-         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
+         theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
       protected function BuildContextMenuInternal (customMenuItemsStack:Array):void

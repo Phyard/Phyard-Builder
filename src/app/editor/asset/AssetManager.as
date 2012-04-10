@@ -12,8 +12,6 @@ package editor.asset {
    
    import editor.core.EditorObject;
    
-   import editor.runtime.Runtime;
-   
    import common.CoordinateSystem;
    
    import common.Define;

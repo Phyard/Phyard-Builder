@@ -86,8 +86,6 @@ package editor.world {
    import editor.codelib.CodeLibManager;
    import editor.codelib.AssetFunction;
 
-   import editor.runtime.Runtime; // temp, to remove
-
    import common.Define;
    import common.ValueAdjuster;
 

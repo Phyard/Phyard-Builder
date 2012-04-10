@@ -96,7 +96,7 @@ package common {
    import editor.trigger.VariableSpace;
    import editor.trigger.VariableInstance;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.trigger.define.FunctionDefine;
    //import common.trigger.define.VariableSpaceDefine;
@@ -1565,7 +1565,7 @@ package common {
          
          editorWorld.SetCreationEntityArrayLocked (true);
          
-         Runtime.mPauseCreateShapeProxy = true;
+         EditorContext.mPauseCreateShapeProxy = true;
          
          for (createId = 0; createId < numEntities; ++ createId)
          {
@@ -2096,7 +2096,7 @@ package common {
          }
          //<<<
          
-         Runtime.mPauseCreateShapeProxy = false;
+         EditorContext.mPauseCreateShapeProxy = false;
          
          //>>> load custom variables
          // from v1.52

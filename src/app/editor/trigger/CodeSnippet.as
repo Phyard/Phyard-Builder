@@ -3,7 +3,7 @@ package editor.trigger {
    import flash.utils.ByteArray;
    //import flash.utils.Dictionary;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.trigger.CoreFunctionIds;
    
@@ -98,7 +98,7 @@ package editor.trigger {
             {
                if (func_calling.Validate ())
                {
-                   mFunctionCallings [i] = new FunctionCalling_Core (Runtime.GetCurrentWorld ().GetTriggerEngine (), TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
+                   mFunctionCallings [i] = new FunctionCalling_Core (EditorContext.GetCurrentWorld ().GetTriggerEngine (), TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
                }
             }
          }

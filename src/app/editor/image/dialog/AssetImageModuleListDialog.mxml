@@ -41,7 +41,7 @@
          import editor.image.dialog.AssetImagePureModuleListingPanel;
          import editor.image.dialog.AssetImageCompositeModuleListingPanel;
          
-         import editor.runtime.Runtime;
+         import editor.EditorContext;
 
       // static functions
          
@@ -59,14 +59,14 @@
             }
             else
             {
-               PopUpManager.addPopUp (sAssetImageModuleListDialog, Runtime.GetApplication (), OnModulePicked != null);
+               PopUpManager.addPopUp (sAssetImageModuleListDialog, EditorContext.GetApplication (), OnModulePicked != null);
                PopUpManager.centerPopUp (sAssetImageModuleListDialog);
             }
             
-            sAssetImageModuleListDialog.GetImageListingPanel ().SetAssetImageManager (Runtime.GetCurrentWorld ().GetAssetImageManager ());            
-            sAssetImageModuleListDialog.GetPureModuleListingPanel ().SetAssetImagePureModuleManager (Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ());            
-            sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageAssembledModuleManager ());            
-            sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().SetAssetImageCompositeModuleManager (Runtime.GetCurrentWorld ().GetAssetImageSequencedModuleManager ());
+            sAssetImageModuleListDialog.GetImageListingPanel ().SetAssetImageManager (EditorContext.GetCurrentWorld ().GetAssetImageManager ());            
+            sAssetImageModuleListDialog.GetPureModuleListingPanel ().SetAssetImagePureModuleManager (EditorContext.GetCurrentWorld ().GetAssetImagePureModuleManager ());            
+            sAssetImageModuleListDialog.GetAssembledModuleListingPanel ().SetAssetImageCompositeModuleManager (EditorContext.GetCurrentWorld ().GetAssetImageAssembledModuleManager ());            
+            sAssetImageModuleListDialog.GetSequencedModuleListingPanel ().SetAssetImageCompositeModuleManager (EditorContext.GetCurrentWorld ().GetAssetImageSequencedModuleManager ());
             
             if (OnModulePicked != null)
             {

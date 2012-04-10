@@ -11,8 +11,6 @@ package editor.trigger {
 
    import editor.sound.AssetSound;
 
-   import editor.runtime.Runtime;
-
    import common.trigger.ValueTypeDefine;
 
    import common.Define;

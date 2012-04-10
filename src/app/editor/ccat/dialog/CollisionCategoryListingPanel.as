@@ -40,8 +40,6 @@ package editor.ccat.dialog {
    import editor.ccat.CollisionCategoryManager;
    import editor.ccat.CollisionCategory;
    
-   import editor.runtime.Runtime;
-   
    import common.Define;
    import common.Version;
    

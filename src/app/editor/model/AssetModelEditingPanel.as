@@ -33,8 +33,6 @@ package editor.model {
    
    import editor.asset.AssetManagerPanel;
    
-   import editor.runtime.Runtime;
-   
    import common.Define;
    import common.Version;
    

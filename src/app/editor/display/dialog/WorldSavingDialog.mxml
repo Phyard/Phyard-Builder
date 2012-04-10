@@ -82,7 +82,7 @@
          
          import com.tapirgames.util.UrlUtil;
          
-         import editor.runtime.Runtime;
+         import editor.EditorContext;
          
          import common.Define;
          
@@ -117,12 +117,12 @@
          {
             var fileReference:FileReference = new FileReference();
             fileReference.addEventListener(Event.COMPLETE, OnFileSaveComplete);
-            fileReference.save (GetValidatedSourceCode (), Runtime.GetRecommandDesignFilename ());
+            fileReference.save (GetValidatedSourceCode (), EditorContext.GetRecommandDesignFilename ());
          }
          
          private function OnFileSaveComplete (event:Event):void
          {
-            Runtime.SetRecommandDesignFilename ((event.target as FileReference).name);
+            EditorContext.SetRecommandDesignFilename ((event.target as FileReference).name);
          }
          
          private function OnClickCopySourceCode ():void

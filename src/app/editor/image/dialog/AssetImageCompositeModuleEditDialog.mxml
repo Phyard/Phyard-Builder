@@ -173,7 +173,7 @@
          import editor.image.dialog.AssetImageCompositeModuleEditingPanel;
          import editor.image.dialog.AssetImageModuleInstanceListingPanel;
          
-         import editor.runtime.Runtime;
+         import editor.EditorContext;
          
          public static function ShowAssetImageCompositeModuleEditDialog (assetImageCompositeModule:AssetImageCompositeModule):void
          {
@@ -191,7 +191,7 @@
             }
             else
             {
-               PopUpManager.addPopUp (assetImageCompositeModuleEditDialog, Runtime.GetApplication (), false);
+               PopUpManager.addPopUp (assetImageCompositeModuleEditDialog, EditorContext.GetApplication (), false);
                PopUpManager.centerPopUp (assetImageCompositeModuleEditDialog);
             }
             

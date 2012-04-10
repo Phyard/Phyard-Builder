@@ -7,8 +7,6 @@ package editor.trigger {
    import editor.entity.WorldEntity;
    import editor.entity.Entity;
    
-   import editor.runtime.Runtime;
-   
    import common.trigger.ValueTypeDefine;
    
    import common.Define;

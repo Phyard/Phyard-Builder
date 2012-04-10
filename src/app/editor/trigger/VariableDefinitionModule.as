@@ -11,8 +11,6 @@ package editor.trigger {
 
    import editor.image.AssetImageModule;
 
-   import editor.runtime.Runtime;
-
    import common.trigger.ValueTypeDefine;
 
    import common.Define;

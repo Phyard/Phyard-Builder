@@ -37,8 +37,6 @@ package editor.image.dialog {
    
    import editor.image.AssetImageManager;
    
-   import editor.runtime.Runtime;
-   
    import common.Define;
    import common.Version;
    

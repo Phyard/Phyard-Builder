@@ -7,9 +7,7 @@ package editor.image {
    import flash.geom.Matrix;
    
    import editor.asset.Asset; 
-   import editor.asset.AssetManager; 
-   
-   import editor.runtime.Runtime;
+   import editor.asset.AssetManager;
    
    import common.CoordinateSystem;
    

@@ -140,8 +140,6 @@
             import mx.controls.Menu;
             import mx.events.MenuEvent;
 
-            import editor.runtime.Runtime;
-
             import editor.trigger.VariableSpace;
             import editor.trigger.Lists;
 

@@ -9,7 +9,7 @@ package editor.display.sprite {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    public class EffectMessagePopup extends EditingEffect 
    {
@@ -73,10 +73,10 @@ package editor.display.sprite {
          mTargetX = kLeftestX;
          mTargetY = kToppestY;
          
-         if (Runtime.mEditorWorldView == null)
+         if (EditorContext.mEditorWorldView == null)
             x = 300;
          else
-            x = 0.5 * Runtime.mEditorWorldView.GetViewWidth ();
+            x = 0.5 * EditorContext.mEditorWorldView.GetViewWidth ();
          x -= 0.5 * width;
          y = kToppestY;
          

@@ -44,7 +44,7 @@
          
          import mx.managers.PopUpManager;
          
-         import editor.runtime.Runtime;
+         import editor.EditorContext;
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
@@ -89,7 +89,7 @@
             }
             fileReference.data.clear ();
 
-            Runtime.SetRecommandDesignFilename (fileReference.name);
+            EditorContext.SetRecommandDesignFilename (fileReference.name);
          }
          
          private function OnClickOkButton():void 

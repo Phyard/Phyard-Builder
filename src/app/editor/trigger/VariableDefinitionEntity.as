@@ -7,7 +7,7 @@ package editor.trigger {
    import editor.entity.WorldEntity;
    import editor.entity.Entity;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.trigger.ValueTypeDefine;
    
@@ -168,7 +168,7 @@ package editor.trigger {
       
       override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
-         var world:World = Runtime.GetCurrentWorld ();
+         var world:World = EditorContext.GetCurrentWorld ();
          var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (IsValidEntity, mGroundSelectable, null, isForPureCustomFunction);
          
          var entity:WorldEntity = valueSourceDirect.GetValueObject () as WorldEntity;
@@ -208,12 +208,12 @@ package editor.trigger {
                valueSourceDirect.SetValueObject (null);
             else
             {
-               var world:World = Runtime.GetCurrentWorld ();
+               var world:World = EditorContext.GetCurrentWorld ();
                var entity_index:int = combo_box.selectedItem.mEntityIndex;
                if (entity_index < 0)
                {
                   if (entity_index == Define.EntityId_Ground)
-                     valueSourceDirect.SetValueObject (Runtime.GetCurrentWorld ());
+                     valueSourceDirect.SetValueObject (EditorContext.GetCurrentWorld ());
                   else // if (entity_index == Define.EntityId_None)
                      valueSourceDirect.SetValueObject (null);
                }

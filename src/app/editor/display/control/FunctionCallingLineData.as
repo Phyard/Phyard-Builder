@@ -10,7 +10,7 @@ package editor.display.control {
    import editor.trigger.ValueSource;
    import editor.trigger.ValueTarget;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.trigger.CoreFunctionIds;
    import common.trigger.parse.FunctionCallingLineInfo;
@@ -124,7 +124,7 @@ package editor.display.control {
          for (j = 0; j < funcDeclaration.GetNumInputs (); ++ j)
          {
             variableDefinition = funcDeclaration.GetInputParamDefinitionAt (j);
-            valueSource = variableDefinition.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
+            valueSource = variableDefinition.GetDefaultValueSource (EditorContext.GetCurrentWorld ().GetTriggerEngine ());
             initialValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
             currentValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
          }
@@ -226,8 +226,8 @@ package editor.display.control {
                }
                else
                {
-                  newInitialInputValueSources [i] = variableDefinition.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
-                  newCurrentInputValueSources [i] = variableDefinition.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
+                  newInitialInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetCurrentWorld ().GetTriggerEngine ());
+                  newCurrentInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetCurrentWorld ().GetTriggerEngine ());
                }
                
                newInputVariableDefinitions [i] = variableDefinition;

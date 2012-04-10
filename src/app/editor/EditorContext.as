@@ -1,4 +1,4 @@
-package editor.runtime {
+package editor {
    
    import flash.display.DisplayObject;
    
@@ -38,7 +38,7 @@ package editor.runtime {
    import common.Define;
    import common.Version;
    
-   public class Runtime
+   public class EditorContext
    {
       
 //=====================================================================
@@ -217,13 +217,13 @@ package editor.runtime {
       
       public static function OnOpenDialog ():void
       {
-         Runtime.SetHasSettingDialogOpened (true);
+         EditorContext.SetHasSettingDialogOpened (true);
          mEditorWorldView.StartSettingEntityProperties ();
       }
       
       public static function OnCloseDialog (checkCustomVariablesModifications:Boolean = false):void
       {
-         Runtime.SetHasSettingDialogOpened (false);
+         EditorContext.SetHasSettingDialogOpened (false);
          mEditorWorldView.stage.focus = mEditorWorldView.stage;
          
          if (checkCustomVariablesModifications)
@@ -329,12 +329,12 @@ package editor.runtime {
       
       public static function ClearCopiedCodeSnippet ():void
       {
-         Runtime.mCopiedCodeSnippet = null;
+         EditorContext.mCopiedCodeSnippet = null;
       }
       
       public static function HasCopiedCodeSnippet ():Boolean
       {
-         return Runtime.mCopiedCodeSnippet != null;
+         return EditorContext.mCopiedCodeSnippet != null;
       }
       
       public static function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array):void
@@ -349,7 +349,7 @@ package editor.runtime {
             codeSnippet.AssignFunctionCallings (copiedCallings);
             codeSnippet.PhysicsValues2DisplayValues (GetCurrentWorld ().GetCoordinateSystem ());
             
-            Runtime.mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
+            EditorContext.mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
          }
       }
       
@@ -363,7 +363,7 @@ package editor.runtime {
          {
             mCopiedCodeSnippet.ValidateCallings ();
             
-            var codeSnippet:CodeSnippet = Runtime.mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
+            var codeSnippet:CodeSnippet = EditorContext.mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
             codeSnippet.DisplayValues2PhysicsValues (GetCurrentWorld ().GetCoordinateSystem ());
             
             return codeSnippet;

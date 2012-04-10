@@ -3,7 +3,7 @@ package editor.trigger {
    import flash.utils.ByteArray;
    //import flash.utils.Dictionary;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.trigger.ValueTypeDefine;
    import common.trigger.FunctionTypeDefine;
@@ -503,7 +503,7 @@ package editor.trigger {
       
       public function CreateFormattedCallingText (valueSources:Array, valueTargets:Array):String
       {
-         var textSegments:Array = Runtime.mPoemCodingFormat ? mPoemCallingTextSegments : mTraditionalCallingTextSegments;
+         var textSegments:Array = EditorContext.mPoemCodingFormat ? mPoemCallingTextSegments : mTraditionalCallingTextSegments;
          
          var len:int = textSegments.length;
          var segment:Array;

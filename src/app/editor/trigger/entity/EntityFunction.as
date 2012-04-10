@@ -32,8 +32,6 @@ package editor.trigger.entity {
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.FunctionDeclaration_Custom;
    
-   import editor.runtime.Runtime;
-   
    import common.Define;
    
    public class EntityFunction extends Entity

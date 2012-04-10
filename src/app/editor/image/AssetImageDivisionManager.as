@@ -13,7 +13,7 @@ package editor.image {
    
    import editor.world.World;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.CoordinateSystem;
    
@@ -138,10 +138,10 @@ package editor.image {
          if (selectIt)
             SetSelectedAsset (imageDivision);
          
-         if (pureModuleManager != null) // in loading stage, Runtime.GetCurrentWorld () is null
+         if (pureModuleManager != null) // in loading stage, EditorContext.GetCurrentWorld () is null
             pureModuleManager.CreateImagePureModule (imageDivision, selectIt);
          else
-            Runtime.GetCurrentWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (imageDivision, selectIt);
+            EditorContext.GetCurrentWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (imageDivision, selectIt);
          
          return imageDivision;
       }

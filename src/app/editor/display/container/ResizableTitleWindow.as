@@ -7,7 +7,7 @@ package editor.display.container
    import mx.managers.CursorManager;
 	import mx.containers.TitleWindow;
 	
-	import editor.runtime.Runtime; // project specified
+	import editor.EditorContext; // project specified
 
 	public class ResizableTitleWindow extends TitleWindow
 	{
@@ -64,7 +64,7 @@ package editor.display.container
          }
          else if (mInDragging)
          {
-            if (Runtime.IsMouseButtonHold ())
+            if (EditorContext.IsMouseButtonHold ())
             {
                var dx:Number = mouseX - mDraggingFromX;
                var dy:Number = mouseY - mDraggingFromY;

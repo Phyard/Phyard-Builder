@@ -14,7 +14,7 @@ package editor.selection {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.Transform2D;
    
@@ -171,7 +171,7 @@ package editor.selection {
       
       public function AddCircleShape (radius:Number, transform:Transform2D = null):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
          var centerX:Number = 0.0;
@@ -218,7 +218,7 @@ package editor.selection {
       
       public function AddConvexPolygonShape (localPoints:Array, transform:Transform2D = null):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
          var vertexCount:uint = localPoints.length;
@@ -253,7 +253,7 @@ package editor.selection {
       
       public function AddConcavePolygonShape (localPoints:Array, transform:Transform2D = null):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
          var vertexCount:uint = localPoints.length;
@@ -302,7 +302,7 @@ package editor.selection {
       
       public function AddLineSegmentShape (localX1:Number, localY1:Number, localX2:Number, localY2:Number, thinkness:Number = 1.0, transform:Transform2D = null):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
          var dx:Number = localX2 - localX1;
@@ -328,7 +328,7 @@ package editor.selection {
       
       public function AddRectangleShapeHalfWH (halfWidth:Number, halfHeight:Number, transform:Transform2D = null):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
          var p1:Point = new Point (- halfWidth, - halfHeight);
@@ -341,7 +341,7 @@ package editor.selection {
       
       public function AddRectangleShape (left:Number, top:Number, width:Number, height:Number, transform:Transform2D = null):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
          var right:Number = left + width;
@@ -361,7 +361,7 @@ package editor.selection {
       
       public function CreateCircleZone (localX:Number, localY:Number, radius:Number):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
       //trace ("------------------- circle");
@@ -379,7 +379,7 @@ package editor.selection {
       
       public function CreateConvexPolygonZone (localPoints:Array):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
       //trace ("------------------- rect");
@@ -405,7 +405,7 @@ package editor.selection {
       
       public function CreateConcavePolygonZone (localPoints:Array):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
       //trace ("------------------- polygon");
@@ -450,7 +450,7 @@ package editor.selection {
       
       public function CreateLineSegmentZone (localX1:Number, localY1:Number, localX2:Number, localY2:Number, thinkness:Number = 1):void
       {
-         if (Runtime.mPauseCreateShapeProxy)
+         if (EditorContext.mPauseCreateShapeProxy)
             return;
          
          var dx:Number = localX2 - localX1;

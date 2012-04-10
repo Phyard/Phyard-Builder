@@ -30,7 +30,7 @@
          <mx:Button id="Button_SettingFunction" toolTip="Edit Code Snippet" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/function/command-setting.png')" disabledIcon="@Embed('../../../res/function/command-setting-disabled.png')" />
          <mx:Spacer width="30"/>
          <mx:Label id="Label_FunctionAssetName" text="Name:" textAlign="right"/>
-         <mx:TextInput id="Text_FunctionAssetName" text="" width="200" enter="stage.focus = panelCodeLibListing;" focusIn="Runtime.SetHasInputFocused (true);" focusOut="Runtime.SetHasInputFocused (false);"/>
+         <mx:TextInput id="Text_FunctionAssetName" text="" width="200" enter="stage.focus = panelCodeLibListing;" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
          <mx:Spacer width="100%"/>
       </mx:HBox>
       <mx:VBox id="Box_CCatListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
@@ -56,7 +56,7 @@
          import mx.controls.Button;
          
          import editor.display.dialog.FunctionEditDialog;
-         import editor.runtime.Runtime;
+         import editor.EditorContext;
 
       // static functions
          
@@ -75,11 +75,11 @@
             }
             else
             {
-               PopUpManager.addPopUp (sCodeLibListDialog, Runtime.GetApplication (), OnCCatPicked != null);
+               PopUpManager.addPopUp (sCodeLibListDialog, EditorContext.GetApplication (), OnCCatPicked != null);
                PopUpManager.centerPopUp (sCodeLibListDialog);
             }
             
-            sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (Runtime.GetCurrentWorld ().GetCodeLibManager ());
+            sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (EditorContext.GetCurrentWorld ().GetCodeLibManager ());
             
             if (OnCCatPicked != null)
             {
@@ -167,13 +167,13 @@
             
             private function ShowFunctionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.OnOpenDialog ();
+               EditorContext.OnOpenDialog ();
                
                var settingDialog:FunctionEditDialog = new FunctionEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (Runtime.OnCloseDialog);
-               PopUpManager.addPopUp (settingDialog, Runtime.GetApplication (), true);
+               settingDialog.SetCloseFunc (EditorContext.OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, EditorContext.GetApplication (), true);
                PopUpManager.centerPopUp (settingDialog);
             }
          

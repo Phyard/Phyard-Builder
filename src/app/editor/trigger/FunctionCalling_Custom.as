@@ -7,7 +7,7 @@ package editor.trigger {
    import common.ValueAdjuster;
    import common.CoordinateSystem;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    public class FunctionCalling_Custom extends FunctionCalling
    {
@@ -85,7 +85,7 @@ package editor.trigger {
                if (index >= 0)
                   newInputValueSources [i] = mInputValueSources [index];
                else
-                  newInputValueSources [i] = variableDefinition.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
+                  newInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetCurrentWorld ().GetTriggerEngine ());
                
                newInputVariableDefinitions [i] = variableDefinition;
             }

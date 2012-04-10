@@ -35,7 +35,7 @@ package editor.trigger {
    
    import editor.display.dialog.VariablesEditDialog;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    public class TriggerEngine
    {
@@ -244,9 +244,9 @@ package editor.trigger {
             
             PopUpManager.removePopUp (mSessionVariablesEditDialog);
             
-            if (Runtime.mSessionVariablesEditingDialogClosedCallBack != null)
+            if (EditorContext.mSessionVariablesEditingDialogClosedCallBack != null)
             {
-               Runtime.mSessionVariablesEditingDialogClosedCallBack ();
+               EditorContext.mSessionVariablesEditingDialogClosedCallBack ();
             }
          }
          
@@ -309,9 +309,9 @@ package editor.trigger {
             
             PopUpManager.removePopUp (mGlobalVariablesEditDialog);
             
-            if (Runtime.mGlobalVariablesEditingDialogClosedCallBack != null)
+            if (EditorContext.mGlobalVariablesEditingDialogClosedCallBack != null)
             {
-               Runtime.mGlobalVariablesEditingDialogClosedCallBack ();
+               EditorContext.mGlobalVariablesEditingDialogClosedCallBack ();
             }
          }
          
@@ -374,9 +374,9 @@ package editor.trigger {
             
             PopUpManager.removePopUp (mEntityVariablesEditDialog);
             
-            if (Runtime.mEntityVariablesEditingDialogClosedCallBack != null)
+            if (EditorContext.mEntityVariablesEditingDialogClosedCallBack != null)
             {
-               Runtime.mEntityVariablesEditingDialogClosedCallBack ();
+               EditorContext.mEntityVariablesEditingDialogClosedCallBack ();
             }
          }
          
@@ -441,9 +441,9 @@ package editor.trigger {
             
             PopUpManager.removePopUp (mLocalVariablesEditDialog);
             
-            if (Runtime.mLocalVariablesEditingDialogClosedCallBack != null)
+            if (EditorContext.mLocalVariablesEditingDialogClosedCallBack != null)
             {
-               Runtime.mLocalVariablesEditingDialogClosedCallBack ();
+               EditorContext.mLocalVariablesEditingDialogClosedCallBack ();
             }
          }
          
@@ -502,9 +502,9 @@ package editor.trigger {
             
             PopUpManager.removePopUp (mInputVariablesEditDialog);
             
-            if (Runtime.mInputVariablesEditingDialogClosedCallBack != null)
+            if (EditorContext.mInputVariablesEditingDialogClosedCallBack != null)
             {
-               Runtime.mInputVariablesEditingDialogClosedCallBack ();
+               EditorContext.mInputVariablesEditingDialogClosedCallBack ();
             }
          }
          
@@ -565,9 +565,9 @@ package editor.trigger {
             
             PopUpManager.removePopUp (mOutputVariablesEditDialog);
             
-            if (Runtime.mOutputVariablesEditingDialogClosedCallBack != null)
+            if (EditorContext.mOutputVariablesEditingDialogClosedCallBack != null)
             {
-               Runtime.mOutputVariablesEditingDialogClosedCallBack ();
+               EditorContext.mOutputVariablesEditingDialogClosedCallBack ();
             }
          }
          

@@ -30,7 +30,7 @@ package editor.codelib {
    
    import editor.trigger.FunctionMenuGroup;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.CoordinateSystem;
    
@@ -247,7 +247,7 @@ package editor.codelib {
             mFunctionMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
          }
          
-         Runtime.GetCurrentWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
+         EditorContext.GetCurrentWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
       }
         
 //=====================================================================

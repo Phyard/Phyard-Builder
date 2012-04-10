@@ -30,7 +30,7 @@ package editor.display.panel {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    import editor.core.KeyboardListener;
    
    import editor.entity.Entity;
@@ -151,7 +151,7 @@ package editor.display.panel {
          addEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
-         // now put in Runtime
+         // now put in EditorContext
          //stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
       }
       
@@ -222,7 +222,7 @@ package editor.display.panel {
             mCurrentCreateMode = null;
          }
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
          {
             if (mLastSelectedCreateButton != null)
                mLastSelectedCreateButton.selected = false;
@@ -263,7 +263,7 @@ package editor.display.panel {
             mCurrentEditMode = null;
          }
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
          {
             if (mLastSelectedCreateButton != null)
                mLastSelectedCreateButton.selected = false;
@@ -450,7 +450,7 @@ package editor.display.panel {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         Runtime.SetKeyboardListener (this);
+         EditorContext.SetKeyboardListener (this);
          stage.focus = this;
          
          if (mCollisionManager == null)
@@ -936,7 +936,7 @@ package editor.display.panel {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
             
-         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
+         theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
    }

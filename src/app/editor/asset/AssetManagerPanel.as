@@ -27,7 +27,7 @@ package editor.asset {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    import editor.core.KeyboardListener;
    
    import common.Define;
@@ -257,7 +257,7 @@ package editor.asset {
             mAssetManager.BuildContextMenuInternal (theContextMenu.customItems);
          }
          
-         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
+         theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
 //==================================================================================
@@ -303,7 +303,7 @@ package editor.asset {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         Runtime.SetKeyboardListener (this);
+         EditorContext.SetKeyboardListener (this);
          stage.focus = this;
          
          if (mAssetManager == null)

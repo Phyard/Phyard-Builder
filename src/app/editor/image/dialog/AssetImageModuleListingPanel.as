@@ -40,8 +40,6 @@ package editor.image.dialog {
    import editor.image.AssetImageModule;
    import editor.image.AssetImageModuleManager;
    
-   import editor.runtime.Runtime;
-   
    import common.Define;
    import common.Version;
    

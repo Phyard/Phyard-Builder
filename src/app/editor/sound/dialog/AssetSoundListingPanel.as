@@ -38,8 +38,6 @@ package editor.sound.dialog {
    import editor.sound.AssetSound;
    import editor.sound.AssetSoundManager;
    
-   import editor.runtime.Runtime;
-   
    import common.Define;
    import common.Version;
    

@@ -27,8 +27,6 @@
 
          import mx.managers.PopUpManager;
 
-         import editor.runtime.Runtime;
-
          import editor.trigger.VariableSpace;
 
          private var OnClose:Function;

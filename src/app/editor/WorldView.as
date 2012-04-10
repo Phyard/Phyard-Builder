@@ -88,7 +88,7 @@ package editor {
    
    import editor.mode.ModeCreateEntityLink;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    import editor.core.KeyboardListener;
    
    import editor.display.sprite.CursorCrossingLine;
@@ -369,7 +369,7 @@ package editor {
          addEventListener (MouseEvent.ROLL_OVER, OnMouseOut);
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
-         // now Put in Runtime
+         // now Put in EditorContext
          //stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
          
          // ...
@@ -893,7 +893,7 @@ package editor {
             mCurrentCreateMode = null;
          }
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
          {
             if (mLastSelectedCreateButton != null)
                mLastSelectedCreateButton.selected = false;
@@ -936,7 +936,7 @@ package editor {
             mCurrentEditMode = null;
          }
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
          {
             if (mLastSelectedCreateButton != null)
                mLastSelectedCreateButton.selected = false;
@@ -1622,7 +1622,7 @@ package editor {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
             
-         theContextMenu.customItems.push (Runtime.GetAboutContextMenuItem ());
+         theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
       private function SetEditorWorld (newEditorWorld:editor.world.World, firstTime:Boolean = false):void
@@ -1635,7 +1635,7 @@ package editor {
          DestroyEditorWorld ();
          ClearAccumulatedModificationsByArrowKeys ();
          
-         Runtime.Cleanup ();
+         EditorContext.Cleanup ();
          
          mEditorWorld = newEditorWorld;
          mEditorWorld.GetCollisionCategoryManager ().SetChanged (false);
@@ -1659,15 +1659,15 @@ package editor {
          
          mContentLayer.addChild (mEditorWorld);
          
-         //if (Runtime.mCollisionCategoryView != null)
-         //   Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
+         //if (EditorContext.mCollisionCategoryView != null)
+         //   EditorContext.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
          if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
          {
             CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().SetCollisionCategoryManager (mEditorWorld.GetCollisionCategoryManager ());
          }
          
-         //if (Runtime.mFunctionEditingView != null)
-         //   Runtime.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetFunctionManager ());
+         //if (EditorContext.mFunctionEditingView != null)
+         //   EditorContext.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetFunctionManager ());
          if (CodeLibListDialog.sCodeLibListDialog != null)
          {
             CodeLibListDialog.sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (mEditorWorld.GetCodeLibManager ());
@@ -1826,10 +1826,10 @@ package editor {
       
       public function Play_RunRestart (keepPauseStatus:Boolean = false):void
       {
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
             return;
          
-         Runtime.SetHasInputFocused (false);
+         EditorContext.SetHasInputFocused (false);
          stage.focus = this;
          
          DestroyDesignPlayer ();
@@ -1872,7 +1872,7 @@ package editor {
          stage.frameRate = mOriginalFPS;
          
          //...
-         Runtime.StopAllSounds ();
+         EditorContext.StopAllSounds ();
          
          //Mouse.show (); // maybe hide in playing. (now put in player.World)
          
@@ -2042,7 +2042,7 @@ package editor {
             CreateUndoPoint ("Modify collision categories");
          }
          
-         Runtime.SetHasInputFocused (false);
+         EditorContext.SetHasInputFocused (false);
          stage.focus = this;
       }
       
@@ -2054,7 +2054,7 @@ package editor {
             CreateUndoPoint ("Modify functions");
          }
          
-         Runtime.SetHasInputFocused (false);
+         EditorContext.SetHasInputFocused (false);
          stage.focus = this;
       }
       
@@ -2158,7 +2158,7 @@ package editor {
          if (! IsEditing ())
             return;
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
             return;
          
          //var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
@@ -2626,7 +2626,7 @@ package editor {
       //   if (! IsEditing ())
       //      return;
       //   
-      //   if (Runtime.HasSettingDialogOpened ())
+      //   if (EditorContext.HasSettingDialogOpened ())
       //      return;
       //   
       //   var values:Object = new Object ();
@@ -2646,7 +2646,7 @@ package editor {
          if (! IsEditing ())
             return;
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
             return;
          
          try
@@ -2709,7 +2709,7 @@ package editor {
          if (! IsEditing ())
             return;
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
             return;
          
          ShowWorldLoadingDialog (LoadEditorWorldFromXmlString);
@@ -2720,7 +2720,7 @@ package editor {
       //   if (! IsEditing ())
       //      return;
       //   
-      //   if (Runtime.HasSettingDialogOpened ())
+      //   if (EditorContext.HasSettingDialogOpened ())
       //      return;
       //   
       //   ShowCollisionGroupManageDialog (null);
@@ -2731,7 +2731,7 @@ package editor {
       //   if (! IsPlaying ())
       //      return;
       //   
-      //   if (Runtime.HasSettingDialogOpened ())
+      //   if (EditorContext.HasSettingDialogOpened ())
       //      return;
       //   
       //   ShowPlayCodeLoadingDialog (LoadPlayerWorldFromHexString);
@@ -2742,7 +2742,7 @@ package editor {
          if (! IsEditing ())
             return;
          
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
             return;
          
          if (importFunctionsOnly)
@@ -2982,8 +2982,8 @@ package editor {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         Runtime.SetHasInputFocused (false);
-         Runtime.SetKeyboardListener (this);
+         EditorContext.SetHasInputFocused (false);
+         EditorContext.SetKeyboardListener (this);
          stage.focus = this;
          
          CheckModifierKeys (event);
@@ -3428,13 +3428,13 @@ package editor {
       
       public function SetShapeInitialProperties (shape:EntityVectorShape):void
       {
-         //shape.SetPhysicsEnabled (Runtime.mShape_EnablePhysics);
-         //shape.SetStatic (Runtime.mShape_IsStatic);
-         //shape.SetAsSensor (Runtime.mShape_IsSensor);
-         //shape.SetDrawBackground (Runtime.mShape_DrawBackground);
-         //shape.SetFilledColor (Runtime.mShape_BackgroundColor);
-         //shape.SetDrawBorder (Runtime.mShape_DrawBorder);
-         //shape.SetBorderColor (Runtime.mShape_BorderColor);
+         //shape.SetPhysicsEnabled (EditorContext.mShape_EnablePhysics);
+         //shape.SetStatic (EditorContext.mShape_IsStatic);
+         //shape.SetAsSensor (EditorContext.mShape_IsSensor);
+         //shape.SetDrawBackground (EditorContext.mShape_DrawBackground);
+         //shape.SetFilledColor (EditorContext.mShape_BackgroundColor);
+         //shape.SetDrawBorder (EditorContext.mShape_DrawBorder);
+         //shape.SetBorderColor (EditorContext.mShape_BorderColor);
       }
       
       public function CreateCircle (centerX:Number, centerY:Number, radius:Number, filledColor:uint, isStatic:Boolean):EntityVectorShapeCircle
@@ -4385,18 +4385,18 @@ package editor {
             
             CalSelectedEntitiesCenterPoint ();
             
-            //Runtime.mCollisionCategoryView.UpdateFriendLinkLines ();
+            //EditorContext.mCollisionCategoryView.UpdateFriendLinkLines ();
             if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
             {
                CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().UpdateAssetLinkLines ();
             }
-            //Runtime.mFunctionEditingView.UpdateEntityLinkLines ();
+            //EditorContext.mFunctionEditingView.UpdateEntityLinkLines ();
             if (CodeLibListDialog.sCodeLibListDialog != null)
             {
                CodeLibListDialog.sCodeLibListDialog.GetCodeLibListingPanel ().UpdateFriendLinkLines ();
             }
             
-            Runtime.SetRecommandDesignFilename (null);
+            EditorContext.SetRecommandDesignFilename (null);
          }
       }
       
@@ -6269,7 +6269,7 @@ package editor {
          levelData.compress ();
 
          var values:Object = new Object ();
-         values.mVersionString = Runtime.GetVersionString ();
+         values.mVersionString = EditorContext.GetVersionString ();
          
          values.mAuthor = urlParams.mAuthorName;
          values.mSlotId = urlParams.mSlotID;
@@ -6496,7 +6496,7 @@ package editor {
          if (params.mRootUrl == null || params.mAction == null || params.mAuthorName == null || params.mSlotID == null || params.mRevisionID == null)
             return false;
          
-         Runtime.SetRecommandDesignFilename (Runtime.GetTimeStringInFilename () + " " + params.mAuthorName + "-" + params.mSlotID + "-" + params.mRevisionID + ".phyardx");
+         EditorContext.SetRecommandDesignFilename (EditorContext.GetTimeStringInFilename () + " " + params.mAuthorName + "-" + params.mSlotID + "-" + params.mRevisionID + ".phyardx");
          
          if (isFirstTime && params.mAction == "create")
             return true;

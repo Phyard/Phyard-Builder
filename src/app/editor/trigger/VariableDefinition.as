@@ -14,7 +14,7 @@ package editor.trigger {
    
    import editor.sound.AssetSound;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.trigger.ValueTypeDefine;
    import common.trigger.ValueSourceTypeDefine;
@@ -133,7 +133,7 @@ package editor.trigger {
       
       public static function ValidateValueObject_Entity (valueObject:Object):Object
       {
-         var world:World = Runtime.GetCurrentWorld (); // in loading stage, it would be null
+         var world:World = EditorContext.GetCurrentWorld (); // in loading stage, it would be null
          
          var entity:WorldEntity = valueObject as WorldEntity;
          if (entity != null && (entity.GetWorld () != world || entity.GetCreationOrderId () < 0))
@@ -144,7 +144,7 @@ package editor.trigger {
       
       public static function ValidateValueObject_CollisiontCategory (valueObject:Object):Object
       {
-         var world:World = Runtime.GetCurrentWorld (); // in loading stage, it would be null
+         var world:World = EditorContext.GetCurrentWorld (); // in loading stage, it would be null
          
          var category:CollisionCategory = valueObject as CollisionCategory;
          if (category != null && category.GetAppearanceLayerId () < 0)
@@ -155,7 +155,7 @@ package editor.trigger {
       
       public static function ValidateValueObject_Module (valueObject:Object):Object
       {
-         //var world:World = Runtime.GetCurrentWorld (); // in loading stage, it would be null
+         //var world:World = EditorContext.GetCurrentWorld (); // in loading stage, it would be null
          
          var module:AssetImageModule = valueObject as AssetImageModule;
          if (module != null && module.GetAppearanceLayerId () < 0)
@@ -166,7 +166,7 @@ package editor.trigger {
       
       public static function ValidateValueObject_Sound (valueObject:Object):Object
       {
-         //var world:World = Runtime.GetCurrentWorld (); // in loading stage, it would be null
+         //var world:World = EditorContext.GetCurrentWorld (); // in loading stage, it would be null
          
          var sound:AssetSound = valueObject as AssetSound;
          if (sound != null && sound.GetAppearanceLayerId () < 0)
@@ -356,7 +356,7 @@ package editor.trigger {
       public function GetDefaultPropertyValueTarget ():ValueTarget_Property
       {
          BuildPropertyVaribleDefinition ();
-         return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
       }
       
       public function CreateControlForPropertyValueTarget (valueTargetProperty:ValueTarget_Property):UIComponent
@@ -405,7 +405,7 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, Runtime.GetCurrentWorld ().GetTriggerEngine ());
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, EditorContext.GetCurrentWorld ().GetTriggerEngine ());
             }
             else if (entityValueSource is ValueSource_Variable)
             {
@@ -586,7 +586,7 @@ package editor.trigger {
       public function GetDefaultPropertyValueSource ():ValueSource_Property
       {
          BuildPropertyVaribleDefinition ();
-         return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
       }
       
       public function CreateControlForPropertyValueSource (valueSourceProperty:ValueSource_Property):UIComponent
@@ -635,7 +635,7 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, Runtime.GetCurrentWorld ().GetTriggerEngine ());
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, EditorContext.GetCurrentWorld ().GetTriggerEngine ());
             }
             else if (entityValueSource is ValueSource_Variable)
             {

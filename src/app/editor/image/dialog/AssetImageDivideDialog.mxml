@@ -48,7 +48,7 @@
          
          import editor.image.AssetImage;
          
-         import editor.runtime.Runtime;
+         import editor.EditorContext;
          
          public static function ShowAssetImageDivideDialog (assetImage:AssetImage):void
          {
@@ -65,7 +65,7 @@
             }
             else
             {
-               PopUpManager.addPopUp (assetImageDivideDialog, Runtime.GetApplication (), false);
+               PopUpManager.addPopUp (assetImageDivideDialog, EditorContext.GetApplication (), false);
                PopUpManager.centerPopUp (assetImageDivideDialog);
             }
             

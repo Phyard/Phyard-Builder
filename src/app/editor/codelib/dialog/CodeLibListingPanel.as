@@ -40,7 +40,7 @@ package editor.codelib.dialog {
    
    import editor.trigger.CodeSnippet;
    
-   import editor.runtime.Runtime;
+   import editor.EditorContext;
    
    import common.Define;
    import common.Version;
@@ -228,7 +228,7 @@ package editor.codelib.dialog {
       
       private function OpenAssetSettingDialog ():void
       {
-         if (Runtime.HasSettingDialogOpened ())
+         if (EditorContext.HasSettingDialogOpened ())
             return;
          
          var selectedAssets:Array = mCodeLibManager.GetSelectedAssets ();
@@ -245,7 +245,7 @@ package editor.codelib.dialog {
             
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
             values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
-            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (Runtime.GetCurrentWorld ().GetCoordinateSystem ());
+            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (EditorContext.GetCurrentWorld ().GetCoordinateSystem ());
             
             ShowFunctionSettingDialog (values, ConfirmSettingAssetProperties);
          }
@@ -265,7 +265,7 @@ package editor.codelib.dialog {
             
             var code_snippet:CodeSnippet = aFunction.GetCodeSnippet ();
             code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-            code_snippet.PhysicsValues2DisplayValues (Runtime.GetCurrentWorld ().GetCoordinateSystem ());
+            code_snippet.PhysicsValues2DisplayValues (EditorContext.GetCurrentWorld ().GetCoordinateSystem ());
          }
       }
       

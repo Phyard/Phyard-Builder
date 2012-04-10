@@ -88,8 +88,10 @@ package editor.world {
    import common.Define;
    import common.ValueAdjuster;
 
-   public class World extends EntityContainer
+   public class World // extends EntityContainer
    {
+      public var mEntityContainer:EntityContainer;
+      
       //public var mCollisionManager:CollisionManager;
       public var mCollisionCategoryManager:CollisionCategoryManager;
 
@@ -114,7 +116,7 @@ package editor.world {
          super ();
 
       //
-         SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium)
+         mEntityContainer = new EntityContainer ();
          
          //mCollisionManager = new CollisionManager ();
          mCollisionCategoryManager = new CollisionCategoryManager ();
@@ -133,7 +135,8 @@ package editor.world {
          mAssetSoundManager = new AssetSoundManager ();
       }
 
-      override public function Destroy ():void
+      //override 
+      public function Destroy ():void
       {
          //mCollisionManager.Destroy ();
          mCollisionCategoryManager.Destroy ();
@@ -144,10 +147,11 @@ package editor.world {
          mAssetImageSequencedModuleManager.Destroy ();
          mAssetSoundManager.Destroy ();
 
-         super.Destroy ();
+      //   super.Destroy ();
       }
 
-      override public function DestroyAllEntities ():void
+      //override 
+      public function DestroyAllEntities ():void
       {
          //mCollisionManager.DestroyAllEntities ();
          mCollisionCategoryManager.DestroyAllAssets ();
@@ -158,15 +162,15 @@ package editor.world {
          mAssetImageManager.DestroyAllAssets ();
          mAssetSoundManager.DestroyAllAssets ();
 
-         super.DestroyAllEntities ();
+      //   super.DestroyAllEntities ();
       }
 
-      override public function DestroyEntity (entity:Entity):void
-      {
-      // ...
-
-         super.DestroyEntity (entity);
-      }
+      //override public function DestroyEntity (entity:Entity):void
+      //{
+      //// ...
+      //
+      //   super.DestroyEntity (entity);
+      //}
 
 //=================================================================================
 //   settings
@@ -307,6 +311,15 @@ package editor.world {
       public function SetPauseOnFocusLost (pauseOnFocusLost:Boolean):void
       {
          mPauseOnFocusLost = pauseOnFocusLost;
+      }
+      
+//=================================================================================
+//   collision categories
+//=================================================================================
+
+      public function GetEntityContainer ():EntityContainer
+      {
+         return mEntityContainer;
       }
       
 //=================================================================================

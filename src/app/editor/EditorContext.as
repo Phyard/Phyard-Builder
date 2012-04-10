@@ -364,7 +364,7 @@ package editor {
          {
             var codeSnippet:CodeSnippet =  new CodeSnippet (ownerFunctionDefinition);
             codeSnippet.AssignFunctionCallings (copiedCallings);
-            codeSnippet.PhysicsValues2DisplayValues (GetCurrentWorld ().GetCoordinateSystem ());
+            codeSnippet.PhysicsValues2DisplayValues (GetCurrentWorld ().GetEntityContainer ().GetCoordinateSystem ());
             
             EditorContext.mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
          }
@@ -381,7 +381,7 @@ package editor {
             mCopiedCodeSnippet.ValidateCallings ();
             
             var codeSnippet:CodeSnippet = EditorContext.mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
-            codeSnippet.DisplayValues2PhysicsValues (GetCurrentWorld ().GetCoordinateSystem ());
+            codeSnippet.DisplayValues2PhysicsValues (GetCurrentWorld ().GetEntityContainer ().GetCoordinateSystem ());
             
             return codeSnippet;
          }

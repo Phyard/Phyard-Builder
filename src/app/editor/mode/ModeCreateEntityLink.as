@@ -74,7 +74,7 @@ package editor.mode {
          var created:Boolean = false;
          
          // first round
-         var entities:Array = mMainView.GetEditorWorld ().GetEntitiesAtPoint (endX, endY);
+         var entities:Array = mMainView.GetEditorWorld ().GetEntityContainer ().GetEntitiesAtPoint (endX, endY);
          var entity:Entity;
          var linkable:Linkable;
          var i:int;

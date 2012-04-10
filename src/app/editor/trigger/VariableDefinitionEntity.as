@@ -169,7 +169,7 @@ package editor.trigger {
       override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var world:World = EditorContext.GetCurrentWorld ();
-         var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (IsValidEntity, mGroundSelectable, null, isForPureCustomFunction);
+         var entity_list:Array = world.GetEntityContainer ().GetEntitySelectListDataProviderByFilter (IsValidEntity, mGroundSelectable, null, isForPureCustomFunction);
          
          var entity:Entity = valueSourceDirect.GetValueObject () as Entity;
          var sel_index:int = -1;
@@ -219,7 +219,7 @@ package editor.trigger {
                }
                else
                {
-                  valueSourceDirect.SetValueObject (world.GetEntityByCreationId (entity_index));
+                  valueSourceDirect.SetValueObject (world.GetEntityContainer ().GetEntityByCreationId (entity_index));
                }
             }
          }

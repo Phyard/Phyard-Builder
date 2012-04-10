@@ -87,6 +87,8 @@ package editor.world {
       
       public function EntityContainer ()
       {
+         SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium)
+         
          mCoordinateSystem = Define.kDefaultCoordinateSystem;
          
          mSelectionEngine = new SelectionEngine ();

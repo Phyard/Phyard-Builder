@@ -43,7 +43,7 @@ package editor.ccat.dialog {
    import common.Define;
    import common.Version;
    
-   public class CollisionCategoryListingPanel extends AssetManagerPanel
+   public class CollisionCategoryListPanel extends AssetManagerPanel
    {
       private var mCollisionCategoryManager:CollisionCategoryManager = null;
       

@@ -42,11 +42,11 @@ package editor.image.dialog {
    import common.Define;
    import common.Version;
    
-   public class AssetImageModuleInstanceListingPanel extends AssetManagerPanel 
+   public class AssetImageModuleInstanceListPanel extends AssetManagerPanel 
    {
       protected var mAssetImageModuleInstanceManagerForListing:AssetImageModuleInstanceManagerForListing;
       
-      public function AssetImageModuleInstanceListingPanel ()
+      public function AssetImageModuleInstanceListPanel ()
       {
       }
       
@@ -68,10 +68,10 @@ package editor.image.dialog {
          }
       }
       
-      protected var mAssetImageCompositeModuleEditingPanelPeer:AssetImageCompositeModuleEditingPanel;
-      public function SetAssetImageCompositeModuleEditingPanelPeer (assetImageCompositeModuleEditingPanel:AssetImageCompositeModuleEditingPanel):void
+      protected var mAssetImageCompositeModuleEditPanelPeer:AssetImageCompositeModuleEditPanel;
+      public function SetAssetImageCompositeModuleEditPanelPeer (assetImageCompositeModuleEditingPanel:AssetImageCompositeModuleEditPanel):void
       {
-         mAssetImageCompositeModuleEditingPanelPeer = assetImageCompositeModuleEditingPanel;
+         mAssetImageCompositeModuleEditPanelPeer = assetImageCompositeModuleEditingPanel;
       }
       
 //=====================================================================
@@ -93,11 +93,11 @@ package editor.image.dialog {
          if (passively)
             return;
          
-         if (mAssetImageCompositeModuleEditingPanelPeer != null)
+         if (mAssetImageCompositeModuleEditPanelPeer != null)
          {
-            mAssetImageCompositeModuleEditingPanelPeer.GetAssetImageModuleInstanceManager ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromListingToEditing ();
+            mAssetImageCompositeModuleEditPanelPeer.GetAssetImageModuleInstanceManager ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromListingToEditing ();
             
-            mAssetImageCompositeModuleEditingPanelPeer.OnAssetSelectionsChanged (true);
+            mAssetImageCompositeModuleEditPanelPeer.OnAssetSelectionsChanged (true);
          }
       } 
       

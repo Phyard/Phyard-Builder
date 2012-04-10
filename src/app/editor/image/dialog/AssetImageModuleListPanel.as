@@ -43,7 +43,7 @@ package editor.image.dialog {
    import common.Define;
    import common.Version;
    
-   public class AssetImageModuleListingPanel extends AssetManagerPanel 
+   public class AssetImageModuleListPanel extends AssetManagerPanel 
    {
       protected var mAssetImageModuleManager:AssetImageModuleManager;
       

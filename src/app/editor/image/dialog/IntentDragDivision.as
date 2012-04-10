@@ -9,11 +9,11 @@ package editor.image.dialog {
 
    public class IntentDragDivision extends IntentDrag
    {
-      protected var mAssetImageDividingPanel:AssetImageDividingPanel;
+      protected var mAssetImageDividePanel:AssetImageDividePanel;
       
-      public function IntentDragDivision (assetImageDividingPanel:AssetImageDividingPanel)
+      public function IntentDragDivision (assetImageDividingPanel:AssetImageDividePanel)
       {
-         mAssetImageDividingPanel = assetImageDividingPanel;
+         mAssetImageDividePanel = assetImageDividingPanel;
       }
       
    //================================================================
@@ -32,13 +32,13 @@ package editor.image.dialog {
          var w:int = right - left;
          var h:int = bottom - top;
          
-         var point1:Point = mAssetImageDividingPanel.ManagerToView (new Point (left, top));
-         var point2:Point = mAssetImageDividingPanel.ManagerToView (new Point (right, bottom));
+         var point1:Point = mAssetImageDividePanel.ManagerToView (new Point (left, top));
+         var point2:Point = mAssetImageDividePanel.ManagerToView (new Point (right, bottom));
          
          if (mBoxShape == null)
          {
             mBoxShape = new Shape ();
-            mAssetImageDividingPanel.mForegroundLayer.addChild (mBoxShape);
+            mAssetImageDividePanel.mForegroundLayer.addChild (mBoxShape);
             mBoxShape.alpha = 0.5;
          }
          
@@ -46,7 +46,7 @@ package editor.image.dialog {
 
          if (finished)
          {
-            mAssetImageDividingPanel.CreateImageDivision (left, top, right, bottom);
+            mAssetImageDividePanel.CreateImageDivision (left, top, right, bottom);
          }
       }
       
@@ -57,9 +57,9 @@ package editor.image.dialog {
       
       override protected function TerminateInternal (passively:Boolean):void
       {
-         if (mBoxShape != null && mAssetImageDividingPanel.mForegroundLayer.contains (mBoxShape))
+         if (mBoxShape != null && mAssetImageDividePanel.mForegroundLayer.contains (mBoxShape))
          {
-            mAssetImageDividingPanel.mForegroundLayer.removeChild (mBoxShape);
+            mAssetImageDividePanel.mForegroundLayer.removeChild (mBoxShape);
          }
       }
 

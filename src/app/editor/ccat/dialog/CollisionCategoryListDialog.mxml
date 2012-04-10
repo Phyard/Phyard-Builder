@@ -39,7 +39,7 @@
          <mx:Spacer width="100%"/>
       </mx:HBox>
       <mx:VBox id="Box_CCatListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-         <ccat:CollisionCategoryListingPanel id="panelCollisionCategoryListing" width="100%" height="100%"/>
+         <ccat:CollisionCategoryListPanel id="panelCollisionCategoryList" width="100%" height="100%"/>
       </mx:VBox>
    </mx:VBox>
 
@@ -72,13 +72,13 @@
                PopUpManager.centerPopUp (sCollisionCategoryListDialog);
             }
             
-            sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ());
+            sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ());
             
             if (OnCCatPicked != null)
             {
                sCollisionCategoryListDialog.mInPickingModet = true;
                
-               sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
+               sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
             }
          }
          
@@ -113,15 +113,15 @@
                
                PopUpManager.removePopUp(sCollisionCategoryListDialog);
             
-               sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().ExitPickAssetIntent ();
+               sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().ExitPickAssetIntent ();
             }
          }
          
       //======================================================
          
-         public function GetCollisionCategoryListingPanel ():CollisionCategoryListingPanel
+         public function GetCollisionCategoryListPanel ():CollisionCategoryListPanel
          {
-            return panelCollisionCategoryListing;
+            return panelCollisionCategoryList;
          }
          
       //======================================================
@@ -130,23 +130,23 @@
          
          private function InitDialog ():void
          {
-            panelCollisionCategoryListing.mButtonCreateCollisionCategory = Button_CreateCollisionCategory;
+            panelCollisionCategoryList.mButtonCreateCollisionCategory = Button_CreateCollisionCategory;
             
-            Button_CreateCollisionCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryListing.OnCreateButtonClick);
+            Button_CreateCollisionCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnCreateButtonClick);
             
-            panelCollisionCategoryListing.mButtonDelete = Button_DeleteCollisionCategory;
+            panelCollisionCategoryList.mButtonDelete = Button_DeleteCollisionCategory;
             
-            panelCollisionCategoryListing.mCheckBoxHarmoniousCategory = CheckBox_CollisionCategory_HarmoniousCategory;
-            panelCollisionCategoryListing.mCheckBoxDefaultCategory = CheckBox_CollisionCategory_DefaultCategory;
+            panelCollisionCategoryList.mCheckBoxHarmoniousCategory = CheckBox_CollisionCategory_HarmoniousCategory;
+            panelCollisionCategoryList.mCheckBoxDefaultCategory = CheckBox_CollisionCategory_DefaultCategory;
             
-            Button_DeleteCollisionCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryListing.OnEditButtonClick);
-            CheckBox_CollisionCategory_HarmoniousCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryListing.OnEditButtonClick);
-            CheckBox_CollisionCategory_DefaultCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryListing.OnEditButtonClick);
+            Button_DeleteCollisionCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
+            CheckBox_CollisionCategory_HarmoniousCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
+            CheckBox_CollisionCategory_DefaultCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
             
-            panelCollisionCategoryListing.mLabelName = Label_CollisionCategoryName;
-            panelCollisionCategoryListing.mTextInputName = Text_CollisionCategoryName;
+            panelCollisionCategoryList.mLabelName = Label_CollisionCategoryName;
+            panelCollisionCategoryList.mTextInputName = Text_CollisionCategoryName;
             
-            Text_CollisionCategoryName.addEventListener (FlexEvent.ENTER, panelCollisionCategoryListing.OnTextInputEnter);
+            Text_CollisionCategoryName.addEventListener (FlexEvent.ENTER, panelCollisionCategoryList.OnTextInputEnter);
          }
          
      ]]>

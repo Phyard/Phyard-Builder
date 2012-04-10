@@ -33,7 +33,7 @@
          <mx:NumericStepper id="NumericStepperBottom" width="50" stepSize="1" value="0" minimum="-10000" maximum="10000" change="ChangeDivisonProperties ();" />
       </mx:HBox>
       <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-         <image:AssetImageDividingPanel id="panelAssetImageDividing" width="100%" height="100%"/>
+         <image:AssetImageDividePanel id="panelAssetImageDividing" width="100%" height="100%"/>
       </mx:VBox>
    </mx:VBox>
 
@@ -69,7 +69,7 @@
                PopUpManager.centerPopUp (assetImageDivideDialog);
             }
             
-            assetImageDivideDialog.GetAssetImageDividingPanel ().SetAssetImageDivisionManager (assetImage.GetAssetImageDivisionManager ());
+            assetImageDivideDialog.GetAssetImageDividePanel ().SetAssetImageDivisionManager (assetImage.GetAssetImageDivisionManager ());
             assetImage.SetAssetImageDivideDialog (assetImageDivideDialog);
          }
          
@@ -78,7 +78,7 @@
             PopUpManager.removePopUp(this);
          }
          
-         public function GetAssetImageDividingPanel ():AssetImageDividingPanel
+         public function GetAssetImageDividePanel ():AssetImageDividePanel
          {
             return panelAssetImageDividing;
          }

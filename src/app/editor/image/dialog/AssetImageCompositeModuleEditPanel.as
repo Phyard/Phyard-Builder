@@ -59,12 +59,12 @@ package editor.image.dialog {
    import common.Define;
    import common.Version;
    
-   public class AssetImageCompositeModuleEditingPanel extends AssetManagerPanel
+   public class AssetImageCompositeModuleEditPanel extends AssetManagerPanel
    {
       protected var mCoordinateSprite:CoordinateSprite = new CoordinateSprite ();
       protected var mAssetImageModuleInstanceManager:AssetImageModuleInstanceManager;
       
-      public function AssetImageCompositeModuleEditingPanel ()
+      public function AssetImageCompositeModuleEditPanel ()
       {
          mBackgroundLayer.addChild (mCoordinateSprite);
       }
@@ -90,10 +90,10 @@ package editor.image.dialog {
          }
       }
       
-      protected var mAssetImageModuleInstanceListingPanelPeer:AssetImageModuleInstanceListingPanel;
-      public function SetAssetImageModuleInstanceListingPanelPeer (assetImageModuleInstanceListingPanel:AssetImageModuleInstanceListingPanel):void
+      protected var mAssetImageModuleInstanceListPanelPeer:AssetImageModuleInstanceListPanel;
+      public function SetAssetImageModuleInstanceListPanelPeer (assetImageModuleInstanceListingPanel:AssetImageModuleInstanceListPanel):void
       {
-         mAssetImageModuleInstanceListingPanelPeer = assetImageModuleInstanceListingPanel;
+         mAssetImageModuleInstanceListPanelPeer = assetImageModuleInstanceListingPanel;
       }
       
 //=====================================================================
@@ -143,11 +143,11 @@ package editor.image.dialog {
          
          if (! passively)
          {
-            if (mAssetImageModuleInstanceListingPanelPeer != null)
+            if (mAssetImageModuleInstanceListPanelPeer != null)
             {
-               mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromEdittingToListing ();
+               mAssetImageModuleInstanceListPanelPeer.GetAssetImageModuleInstanceManagerForListing ().GetAssetImageCompositeModule ().SynchronizeManagerSelectionsFromEdittingToListing ();
                
-               mAssetImageModuleInstanceListingPanelPeer.OnAssetSelectionsChanged (true);
+               mAssetImageModuleInstanceListPanelPeer.OnAssetSelectionsChanged (true);
             }
          }
          
@@ -166,9 +166,9 @@ package editor.image.dialog {
          //mAssetImageModuleInstanceManager.DeleteSelectedAssets ();
          
          // this one will call UpdateLayout
-         if (mAssetImageModuleInstanceListingPanelPeer != null)
+         if (mAssetImageModuleInstanceListPanelPeer != null)
          {
-            mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().DeleteSelectedAssets ();
+            mAssetImageModuleInstanceListPanelPeer.GetAssetImageModuleInstanceManagerForListing ().DeleteSelectedAssets ();
          }
       }
       
@@ -224,9 +224,9 @@ package editor.image.dialog {
          
          mCurrentSelectedCreateButton = null;
 
-         if (mAssetImageModuleInstanceListingPanelPeer != null && mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing () != null)
+         if (mAssetImageModuleInstanceListPanelPeer != null && mAssetImageModuleInstanceListPanelPeer.GetAssetImageModuleInstanceManagerForListing () != null)
          {
-            mAssetImageModuleInstanceListingPanelPeer.GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
+            mAssetImageModuleInstanceListPanelPeer.GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
          }
       }
       

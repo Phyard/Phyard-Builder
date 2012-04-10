@@ -30,11 +30,11 @@
          <mx:Button id="Button_SettingFunction" toolTip="Edit Code Snippet" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/function/command-setting.png')" disabledIcon="@Embed('../../../res/function/command-setting-disabled.png')" />
          <mx:Spacer width="30"/>
          <mx:Label id="Label_FunctionAssetName" text="Name:" textAlign="right"/>
-         <mx:TextInput id="Text_FunctionAssetName" text="" width="200" enter="stage.focus = panelCodeLibListing;" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
+         <mx:TextInput id="Text_FunctionAssetName" text="" width="200" enter="stage.focus = panelCodeLibList;" focusIn="EditorContext.SetHasInputFocused (true);" focusOut="EditorContext.SetHasInputFocused (false);"/>
          <mx:Spacer width="100%"/>
       </mx:HBox>
       <mx:VBox id="Box_CCatListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-         <codelib:CodeLibListingPanel id="panelCodeLibListing" width="100%" height="100%"/>
+         <codelib:CodeLibListPanel id="panelCodeLibList" width="100%" height="100%"/>
       </mx:VBox>
    </mx:VBox>
 
@@ -79,13 +79,13 @@
                PopUpManager.centerPopUp (sCodeLibListDialog);
             }
             
-            sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager ());
+            sCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager ());
             
             if (OnCCatPicked != null)
             {
                sCodeLibListDialog.mInPickingMode = true;
                
-               sCodeLibListDialog.GetCodeLibListingPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
+               sCodeLibListDialog.GetCodeLibListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
             }
          }
          
@@ -120,15 +120,15 @@
                
                PopUpManager.removePopUp(sCodeLibListDialog);
             
-               sCodeLibListDialog.GetCodeLibListingPanel ().ExitPickAssetIntent ();
+               sCodeLibListDialog.GetCodeLibListPanel ().ExitPickAssetIntent ();
             }
          }
          
       //======================================================
          
-         public function GetCodeLibListingPanel ():CodeLibListingPanel
+         public function GetCodeLibListPanel ():CodeLibListPanel
          {
-            return panelCodeLibListing;
+            return panelCodeLibList;
          }
          
       //======================================================
@@ -138,29 +138,29 @@
          private function InitDialog ():void
          {
             // setting dialogs
-            panelCodeLibListing.ShowFunctionSettingDialog = ShowFunctionSettingDialog;
+            panelCodeLibList.ShowFunctionSettingDialog = ShowFunctionSettingDialog;
             
             // 
-            panelCodeLibListing.mButtonCreatePureFunction = Button_CreatePureFunction;
-            panelCodeLibListing.mButtonCreateDirtyFunction = Button_CreateDirtyFunction;
-            //panelCodeLibListing.mButtonCreatePackage = Button_CreatePackage;
-            //panelCodeLibListing.mButtonCreateClass = Button_CreateClass;
+            panelCodeLibList.mButtonCreatePureFunction = Button_CreatePureFunction;
+            panelCodeLibList.mButtonCreateDirtyFunction = Button_CreateDirtyFunction;
+            //panelCodeLibList.mButtonCreatePackage = Button_CreatePackage;
+            //panelCodeLibList.mButtonCreateClass = Button_CreateClass;
             
-            Button_CreatePureFunction.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnCreateButtonClick);
-            Button_CreateDirtyFunction.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnCreateButtonClick);
-            //Button_CreatePackage.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnCreateButtonClick);
-            //Button_CreateClass.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnCreateButtonClick);
+            Button_CreatePureFunction.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
+            Button_CreateDirtyFunction.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
+            //Button_CreatePackage.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
+            //Button_CreateClass.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
             
-            panelCodeLibListing.mButtonDelete = Button_DeleteFunctionAsset;
-            panelCodeLibListing.mButtonSetting = Button_SettingFunction;
+            panelCodeLibList.mButtonDelete = Button_DeleteFunctionAsset;
+            panelCodeLibList.mButtonSetting = Button_SettingFunction;
             
-            Button_DeleteFunctionAsset.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnEditButtonClick);
-            Button_SettingFunction.addEventListener (MouseEvent.CLICK, panelCodeLibListing.OnEditButtonClick);
+            Button_DeleteFunctionAsset.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnEditButtonClick);
+            Button_SettingFunction.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnEditButtonClick);
             
-            panelCodeLibListing.mLabelName = Label_FunctionAssetName;
-            panelCodeLibListing.mTextInputName = Text_FunctionAssetName;
+            panelCodeLibList.mLabelName = Label_FunctionAssetName;
+            panelCodeLibList.mTextInputName = Text_FunctionAssetName;
             
-            Text_FunctionAssetName.addEventListener (FlexEvent.ENTER, panelCodeLibListing.OnTextInputEnter);
+            Text_FunctionAssetName.addEventListener (FlexEvent.ENTER, panelCodeLibList.OnTextInputEnter);
          }
             
       //==========================================================

@@ -45,7 +45,7 @@ package editor.codelib.dialog {
    import common.Define;
    import common.Version;
    
-   public class CodeLibListingPanel extends AssetManagerPanel
+   public class CodeLibListPanel extends AssetManagerPanel
    {
       private var mCodeLibManager:CodeLibManager = null;
       

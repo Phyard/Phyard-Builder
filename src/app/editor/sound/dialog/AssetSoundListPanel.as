@@ -1,5 +1,5 @@
 
-package editor.image.dialog {
+package editor.sound.dialog {
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.display.Shape;
@@ -32,29 +32,43 @@ package editor.image.dialog {
    import com.tapirgames.util.DisplayObjectUtil;
    
    import editor.asset.AssetManagerPanel;
-   import editor.asset.Intent;
-   import editor.asset.IntentPutAsset;
    
-   import editor.asset.AssetManagerArrayLayout; 
+   import editor.asset.AssetManagerListLayout; 
    
-   import editor.image.AssetImageCompositeModuleManager;
+   import editor.sound.AssetSound;
+   import editor.sound.AssetSoundManager;
    
    import common.Define;
    import common.Version;
    
-   public class AssetImageCompositeModuleListingPanel extends AssetImageModuleListingPanel 
+   public class AssetSoundListPanel extends AssetManagerPanel
    {
-      protected var mAssetImageCompositeModuleManager:AssetImageCompositeModuleManager;
+      private var mAssetSoundManager:AssetSoundManager = null;
       
-      public function SetAssetImageCompositeModuleManager (assetImageCompositeModuleManager:AssetImageCompositeModuleManager):void
+      public function SetAssetSoundManager (assetSoundManager:AssetSoundManager):void
       {
-         super.SetAssetImageModuleManager (assetImageCompositeModuleManager);
+         super.SetAssetManager (assetSoundManager);
          
-         if (mAssetImageCompositeModuleManager != assetImageCompositeModuleManager)
+         if (mAssetSoundManager != assetSoundManager)
          {
-            mAssetImageCompositeModuleManager = assetImageCompositeModuleManager;
+            mAssetSoundManager = assetSoundManager;
+            
+            if (mAssetSoundManager != null)
+            {
+               mAssetSoundManager.SetLayout (new AssetManagerListLayout (mAssetSoundManager, 76));
+               mAssetSoundManager.UpdateLayout (true);
+            }
          }
       }
+      
+      override public function GetMouseWheelFunction ():int
+      {
+         return kMouseWheelFunction_Scroll;
+      }
+      
+//============================================================================
+//   
+//============================================================================
       
    }
 }

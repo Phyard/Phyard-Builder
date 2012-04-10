@@ -1679,14 +1679,14 @@ package editor.entity.dialog {
          //   EditorContext.mCollisionCategoryView.SetCollisionManager (mEntityContainer.GetCollisionManager ());
          if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
          {
-            CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ());
+            CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ());
          }
          
          //if (EditorContext.mFunctionEditingView != null)
          //   EditorContext.mFunctionEditingView.SetFunctionManager (mEntityContainer.GetFunctionManager ());
          if (CodeLibListDialog.sCodeLibListDialog != null)
          {
-            CodeLibListDialog.sCodeLibListDialog.GetCodeLibListingPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager ());
+            CodeLibListDialog.sCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager ());
          }
          
          if (firstTime)
@@ -4403,12 +4403,12 @@ package editor.entity.dialog {
             //EditorContext.mCollisionCategoryView.UpdateFriendLinkLines ();
             if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
             {
-               CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListingPanel ().UpdateAssetLinkLines ();
+               CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().UpdateAssetLinkLines ();
             }
             //EditorContext.mFunctionEditingView.UpdateEntityLinkLines ();
             if (CodeLibListDialog.sCodeLibListDialog != null)
             {
-               CodeLibListDialog.sCodeLibListDialog.GetCodeLibListingPanel ().UpdateFriendLinkLines ();
+               CodeLibListDialog.sCodeLibListDialog.GetCodeLibListPanel ().UpdateFriendLinkLines ();
             }
             
             EditorContext.SetRecommandDesignFilename (null);

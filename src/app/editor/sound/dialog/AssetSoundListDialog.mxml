@@ -24,7 +24,7 @@
          <mx:HSlider id="SliderVolume" change="AdjustVolume ()"  width="137" toolTip="Volume" minimum="0.0" maximum="1.0" snapInterval="0.01" value="0.5" allowTrackClick="true" liveDragging="true" />
       </mx:HBox>
       <mx:VBox id="Box_SoundListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-         <sound:AssetSoundListingPanel id="panelAssetSoundListing" width="100%" height="100%"/>
+         <sound:AssetSoundListPanel id="panelAssetSoundList" width="100%" height="100%"/>
       </mx:VBox>
    </mx:VBox>
 
@@ -58,13 +58,13 @@
                PopUpManager.centerPopUp (sAssetSoundListDialog);
             }
             
-            sAssetSoundListDialog.GetAssetSoundListingPanel ().SetAssetSoundManager (EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ());
+            sAssetSoundListDialog.GetAssetSoundListPanel ().SetAssetSoundManager (EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ());
             
             if (OnSoundPicked != null)
             {
                sAssetSoundListDialog.mInPickingMode = true;
                
-               sAssetSoundListDialog.GetAssetSoundListingPanel ().EnterPickAssetIntent (OnSoundPicked, EndPickingMode);
+               sAssetSoundListDialog.GetAssetSoundListPanel ().EnterPickAssetIntent (OnSoundPicked, EndPickingMode);
             }
          }
          
@@ -99,15 +99,15 @@
                
                PopUpManager.removePopUp(sAssetSoundListDialog);
             
-               sAssetSoundListDialog.GetAssetSoundListingPanel ().ExitPickAssetIntent ();
+               sAssetSoundListDialog.GetAssetSoundListPanel ().ExitPickAssetIntent ();
             }
          }
          
       //======================================================
          
-         public function GetAssetSoundListingPanel ():AssetSoundListingPanel
+         public function GetAssetSoundListPanel ():AssetSoundListPanel
          {
-            return panelAssetSoundListing;
+            return panelAssetSoundList;
          }
          
       //======================================================

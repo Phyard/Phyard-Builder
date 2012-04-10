@@ -40,12 +40,12 @@ package editor.image.dialog {
    import common.Define;
    import common.Version;
    
-   public class AssetImageDividingPanel extends AssetManagerPanel 
+   public class AssetImageDividePanel extends AssetManagerPanel 
    {
       protected var mImageSprite:Sprite;
       protected var mAssetImageDivisionManager:AssetImageDivisionManager;
       
-      public function AssetImageDividingPanel ()
+      public function AssetImageDividePanel ()
       {
       }
       

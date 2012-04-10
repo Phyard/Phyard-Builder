@@ -35,22 +35,24 @@ package editor.image.dialog {
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
    
-   import editor.image.AssetImageManager;
+   import editor.asset.AssetManagerArrayLayout; 
+   
+   import editor.image.AssetImageCompositeModuleManager;
    
    import common.Define;
    import common.Version;
    
-   public class AssetImageListingPanel extends AssetImageModuleListingPanel 
+   public class AssetImageCompositeModuleListPanel extends AssetImageModuleListPanel 
    {
-      protected var mAssetImageManager:AssetImageManager = null;
+      protected var mAssetImageCompositeModuleManager:AssetImageCompositeModuleManager;
       
-      public function SetAssetImageManager (assetImageManager:AssetImageManager):void
+      public function SetAssetImageCompositeModuleManager (assetImageCompositeModuleManager:AssetImageCompositeModuleManager):void
       {
-         super.SetAssetImageModuleManager (assetImageManager);
+         super.SetAssetImageModuleManager (assetImageCompositeModuleManager);
          
-         if (mAssetImageManager != assetImageManager)
+         if (mAssetImageCompositeModuleManager != assetImageCompositeModuleManager)
          {
-            mAssetImageManager = assetImageManager;
+            mAssetImageCompositeModuleManager = assetImageCompositeModuleManager;
          }
       }
       

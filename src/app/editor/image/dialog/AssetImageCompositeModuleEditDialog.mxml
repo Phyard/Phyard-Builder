@@ -128,7 +128,7 @@
             <mx:ViewStack id="ViewStack_ModuleInstancesPanel" creationPolicy="all" borderStyle="none" width="100%" height="100%">
                <mx:HDividedBox id="theDividedBox_H" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
                   <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-                     <image:AssetImageCompositeModuleEditingPanel id="panelAssetImageCompositeModuleEditing_H" width="100%" height="100%"/>
+                     <image:AssetImageCompositeModuleEditPanel id="panelAssetImageCompositeModuleEditing_H" width="100%" height="100%"/>
                   </mx:HBox>
                   <mx:VBox width="100" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                      <mx:HBox borderStyle="solid" borderThickness="1" width="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
@@ -138,13 +138,13 @@
                         <mx:Button id="ButtonMoveDownModuleInstance_H" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
                      </mx:HBox>
                      <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-                        <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing_H" width="100%" height="100%"/>
+                        <image:AssetImageModuleInstanceListPanel id="panelAssetImageModuleInstanceListing_H" width="100%" height="100%"/>
                      </mx:HBox>
                   </mx:VBox>
                </mx:HDividedBox>
                <mx:VDividedBox id="theDividedBox_V" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
                   <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-                     <image:AssetImageCompositeModuleEditingPanel id="panelAssetImageCompositeModuleEditing_V" width="100%" height="100%"/>
+                     <image:AssetImageCompositeModuleEditPanel id="panelAssetImageCompositeModuleEditing_V" width="100%" height="100%"/>
                   </mx:HBox>
                   <mx:HBox width="100%" height="100" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                      <mx:VBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
@@ -154,7 +154,7 @@
                         <mx:Button id="ButtonMoveDownModuleInstance_V" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveright.png')" disabledIcon="@Embed('../../../res/action/command_moveright-disabled.png')" />
                      </mx:VBox>
                      <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-                        <image:AssetImageModuleInstanceListingPanel id="panelAssetImageModuleInstanceListing_V" width="100%" height="100%"/>
+                        <image:AssetImageModuleInstanceListPanel id="panelAssetImageModuleInstanceListing_V" width="100%" height="100%"/>
                      </mx:HBox>
                   </mx:HBox>
                </mx:VDividedBox>
@@ -170,8 +170,8 @@
          import mx.controls.Button;
          
          import editor.image.AssetImageCompositeModule;
-         import editor.image.dialog.AssetImageCompositeModuleEditingPanel;
-         import editor.image.dialog.AssetImageModuleInstanceListingPanel;
+         import editor.image.dialog.AssetImageCompositeModuleEditPanel;
+         import editor.image.dialog.AssetImageModuleInstanceListPanel;
          
          import editor.EditorContext;
          
@@ -195,15 +195,15 @@
                PopUpManager.centerPopUp (assetImageCompositeModuleEditDialog);
             }
             
-            assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditingPanel ().SetAssetImageModuleInstanceManager (assetImageCompositeModule.GetModuleInstanceManager ());
-            assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ().SetAssetImageModuleInstanceManagerForListing (assetImageCompositeModule.GetModuleInstanceManagerForListing ());
+            assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditPanel ().SetAssetImageModuleInstanceManager (assetImageCompositeModule.GetModuleInstanceManager ());
+            assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListPanel ().SetAssetImageModuleInstanceManagerForListing (assetImageCompositeModule.GetModuleInstanceManagerForListing ());
             
-            assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditingPanel ().SetAssetImageModuleInstanceListingPanelPeer (assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ());
-            assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ().SetAssetImageCompositeModuleEditingPanelPeer (assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditingPanel ());
+            assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditPanel ().SetAssetImageModuleInstanceListPanelPeer (assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListPanel ());
+            assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListPanel ().SetAssetImageCompositeModuleEditPanelPeer (assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditPanel ());
 
             // ...
             
-            assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListingPanel ().RearrangeModuleInstancePositions ();
+            assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListPanel ().RearrangeModuleInstancePositions ();
             
             if (assetImageCompositeModule.IsSequenced ())
             {
@@ -224,12 +224,12 @@
             PopUpManager.removePopUp(this);
          }
          
-         public function GetAssetImageCompositeModuleEditingPanel ():AssetImageCompositeModuleEditingPanel
+         public function GetAssetImageCompositeModuleEditPanel ():AssetImageCompositeModuleEditPanel
          {
             return panelAssetImageCompositeModuleEditing;
          }
          
-         public function GetAssetImageModuleInstanceListingPanel ():AssetImageModuleInstanceListingPanel
+         public function GetAssetImageModuleInstanceListPanel ():AssetImageModuleInstanceListPanel
          {
             return panelAssetImageModuleInstanceListing;
          }
@@ -241,8 +241,8 @@
       
       //=====================================================================
       
-         private var panelAssetImageCompositeModuleEditing:AssetImageCompositeModuleEditingPanel;
-         private var panelAssetImageModuleInstanceListing:AssetImageModuleInstanceListingPanel;
+         private var panelAssetImageCompositeModuleEditing:AssetImageCompositeModuleEditPanel;
+         private var panelAssetImageModuleInstanceListing:AssetImageModuleInstanceListPanel;
          private var ButtonDeleteModuleInstances:Button;
          private var ButtonMoveUpModuleInstance:Button;
          private var ButtonMoveDownModuleInstance:Button;

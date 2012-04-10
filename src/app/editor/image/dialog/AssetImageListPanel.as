@@ -1,5 +1,5 @@
 
-package editor.sound.dialog {
+package editor.image.dialog {
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.display.Shape;
@@ -32,43 +32,27 @@ package editor.sound.dialog {
    import com.tapirgames.util.DisplayObjectUtil;
    
    import editor.asset.AssetManagerPanel;
+   import editor.asset.Intent;
+   import editor.asset.IntentPutAsset;
    
-   import editor.asset.AssetManagerListLayout; 
-   
-   import editor.sound.AssetSound;
-   import editor.sound.AssetSoundManager;
+   import editor.image.AssetImageManager;
    
    import common.Define;
    import common.Version;
    
-   public class AssetSoundListingPanel extends AssetManagerPanel
+   public class AssetImageListPanel extends AssetImageModuleListPanel 
    {
-      private var mAssetSoundManager:AssetSoundManager = null;
+      protected var mAssetImageManager:AssetImageManager = null;
       
-      public function SetAssetSoundManager (assetSoundManager:AssetSoundManager):void
+      public function SetAssetImageManager (assetImageManager:AssetImageManager):void
       {
-         super.SetAssetManager (assetSoundManager);
+         super.SetAssetImageModuleManager (assetImageManager);
          
-         if (mAssetSoundManager != assetSoundManager)
+         if (mAssetImageManager != assetImageManager)
          {
-            mAssetSoundManager = assetSoundManager;
-            
-            if (mAssetSoundManager != null)
-            {
-               mAssetSoundManager.SetLayout (new AssetManagerListLayout (mAssetSoundManager, 76));
-               mAssetSoundManager.UpdateLayout (true);
-            }
+            mAssetImageManager = assetImageManager;
          }
       }
-      
-      override public function GetMouseWheelFunction ():int
-      {
-         return kMouseWheelFunction_Scroll;
-      }
-      
-//============================================================================
-//   
-//============================================================================
       
    }
 }

@@ -1,7 +1,7 @@
 
 package editor.trigger.entity {
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -22,7 +22,7 @@ package editor.trigger.entity {
    
    public class EntityEventHandler_ModuleLoopToEnd extends EntityEventHandler 
    {
-      public function EntityEventHandler_ModuleLoopToEnd (container:EntityContainer, defaultEventId:int, potientialEventIds:Array = null)
+      public function EntityEventHandler_ModuleLoopToEnd (container:Scene, defaultEventId:int, potientialEventIds:Array = null)
       {
          super (container, defaultEventId, potientialEventIds);
          

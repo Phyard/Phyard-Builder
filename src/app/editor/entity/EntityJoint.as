@@ -5,8 +5,6 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
@@ -23,7 +21,7 @@ package editor.entity {
       
       protected var mIsBreakable:Boolean = false;
       
-      public function EntityJoint (container:EntityContainer)
+      public function EntityJoint (container:Scene)
       {
          super (container);
       }

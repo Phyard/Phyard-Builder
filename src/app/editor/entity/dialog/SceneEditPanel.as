@@ -32,7 +32,7 @@ package editor.entity.dialog {
    
    import editor.asset.AssetManagerPanel;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    
    import common.Define;
    import common.Version;

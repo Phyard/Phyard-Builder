@@ -12,7 +12,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -29,7 +29,7 @@ package editor.trigger.entity {
    {
       protected var mCodeSnippet:CodeSnippet;
       
-      public function EntityCodeSnippetHolder (container:EntityContainer)
+      public function EntityCodeSnippetHolder (container:Scene)
       {
          super (container);
          

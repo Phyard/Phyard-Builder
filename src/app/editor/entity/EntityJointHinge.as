@@ -5,8 +5,6 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
@@ -30,7 +28,7 @@ package editor.entity {
       
       protected var mMaxMotorTorque:Number = Define.DefaultHingeMotorTorque; // v1.04
       
-      public function EntityJointHinge (container:EntityContainer)
+      public function EntityJointHinge (container:Scene)
       {
          super (container);
          

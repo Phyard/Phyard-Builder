@@ -5,8 +5,6 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
@@ -28,7 +26,7 @@ package editor.entity {
       
       private var mRangeBarHalfHeight:Number = 3;
       
-      public function EntityJointSlider (container:EntityContainer)
+      public function EntityJointSlider (container:Scene)
       {
          super (container);
          

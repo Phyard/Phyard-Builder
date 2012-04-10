@@ -1,7 +1,7 @@
 
 package editor.trigger.entity {
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -30,7 +30,7 @@ package editor.trigger.entity {
       protected var mPostEventHandlerDefinition:FunctionDefinition;
       protected var mPostCodeSnippet:CodeSnippet;
       
-      public function EntityEventHandler_TimerWithPrePostHandling (container:EntityContainer, defaultEventId:int, potientialEventIds:Array = null)
+      public function EntityEventHandler_TimerWithPrePostHandling (container:Scene, defaultEventId:int, potientialEventIds:Array = null)
       {
          super (container, defaultEventId, potientialEventIds);
          

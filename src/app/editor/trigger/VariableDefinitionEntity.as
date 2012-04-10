@@ -5,7 +5,7 @@ package editor.trigger {
    
    import editor.world.World;
    import editor.entity.Entity;
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    
    import editor.EditorContext;
    
@@ -187,7 +187,7 @@ package editor.trigger {
             entity_index = entity.GetCreationOrderId ();
          }
          
-         sel_index = EntityContainer.EntityIndex2SelectListSelectedIndex (entity_index, entity_list);
+         sel_index = Scene.EntityIndex2SelectListSelectedIndex (entity_index, entity_list);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = entity_list;

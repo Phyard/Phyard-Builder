@@ -1,5 +1,5 @@
 
-package editor.world {
+package editor.entity {
    
    import flash.display.Sprite;
    import flash.display.DisplayObject;
@@ -76,10 +76,10 @@ package editor.world {
    import common.Define;
    import common.ValueAdjuster;
    
-   public class EntityContainer extends AssetManager //Sprite 
+   public class Scene extends AssetManager //Sprite 
    {
       
-      public function EntityContainer ()
+      public function Scene ()
       {
          super ();
          

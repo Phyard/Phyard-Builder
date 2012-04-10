@@ -12,8 +12,6 @@ package editor.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
@@ -28,7 +26,7 @@ package editor.entity {
       private var mPowerSourceBitmap:Bitmap = null;
       private var mBorderShape:Shape = new Shape ();
       
-      public function EntityUtilityPowerSource (container:EntityContainer)
+      public function EntityUtilityPowerSource (container:Scene)
       {
          super (container);
          

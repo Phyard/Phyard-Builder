@@ -14,7 +14,7 @@ package editor.trigger.entity {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -43,7 +43,7 @@ package editor.trigger.entity {
       
     // ...
       
-      protected var mEntityContainer:EntityContainer;
+      protected var mEntityContainer:Scene;
       
       protected var mSelectionProxy:SelectionProxy = null;
       
@@ -55,7 +55,7 @@ package editor.trigger.entity {
       protected var mOnSelectEntity:Function = null;
       protected var mOnClearEntities:Function = null;
       
-      public function InputEntitySelector (container:EntityContainer, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
+      public function InputEntitySelector (container:Scene, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
       {
          mEntityContainer = container;
          

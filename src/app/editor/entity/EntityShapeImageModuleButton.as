@@ -14,8 +14,6 @@ package editor.entity {
 
    import com.tapirgames.util.GraphicsUtil;
 
-   import editor.world.EntityContainer;
-
    import editor.selection.SelectionProxy;
    
    import editor.core.EditorObject;
@@ -47,7 +45,7 @@ package editor.entity {
 //
 //====================================================================
 
-      public function EntityShapeImageModuleButton (container:EntityContainer)
+      public function EntityShapeImageModuleButton (container:Scene)
       {
          super (container);
          

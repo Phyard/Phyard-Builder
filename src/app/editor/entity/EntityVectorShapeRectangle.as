@@ -8,8 +8,6 @@ package editor.entity {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
 
-   import editor.world.EntityContainer;
-
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
 
@@ -29,7 +27,7 @@ package editor.entity {
       // ...
       protected var mEnableVertexControllers:Boolean = true;
 
-      public function EntityVectorShapeRectangle (container:EntityContainer)
+      public function EntityVectorShapeRectangle (container:Scene)
       {
          super (container);
 

@@ -1,7 +1,7 @@
 
 package editor.trigger.entity {
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -22,7 +22,7 @@ package editor.trigger.entity {
    
    public class EntityEventHandler_Mouse extends EntityEventHandler 
    {
-      public function EntityEventHandler_Mouse (container:EntityContainer, defaultEventId:int, potientialEventIds:Array = null)
+      public function EntityEventHandler_Mouse (container:Scene, defaultEventId:int, potientialEventIds:Array = null)
       {
          super (container, defaultEventId, potientialEventIds);
          

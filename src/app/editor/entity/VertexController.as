@@ -8,8 +8,6 @@ package editor.entity {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;
@@ -20,7 +18,7 @@ package editor.entity {
    
    public class VertexController extends Sprite 
    {
-      protected var mEntityContainer:EntityContainer;
+      protected var mEntityContainer:Scene;
       
       protected var mSelectionProxy:SelectionProxy = null;
       
@@ -28,7 +26,7 @@ package editor.entity {
       
       private var mHalfSize:Number = 3.0;
       
-      public function VertexController (container:EntityContainer, ownerEntity:Entity)
+      public function VertexController (container:Scene, ownerEntity:Entity)
       {
          mEntityContainer = container;
          

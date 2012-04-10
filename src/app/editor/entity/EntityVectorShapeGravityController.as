@@ -8,8 +8,6 @@ package editor.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
 
-   import editor.world.EntityContainer;
-
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
 
@@ -34,7 +32,7 @@ package editor.entity {
 
       private var mInteractiveZonesParams:Array = null;
 
-      public function EntityVectorShapeGravityController (container:EntityContainer)
+      public function EntityVectorShapeGravityController (container:Scene)
       {
          super (container);
 

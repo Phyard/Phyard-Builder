@@ -12,8 +12,6 @@ package editor.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
@@ -30,7 +28,7 @@ package editor.entity {
       private var mCameraWidth:uint = 600;
       private var mCameraHeight:uint = 600;
       
-      public function EntityUtilityCamera (container:EntityContainer)
+      public function EntityUtilityCamera (container:Scene)
       {
          super (container);
          

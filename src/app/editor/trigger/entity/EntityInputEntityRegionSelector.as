@@ -12,7 +12,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -30,7 +30,7 @@ package editor.trigger.entity {
    
    public class EntityInputEntityRegionSelector extends EntityIconInsider implements IEntityLimiter 
    {
-      public function EntityInputEntityRegionSelector (container:EntityContainer)
+      public function EntityInputEntityRegionSelector (container:Scene)
       {
          super (container);
          

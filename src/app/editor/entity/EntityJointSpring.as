@@ -5,8 +5,6 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
@@ -39,7 +37,7 @@ package editor.entity {
       
       protected var mBreakExtendedLength:Number = 0.0;
       
-      public function EntityJointSpring (container:EntityContainer)
+      public function EntityJointSpring (container:Scene)
       {
          super (container);
          

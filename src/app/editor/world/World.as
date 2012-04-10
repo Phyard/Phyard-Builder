@@ -84,13 +84,15 @@ package editor.world {
    
    import editor.codelib.CodeLibManager;
    import editor.codelib.AssetFunction;
+   
+   import editor.entity.Scene;
 
    import common.Define;
    import common.ValueAdjuster;
 
    public class World // extends EntityContainer
    {
-      public var mEntityContainer:EntityContainer;
+      public var mEntityContainer:Scene;
       
       //public var mCollisionManager:CollisionManager;
       public var mCollisionCategoryManager:CollisionCategoryManager;
@@ -116,7 +118,7 @@ package editor.world {
          super ();
 
       //
-         mEntityContainer = new EntityContainer ();
+         mEntityContainer = new Scene ();
          
          //mCollisionManager = new CollisionManager ();
          mCollisionCategoryManager = new CollisionCategoryManager ();
@@ -312,7 +314,7 @@ package editor.world {
 //   collision categories
 //=================================================================================
 
-      public function GetEntityContainer ():EntityContainer
+      public function GetEntityContainer ():Scene
       {
          return mEntityContainer;
       }

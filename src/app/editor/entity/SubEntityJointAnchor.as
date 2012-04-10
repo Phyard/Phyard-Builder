@@ -5,8 +5,6 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.EntityContainer;
-   
    import editor.asset.Asset;
    
    import editor.selection.SelectionEngine;
@@ -20,7 +18,7 @@ package editor.entity {
       
       protected var mSubIndex:int = -1;
       
-      public function SubEntityJointAnchor (container:EntityContainer, mainEntity:Entity, anchorIndex:int)
+      public function SubEntityJointAnchor (container:Scene, mainEntity:Entity, anchorIndex:int)
       {
          super (container);
          

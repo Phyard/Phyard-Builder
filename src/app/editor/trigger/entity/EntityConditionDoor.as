@@ -18,7 +18,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -54,7 +54,7 @@ package editor.trigger.entity {
       
       protected var mInputConditions:Array = new Array ();
       
-      public function EntityConditionDoor (container:EntityContainer)
+      public function EntityConditionDoor (container:Scene)
       {
          super (container);
          

@@ -12,8 +12,6 @@ package editor.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
@@ -42,7 +40,7 @@ package editor.entity {
       protected var mTextLayer:Sprite = new Sprite ();
       protected var mTextSprite:DisplayObject = null;
       
-      public function EntityVectorShapeText (container:EntityContainer)
+      public function EntityVectorShapeText (container:Scene)
       {
          super (container);
          

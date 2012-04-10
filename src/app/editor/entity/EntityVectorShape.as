@@ -3,8 +3,6 @@ package editor.entity {
 
    import flash.display.Sprite;
 
-   import editor.world.EntityContainer;
-
    import editor.selection.SelectionProxy;
 
    import common.Define;
@@ -32,7 +30,7 @@ package editor.entity {
 //
 //====================================================================
 
-      public function EntityVectorShape (container:EntityContainer)
+      public function EntityVectorShape (container:Scene)
       {
          super (container);
       }

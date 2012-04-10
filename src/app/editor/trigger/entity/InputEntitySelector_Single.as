@@ -10,7 +10,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
@@ -109,7 +109,7 @@ package editor.trigger.entity {
       
       protected var mTheSingleEntity:Entity = null;
       
-      public function InputEntitySelector_Single (container:EntityContainer, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
+      public function InputEntitySelector_Single (container:Scene, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
       {
          super (container, ownerEntity, inputId, selectorId, onSelectEntity, onClearEntities);
       }

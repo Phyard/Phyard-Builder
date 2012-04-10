@@ -12,7 +12,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -32,7 +32,7 @@ package editor.trigger.entity {
    
    public class EntityBasicCondition extends EntityCodeSnippetHolder implements ICondition 
    {
-      public function EntityBasicCondition (container:EntityContainer)
+      public function EntityBasicCondition (container:Scene)
       {
          super (container);
          

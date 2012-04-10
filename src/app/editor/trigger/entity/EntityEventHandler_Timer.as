@@ -1,7 +1,7 @@
 
 package editor.trigger.entity {
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -25,7 +25,7 @@ package editor.trigger.entity {
       protected var mRunningInterval:Number = 120.0; // steps or seconds
       protected var mOnlyRunOnce:Boolean = true;
       
-      public function EntityEventHandler_Timer (container:EntityContainer, defaultEventId:int, potientialEventIds:Array = null)
+      public function EntityEventHandler_Timer (container:Scene, defaultEventId:int, potientialEventIds:Array = null)
       {
          super (container, defaultEventId, potientialEventIds);
       }

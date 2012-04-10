@@ -7,8 +7,6 @@ package editor.entity {
    
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionProxy;
    
    import editor.core.EditorObject;
@@ -22,11 +20,11 @@ package editor.entity {
    //todo: extends from Asset (or merge Asset and EditorObject)
    public class Entity extends Asset //EditorObject// Sprite
    {
-      protected var mEntityContainer:EntityContainer;
+      protected var mEntityContainer:Scene;
       
       protected var mIsEnabled:Boolean = true;
       
-      public function Entity (container:EntityContainer)
+      public function Entity (container:Scene)
       {
          super (container);
          

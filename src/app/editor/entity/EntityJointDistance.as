@@ -5,8 +5,6 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
@@ -19,7 +17,7 @@ package editor.entity {
       
       protected var mBreakDeltaLength:Number = 0.00005;
       
-      public function EntityJointDistance (container:EntityContainer)
+      public function EntityJointDistance (container:Scene)
       {
          super (container);
          

@@ -12,8 +12,6 @@ package editor.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
@@ -27,7 +25,7 @@ package editor.entity {
       
       private var mMouseOverShape:EntityVectorShape; // not a real entity in world, just use it to store some values.
       
-      public function EntityVectorShapeTextButton (container:EntityContainer)
+      public function EntityVectorShapeTextButton (container:Scene)
       {
          super (container);
          

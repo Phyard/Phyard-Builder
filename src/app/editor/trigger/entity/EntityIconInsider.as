@@ -12,7 +12,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -46,7 +46,7 @@ package editor.trigger.entity {
       //
       protected var mBorderThickness:Number = 1;
       
-      public function EntityIconInsider (container:EntityContainer)
+      public function EntityIconInsider (container:Scene)
       {
          super (container);
       }

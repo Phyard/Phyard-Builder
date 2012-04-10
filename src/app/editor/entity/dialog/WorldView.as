@@ -167,7 +167,7 @@ package editor.entity.dialog {
    import editor.undo.WorldHistoryManager;
    import editor.undo.WorldState;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    
    import editor.ccat.CollisionCategoryManager;
    
@@ -238,7 +238,7 @@ package editor.entity.dialog {
       
       //
       //private var EditorContext.GetEditorApp ().GetWorld ():editor.world.World;
-      private var mEntityContainer:EntityContainer;
+      private var mEntityContainer:Scene;
       
          private var mViewCenterWorldX:Number = DefaultWorldWidth * 0.5;
          private var mViewCenterWorldY:Number = DefaultWorldHeight * 0.5;
@@ -1624,7 +1624,7 @@ package editor.entity.dialog {
          theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
-      public function SetEntityContainer (container:EntityContainer, firstTime:Boolean = false):void
+      public function SetEntityContainer (container:Scene, firstTime:Boolean = false):void
       {
          super.SetAssetManager (container);
          

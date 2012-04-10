@@ -10,7 +10,7 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
@@ -22,7 +22,7 @@ package editor.trigger.entity {
    
    public class InputEntitySelector_Any extends InputEntitySelector 
    {
-      public function InputEntitySelector_Any (container:EntityContainer, ownerEntity:Entity)
+      public function InputEntitySelector_Any (container:Scene, ownerEntity:Entity)
       {
          super (container, ownerEntity);
       }

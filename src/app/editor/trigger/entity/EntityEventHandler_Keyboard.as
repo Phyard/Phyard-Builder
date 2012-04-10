@@ -1,7 +1,7 @@
 
 package editor.trigger.entity {
    
-   import editor.world.EntityContainer;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
@@ -25,7 +25,7 @@ package editor.trigger.entity {
    {
       protected var mKeyCodes:Array = new Array ();
       
-      public function EntityEventHandler_Keyboard (container:EntityContainer, defaultEventId:int, potientialEventIds:Array = null)
+      public function EntityEventHandler_Keyboard (container:Scene, defaultEventId:int, potientialEventIds:Array = null)
       {
          super (container, defaultEventId, potientialEventIds);
          

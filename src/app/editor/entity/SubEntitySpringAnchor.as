@@ -5,8 +5,6 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.world.EntityContainer;
-   
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
@@ -16,7 +14,7 @@ package editor.entity {
    {
       private var mRadius:Number = 3;
       
-      public function SubEntitySpringAnchor (container:EntityContainer, mainEntity:Entity, anchorIndex:int)
+      public function SubEntitySpringAnchor (container:Scene, mainEntity:Entity, anchorIndex:int)
       {
          super (container, mainEntity, anchorIndex);
          

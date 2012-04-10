@@ -3,8 +3,6 @@ package editor.entity {
 
    import flash.display.Sprite;
 
-   import editor.world.EntityContainer;
-
    import editor.selection.SelectionProxy;
    
    import editor.ccat.CollisionCategory;
@@ -76,7 +74,7 @@ package editor.entity {
 //
 //====================================================================
 
-      public function EntityShape (container:EntityContainer)
+      public function EntityShape (container:Scene)
       {
          super (container);
       }

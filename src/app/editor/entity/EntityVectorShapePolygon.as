@@ -8,8 +8,6 @@ package editor.entity {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
 
-   import editor.world.EntityContainer;
-
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyPolygon;
 
@@ -31,7 +29,7 @@ package editor.entity {
       private var mMinY:Number;
       private var mMaxY:Number;
 
-      public function EntityVectorShapePolygon (container:EntityContainer)
+      public function EntityVectorShapePolygon (container:Scene)
       {
          super (container);
       }

@@ -5,8 +5,6 @@ package editor.entity {
 
    import com.tapirgames.util.GraphicsUtil;
 
-   import editor.world.EntityContainer;
-
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
 
@@ -26,7 +24,7 @@ package editor.entity {
       // wheel
       protected var mAppearanceType:int = Define.CircleAppearanceType_Ball;
 
-      public function EntityVectorShapeCircle (container:EntityContainer)
+      public function EntityVectorShapeCircle (container:Scene)
       {
          super (container);
 

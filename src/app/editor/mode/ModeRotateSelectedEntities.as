@@ -5,7 +5,7 @@ package editor.mode {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.WorldView;
+   import editor.entity.dialog.WorldView;
    
    
    public class ModeRotateSelectedEntities extends Mode

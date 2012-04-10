@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application 
          xmlns:mx="http://www.adobe.com/2006/mxml" 
-         xmlns:editor="editor.*" 
-         xmlns:panel="editor.display.panel.*"
-         xmlns:dialog="editor.display.dialog.*" 
+         xmlns:entity="editor.entity.dialog.*"  
          styleName = "plain" 
          layout="absolute" 
          width ="100%"
@@ -375,7 +373,7 @@
                               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off"
                               horizontalGap="0" verticalGap="0" borderThickness="1">
-                        <editor:WorldView id="MainView" height="100%" width="100%" />
+                        <entity:WorldView id="MainView" height="100%" width="100%" />
                      </mx:Box>
                   </mx:Box>
                   <mx:Box id="Box_StatusInfoBar" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" height="19" width="100%"
@@ -494,7 +492,7 @@
             
             import com.tapirgames.util.DisplayObjectUtil;
             import com.tapirgames.util.UrlUtil;
-            import editor.WorldView;
+            import editor.entity.dialog.WorldView;
             import editor.display.dialog.*;
             import editor.EditorContext;
             import editor.trigger.Lists;

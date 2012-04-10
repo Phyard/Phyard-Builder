@@ -54,8 +54,6 @@ package editor.display.panel {
    import editor.mode.FunctionModeRegionSelectEntities;
    import editor.mode.FunctionModeMoveSelectedEntities;
    
-   import editor.WorldView;
-   
    import common.Define;
    import common.Version;
    

@@ -1,5 +1,5 @@
 
-package editor {
+package editor.entity.dialog {
    
    import flash.events.Event;
    import flash.events.MouseEvent;

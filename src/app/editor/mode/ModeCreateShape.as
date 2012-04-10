@@ -1,7 +1,7 @@
 
 package editor.mode {
    
-   import editor.WorldView;
+   import editor.entity.dialog.WorldView;
    
    
    import common.Define;

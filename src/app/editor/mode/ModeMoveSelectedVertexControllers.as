@@ -6,7 +6,7 @@ package editor.mode {
    
    import editor.entity.VertexController;
    
-   import editor.WorldView;
+   import editor.entity.dialog.WorldView;
    
    
    public class ModeMoveSelectedVertexControllers extends Mode

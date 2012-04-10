@@ -49,8 +49,6 @@ package editor.display.panel {
    import editor.mode.CollisionCategoryModeRegionSelectEntities;
    import editor.mode.CollisionCategoryModeMoveSelectedEntities;
    
-   import editor.WorldView;
-   
    import common.Define;
    import common.Version;
    

@@ -39,6 +39,7 @@ package editor.world {
    import editor.entity.SubEntityJointAnchor;
 
    import editor.trigger.entity.EntityLogic;
+   import editor.trigger.entity.EntityCodeSnippetHolder;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityTask;
@@ -69,6 +70,7 @@ package editor.world {
 
    import editor.trigger.TriggerEngine;
    import editor.trigger.PlayerFunctionDefinesForEditing;
+   import editor.trigger.CodeSnippet;
 
    import editor.image.AssetImageModule;
    import editor.image.AssetImageNullModule;
@@ -1772,6 +1774,54 @@ package editor.world {
       public function GetTriggerEngine ():TriggerEngine
       {
          return mTriggerEngine;
+      }
+      
+      public function ConvertRegisterVariablesToGlobalVariables ():void
+      {
+         var oldNumGlobalVariables:int = mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ();
+         
+         //
+         
+         var variableMapTable:Dictionary = new Dictionary ();
+         var codeSnippet:CodeSnippet;
+         
+         // check script holders
+         
+         var numEntities:int = GetNumEntities ();
+         
+         for (var createId:int = 0; createId < numEntities; ++ createId)
+         {
+            var entity:Entity = GetEntityByCreationId (createId);
+            if (entity is EntityCodeSnippetHolder)
+            {
+               codeSnippet = (entity as EntityCodeSnippetHolder).GetCodeSnippet () as CodeSnippet;
+               if (codeSnippet != null)
+               {
+                  codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
+               }
+            }
+         }
+         
+         // check custom functions
+         
+         var numFunctions:int = GetFunctionManager().GetNumFunctions ();
+         for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+         {
+            var functionEntity:EntityFunction = GetFunctionManager().GetFunctionByIndex (functionId);
+            
+            codeSnippet = functionEntity.GetCodeSnippet ();
+            if (codeSnippet != null)
+            {
+               codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
+            }
+         }
+         
+         // ...
+         
+         if (oldNumGlobalVariables != mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ())
+         {
+            mTriggerEngine.NotifyGlobalVariableSpaceModified ();
+         }
       }
 
 //=================================================================================

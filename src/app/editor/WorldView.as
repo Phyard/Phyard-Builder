@@ -3336,6 +3336,11 @@ package editor {
                   if (event.ctrlKey && event.shiftKey)
                      ExportSwfFile ();
                   break;
+               case 75: // k
+               case 190: // >
+                  if (event.ctrlKey && event.shiftKey)
+                     ConvertOldRegisterVariablesToGlobalVariables ();
+                  break;
                case 83: // S
                   if (event.ctrlKey && event.shiftKey)
                      QuickSave ();
@@ -6223,6 +6228,24 @@ package editor {
          values.mViewerHeight = heightWithPlayBar;
          
          ShowExportSwfFileDialog (values);
+      }
+      
+      public function ConvertOldRegisterVariablesToGlobalVariables ():void
+      {
+         try
+         {
+            mEditorWorld.ConvertRegisterVariablesToGlobalVariables ();
+            
+            // ...
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Convert register variables succeeded", EffectMessagePopup.kBgColor_OK));
+         }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
+            
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Convert register variables failed", EffectMessagePopup.kBgColor_Error));
+         }
       }
       
 //============================================================================

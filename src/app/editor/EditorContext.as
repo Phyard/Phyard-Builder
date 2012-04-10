@@ -38,12 +38,21 @@ package editor {
    
    public class EditorContext
    {
+      
+//=====================================================================
+// app
+//=====================================================================
+
       internal static var sEditorApp:Editor; 
       
       public static function GetEditorApp ():Editor
       {
          return EditorContext.sEditorApp;
       }
+      
+//=====================================================================
+// singleton
+//=====================================================================
       
       internal static var sEditorContext:EditorContext = null; //
       
@@ -374,22 +383,6 @@ package editor {
       {
          SoundMixer.stopAll ();
       }
-      
-//=====================================================================
-// create initial properties
-//=====================================================================
-      
-   // shapes
-      
-      //public static var mShape_EnablePhysics:Boolean = true;
-      //public static var mShape_IsStatic:Boolean = false;
-      //public static var mShape_IsSensor:Boolean = false;
-      //
-      //public static var mShape_DrawBackground:Boolean = true;
-      //public static var mShape_BackgroundColor:uint = Define.ColorMovableObject;
-      //
-      //public static var mShape_DrawBorder:Boolean = true;
-      //public static var mShape_BorderColor:uint = Define.ColorObjectBorder;
 
    }
    

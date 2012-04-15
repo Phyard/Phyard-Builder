@@ -370,6 +370,10 @@
       
       private function OnAddedToStage ():void
       {
+         stage.addEventListener (MouseEvent.MOUSE_DOWN, OnMouseAction);
+         stage.addEventListener (MouseEvent.MOUSE_MOVE, OnMouseAction);
+         stage.addEventListener (MouseEvent.MOUSE_UP, OnMouseAction);
+         
          mOriginalFPS = stage.frameRate;
          
          try
@@ -400,6 +404,11 @@
          {
             
          }
+      }
+      
+      private function OnMouseAction (event:MouseEvent):void
+      {
+         EditorContext.mIsMouseButtonHold = event.buttonDown;
       }
       
       private var mOriginalFPS:Number = 30;

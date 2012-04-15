@@ -66,6 +66,8 @@
                EditorContext.GetSingleton ().mCodeLibListDialog = new CodeLibListDialog ();
             }
             
+            EditorContext.GetSingleton ().mCodeLibListDialog.SetAsCurrentFocusedTitleWindow ();
+            
             if (EditorContext.GetSingleton ().mCodeLibListDialog.parent != null) // OnCCatPicked must be null
             {
                PopUpManager.bringToFront (EditorContext.GetSingleton ().mCodeLibListDialog);

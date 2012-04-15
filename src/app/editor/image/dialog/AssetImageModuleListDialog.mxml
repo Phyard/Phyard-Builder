@@ -53,6 +53,8 @@
                EditorContext.GetSingleton ().mAssetImageModuleListDialog = new AssetImageModuleListDialog ();
             }
             
+            EditorContext.GetSingleton ().mAssetImageModuleListDialog.SetAsCurrentFocusedTitleWindow ();
+            
             if (EditorContext.GetSingleton ().mAssetImageModuleListDialog.parent != null) // OnModulePicked must be null
             {
                PopUpManager.bringToFront (EditorContext.GetSingleton ().mAssetImageModuleListDialog);

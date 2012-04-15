@@ -59,6 +59,8 @@
                assetImageDivideDialog = new AssetImageDivideDialog ();
             }
             
+            assetImageDivideDialog.SetAsCurrentFocusedTitleWindow ();
+            
             if (assetImageDivideDialog.parent != null)
             {
                PopUpManager.bringToFront (assetImageDivideDialog);

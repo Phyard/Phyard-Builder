@@ -47,6 +47,8 @@
                EditorContext.GetSingleton ().mAssetSoundListDialog.SetAllowedResizingModeBits (ResizingMode_Bottom);
             }
             
+            EditorContext.GetSingleton ().mAssetSoundListDialog.SetAsCurrentFocusedTitleWindow ();
+            
             if (EditorContext.GetSingleton ().mAssetSoundListDialog.parent != null) // OnSoundPicked must be null
             {
                PopUpManager.bringToFront (EditorContext.GetSingleton ().mAssetSoundListDialog);

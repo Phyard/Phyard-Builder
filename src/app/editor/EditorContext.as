@@ -233,12 +233,12 @@ package editor {
          if (mCurrentFocusedTitleWindow != titleWindow)
          {
             if (mCurrentFocusedTitleWindow != null)
-               mCurrentFocusedTitleWindow.SetFocused (false);
+               mCurrentFocusedTitleWindow.OnFocusChanged (false);
             
             mCurrentFocusedTitleWindow = titleWindow;
             
             if (mCurrentFocusedTitleWindow != null)
-               mCurrentFocusedTitleWindow.SetFocused (true);
+               mCurrentFocusedTitleWindow.OnFocusChanged (true);
          }
       }
    

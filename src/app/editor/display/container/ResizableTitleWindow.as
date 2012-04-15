@@ -55,8 +55,13 @@ package editor.display.container
          addEventListener (MouseEvent.ROLL_OUT, OnMouseOut);
 		}
 		
+		public function SetAsCurrentFocusedTitleWindow ():void
+		{
+         EditorContext.GetSingleton ().SetCurrentFocusedTitleWindow (this);
+      }
+		
 		private var mFocused:Boolean = false;
-		public function SetFocused (focused:Boolean):void
+		public function OnFocusChanged (focused:Boolean):void
 		{
 		   if (mFocused != focused)
 		   {
@@ -155,7 +160,7 @@ package editor.display.container
 		
 		private function OnMouseDown (event:MouseEvent):void
       {
-         EditorContext.GetSingleton ().SetCurrentFocusedTitleWindow (this);
+         SetAsCurrentFocusedTitleWindow ();
          
          UpdateResizingMode ();
          

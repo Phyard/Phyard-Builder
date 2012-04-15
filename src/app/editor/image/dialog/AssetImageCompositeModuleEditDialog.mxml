@@ -185,6 +185,8 @@
                assetImageCompositeModuleEditDialog.SetUseLayoutForSequencedModule (assetImageCompositeModule.IsSequenced ());
             }
             
+            assetImageCompositeModuleEditDialog.SetAsCurrentFocusedTitleWindow ();
+            
             if (assetImageCompositeModuleEditDialog.parent != null)
             {
                PopUpManager.bringToFront (assetImageCompositeModuleEditDialog);

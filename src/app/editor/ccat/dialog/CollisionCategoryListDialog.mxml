@@ -60,6 +60,8 @@
                EditorContext.GetSingleton ().mCollisionCategoryListDialog = new CollisionCategoryListDialog ();
             }
             
+            EditorContext.GetSingleton ().mCollisionCategoryListDialog.SetAsCurrentFocusedTitleWindow ();
+            
             if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.parent != null) // OnCCatPicked must be null
             {
                PopUpManager.bringToFront (EditorContext.GetSingleton ().mCollisionCategoryListDialog);

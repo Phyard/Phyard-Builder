@@ -1105,25 +1105,6 @@ package editor.asset {
             }
          }
       }
-
-//=================================================================================
-// internal linkables
-//=================================================================================
-
-      public function SetAssetsShowingInternalLinkables (inputAssets:Array):void
-      {
-         var numAssets:int = mAssetsSortedByCreationId.length;
-         
-         for (var i:uint = 0; i < numAssets; ++ i)
-         {
-            var asset:Asset = GetAssetByCreationId (i);
-            
-            if (asset != null)
-            {
-               asset.SetInternalLinkablesVisible (inputAssets != null && inputAssets.indexOf (asset) >= 0);
-            }
-         }
-      }
       
 //=================================================================================
 // appearance and creation order
@@ -1391,18 +1372,24 @@ package editor.asset {
       {
          // some managers will override this
       }
-      
-//====================================================================
-//   properties
-//====================================================================
-      
-      public function GetPropertyValue (propertyId:int):Object
+
+//=================================================================================
+// internal linkables
+//=================================================================================
+
+      public function SetAssetsShowingInternalLinkables (inputAssets:Array):void
       {
-         return null;
-      }
-      
-      public function SetPropertyValue (propertyId:int, value:Object):void
-      {
+         var numAssets:int = mAssetsSortedByCreationId.length;
+         
+         for (var i:uint = 0; i < numAssets; ++ i)
+         {
+            var asset:Asset = GetAssetByCreationId (i);
+            
+            if (asset != null)
+            {
+               asset.SetInternalLinkablesVisible (inputAssets != null && inputAssets.indexOf (asset) >= 0);
+            }
+         }
       }
       
 //====================================================================
@@ -1425,6 +1412,21 @@ package editor.asset {
       {
          // to override
       }
+      
+      public function DrawAssetIds (canvasSprite:Sprite):void
+      {
+         var asset:Asset;
+         var i:int;
+         var numAssets:int = mAssetsSortedByCreationId.length;
+         for (i = 0; i < numAssets; ++ i)
+         {
+            asset = GetAssetByCreationId (i) as Asset;
+            if (asset != null)
+            {
+               asset.DrawAssetId (canvasSprite);
+            }
+         }
+      }
         
 //=====================================================================
 // context menu
@@ -1434,6 +1436,19 @@ package editor.asset {
       public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
       } 
+      
+//====================================================================
+//   properties
+//====================================================================
+      
+      public function GetPropertyValue (propertyId:int):Object
+      {
+         return null;
+      }
+      
+      public function SetPropertyValue (propertyId:int, value:Object):void
+      {
+      }
    }
 }
 

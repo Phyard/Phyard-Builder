@@ -1864,7 +1864,7 @@ package editor.entity.dialog {
          //   SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:null, GetWorldBinaryData:GetWorldBinaryData, GetViewportSize:GetViewportSize, mStartRightNow: true, mMaskViewerField: mMaskViewerField}}));
          //}
          
-         SetDesignPlayer (new Viewer ({mParamsFromEditor: {mWorldDomain: ApplicationDomain.currentDomain, mWorldBinaryData: GetWorldBinaryData (), GetViewportSize:GetViewportSize, mStartRightNow: true, mMaskViewerField: mMaskViewerField}}));
+         SetDesignPlayer (new Viewer ({mParamsFromEditor: {mWorldDomain: ApplicationDomain.currentDomain, mWorldBinaryData: GetWorldBinaryData (), GetViewportSize: GetViewportSize, mStartRightNow: true, mMaskViewerField: mMaskViewerField}}));
          
          mIsPlaying = true;
          

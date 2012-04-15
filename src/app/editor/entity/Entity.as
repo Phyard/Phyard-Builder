@@ -5,8 +5,6 @@ package editor.entity {
    
    import flash.system.Capabilities;
    
-   import com.tapirgames.display.TextFieldEx;
-   
    import editor.selection.SelectionProxy;
    
    import editor.core.EditorObject;
@@ -49,13 +47,6 @@ package editor.entity {
 //======================================================
 // 
 //======================================================
-      
-      override public function Destroy ():void
-      {         
-         RemoveIdText ();
-         
-         super.Destroy ();
-      }
       
       //public function SetSelectable (selectable:Boolean):void
       //{
@@ -173,51 +164,6 @@ package editor.entity {
       {
          // to override
       }
-      
-//====================================================================
-//   draw entity id
-//====================================================================
-      
-      private var mIdText:TextFieldEx = null;
-      private var mLasteId:int = -1;
-      
-      public function DrawEntityId (canvasSprite:Sprite):void
-      {
-         if (canvasSprite == null)
-            return;
-         
-         var creationOrderId:int = GetCreationOrderId ();
-         if (mLasteId != creationOrderId)// || mIdText == null)
-         {
-            RemoveIdText ();
-            
-            mLasteId = creationOrderId;
-            mIdText = TextFieldEx.CreateTextField (mLasteId.toString (), true, 0xFFFFFF, 0x0, false, 0, false, true, 0x0);
-         }
-         
-         if (mIdText.parent != canvasSprite)
-         {
-            canvasSprite.addChild (mIdText);
-         }
-         
-         mIdText.scaleX = 1.0 / mEntityContainer.scaleX;
-         mIdText.scaleY = 1.0 / mEntityContainer.scaleY;
-         mIdText.x = GetLinkPointX () - 0.5 * mIdText.width;
-         mIdText.y = GetLinkPointY () - 0.5 * mIdText.height;
-      }
-      
-      public function RemoveIdText ():void
-      {
-         if (mIdText != null)
-         {
-            if (mIdText.parent != null)
-            {
-               mIdText.parent.removeChild (mIdText);
-            }
-            
-            mIdText = null;
-         }
-      } 
 
    }
 }

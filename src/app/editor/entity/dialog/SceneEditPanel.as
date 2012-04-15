@@ -148,16 +148,6 @@ package editor.entity.dialog {
                                                mParentWidth, mParentHeight, mBackgroundGridSize);
          }
       }
-      
-//============================================================================
-//   
-//============================================================================
-      
-      override public function UpdateInterface ():void
-      {
-      }
-      
-      private var mBackgroundGridSize:int = 50;
 
 //============================================================================
 //   
@@ -530,6 +520,192 @@ package editor.entity.dialog {
          }
          
          OnPutCreating (asset, done);
+      }
+      
+//============================================================================
+//   
+//============================================================================
+      
+      override public function UpdateInterface ():void
+      {
+         var numSelectedEntities:int = 0;
+         var hasUndoPoints:Boolean = false;
+         var hasRedoPoints:Boolean = false;
+         
+         mDialogCallbacks.UpdateInterface (numSelectedEntities, hasUndoPoints, hasRedoPoints);
+      }
+      
+      private var mDialogCallbacks:Object = null; // must be null
+      
+      public function SetDialogCallbacks (callbacks:Object):void
+      {
+         mDialogCallbacks = callbacks;
+      }
+      
+      private var mBackgroundGridSize:int = 50;
+      
+      public function SetBackgroundGridSize (gridSize:Number):void
+      {
+         mBackgroundGridSize = gridSize;
+      }
+      
+      public function ClearAllEntities (resetScene:Boolean, showAlert:Boolean = true):void
+      {
+      /*
+         if (showAlert)
+            Alert.show("Do you want to clear all objects?", "Clear All", 3, this, resetScene ? OnCloseClearAllAndResetSceneAlert : OnCloseClearAllAlert, null, Alert.NO);
+         else
+         {
+            if (resetScene)
+            {
+               EditorContext.GetEditorApp ().SetWorld (new editor.world.World ());
+               mViewCenterWorldX = DefaultWorldWidth * 0.5;
+               mViewCenterWorldY = DefaultWorldHeight * 0.5;
+               mEntityContainerZoomScale = 1.0;
+               
+               mShowAllEntityLinks = false;
+               mShowAllEntityIds = false;
+               
+               UpdateChildComponents ();
+               
+               if (NotifyEditingScaleChanged != null)
+                  NotifyEditingScaleChanged ();
+            }
+            else
+            {
+               mEntityContainer.DestroyAllEntities ();
+            }
+            
+            CreateUndoPoint ("Clear world");
+            
+            CalSelectedEntitiesCenterPoint ();
+            
+            //EditorContext.mCollisionCategoryView.UpdateFriendLinkLines ();
+            if (CollisionCategoryListDialog.sCollisionCategoryListDialog != null)
+            {
+               CollisionCategoryListDialog.sCollisionCategoryListDialog.GetCollisionCategoryListPanel ().UpdateAssetLinkLines ();
+            }
+            ////EditorContext.mFunctionEditingView.UpdateEntityLinkLines ();
+            //if (CodeLibListDialog.sCodeLibListDialog != null)
+            //{
+            //   CodeLibListDialog.sCodeLibListDialog.GetCodeLibListPanel ().UpdateFriendLinkLines ();
+            //}
+            
+            EditorContext.SetRecommandDesignFilename (null);
+         }
+      */
+      }
+
+      public function ShowLevelRulesEditDialog ():void
+      {
+      }
+
+      public function ShowCoordinateSystemEditDialog ():void
+      {
+      }
+
+      public function ShowWorldPhysicsEditDialog ():void
+      {
+      }
+
+      public function ShowWorldAppearanceEditDialog ():void
+      {
+      }
+
+      public function ShowViewportEditDialog ():void
+      {
+      }
+      
+      public function SetMoveSceneMode (moveSveneMode:Boolean):void
+      {
+      }
+      
+      public function SetCookieSelectMode (cookieSelectMode:Boolean):void
+      {
+      }
+      
+      public function SetShowAllEntityLinks (showLinks:Boolean):void
+      {
+      }
+      
+      // find entity
+      
+      public function SelectEntities (entityIDs:Array):void
+      {
+      }
+      
+      // zoom in / out
+      
+      public function ZoomOut ():void
+      {
+      }
+      
+      public function ZoomIn ():void
+      {
+      }
+      
+      // entity settings
+      
+      public function ShowEntitySettingsDialog ():void
+      {
+      }
+      
+      public function ShowBatchModifyEntityCommonPropertiesDialog ():void
+      {
+      }
+      
+      public function ShowBatchModifyShapePhysicsPropertiesDialog ():void
+      {
+      }
+      
+      public function ShowBatchModifyShapeAppearancePropertiesDialog ():void
+      {
+      }
+      
+      public function ShowBatchModifyShapeCirclePropertiesDialog ():void
+      {
+      }
+      
+      public function ShowBatchModifyShapeRectanglePropertiesDialog ():void
+      {
+      }
+      
+      public function ShowBatchModifyShapePolylinePropertiesDialog ():void
+      {
+      }
+      
+      public function ShowBatchModifyJointCollideConnectedsDialog ():void
+      {
+      }
+      
+      // clone / delete
+      
+      public function CloneSelectedEntities ():void
+      {
+      }
+      
+      public function DeleteSelectedEntities ():void
+      {
+      }
+      
+      // move to top/bottom 
+      
+      public function MoveSelectedEntitiesToTop ():void
+      {
+      }
+      
+      public function MoveSelectedEntitiesToBottom ():void
+      {
+      }
+      
+      // brothers
+      
+      public function MakeBrothersForSelectedEntities ():void
+      {
+      }
+      
+      public function BreakApartBrothersForSelectedEntities ():void
+      {
       }
       
 //============================================================================

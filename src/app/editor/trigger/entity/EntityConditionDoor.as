@@ -236,6 +236,8 @@ package editor.trigger.entity {
          if (mContextMenu != null)
             return;
          
+         mouseChildren = true;
+         
          mContextMenu = new ContextMenu ();
          mContextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = mContextMenu.builtInItems;

@@ -176,18 +176,6 @@ package editor.world {
       private var mShareSourceCode:Boolean = false;
       private var mPermitPublishing:Boolean = true;
 
-      //>>1.51
-      private var mViewerUiFlags:int = Define.DefaultPlayerUiFlags;
-      private var mPlayBarColor:uint = 0x606060;
-
-      private var mViewportWidth:int = Define.DefaultPlayerWidth;
-      private var mViewportHeight:int = Define.DefaultPlayerHeight;
-      //<<
-
-      //>>v1.60
-      private var mPauseOnFocusLost:Boolean = false;
-      //<<
-
       public function SetAuthorName (name:String):void
       {
          if (name == null)
@@ -243,69 +231,6 @@ package editor.world {
       public function IsPermitPublishing ():Boolean
       {
          return mPermitPublishing;
-      }
-      
-      public function SetViewerUiFlags (flags:int):void
-      {
-         mViewerUiFlags = flags;
-      }
-
-      public function GetViewerUiFlags ():int
-      {
-         return mViewerUiFlags;
-      }
-
-      public function SetPlayBarColor (color:uint):void
-      {
-         mPlayBarColor = color;
-      }
-
-      public function GetPlayBarColor ():uint
-      {
-         return mPlayBarColor;
-      }
-
-      public function SetViewportWidth (width:int):void
-      {
-         mViewportWidth = width;
-      }
-
-      public function GetViewportWidth ():int
-      {
-         return mViewportWidth;
-      }
-
-      public function SetViewportHeight (height:int):void
-      {
-         mViewportHeight = height;
-      }
-
-      public function GetViewportHeight ():int
-      {
-         return mViewportHeight;
-      }
-
-      public function ValidateViewportSize ():void
-      {
-         if (mViewportWidth > Define.MaxViewportSize)
-            mViewportWidth = Define.MaxViewportSize;
-         if (mViewportWidth < Define.MinViewportSize)
-            mViewportWidth = Define.MinViewportSize;
-
-         if (mViewportHeight > Define.MaxViewportSize)
-            mViewportHeight = Define.MaxViewportSize;
-         if (mViewportHeight < Define.MinViewportSize)
-            mViewportHeight = Define.MinViewportSize;
-      }
-      
-      public function IsPauseOnFocusLost ():Boolean
-      {
-         return mPauseOnFocusLost;
-      }
-      
-      public function SetPauseOnFocusLost (pauseOnFocusLost:Boolean):void
-      {
-         mPauseOnFocusLost = pauseOnFocusLost;
       }
       
 //=================================================================================

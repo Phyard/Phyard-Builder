@@ -146,6 +146,18 @@ package editor.entity {
       private var mPreferredFPS:Number = 25;
       //<<
 
+      //>>1.51
+      private var mViewerUiFlags:int = Define.DefaultPlayerUiFlags;
+      private var mPlayBarColor:uint = 0x606060;
+
+      private var mViewportWidth:int = Define.DefaultPlayerWidth;
+      private var mViewportHeight:int = Define.DefaultPlayerHeight;
+      //<<
+
+      //>>v1.60
+      private var mPauseOnFocusLost:Boolean = false;
+      //<<
+
       public function SetWorldLeft (left:int):void
       {
          mWorldLeft = left;
@@ -512,6 +524,73 @@ package editor.entity {
       public function SetCameraRotatingEnabled (enabled:Boolean):void
       {
          mCameraRotatingEnabled = enabled;
+      }
+      
+      public function SetViewerUiFlags (flags:int):void
+      {
+         mViewerUiFlags = flags;
+      }
+
+      public function GetViewerUiFlags ():int
+      {
+         return mViewerUiFlags;
+      }
+
+      public function SetPlayBarColor (color:uint):void
+      {
+         mPlayBarColor = color;
+      }
+
+      public function GetPlayBarColor ():uint
+      {
+         return mPlayBarColor;
+      }
+
+      public function SetViewportWidth (width:int):void
+      {
+         mViewportWidth = width;
+         
+         ValidateViewportSize ();
+      }
+
+      public function GetViewportWidth ():int
+      {
+         return mViewportWidth;
+      }
+
+      public function SetViewportHeight (height:int):void
+      {
+         mViewportHeight = height;
+         
+         ValidateViewportSize ();
+      }
+
+      public function GetViewportHeight ():int
+      {
+         return mViewportHeight;
+      }
+
+      public function ValidateViewportSize ():void
+      {
+         if (mViewportWidth > Define.MaxViewportSize)
+            mViewportWidth = Define.MaxViewportSize;
+         if (mViewportWidth < Define.MinViewportSize)
+            mViewportWidth = Define.MinViewportSize;
+
+         if (mViewportHeight > Define.MaxViewportSize)
+            mViewportHeight = Define.MaxViewportSize;
+         if (mViewportHeight < Define.MinViewportSize)
+            mViewportHeight = Define.MinViewportSize;
+      }
+      
+      public function IsPauseOnFocusLost ():Boolean
+      {
+         return mPauseOnFocusLost;
+      }
+      
+      public function SetPauseOnFocusLost (pauseOnFocusLost:Boolean):void
+      {
+         mPauseOnFocusLost = pauseOnFocusLost;
       }
       
 //=================================================================================
@@ -1477,25 +1556,6 @@ package editor.entity {
                   removeChild (entity);
                   addChildAt (entity, maxIndex);
                }
-            }
-         }
-      }
-      
-//=================================================================================
-//   draw ids
-//=================================================================================
-      
-      public function DrawEntityIds (canvasSprite:Sprite):void
-      {
-         var entity:Entity;
-         var i:int;
-         var numEntities:int = mAssetsSortedByCreationId.length;
-         for (i = 0; i < numEntities; ++ i)
-         {
-            entity = GetAssetByCreationId (i) as Entity;
-            if (entity != null)
-            {
-               entity.DrawEntityId (canvasSprite);
             }
          }
       }

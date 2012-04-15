@@ -12,6 +12,8 @@ package editor.asset {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
+   import com.tapirgames.display.TextFieldEx;
+   
    import editor.core.EditorObject;
    
    import editor.selection.SelectionProxy;
@@ -734,6 +736,26 @@ package editor.asset {
       public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          // to override
+      }
+      
+//====================================================================
+//   draw entity id
+//====================================================================
+      
+      public function DrawAssetId (canvasSprite:Sprite):void
+      {
+         if (canvasSprite == null)
+            return;
+         
+         var creationOrderId:int = GetCreationOrderId ();
+         var idText:TextFieldEx = TextFieldEx.CreateTextField (creationOrderId.toString (), true, 0xFFFFFF, 0x0, false, 0, false, true, 0x0);
+         
+         canvasSprite.addChild (idText);
+         
+         idText.scaleX = 1.0 / mAssetManager.scaleX;
+         idText.scaleY = 1.0 / mAssetManager.scaleY;
+         idText.x = GetLinkPointX () - 0.5 * idText.width;
+         idText.y = GetLinkPointY () - 0.5 * idText.height;
       }
       
 //====================================================================

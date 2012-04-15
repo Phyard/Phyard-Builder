@@ -159,6 +159,8 @@ package editor.asset {
       
       private function OnAddedToStage (event:Event):void 
       {
+         mParentWidth  = parent.width;
+         mParentHeight = parent.height;
          UpdateBackgroundAndContentMaskSprites ();
          
          // ...
@@ -177,15 +179,15 @@ package editor.asset {
       }
       
       private var mContentMaskSprite:Shape = null;
-      private var mParentContainerWidth :Number = -1;
-      private var mParentContainerHeight:Number = -1;
+      private var mContentMaskWidth :Number = 0;
+      private var mContentMaskHeight:Number = 0;
       
       protected function UpdateBackgroundAndContentMaskSprites ():void
       {
-         if (mParentWidth != mParentContainerWidth || mParentHeight != mParentContainerHeight)
+         if (mParentWidth != mContentMaskWidth || mParentHeight != mContentMaskHeight)
          {
-            mParentContainerWidth  = mParentWidth;
-            mParentContainerHeight = mParentHeight;
+            mContentMaskWidth  = mParentWidth;
+            mContentMaskHeight = mParentHeight;
             
             if (mContentMaskSprite == null)
             {
@@ -194,12 +196,12 @@ package editor.asset {
                mask = mContentMaskSprite;
             }
             
-            GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, mParentContainerWidth - 1, mParentContainerHeight - 1, 0x0, 1, true, 0xFFFFFF);
-            GraphicsUtil.ClearAndDrawRect (mContentMaskSprite, 0, 0, mParentContainerWidth - 1, mParentContainerHeight - 1, 0x0, 1, true);
+            GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true, 0xFFFFFF);
+            GraphicsUtil.ClearAndDrawRect (mContentMaskSprite, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true);
             
             if (mAssetManager != null)
             {
-               mAssetManager.SetViewportSize (mParentContainerWidth, mParentContainerHeight);
+               mAssetManager.SetViewportSize (mContentMaskWidth, mContentMaskHeight);
             }
          }
       }
@@ -979,8 +981,47 @@ package editor.asset {
 // asset links and ids
 //=====================================================================
       
-      private var mShowAllAssetIDs:Boolean = false;
+      // todo: hold/release a button to show/hide ids
+      public function SetShowAllAssetIDs (show:Boolean):void
+      {
+         if (mAssetManager == null)
+         {
+            mAssetLinksLayer.visible = false;
+            return;
+         }
+         
+         mAssetLinksLayer.visible = show;
+         
+         if (show)
+         {
+            mAssetManager.DrawAssetIds (mAssetIDsLayer);
+            
+            if (mAssetIDsLayer.scaleX != mAssetManager.scaleX)
+               mAssetIDsLayer.scaleX = mAssetManager.scaleX;
+            if (mAssetIDsLayer.scaleY != mAssetManager.scaleY)
+               mAssetIDsLayer.scaleY = mAssetManager.scaleY;
+            if ((int (20.0 * mAssetIDsLayer.x)) != (int (20.0 * mAssetManager.x)))
+               mAssetIDsLayer.x = mAssetManager.x;
+            if ((int (20.0 * mAssetIDsLayer.y)) != (int (20.0 * mAssetManager.y)))
+               mAssetIDsLayer.y = mAssetManager.y;
+         }
+         else
+         {
+            while (mAssetLinksLayer.numChildren > 0)
+               mAssetLinksLayer.removeChildAt (0);
+         }
+      }
+      
       private var mShowAllAssetLinks:Boolean = false;
+      
+      public function SetShowAllAssetLinks (show:Boolean):void
+      {
+         if (mShowAllAssetLinks != show)
+         {
+            mShowAllAssetLinks = show;
+            RepaintAllAssetLinks ();
+         }
+      }
       
       public function CreateOrBreakAssetLink (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):void
       {
@@ -992,11 +1033,6 @@ package editor.asset {
       protected function RepaintAllAssetLinks ():void
       {
          mAssetLinksNeedRepaint = true;
-      }
-      
-      protected function RepaintAllAssetIDs ():void
-      {
-         
       }
       
       protected function UpdateAssetLinkLines ():void

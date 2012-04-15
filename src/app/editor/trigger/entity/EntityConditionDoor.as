@@ -36,7 +36,7 @@ package editor.trigger.entity {
    {
       public static const kHalfWidth:Number = 12;
       public static const kHalfHeight:Number = 12;
-      public static const kBandWidth:Number = 9;
+      public static const kBandWidth:Number = 12;
       
       public static const kText_SetAsAnd:String = "Set As \"And\" Door";
       public static const kText_SetAsOr:String = "Set As \"Or\" Door";
@@ -233,18 +233,23 @@ package editor.trigger.entity {
       
       private function BuildContextMenu ():void
       {
-         contextMenu = new ContextMenu ();
-         contextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
+         if (mContextMenu != null)
+            return;
+         
+         mContextMenu = new ContextMenu ();
+         mContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = mContextMenu.builtInItems;
          defaultItems.print = false;
          
          mContextMenuItem_ToggleAndOr = new ContextMenuItem (kText_SetAsAnd, false);
-         contextMenu.customItems.push (mContextMenuItem_ToggleAndOr);
+         mContextMenu.customItems.push (mContextMenuItem_ToggleAndOr);
          mContextMenuItem_ToggleAndOr.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
          mContextMenuItem_ToggleNot = new ContextMenuItem (kText_AddNot, false);
-         contextMenu.customItems.push (mContextMenuItem_ToggleNot);
+         mContextMenu.customItems.push (mContextMenuItem_ToggleNot);
          mContextMenuItem_ToggleNot.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         
+         this.contextMenu = mContextMenu;
          
          UpdateMenuItems ();
       }
@@ -275,21 +280,19 @@ package editor.trigger.entity {
          }
       }
       
-      /*
-      override public function SetInternalComponentsVisible (visible:Boolean):void
+      override public function SetInternalLinkablesVisible (visible:Boolean):void
       {
-         super.SetInternalComponentsVisible (visible);
+         super.SetInternalLinkablesVisible (visible);
          
-         if (AreInternalComponentsVisible ())
+         if (AreInternalLinkablesVisible ())
          {
-            //contextMenu = mContextMenu;
+            contextMenu = mContextMenu;
             
             UpdateMenuItems ();
          }
-         //else
-         //   contextMenu = null;
+         else
+            contextMenu = null;
       }
-      */
       
       private function UpdateMenuItems ():void
       {

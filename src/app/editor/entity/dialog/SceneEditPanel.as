@@ -32,6 +32,7 @@ package editor.entity.dialog {
    
    import editor.asset.Asset;
    import editor.asset.AssetManagerPanel;
+   import editor.asset.Linkable;
    import editor.asset.Intent;
    import editor.asset.IntentPutAsset;
    import editor.asset.IntentDrag;
@@ -529,6 +530,52 @@ package editor.entity.dialog {
          }
          
          OnPutCreating (asset, done);
+      }
+      
+//============================================================================
+//   entity links
+//============================================================================
+      
+      override public function CreateOrBreakAssetLink (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):void
+      {
+         var created:Boolean = false;
+         
+         // first round
+         var entities:Array = mScene.GetAssetsAtPoint (endManagerX, endManagerY);
+         var entity:Entity;
+         var linkable:Linkable;
+         var i:int;
+         for (i = 0; !created && i < entities.length; ++ i)
+         {
+            entity = entities [i] as Entity;
+            if (entity is Linkable)
+            {
+               linkable = entity as Linkable;
+               created = startLinkable.TryToCreateLink (mStartManagerX, mStartManagerY, linkable as Entity, endManagerX, endManagerY);
+               if (! created && startLinkable is Entity)
+                  created = linkable.TryToCreateLink (endManagerX, endManagerY, startLinkable as Entity, mStartManagerX, mStartManagerY);
+            }
+         }
+         
+         // second round, link general entity with a linkable
+         
+         for (i = 0; i < entities.length; ++ i)
+         {
+            entity = (entities [i] as Entity).GetMainAsset () as Entity;
+            if (! (entity is Linkable) )
+            {
+               created = startLinkable.TryToCreateLink (mStartManagerX, mStartManagerY, entity, endManagerX, endManagerY);
+               if (created)
+                  break;
+            }
+         }
+         
+         if (created)
+         {
+            // CreateUndoPoint ("Create link");
+            
+            RepaintAllAssetLinks ();
+         }
       }
       
 //============================================================================

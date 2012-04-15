@@ -1682,6 +1682,11 @@ package editor.entity {
          else
             return 0;
       }
+      
+      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean):void
+      {
+         DrawEntityLinks (canvasSprite, forceDraw);
+      }
 
       public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean):void
       {

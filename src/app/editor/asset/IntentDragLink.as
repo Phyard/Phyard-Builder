@@ -28,7 +28,7 @@ package editor.asset {
       {
          if (finished)
          {
-            mAssetManagerPanel.CreateOrBreakLink (mStartLinkable, mCurrentX, mCurrentY);
+            mAssetManagerPanel.CreateOrBreakAssetLink (mStartLinkable, mStartX, mStartY, mCurrentX, mCurrentY);
          }
          else
          {

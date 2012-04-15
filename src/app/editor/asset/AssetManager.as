@@ -1420,6 +1420,11 @@ package editor.asset {
       {
          return mAssetLinksChangedCallback;
       }
+      
+      public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean):void
+      {
+         // to override
+      }
         
 //=====================================================================
 // context menu

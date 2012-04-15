@@ -731,6 +731,11 @@ package editor.asset {
          return mTransform.mOffsetY;
       }
       
+      public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      {
+         // to override
+      }
+      
 //====================================================================
 //   properties
 //====================================================================

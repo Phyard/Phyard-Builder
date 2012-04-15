@@ -100,7 +100,7 @@ package editor.ccat.dialog {
          }
       }
       
-      override public function CreateOrBreakLink (startLinkable:Linkable, endManagerX:Number, endManagerY:Number):void
+      override public function CreateOrBreakAssetLink (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):void
       {
          if (mCollisionCategoryManager == null)
             return;
@@ -130,7 +130,7 @@ package editor.ccat.dialog {
          mCollisionCategoryManager.CreateOrBreakCollisionCategoryFriendLink (fromCategory, toCategory);
       }
       
-      override public function UpdateAssetLinkLines ():void
+      override protected function UpdateAssetLinkLines ():void
       {
          if (mCollisionCategoryManager == null)
             return;

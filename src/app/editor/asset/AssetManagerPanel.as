@@ -89,9 +89,9 @@ package editor.asset {
          {
             addChildAt (mAssetManager, getChildIndex (mAssetIDsLayer));
             
-            mAssetManager.SetAssetLinksChangedCallback (UpdateAssetLinkLines);
+            mAssetManager.SetAssetLinksChangedCallback (RepaintAllAssetLinks);
             
-            UpdateAssetLinkLines ();
+            RepaintAllAssetLinks ();
          }
          
          BuildContextMenu ();
@@ -102,8 +102,6 @@ package editor.asset {
          if (mAssetManager != null)
          {
             mAssetManager.SetPosition (mAssetManager.x + dx, mAssetManager.y + dy);
-            
-            SynchronizeAssetLinksLayerWithManager ();
          }
       }
       
@@ -138,8 +136,6 @@ package editor.asset {
                currentScale = GetMaxAllowedScale ();
             
             mAssetManager.SetScale (currentScale);
-            
-            SynchronizeAssetLinksLayerWithManager ();
          }
       }
       
@@ -237,6 +233,8 @@ package editor.asset {
          }
          
          UpdateInternal (mStepTimeSpan.GetLastSpan ());
+         
+         UpdateAssetLinkLines ();
       }
       
       protected function UpdateInternal (dt:Number):void
@@ -530,19 +528,6 @@ package editor.asset {
          
          // to call ExternalUpdateInterface ()
          // ExternalUpdateInterface will check the status of this panel
-      }
-      
-      private var mShowAllAssetIDs:Boolean = false;
-      private var mShowAllAssetLinks:Boolean = false;
-      
-      protected function RepaintAllAssetIDs ():void
-      {
-         
-      }
-      
-      protected function RepaintAllAssetLinks ():void
-      {
-         
       }
 
 //=================================================================================
@@ -917,7 +902,7 @@ package editor.asset {
          mAssetManager.DeleteSelectedControlPoints ();
          
          UpdateInterface ();
-         UpdateAssetLinkLines ();
+         RepaintAllAssetLinks ();
       }
       
       protected function InsertControlPoint ():void
@@ -928,7 +913,7 @@ package editor.asset {
          mAssetManager.InsertControlPoint ();
          
          UpdateInterface ();
-         UpdateAssetLinkLines ();
+         RepaintAllAssetLinks ();
       }
       
 //=================================================================================
@@ -943,7 +928,7 @@ package editor.asset {
          mAssetManager.DeleteSelectedAssets ();
          
          UpdateInterface ();
-         UpdateAssetLinkLines ();
+         RepaintAllAssetLinks ();
       }
       
       public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
@@ -954,7 +939,7 @@ package editor.asset {
          mAssetManager.MoveSelectedAssets (moveBodyTexture, offsetX, offsetY, updateSelectionProxy);
          
          UpdateInterface ();
-         UpdateAssetLinkLines ();
+         RepaintAllAssetLinks ();
       }
       
       public function RotateSelectedAssets (rotateBodyTexture:Boolean, centerX:Number, centerY:Number, r:Number, rotatePosition:Boolean, rotateSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -965,7 +950,7 @@ package editor.asset {
          mAssetManager.RotateSelectedAssets (rotateBodyTexture, updateSelectionProxy, r, rotateSelf, rotatePosition, centerX, centerY);
          
          UpdateInterface ();
-         UpdateAssetLinkLines ();
+         RepaintAllAssetLinks ();
       }
       
       public function ScaleSelectedAssets (scaleBodyTexture:Boolean, centerX:Number, centerY:Number, s:Number, scalePosition:Boolean, scaleSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -976,7 +961,7 @@ package editor.asset {
          mAssetManager.ScaleSelectedAssets (scaleBodyTexture, updateSelectionProxy, s, scaleSelf, scalePosition, centerX, centerY);
          
          UpdateInterface ();
-         UpdateAssetLinkLines ();
+         RepaintAllAssetLinks ();
       }
       
       public function FlipSelectedAssets (flipBodyTexture:Boolean, planeX:Number, flipPosition:Boolean, flipSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -987,24 +972,34 @@ package editor.asset {
          mAssetManager.FlipSelectedAssets (flipBodyTexture, updateSelectionProxy, flipSelf, flipPosition, planeX);
          
          UpdateInterface ();
-         UpdateAssetLinkLines ();
+         RepaintAllAssetLinks ();
       }
 
 //=====================================================================
-// asset links
+// asset links and ids
 //=====================================================================
       
-      public function CreateOrBreakLink (startLinkable:Linkable, endManagerX:Number, endManagerY:Number):void
+      private var mShowAllAssetIDs:Boolean = false;
+      private var mShowAllAssetLinks:Boolean = false;
+      
+      public function CreateOrBreakAssetLink (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):void
       {
          // ...
       }
       
-      public function UpdateAssetLinkLines ():void
+      private var mAssetLinksNeedRepaint:Boolean = false;
+      
+      protected function RepaintAllAssetLinks ():void
       {
-         // ...
+         mAssetLinksNeedRepaint = true;
       }
       
-      protected function SynchronizeAssetLinksLayerWithManager ():void
+      protected function RepaintAllAssetIDs ():void
+      {
+         
+      }
+      
+      protected function UpdateAssetLinkLines ():void
       {
          if (mAssetManager == null)
          {
@@ -1014,10 +1009,22 @@ package editor.asset {
          
          mAssetLinksLayer.visible = true;
          
-         mAssetLinksLayer.x = mAssetManager.x;
-         mAssetLinksLayer.y = mAssetManager.y;
-         mAssetLinksLayer.scaleX = mAssetManager.scaleX;
-         mAssetLinksLayer.scaleY = mAssetManager.scaleY;
+         if (mAssetLinksNeedRepaint)
+         {
+            mAssetLinksNeedRepaint = false;
+            
+            mAssetLinksLayer.graphics.clear ();
+            mAssetManager.DrawAssetLinks (mAssetLinksLayer, mShowAllAssetLinks);
+         }
+         
+         if (mAssetLinksLayer.scaleX != mAssetManager.scaleX)
+            mAssetLinksLayer.scaleX = mAssetManager.scaleX;
+         if (mAssetLinksLayer.scaleY != mAssetManager.scaleY)
+            mAssetLinksLayer.scaleY = mAssetManager.scaleY;
+         if ((int (20.0 * mAssetLinksLayer.x)) != (int (20.0 * mAssetManager.x)))
+            mAssetLinksLayer.x = mAssetManager.x;
+         if ((int (20.0 * mAssetLinksLayer.y)) != (int (20.0 * mAssetManager.y)))
+            mAssetLinksLayer.y = mAssetManager.y;
       }
 
 //=====================================================================

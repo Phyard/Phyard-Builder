@@ -164,6 +164,11 @@ package editor.entity {
          return DrawLinksOrder_Normal;
       }
       
+      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      {
+         DrawEntityLinks (canvasSprite, forceDraw, isExpanding);
+      }
+      
       public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          // to override

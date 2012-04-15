@@ -1,11 +1,13 @@
 
 package editor.asset {
 
-   import flash.display.Sprite;
    import flash.display.DisplayObject;
+   import flash.display.DisplayObjectContainer;
    import flash.display.Shape;
+   import flash.display.Sprite;
    
    import flash.events.Event;
+   import flash.events.FocusEvent;
    import flash.events.MouseEvent;
    import flash.events.KeyboardEvent;
    import flash.ui.Keyboard;
@@ -508,10 +510,9 @@ package editor.asset {
       final public function OnKeyDown (event:KeyboardEvent):void
       {
          if (OnKeyDownInternal (event.keyCode))
-            return;
-         
-         EditorContext.GetSingleton ().OnKeyDownDefault (event.keyCode);
-         event.stopPropagation ();
+         {
+            event.stopPropagation ();
+         }
       }
       
       // return true to indicate handled successfully

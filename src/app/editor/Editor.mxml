@@ -16,6 +16,7 @@
          addedToStage="OnAddedToStage ();"
          enterFrame="UpdateApp ();" 
          keyDown="OnKeyDown (event);"
+         mouseDown="EditorContext.GetSingleton ().SetCurrentFocusedTitleWindow (null);"
          >
    
    <mx:Style source="editor.css"/>

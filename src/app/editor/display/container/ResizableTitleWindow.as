@@ -2,6 +2,8 @@ package editor.display.container
 {
    import flash.events.Event;
    import flash.events.MouseEvent;
+   import flash.events.KeyboardEvent;
+   import flash.events.MouseEvent;
    import flash.events.EventPhase;
    
    import mx.managers.CursorManager;
@@ -43,12 +45,36 @@ package editor.display.container
 			super();
 			
 			addEventListener (Event.ENTER_FRAME, OnEnterFrame);
+         
+         addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
 			
          addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
          addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
          addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
          addEventListener (MouseEvent.ROLL_OVER, OnMouseMove);
          addEventListener (MouseEvent.ROLL_OUT, OnMouseOut);
+		}
+		
+		private var mFocused:Boolean = false;
+		public function SetFocused (focused:Boolean):void
+		{
+		   if (mFocused != focused)
+		   {
+		      mFocused = focused;
+		      
+		      if (mFocused)
+		      {
+      		   setStyle ("headerColors", [0x000080, 0xC0C0C0]);
+      		   setStyle ("color", 0xFFFFFF);
+      		   setStyle ("fontWeight", "bold");
+      		}
+      		else
+      		{
+      		   setStyle ("headerColors", null);
+      		   setStyle ("color", 0x000000);
+      		   setStyle ("fontWeight", "normal");
+      		}
+   		}
 		}
 		
 		public function SetAllowedResizingModeBits (bits:int):void
@@ -115,6 +141,11 @@ package editor.display.container
          }
       }
       
+      private function OnKeyDown (event:KeyboardEvent):void
+      {
+         EditorContext.GetSingleton ().OnKeyDownDefault (event.keyCode);
+      }
+      
       private function StopDragging ():void
       {
          mInDragging = false;
@@ -124,6 +155,8 @@ package editor.display.container
 		
 		private function OnMouseDown (event:MouseEvent):void
       {
+         EditorContext.GetSingleton ().SetCurrentFocusedTitleWindow (this);
+         
          UpdateResizingMode ();
          
          if (mResizingMode != 0)

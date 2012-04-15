@@ -16,6 +16,8 @@ package editor {
    
    import com.tapirgames.util.UrlUtil;
    
+   import editor.display.container.ResizableTitleWindow;
+   
    import editor.world.World;
    
    import editor.entity.Entity;
@@ -220,7 +222,26 @@ package editor {
                break;
          }
       }
+   //=====================================================================
+   //
+   //=====================================================================
+   
+      private var mCurrentFocusedTitleWindow:ResizableTitleWindow = null;
       
+      public function SetCurrentFocusedTitleWindow (titleWindow:ResizableTitleWindow):void
+      {
+         if (mCurrentFocusedTitleWindow != titleWindow)
+         {
+            if (mCurrentFocusedTitleWindow != null)
+               mCurrentFocusedTitleWindow.SetFocused (false);
+            
+            mCurrentFocusedTitleWindow = titleWindow;
+            
+            if (mCurrentFocusedTitleWindow != null)
+               mCurrentFocusedTitleWindow.SetFocused (true);
+         }
+      }
+   
    //=====================================================================
    //
    //=====================================================================

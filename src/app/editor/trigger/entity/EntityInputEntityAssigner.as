@@ -18,6 +18,8 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
+   import editor.asset.Asset;
+   
    import editor.entity.Scene;
    import editor.entity.Entity;
    
@@ -182,7 +184,7 @@ package editor.trigger.entity {
             mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyCircle ();
             mSelectionProxy.SetUserData (this);
             
-            SetInternalComponentsVisible (AreInternalComponentsVisible ());
+            //SetInternalComponentsVisible (AreInternalComponentsVisible ());
          }
          
          var borderThickness:Number = mBorderThickness;
@@ -242,16 +244,16 @@ package editor.trigger.entity {
 //
 //==============================================================================================================
       
-      override public function SetInternalComponentsVisible (visible:Boolean):void
+      override public function SetInternalLinkablesVisible (visible:Boolean):void
       {
          if (mSelectionProxy == null)
             return; // this happens when creating this entity
          
          mouseChildren = true;
          
-         super.SetInternalComponentsVisible (visible);
+         super.SetInternalLinkablesVisible (visible);
          
-         if (AreInternalComponentsVisible ())
+         if (AreInternalLinkablesVisible ())
          {
             mSelectorLayer.visible = true;
             
@@ -286,7 +288,7 @@ package editor.trigger.entity {
          for (var i:int = 0; i < sContextMenuItems.length; ++ i)
             (sContextMenuItems [i] as ContextMenuItem).enabled = (sContextMenuItemValues [i] != mEntityAssignerType);
          
-         if (AreInternalComponentsVisible () && oldType != newType)
+         if (AreInternalLinkablesVisible () && oldType != newType)
          {
             DestroyInternalComponents ();
             RebuildEntityArray ();
@@ -413,20 +415,20 @@ package editor.trigger.entity {
       {
          if (forceDraw || isExpanding)
          {
-            if (! AreInternalComponentsVisible ())
+            if (! AreInternalLinkablesVisible ())
             {
-               SetInternalComponentsVisible (true);
+               SetInternalLinkablesVisible (true);
             }
          }
          else if (! IsSelected ())
          {
-            if (AreInternalComponentsVisible ())
+            if (AreInternalLinkablesVisible ())
             {
-               SetInternalComponentsVisible (false);
+               SetInternalLinkablesVisible (false);
             }
          }
          
-         if (! AreInternalComponentsVisible ())
+         if (! AreInternalLinkablesVisible ())
             return;
          
          ValidateEntityLinks ();
@@ -472,7 +474,7 @@ package editor.trigger.entity {
          return GetLinkZoneId (local_point.x, local_point.y) >= 0;
       }
       
-      override public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
+      override public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
       {
          return false;
       }

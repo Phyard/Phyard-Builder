@@ -60,8 +60,6 @@ package editor.world {
    //import editor.trigger.entity.EntityFunctionPackage;
    //import editor.trigger.entity.EntityFunction;
 
-   import editor.entity.VertexController;
-
    //import editor.entity.EntityCollisionCategory;
 
    import editor.selection.SelectionEngine;

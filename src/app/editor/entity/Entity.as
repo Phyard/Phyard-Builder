@@ -51,9 +51,7 @@ package editor.entity {
 //======================================================
       
       override public function Destroy ():void
-      {
-         SetInternalComponentsVisible (false);
-         
+      {         
          RemoveIdText ();
          
          super.Destroy ();
@@ -139,73 +137,16 @@ package editor.entity {
       }
       
 //====================================================================
-//   vertex control points
-//====================================================================
-      
-      private var mVertexControllersVisible:Boolean = false;
-      
-      public function GetVertexControllerIndex (vertexController:VertexController):int
-      {
-         return -1;
-      }
-      
-      public function GetVertexControllerByIndex (index:int):VertexController
-      {
-         return null;
-      }
-      
-      public function SetInternalComponentsVisible (visible:Boolean):void
-      {
-         mVertexControllersVisible = visible;
-      }
-      
-      public function AreInternalComponentsVisible ():Boolean
-      {
-         return mVertexControllersVisible;
-      }
-      
-      public function OnBeginMovingVertexController (movingVertexController:VertexController):void
-      {
-      }
-      
-      public function OnMovingVertexController (movingVertexController:VertexController, offsetX:Number, offsetY:Number):void
-      {
-      }
-      
-      public function OnEndMovingVertexController (movingVertexController:VertexController):void
-      {
-      }
-      
-      public function OnVertexControllerSelectedChanged (movingVertexController:VertexController, selected:Boolean):void
-      {
-      }
-      
-      // if the vertext is not deleted, return it, otherwise, return null
-      public function RemoveVertexController(vertexController:VertexController):VertexController
-      {
-         return vertexController;
-      }
-      
-      // the returned VertexController is not the inserted one but the new one for beforeVertexController
-      public function InsertVertexController(beforeVertexController:VertexController):VertexController
-      {
-         return beforeVertexController;
-      }
-      
-//====================================================================
 //   selected
 //====================================================================
       
       public function OnWorldZoomScaleChanged ():void
       {
-         if (IsSelected ())
+         if (AreControlPointsVisible ())
          {
-            if (AreInternalComponentsVisible ())
-            {
-               // rebuild internal components
-               SetInternalComponentsVisible (false);
-               SetInternalComponentsVisible (true);
-            }
+            // rebuild control points
+            SetControlPointsVisible (false);
+            SetControlPointsVisible (true);
          }
       }
       

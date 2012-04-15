@@ -14,6 +14,8 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
+   import editor.asset.Asset;
+   
    import editor.entity.Scene;
    import editor.entity.Entity;
    
@@ -266,13 +268,15 @@ package editor.trigger.entity {
 //   linkable
 //====================================================================
       
-      override public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
+      override public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
       {
+         var toEntity:Entity = toAsset as Entity;
+         
          ValidateEntityLinks ();
          
          if (toEntity is ICondition)
          {
-            var point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, toEntity as Entity, new Point (toWorldDisplayX, toWorldDisplayY));
+            var point:Point = DisplayObjectUtil.LocalToLocal (mEntityContainer, toEntity as Entity, new Point (toManagerDisplayX, toManagerDisplayY));
             var zone_id:int = (toEntity as EntityLogic).GetLinkZoneId (point.x, point.y);
             var target_value:int = (toEntity as ICondition).GetTargetValueByLinkZoneId (zone_id);
             

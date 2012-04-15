@@ -922,14 +922,21 @@ package editor.asset {
       }
       
 //=================================================================================
+//   
+//=================================================================================
+
+      
+
+//=================================================================================
 //   control points
 //=================================================================================
 
       protected var mCurrentShownControlPoints:Array = new Array ();
 
       // assets == null means hide all control points
-      public function SetAssetsWithControlPointsShown (inputAssets:Array):void
+      public function SetAssetsShowingControlPoints (inputAssets:Array):void
       {
+         /*
          var i:int;
          var count:int;
          var cp:ControlPoint;
@@ -998,6 +1005,19 @@ package editor.asset {
          for (i = 0; i < count; ++ i)
          {
             (assetsToShowControlPoints [i] as Asset).SetControlPointsVisible (true);
+         }
+         */
+         
+         var numAssets:int = mAssetsSortedByCreationId.length;
+         
+         for (var i:uint = 0; i < numAssets; ++ i)
+         {
+            var asset:Asset = GetAssetByCreationId (i);
+            
+            if (asset != null)
+            {
+               asset.SetControlPointsVisible (inputAssets != null && inputAssets.indexOf (asset) >= 0);
+            }
          }
       }
 
@@ -1070,7 +1090,7 @@ package editor.asset {
          }
       }
       
-      public function InsertVertexController ():void
+      public function InsertControlPoint ():void
       {
          for (var i:int = mCurrentShownControlPoints.length - 1; i >= 0; -- i)
          {
@@ -1082,6 +1102,25 @@ package editor.asset {
                cp.GetOwnerAsset ().InsertControlPointBefore (cp);
                
                return;
+            }
+         }
+      }
+
+//=================================================================================
+// internal linkables
+//=================================================================================
+
+      public function SetAssetsShowingInternalLinkables (inputAssets:Array):void
+      {
+         var numAssets:int = mAssetsSortedByCreationId.length;
+         
+         for (var i:uint = 0; i < numAssets; ++ i)
+         {
+            var asset:Asset = GetAssetByCreationId (i);
+            
+            if (asset != null)
+            {
+               asset.SetInternalLinkablesVisible (inputAssets != null && inputAssets.indexOf (asset) >= 0);
             }
          }
       }

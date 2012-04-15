@@ -27,9 +27,6 @@ package editor.entity {
       //protected var mRoundCorners:Boolean = false;
       protected var mVectorShapeRectangle:VectorShapeRectangleForEditing = new VectorShapeRectangleForEditing ();
 
-      // ...
-      protected var mEnableVertexControllers:Boolean = true;
-
       public function EntityVectorShapeRectangle (container:Scene)
       {
          super (container, mVectorShapeRectangle);
@@ -45,17 +42,6 @@ package editor.entity {
             return "Rectangle Bomb";
          else
             return "Rectangle";
-      }
-
-      override public function GetInfoText ():String
-      {
-         var vertexController:VertexController = mEntityContainer.GetTheOnlySelectedVertexControllers ();
-         if (vertexController == null)
-            return super.GetInfoText ();
-
-         var vertexIndex:int = GetVertexControllerIndex (vertexController);
-
-         return super.GetInfoText () + ", vertex#" + vertexIndex + " is selected.";
       }
 
       override public function GetPhysicsShapesCount ():uint
@@ -140,17 +126,6 @@ package editor.entity {
       {
          //return mRoundCorners;
          return mVectorShapeRectangle.IsRoundCorners ();
-      }
-
-//====================================================================
-//   clone
-//====================================================================
-
-      override public function Destroy ():void
-      {
-         SetInternalComponentsVisible (false);
-
-         super.Destroy ();
       }
 
 //====================================================================

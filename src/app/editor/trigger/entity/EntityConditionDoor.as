@@ -18,6 +18,8 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
+   import editor.asset.Asset;
+   
    import editor.entity.Scene;
    import editor.entity.Entity;
    
@@ -197,7 +199,7 @@ package editor.trigger.entity {
             mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyRectangle ();
             mSelectionProxy.SetUserData (this);
             
-            SetInternalComponentsVisible (AreInternalComponentsVisible ());
+            //SetInternalComponentsVisible (AreInternalComponentsVisible ());
          }
          
          var borderThickness:Number = mBorderThickness;
@@ -273,6 +275,7 @@ package editor.trigger.entity {
          }
       }
       
+      /*
       override public function SetInternalComponentsVisible (visible:Boolean):void
       {
          super.SetInternalComponentsVisible (visible);
@@ -286,6 +289,7 @@ package editor.trigger.entity {
          //else
          //   contextMenu = null;
       }
+      */
       
       private function UpdateMenuItems ():void
       {
@@ -326,8 +330,10 @@ package editor.trigger.entity {
          return local_point.x > 2 || local_point.x < -kBandWidth;
       }
       
-      override public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
+      override public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
       {
+         var toEntity:Entity = toAsset as Entity;
+         
          ValidateEntityLinks ();
          
          if (toEntity is ICondition)
@@ -339,13 +345,13 @@ package editor.trigger.entity {
             var zone_id2:int;
             var target_value:int;
             
-            point2 = DisplayObjectUtil.LocalToLocal (mEntityContainer, (condition as Entity), new Point (toWorldDisplayX, toWorldDisplayY));
+            point2 = DisplayObjectUtil.LocalToLocal (mEntityContainer, (condition as Entity), new Point (toManagerDisplayX, toManagerDisplayY));
             zone_id2 = (condition as EntityLogic).GetLinkZoneId (point2.x, point2.y, false, true);
             target_value = condition.GetTargetValueByLinkZoneId (zone_id2);
             
             if (condition is EntityConditionDoor)
             {
-               point1 = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (fromWorldDisplayX, fromWorldDisplayY));
+               point1 = DisplayObjectUtil.LocalToLocal (mEntityContainer, this, new Point (fromManagerDisplayX, fromManagerDisplayY));
                zone_id1 = GetLinkZoneId (point1.x, point1.y, true, false);
                
                if (zone_id1 == ZoneId_In && zone_id2 == ZoneId_Out)

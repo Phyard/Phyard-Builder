@@ -10,6 +10,8 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
+   import editor.asset.Asset;
+   
    import editor.entity.Scene;
    
    import editor.selection.SelectionEngine;
@@ -66,7 +68,7 @@ package editor.trigger.entity {
          return false;
       }
       
-      override public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
+      override public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
       {
          return false;
       }

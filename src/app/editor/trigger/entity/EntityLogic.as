@@ -3,6 +3,8 @@ package editor.trigger.entity {
    
    import flash.display.Sprite;
    
+   import editor.asset.Asset;
+   import editor.asset.Linkable;
    
    import editor.entity.Scene;
    
@@ -107,7 +109,7 @@ package editor.trigger.entity {
          return false;
       }
       
-      public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
+      public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
       {
          return false;
       }

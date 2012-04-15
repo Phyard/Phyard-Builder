@@ -12,6 +12,8 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
+   import editor.asset.Asset;
+   
    import editor.entity.Scene;
    import editor.entity.Entity;
    
@@ -132,7 +134,7 @@ package editor.trigger.entity {
             mSelectionProxy = mEntityContainer.mSelectionEngine.CreateProxyRectangle ();
             mSelectionProxy.SetUserData (this);
             
-            SetInternalComponentsVisible (AreInternalComponentsVisible ());
+            //SetInternalComponentsVisible (AreInternalComponentsVisible ());
          }
          
          var borderThickness:Number = mBorderThickness;
@@ -167,7 +169,7 @@ package editor.trigger.entity {
          return GetLinkZoneId (local_point.x, local_point.y) >= 0;
       }
       
-      override public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
+      override public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
       {
          return false;
       }

@@ -59,12 +59,8 @@ package editor.entity {
 
    //import editor.trigger.entity.EntityFunctionPackage;
    //import editor.trigger.entity.EntityFunction;
-
-   import editor.entity.VertexController;
    
    import editor.selection.SelectionEngine;
-   
-   import editor.trigger.entity.Linkable;
    
    import editor.EditorContext;
    
@@ -1132,63 +1128,6 @@ package editor.entity {
          }
 
          return action;
-      }
-      
-//=================================================================================
-//   vertex controller
-//=================================================================================
-      
-      private var mTheSelectedVertexController:VertexController = null; // currently, only one VertexController can be selected
-      
-      public function SetSelectedVertexController (vertexController:VertexController):void
-      {
-         if (mTheSelectedVertexController != null)
-            mTheSelectedVertexController.NotifySelectedChanged (false);
-         
-         mTheSelectedVertexController = vertexController;
-         
-         if (mTheSelectedVertexController != null)
-            mTheSelectedVertexController.NotifySelectedChanged (true);
-      }
-      
-      public function GetSelectedVertexControllers ():Array
-      {
-         if (mTheSelectedVertexController == null)
-            return [];
-         
-         return [mTheSelectedVertexController];
-      }
-      
-      public function GetTheOnlySelectedVertexControllers ():VertexController
-      {
-         if (mTheSelectedVertexController == null)
-            return null;
-         
-         return mTheSelectedVertexController;
-      }
-      
-      public function MoveSelectedVertexControllers (offsetX:Number, offsetY:Number):void
-      {
-         if (mTheSelectedVertexController != null)
-         {
-            mTheSelectedVertexController.Move (offsetX, offsetY);
-         }
-      }
-      
-      public function DeleteSelectedVertexControllers ():void
-      {
-         if (mTheSelectedVertexController != null)
-         {
-            mTheSelectedVertexController = mTheSelectedVertexController.GetOwnerEntity ().RemoveVertexController (mTheSelectedVertexController);
-         }
-      }
-      
-      public function InsertVertexControllerBeforeSelectedVertexControllers ():void
-      {
-         if (mTheSelectedVertexController != null)
-         {
-            mTheSelectedVertexController = mTheSelectedVertexController.GetOwnerEntity ().InsertVertexController (mTheSelectedVertexController)
-         }
       }
       
 //=================================================================================

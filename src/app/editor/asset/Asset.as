@@ -143,6 +143,8 @@ package editor.asset {
          if (mSelectionProxy != null)
             mSelectionProxy.Destroy ();
          
+         SetControlPointsVisible (false);
+         
          mAssetManager.OnAssetDestroyed (this);
          
          UnreferAllReferings ();
@@ -677,6 +679,44 @@ package editor.asset {
       {
       }
 
+//====================================================================
+//   internal linkables
+//====================================================================
+      
+      private var mInternalLinkablesVisible:Boolean = false;
+      
+      final public function AreInternalLinkablesVisible ():Boolean
+      {
+         return mInternalLinkablesVisible;
+      }
+      
+      public function SetInternalLinkablesVisible (internalLinkablesVisible:Boolean):void
+      {
+         if (mInternalLinkablesVisible != internalLinkablesVisible)
+         {
+            mInternalLinkablesVisible = internalLinkablesVisible;
+            
+            if (mInternalLinkablesVisible)
+            {
+               RebuildInternalLinkables ();
+            }
+            else
+            {
+               DestroyInternalLinkables ();
+            }
+         }
+      }
+      
+      protected function RebuildInternalLinkables ():void
+      {
+         // to override. This one will call DestroyInternalLinkables firstly.
+      }
+      
+      protected function DestroyInternalLinkables ():void
+      {
+         // to override
+      }
+      
 //====================================================================
 //   draw entity links
 //====================================================================

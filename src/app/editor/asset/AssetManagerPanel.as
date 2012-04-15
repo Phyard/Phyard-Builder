@@ -37,7 +37,7 @@ package editor.asset {
       protected var mBackgroundLayer:Sprite;
       protected var mAssetLinksLayer:Sprite;
       protected var mAssetManager:AssetManager = null;
-      public var mForegroundLayer:Sprite;
+      public var mForegroundLayer:Sprite; // some intents will access it.
       
       public function AssetManagerPanel ()
       {
@@ -514,8 +514,24 @@ package editor.asset {
       public function UpdateInterface ():void
       {
          // to override
+         
+         // to call ExternalUpdateInterface ()
+         // ExternalUpdateInterface will check the status of this panel
       }
       
+      private var mShowAllAssetIDs:Boolean = false;
+      private var mShowAllAssetLinks:Boolean = false;
+      
+      protected function RepaintAllAssetIDs ():void
+      {
+         
+      }
+      
+      protected function RepaintAllAssetLinks ():void
+      {
+         
+      }
+
 //=================================================================================
 //   asset selection (todo: move SelectionList from AssetManager to here)
 //=================================================================================
@@ -531,11 +547,24 @@ package editor.asset {
          {
             var assets:Array = new Array (1);
             assets [0] = mAssetManager.GetTheFirstSelectedAsset ();
-            mAssetManager.SetAssetsWithControlPointsShown (assets);
+            mAssetManager.SetAssetsShowingControlPoints (assets);
+            if (! mShowAllAssetLinks)
+            {
+               mAssetManager.SetAssetsShowingInternalLinkables (assets);
+            }
          }
          else
          {
-            mAssetManager.SetAssetsWithControlPointsShown (null);
+            mAssetManager.SetAssetsShowingControlPoints (null);
+            if (! mShowAllAssetLinks)
+            {
+               mAssetManager.SetAssetsShowingInternalLinkables (null);
+            }
+         }
+         
+         if (! mShowAllAssetLinks)
+         {
+            RepaintAllAssetLinks ();
          }
          
          UpdateInterface ();
@@ -878,12 +907,12 @@ package editor.asset {
          UpdateAssetLinkLines ();
       }
       
-      protected function InsertVertexController ():void
+      protected function InsertControlPoint ():void
       {
          if (mAssetManager == null)
             return;
          
-         mAssetManager.InsertVertexController ();
+         mAssetManager.InsertControlPoint ();
          
          UpdateInterface ();
          UpdateAssetLinkLines ();

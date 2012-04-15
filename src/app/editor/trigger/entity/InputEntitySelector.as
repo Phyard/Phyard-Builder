@@ -14,6 +14,9 @@ package editor.trigger.entity {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
+   import editor.asset.Asset;
+   import editor.asset.Linkable;
+   
    import editor.entity.Scene;
    import editor.entity.Entity;
    
@@ -297,9 +300,9 @@ package editor.trigger.entity {
          return true;
       }
       
-      public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
+      public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
       {
-         return LinkEntity (toEntity);
+         return LinkEntity (toAsset as Entity);
       }
       
       protected function LinkEntity (toEntity:Entity):Boolean

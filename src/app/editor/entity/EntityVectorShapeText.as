@@ -233,12 +233,19 @@ package editor.entity {
       
       public function SetAdaptiveBackgroundSize (adapt:Boolean):void
       {
-         if (! mAdaptiveBackgroundSize)
-            SetInternalComponentsVisible (false);
-         
          mAdaptiveBackgroundSize = adapt;
          
-         mEnableVertexControllers = ! mAdaptiveBackgroundSize;
+         if (mAdaptiveBackgroundSize)
+         {
+            if (IsSelected ())
+            {
+               SetControlPointsVisible (true);
+            }
+         }
+         else
+         {
+            SetControlPointsVisible (false);
+         }
       }
       
 //====================================================================

@@ -10,6 +10,7 @@ package editor.entity {
    
    import common.Define;
    
+   // todo
    public class EntityJointSlider extends EntityJoint 
    {
       public var mAnchor1:SubEntitySliderAnchor;
@@ -86,9 +87,7 @@ package editor.entity {
       }
       
       override public function Destroy ():void
-      {
-         SetInternalComponentsVisible (false);
-         
+      {         
          mEntityContainer.DestroyAsset (mAnchor1);
          mEntityContainer.DestroyAsset (mAnchor2);
          
@@ -132,24 +131,7 @@ package editor.entity {
          
          //var dxHalfHeight:Number = - mRangeBarHalfHeight * dy / distance;
          //var dyHalfHeight:Number =   mRangeBarHalfHeight * dx / distance;
-         
-         if (mVertexControllerLower != null)
-         {
-            mVertexControllerLower.SetPosition (halfDistancle + mLowerTranslation, 0);
-            mVertexControllerLower.UpdateSelectionProxy ();
-            
-            mVertexControllerLower.SetSelectable (IsLimitsEnabled ());
-            mVertexControllerLower.visible = IsLimitsEnabled ();
-         }
-         
-         if (mVertexControllerUpper != null)
-         {
-            mVertexControllerUpper.SetPosition (halfDistancle + mUpperTranslation, 0);
-            mVertexControllerUpper.UpdateSelectionProxy ();
-            
-            mVertexControllerUpper.SetSelectable (IsLimitsEnabled ());
-            mVertexControllerUpper.visible = IsLimitsEnabled ();
-         }
+
       }
       
       public function GetAnchor1 ():SubEntitySliderAnchor
@@ -227,112 +209,6 @@ package editor.entity {
       override public function GetSubAssets ():Array
       {
          return [mAnchor1, mAnchor2];
-      }
-      
-      
-      
-//========================================================================
-// vertex controllers
-//========================================================================
-      
-      private var mVertexControllerLower:VertexController = null;
-      private var mVertexControllerUpper:VertexController = null;
-      
-      override public function GetVertexControllerIndex (vertexController:VertexController):int
-      {
-         if (vertexController != null)
-         {
-            if (vertexController == mVertexControllerLower)
-               return 0;
-            if (vertexController == mVertexControllerUpper)
-               return 1;
-         }
-         
-         return -1;
-      }
-      
-      override public function GetVertexControllerByIndex (index:int):VertexController
-      {
-         if (index == 0)
-            return mVertexControllerLower;
-         if (index == 1)
-            return mVertexControllerUpper;
-         
-         return null;
-      }
-      
-      override public function SetInternalComponentsVisible (visible:Boolean):void
-      {
-         // mVertexControlPointsVisible = visible;
-         super.SetInternalComponentsVisible (visible);
-         
-      // create / destroy controllers
-         
-         if ( AreInternalComponentsVisible () )
-         {
-            if (mVertexControllerLower == null)
-            {
-               mVertexControllerLower = new VertexController (mEntityContainer, this);
-               addChild (mVertexControllerLower);
-            }
-            
-            if (mVertexControllerUpper == null)
-            {
-               mVertexControllerUpper = new VertexController (mEntityContainer, this);
-               addChild (mVertexControllerUpper);
-            }
-            
-            UpdateAppearance ();
-         }
-         else
-         {
-            if (mVertexControllerLower != null)
-            {
-               mVertexControllerLower.Destroy ();
-               if (contains (mVertexControllerLower))
-                  removeChild (mVertexControllerLower);
-               
-               mVertexControllerLower = null;
-            }
-            
-            if (mVertexControllerUpper != null)
-            {
-               mVertexControllerUpper.Destroy ();
-               if (contains (mVertexControllerUpper))
-                  removeChild (mVertexControllerUpper);
-               
-               mVertexControllerUpper = null;
-            }
-         }
-      }
-      
-      override public function OnMovingVertexController (vertexController:VertexController, localOffsetX:Number, localOffsetY:Number):void
-      {
-      // ...
-         
-         if (vertexController == mVertexControllerLower)
-         {
-            if (mLowerTranslation + localOffsetX <= mUpperTranslation)
-            {
-               mLowerTranslation = mLowerTranslation + localOffsetX;
-               if (mLowerTranslation > 0)
-                  mLowerTranslation = 0;
-            }
-         }
-         else if (vertexController == mVertexControllerUpper)
-         {
-            if (mUpperTranslation + localOffsetX >= mLowerTranslation)
-            {
-               mUpperTranslation = mUpperTranslation + localOffsetX;
-               if (mUpperTranslation < 0)
-                  mUpperTranslation = 0;
-            }
-         }
-         
-         
-      // ...
-         
-         UpdateAppearance ();
       }
       
       

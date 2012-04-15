@@ -177,12 +177,15 @@ package editor.entity {
       
       override protected function DestroyControlPoints ():void
       {
-         for (var i:int = mControlPoints.length - 1; i >= 0; -- i)
+         if (mControlPoints != null)
          {
-            (mControlPoints [i] as ControlPoint).Destroy ();
+            for (var i:int = mControlPoints.length - 1; i >= 0; -- i)
+            {
+               (mControlPoints [i] as ControlPoint).Destroy ();
+            }
+            
+            mControlPoints = null;
          }
-         
-         mControlPoints = null;
          if (mControlPointsContainer.parent != null) // should be this
             mControlPointsContainer.parent.removeChild (mControlPointsContainer);
       }

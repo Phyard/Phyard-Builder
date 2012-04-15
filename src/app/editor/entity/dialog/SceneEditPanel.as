@@ -41,6 +41,8 @@ package editor.entity.dialog {
    import editor.entity.*;
    import editor.trigger.entity.*;
    
+   import editor.display.sprite.BackgroundSprite;
+   
    import editor.EditorContext;
    
    import common.trigger.CoreEventIds;
@@ -50,16 +52,100 @@ package editor.entity.dialog {
    
    public class SceneEditPanel extends AssetManagerPanel
    {  
+      private var mSceneBackground:BackgroundSprite = new BackgroundSprite ();
       private var mScene:Scene = null;
+      
+      public function SceneEditPanel ()
+      {
+         mBackgroundLayer.addChild (mSceneBackground);
+      }
+      
+//============================================================================
+//   
+//============================================================================
       
       public function SetScene (scene:Scene):void
       {
-         if (mScene != scene)
-         {
-            mScene = scene;
-         }
+         mScene = scene;
          
          super.SetAssetManager (scene);
+         
+         mSceneBackground.visible = (mScene != null);
+         
+         MoveSceneCameraToPanelCenter ();
+      }
+      
+      private function MoveSceneCameraToPanelCenter ():void
+      {
+         if (mScene != null)
+         {
+            var sceneCameraCenterPanelPoint:Point = ManagerToView (new Point (mScene.GetCameraCenterX (), mScene.GetCameraCenterY ()));
+            
+            MoveManager (0.5 * mParentWidth - sceneCameraCenterPanelPoint.x, 0.5 * mParentHeight - sceneCameraCenterPanelPoint.y);
+         }
+      }
+      
+//============================================================================
+//   
+//============================================================================
+      
+      override protected function OnResize (event:Event):void 
+      {
+         super.OnResize (event);
+         
+         MoveSceneCameraToPanelCenter ();
+      }
+      
+      override protected function UpdateInternal (dt:Number):void
+      {
+         if (mScene == null)
+         {
+            mSceneBackground.visible = false;
+         }
+         else
+         {
+            mSceneBackground.visible = true;
+             
+            var sceneLeft  :Number;
+            var sceneTop   :Number;
+            var sceneWidth :Number;
+            var sceneHeight:Number;
+            
+            if (mScene.IsInfiniteSceneSize ())
+            {
+               sceneLeft   = -1000000000; // about halft of - 0x7FFFFFFF;
+               sceneTop    = - 1000000000; // about half of - 0x7FFFFFFF;
+               sceneWidth  = 2000000000; // about half of uint (0xFFFFFFFF);
+               sceneHeight = 2000000000; // about half of uint (0xFFFFFFFF);
+            }
+            else
+            {
+               sceneLeft   = mScene.GetWorldLeft ();
+               sceneTop    = mScene.GetWorldTop ();
+               sceneWidth  = mScene.GetWorldWidth ();
+               sceneHeight = mScene.GetWorldHeight ();
+            }
+            
+            var sceneCameraCenter:Point = ViewToManager (new Point (0.5 * mParentWidth, 0.5 * mParentHeight));
+            
+            if (sceneCameraCenter.x < sceneLeft)
+               sceneCameraCenter.x = sceneLeft;
+            if (sceneCameraCenter.x > sceneLeft + sceneWidth)
+               sceneCameraCenter.x = sceneLeft + sceneWidth;
+            if (sceneCameraCenter.y < sceneTop)
+               sceneCameraCenter.y = sceneTop;
+            if (sceneCameraCenter.y > sceneTop + sceneHeight)
+               sceneCameraCenter.y = sceneTop + sceneHeight;
+            
+            mScene.SetCameraCenterX (sceneCameraCenter.x);
+            mScene.SetCameraCenterY (sceneCameraCenter.y);
+            
+            mSceneBackground.UpdateAppearance (sceneLeft, sceneTop, sceneWidth, sceneHeight, 
+                                               mScene.GetWorldBorderLeftThickness (), mScene.GetWorldBorderTopThickness (), mScene.GetWorldBorderRightThickness (), mScene.GetWorldBorderBottomThickness (),
+                                               mScene.GetBackgroundColor (), mScene.GetBorderColor (), mScene.IsBuildBorder (),
+                                               sceneCameraCenter.x, sceneCameraCenter.y, mScene.scaleX, mScene.scaleY,
+                                               mParentWidth, mParentHeight, mBackgroundGridSize);
+         }
       }
       
 //============================================================================
@@ -70,6 +156,8 @@ package editor.entity.dialog {
       {
       }
       
+      private var mBackgroundGridSize:int = 50;
+
 //============================================================================
 //   
 //============================================================================

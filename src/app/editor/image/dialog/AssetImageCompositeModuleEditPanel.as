@@ -86,9 +86,11 @@ package editor.image.dialog {
          {
             mAssetImageModuleInstanceManager.mCallback_OnChangedForPanel = UpdateInterface;
             
-            UpdateInterface ();
+            MoveManager (0.5 * mParentWidth - mAssetImageModuleInstanceManager.x, 0.5 * mParentHeight - mAssetImageModuleInstanceManager.y);
+            mManagerCameraCenter.x = 0;
+            mManagerCameraCenter.y = 0;
             
-            AdjustPosition ();
+            UpdateInterface ();
          }
       }
       
@@ -102,29 +104,17 @@ package editor.image.dialog {
 //
 //=====================================================================
       
+      private var mManagerCameraCenter:Point = new Point (0, 0);
+      
       override protected function OnResize (event:Event):void 
       {
          super.OnResize (event);
-            //mParentWidth  = parent.width;
-            //mParentHeight = parent.height;
-            //UpdateBackgroundAndContentMaskSprites ();
          
          if (mAssetImageModuleInstanceManager != null)
          {
-            AdjustPosition ();
+            var managerCameraCenterPanelPoint:Point = ManagerToView (mManagerCameraCenter);
+            MoveManager (0.5 * mParentWidth - managerCameraCenterPanelPoint.x, 0.5 * mParentHeight - managerCameraCenterPanelPoint.y);
          }
-      }
-      
-      //private var mOldParentWidth:Number = 0;
-      //private var mOldParentHeight:Number = 0; 
-      
-      private function AdjustPosition ():void
-      {
-         MoveManager (0.5 * mParentWidth - mAssetImageModuleInstanceManager.x, 0.5 * mParentHeight - mAssetImageModuleInstanceManager.y);
-         //MoveManager (0.5 * (mParentWidth - mOldParentWidth) - mAssetImageModuleInstanceManager.x, 0.5 * (mParentHeight - mOldParentHeight) - mAssetImageModuleInstanceManager.y);
-         //
-         //mOldParentWidth = mParentWidth;
-         //mOldParentHeight = mParentHeight;
       }
       
 //=====================================================================
@@ -136,6 +126,8 @@ package editor.image.dialog {
          if (mAssetImageModuleInstanceManager != null)
          {
             mCoordinateSprite.UpdateAppearance (mParentWidth, mParentHeight, mAssetImageModuleInstanceManager.x, mAssetImageModuleInstanceManager.y, mAssetImageModuleInstanceManager.scaleX);
+            
+            mManagerCameraCenter = ViewToManager (new Point (0.5 * mParentWidth, 0.5 * mParentHeight));
          }
       }
       
@@ -736,6 +728,7 @@ package editor.image.dialog {
                   
                   if (vectorShape is VectorShapeCircle)
                   {
+
 
                      var circleShape:VectorShapeCircle = areaVectorShape as VectorShapeCircle;
                      

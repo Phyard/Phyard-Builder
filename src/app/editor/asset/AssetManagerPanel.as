@@ -37,6 +37,8 @@ package editor.asset {
       protected var mBackgroundLayer:Sprite;
       protected var mAssetLinksLayer:Sprite;
       protected var mAssetManager:AssetManager = null;
+      protected var mAssetIDsLayer:Sprite;
+      protected var mEffectsLayer:Sprite;
       public var mForegroundLayer:Sprite; // some intents will access it.
       
       public function AssetManagerPanel ()
@@ -54,6 +56,17 @@ package editor.asset {
          
          mAssetLinksLayer = new Sprite ();
          addChild (mAssetLinksLayer);
+         
+         mAssetLinksLayer = new Sprite ();
+         addChild (mAssetLinksLayer);
+         
+         // [asser manager] must close under mAssetIDsLayer
+         
+         mAssetIDsLayer = new Sprite ();
+         addChild (mAssetIDsLayer);
+         
+         mEffectsLayer = new Sprite ();
+         addChild (mEffectsLayer);
          
          mForegroundLayer = new Sprite ();
          addChild (mForegroundLayer);
@@ -74,7 +87,7 @@ package editor.asset {
          
          if (mAssetManager != null)
          {
-            addChildAt (mAssetManager, getChildIndex (mForegroundLayer));
+            addChildAt (mAssetManager, getChildIndex (mAssetIDsLayer));
             
             mAssetManager.SetAssetLinksChangedCallback (UpdateAssetLinkLines);
             
@@ -131,7 +144,7 @@ package editor.asset {
       }
       
 //=================================================================================
-// coordinates
+// coordinates. (Manager <-> Panel)
 //=================================================================================
       
       public function ViewToManager (point:Point):Point

@@ -34,7 +34,7 @@ package editor.asset {
       
       protected var mName:String = "";
       
-      private var mTransform:Transform2D = new Transform2D ();
+      protected var mTransform:Transform2D = new Transform2D (); // don't change it directly
       
       //private var mPosX:Number = 0;
       //private var mPosY:Number = 0;

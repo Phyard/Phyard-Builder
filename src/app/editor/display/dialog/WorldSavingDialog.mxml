@@ -4,7 +4,7 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
-    title="Save World" width="600">
+    title="Save World" width="600" creationComplete="OnInitPanel()">
 
    <mx:VBox width="100%">
       <mx:Text id="Text_TutorialLink" width="100%" selectable="true" link="OnClickTutorialLink(event)">
@@ -93,16 +93,19 @@
          public function SetValues (values:Object):void
          {
             mInputValues = values;
-            
-            TextArea_SourceCode.text = values.mXmlString;
-            //TextArea_EmbedCode.text = values.mEmbedCode;
-            
-            Button_CopyPlayCode.label = Button_CopyPlayCode.label + " (" + values.mHexString.length +" bytes)";
          }
          
          public function SetCloseFunc (onClose:Function):void
          {
             OnClose = onClose;
+         }
+         
+         private function OnInitPanel ():void
+         {  
+            TextArea_SourceCode.text = mInputValues.mXmlString;
+            //TextArea_EmbedCode.text = mInputValues.mEmbedCode;
+            
+            Button_CopyPlayCode.label = Button_CopyPlayCode.label + " (" + mInputValues.mHexString.length +" bytes)";
          }
          
          private function OnClickCloseButton():void 
@@ -117,12 +120,12 @@
          {
             var fileReference:FileReference = new FileReference();
             fileReference.addEventListener(Event.COMPLETE, OnFileSaveComplete);
-            fileReference.save (GetValidatedSourceCode (), EditorContext.GetRecommandDesignFilename ());
+            fileReference.save (GetValidatedSourceCode (), EditorContext.GetSingleton ().GetRecommandDesignFilename ());
          }
          
          private function OnFileSaveComplete (event:Event):void
          {
-            EditorContext.SetRecommandDesignFilename ((event.target as FileReference).name);
+            EditorContext.GetSingleton ().SetRecommandDesignFilename ((event.target as FileReference).name);
          }
          
          private function OnClickCopySourceCode ():void

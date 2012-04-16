@@ -184,6 +184,11 @@ package editor.asset {
          return mCurrentManagerScale;
       }
       
+      public function GetPanelCenterWorldPoint ():Point
+      {
+         return ViewToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
+      }
+      
 //=================================================================================
 // coordinates. (Manager <-> Panel)
 //=================================================================================

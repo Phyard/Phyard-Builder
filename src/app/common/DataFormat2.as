@@ -672,7 +672,10 @@ package common {
          xml.BrotherGroups = <BrotherGroups />
 
          if (worldDefine.mVersion >= 0x0102)
+         {
             xml.CollisionCategories = <CollisionCategories />;
+            xml.CollisionCategoryFriendPairs = <CollisionCategoryFriendPairs />;
+         }
 
          if (worldDefine.mVersion >= 0x0152)
          {
@@ -780,8 +783,6 @@ package common {
             }
 
             xml.CollisionCategories.@default_category_index = worldDefine.mDefaultCollisionCategoryIndex;
-
-            xml.CollisionCategoryFriendPairs = <CollisionCategoryFriendPairs />;
 
             for (var pairId:int = 0; pairId < worldDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
             {

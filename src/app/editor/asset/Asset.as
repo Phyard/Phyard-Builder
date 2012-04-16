@@ -200,7 +200,17 @@ package editor.asset {
       
       public function GetSelectableAssets ():Array
       {
-         return [this];
+         // currently, only joints have sub entities.
+         
+         // this is just an implementation satisfied current need.
+         
+         var selectableAssets:Array = GetSubAssets ();
+         if (selectableAssets.length == 0)
+         {
+            selectableAssets.push (this);
+         }
+         
+         return selectableAssets;
       }
       
 //=================================================================================

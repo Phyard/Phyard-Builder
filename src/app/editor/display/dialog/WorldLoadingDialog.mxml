@@ -89,7 +89,7 @@
             }
             fileReference.data.clear ();
 
-            EditorContext.SetRecommandDesignFilename (fileReference.name);
+            EditorContext.GetSingleton ().SetRecommandDesignFilename (fileReference.name);
          }
          
          private function OnClickOkButton():void 

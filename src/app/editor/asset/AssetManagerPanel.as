@@ -29,6 +29,11 @@ package editor.asset {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    
+   import editor.display.sprite.CursorCrossingLine;
+   import editor.display.sprite.EditingEffect;
+   import editor.display.sprite.EffectCrossingAiming;
+   import editor.display.sprite.EffectMessagePopup;
+   
    import editor.EditorContext;
    
    import common.Define;
@@ -40,7 +45,8 @@ package editor.asset {
       protected var mAssetLinksLayer:Sprite;
       protected var mAssetManager:AssetManager = null;
       protected var mAssetIDsLayer:Sprite;
-      protected var mEffectsLayer:Sprite;
+      protected var mEditingEffectLayer:Sprite;
+      protected var mFloatingMessageLayer:Sprite;
       public var mForegroundLayer:Sprite; // some intents will access it.
       
       public function AssetManagerPanel ()
@@ -67,8 +73,11 @@ package editor.asset {
          mAssetIDsLayer = new Sprite ();
          addChild (mAssetIDsLayer);
          
-         mEffectsLayer = new Sprite ();
-         addChild (mEffectsLayer);
+         mEditingEffectLayer = new Sprite ();
+         addChild (mEditingEffectLayer);
+         
+         mFloatingMessageLayer = new Sprite ();
+         addChild (mFloatingMessageLayer);
          
          mForegroundLayer = new Sprite ();
          addChild (mForegroundLayer);
@@ -99,11 +108,19 @@ package editor.asset {
          BuildContextMenu ();
       }
       
+      public function MoveManagerTo (managerX:Number, managerY:Number):void
+      {
+         if (mAssetManager != null)
+         {
+            mAssetManager.SetPosition (managerX, managerY);
+         }
+      }
+      
       public function MoveManager (dx:Number, dy:Number):void
       {
          if (mAssetManager != null)
          {
-            mAssetManager.SetPosition (mAssetManager.x + dx, mAssetManager.y + dy);
+            MoveManagerTo (mAssetManager.x + dx, mAssetManager.y + dy);
          }
       }
       
@@ -126,19 +143,45 @@ package editor.asset {
          return kMouseWheelFunction_Zoom;
       }
       
+      public function ScaleManagerTo (managerScale:Number):void
+      {
+         if (mAssetManager != null)
+         {
+            if (managerScale < GetMinAllowedScale ())
+               managerScale = GetMinAllowedScale ();
+            if (managerScale > GetMaxAllowedScale ())
+               managerScale = GetMaxAllowedScale ();
+            
+            mAssetManager.SetScale (managerScale);
+         }
+      }
+      
       public function ScaleManager (scale:Number):void
       {
          if (mAssetManager != null)
          {
-            var currentScale:Number = mAssetManager.scaleX;
-            currentScale *= scale;
-            if (currentScale < GetMinAllowedScale ())
-               currentScale = GetMinAllowedScale ();
-            if (currentScale > GetMaxAllowedScale ())
-               currentScale = GetMaxAllowedScale ();
-            
-            mAssetManager.SetScale (currentScale);
+            ScaleManagerTo (mAssetManager.scaleX * scale);
          }
+      }
+      
+      // used for undo
+      private var mCurrentManagerX:Number = 0;
+      private var mCurrentManagerY:Number = 0;
+      private var mCurrentManagerScale:Number = 1.0;
+      
+      public function GetCurrentManagerX ():Number
+      {
+         return mCurrentManagerX;
+      }
+      
+      public function GetCurrentManagerY ():Number
+      {
+         return mCurrentManagerY;
+      }
+      
+      public function GetCurrentManagerScale ():Number
+      {
+         return mCurrentManagerScale;
       }
       
 //=================================================================================
@@ -159,6 +202,8 @@ package editor.asset {
 //   stage event
 //============================================================================
       
+      //todo: set mParentWidth and mParentHeight private. And mContentMaskWidth-> mPanelWidth
+      
       private function OnAddedToStage (event:Event):void 
       {
          mParentWidth  = parent.width;
@@ -178,6 +223,16 @@ package editor.asset {
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
          addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+      }
+      
+      public function GetPanelWidth ():Number
+      {
+         return mContentMaskWidth;
+      }
+      
+      public function GetPanelHeight ():Number
+      {
+         return mContentMaskHeight;
       }
       
       private var mContentMaskSprite:Shape = null;
@@ -239,6 +294,8 @@ package editor.asset {
          UpdateInternal (mStepTimeSpan.GetLastSpan ());
          
          UpdateAssetLinkLines ();
+         
+         UpdateEffects ();
       }
       
       protected function UpdateInternal (dt:Number):void
@@ -569,7 +626,16 @@ package editor.asset {
          }
          
          UpdateInterface ();
-      } 
+      }
+      
+      public function CancelAllAssetSelections ():void
+      {
+         if (mAssetManager == null)
+            return;
+         
+         mAssetManager.CancelAllAssetSelections ();
+         OnAssetSelectionsChanged ();
+      }
       
       public function PointSelectAsset (managerX:Number, managerY:Number):Boolean
       {
@@ -979,7 +1045,7 @@ package editor.asset {
       }
 
 //=====================================================================
-// asset links and ids
+// asset links and ids, effects, ...
 //=====================================================================
       
       // todo: hold/release a button to show/hide ids
@@ -1062,6 +1128,38 @@ package editor.asset {
             mAssetLinksLayer.x = mAssetManager.x;
          if ((int (20.0 * mAssetLinksLayer.y)) != (int (20.0 * mAssetManager.y)))
             mAssetLinksLayer.y = mAssetManager.y;
+      }
+      
+      public function PushFloatingMessage (popupMessage:EffectMessagePopup):void
+      {
+         mFloatingMessageLayer.addChild (popupMessage);
+      }
+      
+      protected function UpdateEffects ():void
+      {
+         // reverse order for some effects will remove itself
+         var effect:EditingEffect;
+         var i:int;
+         
+         for (i = mEditingEffectLayer.numChildren - 1; i >= 0; -- i)
+         {
+            effect = mEditingEffectLayer.getChildAt (i) as EditingEffect;
+            if (effect != null)
+            {
+               effect.Update ();
+            }
+         }
+         
+         for (i = mFloatingMessageLayer.numChildren - 1; i >= 0; -- i)
+         {
+            effect = mFloatingMessageLayer.getChildAt (i) as EditingEffect;
+            if (effect != null)
+            {
+               effect.Update ();
+            }
+         }
+         
+         EffectMessagePopup.UpdateMessagesPosition (mFloatingMessageLayer);
       }
 
 //=====================================================================

@@ -1,14 +1,23 @@
 package editor.entity.dialog {
-   
+
+   import flash.system.ApplicationDomain;
+   import flash.utils.ByteArray;
+   import flash.display.Shape;
+   import flash.display.Sprite;
    import flash.events.Event;
+   import flash.geom.Point;
    
    import mx.core.UIComponent;
+   
+   import com.tapirgames.util.GraphicsUtil;
    
    import viewer.Viewer;
    import player.world.World;
    
    public class ScenePlayPanel extends UIComponent
-   {  
+   {
+      private var mBackgroundLayer:Sprite = new Sprite ();
+      
       private var mViewer:Viewer = null;
       
       public function ScenePlayPanel ()
@@ -16,7 +25,6 @@ package editor.entity.dialog {
          addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
          addEventListener(Event.RESIZE, OnResize);
          
-         mBackgroundLayer = new Sprite ();
          addChild (mBackgroundLayer);
       }
       
@@ -24,11 +32,25 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      public function SetWorldViewer (viewer:Viewer):void
+      public function SetWorldViewerParams (worldBinaryData:ByteArray, maskFieldInPlaying:Boolean):void
       {
-         mViewer = viewer;
+         mViewer = new Viewer ({mParamsFromEditor: {
+                                         mWorldDomain: ApplicationDomain.currentDomain, 
+                                         mWorldBinaryData: worldBinaryData, 
+                                         GetViewportSize: GetViewportSize, 
+                                         mStartRightNow: true, 
+                                         mMaskViewerField: maskFieldInPlaying
+                                         }
+                             });
          
          addChild (mViewer);
+         
+         mViewer.OnContainerResized ();
+      }
+      
+      private function GetViewportSize ():Point
+      {
+         return new Point (mContentMaskWidth, mContentMaskHeight);
       }
       
 //============================================================================
@@ -40,14 +62,14 @@ package editor.entity.dialog {
          UpdateBackgroundAndContentMaskSprites ();
       }
       
-      override private function OnResize (event:Event):void 
+      private function OnResize (event:Event):void 
       {
          UpdateBackgroundAndContentMaskSprites ();
       }
       
       private var mContentMaskSprite:Shape = null;
-      private var mContentMaskWidth :Number = -1;
-      private var mContentMaskHeight:Number = -1;
+      private var mContentMaskWidth :Number = 0;
+      private var mContentMaskHeight:Number = 0;
       
       protected function UpdateBackgroundAndContentMaskSprites ():void
       {
@@ -68,7 +90,7 @@ package editor.entity.dialog {
             
             if (mViewer != null)
             {
-               mViewer.SetViewportSize (mContentMaskWidth, mContentMaskHeight);
+               mViewer.OnContainerResized ();
             }
          }
       }

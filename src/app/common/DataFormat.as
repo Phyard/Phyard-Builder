@@ -140,10 +140,10 @@ package common {
          // settings
          {
             //>>from v1.51
-            worldDefine.mSettings.mViewerUiFlags = editorWorld.GetViewerUiFlags ();
-            worldDefine.mSettings.mPlayBarColor = editorWorld.GetPlayBarColor ();
-            worldDefine.mSettings.mViewportWidth = editorWorld.GetViewportWidth ();
-            worldDefine.mSettings.mViewportHeight = editorWorld.GetViewportHeight ();
+            worldDefine.mSettings.mViewerUiFlags = editorWorld.GetEntityContainer ().GetViewerUiFlags ();
+            worldDefine.mSettings.mPlayBarColor = editorWorld.GetEntityContainer ().GetPlayBarColor ();
+            worldDefine.mSettings.mViewportWidth = editorWorld.GetEntityContainer ().GetViewportWidth ();
+            worldDefine.mSettings.mViewportHeight = editorWorld.GetEntityContainer ().GetViewportHeight ();
             worldDefine.mSettings.mZoomScale = editorWorld.GetEntityContainer ().GetZoomScale ();
             //<<
             
@@ -195,7 +195,7 @@ package common {
             //>>from v1.60
             worldDefine.mSettings.mInitialSpeedX = editorWorld.GetEntityContainer ().GetInitialSpeedX ();
             worldDefine.mSettings.mPreferredFPS = editorWorld.GetEntityContainer ().GetPreferredFPS ();
-            worldDefine.mSettings.mPauseOnFocusLost = editorWorld.IsPauseOnFocusLost ();
+            worldDefine.mSettings.mPauseOnFocusLost = editorWorld.GetEntityContainer ().IsPauseOnFocusLost ();
             
             worldDefine.mSettings.mPhysicsSimulationEnabled = editorWorld.GetEntityContainer ().IsPhysicsSimulationEnabled ();
             worldDefine.mSettings.mPhysicsSimulationStepTimeLength = editorWorld.GetEntityContainer ().GetPhysicsSimulationStepTimeLength ();
@@ -733,7 +733,7 @@ package common {
          
          for (appearId = 0; appearId < numEntities; ++ appearId)
          {
-            editorEntity = editorWorld.GetEntityContainer ().GetAssetByAppearanceId (appearId);
+            editorEntity = editorWorld.GetEntityContainer ().GetAssetByAppearanceId (appearId) as Entity;
             worldDefine.mEntityAppearanceOrder.push (editorEntity.GetCreationOrderId ());
          }
          
@@ -1294,7 +1294,7 @@ package common {
          }
       }
       
-      public static function WorldDefine2EditorWorld (worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, editorWorld:editor.world.World = null, mergeVariablesWithSameNames:Boolean = false):editor.world.World
+      public static function WorldDefine2EditorWorld (editorWorld:editor.world.World, worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, mergeVariablesWithSameNames:Boolean = false):editor.world.World
       {
          if (worldDefine == null)
             return editorWorld;
@@ -1323,10 +1323,10 @@ package common {
             // settings
             {
                //>>from v1.51
-               editorWorld.SetViewerUiFlags (worldDefine.mSettings.mViewerUiFlags);
-               editorWorld.SetPlayBarColor (worldDefine.mSettings.mPlayBarColor);
-               editorWorld.SetViewportWidth (worldDefine.mSettings.mViewportWidth);
-               editorWorld.SetViewportHeight (worldDefine.mSettings.mViewportHeight);
+               editorWorld.GetEntityContainer ().SetViewerUiFlags (worldDefine.mSettings.mViewerUiFlags);
+               editorWorld.GetEntityContainer ().SetPlayBarColor (worldDefine.mSettings.mPlayBarColor);
+               editorWorld.GetEntityContainer ().SetViewportWidth (worldDefine.mSettings.mViewportWidth);
+               editorWorld.GetEntityContainer ().SetViewportHeight (worldDefine.mSettings.mViewportHeight);
                editorWorld.GetEntityContainer ().SetZoomScale (worldDefine.mSettings.mZoomScale);
                //<<
                
@@ -1378,7 +1378,7 @@ package common {
                //>>from v1.60
                editorWorld.GetEntityContainer ().SetInitialSpeedX (worldDefine.mSettings.mInitialSpeedX);
                editorWorld.GetEntityContainer ().SetPreferredFPS (worldDefine.mSettings.mPreferredFPS);
-               editorWorld.SetPauseOnFocusLost (worldDefine.mSettings.mPauseOnFocusLost);
+               editorWorld.GetEntityContainer ().SetPauseOnFocusLost (worldDefine.mSettings.mPauseOnFocusLost);
                
                editorWorld.GetEntityContainer ().SetPhysicsSimulationEnabled (worldDefine.mSettings.mPhysicsSimulationEnabled);
                editorWorld.GetEntityContainer ().SetPhysicsSimulationStepTimeLength (worldDefine.mSettings.mPhysicsSimulationStepTimeLength);

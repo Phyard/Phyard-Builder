@@ -71,6 +71,8 @@
                PopUpManager.centerPopUp (assetImageDivideDialog);
             }
             
+            EditorContext.GetSingleton ().RegisterOtherPopupModelessDialog (assetImageDivideDialog);
+            
             assetImageDivideDialog.GetAssetImageDividePanel ().SetAssetImageDivisionManager (assetImage.GetAssetImageDivisionManager ());
             assetImage.SetAssetImageDivideDialog (assetImageDivideDialog);
          }
@@ -78,6 +80,7 @@
          public function Hide ():void
          {
             PopUpManager.removePopUp(this);
+            EditorContext.GetSingleton ().UnregisterOtherPopupModelessDialog (this);
          }
          
          public function GetAssetImageDividePanel ():AssetImageDividePanel

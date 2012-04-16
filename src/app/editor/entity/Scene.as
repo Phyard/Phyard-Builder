@@ -606,10 +606,10 @@ package editor.entity {
          circle.SetAiType (aiType);
          addChild (circle);
 
-         circle.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
-         
          if (selectIt)
          {
+            circle.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            
             circle.SetPosition (mouseX, mouseY);
             SetSelectedAsset (circle);
          }
@@ -626,10 +626,10 @@ package editor.entity {
          rect.SetAiType (aiType);
          addChild (rect);
 
-         rect.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
-         
          if (selectIt)
          {
+            rect.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            
             rect.SetPosition (mouseX, mouseY);
             SetSelectedAsset (rect);
          }
@@ -646,10 +646,10 @@ package editor.entity {
          polygon.SetAiType (aiType);
          addChild (polygon);
 
-         polygon.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
-         
          if (selectIt)
          {
+            polygon.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            
             polygon.SetPosition (mouseX, mouseY);
             SetSelectedAsset (polygon);
          }
@@ -666,10 +666,10 @@ package editor.entity {
          polyline.SetAiType (aiType);
          addChild (polyline);
 
-         polyline.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
-         
          if (selectIt)
          {
+            polyline.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            
             polyline.SetPosition (mouseX, mouseY);
             SetSelectedAsset (polyline);
          }

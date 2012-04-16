@@ -549,6 +549,18 @@ package editor.entity.dialog {
          mBackgroundGridSize = gridSize;
       }
       
+      private var mMaskFieldInPlaying:Boolean = false;
+      
+      public function IsMaskFieldInPlaying ():Boolean
+      {
+         return mMaskFieldInPlaying;
+      }
+      
+      public function SetMaskFieldInPlaying (mask:Boolean):void
+      {
+         mMaskFieldInPlaying = mask; 
+      }
+      
       public function ClearAllEntities (resetScene:Boolean, showAlert:Boolean = true):void
       {
       /*

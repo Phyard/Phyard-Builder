@@ -45,8 +45,6 @@ package editor.display.container
 			super();
 			
 			addEventListener (Event.ENTER_FRAME, OnEnterFrame);
-         
-         addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
 			
          addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
          addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
@@ -70,7 +68,7 @@ package editor.display.container
 		      if (mFocused)
 		      {
       		   setStyle ("headerColors", [0x000080, 0xC0C0C0]);
-      		   setStyle ("color", 0xFFFFFF);
+      		   setStyle ("color", 0xFFFF00);
       		   setStyle ("fontWeight", "bold");
       		}
       		else
@@ -144,11 +142,6 @@ package editor.display.container
                StopDragging ();
             }
          }
-      }
-      
-      private function OnKeyDown (event:KeyboardEvent):void
-      {
-         EditorContext.GetSingleton ().OnKeyDownDefault (event.keyCode);
       }
       
       private function StopDragging ():void

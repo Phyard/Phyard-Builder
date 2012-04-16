@@ -12,6 +12,7 @@ package editor {
    
    import mx.core.Application;
    import mx.core.UIComponent;
+   import mx.core.IFlexDisplayObject;
    import mx.managers.PopUpManager;
    
    import com.tapirgames.util.UrlUtil;
@@ -81,6 +82,31 @@ package editor {
       public static var mIsMouseButtonHold:Boolean = false;
       
    //=====================================================================
+   //
+   //=====================================================================
+
+      public static function GetVersionString ():String
+      {
+         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
+         
+         return majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16);
+      }
+
+      public static function GetAboutContextMenuItem ():ContextMenuItem
+      {
+         var menuItemAbout:ContextMenuItem = new ContextMenuItem("About Phyard Builder v" + GetVersionString (), true);
+         menuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
+         
+         return menuItemAbout;
+      }
+      
+      private static function OnAbout (event:ContextMenuEvent):void
+      {
+         UrlUtil.PopupPage (Define.AboutUrl);
+      }
+      
+   //=====================================================================
    // sound
    //=====================================================================
       
@@ -107,28 +133,28 @@ package editor {
       }
       
    //=====================================================================
-   //
+   // modal dialog
    //=====================================================================
-
-      public static function GetVersionString ():String
-      {
-         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
-         
-         return majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16);
-      }
-
-      public static function GetAboutContextMenuItem ():ContextMenuItem
-      {
-         var menuItemAbout:ContextMenuItem = new ContextMenuItem("About Phyard Builder v" + GetVersionString (), true);
-         menuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
-         
-         return menuItemAbout;
-      }
       
-      private static function OnAbout (event:ContextMenuEvent):void
+      public static function ShowModalDialog (DialogClass:Class, onConfirmCallback:Function, initialParams:Object = null):void
       {
-         UrlUtil.PopupPage (Define.AboutUrl);
+         if (sEditorContext.HasSettingDialogOpened ())
+            return;
+         
+         sEditorContext.OnOpenModalDialog ();
+         
+         var settingDialog:Object = new DialogClass ();
+         
+         if (settingDialog.hasOwnProperty ("SetValues"))
+            settingDialog.SetValues (initialParams);
+         
+         if (settingDialog.hasOwnProperty ("SetConfirmFunc"))
+            settingDialog.SetConfirmFunc (onConfirmCallback);
+         
+         settingDialog.SetCloseFunc (sEditorContext.OnCloseModalDialog);
+         
+         PopUpManager.addPopUp (settingDialog as IFlexDisplayObject, sEditorApp, true);
+         PopUpManager.centerPopUp (settingDialog as IFlexDisplayObject);
       }
       
 //=====================================================================
@@ -143,7 +169,9 @@ package editor {
       }
       
       public function Cleanup ():void
-      {  
+      {
+         StopAllSounds ();
+         
          if (mAssetImageModuleListDialog != null)
             AssetImageModuleListDialog.HideAssetImageModuleListDialog ();
          
@@ -156,7 +184,7 @@ package editor {
          if (mCodeLibListDialog != null)
             CodeLibListDialog.HideCodeLibListDialog ();
          
-         StopAllSounds ();
+         CloseOtherPopupModelessDialog ();
       }
       
    //=====================================================================
@@ -165,29 +193,32 @@ package editor {
       
       private var mDesignFilename:String  = null;
       
-      public function SetRecommandDesignFilename (filename:String):void
+      public function SetRecommandDesignFilename (filename:String, appendTimePrefix:Boolean = false):void
       {
-         mDesignFilename = filename;
-      }
-      
-      public function GetTimeStringInFilename ():String
-      {
-         var date:Date = new Date ();
-         return "[" 
+         if (appendTimePrefix)
+         {
+            var date:Date = new Date ();
+            
+            mDesignFilename = "[" 
                + date.getFullYear () + "-" 
                + (date.getMonth () < 9 ? "0" + (date.getMonth () + 1) : (date.getMonth () + 1)) + "-"
                + (date.getDate () < 10 ? "0" + date.getDate () : date.getDate ())
                + " " + (date.getHours () < 10 ? "0" + date.getHours () : date.getHours ())
                + "." + (date.getMinutes () < 10 ? "0" + date.getMinutes () : date.getMinutes ())
                + "." + (date.getSeconds () < 10 ? "0" + date.getSeconds () : date.getSeconds ())
-               + "]";
+               + "] " + filename;
+         }
+         else
+         {
+            mDesignFilename = filename;
+         }
       }
       
       public function GetRecommandDesignFilename ():String
       {
          if (mDesignFilename == null)
          {
-            mDesignFilename = GetTimeStringInFilename () + " {design name}.phyardx";
+            SetRecommandDesignFilename ("{design name}.phyardx");
          }
          
          return mDesignFilename;
@@ -252,6 +283,33 @@ package editor {
       public var mAssetSoundListDialog:AssetSoundListDialog = null;
       public var mCollisionCategoryListDialog:CollisionCategoryListDialog = null;
       public var mCodeLibListDialog:CodeLibListDialog  = null;
+      
+      private var mOtherPopupModelessDialogs:Array = new Array ();
+      
+      public function RegisterOtherPopupModelessDialog (dialog:IFlexDisplayObject):void
+      {
+         if (mOtherPopupModelessDialogs.indexOf (dialog) < 0)
+         {
+            mOtherPopupModelessDialogs.push (dialog);
+         }
+      }
+      
+      public function UnregisterOtherPopupModelessDialog (dialog:IFlexDisplayObject):void
+      {
+         var index:int = mOtherPopupModelessDialogs.indexOf (dialog);
+         if (index >= 0)
+         {
+            mOtherPopupModelessDialogs.splice (index, 1);
+         }
+      }
+      
+      private function CloseOtherPopupModelessDialog ():void
+      {
+         for each (var dialog:IFlexDisplayObject in mOtherPopupModelessDialogs)
+         {
+            PopUpManager.removePopUp (dialog);
+         }
+      }
       
    //=====================================================================
    //

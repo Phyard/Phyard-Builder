@@ -197,6 +197,8 @@
                PopUpManager.centerPopUp (assetImageCompositeModuleEditDialog);
             }
             
+            EditorContext.GetSingleton ().RegisterOtherPopupModelessDialog (assetImageCompositeModuleEditDialog);
+            
             assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditPanel ().SetAssetImageModuleInstanceManager (assetImageCompositeModule.GetModuleInstanceManager ());
             assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListPanel ().SetAssetImageModuleInstanceManagerForListing (assetImageCompositeModule.GetModuleInstanceManagerForListing ());
             
@@ -224,6 +226,8 @@
          public function Hide ():void
          {
             PopUpManager.removePopUp(this);
+            
+            EditorContext.GetSingleton ().UnregisterOtherPopupModelessDialog (this);
          }
          
          public function GetAssetImageCompositeModuleEditPanel ():AssetImageCompositeModuleEditPanel

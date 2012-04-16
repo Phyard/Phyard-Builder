@@ -92,7 +92,7 @@ package editor.entity.dialog {
    import editor.core.KeyboardListener;
    
    import editor.display.sprite.CursorCrossingLine;
-   import editor.display.sprite.EditingEffect
+   import editor.display.sprite.EditingEffect;
    import editor.display.sprite.EffectCrossingAiming;
    import editor.display.sprite.EffectMessagePopup;
    

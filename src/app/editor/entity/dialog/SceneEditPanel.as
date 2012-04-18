@@ -29,6 +29,7 @@ package editor.entity.dialog {
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
+   import com.tapirgames.util.MathUtil;
    
    import editor.asset.Asset;
    import editor.asset.AssetManagerPanel;
@@ -42,8 +43,13 @@ package editor.entity.dialog {
    import editor.entity.*;
    import editor.trigger.entity.*;
    
+   import editor.trigger.CodeSnippet;
+   import editor.trigger.Filters;
+   
    import editor.display.sprite.BackgroundSprite;
    import editor.display.dialog.*;
+   
+   import editor.ccat.CollisionCategoryManager;
    
    import editor.EditorContext;
    
@@ -695,7 +701,6 @@ package editor.entity.dialog {
          info.mViewportHeight = mScene.GetViewportHeight ();
          
          EditorContext.ShowModalDialog (WorldAppearanceSettingDialog, SetLevelAppearanceInfo, info);
-         
       }
       
       private function SetLevelAppearanceInfo (info:Object):void
@@ -818,17 +823,40 @@ package editor.entity.dialog {
       
       // entity settings
       
+      private function RetrieveShapePhysicsProperties (shape:EntityShape, values:Object):void
+      {        
+         values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
+         values.mCollisionCategoryListDataProvider =  EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
+         values.mCollisionCategoryListSelectedIndex = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
+         
+         values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
+         values.mIsSensor = shape.mIsSensor;
+         values.mIsStatic = shape.IsStatic ();
+         values.mIsBullet = shape.mIsBullet;
+         values.mIsHollow = shape.IsHollow ();
+         values.mBuildBorder = shape.IsBuildBorder ();
+         values.mDensity = ValueAdjuster.Number2Precision (shape.mDensity, 6);
+         values.mFriction = ValueAdjuster.Number2Precision (shape.mFriction, 6);
+         values.mRestitution = ValueAdjuster.Number2Precision (shape.mRestitution, 6);
+         
+         values.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (shape.GetLinearVelocityMagnitude ()), 6);
+         values.mLinearVelocityAngle = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_RotationDegrees (shape.GetLinearVelocityAngle ()), 6);
+         values.mAngularVelocity = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_AngularVelocity (shape.GetAngularVelocity ()), 6);
+         values.mLinearDamping = ValueAdjuster.Number2Precision (shape.GetLinearDamping (), 6);
+         values.mAngularDamping = ValueAdjuster.Number2Precision (shape.GetAngularDamping (), 6);
+         values.mAllowSleeping = shape.IsAllowSleeping ();
+         values.mFixRotation = shape.IsFixRotation ();
+      }
+      
       public function ShowEntitySettingsDialog ():void
       {
-      /*
-         //var selectedEntities:Array = mScene.GetSelectedAssets ();
-         //if (selectedEntities == null || selectedEntities.length != 1)
-         //   return;
-         if (mMainSelectedEntity == null)
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         if (selectedEntities == null || selectedEntities.length != 1)
             return;
          
-         //var entity:Entity = selectedEntities [0] as Entity;
-         var entity:Entity = mMainSelectedEntity;
+         var entity:Entity = selectedEntities [0] as Entity;
+         
+         //...
          
          var values:Object = new Object ();
          
@@ -865,11 +893,12 @@ package editor.entity.dialog {
                      
                      values.mPreCodeSnippet  = timer_event_handler_withPrePostHandling.GetPreCodeSnippet  ().Clone (null);
                      values.mPostCodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ().Clone (null);
-                     ShowTimerEventHandlerWithPreAndPostHandlingSettingDialog (values, ConfirmSettingEntityProperties);
+                     
+                     EditorContext.ShowModalDialog (LogicTimerEventHandlerWithPrePostHandlingEditDialog, ConfirmSettingEntityProperties, values);
                   }
                   else
                   {
-                     ShowTimerEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                     EditorContext.ShowModalDialog (LogicTimerEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                   }
                }
                else if (entity is EntityEventHandler_Keyboard)
@@ -878,28 +907,28 @@ package editor.entity.dialog {
                   
                   values.mKeyCodes = keyboard_event_handler.GetKeyCodes ();
                   
-                  ShowKeyboardEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                  EditorContext.ShowModalDialog (LogicKeyboardEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_Mouse)
                {
-                  ShowMouseEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                  EditorContext.ShowModalDialog (LogicMouseEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_Contact)
                {
-                  ShowContactEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                  EditorContext.ShowModalDialog (LogicShapeContactEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_JointReachLimit)
                {
-                  ShowJointReachLimitEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                  EditorContext.ShowModalDialog (LogicJointReachLimitEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_GameLostOrGotFocus)
                {
-                  ShowGameLostOrGotFocusEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                  EditorContext.ShowModalDialog (LogicGameLostOrGotFocusEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                //else if (entity is EntityEventHandler_ModuleLoopToEnd)
                else
                {
-                  ShowEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                  EditorContext.ShowModalDialog (LogicEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
             }
             else if (entity is EntityBasicCondition)
@@ -911,7 +940,7 @@ package editor.entity.dialog {
                values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
-               ShowConditionSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (LogicConditionEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityAction)
             {
@@ -922,7 +951,7 @@ package editor.entity.dialog {
                values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
-               ShowActionSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (LogicActionEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityInputEntityScriptFilter)
             {
@@ -932,7 +961,7 @@ package editor.entity.dialog {
                values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
-               ShowEntityFilterSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (LogicEntityFilterEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityInputEntityPairScriptFilter)
             {
@@ -942,23 +971,23 @@ package editor.entity.dialog {
                values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
-               ShowEntityPairFilterSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (LogicEntityPairFilterEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityConditionDoor)
             {
-               ShowConditionDoorSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (LogicConditionDoorEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityTask)
             {
-               ShowTaskSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (LogicTaskEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityInputEntityAssigner)
             {
-               ShowEntityAssignerSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (LogicEntityAssignerEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityInputEntityPairAssigner)
             {
-               ShowEntityPairAssignerSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (LogicEntityPairAssignerEditDialog, ConfirmSettingEntityProperties, values);
             }
          }
          else if (entity is EntityVectorShape)
@@ -991,7 +1020,10 @@ package editor.entity.dialog {
                   values.mAppearanceType = (entity as EntityVectorShapeCircle).GetAppearanceType();
                   values.mAppearanceTypeListSelectedIndex = (entity as EntityVectorShapeCircle).GetAppearanceType();
                   
-                  ShowShapeCircleSettingDialog (values, ConfirmSettingEntityProperties);
+                  if (Define.IsBombShape (values.mAiType))
+                     EditorContext.ShowModalDialog (ShapeCircleBombSettingDialog, ConfirmSettingEntityProperties, values);
+                  else
+                     EditorContext.ShowModalDialog (ShapeCircleSettingDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityVectorShapeRectangle)
                {
@@ -999,11 +1031,14 @@ package editor.entity.dialog {
                   values.mHeight = ValueAdjuster.Number2Precision (2.0 * mScene.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
                   values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
                   
-                  ShowShapeRectangleSettingDialog (values, ConfirmSettingEntityProperties);
+                  if (Define.IsBombShape (values.mAiType))
+                     EditorContext.ShowModalDialog (ShapeRectangleBombSettingDialog, ConfirmSettingEntityProperties, values);
+                  else
+                     EditorContext.ShowModalDialog (ShapeRectangleSettingDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityVectorShapePolygon)
                {
-                  ShowShapePolygonSettingDialog (values, ConfirmSettingEntityProperties);
+                  EditorContext.ShowModalDialog (ShapePolygonSettingDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityVectorShapePolyline)
                {
@@ -1011,7 +1046,7 @@ package editor.entity.dialog {
                   values.mIsRoundEnds = (vectorShape as EntityVectorShapePolyline).IsRoundEnds ();
                   values.mIsClosed = (vectorShape as EntityVectorShapePolyline).IsClosed ();
                   
-                  ShowShapePolylineSettingDialog (values, ConfirmSettingEntityProperties);
+                  EditorContext.ShowModalDialog (ShapePolylineSettingDialog, ConfirmSettingEntityProperties, values);
                }
             }
             else // no physics entity
@@ -1048,11 +1083,11 @@ package editor.entity.dialog {
                      values.mMouseOverValues.mTransparency = moveOverShape.GetTransparency ();
                      values.mMouseOverValues.mBorderTransparency = moveOverShape.GetBorderTransparency ();
                      
-                     ShowShapeTextButtonSettingDialog (values, ConfirmSettingEntityProperties);
+                     EditorContext.ShowModalDialog (ShapeTextButtonSettingDialog, ConfirmSettingEntityProperties, values);
                   }
                   else
                   {
-                     ShowShapeTextSettingDialog (values, ConfirmSettingEntityProperties);
+                     EditorContext.ShowModalDialog (ShapeTextSettingDialog, ConfirmSettingEntityProperties, values);
                   }
                }
                else if (entity is EntityVectorShapeGravityController)
@@ -1070,7 +1105,7 @@ package editor.entity.dialog {
                   values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ()), 6);
                   values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_RotationDegrees ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAngle ()), 6);
                   
-                  ShowShapeGravityControllerSettingDialog (values, ConfirmSettingEntityProperties);
+                  EditorContext.ShowModalDialog (ShapeGravityControllerSettingDialog, ConfirmSettingEntityProperties, values);
                }
             }
          }
@@ -1084,7 +1119,7 @@ package editor.entity.dialog {
                
                values.mModule = (entity as EntityShapeImageModule).GetAssetImageModule ();
                
-               ShowShapeImageModuleSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (ShapeImageModuleSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityShapeImageModuleButton)
             {
@@ -1094,7 +1129,7 @@ package editor.entity.dialog {
                values.mModuleOver = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseOver ();
                values.mModuleDown = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseDown ();
                
-               ShowShapeImageModuleButtonSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (ShapeImageModuleButtonSettingDialog, ConfirmSettingEntityProperties, values);
             }
          }
          else if (entity is SubEntityJointAnchor)
@@ -1117,8 +1152,8 @@ package editor.entity.dialog {
             
             //>>from v1.02
             jointValues.mShapeListDataProvider = mScene.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, true, "[Auto Select]");
-            jointValues.mShapeList1SelectedIndex = EntityContainer.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape1Index (), jointValues.mShapeListDataProvider);
-            jointValues.mShapeList2SelectedIndex = EntityContainer.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape2Index (), jointValues.mShapeListDataProvider);
+            jointValues.mShapeList1SelectedIndex = Scene.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape1Index (), jointValues.mShapeListDataProvider);
+            jointValues.mShapeList2SelectedIndex = Scene.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape2Index (), jointValues.mShapeListDataProvider);
             jointValues.mAnchorIndex = jointAnchor.GetAnchorIndex (); // hinge will modify it below
             //<<
             
@@ -1151,7 +1186,7 @@ package editor.entity.dialog {
                jointValues.mMaxMotorTorque = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_Torque (hinge.GetMaxMotorTorque ()), 6);
                //<<
                
-               ShowHingeSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (JointHingeSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntitySliderAnchor)
             {
@@ -1168,7 +1203,7 @@ package editor.entity.dialog {
                jointValues.mMaxMotorForce = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_ForceMagnitude (slider.GetMaxMotorForce ()), 6);
                //<<
                
-               ShowSliderSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (JointSliderSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntitySpringAnchor)
             {
@@ -1185,7 +1220,7 @@ package editor.entity.dialog {
                jointValues.mBreakExtendedLength = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_Length (spring.GetBreakExtendedLength ()), 6);
                //<<
                
-               ShowSpringSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (JointSpringSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntityDistanceAnchor)
             {
@@ -1195,7 +1230,7 @@ package editor.entity.dialog {
                jointValues.mBreakDeltaLength = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_Length (distance.GetBreakDeltaLength ()), 6);
                //<<
                
-               ShowDistanceSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (JointDistanceSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntityWeldAnchor)
             {
@@ -1203,13 +1238,13 @@ package editor.entity.dialog {
                
                var weld:EntityJointWeld = joint as EntityJointWeld;
                
-               ShowWeldSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (JointWeldSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntityDummyAnchor)
             {
                var dummy:EntityJointDummy = joint as EntityJointDummy;
                
-               ShowDummySettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (JointDummySettingDialog, ConfirmSettingEntityProperties, values);
             }
          }
          else if (entity is EntityUtility)
@@ -1225,7 +1260,7 @@ package editor.entity.dialog {
                values.mFollowingStyle = camera.GetFollowingStyle ();
                //<<
                
-               ShowCameraSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (UtilityCameraSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityUtilityPowerSource)
             {
@@ -1274,10 +1309,498 @@ package editor.entity.dialog {
                }
                values.mPowerMagnitude = ValueAdjuster.Number2Precision (values.mPowerMagnitude, 6);
                
-               ShowPowerSourceSettingDialog (values, ConfirmSettingEntityProperties);
+               EditorContext.ShowModalDialog (UtilityPowerSourceSettingDialog, ConfirmSettingEntityProperties, values);
             }
          }
-         */
+      }
+      
+      private function UpdateShapePhysicsProperties (shape:EntityShape, params:Object):void
+      {        
+         shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
+         
+         shape.SetPhysicsEnabled (params.mIsPhysicsEnabled);
+         shape.SetAsSensor (params.mIsSensor);
+         shape.SetStatic (params.mIsStatic);
+         shape.SetAsBullet (params.mIsBullet);
+         shape.SetHollow (params.mIsHollow);
+         shape.SetBuildBorder (params.mBuildBorder);
+         shape.SetDensity (params.mDensity);
+         shape.SetFriction (params.mFriction);
+         shape.SetRestitution (params.mRestitution);
+         
+         if (params.mLinearVelocityMagnitude < 0)
+         {
+            params.mLinearVelocityMagnitude = -params.mLinearVelocityMagnitude;
+            params.mLinearVelocityAngle = 360.0 - params.mLinearVelocityAngle;
+         }
+         shape.SetLinearVelocityMagnitude (mScene.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
+         shape.SetLinearVelocityAngle (mScene.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
+         shape.SetAngularVelocity (mScene.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
+         shape.SetLinearDamping (params. mLinearDamping);
+         shape.SetAngularDamping (params.mAngularDamping);
+         shape.SetAllowSleeping (params.mAllowSleeping);
+         shape.SetFixRotation (params.mFixRotation);
+      }
+      
+      private function ConfirmSettingEntityProperties (params:Object):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         if (selectedEntities == null || selectedEntities.length != 1)
+            return;
+         
+         var entity:Entity = selectedEntities [0] as Entity;
+         
+         var newPosX:Number = mScene.GetCoordinateSystem ().P2D_PositionX (params.mPosX);
+         var newPosY:Number = mScene.GetCoordinateSystem ().P2D_PositionY (params.mPosY);
+         if (! mScene.IsInfiniteSceneSize ())
+         {
+            //todo: seems this is not essential
+            newPosX = MathUtil.GetClipValue (newPosX, mScene.GetWorldLeft () - Define.WorldFieldMargin, mScene.GetWorldRight () + Define.WorldFieldMargin);
+            newPosY = MathUtil.GetClipValue (newPosY, mScene.GetWorldTop () - Define.WorldFieldMargin, mScene.GetWorldBottom () + Define.WorldFieldMargin);
+         }
+         
+         entity.SetPosition (newPosX, newPosY);
+         entity.SetRotation (mScene.GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
+         entity.SetVisible (params.mIsVisible);
+         entity.SetAlpha (params.mAlpha);
+         entity.SetEnabled (params.mIsEnabled);
+         
+         if (entity is EntityLogic)
+         {
+            var logic:EntityLogic = entity as EntityLogic;
+            
+            var code_snippet:CodeSnippet;
+            
+            if (entity is EntityEventHandler)
+            {
+               var event_handler:EntityEventHandler = entity as EntityEventHandler;
+               
+               code_snippet = event_handler.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mScene.GetCoordinateSystem ());
+               
+               if (entity is EntityEventHandler_Timer)
+               {
+                  var timer_event_handler:EntityEventHandler_Timer = entity as EntityEventHandler_Timer;
+                  
+                  timer_event_handler.SetRunningInterval (params.mRunningInterval);
+                  timer_event_handler.SetOnlyRunOnce (params.mOnlyRunOnce);
+                  
+                  if (entity is EntityEventHandler_TimerWithPrePostHandling)
+                  {
+                     var timer_event_handler_withPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = entity as EntityEventHandler_TimerWithPrePostHandling;
+                     
+                     var pre_code_snippet:CodeSnippet = timer_event_handler_withPrePostHandling.GetPreCodeSnippet ();
+                     pre_code_snippet.AssignFunctionCallings (params.mReturnPreFunctionCallings);
+                     pre_code_snippet.PhysicsValues2DisplayValues (mScene.GetCoordinateSystem ());
+                     
+                     var post_code_snippet:CodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ();
+                     post_code_snippet.AssignFunctionCallings (params.mReturnPostFunctionCallings);
+                     post_code_snippet.PhysicsValues2DisplayValues (mScene.GetCoordinateSystem ());
+                  }
+               }
+               else if (entity is EntityEventHandler_Keyboard)
+               {
+                  var keyboard_event_handler:EntityEventHandler_Keyboard = entity as EntityEventHandler_Keyboard;
+                  
+                  //keyboard_event_handler.ChangeKeyboardEventId (params.mEventId);
+                  keyboard_event_handler.SetKeyCodes (params.mKeyCodes);
+               }
+               else if (entity is EntityEventHandler_Mouse)
+               {
+                  var mouse_event_handler:EntityEventHandler_Mouse = entity as EntityEventHandler_Mouse;
+                  
+                  //mouse_event_handler.ChangeMouseEventId (params.mEventId);
+               }
+               else if (entity is EntityEventHandler_Contact)
+               {
+                  var contact_event_handler:EntityEventHandler_Contact = entity as EntityEventHandler_Contact;
+                  
+                  //contact_event_handler.ChangeContactEventId (params.mEventId);
+               }
+               else if (entity is EntityEventHandler_JointReachLimit)
+               {
+                   var jointReachLimit_event_handler:EntityEventHandler_JointReachLimit = entity as EntityEventHandler_JointReachLimit;
+               }
+               else if (entity is EntityEventHandler_GameLostOrGotFocus)
+               {
+                   var gameLostOrGotFocus_event_handler:EntityEventHandler_GameLostOrGotFocus = entity as EntityEventHandler_GameLostOrGotFocus;
+               }
+               else if (entity is EntityEventHandler_ModuleLoopToEnd)
+               {
+                  //
+               }
+               
+               if (params.mEventId != event_handler.GetEventId ())
+               {
+                  event_handler.ChangeToIsomorphicEventId (params.mEventId );
+               }
+            }
+            else if (entity is EntityBasicCondition)
+            {
+               var condition:EntityBasicCondition = entity as EntityBasicCondition;
+               
+               condition.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = condition.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mScene.GetCoordinateSystem ());
+            }
+            else if (entity is EntityAction)
+            {
+               var action:EntityAction = entity as EntityAction;
+               
+               action.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = action.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mScene.GetCoordinateSystem ());
+            }
+            else if (entity is EntityInputEntityScriptFilter)
+            {
+               var entityFilter:EntityInputEntityScriptFilter = entity as EntityInputEntityScriptFilter;
+               
+               entityFilter.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = entityFilter.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mScene.GetCoordinateSystem ());
+            }
+            else if (entity is EntityInputEntityPairScriptFilter)
+            {
+               var pairFilter:EntityInputEntityPairScriptFilter = entity as EntityInputEntityPairScriptFilter;
+               
+               pairFilter.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = pairFilter.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mScene.GetCoordinateSystem ());
+            }
+            else if (entity is EntityConditionDoor)
+            {
+            }
+            else if (entity is EntityTask)
+            {
+            }
+            else if (entity is EntityInputEntityAssigner)
+            {
+            }
+            else if (entity is EntityInputEntityPairAssigner)
+            {
+            }
+            
+            logic.UpdateAppearance ();
+            logic.UpdateSelectionProxy ();
+         }
+         else if (entity is EntityVectorShape)
+         {
+            var vectorShape:EntityVectorShape = entity as EntityVectorShape;
+            
+            vectorShape.SetDrawBorder (params.mDrawBorder);
+            vectorShape.SetTransparency (params.mTransparency);
+            vectorShape.SetBorderColor (params.mBorderColor);
+            vectorShape.SetBorderThickness (params.mBorderThickness);
+            vectorShape.SetDrawBackground (params.mDrawBackground);
+            vectorShape.SetFilledColor (params.mBackgroundColor);
+            vectorShape.SetBorderTransparency (params.mBorderTransparency);
+            
+            vectorShape.SetAiType (params.mAiType);
+
+            if (vectorShape.IsBasicVectorShapeEntity ())
+            {
+               UpdateShapePhysicsProperties (vectorShape, params);
+               
+               if (entity is EntityVectorShapeCircle)
+               {
+                  (vectorShape as EntityVectorShapeCircle).SetRadius (mScene.GetCoordinateSystem ().P2D_Length (params.mRadius));
+                  (vectorShape as EntityVectorShapeCircle).SetAppearanceType (params.mAppearanceType);
+               }
+               else if (entity is EntityVectorShapeRectangle)
+               {
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  (vectorShape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
+               }
+               else if (entity is EntityVectorShapePolygon)
+               {
+               }
+               else if (entity is EntityVectorShapePolyline)
+               {
+                  (vectorShape as EntityVectorShapePolyline).SetCurveThickness (params.mCurveThickness);
+                  (vectorShape as EntityVectorShapePolyline).SetRoundEnds (params.mIsRoundEnds);
+                  (vectorShape as EntityVectorShapePolyline).SetClosed (params.mIsClosed);
+               }
+            }
+            else // no physics entity
+            {
+               if (entity is EntityVectorShapeText)
+               {
+                  if (entity is EntityVectorShapeTextButton)
+                  {
+                     (vectorShape as EntityVectorShapeTextButton).SetUsingHandCursor (params.mUsingHandCursor);
+                     
+                     var moveOverShape:EntityVectorShape = (vectorShape as EntityVectorShapeTextButton).GetMouseOverShape ();
+                     moveOverShape.SetDrawBorder (params.mMouseOverValues.mDrawBorder);
+                     moveOverShape.SetTransparency (params.mMouseOverValues.mTransparency);
+                     moveOverShape.SetDrawBorder (params.mMouseOverValues.mDrawBorder);
+                     moveOverShape.SetBorderColor (params.mMouseOverValues.mBorderColor);
+                     moveOverShape.SetBorderThickness (params.mMouseOverValues.mBorderThickness);
+                     moveOverShape.SetDrawBackground (params.mMouseOverValues.mDrawBackground);
+                     moveOverShape.SetFilledColor (params.mMouseOverValues.mBackgroundColor);
+                     moveOverShape.SetBorderTransparency (params.mMouseOverValues.mBorderTransparency);
+                   }
+                  else
+                  {
+                  }
+                  
+                  (vectorShape as EntityVectorShapeText).SetWordWrap (params.mWordWrap);
+                  (vectorShape as EntityVectorShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
+                  
+                  (vectorShape as EntityVectorShapeText).SetUnderlined (params.mIsUnderlined);
+                  (vectorShape as EntityVectorShapeText).SetTextAlign (params.mTextAlign);
+                  
+                  (vectorShape as EntityVectorShapeText).SetText (params.mText);
+                  (vectorShape as EntityVectorShapeText).SetTextColor (params.mTextColor);
+                  (vectorShape as EntityVectorShapeText).SetFontSize (params.mFontSize);
+                  (vectorShape as EntityVectorShapeText).SetBold (params.mIsBold);
+                  (vectorShape as EntityVectorShapeText).SetItalic (params.mIsItalic);
+                  
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mHeight));
+               }
+               else if (entity is EntityVectorShapeGravityController)
+               {
+                  (vectorShape as EntityVectorShapeCircle).SetRadius (mScene.GetCoordinateSystem ().P2D_Length (params.mRadius));
+                  
+                  //(vectorShape as EntityVectorShapeGravityController).SetInteractive (params.mIsInteractive);
+                  (vectorShape as EntityVectorShapeGravityController).SetInteractiveZones (params.mInteractiveZones);
+                  
+                  (vectorShape as EntityVectorShapeGravityController).mInteractiveConditions = params.mInteractiveConditions;
+                  
+                  if (params.mInitialGravityAcceleration < 0)
+                  {
+                     params.mInitialGravityAcceleration = -params.mInitialGravityAcceleration;
+                     params.mInitialGravityAngle = 360.0 - params.mInitialGravityAngle;
+                  }
+                  
+                  (vectorShape as EntityVectorShapeGravityController).SetMaximalGravityAcceleration (mScene.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mMaximalGravityAcceleration));
+                  (vectorShape as EntityVectorShapeGravityController).SetInitialGravityAcceleration (mScene.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mInitialGravityAcceleration));
+                  (vectorShape as EntityVectorShapeGravityController).SetInitialGravityAngle (mScene.GetCoordinateSystem ().P2D_RotationDegrees (params.mInitialGravityAngle));
+               }
+            }
+            
+            vectorShape.UpdateAppearance ();
+            vectorShape.UpdateSelectionProxy ();
+            
+            if (entity is EntityVectorShapeText)
+            {
+               (entity as EntityVectorShapeText).SetControlPointsVisible (! params.mAdaptiveBackgroundSize);
+            }
+         }
+         else if (entity is EntityShape)
+         {
+            var shape:EntityShape = entity as EntityShape;
+            
+            if (entity is EntityShapeImageModule)
+            {
+               var moduleShape:EntityShapeImageModule = entity as EntityShapeImageModule;
+               
+               UpdateShapePhysicsProperties (moduleShape, params);
+               
+               moduleShape.SetAssetImageModule (params.mModule);
+               
+               moduleShape.UpdateAppearance ();
+               moduleShape.UpdateSelectionProxy ();
+            }
+            else if (entity is EntityShapeImageModuleButton)
+            {
+               var moduleShapeButton:EntityShapeImageModuleButton = entity as EntityShapeImageModuleButton;
+               
+               UpdateShapePhysicsProperties (moduleShapeButton, params);
+               
+               moduleShapeButton.SetAssetImageModuleForMouseUp (params.mModuleUp);
+               moduleShapeButton.SetAssetImageModuleForMouseOver (params.mModuleOver);
+               moduleShapeButton.SetAssetImageModuleForMouseDown (params.mModuleDown);
+               
+               moduleShapeButton.UpdateAppearance ();
+               moduleShapeButton.UpdateSelectionProxy ();
+            }
+         }
+         else if (entity is SubEntityJointAnchor)
+         {
+            var jointAnchor:SubEntityJointAnchor = entity as SubEntityJointAnchor;
+            var joint:EntityJoint = jointAnchor.GetMainAsset () as EntityJoint;
+            
+            var jointParams:Object = params.mJointValues;
+            
+            joint.mCollideConnected = jointParams.mCollideConnected;
+            
+            newPosX = mScene.GetCoordinateSystem ().P2D_PositionX (jointParams.mPosX);
+            newPosY = mScene.GetCoordinateSystem ().P2D_PositionY (jointParams.mPosY);
+            if (! mScene.IsInfiniteSceneSize ())
+            {
+               newPosX = MathUtil.GetClipValue (newPosX, mScene.GetWorldLeft (), mScene.GetWorldRight ());
+               newPosY = MathUtil.GetClipValue (newPosY, mScene.GetWorldTop (), mScene.GetWorldBottom ());
+            }
+            joint.SetPosition (newPosX, newPosY);
+            joint.SetRotation (mScene.GetCoordinateSystem ().P2D_RotationRadians (jointParams.mAngle * Define.kDegrees2Radians));
+            joint.SetVisible (jointParams.mIsVisible);
+            joint.SetAlpha (jointParams.mAlpha);
+            joint.SetEnabled (jointParams.mIsEnabled);
+            
+            //>> from v1.02
+            joint.SetConnectedShape1Index (jointParams.mConntectedShape1Index);
+            joint.SetConnectedShape2Index (jointParams.mConntectedShape2Index);
+            //<<
+            
+            //from v1.08
+            joint.SetBreakable (jointParams.mIsBreakable);
+            //<<
+            
+            if (entity is SubEntityHingeAnchor)
+            {
+               var hinge:EntityJointHinge = joint as EntityJointHinge;
+               
+               hinge.SetLimitsEnabled (jointParams.mEnableLimit);
+               hinge.SetLimits (mScene.GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mLowerAngle), mScene.GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mUpperAngle));
+               hinge.mEnableMotor = jointParams.mEnableMotor;
+               hinge.mMotorSpeed = mScene.GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mMotorSpeed);
+               hinge.mBackAndForth = jointParams.mBackAndForth;
+               
+               //>>from v1.04
+               hinge.SetMaxMotorTorque (mScene.GetCoordinateSystem ().P2D_Torque (jointParams.mMaxMotorTorque));
+               //<<
+               
+               // 
+               hinge.GetAnchor ().SetVisible (jointParams.mIsVisible);
+            }
+            else if (entity is SubEntitySliderAnchor)
+            {
+               var slider:EntityJointSlider = joint as EntityJointSlider;
+               
+               slider.SetLimitsEnabled (jointParams.mEnableLimit);
+               slider.SetLimits (mScene.GetCoordinateSystem ().P2D_Length (jointParams.mLowerTranslation), mScene.GetCoordinateSystem ().P2D_Length (jointParams.mUpperTranslation));
+               slider.mEnableMotor = jointParams.mEnableMotor;
+               slider.mMotorSpeed = mScene.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (jointParams.mMotorSpeed);
+               slider.mBackAndForth = jointParams.mBackAndForth;
+               
+               //>>from v1.04
+               slider.SetMaxMotorForce (mScene.GetCoordinateSystem ().P2D_ForceMagnitude (jointParams.mMaxMotorForce));
+               //<<
+               
+               // 
+               slider.GetAnchor1 ().SetVisible (jointParams.mIsVisible);
+               slider.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
+            }
+            else if (entity is SubEntitySpringAnchor)
+            {
+               var spring:EntityJointSpring = joint as EntityJointSpring;
+               
+               spring.SetStaticLengthRatio (jointParams.mStaticLengthRatio);
+               spring.SetSpringType (jointParams.mSpringType);
+               spring.mDampingRatio = jointParams.mDampingRatio;
+               
+               //from v1.08
+               spring.SetFrequencyDeterminedManner (jointParams.mFrequencyDeterminedManner);
+               spring.SetFrequency (jointParams.mFrequency);
+               spring.SetSpringConstant (jointParams.mSpringConstant * mScene.GetCoordinateSystem ().P2D_Length (1.0) / mScene.GetCoordinateSystem ().P2D_ForceMagnitude (1.0));
+               spring.SetBreakExtendedLength (mScene.GetCoordinateSystem ().P2D_Length (jointParams.mBreakExtendedLength));
+               //<<
+               
+               // 
+               spring.GetAnchor1 ().SetVisible (jointParams.mIsVisible);
+               spring.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
+            }
+            else if (entity is SubEntityDistanceAnchor)
+            {
+               var distance:EntityJointDistance = joint as EntityJointDistance;
+               
+               //from v1.08
+               distance.SetBreakDeltaLength (mScene.GetCoordinateSystem ().P2D_Length (jointParams.mBreakDeltaLength));
+               //<<
+               
+               // 
+               distance.GetAnchor1 ().SetVisible (jointParams.mIsVisible);
+               distance.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
+            }
+            else if (entity is SubEntityWeldAnchor)
+            {
+               var weld:EntityJointWeld = joint as EntityJointWeld;
+               
+               // 
+               weld.GetAnchor ().SetVisible (jointParams.mIsVisible);
+            }
+            else if (entity is SubEntityDummyAnchor)
+            {
+               var dummy:EntityJointDummy = joint as EntityJointDummy;
+               
+               // 
+               dummy.GetAnchor1 ().SetVisible (jointParams.mIsVisible);
+               dummy.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
+            }
+            
+            jointAnchor.GetMainAsset ().UpdateAppearance ();
+            jointAnchor.UpdateSelectionProxy ();
+         }
+         else if (entity is EntityUtility)
+         {
+            var utility:EntityUtility = entity as EntityUtility;
+            
+            if (entity is EntityUtilityCamera)
+            {
+               var camera:EntityUtilityCamera = utility as EntityUtilityCamera;
+               
+               //from v1.08
+               camera.SetFollowedTarget (params.mFollowedTarget);
+               camera.SetFollowingStyle (params.mFollowingStyle);
+               //<<
+            }
+            else if (entity is EntityUtilityPowerSource)
+            {
+               var powerSource:EntityUtilityPowerSource = entity as EntityUtilityPowerSource;
+               
+               powerSource.SetKeyboardEventId (params.mEventId);
+               powerSource.SetKeyCodes (params.mKeyCodes);
+               
+               switch (powerSource.GetPowerSourceType ())
+               {
+                  case Define.PowerSource_Torque:
+                     params.mPowerMagnitude = mScene.GetCoordinateSystem ().P2D_Torque (params.mPowerMagnitude);
+                     break;
+                  case Define.PowerSource_LinearImpusle:
+                     params.mPowerMagnitude = mScene.GetCoordinateSystem ().P2D_ImpulseMagnitude (params.mPowerMagnitude);
+                     break;
+                  case Define.PowerSource_AngularImpulse:
+                     params.mPowerMagnitude = mScene.GetCoordinateSystem ().P2D_AngularImpulse (params.mPowerMagnitude);
+                     break;
+                  case Define.PowerSource_AngularAcceleration:
+                     params.mPowerMagnitude = mScene.GetCoordinateSystem ().P2D_AngularAcceleration (params.mPowerMagnitude);
+                     break;
+                  case Define.PowerSource_AngularVelocity:
+                     params.mPowerMagnitude = mScene.GetCoordinateSystem ().P2D_AngularVelocity (params.mPowerMagnitude);
+                     break;
+                  //case Define.PowerSource_LinearAcceleration:
+                  //   params.mPowerMagnitude = mScene.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mPowerMagnitude);
+                  //   break;
+                  //case Define.PowerSource_LinearVelocity:
+                  //   params.mPowerMagnitude = mScene.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mPowerMagnitude);
+                  //   break;
+                  case Define.PowerSource_Force:
+                  default:
+                     params.mPowerMagnitude = mScene.GetCoordinateSystem ().P2D_ForceMagnitude (params.mPowerMagnitude);
+                     break;
+               }
+               powerSource.SetPowerMagnitude (params.mPowerMagnitude);
+            }
+            
+            utility.UpdateAppearance ();
+            utility.UpdateSelectionProxy ();
+         }
+         
+         if (entity != null)
+         {
+            EditorContext.GetEditorApp ().CreateUndoPoint ("The properties of entity [" + entity.GetTypeName ().toLowerCase () + "] are changed");
+         }
       }
       
       public function ShowBatchModifyEntityCommonPropertiesDialog ():void

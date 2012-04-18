@@ -76,7 +76,7 @@
             
             if (OnCCatPicked != null)
             {
-               EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingModet = true;
+               EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingMode = true;
                
                EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
             }
@@ -84,7 +84,7 @@
          
          public static function HideCollisionCategoryListDialog ():void
          {
-            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingModet)
+            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingMode)
             {
                EndPickingMode ();
             }
@@ -109,7 +109,7 @@
          {
             if (EditorContext.GetSingleton ().mCollisionCategoryListDialog != null)
             {
-               EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingModet = false;
+               EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingMode = false;
                
                PopUpManager.removePopUp(EditorContext.GetSingleton ().mCollisionCategoryListDialog);
             
@@ -126,7 +126,7 @@
          
       //======================================================
       
-         internal var mInPickingModet:Boolean = false;
+         internal var mInPickingMode:Boolean = false;
          
          private function InitDialog ():void
          {

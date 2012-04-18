@@ -89,11 +89,6 @@ package editor.entity {
 //   clone
 //====================================================================
       
-      public function IsClonedable ():Boolean
-      {
-         return true;
-      }
-      
       public final function Clone (displayOffsetX:Number, displayOffsetY:Number):Entity
       {
          var entity:Entity = CreateCloneShell ();

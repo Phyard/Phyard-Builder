@@ -27,9 +27,13 @@ package editor.asset {
    public class Asset extends EditorObject
    {
       protected var mAssetManager:AssetManager;
-      protected var mAppearanceLayerId:int = -1;
       protected var mCreationOrderId:int = -1; // to reduce random factors
-      
+      protected var mAppearanceLayerId:int = -1;
+      public function get appearanceLayerId ():int // for MoveSelectedAssetsToTop/Bottom
+      {
+         return mAppearanceLayerId;
+      }
+            
       protected var mSelectionProxy:SelectionProxy = null;
       
       protected var mName:String = "";

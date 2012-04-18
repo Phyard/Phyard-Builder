@@ -130,10 +130,19 @@ package editor.asset {
          UpdateLayout ();
       }
       
+      public function GetPositionX ():Number
+      {
+         return x;
+      }
+      
+      public function GetPositionY ():Number
+      {
+         return y;
+      }
+      
       public function SetScale (s:Number):void
       {
          scaleX = scaleY = s;
-         
          
          var numAssets:int = mAssetsSortedByCreationId.length;
          
@@ -864,7 +873,7 @@ package editor.asset {
       public function MoveSelectedAssetsToTop ():void
       {
          var assetArray:Array = GetSelectedAssets ();
-         assetArray.sortOn("mAppearOrderId", Array.NUMERIC);
+         assetArray.sortOn("appearanceLayerId", Array.NUMERIC);
          
          var asset:Asset;
          
@@ -894,7 +903,7 @@ package editor.asset {
       public function MoveSelectedAssetsToBottom ():void
       {
          var assetArray:Array = GetSelectedAssets ();
-         assetArray.sortOn("mAppearOrderId", Array.NUMERIC);
+         assetArray.sortOn("appearanceLayerId", Array.NUMERIC);
          
          var asset:Asset;
          

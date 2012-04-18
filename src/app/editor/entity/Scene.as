@@ -83,6 +83,17 @@ package editor.entity {
       }
       
 //================================================================================
+//  
+//================================================================================
+      
+      override public function SetScale (s:Number):void
+      {
+         super.SetScale (s);
+         
+         SetZoomScale (super.GetScale ());
+      }
+      
+//================================================================================
 // settings 
 //================================================================================
 
@@ -316,18 +327,6 @@ package editor.entity {
       public function SetZoomScale (zoomScale:Number):void
       {
          mZoomScale = zoomScale;
-
-         scaleX = zoomScale;
-         scaleY = zoomScale;
-
-         var entity:Entity;
-         var numEntities:int = mAssetsSortedByCreationId.length;
-
-         for (var entityId:int = 0; entityId < numEntities; ++ entityId)
-         {
-            entity = GetAssetByCreationId (entityId) as Entity;
-            entity.OnWorldZoomScaleChanged ();
-         }
       }
 
       public function StatisticsPhysicsShapes ():void

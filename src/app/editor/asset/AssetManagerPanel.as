@@ -113,6 +113,9 @@ package editor.asset {
          if (mAssetManager != null)
          {
             mAssetManager.SetPosition (managerX, managerY);
+            
+            mCurrentManagerX = mAssetManager.GetPositionX ();
+            mCurrentManagerY = mAssetManager.GetPositionY ();
          }
       }
       
@@ -120,7 +123,7 @@ package editor.asset {
       {
          if (mAssetManager != null)
          {
-            MoveManagerTo (mAssetManager.x + dx, mAssetManager.y + dy);
+            MoveManagerTo (mAssetManager.GetPositionX () + dx, mAssetManager.GetPositionY () + dy);
          }
       }
       
@@ -153,6 +156,8 @@ package editor.asset {
                managerScale = GetMaxAllowedScale ();
             
             mAssetManager.SetScale (managerScale);
+            
+            mCurrentManagerScale = mAssetManager.GetScale ();
          }
       }
       
@@ -337,7 +342,7 @@ package editor.asset {
       }
       
 //==================================================================================
-// edit mode
+// intent
 //==================================================================================
       
       // edit mode
@@ -362,16 +367,54 @@ package editor.asset {
       }
       
 //==================================================================================
+// mode
+//==================================================================================
+      
+      protected var mInMoveManagerMode:Boolean = false;
+      protected var mInCookieSelectMode:Boolean = false;
+      
+      protected var mShowAllAssetIDs:Boolean = false;
+      protected var mShowAllAssetLinks:Boolean = false;
+      
+      public function SetMoveManagerMode (moveManagerMode:Boolean):void
+      {
+         mInMoveManagerMode = moveManagerMode;
+      }
+      
+      public function SetCookieSelectMode (cookieMode:Boolean):void
+      {
+         mInCookieSelectMode = cookieMode;
+      }
+      
+      public function SetShowAllAssetIDs (show:Boolean):void
+      {
+         if (mShowAllAssetIDs != show)
+         {
+            mShowAllAssetIDs = show;
+            RepaintAllAssetIDs ();
+         }
+      }
+      
+      public function SetShowAllAssetLinks (show:Boolean):void
+      {
+         if (mShowAllAssetLinks != show)
+         {
+            mShowAllAssetLinks = show;
+            RepaintAllAssetLinks ();
+         }
+      }
+      
+//==================================================================================
 // mouse and key events
 //==================================================================================
       
-      protected var mIsMouseZeroMove:Boolean = false;
+      protected var mHandleCookieModeOnMouseUp:Boolean = false;
       protected var mIsCtrlDownOnMouseDown:Boolean = false;
       protected var mIsShiftDownOnMouseDown:Boolean = false;
       
       public function IsMouseZeroMove ():Boolean
       {
-         return mIsMouseZeroMove;
+         return mHandleCookieModeOnMouseUp;
       }
       
       final public function OnMouseDown (event:MouseEvent):void
@@ -384,7 +427,7 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         mIsMouseZeroMove = true;
+         mHandleCookieModeOnMouseUp = false;
          mIsCtrlDownOnMouseDown = event.ctrlKey;
          mIsShiftDownOnMouseDown = event.shiftKey;
          
@@ -398,7 +441,7 @@ package editor.asset {
             return;
          }
          
-         if (mIsShiftDownOnMouseDown)
+         if (mIsShiftDownOnMouseDown || mInMoveManagerMode)
          {
             SetCurrentIntent (new IntentPanManager (this));
             mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
@@ -440,27 +483,35 @@ package editor.asset {
          
          if (mAssetManager.AreSelectedAssetsContainingPoint (managerX, managerY))
          {
+            mHandleCookieModeOnMouseUp = mInCookieSelectMode;
+            
             SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown));
             mCurrentIntent.OnMouseDown (managerX, managerY);
           
             return;
          }
          
-         mIsMouseZeroMove = false; // avoid some handing in OnMouseUp
-         
-         // ...
+         // ... 
          
          if (! mAssetManager.SupportSelectingEntitiesWithMouse ())
             return;
          
          var oldSelectedAssets:Array = mAssetManager.GetSelectedAssets ();
+         
+         if (mInCookieSelectMode)
+         {
+            //mAssetManager.AddAssetSelections (oldSelectedAssets);
+            SetCurrentIntent (new IntentRegionSelectAssets (this, oldSelectedAssets));
+            mCurrentIntent.OnMouseDown (managerX, managerY);
+            
+            return;
+         }
 
-         var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
          if (PointSelectAsset (managerX, managerY))
          {
             SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown));
             mCurrentIntent.OnMouseDown (managerX, managerY);
-
+   
             return;
          }
          else
@@ -483,7 +534,7 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         mIsMouseZeroMove = false;
+         mHandleCookieModeOnMouseUp = false;
          
          if (mCurrentIntent != null)
          {
@@ -521,15 +572,18 @@ package editor.asset {
                mCurrentIntent.OnMouseUp (mAssetManager.mouseX, mAssetManager.mouseY);
             }
             
-            if (mIsMouseZeroMove && (mCurrentIntent is IntentMoveSelectedAssets) && mCurrentIntent.IsTerminated ())
+            //if (mHandleCookieModeOnMouseUp && (mCurrentIntent is IntentMoveSelectedAssets) && mCurrentIntent.IsTerminated ())
+            //{
+            //   PointSelectAsset (mAssetManager.mouseX, mAssetManager.mouseY);
+            //} 
+            
+            if (! mCurrentIntent.IsTerminated ())
             {
-               PointSelectAsset (mAssetManager.mouseX, mAssetManager.mouseY);
-            } 
-
-            return;
+               return;
+            }
          }
          
-         if (mIsMouseZeroMove)
+         if (mHandleCookieModeOnMouseUp)
          {
             PointSelectAsset (mAssetManager.mouseX, mAssetManager.mouseY);
          }
@@ -652,7 +706,7 @@ package editor.asset {
          {
             var asset:Asset = assetArray[0] as Asset;
             
-            if (mIsCtrlDownOnMouseDown)
+            if (mIsCtrlDownOnMouseDown || mInCookieSelectMode)
             {
                mAssetManager.ToggleAssetSelected (asset);
                OnAssetSelectionsChanged ();
@@ -687,7 +741,7 @@ package editor.asset {
          
          var newSelectedAssets:Array = mAssetManager.GetAssetsIntersectWithRegion (left, top, right, bottom);
          
-         if (mIsCtrlDownOnMouseDown)
+         if (mIsCtrlDownOnMouseDown || mInCookieSelectMode)
          {
             if (mAssetManager.SetSelectedAssetsByToggleTwoAssetArrays (oldSelectedAssets, newSelectedAssets))
             {
@@ -774,9 +828,9 @@ package editor.asset {
             var menuItemFlipSelectedsPositionsOnly:ContextMenuItem = new ContextMenuItem("Horizontal-Flip Selected Entities (Positions Only)");
             menuItemFlipSelectedsPositionsOnly.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelecteds_PositionsOnly);
             contextMenuFlipHorizontally.customItems.push (menuItemFlipSelectedsPositionsOnly);
-            var menuItemFlipSelectedsWioutPositions:ContextMenuItem = new ContextMenuItem("Horizontal-Flip Selected Entities (Without Flipping Positions)");
-            menuItemFlipSelectedsWioutPositions.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelecteds_WioutPositions);
-            contextMenuFlipHorizontally.customItems.push (menuItemFlipSelectedsWioutPositions);
+            var menuItemFlipSelectedsWithoutPositions:ContextMenuItem = new ContextMenuItem("Horizontal-Flip Selected Entities (Without Flipping Positions)");
+            menuItemFlipSelectedsWithoutPositions.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelecteds_WithoutPositions);
+            contextMenuFlipHorizontally.customItems.push (menuItemFlipSelectedsWithoutPositions);
             
             var contextMenuFlipVertically:ContextMenu = new ContextMenu ();
             contextMenuFlipVertically.hideBuiltInItems ();
@@ -785,9 +839,9 @@ package editor.asset {
             var menuItemFlipSelectedsPositionsOnlyVertically:ContextMenuItem = new ContextMenuItem("Vertical-Flip Selected Entities (Positions Only)");
             menuItemFlipSelectedsPositionsOnlyVertically.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelectedsVertically_PositionsOnly);
             contextMenuFlipVertically.customItems.push (menuItemFlipSelectedsPositionsOnlyVertically);
-            var menuItemFlipSelectedsWioutPositionsVertically:ContextMenuItem = new ContextMenuItem("Vertical-Flip Selected Entities (Without Flipping Positions)");
-            menuItemFlipSelectedsWioutPositionsVertically.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelectedsVertically_WioutPositions);
-            contextMenuFlipVertically.customItems.push (menuItemFlipSelectedsWioutPositionsVertically);
+            var menuItemFlipSelectedsWithoutPositionsVertically:ContextMenuItem = new ContextMenuItem("Vertical-Flip Selected Entities (Without Flipping Positions)");
+            menuItemFlipSelectedsWithoutPositionsVertically.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelectedsVertically_WithoutPositions);
+            contextMenuFlipVertically.customItems.push (menuItemFlipSelectedsWithoutPositionsVertically);
             
             var halfHandlerSize:Number = 6;
             var handlerRadius:Number = halfHandlerSize * 1.2;
@@ -866,32 +920,47 @@ package editor.asset {
       
       protected function OnStartMoveScaleRotateFlipHandlers(event:MouseEvent):void
       {
+         if (mCurrentIntent != null)
+            return;
+         
          SetCurrentIntent (new IntentMovemScaleRotateFlipHandlers (this));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
       public function MoveScaleRotateFlipHandlers (dx:Number, dy:Number):void
       {
+         if (mCurrentIntent != null)
+            return;
+         
          mScaleRotateFlipHandlersContainer.x += dx;
          mScaleRotateFlipHandlersContainer.y += dy;
       }
       
       protected function OnStartRotateSelecteds(event:MouseEvent):void
       {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentRotateSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
       protected function OnStartRotateSelectedSelves(event:MouseEvent):void
-      {  
+      {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentRotateSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, false, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
       protected function OnStartRotateSelectedPositions(event:MouseEvent):void
-      {  
+      {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentRotateSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, false));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
@@ -899,20 +968,29 @@ package editor.asset {
       
       protected function OnStartScaleSelecteds(event:MouseEvent):void
       {  
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentScaleSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
       protected function OnStartScaleSelectedSelves(event:MouseEvent):void
-      {  
+      {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentScaleSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, false, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
       protected function OnStartScaleSelectedPositions(event:MouseEvent):void
-      {  
+      {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentScaleSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, false));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
@@ -920,6 +998,9 @@ package editor.asset {
       
       protected function OnFlipSelecteds(event:MouseEvent):void
       {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          var handlerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y + ScaleRotateFlipCircleRadius));
          SetCurrentIntent (new IntentFlipSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, handlerPoint.y, true, true, false));
@@ -928,6 +1009,9 @@ package editor.asset {
       
       protected function OnFlipSelectedsVertically(event:MouseEvent):void
       {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          var handlerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y - ScaleRotateFlipCircleRadius));
          SetCurrentIntent (new IntentFlipSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, handlerPoint.y, true, true, true));
@@ -936,13 +1020,19 @@ package editor.asset {
       
       private function OnFlipSelecteds_PositionsOnly (event:ContextMenuEvent):void
       {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          
          FlipSelectedAssets (false, managerPoint.x, true, false, true);
       }
       
-      private function OnFlipSelecteds_WioutPositions (event:ContextMenuEvent):void
+      private function OnFlipSelecteds_WithoutPositions (event:ContextMenuEvent):void
       {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          
          FlipSelectedAssets (false, managerPoint.x, false, true, true);
@@ -950,14 +1040,20 @@ package editor.asset {
       
       private function OnFlipSelectedsVertically_PositionsOnly (event:ContextMenuEvent):void
       {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          
          RotateSelectedAssets (false, managerPoint.x, managerPoint.y, Math.PI, true, false, false);
          FlipSelectedAssets (false, managerPoint.x, true, false, true);
       }
       
-      private function OnFlipSelectedsVertically_WioutPositions (event:ContextMenuEvent):void
+      private function OnFlipSelectedsVertically_WithoutPositions (event:ContextMenuEvent):void
       {
+         if (mCurrentIntent != null)
+            return;
+         
          var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          
          RotateSelectedAssets (false, managerPoint.x, managerPoint.y, Math.PI, false, true, false);
@@ -1054,7 +1150,7 @@ package editor.asset {
 //=====================================================================
       
       // todo: hold/release a button to show/hide ids
-      public function SetShowAllAssetIDs (show:Boolean):void
+      protected function RepaintAllAssetIDs ():void
       {
          if (mAssetManager == null)
          {
@@ -1062,9 +1158,12 @@ package editor.asset {
             return;
          }
          
-         mAssetLinksLayer.visible = show;
+         mAssetLinksLayer.visible = mShowAllAssetIDs;
          
-         if (show)
+         while (mAssetLinksLayer.numChildren > 0)
+            mAssetLinksLayer.removeChildAt (0);
+         
+         if (mShowAllAssetIDs)
          {
             mAssetManager.DrawAssetIds (mAssetIDsLayer);
             
@@ -1077,22 +1176,11 @@ package editor.asset {
             if ((int (20.0 * mAssetIDsLayer.y)) != (int (20.0 * mAssetManager.y)))
                mAssetIDsLayer.y = mAssetManager.y;
          }
-         else
-         {
-            while (mAssetLinksLayer.numChildren > 0)
-               mAssetLinksLayer.removeChildAt (0);
-         }
       }
       
-      private var mShowAllAssetLinks:Boolean = false;
-      
-      public function SetShowAllAssetLinks (show:Boolean):void
+      protected function UpdateAllAssetIDs ():void
       {
-         if (mShowAllAssetLinks != show)
-         {
-            mShowAllAssetLinks = show;
-            RepaintAllAssetLinks ();
-         }
+         // todo: corrent id positions
       }
       
       public function CreateOrBreakAssetLink (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):void

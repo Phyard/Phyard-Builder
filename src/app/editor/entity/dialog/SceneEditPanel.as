@@ -90,6 +90,16 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
+      override protected function GetMaxAllowedScale ():Number
+      {
+         return 16.0;
+      }
+      
+      override protected function GetMinAllowedScale ():Number
+      {
+         return 1.0 / 16.0;
+      }
+      
       override protected function OnResize (event:Event):void 
       {
          super.OnResize (event);
@@ -164,6 +174,8 @@ package editor.entity.dialog {
          
          if (entityType == null)
             return;
+         
+         CancelAllAssetSelections ();
          
          switch (entityType)
          {
@@ -628,18 +640,6 @@ package editor.entity.dialog {
       {
       }
       
-      public function SetMoveSceneMode (moveSveneMode:Boolean):void
-      {
-      }
-      
-      public function SetCookieSelectMode (cookieSelectMode:Boolean):void
-      {
-      }
-      
-      public function SetShowAllEntityLinks (showLinks:Boolean):void
-      {
-      }
-      
       // find entity
       
       public function SelectEntities (entityIDs:Array):void
@@ -656,10 +656,522 @@ package editor.entity.dialog {
       {
       }
       
+      // clone / delete
+      
+      public function CloneSelectedEntities ():void
+      {
+         if (mScene.GetNumSelectedAssets () > 0)
+         {
+            mScene.CloneSelectedEntities (Define.BodyCloneOffsetX, Define.BodyCloneOffsetY);
+            
+            OnAssetSelectionsChanged ();
+            
+            EditorContext.GetEditorApp ().CreateUndoPoint ("Clone");
+         }
+      }
+      
+      public function DeleteSelectedEntities ():void
+      {
+         if (mScene.DeleteSelectedAssets ())
+         {
+            EditorContext.GetEditorApp ().CreateUndoPoint ("Delete");
+         }
+      }
+      
+      // move to top/bottom 
+      
+      public function MoveSelectedEntitiesToTop ():void
+      {
+         mScene.MoveSelectedAssetsToTop ();
+         
+         EditorContext.GetEditorApp ().CreateUndoPoint ("Move entities to the most top layer");
+      }
+      
+      public function MoveSelectedEntitiesToBottom ():void
+      {
+         mScene.MoveSelectedAssetsToBottom ();
+         
+         EditorContext.GetEditorApp ().CreateUndoPoint ("Move entities to the most bottom layer");
+      }
+      
+      // brothers
+      
+      public function MakeBrothersForSelectedEntities ():void
+      {
+         mScene.MakeBrothers (mScene.GetSelectedAssets ());
+         
+         EditorContext.GetEditorApp ().CreateUndoPoint ("Make brothers");
+      }
+      
+      public function BreakApartBrothersForSelectedEntities ():void
+      {
+         mScene.BreakBrothersApart ();
+         
+         EditorContext.GetEditorApp ().CreateUndoPoint ("Break brothers");
+      }
+      
       // entity settings
       
       public function ShowEntitySettingsDialog ():void
       {
+      /*
+         //var selectedEntities:Array = mEntityContainer.GetSelectedAssets ();
+         //if (selectedEntities == null || selectedEntities.length != 1)
+         //   return;
+         if (mMainSelectedEntity == null)
+            return;
+         
+         //var entity:Entity = selectedEntities [0] as Entity;
+         var entity:Entity = mMainSelectedEntity;
+         
+         var values:Object = new Object ();
+         
+         values.mPosX = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (entity.GetPositionX ()), 12);
+         values.mPosY = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (entity.GetPositionY ()), 12);
+         values.mAngle = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_RotationRadians (entity.GetRotation ()) * Define.kRadians2Degrees, 6);
+         
+         values.mIsVisible = entity.IsVisible ();
+         values.mAlpha = entity.GetAlpha ();
+         values.mIsEnabled = entity.IsEnabled ();
+         
+         if (entity is EntityLogic)
+         {
+            if (entity is EntityEventHandler)
+            {
+               var event_handler:EntityEventHandler = entity as EntityEventHandler;
+               event_handler.GetCodeSnippet ().ValidateCallings ();
+               
+               values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
+               values.mEventId = event_handler.GetEventId ();
+               values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
+               
+               if (entity is EntityEventHandler_Timer)
+               {
+                  var timer_event_handler:EntityEventHandler_Timer = entity as EntityEventHandler_Timer;
+                  
+                  values.mRunningInterval = timer_event_handler.GetRunningInterval ();
+                  values.mOnlyRunOnce = timer_event_handler.IsOnlyRunOnce ();
+                  
+                  if (entity is EntityEventHandler_TimerWithPrePostHandling)
+                  {
+                     var timer_event_handler_withPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = entity as EntityEventHandler_TimerWithPrePostHandling;
+                     
+                     values.mPreCodeSnippet  = timer_event_handler_withPrePostHandling.GetPreCodeSnippet  ().Clone (null);
+                     values.mPostCodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ().Clone (null);
+                     ShowTimerEventHandlerWithPreAndPostHandlingSettingDialog (values, ConfirmSettingEntityProperties);
+                  }
+                  else
+                  {
+                     ShowTimerEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                  }
+               }
+               else if (entity is EntityEventHandler_Keyboard)
+               {
+                  var keyboard_event_handler:EntityEventHandler_Keyboard = entity as EntityEventHandler_Keyboard;
+                  
+                  values.mKeyCodes = keyboard_event_handler.GetKeyCodes ();
+                  
+                  ShowKeyboardEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+               else if (entity is EntityEventHandler_Mouse)
+               {
+                  ShowMouseEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+               else if (entity is EntityEventHandler_Contact)
+               {
+                  ShowContactEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+               else if (entity is EntityEventHandler_JointReachLimit)
+               {
+                  ShowJointReachLimitEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+               else if (entity is EntityEventHandler_GameLostOrGotFocus)
+               {
+                  ShowGameLostOrGotFocusEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+               //else if (entity is EntityEventHandler_ModuleLoopToEnd)
+               else
+               {
+                  ShowEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+            }
+            else if (entity is EntityBasicCondition)
+            {
+               var condition:EntityBasicCondition = entity as EntityBasicCondition;
+               condition.GetCodeSnippet ().ValidateCallings ();
+               
+               values.mCodeSnippetName = condition.GetCodeSnippetName ();
+               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
+               
+               ShowConditionSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityAction)
+            {
+               var action:EntityAction = entity as EntityAction;
+               action.GetCodeSnippet ().ValidateCallings ();
+               
+               values.mCodeSnippetName = action.GetCodeSnippetName ();
+               values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
+               
+               ShowActionSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityInputEntityScriptFilter)
+            {
+               var entityFilter:EntityInputEntityScriptFilter = entity as EntityInputEntityScriptFilter;
+               
+               values.mCodeSnippetName = entityFilter.GetCodeSnippetName ();
+               values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
+               
+               ShowEntityFilterSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityInputEntityPairScriptFilter)
+            {
+               var pairFilter:EntityInputEntityPairScriptFilter = entity as EntityInputEntityPairScriptFilter;
+               
+               values.mCodeSnippetName = pairFilter.GetCodeSnippetName ();
+               values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEntityContainer.GetCoordinateSystem ());
+               
+               ShowEntityPairFilterSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityConditionDoor)
+            {
+               ShowConditionDoorSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityTask)
+            {
+               ShowTaskSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityInputEntityAssigner)
+            {
+               ShowEntityAssignerSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityInputEntityPairAssigner)
+            {
+               ShowEntityPairAssignerSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+         }
+         else if (entity is EntityVectorShape)
+         {
+            var vectorShape:EntityVectorShape = entity as EntityVectorShape;
+            
+            values.mDrawBorder = vectorShape.IsDrawBorder ();
+            values.mDrawBackground = vectorShape.IsDrawBackground ();
+            values.mBorderColor = vectorShape.GetBorderColor ();
+            values.mBorderThickness = vectorShape.GetBorderThickness ();
+            values.mBackgroundColor = vectorShape.GetFilledColor ();
+            values.mTransparency = vectorShape.GetTransparency ();
+            values.mBorderTransparency = vectorShape.GetBorderTransparency ();
+            
+            values.mAiType = vectorShape.GetAiType ();
+            
+            if (vectorShape.IsBasicVectorShapeEntity ())
+            {
+               RetrieveShapePhysicsProperties (vectorShape, values);
+               
+               //values.mVisibleEditable = true; //vectorShape.GetFilledColor () == Define.ColorStaticObject;
+               //values.mStaticEditable = true; //vectorShape.GetFilledColor () == Define.ColorBreakableObject
+               //                             || vectorShape.GetFilledColor () == Define.ColorBombObject
+               //                      ;
+               if (entity is EntityVectorShapeCircle)
+               {
+                  //values.mRadius = (entity as EntityVectorShapeCircle).GetRadius();
+                  values.mRadius = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length ((entity as EntityVectorShapeCircle).GetRadius()), 6);
+                  
+                  values.mAppearanceType = (entity as EntityVectorShapeCircle).GetAppearanceType();
+                  values.mAppearanceTypeListSelectedIndex = (entity as EntityVectorShapeCircle).GetAppearanceType();
+                  
+                  ShowShapeCircleSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+               else if (entity is EntityVectorShapeRectangle)
+               {
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEntityContainer.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEntityContainer.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
+                  values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
+                  
+                  ShowShapeRectangleSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+               else if (entity is EntityVectorShapePolygon)
+               {
+                  ShowShapePolygonSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+               else if (entity is EntityVectorShapePolyline)
+               {
+                  values.mCurveThickness = (vectorShape as EntityVectorShapePolyline).GetCurveThickness ();
+                  values.mIsRoundEnds = (vectorShape as EntityVectorShapePolyline).IsRoundEnds ();
+                  values.mIsClosed = (vectorShape as EntityVectorShapePolyline).IsClosed ();
+                  
+                  ShowShapePolylineSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+            }
+            else // no physics entity
+            {
+               if (entity is EntityVectorShapeText)
+               {
+                  values.mText = (vectorShape as EntityVectorShapeText).GetText ();
+                  
+                  values.mTextColor = (vectorShape as EntityVectorShapeText).GetTextColor ();
+                  values.mFontSize = (vectorShape as EntityVectorShapeText).GetFontSize ();
+                  values.mIsBold = (vectorShape as EntityVectorShapeText).IsBold ();
+                  values.mIsItalic = (vectorShape as EntityVectorShapeText).IsItalic ();
+                  
+                  values.mIsUnderlined = (vectorShape as EntityVectorShapeText).IsUnderlined ();
+                  values.mTextAlign = (vectorShape as EntityVectorShapeText).GetTextAlign ();
+                  
+                  values.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap ();
+                  values.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
+                  
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEntityContainer.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEntityContainer.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
+                  
+                  if (entity is EntityVectorShapeTextButton)
+                  {
+                     values.mUsingHandCursor = (vectorShape as EntityVectorShapeTextButton).UsingHandCursor ();
+                     
+                     var moveOverShape:EntityVectorShape = (vectorShape as EntityVectorShapeTextButton).GetMouseOverShape ();
+                     values.mMouseOverValues = new Object ();
+                     values.mMouseOverValues.mDrawBorder = moveOverShape.IsDrawBorder ();
+                     values.mMouseOverValues.mDrawBackground = moveOverShape.IsDrawBackground ();
+                     values.mMouseOverValues.mBorderColor = moveOverShape.GetBorderColor ();
+                     values.mMouseOverValues.mBorderThickness = moveOverShape.GetBorderThickness ();
+                     values.mMouseOverValues.mBackgroundColor = moveOverShape.GetFilledColor ();
+                     values.mMouseOverValues.mTransparency = moveOverShape.GetTransparency ();
+                     values.mMouseOverValues.mBorderTransparency = moveOverShape.GetBorderTransparency ();
+                     
+                     ShowShapeTextButtonSettingDialog (values, ConfirmSettingEntityProperties);
+                  }
+                  else
+                  {
+                     ShowShapeTextSettingDialog (values, ConfirmSettingEntityProperties);
+                  }
+               }
+               else if (entity is EntityVectorShapeGravityController)
+               {
+                  values.mRadius = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length ((entity as EntityVectorShapeCircle).GetRadius()), 6);
+                  
+                  // removed from v1.05
+                  /////values.mIsInteractive = (vectorShape as EntityVectorShapeGravityController).IsInteractive ();
+                  values.mInteractiveZones = (vectorShape as EntityVectorShapeGravityController).GetInteractiveZones ();
+                  
+                  values.mInteractiveConditions = (vectorShape as EntityVectorShapeGravityController).mInteractiveConditions;
+                  
+                  values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetMaximalGravityAcceleration ()), 6);
+                  
+                  values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ()), 6);
+                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAngle ()), 6);
+                  
+                  ShowShapeGravityControllerSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+            }
+         }
+         else if (entity is EntityShape)
+         {
+            var shape:EntityShape = entity as EntityShape;
+            
+            if (entity is EntityShapeImageModule)
+            {
+               RetrieveShapePhysicsProperties (shape, values);
+               
+               values.mModule = (entity as EntityShapeImageModule).GetAssetImageModule ();
+               
+               ShowShapeImageModuleSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityShapeImageModuleButton)
+            {
+               RetrieveShapePhysicsProperties (shape, values);
+               
+               values.mModuleUp = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseUp ();
+               values.mModuleOver = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseOver ();
+               values.mModuleDown = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseDown ();
+               
+               ShowShapeImageModuleButtonSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+         }
+         else if (entity is SubEntityJointAnchor)
+         {
+            var jointAnchor:SubEntityJointAnchor = entity as SubEntityJointAnchor;
+            var joint:EntityJoint = entity.GetMainAsset () as EntityJoint;
+            
+            var jointValues:Object = new Object ();
+            values.mJointValues = jointValues;
+            
+            jointValues.mCollideConnected = joint.mCollideConnected;
+            
+            jointValues.mPosX = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (joint.GetPositionX ()), 12);
+            jointValues.mPosY = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (joint.GetPositionY ()), 12);
+            jointValues.mAngle = ValueAdjuster.Number2Precision (joint.GetRotation () * Define.kRadians2Degrees, 6);
+            
+            jointValues.mIsVisible = joint.IsVisible ();
+            jointValues.mAlpha = joint.GetAlpha ();
+            jointValues.mIsEnabled = joint.IsEnabled ();
+            
+            //>>from v1.02
+            jointValues.mShapeListDataProvider = mEntityContainer.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, true, "[Auto Select]");
+            jointValues.mShapeList1SelectedIndex = EntityContainer.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape1Index (), jointValues.mShapeListDataProvider);
+            jointValues.mShapeList2SelectedIndex = EntityContainer.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape2Index (), jointValues.mShapeListDataProvider);
+            jointValues.mAnchorIndex = jointAnchor.GetAnchorIndex (); // hinge will modify it below
+            //<<
+            
+            //from v1.08
+            jointValues.mIsBreakable = joint.IsBreakable ();
+            //<<
+            
+            if (entity is SubEntityHingeAnchor)
+            {
+               jointValues.mAnchorIndex = -1; // to make both shape select lists selectable
+               
+               var hinge:EntityJointHinge = joint as EntityJointHinge;
+               var lowerAngle:Number = mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees (hinge.GetLowerLimit ());
+               var upperAngle:Number = mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees (hinge.GetUpperLimit ());
+               if (lowerAngle > upperAngle)
+               {
+                  var tempAngle:Number = lowerAngle;
+                  lowerAngle = upperAngle;
+                  upperAngle = tempAngle;
+               }
+               
+               jointValues.mEnableLimit = hinge.IsLimitsEnabled ();
+               jointValues.mLowerAngle = ValueAdjuster.Number2Precision (lowerAngle, 6);
+               jointValues.mUpperAngle = ValueAdjuster.Number2Precision (upperAngle, 6);
+               jointValues.mEnableMotor = hinge.mEnableMotor;
+               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_RotationDegrees (hinge.mMotorSpeed), 6);
+               jointValues.mBackAndForth = hinge.mBackAndForth;
+               
+               //>>from v1.04
+               jointValues.mMaxMotorTorque = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Torque (hinge.GetMaxMotorTorque ()), 6);
+               //<<
+               
+               ShowHingeSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is SubEntitySliderAnchor)
+            {
+               var slider:EntityJointSlider = joint as EntityJointSlider;
+               
+               jointValues.mEnableLimit = slider.IsLimitsEnabled ();
+               jointValues.mLowerTranslation = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (slider.GetLowerLimit ()), 6);
+               jointValues.mUpperTranslation = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (slider.GetUpperLimit ()), 6);
+               jointValues.mEnableMotor = slider.mEnableMotor;
+               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (slider.mMotorSpeed), 6);
+               jointValues.mBackAndForth = slider.mBackAndForth;
+               
+               //>>from v1.04
+               jointValues.mMaxMotorForce = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_ForceMagnitude (slider.GetMaxMotorForce ()), 6);
+               //<<
+               
+               ShowSliderSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is SubEntitySpringAnchor)
+            {
+               var spring:EntityJointSpring = joint as EntityJointSpring;
+               
+               jointValues.mStaticLengthRatio = ValueAdjuster.Number2Precision (spring.GetStaticLengthRatio (), 6);
+               jointValues.mSpringType = spring.GetSpringType ();
+               jointValues.mDampingRatio = ValueAdjuster.Number2Precision (spring.mDampingRatio, 6);
+               
+               //from v1.08
+               jointValues.mFrequencyDeterminedManner = spring.GetFrequencyDeterminedManner ();
+               jointValues.mFrequency = ValueAdjuster.Number2Precision (spring.GetFrequency (), 6);
+               jointValues.mSpringConstant = ValueAdjuster.Number2Precision (spring.GetSpringConstant () * mEntityContainer.GetCoordinateSystem ().D2P_Length (1.0) / mEntityContainer.GetCoordinateSystem ().D2P_ForceMagnitude (1.0), 6);
+               jointValues.mBreakExtendedLength = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (spring.GetBreakExtendedLength ()), 6);
+               //<<
+               
+               ShowSpringSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is SubEntityDistanceAnchor)
+            {
+               var distance:EntityJointDistance = joint as EntityJointDistance;
+               
+               //from v1.08
+               jointValues.mBreakDeltaLength = ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (distance.GetBreakDeltaLength ()), 6);
+               //<<
+               
+               ShowDistanceSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is SubEntityWeldAnchor)
+            {
+               jointValues.mAnchorIndex = -1; // to make both shape select lists selectable
+               
+               var weld:EntityJointWeld = joint as EntityJointWeld;
+               
+               ShowWeldSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is SubEntityDummyAnchor)
+            {
+               var dummy:EntityJointDummy = joint as EntityJointDummy;
+               
+               ShowDummySettingDialog (values, ConfirmSettingEntityProperties);
+            }
+         }
+         else if (entity is EntityUtility)
+         {
+            var utility:EntityUtility = entity as EntityUtility;
+            
+            if (entity is EntityUtilityCamera)
+            {
+               var camera:EntityUtilityCamera = utility as EntityUtilityCamera;
+               
+               //from v1.08
+               values.mFollowedTarget = camera.GetFollowedTarget ();
+               values.mFollowingStyle = camera.GetFollowingStyle ();
+               //<<
+               
+               ShowCameraSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+            else if (entity is EntityUtilityPowerSource)
+            {
+               var powerSource:EntityUtilityPowerSource = entity as EntityUtilityPowerSource;
+               
+               values.mEventId = powerSource.GetKeyboardEventId ();
+               values.mKeyCodes = powerSource.GetKeyCodes ();
+               values.mPowerSourceType = powerSource.GetPowerSourceType ();
+               values.mPowerMagnitude = powerSource.GetPowerMagnitude ();
+               
+               switch (powerSource.GetPowerSourceType ())
+               {
+                  case Define.PowerSource_Torque:
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_Torque (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Torque";
+                     break;
+                  case Define.PowerSource_LinearImpusle:
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_ImpulseMagnitude (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Linear Impulse";
+                     break;
+                  case Define.PowerSource_AngularImpulse:
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_AngularImpulse (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Angular Impulse";
+                     break;
+                  case Define.PowerSource_AngularAcceleration:
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_AngularAcceleration (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Angular Acceleration";
+                     break;
+                  case Define.PowerSource_AngularVelocity:
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_AngularVelocity (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Angular Velocity";
+                     break;
+                  //case Define.PowerSource_LinearAcceleration:
+                  //   values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (values.mPowerMagnitude);
+                  //   values.mPowerLabel = "Step Linear Acceleration";
+                  //   break;
+                  //case Define.PowerSource_LinearVelocity:
+                  //   values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (values.mPowerMagnitude);
+                  //   values.mPowerLabel = "Step Linear Velocity";
+                  //   break;
+                  case Define.PowerSource_Force:
+                  default:
+                     values.mPowerMagnitude = mEntityContainer.GetCoordinateSystem ().D2P_ForceMagnitude (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Force";
+                     break;
+               }
+               values.mPowerMagnitude = ValueAdjuster.Number2Precision (values.mPowerMagnitude, 6);
+               
+               ShowPowerSourceSettingDialog (values, ConfirmSettingEntityProperties);
+            }
+         }
+         */
       }
       
       public function ShowBatchModifyEntityCommonPropertiesDialog ():void
@@ -687,36 +1199,6 @@ package editor.entity.dialog {
       }
       
       public function ShowBatchModifyJointCollideConnectedsDialog ():void
-      {
-      }
-      
-      // clone / delete
-      
-      public function CloneSelectedEntities ():void
-      {
-      }
-      
-      public function DeleteSelectedEntities ():void
-      {
-      }
-      
-      // move to top/bottom 
-      
-      public function MoveSelectedEntitiesToTop ():void
-      {
-      }
-      
-      public function MoveSelectedEntitiesToBottom ():void
-      {
-      }
-      
-      // brothers
-      
-      public function MakeBrothersForSelectedEntities ():void
-      {
-      }
-      
-      public function BreakApartBrothersForSelectedEntities ():void
       {
       }
       

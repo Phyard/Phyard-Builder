@@ -65,7 +65,7 @@
          <mx:Spacer width="100%"/>
       </mx:HBox>
       <mx:HBox id="Box_SwitchViewCommands" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
-         <mx:Button id="Button_CollisionCategoryHelp" toolTip="Editing Help" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" click="OnClickOpenLinksButton()" />
+         <mx:Button id="Button_CollisionCategoryHelp" toolTip="Help" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" click="OnClickOpenLinksButton()" />
          <mx:Spacer width="2"/>
       </mx:HBox>
 
@@ -689,12 +689,12 @@
       
       private function OnClickUndoSceneButton ():void
       {
-         
+         Undo ();
       }
       
       private function OnClickRedoSceneButton ():void
       {
-         
+         Redo ();
       }
       
    //========================================================================================
@@ -1731,7 +1731,7 @@
       
       private function OnClickMoveSceneModeButton ():void
       {
-         mCurrentSceneEditPanel.SetMoveSceneMode (Button_MoveSceneMode.selected);
+         mCurrentSceneEditPanel.SetMoveManagerMode (Button_MoveSceneMode.selected);
       }
       
       private function OnClickCookieSelectModeButton ():void
@@ -1741,7 +1741,7 @@
       
       private function OnClickShowAllEntityLinksButton ():void
       {
-         mCurrentSceneEditPanel.SetShowAllEntityLinks (Button_ShowAllEntityLinks.selected);
+         mCurrentSceneEditPanel.SetShowAllAssetLinks (Button_ShowAllEntityLinks.selected);
       }
       
       // find entity
@@ -1771,16 +1771,16 @@
       }
       
       // zoom in / out
-      
-      private function OnClickZoomOutButton ():void
-      {
-         mCurrentSceneEditPanel.ZoomOut ();
-      }
-      
-      private function OnClickZoomInButton ():void
-      {
-         mCurrentSceneEditPanel.ZoomIn ();
-      }
+      //
+      //private function OnClickZoomOutButton ():void
+      //{
+      //   mCurrentSceneEditPanel.ZoomOut ();
+      //}
+      //
+      //private function OnClickZoomInButton ():void
+      //{
+      //   mCurrentSceneEditPanel.ZoomIn ();
+      //}
       
       // entity settings
       

@@ -1681,11 +1681,11 @@
       {
          if (event.item.@data == "clear_all")
          {
-            mCurrentSceneEditPanel.ClearAllEntities (false);
+            EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, mCurrentSceneEditPanel.ClearAllEntities);
          }
          else if (event.item.@data == "clear_all_and_reset")
          {
-            mCurrentSceneEditPanel.ClearAllEntities (true);
+            EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, NewWorld);
          }
       }
       
@@ -1713,19 +1713,19 @@
          }
          else if (event.item.@data == "coordinate")
          {
-            mCurrentSceneEditPanel.ShowCoordinateSystemEditDialog ();
+            mCurrentSceneEditPanel.ShowLevelCoordinateSystemEditDialog ();
          }
          else if (event.item.@data == "physics")
          {
-            mCurrentSceneEditPanel.ShowWorldPhysicsEditDialog ();
+            mCurrentSceneEditPanel.ShowLevelPhysicsEditDialog ();
          }
          else if (event.item.@data == "appearance")
          {
-            mCurrentSceneEditPanel.ShowWorldAppearanceEditDialog ();
+            mCurrentSceneEditPanel.ShowLevelAppearanceEditDialog ();
          }
          else if (event.item.@data == "viewport")
          {
-            mCurrentSceneEditPanel.ShowViewportEditDialog ();
+            mCurrentSceneEditPanel.ShowLevelViewportEditDialog ();
          }
       }
       
@@ -1852,12 +1852,12 @@
       
       private function OnClickMakeEntityBrothersButton ():void
       {
-         mCurrentSceneEditPanel.MakeBrothersForSelectedEntities (); 
+         mCurrentSceneEditPanel.MakeBrothers (); 
       }
       
       private function OnClickBreakApartEntityBrothersButton ():void
       {
-         mCurrentSceneEditPanel.BreakApartBrothersForSelectedEntities (); 
+         mCurrentSceneEditPanel.BreakApartBrothers (); 
       }
 
    //========================================================================================

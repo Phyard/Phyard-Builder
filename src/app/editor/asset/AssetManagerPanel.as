@@ -918,6 +918,12 @@ package editor.asset {
          }
       }
       
+      public function MoveScaleRotateFlipHandlers (dx:Number, dy:Number):void
+      {
+         mScaleRotateFlipHandlersContainer.x += dx;
+         mScaleRotateFlipHandlersContainer.y += dy;
+      }
+      
       protected function OnStartMoveScaleRotateFlipHandlers(event:MouseEvent):void
       {
          if (mCurrentIntent != null)
@@ -925,15 +931,6 @@ package editor.asset {
          
          SetCurrentIntent (new IntentMovemScaleRotateFlipHandlers (this));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
-      }
-      
-      public function MoveScaleRotateFlipHandlers (dx:Number, dy:Number):void
-      {
-         if (mCurrentIntent != null)
-            return;
-         
-         mScaleRotateFlipHandlersContainer.x += dx;
-         mScaleRotateFlipHandlersContainer.y += dy;
       }
       
       protected function OnStartRotateSelecteds(event:MouseEvent):void

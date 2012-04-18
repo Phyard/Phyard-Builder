@@ -247,6 +247,11 @@ package editor.asset {
          mBrothersManager.MakeBrothers (assets);
       }
 
+      public function MakeSelectedAssetsBrothers ():void
+      {
+         mBrothersManager.MakeBrothers (GetSelectedAssets ());
+      }
+
       public function MakeBrothersByCreationIds (entityIndices:Array):void
       {
          var entities:Array = new Array (entityIndices.length);
@@ -259,7 +264,7 @@ package editor.asset {
          mBrothersManager.MakeBrothers (entities);
       }
 
-      public function BreakBrothersApart ():void
+      public function BreakBrothersApartBwtweenSelectedAssets ():void
       {
          var assetArray:Array = GetSelectedAssets ();
 

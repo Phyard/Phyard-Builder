@@ -14,6 +14,8 @@ package editor {
    import mx.core.UIComponent;
    import mx.core.IFlexDisplayObject;
    import mx.managers.PopUpManager;
+   import mx.controls.Alert;
+   import mx.events.CloseEvent;
    
    import com.tapirgames.util.UrlUtil;
    
@@ -155,6 +157,25 @@ package editor {
          
          PopUpManager.addPopUp (settingDialog as IFlexDisplayObject, sEditorApp, true);
          PopUpManager.centerPopUp (settingDialog as IFlexDisplayObject);
+      }
+      
+      // "showYesNo == false" means showOk
+      public static function ShowAlert (title:String, question:String, showYesNo:Boolean = false, onYesHandler:Function = null):void
+      {
+         GetSingleton ().SetAlertOnYesCallback (onYesHandler);
+         
+         Alert.show(question, title, showYesNo ? (Alert.YES | Alert.NO) : Alert.OK, sEditorApp, OnCloseAlertDialog, null, Alert.NO);
+      }
+      
+      private static function OnCloseAlertDialog (event:CloseEvent):void 
+      {
+         var onYesHandler:Function = GetSingleton ().GetAlertOnYesCallback ();
+         GetSingleton ().SetAlertOnYesCallback (null);
+         
+         if (event.detail == Alert.YES)
+         {
+            onYesHandler ();
+         }
       }
       
 //=====================================================================
@@ -366,6 +387,18 @@ package editor {
          
          PopUpManager.addPopUp (settingDialog as UIComponent, sEditorApp, true);
          PopUpManager.centerPopUp (settingDialog as UIComponent);
+      }
+      
+      private var mAlertOnYesCallback:Function = null;
+      
+      public function SetAlertOnYesCallback (callback:Function):void
+      {
+         mAlertOnYesCallback = callback;
+      }
+      
+      public function GetAlertOnYesCallback ():Function
+      {
+         return mAlertOnYesCallback;
       }
       
    //=====================================================================

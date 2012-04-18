@@ -569,7 +569,7 @@ package editor.entity {
          return mViewportHeight;
       }
 
-      public function ValidateViewportSize ():void
+      private function ValidateViewportSize ():void
       {
          if (mViewportWidth > Define.MaxViewportSize)
             mViewportWidth = Define.MaxViewportSize;

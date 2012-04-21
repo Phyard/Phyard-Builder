@@ -73,6 +73,11 @@ package editor.entity {
          return 0;
       }
       
+      override public function AreControlPointsEnabled ():Boolean
+      {
+         return ! IsAdaptiveBackgroundSize ();
+      }
+      
       override public function UpdateAppearance ():void
       {
          if (mTextSprite != null)

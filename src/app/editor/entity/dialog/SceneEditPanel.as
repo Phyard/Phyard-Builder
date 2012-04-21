@@ -1602,11 +1602,6 @@ package editor.entity.dialog {
             
             vectorShape.UpdateAppearance ();
             vectorShape.UpdateSelectionProxy ();
-            
-            if (entity is EntityVectorShapeText)
-            {
-               (entity as EntityVectorShapeText).SetControlPointsVisible (! params.mAdaptiveBackgroundSize);
-            }
          }
          else if (entity is EntityShape)
          {
@@ -1810,36 +1805,289 @@ package editor.entity.dialog {
          
          if (entity != null)
          {
+            entity.UpdateControlPoints (true);
+            
             EditorContext.GetEditorApp ().CreateUndoPoint ("The properties of entity [" + entity.GetTypeName ().toLowerCase () + "] are changed");
          }
       }
       
       public function ShowBatchModifyEntityCommonPropertiesDialog ():void
       {
+         EditorContext.ShowModalDialog (BatchEntityCommonPropertyModifyDialog, OnBatchModifyEntityCommonProperties, null);
       }
       
       public function ShowBatchModifyShapePhysicsPropertiesDialog ():void
       {
+         EditorContext.ShowModalDialog (BatchShapePhysicsPropertiesModifyDialog, OnBatchModifyShapePhysicsProperties, null);
       }
       
       public function ShowBatchModifyShapeAppearancePropertiesDialog ():void
       {
+         EditorContext.ShowModalDialog (BatchShapeAppearancePropertiesModifyDialog, OnBatchModifyShapeAppearanceProperties, null);
       }
       
       public function ShowBatchModifyShapeCirclePropertiesDialog ():void
       {
+         EditorContext.ShowModalDialog (BatchShapeCirclePropertiesModifyDialog, OnBatchModifyShapeCircleProperties, null);
       }
       
       public function ShowBatchModifyShapeRectanglePropertiesDialog ():void
       {
+         EditorContext.ShowModalDialog (BatchShapeRectanglePropertiesModifyDialog, OnBatchModifyShapeRectangleProperties, null);
       }
       
       public function ShowBatchModifyShapePolylinePropertiesDialog ():void
       {
+         EditorContext.ShowModalDialog (BatchShapePolylinePropertiesModifyDialog, OnBatchModifyShapePolylineProperties, null);
       }
       
       public function ShowBatchModifyJointCollideConnectedsDialog ():void
       {
+         EditorContext.ShowModalDialog (BatchJointCollideConnectedsModifyDialog, OnBatchModifyJointCollideConnectedsProperty, null);
+      }
+      
+      private function OnBatchModifyEntityCommonProperties (params:Object):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         var entity:Entity;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            entity = selectedEntities [i];
+            
+            if (entity != null)
+            {
+               if (params.mToModifyAngle)
+                  entity.SetRotation (mScene.GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
+               if (params.mToModifyAlpha)
+                  entity.SetAlpha (params.mAlpha);
+               if (params.mToModifyVisible)
+                  entity.SetVisible (params.mIsVisible);
+            }
+         }
+         
+         if (selectedEntities.length > 0)
+            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify common proeprties for " + selectedEntities.length + " entities");
+      }
+      
+      public function OnBatchModifyShapeAppearanceProperties (params:Object):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         
+         var numShapes:int = 0;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            var shape:EntityVectorShape = selectedEntities [i] as EntityVectorShape;
+            
+            if (shape != null)
+            {
+               ++ numShapes;
+               
+               if (shape.IsBasicVectorShapeEntity ())
+               {
+                  if (params.mToModifyAiType)
+                     shape.SetAiType (params.mAiType);
+               }
+               
+               if (params.mToModifyDrawBackground)
+                  shape.SetDrawBackground (params.mDrawBackground);
+               if (params.mToModifyTransparency)
+                  shape.SetTransparency (params.mTransparency);
+               if (params.mToModifyBackgroundColor)
+                  shape.SetFilledColor (params.mBackgroundColor);
+               if (params.mToModifyDrawBorder)
+                  shape.SetDrawBorder (params.mDrawBorder);
+               if (params.mToModifyBorderColor)
+                  shape.SetBorderColor (params.mBorderColor);
+               if (params.mToModifyBorderThickness)
+                  shape.SetBorderThickness (params.mBorderThickness);
+               if (params.mToModifyBorderTransparency)
+                  shape.SetBorderTransparency (params.mBorderTransparency);
+            }
+            
+            shape.UpdateAppearance ();
+         }
+         
+         if (selectedEntities.length > 0)
+            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify appearances proeprties for " + numShapes + " shapes");
+      }
+      
+      public function OnBatchModifyShapePhysicsProperties (params:Object):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         
+         var numShapes:int = 0;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            //var shape:EntityVectorShape = selectedEntities [i] as EntityVectorShape;
+            var shape:EntityShape = selectedEntities [i] as EntityShape;
+            
+            if (shape != null)
+            {
+               ++ numShapes;
+               
+               // flags
+               if (params.mToModifyEnablePhysics)
+                  shape.SetPhysicsEnabled (params.mIsPhysicsEnabled);
+               if (params.mToModifyStatic)
+                  shape.SetStatic (params.mIsStatic);
+               if (params.mToModifyBullet)
+                  shape.SetAsBullet (params.mIsBullet);
+               if (params.mToModifySensor)
+                  shape.SetAsSensor (params.mIsSensor);
+               if (params.mToModifyHollow)
+                  shape.SetHollow (params.mIsHollow);
+               if (params.mToModifyBuildBorder)
+                  shape.SetBuildBorder (params.mBuildBorder);
+               if (params.mToModifAllowSleeping)
+                  shape.SetAllowSleeping (params.mAllowSleeping);
+               if (params.mToModifyFixRotation)
+                  shape.SetFixRotation (params.mFixRotation);
+               
+               // ccat
+               if (params.mToModifyCCat)
+                  shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
+               
+               // velocity
+               if (params.mToModifyLinearVelocityMagnitude)
+                  shape.SetLinearVelocityMagnitude (mScene.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
+               if (params.mToModifyLinearVelocityAngle)
+                  shape.SetLinearVelocityAngle (mScene.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
+               if (params.mToModifyAngularVelocity)
+                  shape.SetAngularVelocity (mScene.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
+               
+               // fixture
+               if (params.mToModifyDensity)
+                  shape.SetDensity (params.mDensity);
+               if (params.mToModifyFriction)
+                  shape.SetFriction (params.mFriction);
+               if (params.mToModifyRestitution)
+                  shape.SetRestitution (params.mRestitution);
+            }
+         }
+         
+         if (selectedEntities.length > 0)
+            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify physics proeprties for " + numShapes + " shapes");
+      }
+      
+      public function OnBatchModifyShapeCircleProperties (params:Object):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         var circle:EntityVectorShapeCircle;
+         
+         var numCircles:int = 0;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            circle = selectedEntities [i] as EntityVectorShapeCircle;
+            
+            if (circle != null)
+            {
+               ++ numCircles;
+               
+               if (params.mToModifyAppearanceType)
+                  circle.SetAppearanceType (params.mAppearanceType);
+               if (params.mToModifyRadius)
+                  circle.SetRadius (mScene.GetCoordinateSystem ().P2D_Length (params.mRadius));
+               
+               circle.UpdateAppearance ();
+               circle.UpdateSelectionProxy ();
+            }
+         }
+         
+         if (selectedEntities.length > 0)
+            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify proeprties for " + numCircles + " circles");
+      }
+      
+      public function OnBatchModifyShapeRectangleProperties (params:Object):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         var rect:EntityVectorShapeRectangle;
+         
+         var numRectangles:int = 0;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            rect = selectedEntities [i] as EntityVectorShapeRectangle;
+            
+            if (rect != null)
+            {
+               ++ numRectangles;
+            
+               if (params.mToModifyRoundCorners)
+                  rect.SetRoundCorners (params.mIsRoundCorners);
+               if (params.mToModifyWidth)
+                  rect.SetHalfWidth (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mWidth));
+               if (params.mToModifyHeight)
+                  rect.SetHalfHeight (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mHeight));
+            
+               rect.UpdateAppearance ();
+               rect.UpdateSelectionProxy ();
+               
+               rect.UpdateControlPoints (true);
+            }
+         }
+         
+         if (selectedEntities.length > 0)
+            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify proeprties for " + numRectangles + " rectangles");
+      }
+      
+      public function OnBatchModifyShapePolylineProperties (params:Object):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         var polyline:EntityVectorShapePolyline;
+         
+         var numPolylines:int = 0;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            polyline = selectedEntities [i] as EntityVectorShapePolyline;
+            
+            if (polyline != null)
+            {
+               ++  numPolylines;
+            
+               if (params.mToModifyCurveThickness)
+                  polyline.SetCurveThickness (params.mCurveThickness);
+               if (params.mToModifyRoundEnds)
+                  polyline.SetRoundEnds (params.mIsRoundEnds);
+               if (params.mToModifyClosed)
+                  polyline.SetClosed (params.mIsClosed);
+            
+               polyline.UpdateAppearance ();
+               polyline.UpdateSelectionProxy ();
+            }
+         }
+         
+         if (selectedEntities.length > 0)
+            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify proeprties for " +  numPolylines + " polylines");
+      }
+      
+      public function OnBatchModifyJointCollideConnectedsProperty (params:Object):void
+      {
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         var joint:EntityJoint;
+         var anchor:SubEntityJointAnchor;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            anchor = selectedEntities [i] as SubEntityJointAnchor;
+            
+            if (anchor != null)
+            {
+               joint = anchor.GetMainAsset () as EntityJoint;
+               
+               if (joint != null)
+               {
+                  joint.mCollideConnected = params.mCollideConnected;
+               }
+            }
+         }
+         
+         if (selectedEntities.length > 0)
+            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify collid-connected proeprty for " + selectedEntities.length + " joints");
       }
       
 //============================================================================

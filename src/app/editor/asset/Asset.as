@@ -625,6 +625,11 @@ package editor.asset {
       
       private var mControlPointsVisible:Boolean = false;
       
+      public function AreControlPointsEnabled ():Boolean
+      {
+         return true;
+      }
+      
       final public function AreControlPointsVisible ():Boolean
       {
          return mControlPointsVisible;
@@ -639,7 +644,7 @@ package editor.asset {
             if (mAssetManager != null)
                mAssetManager.UnregisterShownControlPointsOfAsset (this);
                
-            if (mControlPointsVisible)
+            if (mControlPointsVisible && AreControlPointsEnabled ())
             {
                RebuildControlPoints ();
             }
@@ -655,11 +660,21 @@ package editor.asset {
          return this; // to override
       }
       
-      final public function UpdateControlPoints ():void
+      final public function UpdateControlPoints (forceRebuild:Boolean = false):void
       {
          if (AreControlPointsVisible ())
          {
-            UpdateControlPoints_Internal ();
+            if (AreControlPointsEnabled ())
+            {
+               if (forceRebuild)
+                  RebuildControlPoints ();
+               else
+                  UpdateControlPoints_Internal ();
+            }
+            else
+            {
+               DestroyControlPoints ();
+            }
          }
       }
       

@@ -33,8 +33,8 @@ package editor.asset {
       
       override protected function TerminateInternal (passively:Boolean):void
       {
-         var viewStartPoint:Point = mAssetManagerPanel.ManagerToView (new Point (mCenterX, mHandlerY));
-         var viewEndPoint:Point = mAssetManagerPanel.ManagerToView (new Point (mCurrentX, mCurrentY));
+         var viewStartPoint:Point = mAssetManagerPanel.ManagerToPanel (new Point (mCenterX, mHandlerY));
+         var viewEndPoint:Point = mAssetManagerPanel.ManagerToPanel (new Point (mCurrentX, mCurrentY));
          var dx:Number = viewEndPoint.x - viewStartPoint.x;
          var dy:Number = viewEndPoint.y - viewStartPoint.y;
          var length:Number = Math.sqrt (dx * dx + dy * dy);

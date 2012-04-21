@@ -148,8 +148,8 @@ package editor.ccat.dialog {
             friend1 = friendPairs [i].mCategory1;
             friend2 = friendPairs [i].mCategory2;
             
-            point1 = DisplayObjectUtil.LocalToLocal (mCollisionCategoryManager, mAssetLinksLayer, new Point (friend1.x, friend1.y) );
-            point2 = DisplayObjectUtil.LocalToLocal (mCollisionCategoryManager, mAssetLinksLayer, new Point (friend2.x, friend2.y) );
+            point1 = ManagerToPanel (new Point (friend1.x, friend1.y) );
+            point2 = ManagerToPanel (new Point (friend2.x, friend2.y) );
             
             GraphicsUtil.DrawLine (mAssetLinksLayer, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
          }

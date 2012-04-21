@@ -292,6 +292,17 @@ package editor {
             if (mCurrentFocusedTitleWindow != null)
                mCurrentFocusedTitleWindow.OnFocusChanged (true);
          }
+         
+         if (mCurrentFocusedTitleWindow == null)
+         {
+            if (GetEditorApp ().stage.focus == null || (! GetEditorApp ().contains (GetEditorApp ().stage.focus)))
+               GetEditorApp ().stage.focus = GetEditorApp ().GetCurrentSceneEditPanel ();
+         }
+         else
+         {
+            if (GetEditorApp ().stage.focus == null || (! mCurrentFocusedTitleWindow.contains (GetEditorApp ().stage.focus)))
+               GetEditorApp ().stage.focus = mCurrentFocusedTitleWindow; // todo: TitleWindow.GetDefaultFocusChild ()
+         }
       }
    
    //=====================================================================

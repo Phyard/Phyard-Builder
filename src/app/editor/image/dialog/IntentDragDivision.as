@@ -32,8 +32,8 @@ package editor.image.dialog {
          var w:int = right - left;
          var h:int = bottom - top;
          
-         var point1:Point = mAssetImageDividePanel.ManagerToView (new Point (left, top));
-         var point2:Point = mAssetImageDividePanel.ManagerToView (new Point (right, bottom));
+         var point1:Point = mAssetImageDividePanel.ManagerToPanel (new Point (left, top));
+         var point2:Point = mAssetImageDividePanel.ManagerToPanel (new Point (right, bottom));
          
          if (mBoxShape == null)
          {

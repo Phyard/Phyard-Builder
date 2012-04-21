@@ -86,7 +86,7 @@ package editor.image.dialog {
          {
             mAssetImageModuleInstanceManager.mCallback_OnChangedForPanel = UpdateInterface;
             
-            MoveManager (0.5 * mParentWidth - mAssetImageModuleInstanceManager.x, 0.5 * mParentHeight - mAssetImageModuleInstanceManager.y);
+            MoveManager (0.5 * GetPanelWidth () - mAssetImageModuleInstanceManager.x, 0.5 * GetPanelHeight () - mAssetImageModuleInstanceManager.y);
             mManagerCameraCenter.x = 0;
             mManagerCameraCenter.y = 0;
             
@@ -112,8 +112,8 @@ package editor.image.dialog {
          
          if (mAssetImageModuleInstanceManager != null)
          {
-            var managerCameraCenterPanelPoint:Point = ManagerToView (mManagerCameraCenter);
-            MoveManager (0.5 * mParentWidth - managerCameraCenterPanelPoint.x, 0.5 * mParentHeight - managerCameraCenterPanelPoint.y);
+            var managerCameraCenterPanelPoint:Point = ManagerToPanel (mManagerCameraCenter);
+            MoveManager (0.5 * GetPanelWidth () - managerCameraCenterPanelPoint.x, 0.5 * GetPanelHeight () - managerCameraCenterPanelPoint.y);
          }
       }
       
@@ -125,9 +125,9 @@ package editor.image.dialog {
       {
          if (mAssetImageModuleInstanceManager != null)
          {
-            mCoordinateSprite.UpdateAppearance (mParentWidth, mParentHeight, mAssetImageModuleInstanceManager.x, mAssetImageModuleInstanceManager.y, mAssetImageModuleInstanceManager.scaleX);
+            mCoordinateSprite.UpdateAppearance (GetPanelWidth (), GetPanelHeight (), mAssetImageModuleInstanceManager.x, mAssetImageModuleInstanceManager.y, mAssetImageModuleInstanceManager.scaleX);
             
-            mManagerCameraCenter = ViewToManager (new Point (0.5 * mParentWidth, 0.5 * mParentHeight));
+            mManagerCameraCenter = PanelToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
          }
       }
       
@@ -146,6 +146,41 @@ package editor.image.dialog {
          }
          
          super.OnAssetSelectionsChanged ();
+      }
+      
+      // return true to indicate handled successfully
+      override protected function OnKeyDownInternal (keyCode:int, ctrlHold:Boolean, shiftHold:Boolean):Boolean
+      {
+         switch (keyCode)
+         {
+            case Keyboard.ESCAPE:
+               SetCurrentIntent (null);
+               break;
+            case Keyboard.DELETE:
+               if (ctrlHold)
+                  DeleteSelectedControlPoints ();
+               //else
+               //   DeleteSelectedEntities ();
+               break;
+            case Keyboard.INSERT:
+               if (ctrlHold)
+                  InsertControlPoint ();
+               //else
+               //   CloneSelectedEntities ();
+               break;
+            //case 67: // C
+            //   CloneSelectedEntities ();
+            //   break;
+            //case 68: // D
+            //   DeleteSelectedEntities ();
+            //   break;
+            default:
+            {
+               return false;
+            }
+         }
+         
+         return true;
       }
 
 //====================================================================================

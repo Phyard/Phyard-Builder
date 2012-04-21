@@ -32,8 +32,8 @@ package editor.asset {
          }
          else
          {
-            var point1:Point = mAssetManagerPanel.ManagerToView (new Point (mStartX, mStartY));
-            var point2:Point = mAssetManagerPanel.ManagerToView (new Point (mCurrentX, mCurrentY));
+            var point1:Point = mAssetManagerPanel.ManagerToPanel (new Point (mStartX, mStartY));
+            var point2:Point = mAssetManagerPanel.ManagerToPanel (new Point (mCurrentX, mCurrentY));
             
             if (mLineShape == null)
             {

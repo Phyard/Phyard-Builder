@@ -44,8 +44,8 @@ package editor.asset {
             {
                var lastPoint:Point = mPoints [mPoints.length - 1] as Point;
                
-               var lastPointInView:Point    = mAssetManagerPanel.ManagerToView (lastPoint);
-               var currentPointInView:Point = mAssetManagerPanel.ManagerToView (new Point (managerX, managerY));
+               var lastPointInView:Point    = mAssetManagerPanel.ManagerToPanel (lastPoint);
+               var currentPointInView:Point = mAssetManagerPanel.ManagerToPanel (new Point (managerX, managerY));
                var dx:Number = currentPointInView.x - lastPointInView.x;
                var dy:Number = currentPointInView.y - lastPointInView.y;
                

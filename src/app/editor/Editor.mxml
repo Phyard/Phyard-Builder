@@ -28,7 +28,7 @@
          <mx:Button id="Button_SaveWorld" toolTip="Save Design" click="OnClicSaveWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-save.png')" />
          <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-info.png')" />
       </mx:HBox>
-      <mx:HBox id="Box_EntityEditViewCommands" backgroundColor="0xD0D0D0" width="100%" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+      <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
          <mx:Spacer width="100%"/>
          <mx:Spacer width="5"/>
          <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" click="OnClickCloneEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/command/command-clone.png')" disabledIcon="@Embed('../res/command/command-clone-disabled.png')" />
@@ -266,9 +266,9 @@
                      <mx:Label id="Label_MousePhysicsPosition" text="" minWidth="116"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Spacer width="2" />
-                     <mx:Button id="Button_ZoomOut" click="OnClickZoomOutButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/zoom-out.png')" disabledIcon="@Embed('../res/edit/zoom-out-disabled.png')" />
-                     <mx:Label id="Label_ZoomScale" textAlign="center" text=" 1.00"/>
                      <mx:Button id="Button_ZoomIn" click="OnClickZoomInButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/zoom-in.png')" disabledIcon="@Embed('../res/edit/zoom-in-disabled.png')" />
+                     <mx:Label id="Label_ZoomScale" textAlign="center" text=" 1.00"/>
+                     <mx:Button id="Button_ZoomOut" click="OnClickZoomOutButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/edit/zoom-out.png')" disabledIcon="@Embed('../res/edit/zoom-out-disabled.png')" />
                   </mx:Box>
                   <mx:Box id="Box_StatusBarForPlaying" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" 
                               height="100%" width="100%"
@@ -395,7 +395,7 @@
       import common.WorldDefine;
       
       import common.trigger.CoreEventIds;
-      
+      import common.ValueAdjuster;
       import common.Define;
       import common.Version;
    
@@ -1566,7 +1566,9 @@
       
       private function CreateScenePanels ():void
       {
-         if (mWorld != null)
+         if (mWorld == null)
+            UpdateInterface (null);
+         else
          {
             var box:VBox = new VBox ();
             box.percentWidth = 100;
@@ -1581,10 +1583,13 @@
             mCurrentSceneEditPanel.SetScene (mWorld.GetEntityContainer ());
             mCurrentSceneEditPanel.SetDialogCallbacks ({
                                           UpdateInterface: UpdateInterface,
-                                          SetInfoOfSelectedEntity: SetInfoOfSelectedEntity, 
                                           SetCurrentSceneScale: SetCurrentSceneScale, 
                                           SetMousePosition: SetMousePosition
                                        });
+                                       
+            mCurrentSceneEditPanel.UpdateInterface ();
+            SetCurrentSceneScale (mWorld.GetEntityContainer ().GetScale ());
+            SetMousePosition (null);
          }
       }
       
@@ -1674,31 +1679,43 @@
    // callbacks for panel
    //========================================================================================
 
-      private function SetInfoOfSelectedEntity (info:String):void
-      {
-      }
-      
       private function SetCurrentSceneScale (sceneScale:Number):void
       {
+         var scaleText:String = sceneScale.toPrecision (3);
+         if (scaleText.length < 5)
+            scaleText = " " + scaleText;
+         Label_ZoomScale.text = scaleText;
       }
       
-      private function SetMousePosition (physicsX:Number, physicsY:Number, pixelX:Number, pixelY:Number):void
+      private function SetMousePosition (mousePositionInfo:Object):void
       {
+         if (mousePositionInfo == null)
+         {
+            Label_MouseDisplayPosition.text = "";
+            Label_MousePhysicsPosition.text = "";
+         }
+         else
+         {
+            Label_MouseDisplayPosition.text = "(" 
+                        + Math.round(mousePositionInfo.mPixelX) + "px" + ", " 
+                        + Math.round(mousePositionInfo.mPixelY) + "px)";
+            Label_MousePhysicsPosition.text = "(" 
+                        + ValueAdjuster.Number2Precision (mousePositionInfo.mPhysicsX, 6) + "m" + ", " 
+                        + ValueAdjuster.Number2Precision (mousePositionInfo.mPhysicsY, 6) + "m)";
+         }
       }
+      
+      private var mBatchEntityCommonContextMenuItem:ContextMenuItem;
+      private var mBatchShapePhysicsContextMenuItem:ContextMenuItem;
+      private var mBatchShapeAppearanceContextMenuItem:ContextMenuItem;
+      private var mBatchShapeCircleContextMenuItem:ContextMenuItem;
+      private var mBatchShapeRectangleContextMenuItem:ContextMenuItem;
+      private var mBatchShapePolylineContextMenuItem:ContextMenuItem;
+      private var mBatchJointCollideConnectedsContextMenuItem:ContextMenuItem;
       
       private var mBatchEntitiesSettingsContextMenuBuilt:Boolean = false;
             
-         private var mBatchEntityCommonContextMenuItem:ContextMenuItem;
-            
-            private var mBatchShapePhysicsContextMenuItem:ContextMenuItem;
-            private var mBatchShapeAppearanceContextMenuItem:ContextMenuItem;
-            private var mBatchShapeCircleContextMenuItem:ContextMenuItem;
-            private var mBatchShapeRectangleContextMenuItem:ContextMenuItem;
-            private var mBatchShapePolylineContextMenuItem:ContextMenuItem;
-            
-            private var mBatchJointCollideConnectedsContextMenuItem:ContextMenuItem;
-      
-      private function UpdateInterface (numSelectedEntities:int, hasUndoPoints:Boolean, hasRedoPoints:Boolean):void
+      private function UpdateInterface (selectionsInfo:Object):void
       {
          if (! mBatchEntitiesSettingsContextMenuBuilt)
          {
@@ -1714,6 +1731,32 @@
             
             mBatchJointCollideConnectedsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_EntitySettings, "Batch Modify Joint \"Collide Connecteds\" Property ...", OnSelectShowBatchModifyJointCollideConnectedsDialog, true);
          }
+         
+         if (selectionsInfo == null)
+         {
+            SetCurrentSceneScale (1.0);
+            SetMousePosition (null);
+            Box_BasicToolbar.enabled = false;
+            
+            return;
+         }
+
+         Box_BasicToolbar.enabled = true;
+         
+         Button_Clone.enabled = Button_Delete.enabled = Button_MoveToTop.enabled = Button_MoveToBottom.enabled = selectionsInfo.mNumSelectedEntities > 0;
+         Button_Glue.enabled = Button_BreakApart.enabled = selectionsInfo.mNumSelectedEntities > 1;
+         Button_EntitySettings.enabled = selectionsInfo.mNumSelectedEntities == 1;
+         
+         mBatchEntityCommonContextMenuItem.enabled = selectionsInfo.mNumSelectedEntities > 0;
+         mBatchJointCollideConnectedsContextMenuItem.enabled = selectionsInfo.mNumSelectedJoints > 0;
+         mBatchShapePhysicsContextMenuItem.enabled = selectionsInfo.mNumSelectedShapes > 0;
+         mBatchShapeAppearanceContextMenuItem.enabled = selectionsInfo.mNumSelectedAreaShapes > 0;
+         mBatchShapeCircleContextMenuItem.enabled = selectionsInfo.mNumSelectedCircleShapes > 0;
+         mBatchShapeRectangleContextMenuItem.enabled = selectionsInfo.mNumSelectedRectangleShapes > 0;
+         mBatchShapePolylineContextMenuItem.enabled = selectionsInfo.mNumSelectedPolylineShapes > 0;
+         
+         Button_Undo.enabled = mWorldHistoryManager.GetPrevWorldState () != null;
+         Button_Redo.enabled = mWorldHistoryManager.GetNextWorldState () != null;
       }
 
    //========================================================================================
@@ -1827,7 +1870,9 @@
          if (entityIds.length == 0)
             return;
                
-         mCurrentSceneEditPanel.SelectEntities (entityIds);
+         mCurrentSceneEditPanel.SearchEntitiesByIDs (entityIds);
+         
+         stage.focus = mCurrentSceneEditPanel;
       }
       
       // zoom in / out

@@ -63,10 +63,10 @@ package editor.image.dialog {
             mImageSprite = mAssetImageDivisionManager.GetAssetImageSprite ();
             mBackgroundLayer.addChild (mImageSprite);
                                     
-            ScaleManager (1.0);
+            ScaleManagerAroundFixedPoint (1.0, 0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ());
             
-            MoveManager (0.5 * (mParentWidth - (mImageSprite.width == 0 ? mParentWidth : mImageSprite.width)) - mAssetImageDivisionManager.x, 
-                         0.5 * (mParentHeight - (mImageSprite.height == 0 ? mParentHeight : mImageSprite.height)) - mAssetImageDivisionManager.y
+            MoveManager (0.5 * (GetPanelWidth () - (mImageSprite.width == 0 ? GetPanelWidth () : mImageSprite.width)) - mAssetImageDivisionManager.x, 
+                         0.5 * (GetPanelHeight () - (mImageSprite.height == 0 ? GetPanelHeight () : mImageSprite.height)) - mAssetImageDivisionManager.y
                         );
             
             UpdateInterface ();
@@ -79,12 +79,12 @@ package editor.image.dialog {
       
       override protected function OnResize (event:Event):void 
       {
-         var lastParentWidth:Number  = mParentWidth; 
-         var lastParentHeight:Number = mParentHeight; 
+         var lastParentWidth:Number  = GetPanelWidth (); 
+         var lastParentHeight:Number = GetPanelHeight (); 
          
          super.OnResize (event);
          
-         MoveManager (0.5 * (mParentWidth - lastParentWidth), 0.5 * (mParentHeight - lastParentHeight));
+         MoveManager (0.5 * (GetPanelWidth () - lastParentWidth), 0.5 * (GetPanelHeight () - lastParentHeight));
       }
       
       override public function MoveManager (dx:Number, dy:Number):void
@@ -98,12 +98,14 @@ package editor.image.dialog {
          }
       }
       
-      override public function ScaleManager (scale:Number):void
+      override public function ScaleManagerAroundFixedPoint (scale:Number, fixedPanelPointX:Number, fixedPanelPointY:Number):void
       {
-         super.ScaleManager (scale);
+         super.ScaleManagerAroundFixedPoint (scale, fixedPanelPointX, fixedPanelPointY);
          
          if (mImageSprite != null)
          {
+            mImageSprite.x = mAssetImageDivisionManager.x;
+            mImageSprite.y = mAssetImageDivisionManager.y;
             mImageSprite.scaleX = mAssetImageDivisionManager.scaleX;
             mImageSprite.scaleY = mAssetImageDivisionManager.scaleY;
          }

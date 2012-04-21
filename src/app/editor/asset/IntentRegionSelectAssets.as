@@ -34,8 +34,8 @@ package editor.asset {
          var w:int = right - left;
          var h:int = bottom - top;
          
-         var point1:Point = mAssetManagerPanel.ManagerToView (new Point (left, top));
-         var point2:Point = mAssetManagerPanel.ManagerToView (new Point (right, bottom));
+         var point1:Point = mAssetManagerPanel.ManagerToPanel (new Point (left, top));
+         var point2:Point = mAssetManagerPanel.ManagerToPanel (new Point (right, bottom));
          
          if (mBoxShape == null)
          {

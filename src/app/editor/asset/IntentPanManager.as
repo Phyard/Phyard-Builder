@@ -25,7 +25,7 @@ package editor.asset {
       
       override protected function OnMouseDownInternal (managerX:Number, managerY:Number):void
       {
-         var point:Point = mAssetManagerPanel.ManagerToView (new Point (managerX, managerY));
+         var point:Point = mAssetManagerPanel.ManagerToPanel (new Point (managerX, managerY));
          
          mLastX = point.x;
          mLastY = point.y;
@@ -35,7 +35,7 @@ package editor.asset {
       {
          if (isHold)
          {
-            var point:Point = mAssetManagerPanel.ManagerToView (new Point (managerX, managerY));
+            var point:Point = mAssetManagerPanel.ManagerToPanel (new Point (managerX, managerY));
             
             mCurrentX = point.x;
             mCurrentY = point.y;
@@ -53,7 +53,7 @@ package editor.asset {
       
       override protected function OnMouseUpInternal (managerX:Number, managerY:Number):void
       {
-         var point:Point = mAssetManagerPanel.ManagerToView (new Point (managerX, managerY));
+         var point:Point = mAssetManagerPanel.ManagerToPanel (new Point (managerX, managerY));
          
          mCurrentX = point.x;
          mCurrentY = point.y;

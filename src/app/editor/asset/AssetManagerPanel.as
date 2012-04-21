@@ -116,6 +116,8 @@ package editor.asset {
             
             mCurrentManagerX = mAssetManager.GetPositionX ();
             mCurrentManagerY = mAssetManager.GetPositionY ();
+            
+            OnMousePositionChanged ();
          }
       }
       
@@ -146,7 +148,12 @@ package editor.asset {
          return kMouseWheelFunction_Zoom;
       }
       
-      public function ScaleManagerTo (managerScale:Number):void
+      public function ScaleManagerTo (sceneScale:Number):void
+      {
+         ScaleManagerToAroundFixedPoint (sceneScale, 0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ());
+      }
+      
+      public function ScaleManagerToAroundFixedPoint (managerScale:Number, fixedPanelPointX:Number, fixedPanelPointY:Number):void
       {
          if (mAssetManager != null)
          {
@@ -155,17 +162,37 @@ package editor.asset {
             if (managerScale > GetMaxAllowedScale ())
                managerScale = GetMaxAllowedScale ();
             
-            mAssetManager.SetScale (managerScale);
+            var oldFixedManagerPoint:Point = PanelToManager (new Point (fixedPanelPointX, fixedPanelPointY));
             
+            mAssetManager.SetScale (managerScale);
             mCurrentManagerScale = mAssetManager.GetScale ();
+            
+            var newPanelPoint:Point = ManagerToPanel (oldFixedManagerPoint);
+            
+            MoveManager (fixedPanelPointX - newPanelPoint.x, fixedPanelPointY - newPanelPoint.y);
+            
+            OnManagerScaleChanged ();
          }
+      }
+      
+      protected function OnManagerScaleChanged ():void
+      {
+         // to override
       }
       
       public function ScaleManager (scale:Number):void
       {
          if (mAssetManager != null)
          {
-            ScaleManagerTo (mAssetManager.scaleX * scale);
+            ScaleManagerTo (mAssetManager.scaleX * scale);          
+         }
+      }
+      
+      public function ScaleManagerAroundFixedPoint (scale:Number, fixedPanelPointX:Number, fixedPanelPointY:Number):void
+      {
+         if (mAssetManager != null)
+         {
+            ScaleManagerToAroundFixedPoint (mAssetManager.scaleX * scale, fixedPanelPointX, fixedPanelPointY);          
          }
       }
       
@@ -191,19 +218,19 @@ package editor.asset {
       
       public function GetPanelCenterWorldPoint ():Point
       {
-         return ViewToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
+         return PanelToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
       }
       
 //=================================================================================
 // coordinates. (Manager <-> Panel)
 //=================================================================================
       
-      public function ViewToManager (point:Point):Point
+      public function PanelToManager (point:Point):Point
       {
          return DisplayObjectUtil.LocalToLocal (this, mAssetManager, point);
       }
       
-      public function ManagerToView (point:Point):Point
+      public function ManagerToPanel (point:Point):Point
       {
          return DisplayObjectUtil.LocalToLocal (mAssetManager, this, point);
       }
@@ -218,8 +245,6 @@ package editor.asset {
       
       private function OnAddedToStage (event:Event):void 
       {
-         mParentWidth  = parent.width;
-         mParentHeight = parent.height;
          UpdateBackgroundAndContentMaskSprites ();
          
          // ...
@@ -258,10 +283,10 @@ package editor.asset {
       
       protected function UpdateBackgroundAndContentMaskSprites ():void
       {
-         if (mParentWidth != mContentMaskWidth || mParentHeight != mContentMaskHeight)
+         if (parent.width != mContentMaskWidth || parent.height != mContentMaskHeight)
          {
-            mContentMaskWidth  = mParentWidth;
-            mContentMaskHeight = mParentHeight;
+            mContentMaskWidth  = parent.width;
+            mContentMaskHeight = parent.height;
             
             if (mContentMaskSprite == null)
             {
@@ -280,13 +305,8 @@ package editor.asset {
          }
       }
       
-      protected var mParentWidth:Number = 0;
-      protected var mParentHeight:Number = 0;
-      
       protected function OnResize (event:Event):void 
       {
-         mParentWidth  = parent.width;
-         mParentHeight = parent.height;
          UpdateBackgroundAndContentMaskSprites ();
       }
       
@@ -307,6 +327,8 @@ package editor.asset {
          {
             mAssetManager.Update (mStepTimeSpan.GetLastSpan ());
          }
+         
+         UpdateManagerScale ();
          
          UpdateInternal (mStepTimeSpan.GetLastSpan ());
          
@@ -431,6 +453,8 @@ package editor.asset {
          
          stage.focus = this;
          
+         OnMousePositionChanged ();
+         
          if (mAssetManager == null)
             return;
          
@@ -538,6 +562,8 @@ package editor.asset {
          
          //stage.focus = this;
          
+         OnMousePositionChanged ();
+         
          if (mAssetManager == null)
             return;
          
@@ -566,6 +592,8 @@ package editor.asset {
             return;
          
          //stage.focus = this;
+         
+         OnMousePositionChanged ();
          
          if (mAssetManager == null)
             return;
@@ -597,6 +625,10 @@ package editor.asset {
       {
       }
       
+      protected function OnMousePositionChanged ():void
+      {
+      }
+      
       protected function OnMouseWheel (event:MouseEvent):void
       {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
@@ -611,13 +643,8 @@ package editor.asset {
          
          if (mouseWheelFunction == kMouseWheelFunction_Zoom && (! event.ctrlKey))
          {
-            var oldMouseManagerPoint:Point = new Point (mAssetManager.mouseX, mAssetManager.mouseY);
-   
-            ScaleManager (event.delta > 0 ? 1.1 : 0.9);
-   
-            var newMousePoint:Point = DisplayObjectUtil.LocalToLocal (mAssetManager, this, oldMouseManagerPoint);
-            
-            MoveManager (mouseX - newMousePoint.x, mouseY - newMousePoint.y);
+            ScaleManagerAroundFixedPoint (event.delta > 0 ? 1.1 : 0.9, mouseX, mouseY);
+            OnZoomingDone ();
          }
          else if (mouseWheelFunction == kMouseWheelFunction_Scroll)
          {
@@ -627,14 +654,14 @@ package editor.asset {
       
       final public function OnKeyDown (event:KeyboardEvent):void
       {
-         if (OnKeyDownInternal (event.keyCode))
+         if (OnKeyDownInternal (event.keyCode, event.ctrlKey, event.shiftKey))
          {
             event.stopPropagation ();
          }
       }
       
       // return true to indicate handled successfully
-      protected function OnKeyDownInternal (keyCode:int):Boolean
+      protected function OnKeyDownInternal (keyCode:int, ctrlHold:Boolean, shiftHold:Boolean):Boolean
       {
          return false;
       }
@@ -899,7 +926,7 @@ package editor.asset {
          centerX /= selectedAssets.length;
          centerY /= selectedAssets.length;
          
-         var panelPoint:Point = DisplayObjectUtil.LocalToLocal (mAssetManager, mForegroundLayer, new Point (centerX, centerY));
+         var panelPoint:Point = ManagerToPanel (new Point (centerX, centerY));
          
          mScaleRotateFlipHandlersContainer.x = panelPoint.x;
          mScaleRotateFlipHandlersContainer.y = panelPoint.y;
@@ -940,7 +967,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentRotateSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
@@ -950,7 +977,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentRotateSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, false, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
@@ -960,7 +987,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentRotateSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, false));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
@@ -970,7 +997,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentScaleSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
@@ -980,7 +1007,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentScaleSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, false, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
@@ -990,7 +1017,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          SetCurrentIntent (new IntentScaleSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, false));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
@@ -1000,8 +1027,8 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         var handlerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y + ScaleRotateFlipCircleRadius));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var handlerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y + ScaleRotateFlipCircleRadius));
          SetCurrentIntent (new IntentFlipSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, handlerPoint.y, true, true, false));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
@@ -1011,8 +1038,8 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         var handlerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y - ScaleRotateFlipCircleRadius));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var handlerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y - ScaleRotateFlipCircleRadius));
          SetCurrentIntent (new IntentFlipSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, handlerPoint.y, true, true, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
@@ -1022,7 +1049,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          
          FlipSelectedAssets (false, managerPoint.x, true, false, true);
       }
@@ -1032,7 +1059,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          
          FlipSelectedAssets (false, managerPoint.x, false, true, true);
       }
@@ -1042,7 +1069,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          
          RotateSelectedAssets (false, managerPoint.x, managerPoint.y, Math.PI, true, false, false);
          FlipSelectedAssets (false, managerPoint.x, true, false, true);
@@ -1053,7 +1080,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         var managerPoint:Point = ViewToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          
          RotateSelectedAssets (false, managerPoint.x, managerPoint.y, Math.PI, false, true, false);
          FlipSelectedAssets (false, managerPoint.x, false, true, true);
@@ -1264,6 +1291,104 @@ package editor.asset {
          }
          
          EffectMessagePopup.UpdateMessagesPosition (mFloatingMessageLayer);
+      }
+      
+      // zoom in / out
+      
+      protected var mTargetManagerScale:Number = 1.0;
+      protected var mAssetManagerScaleChangeSpeed:Number = 0.0;
+      
+      public function ZoomOut ():void
+      {  
+         Zoom (false, true);
+      }
+      
+      public function ZoomIn ():void
+      {
+         Zoom (true, true);
+      }
+      
+      private function Zoom (isIn:Boolean, smmothly:Boolean):void
+      {
+         if (mAssetManager == null)
+            return;
+         
+         var compareScale:Number = mTargetManagerScale * (isIn ? 0.99 : 1.01);
+         var targetScale:Number = 1024.0;
+         if (mTargetManagerScale > targetScale)
+            mTargetManagerScale = targetScale;
+         else
+         {
+            var nextScale:Number = 0.5 * targetScale;
+            while (nextScale > compareScale)
+            {
+               targetScale = nextScale;
+               nextScale = 0.5 * targetScale;
+            }
+            
+            if (isIn)
+               targetScale = nextScale;
+         }
+         
+         mTargetManagerScale = targetScale;
+         
+         if (mTargetManagerScale < GetMinAllowedScale ())
+            mTargetManagerScale = GetMinAllowedScale ();
+         if (mTargetManagerScale > GetMaxAllowedScale ())
+            mTargetManagerScale = GetMaxAllowedScale ();
+         
+         mAssetManagerScaleChangeSpeed = Math.abs (mTargetManagerScale - mAssetManager.GetScale ());
+         if (smmothly)
+         {
+            mAssetManagerScaleChangeSpeed = mAssetManagerScaleChangeSpeed * 0.03;
+         }
+      }
+      
+      private function OnZoomingDone ():void
+      {
+         mTargetManagerScale = mAssetManager == null ? 1.0 : mAssetManager.GetScale ();
+         mAssetManagerScaleChangeSpeed = 0;
+      }
+      
+      private function UpdateManagerScale ():void
+      {
+         if (mAssetManager == null)
+            return;
+         
+         var currentScale:Number = mAssetManager.GetScale ();
+         if (currentScale < mTargetManagerScale)
+         {
+            if (mTargetManagerScale - currentScale <= mAssetManagerScaleChangeSpeed)
+            {
+               currentScale = mTargetManagerScale;
+               OnZoomingDone ();
+            }
+            else
+            {
+               currentScale += mAssetManagerScaleChangeSpeed;
+               if (currentScale >= mTargetManagerScale)
+                  currentScale = mTargetManagerScale;
+            }
+         }
+         else
+         {
+            if (currentScale - mTargetManagerScale <= mAssetManagerScaleChangeSpeed)
+            {
+               currentScale = mTargetManagerScale;
+               OnZoomingDone ();
+            }
+            else
+            {
+               currentScale -= mAssetManagerScaleChangeSpeed;
+               if (currentScale <= mTargetManagerScale)
+                  currentScale = mTargetManagerScale;
+            }
+         }
+         
+         if (currentScale != mAssetManager.GetScale ())
+         {
+            ScaleManagerTo (currentScale);
+         }
       }
 
 //=====================================================================

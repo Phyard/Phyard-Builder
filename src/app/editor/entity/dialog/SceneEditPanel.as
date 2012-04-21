@@ -89,16 +89,8 @@ package editor.entity.dialog {
       
       private function FocusManagerAtManagerPoint (managerX:Number, managerY:Number):void
       {
-         var panelPoint:Point = ManagerToView (new Point (managerX, managerY));
-         MoveManagerTo (0.5 * GetPanelWidth () - panelPoint.x, 0.5 * GetPanelHeight () - panelPoint.y);
-      }
-      
-      private function SetSceneScale (sceneScale:Number):void
-      {
-         ScaleManagerTo (sceneScale);
-         
-         if (mScene != null)
-            FocusManagerAtManagerPoint (mScene.GetCameraCenterX (), mScene.GetCameraCenterY ());
+         var panelPoint:Point = ManagerToPanel (new Point (managerX, managerY));
+         MoveManager (0.5 * GetPanelWidth () - panelPoint.x, 0.5 * GetPanelHeight () - panelPoint.y);
       }
       
       override public function MoveManagerTo (managerPanelX:Number, managerPanelY:Number):void
@@ -112,8 +104,8 @@ package editor.entity.dialog {
             var sceneWidth:Number  = mScene.GetWorldWidth ();
             var sceneHeight:Number = mScene.GetWorldHeight ();
             
-            var topLeft:Point = ManagerToView (new Point (sceneLeft, sceneTop));
-            var bottomRight:Point = ManagerToView (new Point (sceneLeft + sceneWidth, sceneTop + sceneHeight));
+            var topLeft:Point = ManagerToPanel (new Point (sceneLeft, sceneTop));
+            var bottomRight:Point = ManagerToPanel (new Point (sceneLeft + sceneWidth, sceneTop + sceneHeight));
             
             var panelCenterX:Number = 0.5 * GetPanelWidth ();
             var panelCenterY:Number = 0.5 * GetPanelHeight ();
@@ -141,7 +133,7 @@ package editor.entity.dialog {
          
          super.MoveManagerTo (managerPanelX, managerPanelY);
 
-         var sceneCameraCenter:Point = ViewToManager (new Point (0.5 * mParentWidth, 0.5 * mParentHeight));
+         var sceneCameraCenter:Point = PanelToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
          mScene.SetCameraCenterX (sceneCameraCenter.x);
          mScene.SetCameraCenterY (sceneCameraCenter.y);
       }
@@ -198,13 +190,13 @@ package editor.entity.dialog {
                sceneHeight = mScene.GetWorldHeight ();
             }
             
-            var sceneCameraCenter:Point = ViewToManager (new Point (0.5 * mParentWidth, 0.5 * mParentHeight));
+            var sceneCameraCenter:Point = PanelToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
             
             mSceneBackground.UpdateAppearance (sceneLeft, sceneTop, sceneWidth, sceneHeight, 
                                                mScene.GetWorldBorderLeftThickness (), mScene.GetWorldBorderTopThickness (), mScene.GetWorldBorderRightThickness (), mScene.GetWorldBorderBottomThickness (),
                                                mScene.GetBackgroundColor (), mScene.GetBorderColor (), mScene.IsBuildBorder (),
                                                sceneCameraCenter.x, sceneCameraCenter.y, mScene.scaleX, mScene.scaleY,
-                                               mParentWidth, mParentHeight, mBackgroundGridSize);
+                                               GetPanelWidth (), GetPanelHeight (), mBackgroundGridSize);
          }
       }
       
@@ -219,6 +211,44 @@ package editor.entity.dialog {
          }
          
          super.OnAssetSelectionsChanged (passively);
+      }
+      
+      // return true to indicate handled successfully
+      override protected function OnKeyDownInternal (keyCode:int, ctrlHold:Boolean, shiftHold:Boolean):Boolean
+      {
+         switch (keyCode)
+         {
+            case Keyboard.ESCAPE:
+               SetCurrentIntent (null);
+               break;
+            case Keyboard.SPACE:
+               ShowEntitySettingsDialog ();
+               break;
+            case Keyboard.DELETE:
+               if (ctrlHold)
+                  DeleteSelectedControlPoints ();
+               else
+                  DeleteSelectedEntities ();
+               break;
+            case Keyboard.INSERT:
+               if (ctrlHold)
+                  InsertControlPoint ();
+               else
+                  CloneSelectedEntities ();
+               break;
+            case 67: // C
+               CloneSelectedEntities ();
+               break;
+            case 68: // D
+               DeleteSelectedEntities ();
+               break;
+            default:
+            {
+               return false;
+            }
+         }
+         
+         return true;
       }
 
 //============================================================================
@@ -607,20 +637,112 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      override public function UpdateInterface ():void
-      {
-         var numSelectedEntities:int = 0;
-         var hasUndoPoints:Boolean = false;
-         var hasRedoPoints:Boolean = false;
-         
-         mDialogCallbacks.UpdateInterface (numSelectedEntities, hasUndoPoints, hasRedoPoints);
-      }
-      
-      private var mDialogCallbacks:Object = null; // must be null
+      private var mDialogCallbacks:Object = null; // must not be null
       
       public function SetDialogCallbacks (callbacks:Object):void
       {
          mDialogCallbacks = callbacks;
+      }
+      
+      override protected function OnMousePositionChanged ():void
+      {
+         if (mDialogCallbacks == null || mDialogCallbacks.SetMousePosition == null)
+            return;
+         
+         if (mScene == null)
+         {
+            mDialogCallbacks.SetMousePosition (null);
+            return;
+         }
+         
+         var mousePositionInfo:Object = new Object ();
+         mousePositionInfo.mPixelX = mScene.mouseX;
+         mousePositionInfo.mPixelY = mScene.mouseY;
+         mousePositionInfo.mPhysicsX = mScene.GetCoordinateSystem ().D2P_PositionX (mScene.mouseX);
+         mousePositionInfo.mPhysicsY = mScene.GetCoordinateSystem ().D2P_PositionY (mScene.mouseY);
+         
+         mDialogCallbacks.SetMousePosition (mousePositionInfo);
+      }
+      
+      override protected function OnManagerScaleChanged ():void
+      {
+         if (mDialogCallbacks == null || mDialogCallbacks.SetCurrentSceneScale == null)
+            return;
+         
+         mDialogCallbacks.SetCurrentSceneScale (mScene == null ? 1.0 : mScene.GetZoomScale ());
+      }
+      
+      override public function UpdateInterface ():void
+      {
+         if (mDialogCallbacks == null || mDialogCallbacks.UpdateInterface == null)
+            return;
+         
+         if (mScene == null)
+         {
+            mDialogCallbacks.UpdateInterface (null);
+            return;
+         }
+         
+         var selectionsInfo:Object = new Object ();
+         
+         var selectedEntities:Array = mScene.GetSelectedAssets ();
+         
+         var numEntities:int = 0;
+            var numShapes:int = 0;
+               var numAreaShapes:int = 0;
+                  var numCircles:int = 0; 
+                  var numRectanges:int = 0; 
+                  var numPolylines:int = 0; 
+            var numJoints:int = 0;
+         
+         var entity:Entity;
+         for (var j:int = 0; j < selectedEntities.length; ++ j)
+         {
+            entity = selectedEntities [j] as Entity;
+            //if (entity != null)
+            //{
+               ++ numEntities;
+               
+               //if (entity is EntityVectorShape)
+               if (entity is EntityShape)
+               {
+                  ++ numShapes;
+                  
+                  if (entity is EntityVectorShapeCircle)
+                  {
+                     ++ numCircles;
+                     ++ numAreaShapes;
+                  }
+                  else if (entity is EntityVectorShapeRectangle)
+                  {
+                     ++ numRectanges;
+                     ++ numAreaShapes;
+                  }
+                  else if (entity is EntityVectorShapePolygon)
+                  {
+                     ++ numAreaShapes;
+                  }
+                  else if (entity is EntityVectorShapePolyline)
+                  {
+                     ++ numPolylines;
+                  }
+               }
+               else if (entity is SubEntityJointAnchor)
+               {
+                  ++ numJoints;
+               }
+            //}
+         }
+         
+         selectionsInfo.mNumSelectedEntities = numEntities;
+         selectionsInfo.mNumSelectedJoints = numJoints;
+         selectionsInfo.mNumSelectedShapes = numShapes;
+         selectionsInfo.mNumSelectedAreaShapes = numAreaShapes;
+         selectionsInfo.mNumSelectedCircleShapes = numCircles;
+         selectionsInfo.mNumSelectedRectangleShapes = numRectanges;
+         selectionsInfo.mNumSelectedPolylineShapes = numPolylines;
+         
+         mDialogCallbacks.UpdateInterface (selectionsInfo);
       }
       
       private var mBackgroundGridSize:int = 50;
@@ -801,7 +923,7 @@ package editor.entity.dialog {
       
       // find entity
       
-      public function SelectEntities (entityIds:Array):void
+      public function SearchEntitiesByIDs (entityIds:Array):void
       {
          var numIds:int = entityIds.length;
          
@@ -819,7 +941,7 @@ package editor.entity.dialog {
             
             if (i == 0)
             {
-               var viewPoint:Point = ManagerToView (new Point (posX, posY));
+               var viewPoint:Point = ManagerToPanel (new Point (posX, posY));
                if (viewPoint.x < 0 || viewPoint.x >= GetPanelWidth () || viewPoint.y < 0 || viewPoint.y >= GetPanelHeight ())
                {
                   FocusManagerAtManagerPoint (posX, posY);
@@ -835,16 +957,11 @@ package editor.entity.dialog {
             // aiming effect
             PushEditingEffect (new EffectCrossingAiming (entity));
          }
-      }
-      
-      // zoom in / out
-      
-      public function ZoomOut ():void
-      {
-      }
-      
-      public function ZoomIn ():void
-      {
+         
+         if (numIds > 0)
+         {
+            OnAssetSelectionsChanged ();
+         }
       }
       
       // clone / delete

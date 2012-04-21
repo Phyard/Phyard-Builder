@@ -209,11 +209,18 @@ package editor.entity.dialog {
                SetCurrentIntent (new IntentDrag (OnDragCreatingShape, OnCreatingCancelled));
                break;
             case "PolygonShape":
-               mScene.CreateEntityVectorShapePolygon (params.mAiType, true);
+               var polygon:EntityVectorShapePolygon = mScene.CreateEntityVectorShapePolygon (params.mAiType, true);
+               polygon.SetStatic (true);
+               polygon.SetDrawBorder (false);
+               polygon.SetBuildBorder (false);
+               polygon.SetBorderThickness (0);
+               
                SetCurrentIntent (new IntentTaps (this, OnCreatingShape, OnTapsCreatingShape, OnCreatingCancelled));
                break;
             case "PolylineShape":
-               mScene.CreateEntityVectorShapePolyline (params.mAiType, true);
+               var polyline:EntityVectorShapePolyline = mScene.CreateEntityVectorShapePolyline (params.mAiType, true);
+               polyline.SetStatic (true);
+               polyline.SetCurveThickness (0);
                SetCurrentIntent (new IntentTaps (this, OnCreatingShape, OnTapsCreatingShape, OnCreatingCancelled));
                break;
             case "HingeJoint":
@@ -1002,6 +1009,8 @@ package editor.entity.dialog {
             values.mTransparency = vectorShape.GetTransparency ();
             values.mBorderTransparency = vectorShape.GetBorderTransparency ();
             
+            values.mBodyTextureModule = vectorShape.GetBodyTextureModule ();
+            
             values.mAiType = vectorShape.GetAiType ();
             
             if (vectorShape.IsBasicVectorShapeEntity ())
@@ -1503,6 +1512,8 @@ package editor.entity.dialog {
             vectorShape.SetDrawBackground (params.mDrawBackground);
             vectorShape.SetFilledColor (params.mBackgroundColor);
             vectorShape.SetBorderTransparency (params.mBorderTransparency);
+            
+            vectorShape.SetBodyTextureModule (params.mBodyTextureModule);
             
             vectorShape.SetAiType (params.mAiType);
 

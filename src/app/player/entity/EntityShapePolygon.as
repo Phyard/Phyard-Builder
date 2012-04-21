@@ -77,7 +77,9 @@ package player.entity {
                      mBorderColor,
                      -1, // not draw border
                      true, // draw background
-                     GetFilledColor ()
+                     GetFilledColor (), 
+                     mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData (),
+                     mBodyTextureTransform == null ? null : mBodyTextureTransform.ToMatrix ()
                   );
             
             GraphicsUtil.ClearAndDrawPolygon (

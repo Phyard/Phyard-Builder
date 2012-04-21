@@ -13,6 +13,8 @@ package common {
    import editor.entity.EntityShapeImageModuleButton;
    
    import editor.entity.EntityVectorShape;
+   import editor.entity.EntityVectorShapeArea;
+   import editor.entity.EntityVectorShapePath;
    import editor.entity.EntityVectorShapeCircle;
    import editor.entity.EntityVectorShapeRectangle;
    import editor.entity.EntityVectorShapePolygon;
@@ -450,65 +452,65 @@ package common {
                   //
                   RetrieveShapePhysicsProperties (entityDefine, vectorShape);
                   
-                  if (editorEntity is EntityVectorShapeCircle)
+                  //
+                  
+                  var vectorShapeData:VectorShape = vectorShape.GetVectorShape () as VectorShape;
+                  
+                  if (vectorShapeData is VectorShapePath)
                   {
-                     entityDefine.mEntityType = Define.EntityType_ShapeCircle;
-                     
-                     entityDefine.mRadius = (vectorShape as EntityVectorShapeCircle).GetRadius ();
-                     
-                     entityDefine.mAppearanceType = (vectorShape as EntityVectorShapeCircle).GetAppearanceType ();
-                     
-                     //>>from v1.60 (to implement)
-                     entityDefine.mBodyTextureDefine = Texture2TextureDefine (-1,
-                                                                                      null);
+                     //>>from v1.05
+                     if (editorEntity is EntityVectorShapePolyline)
+                     {
+                        entityDefine.mEntityType = Define.EntityType_ShapePolyline;
+                        
+                        entityDefine.mCurveThickness = (vectorShape as EntityVectorShapePolyline).GetCurveThickness ();
+                        
+                        //>> from v1.08
+                        entityDefine.mIsRoundEnds = (vectorShape as EntityVectorShapePolyline).IsRoundEnds ();
+                        //<<
+                        //>> from v1.57
+                        entityDefine.mIsClosed = (vectorShape as EntityVectorShapePolyline).IsClosed ();
+                        //<<
+                        
+                        entityDefine.mLocalPoints = (vectorShape as EntityVectorShapePolyline).GetLocalVertexPoints ();
+                     }
                      //<<
                   }
-                  else if (editorEntity is EntityVectorShapeRectangle)
+                  else if (vectorShapeData is VectorShapeArea)
                   {
-                     entityDefine.mEntityType = Define.EntityType_ShapeRectangle;
-                     
-                     entityDefine.mHalfWidth = (vectorShape as EntityVectorShapeRectangle).GetHalfWidth ();
-                     entityDefine.mHalfHeight = (vectorShape as EntityVectorShapeRectangle).GetHalfHeight ();
-                     
-                     //from v1.08
-                     entityDefine.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
+                     if (editorEntity is EntityVectorShapeCircle)
+                     {
+                        entityDefine.mEntityType = Define.EntityType_ShapeCircle;
+                        
+                        entityDefine.mRadius = (vectorShape as EntityVectorShapeCircle).GetRadius ();
+                        
+                        entityDefine.mAppearanceType = (vectorShape as EntityVectorShapeCircle).GetAppearanceType ();
+                     }
+                     else if (editorEntity is EntityVectorShapeRectangle)
+                     {
+                        entityDefine.mEntityType = Define.EntityType_ShapeRectangle;
+                        
+                        entityDefine.mHalfWidth = (vectorShape as EntityVectorShapeRectangle).GetHalfWidth ();
+                        entityDefine.mHalfHeight = (vectorShape as EntityVectorShapeRectangle).GetHalfHeight ();
+                        
+                        //from v1.08
+                        entityDefine.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
+                        //<<
+                     }
+                     //>>from v1.04
+                     else if (editorEntity is EntityVectorShapePolygon)
+                     {
+                        entityDefine.mEntityType = Define.EntityType_ShapePolygon;
+                        
+                        entityDefine.mLocalPoints = (vectorShape as EntityVectorShapePolygon).GetLocalVertexPoints ();
+                     }
                      //<<
-                     
-                     //>>from v1.60 (to implement)
-                     entityDefine.mBodyTextureDefine = Texture2TextureDefine (-1,
-                                                                                      null);
+               
+                     //>> from v1.60
+                     entityDefine.mBodyTextureDefine = DataFormat2.Texture2TextureDefine (editorWorld.GetImageModuleIndex (vectorShapeData.GetBodyTextureModule () as AssetImageModule),
+                                                                                              vectorShapeData.GetBodyTextureTransform ());
                      //<<
                   }
-                  //>>from v1.04
-                  else if (editorEntity is EntityVectorShapePolygon)
-                  {
-                     entityDefine.mEntityType = Define.EntityType_ShapePolygon;
-                     
-                     entityDefine.mLocalPoints = (vectorShape as EntityVectorShapePolygon).GetLocalVertexPoints ();
-                     
-                     //>>from v1.60 (to implement)
-                     entityDefine.mBodyTextureDefine = Texture2TextureDefine (-1,
-                                                                                      null);
-                     //<<
-                  }
-                  //<<
-                  //>>from v1.05
-                  else if (editorEntity is EntityVectorShapePolyline)
-                  {
-                     entityDefine.mEntityType = Define.EntityType_ShapePolyline;
-                     
-                     entityDefine.mCurveThickness = (vectorShape as EntityVectorShapePolyline).GetCurveThickness ();
-                     
-                     //>> from v1.08
-                     entityDefine.mIsRoundEnds = (vectorShape as EntityVectorShapePolyline).IsRoundEnds ();
-                     //<<
-                     //>> from v1.57
-                     entityDefine.mIsClosed = (vectorShape as EntityVectorShapePolyline).IsClosed ();
-                     //<<
-                     
-                     entityDefine.mLocalPoints = (vectorShape as EntityVectorShapePolyline).GetLocalVertexPoints ();
-                  }
-                  //<<
                }
                else // not physics entity
                {
@@ -1080,7 +1082,7 @@ package common {
                }
                
                //>> from v1.60
-               moduleInstanceDefine.mBodyTextureDefine = Texture2TextureDefine (editorWorld.GetImageModuleIndex (areaVectorShape.GetBodyTextureModule () as AssetImageModule),
+               moduleInstanceDefine.mBodyTextureDefine = DataFormat2.Texture2TextureDefine (editorWorld.GetImageModuleIndex (areaVectorShape.GetBodyTextureModule () as AssetImageModule),
                                                                                         areaVectorShape.GetBodyTextureTransform ());
                //<<
             }
@@ -1097,23 +1099,6 @@ package common {
          }
          
          return moduleInstanceDefine;
-      }
-      
-      public static function Texture2TextureDefine(textureModuleIndex:int, textureTransform:Transform2D):Object
-      {
-         var textureDefine:Object = new Object ();
-         
-         textureDefine.mModuleIndex = textureModuleIndex;
-         if (textureModuleIndex >= 0)
-         {
-            textureDefine.mPosX = textureTransform == null ? 0.0 : textureTransform.mOffsetX;
-            textureDefine.mPosY = textureTransform == null ? 0.0 : textureTransform.mOffsetY;
-            textureDefine.mScale = textureTransform == null ? 1.0 : textureTransform.mScale;
-            textureDefine.mIsFlipped = textureTransform == null ? false : textureTransform.mFlipped;
-            textureDefine.mRotation = textureTransform == null ? 0.0 : textureTransform.mRotation;
-         }
-         
-         return textureDefine;
       }
       
 //==============================================================
@@ -1242,6 +1227,16 @@ package common {
             imageModule = new AssetImageNullModule ();
       
          return imageModule;
+      }
+      
+      public static function SetShapeEntityBodyTexture (editorWorld:World, areaVectorShapeEntity:EntityVectorShapeArea, textureDefine:Object):void
+      {
+         if (textureDefine.mModuleIndex >= 0)
+         {
+            areaVectorShapeEntity.SetBodyTextureModule (editorWorld.GetImageModuleByIndex (textureDefine.mModuleIndex) as AssetImageBitmapModule);
+            areaVectorShapeEntity.SetBodyTextureTransform (new Transform2D (textureDefine.mPosX, textureDefine.mPosY, 
+                                                     textureDefine.mScale, textureDefine.mIsFlipped, textureDefine.mRotation));
+         }
       }
       
       public static function SetShapeBodyTexture (editorWorld:World, areaVectorShape:VectorShapeArea, textureDefine:Object):void
@@ -1700,74 +1695,72 @@ package common {
                
                if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
+                  if ( Define.IsBasicPathVectorShapeEntity (entityDefine.mEntityType) )
                   {
-                     var circle:EntityVectorShapeCircle = editorWorld.GetEntityContainer ().CreateEntityVectorShapeCircle ();
-                     circle.SetAppearanceType (entityDefine.mAppearanceType);
-                     circle.SetRadius (entityDefine.mRadius);
-                     
+                     //>>from v1.05
+                     if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
+                     {
+                        var polyline:EntityVectorShapePolyline = editorWorld.GetEntityContainer ().CreateEntityVectorShapePolyline ();
+                        
+                        polyline.SetCurveThickness (entityDefine.mCurveThickness);
+                        
+                        //>> from v1.08
+                        polyline.SetRoundEnds (entityDefine.mIsRoundEnds);
+                        //<<
+                        
+                        //>> from v1.57
+                        polyline.SetClosed (entityDefine.mIsClosed);
+                        //<<
+                        
+                        // commented off, do it in the 2nd round below
+                        //   polyline.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
+                        //   polyline.SetRotation (entityDefine.mRotation);                 // but the SetLocalVertexPoints needs position and rotation set before
+                        //polyline.SetLocalVertexPoints (entityDefine.mLocalPoints);
+                        
+                        entity = vectorShape = polyline;
+                     }
+                     //<<
+                  }
+                  else if ( Define.IsBasicAreaVectorShapeEntity (entityDefine.mEntityType) )
+                  {
+                     if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
+                     {
+                        var circle:EntityVectorShapeCircle = editorWorld.GetEntityContainer ().CreateEntityVectorShapeCircle ();
+                        circle.SetAppearanceType (entityDefine.mAppearanceType);
+                        circle.SetRadius (entityDefine.mRadius);
+                        
+                        entity = vectorShape = circle;
+                     }
+                     else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
+                     {
+                        var rect:EntityVectorShapeRectangle = editorWorld.GetEntityContainer ().CreateEntityVectorShapeRectangle ();
+                        rect.SetHalfWidth (entityDefine.mHalfWidth);
+                        rect.SetHalfHeight (entityDefine.mHalfHeight);
+                        
+                        //from v1.08
+                        rect.SetRoundCorners (entityDefine.mIsRoundCorners);
+                        //<<
+                        
+                        entity = vectorShape = rect;
+                     }
+                     //>> from v1.04
+                     else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
+                     {
+                        var polygon:EntityVectorShapePolygon = editorWorld.GetEntityContainer ().CreateEntityVectorShapePolygon ();
+                        
+                        // commented off, do it in the 2nd round below
+                        //   polygon.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
+                        //   polygon.SetRotation (entityDefine.mRotation);                 // but the SetLocalVertexPoints needs position and rotation set before
+                        //polygon.SetLocalVertexPoints (entityDefine.mLocalPoints);
+                        
+                        entity = vectorShape = polygon;
+                     }
+                     //<<
+
                      //>> from v1.60
-                     //SetShapeBodyTexture (editorWorld, areaVectorShape, entityDefine.mBodyTextureDefine);
-                     //<<
-                     
-                     entity = vectorShape = circle;
+                     SetShapeEntityBodyTexture (editorWorld, vectorShape as EntityVectorShapeArea, entityDefine.mBodyTextureDefine);
+                     //<<      
                   }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
-                  {
-                     var rect:EntityVectorShapeRectangle = editorWorld.GetEntityContainer ().CreateEntityVectorShapeRectangle ();
-                     rect.SetHalfWidth (entityDefine.mHalfWidth);
-                     rect.SetHalfHeight (entityDefine.mHalfHeight);
-                     
-                     //from v1.08
-                     rect.SetRoundCorners (entityDefine.mIsRoundCorners);
-                     //<<
-                     
-                     //>> from v1.60
-                     //SetShapeBodyTexture (editorWorld, areaVectorShape, entityDefine.mBodyTextureDefine);
-                     //<<
-                     
-                     entity = vectorShape = rect;
-                  }
-                  //>> from v1.04
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
-                  {
-                     var polygon:EntityVectorShapePolygon = editorWorld.GetEntityContainer ().CreateEntityVectorShapePolygon ();
-                     
-                     // commented off, do it in the 2nd round below
-                     //   polygon.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
-                     //   polygon.SetRotation (entityDefine.mRotation);                 // but the SetLocalVertexPoints needs position and rotation set before
-                     //polygon.SetLocalVertexPoints (entityDefine.mLocalPoints);
-                     
-                     //>> from v1.60
-                     //SetShapeBodyTexture (editorWorld, areaVectorShape, entityDefine.mBodyTextureDefine);
-                     //<<
-                     
-                     entity = vectorShape = polygon;
-                  }
-                  //<<
-                  //>>from v1.05
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
-                  {
-                     var polyline:EntityVectorShapePolyline = editorWorld.GetEntityContainer ().CreateEntityVectorShapePolyline ();
-                     
-                     polyline.SetCurveThickness (entityDefine.mCurveThickness);
-                     
-                     //>> from v1.08
-                     polyline.SetRoundEnds (entityDefine.mIsRoundEnds);
-                     //<<
-                     
-                     //>> from v1.57
-                     polyline.SetClosed (entityDefine.mIsClosed);
-                     //<<
-                     
-                     // commented off, do it in the 2nd round below
-                     //   polyline.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
-                     //   polyline.SetRotation (entityDefine.mRotation);                 // but the SetLocalVertexPoints needs position and rotation set before
-                     //polyline.SetLocalVertexPoints (entityDefine.mLocalPoints);
-                     
-                     entity = vectorShape = polyline;
-                  }
-                  //<<
                   
                   if (vectorShape != null)
                   {

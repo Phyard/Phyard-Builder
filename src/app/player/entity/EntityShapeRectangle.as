@@ -11,7 +11,7 @@ package player.entity {
    import common.Define;
    import common.Transform2D;
    
-   public class EntityShapeRectangle extends EntityShape
+   public class EntityShapeRectangle extends EntityShape_WithBodyTexture // EntityShape
    {
       public function EntityShapeRectangle (world:World)
       {
@@ -166,7 +166,11 @@ package player.entity {
                   mBorderColor,
                   -1, // not draw border
                   true, // draw background
-                  GetFilledColor ()
+                  GetFilledColor (),
+                  mIsRoundCornors,
+                  false, 1.0, 
+                  mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData (),
+                  mBodyTextureTransform == null ? null : mBodyTextureTransform.ToMatrix ()
                );
          
          GraphicsUtil.ClearAndDrawRect (

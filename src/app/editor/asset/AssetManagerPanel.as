@@ -572,12 +572,7 @@ package editor.asset {
                mCurrentIntent.OnMouseUp (mAssetManager.mouseX, mAssetManager.mouseY);
             }
             
-            //if (mHandleCookieModeOnMouseUp && (mCurrentIntent is IntentMoveSelectedAssets) && mCurrentIntent.IsTerminated ())
-            //{
-            //   PointSelectAsset (mAssetManager.mouseX, mAssetManager.mouseY);
-            //} 
-            
-            if (! mCurrentIntent.IsTerminated ())
+            if (mCurrentIntent != null && (! mCurrentIntent.IsTerminated ()))
             {
                return;
             }

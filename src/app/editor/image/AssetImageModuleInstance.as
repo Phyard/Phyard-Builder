@@ -631,6 +631,9 @@ package editor.image {
       
       override protected function DestroyControlPoints ():void
       {
+         if (mControlPoints == null)
+            return;
+         
          for (var i:int = mControlPoints.length - 1; i >= 0; -- i)
          {
             (mControlPoints [i] as ControlPoint).Destroy ();

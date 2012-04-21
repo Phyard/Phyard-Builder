@@ -32,6 +32,17 @@ package editor.entity {
 // appearance
 //======================================================
 
+      override public function SetBuildBorder (build:Boolean):void
+      {
+         mVectorShapeArea.SetBuildBorder (build);
+      }
+
+      override public function IsBuildBorder ():Boolean
+      {
+         //return mBuildBorder;
+         return mVectorShapeArea.IsBuildBorder ();
+      }
+
       override public function SetDrawBorder (draw:Boolean):void
       {
          //mDrawBorder = draw;

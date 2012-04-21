@@ -11,7 +11,7 @@ package player.entity {
    import common.Define;
    import common.Transform2D;
    
-   public class EntityShapeCircle extends EntityShape
+   public class EntityShapeCircle extends EntityShape_WithBodyTexture // EntityShape
    {
       public function EntityShapeCircle (world:World)
       {
@@ -125,7 +125,9 @@ package player.entity {
                      mBorderColor, // useless
                      -1, // not draw border
                      true, // draw background
-                     GetFilledColor ()
+                     GetFilledColor (), 
+                     mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData (),
+                     mBodyTextureTransform == null ? null : mBodyTextureTransform.ToMatrix ()
                   );
             
          // border

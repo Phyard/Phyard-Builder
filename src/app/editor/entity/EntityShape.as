@@ -56,13 +56,13 @@ package editor.entity {
          // when move them into EntityVectorShape, 
          // OnBatchModifyShapePhysicsProperties needs modification.
 
-      //>> form v1.05
-      protected var mIsHollow:Boolean = false;
-      //<<
+      ////>> form v1.05
+      //protected var mIsHollow:Boolean = false;
+      ////<<
 
-      //>> v1.08
-      protected var mBuildBorder:Boolean = true;
-      //<<
+      ////>> v1.08
+      //protected var mBuildBorder:Boolean = true;
+      ////<<
 
 
 
@@ -321,22 +321,24 @@ package editor.entity {
 
       public function SetHollow (hollow:Boolean):void
       {
-         mIsHollow = hollow;
+         //mIsHollow = hollow;
       }
 
       public function IsHollow ():Boolean
       {
-         return mIsHollow;
+         //return mIsHollow;
+         return false; // to override
       }
 
       public function SetBuildBorder (build:Boolean):void
       {
-         mBuildBorder = build;
+         //mBuildBorder = build;
       }
 
       public function IsBuildBorder ():Boolean
       {
-         return mBuildBorder;
+         //return mBuildBorder;
+         return true; // to override
       }
 
 //======================================================

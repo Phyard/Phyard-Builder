@@ -67,6 +67,23 @@ package common {
 
    public class DataFormat2
    {
+      
+      public static function Texture2TextureDefine(textureModuleIndex:int, textureTransform:Transform2D):Object
+      {
+         var textureDefine:Object = new Object ();
+         
+         textureDefine.mModuleIndex = textureModuleIndex;
+         if (textureModuleIndex >= 0)
+         {
+            textureDefine.mPosX = textureTransform == null ? 0.0 : textureTransform.mOffsetX;
+            textureDefine.mPosY = textureTransform == null ? 0.0 : textureTransform.mOffsetY;
+            textureDefine.mScale = textureTransform == null ? 1.0 : textureTransform.mScale;
+            textureDefine.mIsFlipped = textureTransform == null ? false : textureTransform.mFlipped;
+            textureDefine.mRotation = textureTransform == null ? 0.0 : textureTransform.mRotation;
+         }
+         
+         return textureDefine;
+      }
 
 //===========================================================================
 // define -> world
@@ -3256,45 +3273,51 @@ package common {
             {
                if ( Define.IsBasicVectorShapeEntity (entityDefine.mEntityType) )
                {
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
+                  if ( Define.IsBasicPathVectorShapeEntity (entityDefine.mEntityType) )
                   {
-                     if (worldDefine.mVersion < 0x0160)
+                     if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                      {
-                        entityDefine.mBodyTextureDefine = new Object ();
-                        entityDefine.mBodyTextureDefine.mModuleIndex = -1;
+                        if (worldDefine.mVersion < 0x0108)
+                        {
+                           entityDefine.mIsRoundEnds = true;
+                        }
+                        
+                        if (worldDefine.mVersion < 0x0157)
+                        {
+                           entityDefine.mIsClosed = false;
+                        }
                      }
                   }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
+                  else if ( Define.IsBasicAreaVectorShapeEntity (entityDefine.mEntityType) )
                   {
-                     if (worldDefine.mVersion < 0x0108)
+                     if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                      {
-                        entityDefine.mIsRoundCorners = false;
+                        if (worldDefine.mVersion < 0x0160)
+                        {
+                           entityDefine.mBodyTextureDefine = new Object ();
+                           entityDefine.mBodyTextureDefine.mModuleIndex = -1;
+                        }
                      }
-                     
-                     if (worldDefine.mVersion < 0x0160)
+                     else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                      {
-                        entityDefine.mBodyTextureDefine = new Object ();
-                        entityDefine.mBodyTextureDefine.mModuleIndex = -1;
+                        if (worldDefine.mVersion < 0x0108)
+                        {
+                           entityDefine.mIsRoundCorners = false;
+                        }
+                        
+                        if (worldDefine.mVersion < 0x0160)
+                        {
+                           entityDefine.mBodyTextureDefine = new Object ();
+                           entityDefine.mBodyTextureDefine.mModuleIndex = -1;
+                        }
                      }
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
-                  {
-                     if (worldDefine.mVersion < 0x0160)
+                     else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                      {
-                        entityDefine.mBodyTextureDefine = new Object ();
-                        entityDefine.mBodyTextureDefine.mModuleIndex = -1;
-                     }
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
-                  {
-                     if (worldDefine.mVersion < 0x0108)
-                     {
-                        entityDefine.mIsRoundEnds = true;
-                     }
-                     
-                     if (worldDefine.mVersion < 0x0157)
-                     {
-                        entityDefine.mIsClosed = false;
+                        if (worldDefine.mVersion < 0x0160)
+                        {
+                           entityDefine.mBodyTextureDefine = new Object ();
+                           entityDefine.mBodyTextureDefine.mModuleIndex = -1;
+                        }
                      }
                   }
                }

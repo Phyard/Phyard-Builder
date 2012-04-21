@@ -13,7 +13,7 @@ package player.entity {
    import common.Define;
    import common.CoordinateSystem;
    
-   public class EntityShapePolyShape extends EntityShape
+   public class EntityShapePolyShape extends EntityShape_WithBodyTexture // EntityShape
    {
       public function EntityShapePolyShape (world:World)
       {

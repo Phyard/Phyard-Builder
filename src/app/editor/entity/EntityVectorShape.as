@@ -9,11 +9,14 @@ package editor.entity {
 
    import com.tapirgames.util.GraphicsUtil;
    
+   import editor.core.ReferPair;
+   
    import editor.selection.SelectionProxy;
    
    import editor.asset.ControlPoint;
    import editor.asset.ControlPointModifyResult;
    
+   import editor.image.AssetImageBitmapModule;
    import editor.image.vector.*;
    import common.shape.*;
 
@@ -284,6 +287,9 @@ package editor.entity {
 
          //shape.SetHollow (IsHollow ());
          //shape.SetBuildBorder (IsBuildBorder ());
+         
+         shape.SetBodyTextureModule (GetBodyTextureModule ());
+         shape.SetBodyTextureTransform (GetBodyTextureTransform ());
       }
 
 //======================================================
@@ -303,6 +309,17 @@ package editor.entity {
 //======================================================
 // appearance
 //======================================================
+
+      override public function SetHollow (hollow:Boolean):void
+      {
+         mVectorShape.SetBuildBackground (! hollow);
+      }
+
+      override public function IsHollow ():Boolean
+      {
+         //return mIsHollow;
+         return (! mVectorShape.IsBuildBackground ());
+      }
 
       public function SetDrawBackground (draw:Boolean):void
       {
@@ -389,6 +406,324 @@ package editor.entity {
       {
          //return mBorderTransparency;
          return 100; // to override
+      }
+      
+//=============================================================
+//   body texture
+//=============================================================
+      
+      private var mReferPair_ShapeBodyTexture:ReferPair;
+      
+      override public function OnReferingModified (referPair:ReferPair, info:Object = null):void
+      {
+         super.OnReferingModified (referPair, info);
+         
+         if (referPair == mReferPair_ShapeBodyTexture)
+         {
+            UpdateAppearance ();
+         }
+      }
+
+      override public function OnReferingDestroyed (referPair:ReferPair):void
+      {
+         super.OnReferingDestroyed (referPair);
+         
+         if (referPair == mReferPair_ShapeBodyTexture)
+         {
+            SetBodyTextureModule (null);
+         }
+      }
+      
+      
+//=============================================================
+//   body texture transform
+//=============================================================
+
+      public function GetVectorShapeWithBodyTexture ():VectorShape
+      {
+         //if (mVectorShape is VectorShapePath)
+         //{
+         //}
+         //else 
+         if (mVectorShape is VectorShapeArea)
+         {
+            return mVectorShape;
+         }
+         
+         return null;
+      }
+
+      public function GetBodyTextureModule ():AssetImageBitmapModule
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+            return vectorShape.GetBodyTextureModule () as AssetImageBitmapModule;
+         
+         return null;
+      }
+
+      public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):Boolean
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            if (mReferPair_ShapeBodyTexture != null)
+            {
+               mReferPair_ShapeBodyTexture.Break ();
+               mReferPair_ShapeBodyTexture = null;
+            }
+            
+            vectorShape.SetBodyTextureModule (bitmapModule);
+            
+            if (bitmapModule != null)
+            {
+               mReferPair_ShapeBodyTexture = ReferObject (bitmapModule);
+            }
+            
+            return true;
+         }
+         
+         return false;
+      }
+      
+      public function GetBodyTextureTransform ():Transform2D
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+            return vectorShape.GetBodyTextureTransform ();
+         
+         return null;
+      }
+
+      public function SetBodyTextureTransform (transform:Transform2D):void
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            vectorShape.SetBodyTextureTransform (transform);
+         }
+      }
+      
+      override public function MoveBodyTexture (offsetX:Number, offsetY:Number/*, intentionDone:Boolean = true*/):void
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            var thisTransfrom:Transform2D = CloneTransform ();
+            var localTransform:Transform2D = vectorShape.GetBodyTextureTransform ();
+            var combinedTransform:Transform2D;
+            if (localTransform == null)
+               combinedTransform = thisTransfrom.Clone ();
+            else
+               combinedTransform = Transform2D.CombineTransforms (thisTransfrom, localTransform);
+            
+            //>>
+            combinedTransform.mOffsetX += offsetX;
+            combinedTransform.mOffsetY += offsetY;
+            //<<
+            
+            localTransform = Transform2D.CombineInverseTransformAndTransform (thisTransfrom, combinedTransform, localTransform);
+            
+            vectorShape.SetBodyTextureTransform (localTransform);
+            
+            UpdateAppearance ();
+            
+            /*
+            if (intentionDone)
+            {
+               NotifyModifiedForReferers ();
+            }
+            */
+         }
+      }
+      
+      override public function ScaleBodyTexturePosition (centerX:Number, centerY:Number, s:Number/*, intentionDone:Boolean = true*/):void
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            var thisTransfrom:Transform2D = CloneTransform ();
+            var localTransform:Transform2D = vectorShape.GetBodyTextureTransform ();
+            var combinedTransform:Transform2D;
+            if (localTransform == null)
+               combinedTransform = thisTransfrom.Clone ();
+            else
+               combinedTransform = Transform2D.CombineTransforms (thisTransfrom, localTransform);
+            
+            //>>
+            if (s < 0)
+               s = -s;
+            var offsetX:Number = combinedTransform.mOffsetX - centerX;
+            var offsetY:Number = combinedTransform.mOffsetY - centerY;
+            combinedTransform.mOffsetX = centerX + s * offsetX;
+            combinedTransform.mOffsetY = centerY + s * offsetY;
+            //<<
+            
+            localTransform = Transform2D.CombineInverseTransformAndTransform (thisTransfrom, combinedTransform, localTransform);
+            
+            vectorShape.SetBodyTextureTransform (localTransform);
+            
+            UpdateAppearance ();
+            
+            /*
+            if (intentionDone)
+            {
+               NotifyModifiedForReferers ();
+            }
+            */
+         }
+      }
+      
+      override public function ScaleBodyTextureSelf (s:Number/*, intentionDone:Boolean = true*/):void
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            var localTransform:Transform2D = vectorShape.GetBodyTextureTransform ();
+            if (localTransform == null)
+               localTransform = new Transform2D ();
+            
+            if (s < 0)
+               s = -s;
+            localTransform.mScale *= s;
+            
+            vectorShape.SetBodyTextureTransform (localTransform);
+            
+            UpdateAppearance ();
+            
+            /*
+            if (intentionDone)
+            {
+               NotifyModifiedForReferers ();
+            }
+            */
+         }
+      }
+      
+      override public function RotateBodyTexturePositionByCosSin (centerX:Number, centerY:Number, cos:Number, sin:Number/*, intentionDone:Boolean = true*/):void
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            var thisTransfrom:Transform2D = CloneTransform ();
+            var localTransform:Transform2D = vectorShape.GetBodyTextureTransform ();
+            var combinedTransform:Transform2D;
+            if (localTransform == null)
+               combinedTransform = thisTransfrom.Clone ();
+            else
+               combinedTransform = Transform2D.CombineTransforms (thisTransfrom, localTransform);
+            
+            //>>
+            var offsetX:Number = combinedTransform.mOffsetX - centerX;
+            var offsetY:Number = combinedTransform.mOffsetY - centerY;
+            var newOffsetX:Number = offsetX * cos - offsetY * sin;
+            var newOffsetY:Number = offsetX * sin + offsetY * cos;
+            combinedTransform.mOffsetX = centerX + newOffsetX;
+            combinedTransform.mOffsetY = centerY + newOffsetY;
+            //<<
+            
+            localTransform = Transform2D.CombineInverseTransformAndTransform (thisTransfrom, combinedTransform, localTransform);
+            
+            vectorShape.SetBodyTextureTransform (localTransform);
+            
+            UpdateAppearance ();
+            
+            /*
+            if (intentionDone)
+            {
+               NotifyModifiedForReferers ();
+            }
+            */
+         }
+      }
+      
+      override public function RotateBodyTextureSelf (deltaRotation:Number/*, intentionDone:Boolean = true*/):void
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            var localTransform:Transform2D = vectorShape.GetBodyTextureTransform ();
+            if (localTransform == null)
+               localTransform = new Transform2D ();
+            
+            localTransform.mRotation += (localTransform.mFlipped == IsFlipped () ? deltaRotation : - deltaRotation);
+            vectorShape.SetBodyTextureTransform (localTransform);
+            
+            UpdateAppearance ();
+            
+            /*
+            if (intentionDone)
+            {
+               NotifyModifiedForReferers ();
+            }
+            */
+         }
+      }
+      
+      override public function FlipBodyTexturePosition (planeX:Number/*, intentionDone:Boolean = true*/):void
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            var thisTransfrom:Transform2D = CloneTransform ();
+            var localTransform:Transform2D = vectorShape.GetBodyTextureTransform ();
+            var combinedTransform:Transform2D;
+            if (localTransform == null)
+               combinedTransform = thisTransfrom.Clone ();
+            else
+               combinedTransform = Transform2D.CombineTransforms (thisTransfrom, localTransform);
+            
+            //>>
+            combinedTransform.mOffsetX = planeX + planeX - combinedTransform.mOffsetX;
+            //<<
+            
+            localTransform = Transform2D.CombineInverseTransformAndTransform (thisTransfrom, combinedTransform, localTransform);
+            
+            vectorShape.SetBodyTextureTransform (localTransform);
+            
+            UpdateAppearance ();
+            
+            /*
+            if (intentionDone)
+            {
+               NotifyModifiedForReferers ();
+            }
+            */
+         }
+      }
+      
+      override public function FlipBodyTextureSelf (/*intentionDone:Boolean = true*/):void
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            var localTransform:Transform2D = vectorShape.GetBodyTextureTransform ();
+            if (localTransform == null)
+               localTransform = new Transform2D ();
+            
+            localTransform.mFlipped = ! localTransform.mFlipped;
+            vectorShape.SetBodyTextureTransform (localTransform);
+            
+            UpdateAppearance ();
+            
+            /*
+            if (intentionDone)
+            {
+               NotifyModifiedForReferers ();
+            }
+            */
+         }
       }
 
 //======================================================

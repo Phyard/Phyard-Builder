@@ -16,7 +16,7 @@ package editor.entity {
    
    import common.Define;
 
-   public class EntityVectorShapePolygon extends EntityVectorShape
+   public class EntityVectorShapePolygon extends EntityVectorShapeArea
    {
    // geom
 

@@ -59,6 +59,8 @@ package player.image
                      -1, // not draw border
                      true, // draw background
                      bodyColor,
+                     IsRoundCorners (),
+                     false, 1.0, 
                      bitmapModule == null ? null : bitmapModule.GetBitmapData (),
                      bitmapTransform == null ? null : bitmapTransform.ToMatrix ()
                   );

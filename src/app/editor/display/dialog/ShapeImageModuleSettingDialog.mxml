@@ -26,7 +26,7 @@
          <mx:HBox width="100%">
             <mx:Spacer width="100%"/>
             <mx:Label text="Module:" textAlign="right" />
-            <ctl:ModulePickButton id="ButtonPickModule" label="Null" width="128" />
+            <ctl:ModulePickButton id="Button_PickModule" label="Null" width="128" />
             <mx:Spacer width="100%"/>
          </mx:HBox>
          <mx:Spacer height="100%" />
@@ -88,7 +88,7 @@
             mParams.mEnabledNonsense = true;
             BasicSettingPanel.SetValues (mParams);
             
-            ButtonPickModule.SetPickedModule (mParams.mModule);
+            Button_PickModule.SetPickedModule (mParams.mModule);
          }
 
          public function SetConfirmFunc (onConfirm:Function):void
@@ -112,7 +112,7 @@
             {
                BasicSettingPanel.GetValues (mParams);
                
-               mParams.mModule = ButtonPickModule.GetPickedModule ();
+               mParams.mModule = Button_PickModule.GetPickedModule ();
             }
 
             PopUpManager.removePopUp(this);

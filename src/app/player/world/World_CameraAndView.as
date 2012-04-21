@@ -57,8 +57,8 @@ public function SetRealViewportSize (realWidth:Number, realHeight:Number):void
    mRealViewportWidth  = realWidth;
    mRealViewportHeight = realHeight;
    
-   mCameraCenterX
-   mCameraCenterY
+   //mCameraCenterX
+   //mCameraCenterY
 
    mBackgroundNeedRepaint = true;
 }

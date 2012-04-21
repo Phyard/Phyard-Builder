@@ -47,6 +47,8 @@ package editor.entity.dialog {
    import editor.trigger.Filters;
    
    import editor.display.sprite.BackgroundSprite;
+   import editor.display.sprite.EffectMessagePopup;
+   import editor.display.sprite.EffectCrossingAiming;
    import editor.display.dialog.*;
    
    import editor.ccat.CollisionCategoryManager;
@@ -81,17 +83,67 @@ package editor.entity.dialog {
          
          mSceneBackground.visible = (mScene != null);
          
-         MoveSceneCameraToPanelCenter ();
+         if (mScene != null)
+            FocusManagerAtManagerPoint (mScene.GetCameraCenterX (), mScene.GetCameraCenterY ());
       }
       
-      private function MoveSceneCameraToPanelCenter ():void
+      private function FocusManagerAtManagerPoint (managerX:Number, managerY:Number):void
       {
+         var panelPoint:Point = ManagerToView (new Point (managerX, managerY));
+         MoveManagerTo (0.5 * GetPanelWidth () - panelPoint.x, 0.5 * GetPanelHeight () - panelPoint.y);
+      }
+      
+      private function SetSceneScale (sceneScale:Number):void
+      {
+         ScaleManagerTo (sceneScale);
+         
          if (mScene != null)
+            FocusManagerAtManagerPoint (mScene.GetCameraCenterX (), mScene.GetCameraCenterY ());
+      }
+      
+      override public function MoveManagerTo (managerPanelX:Number, managerPanelY:Number):void
+      {
+         // validate
+                  
+         if (! mScene.IsInfiniteSceneSize ())
          {
-            var sceneCameraCenterPanelPoint:Point = ManagerToView (new Point (mScene.GetCameraCenterX (), mScene.GetCameraCenterY ()));
+            var sceneLeft:Number   = mScene.GetWorldLeft ();
+            var sceneTop:Number    = mScene.GetWorldTop ();
+            var sceneWidth:Number  = mScene.GetWorldWidth ();
+            var sceneHeight:Number = mScene.GetWorldHeight ();
             
-            MoveManager (0.5 * mParentWidth - sceneCameraCenterPanelPoint.x, 0.5 * mParentHeight - sceneCameraCenterPanelPoint.y);
+            var topLeft:Point = ManagerToView (new Point (sceneLeft, sceneTop));
+            var bottomRight:Point = ManagerToView (new Point (sceneLeft + sceneWidth, sceneTop + sceneHeight));
+            
+            var panelCenterX:Number = 0.5 * GetPanelWidth ();
+            var panelCenterY:Number = 0.5 * GetPanelHeight ();
+            
+            var maxAllowedDx:Number = panelCenterX - topLeft.x;
+            var minAllowedDx:Number = panelCenterX - bottomRight.x;
+            var maxAllowedDy:Number = panelCenterY - topLeft.y;
+            var minAllowedDy:Number = panelCenterY - bottomRight.y;
+            
+            var dx:Number = managerPanelX - mScene.GetPositionX ();
+            var dy:Number = managerPanelY - mScene.GetPositionY ();
+            
+            if (dx < minAllowedDx)
+               dx = minAllowedDx;
+            else if (dx > maxAllowedDx)
+               dx = maxAllowedDx;
+            if (dy < minAllowedDy)
+               dy = minAllowedDy;
+            else if (dy > maxAllowedDy)
+               dy = maxAllowedDy;
+            
+            managerPanelX = mScene.GetPositionX () + dx;
+            managerPanelY = mScene.GetPositionY () + dy;
          }
+         
+         super.MoveManagerTo (managerPanelX, managerPanelY);
+
+         var sceneCameraCenter:Point = ViewToManager (new Point (0.5 * mParentWidth, 0.5 * mParentHeight));
+         mScene.SetCameraCenterX (sceneCameraCenter.x);
+         mScene.SetCameraCenterY (sceneCameraCenter.y);
       }
       
 //============================================================================
@@ -100,19 +152,20 @@ package editor.entity.dialog {
       
       override protected function GetMaxAllowedScale ():Number
       {
-         return 16.0;
+         return Define.MaxWorldZoomScale;
       }
       
       override protected function GetMinAllowedScale ():Number
       {
-         return 1.0 / 16.0;
+         return Define.MinWorldZoomScale;
       }
       
       override protected function OnResize (event:Event):void 
       {
          super.OnResize (event);
          
-         MoveSceneCameraToPanelCenter ();
+         if (mScene != null)
+            FocusManagerAtManagerPoint (mScene.GetCameraCenterX (), mScene.GetCameraCenterY ());
       }
       
       override protected function UpdateInternal (dt:Number):void
@@ -146,18 +199,6 @@ package editor.entity.dialog {
             }
             
             var sceneCameraCenter:Point = ViewToManager (new Point (0.5 * mParentWidth, 0.5 * mParentHeight));
-            
-            if (sceneCameraCenter.x < sceneLeft)
-               sceneCameraCenter.x = sceneLeft;
-            if (sceneCameraCenter.x > sceneLeft + sceneWidth)
-               sceneCameraCenter.x = sceneLeft + sceneWidth;
-            if (sceneCameraCenter.y < sceneTop)
-               sceneCameraCenter.y = sceneTop;
-            if (sceneCameraCenter.y > sceneTop + sceneHeight)
-               sceneCameraCenter.y = sceneTop + sceneHeight;
-            
-            mScene.SetCameraCenterX (sceneCameraCenter.x);
-            mScene.SetCameraCenterY (sceneCameraCenter.y);
             
             mSceneBackground.UpdateAppearance (sceneLeft, sceneTop, sceneWidth, sceneHeight, 
                                                mScene.GetWorldBorderLeftThickness (), mScene.GetWorldBorderTopThickness (), mScene.GetWorldBorderRightThickness (), mScene.GetWorldBorderBottomThickness (),
@@ -760,8 +801,40 @@ package editor.entity.dialog {
       
       // find entity
       
-      public function SelectEntities (entityIDs:Array):void
+      public function SelectEntities (entityIds:Array):void
       {
+         var numIds:int = entityIds.length;
+         
+         for (var i:int = 0; i < numIds; ++ i)
+         {
+            var entityId:int = entityIds [i] as int;
+            
+            if (entityId < 0 || entityId >= mScene.GetNumAssets ())
+               continue;
+            
+            var entity:Entity = mScene.GetAssetByCreationId (entityId) as Entity;
+            
+            var posX:Number = entity.GetPositionX ();
+            var posY:Number = entity.GetPositionY ();
+            
+            if (i == 0)
+            {
+               var viewPoint:Point = ManagerToView (new Point (posX, posY));
+               if (viewPoint.x < 0 || viewPoint.x >= GetPanelWidth () || viewPoint.y < 0 || viewPoint.y >= GetPanelHeight ())
+               {
+                  FocusManagerAtManagerPoint (posX, posY);
+               }
+            }
+            
+            var selectableEntites:Array =  entity.GetSelectableAssets ();
+            for each (var selectableEntity:Entity in selectableEntites)
+            {
+                mScene.AddAssetSelection (selectableEntity);
+            }
+            
+            // aiming effect
+            PushEditingEffect (new EffectCrossingAiming (entity));
+         }
       }
       
       // zoom in / out
@@ -2134,59 +2207,6 @@ package editor.entity.dialog {
             
             RepaintAllAssetLinks ();
          }
-      }
-      
-//============================================================================
-//   
-//============================================================================
-      
-      public var ShowFunctionSettingDialog:Function = null;
-      
-      private function OpenAssetSettingDialog ():void
-      {
-         if (EditorContext.GetSingleton ().HasSettingDialogOpened ())
-            return;
-         
-         var selectedAssets:Array = mScene.GetSelectedAssets ();
-         if (selectedAssets == null || selectedAssets.length != 1)
-            return;
-         
-         var entity:Entity = selectedAssets [0] as Entity;
-         
-         var values:Object = new Object ();
-         
-         /*
-         if (entity is AssetFunction)
-         {
-            var aFunction:AssetFunction = asset as AssetFunction;
-            
-            values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
-            values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
-            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
-            
-            ShowFunctionSettingDialog (values, ConfirmSettingAssetProperties);
-         }
-         */
-      }
-      
-      private function ConfirmSettingAssetProperties (params:Object):void
-      {
-         var selectedAssets:Array = mScene.GetSelectedAssets ();
-         if (selectedAssets == null || selectedAssets.length != 1)
-            return;
-         
-         var entity:Entity = selectedAssets [0] as Entity;
-         
-         /*
-         if (asset is AssetFunction)
-         {
-            var aFunction:AssetFunction = asset as AssetFunction;
-            
-            var code_snippet:CodeSnippet = aFunction.GetCodeSnippet ();
-            code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-            code_snippet.PhysicsValues2DisplayValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
-         }
-         */
       }
    
    }

@@ -164,14 +164,8 @@ package editor.asset {
          return scaleX;
       }
       
-      internal var mViewWidth:Number;
-      internal var mViewHeight:Number;
-      
-      public function SetViewportSize (parentViewWidth:Number, parentViewHeight:Number):void
+      public function OnViewportSizeChanged ():void
       {
-         mViewWidth  = parentViewWidth  / this.scaleX;
-         mViewHeight = parentViewHeight / this.scaleY;
-         
          UpdateLayout ();
       }
       

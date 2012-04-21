@@ -108,11 +108,11 @@ package editor.asset {
          BuildContextMenu ();
       }
       
-      public function MoveManagerTo (managerX:Number, managerY:Number):void
+      public function MoveManagerTo (managerPanelX:Number, managerPanelY:Number):void
       {
          if (mAssetManager != null)
          {
-            mAssetManager.SetPosition (managerX, managerY);
+            mAssetManager.SetPosition (managerPanelX, managerPanelY);
             
             mCurrentManagerX = mAssetManager.GetPositionX ();
             mCurrentManagerY = mAssetManager.GetPositionY ();
@@ -214,6 +214,8 @@ package editor.asset {
       
       //todo: set mParentWidth and mParentHeight private. And mContentMaskWidth-> mPanelWidth
       
+      private var mFirstTimeAddTiStage:Boolean = true;
+      
       private function OnAddedToStage (event:Event):void 
       {
          mParentWidth  = parent.width;
@@ -221,18 +223,23 @@ package editor.asset {
          UpdateBackgroundAndContentMaskSprites ();
          
          // ...
-         addEventListener (Event.ENTER_FRAME, OnEnterFrame);
-         
-         addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
-         addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
-         addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
-         
-         //addEventListener (MouseEvent.CLICK, OnMouseClick);
-         //addEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
-         
-         addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
-         
-         addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+         if (mFirstTimeAddTiStage)
+         {
+            mFirstTimeAddTiStage = false;
+            
+            addEventListener (Event.ENTER_FRAME, OnEnterFrame);
+            
+            addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
+            addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
+            addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+            
+            //addEventListener (MouseEvent.CLICK, OnMouseClick);
+            //addEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
+            
+            addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
+            
+            addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+         }
       }
       
       public function GetPanelWidth ():Number
@@ -268,7 +275,7 @@ package editor.asset {
             
             if (mAssetManager != null)
             {
-               mAssetManager.SetViewportSize (mContentMaskWidth, mContentMaskHeight);
+               mAssetManager.OnViewportSizeChanged ();
             }
          }
       }
@@ -1217,7 +1224,19 @@ package editor.asset {
       
       public function PushFloatingMessage (popupMessage:EffectMessagePopup):void
       {
-         mFloatingMessageLayer.addChild (popupMessage);
+         PushEditingEffect (popupMessage);
+      }
+      
+      public function PushEditingEffect (effect:EditingEffect):void
+      {
+         if (effect is EffectMessagePopup)
+         {
+            mFloatingMessageLayer.addChild (effect);
+         }
+         else
+         {
+            mEditingEffectLayer.addChild (effect);
+         }
       }
       
       protected function UpdateEffects ():void

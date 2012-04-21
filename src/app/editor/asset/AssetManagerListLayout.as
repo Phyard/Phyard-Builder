@@ -75,8 +75,8 @@ package editor.asset {
          if (mAssetManager.parent == null)
             return;
          
-         mAssetManager.mViewWidth  = mAssetManager.parent.width  / mAssetManager.scaleX;
-         mAssetManager.mViewHeight = mAssetManager.parent.height / mAssetManager.scaleY;
+         var managerViewWidth:Number  = mAssetManager.parent.width  / mAssetManager.scaleX;
+         var managerViewHeight:Number = mAssetManager.parent.height / mAssetManager.scaleY;
          
          var rowHeight:Number = GetAssetSpriteHeight ();
          var gap:Number = GetAssetSpriteGap ();
@@ -104,13 +104,13 @@ package editor.asset {
          
          mAssetManager.x = 0;
          
-         if (mContentHeight < mAssetManager.mViewHeight)
+         if (mContentHeight < managerViewHeight)
             mAssetManager.y = 0;
          else if (mAssetManager.y > 0)
             mAssetManager.y = 0;
          else
          {
-            var minY:Number = (mAssetManager.mViewHeight - mContentHeight) * mAssetManager.scaleY;
+            var minY:Number = (managerViewHeight - mContentHeight) * mAssetManager.scaleY;
             if (mAssetManager.y < minY)
             {
                mAssetManager.y = minY;

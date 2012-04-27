@@ -174,6 +174,11 @@ package editor.image.dialog {
             //case 68: // D
             //   DeleteSelectedEntities ();
             //   break;
+            case 187:// +
+            case Keyboard.NUMPAD_ADD:
+               if (ctrlHold)
+                  AlignTextureCenterWithShapeCenter ();
+               break;
             default:
             {
                return super.OnKeyDownInternal (keyCode, ctrlHold, shiftHold);
@@ -215,6 +220,27 @@ package editor.image.dialog {
             return;
          
          mAssetImageModuleInstanceManager.MoveUpDownTheOnlySelectedModuleInstance (false);
+      }
+      
+      public function AlignTextureCenterWithShapeCenter ():void
+      {
+         var assets:Array = mAssetImageModuleInstanceManager.GetSelectedAssets ();
+         var asset:Asset;
+         var i:int;
+         var count:int = 0;
+         for (i = 0; i < assets.length; ++ i)
+         {
+            asset = assets [i] as Asset;
+            if (asset is AssetImageModuleInstance)
+            {
+               if ((asset as AssetImageModuleInstance).AlignTextureCenterWithShapeCenter ())
+               {
+                  ++ count;
+               }
+            }
+         }
+         
+         //todo: creat undo point
       }
       
 //====================================================================================

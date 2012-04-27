@@ -246,7 +246,10 @@ package editor.entity.dialog {
                break;
             case 187:// +
             case Keyboard.NUMPAD_ADD:
-               AlignCenterSelectedEntities ();
+               if (ctrlHold)
+                  AlignTextureCenterWithShapeCenter ();
+               else
+                  AlignCenterSelectedEntities ();
                break;
             case 189:// -
             case Keyboard.NUMPAD_SUBTRACT:
@@ -2325,8 +2328,32 @@ package editor.entity.dialog {
       }
       
 //============================================================================
-//   entity links
+//   
 //============================================================================
+      
+      public function AlignTextureCenterWithShapeCenter ():void
+      {
+         var entities:Array = mScene.GetSelectedAssets ();
+         var entity:Entity;
+         var i:int;
+         var count:int = 0;
+         for (i = 0; i < entities.length; ++ i)
+         {
+            entity = entities [i] as Entity;
+            if (entity is EntityVectorShapeArea)
+            {
+               if ((entity as EntityVectorShapeArea).AlignTextureCenterWithShapeCenter ())
+               {
+                  ++ count;
+               }
+            }
+         }
+         
+         if (count > 0)
+         {
+            CreateUndoPoint ("Align texture");
+         }
+      }
       
       public function AlignCenterSelectedEntities ():void
       {

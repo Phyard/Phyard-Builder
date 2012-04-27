@@ -144,6 +144,42 @@ package editor.image {
 //   
 //=============================================================
 
+      public function AlignTextureCenterWithShapeCenter ():Boolean
+      {
+         var vectorShape:VectorShape = GetVectorShapeWithBodyTexture ();
+         
+         if (vectorShape != null)
+         {
+            var bitmapModule:AssetImageBitmapModule = vectorShape.GetBodyTextureModule () as AssetImageBitmapModule;
+            if (bitmapModule == null)
+               return false;
+            
+            var bitmapData:BitmapData = bitmapModule.GetBitmapData ();
+            if (bitmapData == null)
+               return false;
+            
+            var localTransform:Transform2D = vectorShape.GetBodyTextureTransform (); // in shape space
+            if (localTransform == null)
+               localTransform = new Transform2D ();
+            
+            var textureCenter:Point = localTransform.TransformPointXY (0.5 * bitmapData.width, 0.5 * bitmapData.height);
+            localTransform.mOffsetX -= textureCenter.x;
+            localTransform.mOffsetY -= textureCenter.y;
+            
+            vectorShape.SetBodyTextureTransform (localTransform);
+            
+            UpdateAppearance ();
+            
+            /*
+            NotifyModifiedForReferers ();
+            */
+            
+            return true;
+         }
+         
+         return false;
+      }
+
       public function GetVectorShapeWithBodyTexture ():VectorShape
       {
          if (mAssetImageModule is AssetImageShapeModule)

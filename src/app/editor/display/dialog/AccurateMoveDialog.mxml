@@ -4,17 +4,18 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
-    title="Move ..." width="300">
+    title="Move ..." width="300"
+    creationComplete="OnInitPanel ()">
 
    <mx:HBox width="100%">
-      <mx:Label text="Move Offset X:" textAlign="right" width="100"/>
-      <mx:TextInput id="TextInput_MoveOffsetX" width="80" text="0"/>
+      <mx:Label id="Label_X" text="Move Offset X:" textAlign="right" width="100"/>
+      <mx:TextInput id="TextInput_MoveX" width="80" text="0"/>
       <mx:Label text="px" textAlign="left" />
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Label text="Move Offset Y:" textAlign="right" width="100"/>
-      <mx:TextInput id="TextInput_MoveOffsetY" width="80" text="0"/>
+      <mx:Label id="Label_Y" text="Move Offset Y:" textAlign="right" width="100"/>
+      <mx:TextInput id="TextInput_MoveY" width="80" text="0"/>
       <mx:Label text="px" textAlign="left" />
    </mx:HBox>
 
@@ -39,6 +40,15 @@
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
+
+         private var mIsMoveTo:Boolean = false;
+         public function SetValues (initialValues:Object):void
+         {
+            if (initialValues != null && initialValues.mIsMoveTo != null)
+            {
+               mIsMoveTo = initialValues.mIsMoveTo as Boolean;
+            }
+         }
          
          public function SetConfirmFunc (onConfirm:Function):void
          {
@@ -50,29 +60,45 @@
             OnClose = onClose;
          }
          
+         private function OnInitPanel ():void
+         {
+            if (mIsMoveTo)
+            {
+               Label_X.text = "Move Target X:";
+               Label_Y.text = "Move Target Y:";
+            }
+         }
+         
          private function OnClickOkButton():void 
          {
             PopUpManager.removePopUp(this);
             
+            var valueX:Number = parseFloat (TextInput_MoveX.text);
+            if ( isNaN (valueX) )
+               valueX = 0;
+            
+            var valueY:Number = parseFloat (TextInput_MoveY.text);
+            if ( isNaN (valueY) )
+               valueY = 0;
+            
             var params:Object = new Object ();
             
-            var offsetX:Number = parseFloat (TextInput_MoveOffsetX.text);
-            if ( isNaN (offsetX) )
-               params.mOffsetX = 0;
+            if (mIsMoveTo)
+            {
+               params.mTargetX = valueX;
+               params.mTargetY = valueY;
+            }
             else
-               params.mOffsetX = offsetX;
+            {
+               params.mOffsetX = valueX;
+               params.mOffsetY = valueY;
+            }
             
-            var offsetY:Number = parseFloat (TextInput_MoveOffsetY.text);
-            if ( isNaN (offsetX) )
-               params.mOffsetY = 0;
-            else
-               params.mOffsetY = offsetY;
-             
-           if (OnClose != null)
-              OnClose ();
+            if (OnClose != null)
+               OnClose ();
             
-           if (OnConfirm != null)
-              OnConfirm (params);
+            if (OnConfirm != null)
+               OnConfirm (params);
          }
          
          private function OnClickCancelButton():void 

@@ -904,19 +904,21 @@ package editor.asset {
             flipHorizontallyHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelecteds);
             flipVerticallyHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelectedsVertically);
             
+            DisplayObjectUtil.AppendContextMenuItem (handlersBaseCircle, "Move Transform Ring Accurately", OnMoveTransformRingAccurately);
+
             DisplayObjectUtil.AppendContextMenuItem (rotateBothHandler, "Rotate Selection(s) Accurately", OnRotateSelectionsAccurately);
             DisplayObjectUtil.AppendContextMenuItem (rotatePosHandler, "Rotate Selection(s) Accurately (Positions Only)", OnRotateSelectionsAccurately_PositionsOnly);
-            DisplayObjectUtil.AppendContextMenuItem (rotateSelfHandler, "Rotate Selection(s) Accurately (Without Rotate Positions)", OnRotateSelectionsAccurately_WithoutPositions);
+            DisplayObjectUtil.AppendContextMenuItem (rotateSelfHandler, "Rotate Selection(s) Accurately (Without Rotating Positions)", OnRotateSelectionsAccurately_WithoutPositions);
             
             DisplayObjectUtil.AppendContextMenuItem (scaleBothHandler, "Scale Selection(s) Accurately", OnScaleSelectionsAccurately);
             DisplayObjectUtil.AppendContextMenuItem (scalePosHandler, "Scale Selection(s) Accurately (Positions Only)", OnScaleSelectionsAccurately_PositionsOnly);
-            DisplayObjectUtil.AppendContextMenuItem (scaleSelfHandler, "Scale Selection(s) Accurately (Without Scale Positions)", OnScaleSelectionsAccurately_WithoutPositions);
+            DisplayObjectUtil.AppendContextMenuItem (scaleSelfHandler, "Scale Selection(s) Accurately (Without Scaling Positions)", OnScaleSelectionsAccurately_WithoutPositions);
             
             DisplayObjectUtil.AppendContextMenuItem (flipHorizontallyHandler, "Horizontal-Flip Selection(s) (Positions Only)", OnFlipSelecteds_PositionsOnly);
-            DisplayObjectUtil.AppendContextMenuItem (flipHorizontallyHandler, "Horizontal-Flip Selection(s) (Without Flipping Positions", OnFlipSelecteds_WithoutPositions);
+            DisplayObjectUtil.AppendContextMenuItem (flipHorizontallyHandler, "Horizontal-Flip Selection(s) (Without Flipping Positions)", OnFlipSelecteds_WithoutPositions);
             
             DisplayObjectUtil.AppendContextMenuItem (flipVerticallyHandler, "Vertical-Flip Selection(s) (Positions Only)", OnFlipSelectedsVertically_PositionsOnly);
-            DisplayObjectUtil.AppendContextMenuItem (flipVerticallyHandler, "Vertical-Flip Selection(s) (Without Flipping Positions", OnFlipSelectedsVertically_WithoutPositions);
+            DisplayObjectUtil.AppendContextMenuItem (flipVerticallyHandler, "Vertical-Flip Selection(s) (Without Flipping Positions)", OnFlipSelectedsVertically_WithoutPositions);
             
             var halfHandlerSize:Number = 6;
             var handlerRadius:Number = halfHandlerSize * 1.2;
@@ -1133,6 +1135,18 @@ package editor.asset {
          
          RotateSelectedAssets (false, managerPoint.x, managerPoint.y, Math.PI, false, true, false);
          FlipSelectedAssets (false, managerPoint.x, false, true, true);
+      }
+      
+      private function OnMoveTransformRingAccurately (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mIsMoveTo: true});
+      }
+      
+      private function MoveTransformRingAccurately (params:Object):void
+      {
+         var panelPoint:Point = ManagerToPanel (new Point (params.mTargetX, params.mTargetY));
+         
+         MoveScaleRotateFlipHandlers (panelPoint.x - mScaleRotateFlipHandlersContainer.x, panelPoint.y - mScaleRotateFlipHandlersContainer.y);
       }
       
       private function OnMoveSelectionsAccurately (event:ContextMenuEvent):void

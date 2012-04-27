@@ -45,6 +45,14 @@ package editor.asset {
       {
          mAssetManagerPanel.MoveSelectedAssets (mMoveBodyTexture, 0, 0, true);
          
+trace ("222 passively = " + passively);
+         if (! passively)
+         {
+trace ("222 mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode () = " + mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ());
+            if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
+               mAssetManagerPanel.PointSelectAsset (mCurrentX, mCurrentY); //mAssetManager.mouseX, mAssetManager.mouseY);
+         }
+         
          super.TerminateInternal (passively);
       }
       

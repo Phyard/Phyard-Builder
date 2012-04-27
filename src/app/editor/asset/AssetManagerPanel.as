@@ -437,13 +437,13 @@ package editor.asset {
 // mouse and key events
 //==================================================================================
       
-      protected var mHandleCookieModeOnMouseUp:Boolean = false;
+      protected var mIsMouseZeroMoveSinceLastDown:Boolean = false;
       protected var mIsCtrlDownOnMouseDown:Boolean = false;
       protected var mIsShiftDownOnMouseDown:Boolean = false;
       
-      public function IsMouseZeroMove ():Boolean
+      public function IsMouseZeroMoveSinceLastDownInCookieMode ():Boolean
       {
-         return mHandleCookieModeOnMouseUp;
+         return mIsMouseZeroMoveSinceLastDown && mInCookieSelectMode;
       }
       
       final public function OnMouseDown (event:MouseEvent):void
@@ -458,7 +458,7 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         mHandleCookieModeOnMouseUp = false;
+         mIsMouseZeroMoveSinceLastDown = true;
          mIsCtrlDownOnMouseDown = event.ctrlKey;
          mIsShiftDownOnMouseDown = event.shiftKey;
          
@@ -514,8 +514,6 @@ package editor.asset {
          
          if (mAssetManager.AreSelectedAssetsContainingPoint (managerX, managerY))
          {
-            mHandleCookieModeOnMouseUp = mInCookieSelectMode;
-            
             SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown));
             mCurrentIntent.OnMouseDown (managerX, managerY);
           
@@ -531,8 +529,9 @@ package editor.asset {
          
          if (mInCookieSelectMode)
          {
+            var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
             //mAssetManager.AddAssetSelections (oldSelectedAssets);
-            SetCurrentIntent (new IntentRegionSelectAssets (this, oldSelectedAssets));
+            SetCurrentIntent (new IntentRegionSelectAssets (this, oldSelectedAssets, assetArray != null && assetArray.length > 0));
             mCurrentIntent.OnMouseDown (managerX, managerY);
             
             return;
@@ -567,7 +566,7 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         mHandleCookieModeOnMouseUp = false;
+         mIsMouseZeroMoveSinceLastDown = false;
          
          if (mCurrentIntent != null)
          {
@@ -611,11 +610,6 @@ package editor.asset {
             {
                return;
             }
-         }
-         
-         if (mHandleCookieModeOnMouseUp)
-         {
-            PointSelectAsset (mAssetManager.mouseX, mAssetManager.mouseY);
          }
          
          OnMouseUpInternal (mAssetManager.mouseX, mAssetManager.mouseY, event.ctrlKey, event.shiftKey);
@@ -1095,10 +1089,13 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         mAssetManager.DeleteSelectedControlPoints ();
-         
-         UpdateInterface ();
-         RepaintAllAssetLinks ();
+         if (mAssetManager.DeleteSelectedControlPoints ())
+         {
+            UpdateInterface ();
+            RepaintAllAssetLinks ();
+            
+            CreateUndoPoint ("Delete control point");
+         }
       }
       
       protected function InsertControlPoint ():void
@@ -1106,10 +1103,13 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         mAssetManager.InsertControlPoint ();
-         
-         UpdateInterface ();
-         RepaintAllAssetLinks ();
+         if (mAssetManager.InsertControlPoint ())
+         {
+            UpdateInterface ();
+            RepaintAllAssetLinks ();
+            
+            CreateUndoPoint ("Insert control point");
+         }
       }
       
 //=================================================================================
@@ -1121,10 +1121,13 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         mAssetManager.DeleteSelectedAssets ();
-         
-         UpdateInterface ();
-         RepaintAllAssetLinks ();
+         if (mAssetManager.DeleteSelectedAssets ())
+         {
+            UpdateInterface ();
+            RepaintAllAssetLinks ();
+            
+            CreateUndoPoint ("Delete selection(s)");
+         }
       }
       
       public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
@@ -1136,6 +1139,11 @@ package editor.asset {
          
          UpdateInterface ();
          RepaintAllAssetLinks ();
+         
+         if (updateSelectionProxy && (! mIsMouseZeroMoveSinceLastDown))
+         {
+            CreateUndoPoint ("Move selection(s)");
+         } 
       }
       
       public function RotateSelectedAssets (rotateBodyTexture:Boolean, centerX:Number, centerY:Number, r:Number, rotatePosition:Boolean, rotateSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -1147,6 +1155,11 @@ package editor.asset {
          
          UpdateInterface ();
          RepaintAllAssetLinks ();
+         
+         if (updateSelectionProxy && (! mIsMouseZeroMoveSinceLastDown))
+         {
+            CreateUndoPoint ("Rotate selection(s)");
+         } 
       }
       
       public function ScaleSelectedAssets (scaleBodyTexture:Boolean, centerX:Number, centerY:Number, s:Number, scalePosition:Boolean, scaleSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -1158,6 +1171,11 @@ package editor.asset {
          
          UpdateInterface ();
          RepaintAllAssetLinks ();
+         
+         if (updateSelectionProxy && (! mIsMouseZeroMoveSinceLastDown))
+         {
+            CreateUndoPoint ("Scale selection(s)");
+         } 
       }
       
       public function FlipSelectedAssets (flipBodyTexture:Boolean, planeX:Number, flipPosition:Boolean, flipSelf:Boolean, updateSelectionProxy:Boolean):void
@@ -1169,6 +1187,19 @@ package editor.asset {
          
          UpdateInterface ();
          RepaintAllAssetLinks ();
+         
+         if (updateSelectionProxy && (! mIsMouseZeroMoveSinceLastDown))
+         {
+            CreateUndoPoint ("Flip selection(s)");
+         } 
+      }
+
+//=====================================================================
+// undo point
+//=====================================================================
+
+      protected function CreateUndoPoint (undoPointName:String):void
+      {
       }
 
 //=====================================================================

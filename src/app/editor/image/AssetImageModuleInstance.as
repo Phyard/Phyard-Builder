@@ -703,22 +703,30 @@ package editor.image {
          }
       }
 
-      override public function DeleteControlPoint (controlPoint:ControlPoint):void
+      override public function DeleteControlPoint (controlPoint:ControlPoint):Boolean
       {
          if (mAssetImageModule is AssetImageShapeModule)
          {
             var result:ControlPointModifyResult = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().DeleteControlPoint (mControlPoints, controlPoint.GetIndex ());
             OnControlPointsModified (result, true);
+            
+            return result != null;
          }
+         
+         return false;
       }
 
-      override public function InsertControlPointBefore (controlPoint:ControlPoint):void
+      override public function InsertControlPointBefore (controlPoint:ControlPoint):Boolean
       {
          if (mAssetImageModule is AssetImageShapeModule)
          {
             var result:ControlPointModifyResult = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().InsertControlPointBefore (mControlPoints, controlPoint.GetIndex ());
             OnControlPointsModified (result, true);
+            
+            return result != null;
          }
+         
+         return false;
       }
       
 //=============================================================

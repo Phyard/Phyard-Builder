@@ -246,16 +246,20 @@ package editor.entity {
          OnControlPointsModified (result, done);
       }
 
-      override public function DeleteControlPoint (controlPoint:ControlPoint):void
+      override public function DeleteControlPoint (controlPoint:ControlPoint):Boolean
       {
          var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).DeleteControlPoint (mControlPoints, controlPoint.GetIndex ());
          OnControlPointsModified (result, true);
+         
+         return result != null;
       }
 
-      override public function InsertControlPointBefore (controlPoint:ControlPoint):void
+      override public function InsertControlPointBefore (controlPoint:ControlPoint):Boolean
       {
          var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).InsertControlPointBefore (mControlPoints, controlPoint.GetIndex ());
          OnControlPointsModified (result, true);
+         
+         return result != null;
       }
 
 //====================================================================

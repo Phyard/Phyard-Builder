@@ -11,11 +11,15 @@ package editor.asset {
       
       protected var mOldSelectedAssets:Array;
       
-      public function IntentRegionSelectAssets (assetManagerPanel:AssetManagerPanel, oldSelectedAssets:Array)
+      protected var mHasAsstsUnderStartPoint:Boolean; // for cookie mode only
+      
+      public function IntentRegionSelectAssets (assetManagerPanel:AssetManagerPanel, oldSelectedAssets:Array, hasAsstsUnderStartPoint:Boolean = false)
       {
          mAssetManagerPanel = assetManagerPanel;
          
          mOldSelectedAssets = oldSelectedAssets;
+         
+         mHasAsstsUnderStartPoint = hasAsstsUnderStartPoint;
       }
       
    //================================================================
@@ -57,9 +61,12 @@ package editor.asset {
             mAssetManagerPanel.mForegroundLayer.removeChild (mBoxShape);
          }
          
-         if (passively && mAssetManagerPanel.IsMouseZeroMove ())
+trace ("111 passively = " + passively);
+         if (! passively)
          {
-            mAssetManagerPanel.PointSelectAsset (mCurrentX, mCurrentY); // (mAssetManager.mouseX, mAssetManager.mouseY)
+trace ("111 mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode () = " + mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ());
+            if ((! mHasAsstsUnderStartPoint) && mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
+               mAssetManagerPanel.CancelAllAssetSelections ();
          }
          
          super.TerminateInternal (passively);

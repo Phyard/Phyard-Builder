@@ -316,6 +316,11 @@ package viewer {
       {
          // to override
       }
+      
+      public function GetFPS ():Number
+      {
+         return 0; //to overrride
+      }
 
 //======================================================================
 // for Viewer

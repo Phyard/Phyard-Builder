@@ -1082,7 +1082,7 @@ package editor.asset {
          }
       }
       
-      public function DeleteSelectedControlPoints ():void
+      public function DeleteSelectedControlPoints ():Boolean
       {
          for (var i:int = mCurrentShownControlPoints.length - 1; i >= 0; -- i)
          {
@@ -1091,14 +1091,15 @@ package editor.asset {
             {
                // todo: currently, onpy support most one control point
                
-               cp.GetOwnerAsset ().DeleteControlPoint (cp);
-               
-               return;
+               if (cp.GetOwnerAsset ().DeleteControlPoint (cp))
+                  return true;
             }
          }
+         
+         return false;
       }
       
-      public function InsertControlPoint ():void
+      public function InsertControlPoint ():Boolean
       {
          for (var i:int = mCurrentShownControlPoints.length - 1; i >= 0; -- i)
          {
@@ -1107,11 +1108,12 @@ package editor.asset {
             {
                // todo: currently, onpy support most one control point
                
-               cp.GetOwnerAsset ().InsertControlPointBefore (cp);
-               
-               return;
+               if (cp.GetOwnerAsset ().InsertControlPointBefore (cp))
+                  return true;
             }
          }
+         
+         return false;
       }
       
 //=================================================================================

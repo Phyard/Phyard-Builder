@@ -251,6 +251,15 @@ package editor.entity.dialog {
          return true;
       }
 
+//=====================================================================
+// undo point
+//=====================================================================
+
+      override protected function CreateUndoPoint (undoPointName:String):void
+      {
+         EditorContext.GetEditorApp ().CreateWorldSnapshot (undoPointName);
+      }
+
 //============================================================================
 //   
 //============================================================================
@@ -468,6 +477,8 @@ package editor.entity.dialog {
          TryToCallOnEndCreatingEntityCallback ();
          
          OnAssetSelectionsChanged ();
+         
+         CreateUndoPoint ("Create new entity");
       }
       
       private function OnCreatingCancelled ():void
@@ -634,6 +645,22 @@ package editor.entity.dialog {
       }
       
 //============================================================================
+//   for playing
+//============================================================================
+      
+      //private var mMaskPlayerField:Boolean = false;
+      //
+      //public function IsMaskPlayerField ():Boolean
+      //{
+      //   return mMaskPlayerField;
+      //}
+      //
+      //public function SetMaskPlayerField (mask:Boolean):void
+      //{
+      //   mMaskPlayerField = mask;
+      //}
+      
+//============================================================================
 //   
 //============================================================================
       
@@ -770,7 +797,7 @@ package editor.entity.dialog {
          
          OnAssetSelectionsChanged ();
           
-         EditorContext.GetEditorApp ().CreateUndoPoint ("Clear world");
+         CreateUndoPoint ("Clear world");
       }
 
       public function ShowLevelRulesEditDialog ():void
@@ -788,7 +815,7 @@ package editor.entity.dialog {
          mScene.SetPauseOnFocusLost (info.mIsPauseOnFocusLost);
          mScene.SetCiRulesEnabled (info.mIsCiRulesEnabled);
          
-         EditorContext.GetEditorApp ().CreateUndoPoint ("World rules are changed");
+         CreateUndoPoint ("World rules are changed");
       }
 
       public function ShowLevelPhysicsEditDialog ():void
@@ -821,7 +848,7 @@ package editor.entity.dialog {
          mScene.SetDefaultGravityAccelerationMagnitude (mScene.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (info.mDefaultGravityAccelerationMagnitude));
          mScene.SetDefaultGravityAccelerationAngle (mScene.GetCoordinateSystem ().P2D_RotationDegrees (info.mDefaultGravityAccelerationAngle));
          
-         EditorContext.GetEditorApp ().CreateUndoPoint ("World physics settings are changed");
+         CreateUndoPoint ("World physics settings are changed");
       }
 
       public function ShowLevelCoordinateSystemEditDialog ():void
@@ -845,7 +872,7 @@ package editor.entity.dialog {
                   info.mIsRightHand
                );
          
-         EditorContext.GetEditorApp ().CreateUndoPoint ("Coordinate system is modified");
+         CreateUndoPoint ("Coordinate system is modified");
       }
 
       public function ShowLevelAppearanceEditDialog ():void
@@ -890,7 +917,7 @@ package editor.entity.dialog {
          mScene.SetWorldBorderRightThickness (info.mWorldBorderRightThickness);
          mScene.SetWorldBorderBottomThickness (info.mWorldBorderBottomThickness);
          
-         EditorContext.GetEditorApp ().CreateUndoPoint ("World appearance is changed");
+         CreateUndoPoint ("World appearance is changed");
       }
 
       public function ShowLevelViewportEditDialog ():void
@@ -918,7 +945,7 @@ package editor.entity.dialog {
          
          mScene.SetCameraRotatingEnabled (info.mCameraRotatingEnabled);
          
-         EditorContext.GetEditorApp ().CreateUndoPoint ("World appearance is changed");
+         CreateUndoPoint ("World appearance is changed");
       }
       
       // find entity
@@ -974,7 +1001,7 @@ package editor.entity.dialog {
             
             OnAssetSelectionsChanged ();
             
-            EditorContext.GetEditorApp ().CreateUndoPoint ("Clone");
+            CreateUndoPoint ("Clone");
          }
       }
       
@@ -982,7 +1009,7 @@ package editor.entity.dialog {
       {
          if (mScene.DeleteSelectedAssets ())
          {
-            EditorContext.GetEditorApp ().CreateUndoPoint ("Delete");
+            CreateUndoPoint ("Delete");
          }
       }
       
@@ -992,14 +1019,14 @@ package editor.entity.dialog {
       {
          mScene.MoveSelectedAssetsToTop ();
          
-         EditorContext.GetEditorApp ().CreateUndoPoint ("Move entities to the most top layer");
+         CreateUndoPoint ("Move entities to the most top layer");
       }
       
       public function MoveSelectedEntitiesToBottom ():void
       {
          mScene.MoveSelectedAssetsToBottom ();
          
-         EditorContext.GetEditorApp ().CreateUndoPoint ("Move entities to the most bottom layer");
+         CreateUndoPoint ("Move entities to the most bottom layer");
       }
       
       // brothers
@@ -1008,14 +1035,14 @@ package editor.entity.dialog {
       {
          mScene.MakeSelectedAssetsBrothers ();
          
-         EditorContext.GetEditorApp ().CreateUndoPoint ("Make brothers");
+         CreateUndoPoint ("Make brothers");
       }
       
       public function BreakApartBrothers ():void
       {
          mScene.BreakBrothersApartBwtweenSelectedAssets ();
          
-         EditorContext.GetEditorApp ().CreateUndoPoint ("Break brothers");
+         CreateUndoPoint ("Break brothers");
       }
       
       // entity settings
@@ -1997,7 +2024,7 @@ package editor.entity.dialog {
          {
             entity.UpdateControlPoints (true);
             
-            EditorContext.GetEditorApp ().CreateUndoPoint ("The properties of entity [" + entity.GetTypeName ().toLowerCase () + "] are changed");
+            CreateUndoPoint ("The properties of entity [" + entity.GetTypeName ().toLowerCase () + "] are changed");
          }
       }
       
@@ -2057,7 +2084,7 @@ package editor.entity.dialog {
          }
          
          if (selectedEntities.length > 0)
-            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify common proeprties for " + selectedEntities.length + " entities");
+            CreateUndoPoint ("Modify common proeprties for " + selectedEntities.length + " entities");
       }
       
       public function OnBatchModifyShapeAppearanceProperties (params:Object):void
@@ -2100,7 +2127,7 @@ package editor.entity.dialog {
          }
          
          if (selectedEntities.length > 0)
-            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify appearances proeprties for " + numShapes + " shapes");
+            CreateUndoPoint ("Modify appearances proeprties for " + numShapes + " shapes");
       }
       
       public function OnBatchModifyShapePhysicsProperties (params:Object):void
@@ -2159,7 +2186,7 @@ package editor.entity.dialog {
          }
          
          if (selectedEntities.length > 0)
-            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify physics proeprties for " + numShapes + " shapes");
+            CreateUndoPoint ("Modify physics proeprties for " + numShapes + " shapes");
       }
       
       public function OnBatchModifyShapeCircleProperties (params:Object):void
@@ -2188,7 +2215,7 @@ package editor.entity.dialog {
          }
          
          if (selectedEntities.length > 0)
-            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify proeprties for " + numCircles + " circles");
+            CreateUndoPoint ("Modify proeprties for " + numCircles + " circles");
       }
       
       public function OnBatchModifyShapeRectangleProperties (params:Object):void
@@ -2221,7 +2248,7 @@ package editor.entity.dialog {
          }
          
          if (selectedEntities.length > 0)
-            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify proeprties for " + numRectangles + " rectangles");
+            CreateUndoPoint ("Modify proeprties for " + numRectangles + " rectangles");
       }
       
       public function OnBatchModifyShapePolylineProperties (params:Object):void
@@ -2252,7 +2279,7 @@ package editor.entity.dialog {
          }
          
          if (selectedEntities.length > 0)
-            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify proeprties for " +  numPolylines + " polylines");
+            CreateUndoPoint ("Modify proeprties for " +  numPolylines + " polylines");
       }
       
       public function OnBatchModifyJointCollideConnectedsProperty (params:Object):void
@@ -2277,7 +2304,7 @@ package editor.entity.dialog {
          }
          
          if (selectedEntities.length > 0)
-            EditorContext.GetEditorApp ().CreateUndoPoint ("Modify collid-connected proeprty for " + selectedEntities.length + " joints");
+            CreateUndoPoint ("Modify collid-connected proeprty for " + selectedEntities.length + " joints");
       }
       
 //============================================================================
@@ -2320,9 +2347,9 @@ package editor.entity.dialog {
          
          if (created)
          {
-            // CreateUndoPoint ("Create link");
-            
             RepaintAllAssetLinks ();
+            
+            CreateUndoPoint ("Create link");
          }
       }
    

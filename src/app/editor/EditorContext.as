@@ -250,7 +250,7 @@ package editor {
    //=====================================================================
       
       // this is the default
-      public function OnKeyDownDefault (keyCode:int):void
+      public function OnKeyDownDefault (keyCode:int, ctrlDown:Boolean = false, shiftDown:Boolean = false):void
       {
          if (HasSettingDialogOpened ())
             return;
@@ -271,6 +271,25 @@ package editor {
                break;
             case Keyboard.F6:
                CodeLibListDialog.ShowCodeLibListDialog ();
+               break;
+            case 67: // C
+               GetEditorApp ().OnStartOfflineExporting ();
+               break;
+            case 83: // S
+               if (ctrlDown)
+               {
+                  if (shiftDown)
+                     GetEditorApp ().OnStartOnlineSaving ();
+                  //else
+                  // local save
+               }
+               else
+               {
+                  if (shiftDown)
+                     GetEditorApp ().OnStartOfflineSaving ();
+                  else
+                     GetEditorApp ().CreateWorldSnapshot ("Snapshot created manually");
+               }
                break;
          }
       }

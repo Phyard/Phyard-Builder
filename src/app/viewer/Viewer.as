@@ -1752,49 +1752,35 @@ package viewer {
          if (mSkin != null)
             mSkin.Restart ();
       }
-
-      public function PlayRun ():void
+      
+      public function ResumeOrPause (playing:Boolean):void
       {
          if (mSkin != null)
-            mSkin.SetPlaying (true);
+            mSkin.SetPlaying (playing);
       }
-
-      public function PlayPause ():void
+      
+      public function ChangeSpeedX (deltaSpeedX:int):void
       {
          if (mSkin != null)
-            mSkin.SetPlaying (false);
+            mSkin.SetPlayingSpeedX (GetPlayingSpeedX () + deltaSpeedX);
       }
 
-      public function PlayFaster (delta:uint):Boolean
+      public function UpdateSingleFrame ():void
       {
-         if (mSkin == null)
-            return true;
-
-         mSkin.SetPlayingSpeedX (GetPlayingSpeedX () + delta);
-
-         return true;
+         Step (true);
+      }
+      
+      public function GetFPS ():Number
+      {
+         if (mSkin != null)
+            return mSkin.GetFPS ();
+         
+         return 0;
       }
 
-      public function PlaySlower (delta:uint):Boolean
+      public function GetPlayerWorld ():Object
       {
-         if (mSkin == null)
-            return true;
-
-         mSkin.SetPlayingSpeedX (GetPlayingSpeedX () - delta);
-
-          return GetPlayingSpeedX () > 0;
-      }
-
-      private var _OnSpeedChanged:Function = null;
-      public function SetOnSpeedChangedFunction (onSpeed:Function):void
-      {
-         _OnSpeedChanged = onSpeed;
-      }
-
-      private var _onPlayStatusChanged:Function = null;
-      public function SetOnPlayStatusChangedFunction (onPlayStatusChanged:Function):void
-      {
-         _onPlayStatusChanged = onPlayStatusChanged;
+         return mPlayerWorld;
       }
       
       private var mExternalPaused:Boolean = false;
@@ -1802,15 +1788,19 @@ package viewer {
       {
          mExternalPaused = paused;
       }
-
-      public function GetPlayerWorld ():Object
+      
+      // maybe useless now
+      
+      private var _OnSpeedChanged:Function = null;
+      public function SetOnSpeedChangedFunction (onSpeed:Function):void
       {
-         return mPlayerWorld;
+         _OnSpeedChanged = onSpeed;
       }
-
-      public function UpdateSingleStep ():void
+      
+      private var _onPlayStatusChanged:Function = null;
+      public function SetOnPlayStatusChangedFunction (onPlayStatusChanged:Function):void
       {
-         Step (true);
+         _onPlayStatusChanged = onPlayStatusChanged;
       }
 
    }

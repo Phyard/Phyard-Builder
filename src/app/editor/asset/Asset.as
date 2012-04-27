@@ -702,12 +702,14 @@ package editor.asset {
       {
       }
 
-      public function DeleteControlPoint (controlPoint:ControlPoint):void
+      public function DeleteControlPoint (controlPoint:ControlPoint):Boolean
       {
+         return false;
       }
 
-      public function InsertControlPointBefore (controlPoint:ControlPoint):void
+      public function InsertControlPointBefore (controlPoint:ControlPoint):Boolean
       {
+         return false;
       }
 
 //====================================================================

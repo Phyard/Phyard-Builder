@@ -387,7 +387,7 @@ package editor.asset {
          {
             if (mMoveSelectionsAccuratelyMenuItem == null)
             {
-               mMoveSelectionsAccuratelyMenuItem = new ContextMenuItem ("Move Selection(s) Accyrately ...", true);
+               mMoveSelectionsAccuratelyMenuItem = new ContextMenuItem ("Move Selection(s) Accurately ...", true);
                mMoveSelectionsAccuratelyMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnMoveSelectionsAccurately);
             }
             

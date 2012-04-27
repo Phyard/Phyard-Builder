@@ -137,6 +137,7 @@ package player.physics {
       public function SetStatic (static:Boolean):void
       {
          _b2Body.SetType (static ? b2Body.b2_staticBody : b2Body.b2_dynamicBody);
+         //_b2Body.SetType (static ? b2Body.b2_kinematicBody : b2Body.b2_dynamicBody); // still not collision checking between static and sensors
       }
       
       public function IsStatic ():Boolean

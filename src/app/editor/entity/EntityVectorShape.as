@@ -756,6 +756,24 @@ package editor.entity {
 
          super.SetStatic (isStatic);
       }
+      
+      //
+      public function Validate ():void
+      {
+         if (mAiType == Define.ShapeAiType_Movable)
+         {
+            SetStatic (false);
+            SetFilledColor (Define.ColorMovableObject);
+            SetDrawBorder (true);
+         }
+         
+         if (mAiType == Define.ShapeAiType_Static)
+         {
+            SetStatic (true);
+            SetFilledColor (Define.ColorStaticObject);
+            SetDrawBorder (false);
+         }
+      }
 
    }
 }

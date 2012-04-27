@@ -1526,6 +1526,14 @@ package editor.asset {
             return;
          
          var currentScale:Number = mAssetManager.GetScale ();
+         
+         if (mAssetManagerScaleChangeSpeed == 0)
+         {
+            mTargetManagerScale = currentScale;
+            OnManagerScaleChanged ();
+            return;
+         }
+         
          if (currentScale < mTargetManagerScale)
          {
             if (mTargetManagerScale - currentScale <= mAssetManagerScaleChangeSpeed)

@@ -96,6 +96,9 @@ package editor.entity.dialog {
       
       private function OnEnterFrame (event:Event):void 
       {
+         if (mDesignViewer != null)
+            stage.focus = this;
+         
          UpdateInterface ();
       }
       
@@ -141,7 +144,7 @@ package editor.entity.dialog {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         stage.focus = this;
+         //stage.focus = this;
          
          OnMousePositionChanged ();
       }
@@ -171,14 +174,16 @@ package editor.entity.dialog {
          switch (event.keyCode)
          {
             case 70: // F
-            //case Keyboard.SPACE: // cancelled from v1.55
-               AdvanceOneFrame (); 
+            case Keyboard.SPACE:
+               if (event.ctrlKey || event.shiftKey)
+                  AdvanceOneFrame (); 
+               
                break;
             default:
                break;
          }
          
-         event.stopPropagation ();
+         //event.stopPropagation (); // will cause Keyboard events not triggered in playing
       }
       
 //============================================================================

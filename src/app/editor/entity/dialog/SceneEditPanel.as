@@ -84,7 +84,9 @@ package editor.entity.dialog {
          mSceneBackground.visible = (mScene != null);
          
          if (mScene != null)
+         {
             FocusManagerAtManagerPoint (mScene.GetCameraCenterX (), mScene.GetCameraCenterY ());
+         }
       }
       
       private function FocusManagerAtManagerPoint (managerX:Number, managerY:Number):void

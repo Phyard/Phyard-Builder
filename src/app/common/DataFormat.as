@@ -1323,6 +1323,8 @@ package common {
                editorWorld.GetEntityContainer ().SetZoomScale (worldDefine.mSettings.mZoomScale);
                //<<
                
+               editorWorld.GetEntityContainer ().SetScale (editorWorld.GetEntityContainer ().GetZoomScale ());
+               
                //>> from v1.04
                editorWorld.GetEntityContainer ().SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
                editorWorld.GetEntityContainer ().SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
@@ -2154,6 +2156,7 @@ package common {
             TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
          }
          editorWorld.GetCodeLibManager().SetDelayUpdateFunctionMenu (false);
+         editorWorld.GetCodeLibManager().UpdateFunctionMenu ();
          //<<<
          
          // modify, 2nd round

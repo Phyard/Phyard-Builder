@@ -412,11 +412,41 @@
          EditorContext.sEditorApp = this;
          
          NewWorld ();
+         
+         AddExternalCallbacks ();
       }
       
       private function UpdateApp ():void
       {
          
+      }
+      
+   //================================================================================
+   // 
+   //================================================================================
+      
+      private function AddExternalCallbacks ():void
+      {         
+         if (flash.external.ExternalInterface.available)
+         {
+             try
+             {
+                 flash.external.ExternalInterface.addCallback("DesignNotSaved", DesignNotSaved);
+             }
+             catch (error:Error)
+             {
+                trace ("Adding external callbacks failed: " + error.message + "\n");
+             }
+         }
+         else
+         {
+             trace ("External interface is not available for this container.");
+         }
+      }
+            
+      private function DesignNotSaved ():Boolean
+      {
+         return true; // todo
       }
       
    //================================================================================
@@ -538,9 +568,12 @@
       
       private function OnKeyDown (event:KeyboardEvent):void
       {
-         if (EditorContext.GetSingleton () != null)
+         if (ViewStack_Scenes.selectedChild == Box_SceneEdit)
          {
-            EditorContext.GetSingleton ().OnKeyDownDefault (event.keyCode, event.ctrlKey, event.shiftKey);
+            if (EditorContext.GetSingleton () != null)
+            {
+               EditorContext.GetSingleton ().OnKeyDownDefault (event.keyCode, event.ctrlKey, event.shiftKey);
+            }
          }
       }
       

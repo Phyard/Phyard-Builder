@@ -49,7 +49,10 @@ package editor.asset {
          
          GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, point2.x - point1.x, point2.y - point1.y);
          
-         mAssetManagerPanel.RegionSelectAssets (left, top, right, bottom, mOldSelectedAssets);
+         if (! mAssetManagerPanel.IsMouseZeroMoveSinceLastDown ())
+         {
+            mAssetManagerPanel.RegionSelectAssets (left, top, right, bottom, mOldSelectedAssets);
+         }
          
          super.Process (finished);
       }
@@ -63,8 +66,15 @@ package editor.asset {
          
          if (! passively)
          {
-            if ((! mHasAsstsUnderStartPoint) && mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
-               mAssetManagerPanel.CancelAllAssetSelections ();
+            //if ((! mHasAsstsUnderStartPoint) && mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
+            //   mAssetManagerPanel.CancelAllAssetSelections ();
+            if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
+            {
+               if (mHasAsstsUnderStartPoint)
+                  mAssetManagerPanel.PointSelectAsset (mCurrentX, mCurrentY);
+               else
+                  mAssetManagerPanel.CancelAllAssetSelections ();
+            }
          }
          
          super.TerminateInternal (passively);

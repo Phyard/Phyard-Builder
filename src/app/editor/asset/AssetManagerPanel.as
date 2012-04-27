@@ -84,6 +84,11 @@ package editor.asset {
          addChild (mForegroundLayer);
       }
       
+      public function GetAssetManager ():AssetManager
+      {
+         return mAssetManager;
+      }
+      
       public function SetAssetManager (assetManager:AssetManager):void
       {
          if (mAssetManager == assetManager)
@@ -476,6 +481,11 @@ package editor.asset {
       protected var mIsMouseZeroMoveSinceLastDown:Boolean = false;
       protected var mIsCtrlDownOnMouseDown:Boolean = false;
       protected var mIsShiftDownOnMouseDown:Boolean = false;
+      
+      public function IsMouseZeroMoveSinceLastDown ():Boolean
+      {
+         return mIsMouseZeroMoveSinceLastDown;
+      }
       
       public function IsMouseZeroMoveSinceLastDownInCookieMode ():Boolean
       {

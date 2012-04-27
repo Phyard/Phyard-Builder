@@ -170,16 +170,22 @@ package player.entity {
 //   
 //=============================================================
       
+      private var mInteractiveZonesParams:Array = null;
+      private var mInteractive:Boolean;
+
       private var mGravityWorldRotation:Number = 0.0;
       private var mCosGravityWorldRotation:Number = Math.cos (mGravityWorldRotation);
       private var mSinGravityWorldRotation:Number = Math.sin (mGravityWorldRotation);
-      private var mInteractiveZonesParams:Array = null;
-      private var mInteractive:Boolean;
       
       private function RegisterGravity ():void
       {
          // mGravityAngle is in self coordinate, newRotation is in world coordinate
          var newRotation:Number = mGravityAngle + GetRotation ();
+         if (IsFlipped ())
+            newRotation = Math.PI - newRotation;
+         
+         // will not scaled 
+         
          if (mGravityWorldRotation != newRotation)
          {
             mGravityWorldRotation = newRotation;

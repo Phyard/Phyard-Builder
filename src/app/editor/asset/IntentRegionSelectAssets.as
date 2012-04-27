@@ -61,10 +61,8 @@ package editor.asset {
             mAssetManagerPanel.mForegroundLayer.removeChild (mBoxShape);
          }
          
-trace ("111 passively = " + passively);
          if (! passively)
          {
-trace ("111 mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode () = " + mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ());
             if ((! mHasAsstsUnderStartPoint) && mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
                mAssetManagerPanel.CancelAllAssetSelections ();
          }

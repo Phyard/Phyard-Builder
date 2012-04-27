@@ -39,6 +39,8 @@ package editor.entity.dialog {
       
       public function SetWorldViewerParams (worldBinaryData:ByteArray, maskFieldInPlaying:Boolean):void
       {
+         CloseViewer ();
+         
          mDesignViewer = new Viewer ({mParamsFromEditor: {
                                          mWorldDomain: ApplicationDomain.currentDomain, 
                                          mWorldBinaryData: worldBinaryData, 
@@ -51,6 +53,15 @@ package editor.entity.dialog {
          addChild (mDesignViewer);
          
          mDesignViewer.OnContainerResized ();
+      }
+      
+      public function CloseViewer ():void
+      {
+         if (mDesignViewer != null)
+         {
+            removeChild (mDesignViewer);
+            mDesignViewer = null;
+         }
       }
       
       private function GetViewportSize ():Point
@@ -88,7 +99,7 @@ package editor.entity.dialog {
          UpdateInterface ();
       }
       
-      private function OnResize (event:Event):void 
+      private function OnResize (event:Event):void
       {
          UpdateBackgroundAndContentMaskSprites ();
       }

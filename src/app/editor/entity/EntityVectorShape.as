@@ -370,7 +370,7 @@ package editor.entity {
       public function IsDrawBorder ():Boolean
       {
          //return mDrawBorder;
-         return true; // to override
+         return false; //true; // to override
       }
 
       public function SetBorderColor (color:uint):void
@@ -397,7 +397,7 @@ package editor.entity {
          //   return 0;
          //
          //return mBorderThickness;
-         return 1; // to override
+         return 0; //1; // to override
       }
 
       public function SetBorderTransparency (transparency:uint):void

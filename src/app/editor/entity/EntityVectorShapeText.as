@@ -49,6 +49,7 @@ package editor.entity {
          SetText ("(not set yet)");
          SetDrawBorder (false);
          SetDrawBackground (false);
+         SetFilledColor (0xFFFFFF);
          
          addChild (mTextLayer);
       }
@@ -89,6 +90,7 @@ package editor.entity {
          
          super.UpdateAppearance ();
          
+         addChild (mTextLayer);
          mTextLayer.addChild (mTextSprite);
       }
       

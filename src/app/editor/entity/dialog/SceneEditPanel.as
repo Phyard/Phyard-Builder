@@ -717,9 +717,9 @@ package editor.entity.dialog {
          var numEntities:int = 0;
             var numShapes:int = 0;
                var numAreaShapes:int = 0;
-                  var numCircles:int = 0; 
-                  var numRectanges:int = 0; 
-                  var numPolylines:int = 0; 
+                  var numCircles:int = 0;
+                  var numRectanges:int = 0;
+                  var numPolylines:int = 0;
             var numJoints:int = 0;
          
          var entity:Entity;
@@ -768,6 +768,16 @@ package editor.entity.dialog {
          selectionsInfo.mNumSelectedCircleShapes = numCircles;
          selectionsInfo.mNumSelectedRectangleShapes = numRectanges;
          selectionsInfo.mNumSelectedPolylineShapes = numPolylines;
+         
+         if (selectedEntities.length == 0)
+            selectionsInfo.mSelectedEntitiesInfos = "";
+         else if (selectedEntities.length == 1)
+         {
+            entity = selectedEntities [0] as Entity;
+            selectionsInfo.mSelectedEntitiesInfos = "<" + entity.GetCreationOrderId () + "> " + entity.GetTypeName () + ": "+ entity.GetInfoText ();
+         }
+         else
+            selectionsInfo.mSelectedEntitiesInfos = selectedEntities.length + " entities are selected.";
          
          mDialogCallbacks.UpdateInterface (selectionsInfo);
       }

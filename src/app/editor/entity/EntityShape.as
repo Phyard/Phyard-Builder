@@ -338,7 +338,7 @@ package editor.entity {
       public function IsBuildBorder ():Boolean
       {
          //return mBuildBorder;
-         return true; // to override
+         return false; //true; // to override
       }
 
 //======================================================

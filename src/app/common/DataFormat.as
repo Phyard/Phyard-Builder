@@ -1289,12 +1289,10 @@ package common {
          }
       }
       
-      public static function WorldDefine2EditorWorld (editorWorld:editor.world.World, worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, mergeVariablesWithSameNames:Boolean = false):editor.world.World
+      public static function WorldDefine2EditorWorld (isNewWorldToLoadAll:Boolean, editorWorld:editor.world.World, worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, mergeVariablesWithSameNames:Boolean = false):editor.world.World
       {
          if (worldDefine == null)
             return editorWorld;
-         
-         var isCreatingNewWorld:Boolean = (editorWorld == null);
          
          // from v1,03
          DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
@@ -1302,9 +1300,9 @@ package common {
             DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
          
          //
-         if (isCreatingNewWorld)
+         if (isNewWorldToLoadAll)
          {
-            editorWorld = new editor.world.World ();
+            //editorWorld = new editor.world.World ();
             
             // basic
             {
@@ -1404,7 +1402,7 @@ package common {
                collisionCategory.UpdateSelectionProxy ();
             }
             
-            if (isCreatingNewWorld)
+            if (isNewWorldToLoadAll)
             {
                collisionCategory = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (worldDefine.mDefaultCollisionCategoryIndex);
                if (collisionCategory != null)

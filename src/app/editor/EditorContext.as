@@ -400,6 +400,8 @@ package editor {
       {
          SetHasSettingDialogOpened (false);
          
+         GetEditorApp ().stage.focus = GetEditorApp ();
+         
          if (checkCustomVariablesModifications)
          {
             EditorContext.GetSingleton ().CancelSettingEntityProperties ();
@@ -534,6 +536,8 @@ package editor {
             }
             
             message = message + ") are modified";
+            
+            GetEditorApp ().CreateWorldSnapshot (message);
          }
       }
       

@@ -137,5 +137,19 @@ package editor.entity {
          camera.SetFollowingStyle (GetFollowingStyle ());
       }
       
+//====================================================================
+//   transform
+//====================================================================
+      
+      override public function ScaleSelfTo (targetScale:Number/*, intentionDone:Boolean = true*/):void
+      {
+         // currrently, camera doesn't support scale
+      }
+      
+      override public function FlipSelf (/*intentionDone:Boolean = true*/):void
+      {
+         // currrently, camera doesn't support flip
+      }
+      
    }
 }

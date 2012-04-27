@@ -265,10 +265,20 @@ package editor.entity {
          gravityController.SetMaximalGravityAcceleration (GetMaximalGravityAcceleration ());
          gravityController.SetInitialGravityAngle (GetInitialGravityAngle ());
       }
-
+      
 //====================================================================
-//
+//   transform
 //====================================================================
+      
+      override public function ScaleSelfTo (targetScale:Number/*, intentionDone:Boolean = true*/):void
+      {
+         // currently, gravity controller will always keep scale 1.0
+         
+         SetScale (1.0);
+         SetRadius (GetRadius () * (targetScale >= 0 ? targetScale : - targetScale));
+         
+         UpdateAppearance ();
+      }
 
    }
 }

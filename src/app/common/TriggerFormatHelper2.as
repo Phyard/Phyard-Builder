@@ -189,6 +189,7 @@ package common {
             
             callingInfo.mLineNumber = lineNumber;
             callingInfo.mFunctionId = callingDefine.mFunctionId;
+            callingInfo.mIsCoreDeclaration = callingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core;
             callingInfo.mFunctionCallingDefine = callingDefine;
          }
          
@@ -246,86 +247,93 @@ package common {
                
                calling_condition = null;
                
-               switch (lastCallingInfo.mFunctionId)
+               if (lastCallingInfo.mIsCoreDeclaration)
                {
-                  case CoreFunctionIds.ID_ReturnIfTrue:
-                     calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
-                     
-                     nextCallingInfoForTrue = null;
-                     nextCallingInfoForFalse = callingInfo;
-                     break;
-                  case CoreFunctionIds.ID_ReturnIfFalse:
-                     calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
-                     
-                     nextCallingInfoForTrue = callingInfo;
-                     nextCallingInfoForFalse = null;
-                     break;
-                  case CoreFunctionIds.ID_StartIf:
-                     calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
-                     
-                     if (lastCallingInfo.mOwnerBlock.mFirstBranch.mNumValidCallings > 1)
-                     {
+                  switch (lastCallingInfo.mFunctionId)
+                  {
+                     case CoreFunctionIds.ID_ReturnIfTrue:
+                        calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
+                        
+                        nextCallingInfoForTrue = null;
+                        nextCallingInfoForFalse = callingInfo;
+                        break;
+                     case CoreFunctionIds.ID_ReturnIfFalse:
+                        calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
+                        
                         nextCallingInfoForTrue = callingInfo;
-                     }
-                     else
-                     {
-                        nextCallingInfoForTrue = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
+                        nextCallingInfoForFalse = null;
+                        break;
+                     case CoreFunctionIds.ID_StartIf:
+                        calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
                         
-                        if (nextCallingInfoForTrue != null)
-                           nextCallingInfoForTrue = nextCallingInfoForTrue.mNextGoodCallingLine;
-                     }
-                     
-                     branchInfo = lastCallingInfo.mOwnerBlock.mFirstBranch; // if branch, should not be null
-                     branchInfo = branchInfo.mNextBranch; // else branch
-                     if (branchInfo != null && branchInfo.mNumValidCallings > 1)
-                     {
-                        nextCallingInfoForFalse = branchInfo.mFirstCallingLine.mNextGoodCallingLine;
-                     }
-                     else
-                     {
-                        nextCallingInfoForFalse = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
+                        if (lastCallingInfo.mOwnerBlock.mFirstBranch.mNumValidCallings > 1)
+                        {
+                           nextCallingInfoForTrue = callingInfo;
+                        }
+                        else
+                        {
+                           nextCallingInfoForTrue = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
+                           
+                           if (nextCallingInfoForTrue != null)
+                              nextCallingInfoForTrue = nextCallingInfoForTrue.mNextGoodCallingLine;
+                        }
                         
+                        branchInfo = lastCallingInfo.mOwnerBlock.mFirstBranch; // if branch, should not be null
+                        branchInfo = branchInfo.mNextBranch; // else branch
+                        if (branchInfo != null && branchInfo.mNumValidCallings > 1)
+                        {
+                           nextCallingInfoForFalse = branchInfo.mFirstCallingLine.mNextGoodCallingLine;
+                        }
+                        else
+                        {
+                           nextCallingInfoForFalse = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
+                           
+                           if (nextCallingInfoForFalse != null)
+                              nextCallingInfoForFalse = nextCallingInfoForFalse.mNextGoodCallingLine;
+                        }
+                        break;
+                     case CoreFunctionIds.ID_StartWhile:
+                        calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
+                        
+                        nextCallingInfoForTrue = callingInfo;
+                        
+                        nextCallingInfoForFalse = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end while
                         if (nextCallingInfoForFalse != null)
                            nextCallingInfoForFalse = nextCallingInfoForFalse.mNextGoodCallingLine;
+                        break;
+                     
+                     //========================================================
+                     
+                     case CoreFunctionIds.ID_Else:
+                        nextCallingInfo = callingInfo;
+                        break;
+                     case CoreFunctionIds.ID_EndIf:
+                        nextCallingInfo = callingInfo;
+                        break;
+                     case CoreFunctionIds.ID_EndWhile:
+                        nextCallingInfo = lastCallingInfo.mOwnerBlock.mStartCallingLine; // start while
+                        break;
+                     case CoreFunctionIds.ID_Return:
+                        nextCallingInfo = null;
+                        break;
+                     case CoreFunctionIds.ID_Break:
+                        nextCallingInfo = lastCallingInfo.mOwnerBlockSupportBreak.mEndCallingLine; // end while / end switch / end do while / end for / ...
+                        if (nextCallingInfo != null)
+                           nextCallingInfo = nextCallingInfo.mNextGoodCallingLine;
+                        break;
+                     case CoreFunctionIds.ID_Continue:
+                        nextCallingInfo = lastCallingInfo.mOwnerBlockSupportContinue.mStartCallingLine; // end while / end switch / end do while / end for / ...
+                        break;
+                     default:
+                     {
+                        nextCallingInfo = callingInfo;
+                        break;
                      }
-                     break;
-                  case CoreFunctionIds.ID_StartWhile:
-                     calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
-                     
-                     nextCallingInfoForTrue = callingInfo;
-                     
-                     nextCallingInfoForFalse = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end while
-                     if (nextCallingInfoForFalse != null)
-                        nextCallingInfoForFalse = nextCallingInfoForFalse.mNextGoodCallingLine;
-                     break;
-                  
-                  //========================================================
-                  
-                  case CoreFunctionIds.ID_Else:
-                     nextCallingInfo = callingInfo;
-                     break;
-                  case CoreFunctionIds.ID_EndIf:
-                     nextCallingInfo = callingInfo;
-                     break;
-                  case CoreFunctionIds.ID_EndWhile:
-                     nextCallingInfo = lastCallingInfo.mOwnerBlock.mStartCallingLine; // start while
-                     break;
-                  case CoreFunctionIds.ID_Return:
-                     nextCallingInfo = null;
-                     break;
-                  case CoreFunctionIds.ID_Break:
-                     nextCallingInfo = lastCallingInfo.mOwnerBlockSupportBreak.mEndCallingLine; // end while / end switch / end do while / end for / ...
-                     if (nextCallingInfo != null)
-                        nextCallingInfo = nextCallingInfo.mNextGoodCallingLine;
-                     break;
-                  case CoreFunctionIds.ID_Continue:
-                     nextCallingInfo = lastCallingInfo.mOwnerBlockSupportContinue.mStartCallingLine; // end while / end switch / end do while / end for / ...
-                     break;
-                  default:
-                  {
-                     nextCallingInfo = callingInfo;
-                     break;
                   }
+               }
+               else
+               {
+                  nextCallingInfo = callingInfo;
                }
                
                if (calling_condition != null)

@@ -8,6 +8,7 @@ package common.trigger.parse {
    public class FunctionCallingLineInfo
    {
       public var mFunctionId:int;
+      public var mIsCoreDeclaration:Boolean;
       
       private var _mIndentLevel:int = 0;
       

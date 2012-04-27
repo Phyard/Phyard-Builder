@@ -78,6 +78,11 @@ package editor.asset {
       
       protected var mAssetManagerLayout:AssetManagerLayout = null;
       
+      public function GetLayout ():AssetManagerLayout
+      {
+         return mAssetManagerLayout;
+      }
+      
       public function SetLayout (layout:AssetManagerLayout):void
       {
          mAssetManagerLayout = layout;
@@ -710,9 +715,9 @@ package editor.asset {
          if (count > 0)
          {
             NotifyModifiedForReferers ();
+            
+            UpdateLayout (true);
          }
-         
-         UpdateLayout ();
          
          return count > 0;
       }

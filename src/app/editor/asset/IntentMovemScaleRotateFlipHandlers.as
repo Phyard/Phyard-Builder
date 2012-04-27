@@ -28,10 +28,10 @@ package editor.asset {
             mFirstTime = false;
          }
          
-         var startPoint:Point = mAssetManagerPanel.ManagerToPanel (new Point (mLastX, mLastY));
-         var endPoint:Point = mAssetManagerPanel.ManagerToPanel (new Point (mCurrentX, mCurrentY));
-         var dx:Number = endPoint.x - startPoint.x;
-         var dy:Number = endPoint.y - startPoint.y;
+         var startPanelPoint:Point = mAssetManagerPanel.ManagerToPanel (new Point (mLastX, mLastY));
+         var endPanelPoint:Point = mAssetManagerPanel.ManagerToPanel (new Point (mCurrentX, mCurrentY));
+         var dx:Number = endPanelPoint.x - startPanelPoint.x;
+         var dy:Number = endPanelPoint.y - startPanelPoint.y;
          
          mLastX = mCurrentX;
          mLastY = mCurrentY;

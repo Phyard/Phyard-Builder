@@ -1,5 +1,7 @@
 package editor.asset {
 
+   import flash.geom.Point;
+
    public class IntentMoveSelectedAssets extends IntentDrag
    {
       protected var mAssetManagerPanel:AssetManagerPanel;
@@ -33,10 +35,20 @@ package editor.asset {
          var dx:Number = mCurrentX - mLastX;
          var dy:Number = mCurrentY - mLastY;
          
+         mAssetManagerPanel.MoveSelectedAssets (mMoveBodyTexture, dx, dy, false);
+         
+         //
+         var startPanelPoint:Point = mAssetManagerPanel.ManagerToPanel (new Point (mLastX, mLastY));
+         var endPanelPoint:Point = mAssetManagerPanel.ManagerToPanel (new Point (mCurrentX, mCurrentY));
+         dx = endPanelPoint.x - startPanelPoint.x;
+         dy = endPanelPoint.y - startPanelPoint.y;
+         
+         mAssetManagerPanel.MoveScaleRotateFlipHandlers (dx, dy);
+         
+         //
+         
          mLastX = mCurrentX;
          mLastY = mCurrentY;
-         
-         mAssetManagerPanel.MoveSelectedAssets (mMoveBodyTexture, dx, dy, false);
          
          super.Process (finished);
       }

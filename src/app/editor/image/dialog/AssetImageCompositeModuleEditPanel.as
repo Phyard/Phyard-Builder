@@ -176,7 +176,7 @@ package editor.image.dialog {
             //   break;
             default:
             {
-               return false;
+               return super.OnKeyDownInternal (keyCode, ctrlHold, shiftHold);
             }
          }
          

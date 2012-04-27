@@ -242,9 +242,17 @@ package editor.entity.dialog {
             case 68: // D
                DeleteSelectedEntities ();
                break;
+            case 187:// +
+            case Keyboard.NUMPAD_ADD:
+               AlignCenterSelectedEntities ();
+               break;
+            case 189:// -
+            case Keyboard.NUMPAD_SUBTRACT:
+               RoundPositionForSelectedEntities ();
+               break;
             default:
             {
-               return false;
+               return super.OnKeyDownInternal (keyCode, ctrlHold, shiftHold);
             }
          }
          
@@ -1017,10 +1025,7 @@ package editor.entity.dialog {
       
       public function DeleteSelectedEntities ():void
       {
-         if (mScene.DeleteSelectedAssets ())
-         {
-            CreateUndoPoint ("Delete");
-         }
+         DeleteSelectedAssets ();
       }
       
       // move to top/bottom 
@@ -2315,6 +2320,106 @@ package editor.entity.dialog {
          
          if (selectedEntities.length > 0)
             CreateUndoPoint ("Modify collid-connected proeprty for " + selectedEntities.length + " joints");
+      }
+      
+//============================================================================
+//   entity links
+//============================================================================
+      
+      public function AlignCenterSelectedEntities ():void
+      {
+         // try to find the largest circle and set its position as target position, 
+         // if no circle found, set the first joint anchor as target position,
+         // 
+         
+         var entities:Array = mScene.GetSelectedAssets ();
+         var entity:Entity;
+         var i:int;
+         var centerX:Number;
+         var centerY:Number;
+         var maxArea:Number = 0;
+         var area:Number;
+         var numShapes:int = 0;
+         var circleRadius:Number;
+         var numAnchors:int = 0;
+         for (i = 0; i < entities.length; ++ i)
+         {
+            entity = entities [i] as Entity;
+            if (entity is EntityVectorShapeCircle)
+            {
+               ++ numShapes;
+               circleRadius = (entity as EntityVectorShapeCircle).GetRadius ();
+               area = Math.PI * circleRadius * circleRadius;
+               if ( area > maxArea )
+               {
+                  maxArea = area;
+                  centerX = entity.GetPositionX ();
+                  centerY = entity.GetPositionY ();
+               }
+            }
+            else if (entity is EntityVectorShapeRectangle)
+            {
+               ++ numShapes;
+               area = 4 * (entity as EntityVectorShapeRectangle).GetHalfWidth () * (entity as EntityVectorShapeRectangle).GetHalfHeight ();
+               if ( area > maxArea )
+               {
+                  maxArea = area;
+                  centerX = entity.GetPositionX ();
+                  centerY = entity.GetPositionY ();
+               }
+            }
+            else if (entity is SubEntityJointAnchor)
+            {
+               if (numShapes == 0 && numAnchors == 0)
+               {
+                  centerX = entity.GetPositionX ();
+                  centerY = entity.GetPositionY ();
+               }
+               
+               ++ numAnchors;
+            }
+         }
+         
+         if (numShapes + numAnchors > 1)
+         {
+            for (i = 0; i < entities.length; ++ i)
+            {
+               entity = entities [i] as Entity;
+               if (entity is EntityVectorShapeCircle || entity is EntityVectorShapeRectangle || entity is SubEntityJointAnchor)
+               {
+                  entity.Move (centerX - entity.GetPositionX (), centerY - entity.GetPositionY ());
+                  entity.OnTransformIntentDone ();
+               }
+            }
+            
+            CreateUndoPoint ("Coincide entity centers");
+            
+            OnAssetSelectionsChanged ();
+         }
+      }
+      
+      public function RoundPositionForSelectedEntities ():void
+      {
+         var entities:Array = mScene.GetSelectedAssets ();
+         var entity:Entity;
+         var i:int;
+         var posX:Number;
+         var posY:Number;
+         for (i = 0; i < entities.length; ++ i)
+         {
+            entity = entities [i] as Entity;
+            posX = Math.round (entity.GetPositionX ());
+            posY = Math.round (entity.GetPositionY ());
+            entity.SetPosition (posX, posY);
+            entity.OnTransformIntentDone ();
+         }
+         
+         if (entities.length > 0)
+         {
+            CreateUndoPoint ("Round entity positons");
+            
+            OnAssetSelectionsChanged ();
+         }
       }
       
 //============================================================================

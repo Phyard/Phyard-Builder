@@ -5,6 +5,7 @@ package editor.display.control {
    import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableDefinition;
    import editor.trigger.FunctionDeclaration;
+   import editor.trigger.FunctionDeclaration_Core;
    import editor.trigger.FunctionDeclaration_Custom;
    import editor.trigger.FunctionCalling;
    import editor.trigger.ValueSource;
@@ -27,7 +28,7 @@ package editor.display.control {
             
             if (! mInfo.mIsValid)
             {
-               mInfo.mHtmlText = "<font color='#A0A0A0'>" + mHtmlText + "</font>"
+               mInfo.mHtmlText = "<font color='#A0A0A0'>" + mHtmlText + "</font>";
             }
             
             mInfo.mIndentChanged = false;
@@ -83,6 +84,7 @@ package editor.display.control {
       {
          mFuncDeclaration = funcDeclaration;
          mInfo.mFunctionId = funcDeclaration.GetID ();
+         mInfo.mIsCoreDeclaration = mFuncDeclaration is FunctionDeclaration_Core;
          
          if (mFuncDeclaration is FunctionDeclaration_Custom)
          {

@@ -79,10 +79,13 @@ package editor.image {
          }
       }
       
-      protected var mMenuItemCreateCompositeModule:ContextMenuItem = new ContextMenuItem  (IsSequencedModuleManager () ? "Create New Sequenced Module" : "Create New Assembled Module", true);
+      protected var mMenuItemCreateCompositeModule:ContextMenuItem = null;
 
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
+         if (mMenuItemCreateCompositeModule == null)
+            mMenuItemCreateCompositeModule = new ContextMenuItem  (IsSequencedModuleManager () ? "Create New Sequenced Module" : "Create New Assembled Module", true);
+         
          mMenuItemCreateCompositeModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateCompositeModule);
 
          customMenuItemsStack.push (mMenuItemCreateCompositeModule);

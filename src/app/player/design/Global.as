@@ -496,9 +496,11 @@ package player.design
          
          if (mSounds == null)
          {
+            var soundId:int;
+            
             mSounds = new Array (soundDefines.length);
             
-            for (var soundId:int = 0; soundId < soundDefines.length; ++ soundId)
+            for (soundId = 0; soundId < soundDefines.length; ++ soundId)
             {
                var soundDefine:Object = soundDefines [soundId];
                
@@ -509,6 +511,16 @@ package player.design
                //soundDefine.mName
                sound.SetAttributeBits (soundDefine.mAttributeBits);
                sound.SetNumSamples (soundDefine.mNumSamples);
+               
+               // bugs. Must put in a seperated loop.
+               //sound.SetFileDataAndLoad (soundDefine.mFileData, OnLoadSoundDone, OnLoadSoundError);
+            }
+            
+            for (soundId = 0; soundId < soundDefines.length; ++ soundId)
+            {
+               var soundDefine:Object = soundDefines [soundId];
+               var sound:Sound = mSounds [soundId] as Sound;
+               
                sound.SetFileDataAndLoad (soundDefine.mFileData, OnLoadSoundDone, OnLoadSoundError);
             }
          }
@@ -592,7 +604,7 @@ package player.design
                pending = true;
             }
          }
-         
+
          for (var soundId:int = 0; soundId < mSounds.length; ++ soundId)
          {
             var sound:Sound = mSounds [soundId] as Sound;

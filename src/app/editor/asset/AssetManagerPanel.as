@@ -29,6 +29,7 @@ package editor.asset {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    
+   import editor.display.dialog.*;
    import editor.display.sprite.CursorCrossingLine;
    import editor.display.sprite.EditingEffect;
    import editor.display.sprite.EffectCrossingAiming;
@@ -370,6 +371,41 @@ package editor.asset {
          theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
+      private var mMoveSelectionsAccuratelyMenuItem:ContextMenuItem = null;
+      
+      protected function SetMoveSelectionsAccuratelyMenuItemShown (shown:Boolean):void
+      {
+         if (shown)
+         {
+            if (mAssetManager == null || (mAssetManager.GetLayout () != null && (! mAssetManager.GetLayout ().SupportMoveSelectedAssets ())))
+            {
+               shown = false;
+            }
+         }
+          
+         if (shown)
+         {
+            if (mMoveSelectionsAccuratelyMenuItem == null)
+            {
+               mMoveSelectionsAccuratelyMenuItem = new ContextMenuItem ("Move Selection(s) Accyrately ...", true);
+               mMoveSelectionsAccuratelyMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnMoveSelectionsAccurately);
+            }
+            
+            if (contextMenu.customItems.indexOf (mMoveSelectionsAccuratelyMenuItem) < 0)
+            {
+               contextMenu.customItems.unshift (mMoveSelectionsAccuratelyMenuItem);
+            }
+         }
+         else if (mMoveSelectionsAccuratelyMenuItem != null)
+         {
+            var index:int = contextMenu.customItems.indexOf (mMoveSelectionsAccuratelyMenuItem);
+            if (index >= 0)
+            {
+               contextMenu.customItems.splice (index, 1);
+            }
+         }
+      }
+      
 //==================================================================================
 // intent
 //==================================================================================
@@ -657,6 +693,29 @@ package editor.asset {
       // return true to indicate handled successfully
       protected function OnKeyDownInternal (keyCode:int, ctrlHold:Boolean, shiftHold:Boolean):Boolean
       {
+         if (mAssetManager != null && (mAssetManager.GetLayout () == null || mAssetManager.GetLayout ().SupportMoveSelectedAssets ()))
+         {
+            switch (keyCode)
+            {
+               case Keyboard.LEFT:
+                  MoveSelectedAssets (ctrlHold, -1, 0, true, false);
+                  
+                  return true;
+               case Keyboard.RIGHT:
+                  MoveSelectedAssets (ctrlHold, 1, 0, true, false);
+                  
+                  return true;
+               case Keyboard.UP:
+                  MoveSelectedAssets (ctrlHold, 0, -1, true, false);
+                  
+                  return true;
+               case Keyboard.DOWN:
+                  MoveSelectedAssets (ctrlHold, 0, 1, true, false);
+                  
+                  return true;
+            }
+         }
+         
          return false;
       }
       
@@ -682,6 +741,7 @@ package editor.asset {
             return;
          
          SetScaleRotateFlipHandlersVisible (mAssetManager.GetNumSelectedAssets () > 0);
+         SetMoveSelectionsAccuratelyMenuItemShown (mAssetManager.GetNumSelectedAssets () > 0);
          
          if (mAssetManager.GetNumSelectedAssets () == 1)
          {
@@ -844,27 +904,19 @@ package editor.asset {
             flipHorizontallyHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelecteds);
             flipVerticallyHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelectedsVertically);
             
-            var contextMenuFlipHorizontally:ContextMenu = new ContextMenu ();
-            contextMenuFlipHorizontally.hideBuiltInItems ();
-            contextMenuFlipHorizontally.builtInItems.print = true;
-            flipHorizontallyHandler.contextMenu = contextMenuFlipHorizontally;
-            var menuItemFlipSelectedsPositionsOnly:ContextMenuItem = new ContextMenuItem("Horizontal-Flip Selected Entities (Positions Only)");
-            menuItemFlipSelectedsPositionsOnly.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelecteds_PositionsOnly);
-            contextMenuFlipHorizontally.customItems.push (menuItemFlipSelectedsPositionsOnly);
-            var menuItemFlipSelectedsWithoutPositions:ContextMenuItem = new ContextMenuItem("Horizontal-Flip Selected Entities (Without Flipping Positions)");
-            menuItemFlipSelectedsWithoutPositions.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelecteds_WithoutPositions);
-            contextMenuFlipHorizontally.customItems.push (menuItemFlipSelectedsWithoutPositions);
+            DisplayObjectUtil.AppendContextMenuItem (rotateBothHandler, "Rotate Selection(s) Accurately", OnRotateSelectionsAccurately);
+            DisplayObjectUtil.AppendContextMenuItem (rotatePosHandler, "Rotate Selection(s) Accurately (Positions Only)", OnRotateSelectionsAccurately_PositionsOnly);
+            DisplayObjectUtil.AppendContextMenuItem (rotateSelfHandler, "Rotate Selection(s) Accurately (Without Rotate Positions)", OnRotateSelectionsAccurately_WithoutPositions);
             
-            var contextMenuFlipVertically:ContextMenu = new ContextMenu ();
-            contextMenuFlipVertically.hideBuiltInItems ();
-            contextMenuFlipVertically.builtInItems.print = true;
-            flipVerticallyHandler.contextMenu = contextMenuFlipVertically;
-            var menuItemFlipSelectedsPositionsOnlyVertically:ContextMenuItem = new ContextMenuItem("Vertical-Flip Selected Entities (Positions Only)");
-            menuItemFlipSelectedsPositionsOnlyVertically.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelectedsVertically_PositionsOnly);
-            contextMenuFlipVertically.customItems.push (menuItemFlipSelectedsPositionsOnlyVertically);
-            var menuItemFlipSelectedsWithoutPositionsVertically:ContextMenuItem = new ContextMenuItem("Vertical-Flip Selected Entities (Without Flipping Positions)");
-            menuItemFlipSelectedsWithoutPositionsVertically.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnFlipSelectedsVertically_WithoutPositions);
-            contextMenuFlipVertically.customItems.push (menuItemFlipSelectedsWithoutPositionsVertically);
+            DisplayObjectUtil.AppendContextMenuItem (scaleBothHandler, "Scale Selection(s) Accurately", OnScaleSelectionsAccurately);
+            DisplayObjectUtil.AppendContextMenuItem (scalePosHandler, "Scale Selection(s) Accurately (Positions Only)", OnScaleSelectionsAccurately_PositionsOnly);
+            DisplayObjectUtil.AppendContextMenuItem (scaleSelfHandler, "Scale Selection(s) Accurately (Without Scale Positions)", OnScaleSelectionsAccurately_WithoutPositions);
+            
+            DisplayObjectUtil.AppendContextMenuItem (flipHorizontallyHandler, "Horizontal-Flip Selection(s) (Positions Only)", OnFlipSelecteds_PositionsOnly);
+            DisplayObjectUtil.AppendContextMenuItem (flipHorizontallyHandler, "Horizontal-Flip Selection(s) (Without Flipping Positions", OnFlipSelecteds_WithoutPositions);
+            
+            DisplayObjectUtil.AppendContextMenuItem (flipVerticallyHandler, "Vertical-Flip Selection(s) (Positions Only)", OnFlipSelectedsVertically_PositionsOnly);
+            DisplayObjectUtil.AppendContextMenuItem (flipVerticallyHandler, "Vertical-Flip Selection(s) (Without Flipping Positions", OnFlipSelectedsVertically_WithoutPositions);
             
             var halfHandlerSize:Number = 6;
             var handlerRadius:Number = halfHandlerSize * 1.2;
@@ -943,8 +995,11 @@ package editor.asset {
       
       public function MoveScaleRotateFlipHandlers (dx:Number, dy:Number):void
       {
-         mScaleRotateFlipHandlersContainer.x += dx;
-         mScaleRotateFlipHandlersContainer.y += dy;
+         if (mScaleRotateFlipHandlersContainer != null)
+         {
+            mScaleRotateFlipHandlersContainer.x += dx;
+            mScaleRotateFlipHandlersContainer.y += dy;
+         }
       }
       
       protected function OnStartMoveScaleRotateFlipHandlers(event:MouseEvent):void
@@ -1080,6 +1135,88 @@ package editor.asset {
          FlipSelectedAssets (false, managerPoint.x, false, true, true);
       }
       
+      private function OnMoveSelectionsAccurately (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateMoveDialog, MoveSelectionsAccurately, null);
+      }
+      
+      private function MoveSelectionsAccurately (params:Object):void
+      {
+         MoveSelectedAssets (false, params.mOffsetX, params.mOffsetY, true);
+      }
+      
+      private function OnRotateSelectionsAccurately (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateRotateDialog, RotateSelectionsAccurately, null);
+      }
+      
+      private function RotateSelectionsAccurately (params:Object):void
+      {
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         RotateSelectedAssets (false, managerPoint.x, managerPoint.y, params.mRotationAngle * Define.kDegrees2Radians, true, true, true);   
+      }
+      
+      private function OnRotateSelectionsAccurately_PositionsOnly (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateRotateDialog, RotateSelectionsAccurately_PositionsOnly, null);
+      }
+      
+      private function RotateSelectionsAccurately_PositionsOnly (params:Object):void
+      {
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         RotateSelectedAssets (false, managerPoint.x, managerPoint.y, params.mRotationAngle * Define.kDegrees2Radians, true, false, true);   
+      }
+      
+      private function OnRotateSelectionsAccurately_WithoutPositions (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateRotateDialog, RotateSelectionsAccurately_WithoutPositions, null);
+      }
+      
+      private function RotateSelectionsAccurately_WithoutPositions (params:Object):void
+      {
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         RotateSelectedAssets (false, managerPoint.x, managerPoint.y, params.mRotationAngle * Define.kDegrees2Radians, false, true, true);   
+      }
+      
+      private function OnScaleSelectionsAccurately (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateScaleDialog, ScaleSelectionsAccurately, null);
+      }
+      
+      private function ScaleSelectionsAccurately (params:Object):void
+      {
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         ScaleSelectedAssets (false, managerPoint.x, managerPoint.y, params.mScaleRatio, true, true, true);
+      }
+      
+      private function OnScaleSelectionsAccurately_PositionsOnly (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateScaleDialog, ScaleSelectionsAccurately_PositionsOnly, null);
+      }
+      
+      private function ScaleSelectionsAccurately_PositionsOnly (params:Object):void
+      {
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         ScaleSelectedAssets (false, managerPoint.x, managerPoint.y, params.mScaleRatio, true, false, true);
+      }
+      
+      private function OnScaleSelectionsAccurately_WithoutPositions (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateScaleDialog, ScaleSelectionsAccurately_WithoutPositions, null);
+      }
+      
+      private function ScaleSelectionsAccurately_WithoutPositions (params:Object):void
+      {
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         
+         ScaleSelectedAssets (false, managerPoint.x, managerPoint.y, params.mScaleRatio, false, true, true);
+      }
+      
 //=================================================================================
 //   edit selected assets
 //=================================================================================
@@ -1126,11 +1263,13 @@ package editor.asset {
             UpdateInterface ();
             RepaintAllAssetLinks ();
             
+            OnAssetSelectionsChanged ();
+            
             CreateUndoPoint ("Delete selection(s)");
          }
       }
       
-      public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
+      public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean, createUndoPointIfUpdateSelectionProxy:Boolean = true):void
       {
          if (mAssetManager == null)
             return;
@@ -1140,7 +1279,7 @@ package editor.asset {
          UpdateInterface ();
          RepaintAllAssetLinks ();
          
-         if (updateSelectionProxy && (! mIsMouseZeroMoveSinceLastDown))
+         if (updateSelectionProxy && (! mIsMouseZeroMoveSinceLastDown) && createUndoPointIfUpdateSelectionProxy)
          {
             CreateUndoPoint ("Move selection(s)");
          } 

@@ -914,7 +914,7 @@ package editor.asset {
             flipHorizontallyHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelecteds);
             flipVerticallyHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelectedsVertically);
             
-            DisplayObjectUtil.AppendContextMenuItem (handlersBaseCircle, "Move Transform Ring Accurately", OnMoveTransformRingAccurately);
+            DisplayObjectUtil.AppendContextMenuItem (handlersBaseCircle, "Move Transform Ring Accurately ...", OnMoveTransformRingAccurately);
 
             DisplayObjectUtil.AppendContextMenuItem (rotateBothHandler, "Rotate Selection(s) Accurately", OnRotateSelectionsAccurately);
             DisplayObjectUtil.AppendContextMenuItem (rotatePosHandler, "Rotate Selection(s) Accurately (Positions Only)", OnRotateSelectionsAccurately_PositionsOnly);

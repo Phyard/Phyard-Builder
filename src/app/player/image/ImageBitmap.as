@@ -69,7 +69,7 @@ package player.image
          {
             mStatus = 1;
             
-            onLoadDone (this);
+            //onLoadDone (this); // not essential, will cause bugs
          }
          else
          {

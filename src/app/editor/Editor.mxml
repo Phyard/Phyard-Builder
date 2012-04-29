@@ -1301,6 +1301,7 @@
             var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld);
             var newWorld:World = new World ();
             newWorld = DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
+               // !!! here may be some bugs: somewhere will call EditorContext.GetCurrentWorld, which is not the newWorld
             
             var selectedEntities:Array = mWorld.GetEntityContainer ().GetSelectedAssets ();
             

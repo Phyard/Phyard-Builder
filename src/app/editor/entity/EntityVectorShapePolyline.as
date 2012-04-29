@@ -40,7 +40,9 @@ package editor.entity {
       public function EntityVectorShapePolyline (container:Scene)
       {
          super (container, mVectorShapePolyline);
+         SetStatic (true);
          SetFilledColor (Define.ColorStaticObject);
+         SetCurveThickness (0);
       }
 
       override public function GetTypeName ():String

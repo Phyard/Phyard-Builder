@@ -59,8 +59,8 @@ package editor.asset {
          
          if (! passively)
          {
-            //if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
-            if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDown ())
+            //if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDown ())
+            if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
                mAssetManagerPanel.PointSelectAsset (mCurrentX, mCurrentY); //mAssetManager.mouseX, mAssetManager.mouseY);
          }
          

@@ -35,7 +35,11 @@ package editor.entity {
       public function EntityVectorShapePolygon (container:Scene)
       {
          super (container, mVectorShapePolygon);
+         SetStatic (true);
          SetFilledColor (Define.ColorStaticObject);
+         SetDrawBorder (false);
+         SetBuildBorder (false);
+         SetBorderThickness (0);
       }
 
       override public function GetTypeName ():String

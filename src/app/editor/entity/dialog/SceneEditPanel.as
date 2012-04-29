@@ -294,26 +294,19 @@ package editor.entity.dialog {
          switch (entityType)
          {
             case "RectangleShape":
-               mScene.CreateEntityVectorShapeRectangle (params.mAiType, true);
+               var rectangle:EntityVectorShapeRectangle = mScene.CreateEntityVectorShapeRectangle (params.mAiType, true);
                SetCurrentIntent (new IntentDrag (OnDragCreatingShape, OnCreatingCancelled));
                break;
             case "CircleShape":
-               mScene.CreateEntityVectorShapeCircle (params.mAiType, true);
+               var circle:EntityVectorShapeCircle = mScene.CreateEntityVectorShapeCircle (params.mAiType, true);
                SetCurrentIntent (new IntentDrag (OnDragCreatingShape, OnCreatingCancelled));
                break;
             case "PolygonShape":
-               var polygon:EntityVectorShapePolygon = mScene.CreateEntityVectorShapePolygon (params.mAiType, true);
-               polygon.SetStatic (true);
-               polygon.SetDrawBorder (false);
-               polygon.SetBuildBorder (false);
-               polygon.SetBorderThickness (0);
-               
+               mScene.CreateEntityVectorShapePolygon (params.mAiType, true);
                SetCurrentIntent (new IntentTaps (this, OnCreatingShape, OnTapsCreatingShape, OnCreatingCancelled));
                break;
             case "PolylineShape":
-               var polyline:EntityVectorShapePolyline = mScene.CreateEntityVectorShapePolyline (params.mAiType, true);
-               polyline.SetStatic (true);
-               polyline.SetCurveThickness (0);
+               mScene.CreateEntityVectorShapePolyline (params.mAiType, true);
                SetCurrentIntent (new IntentTaps (this, OnCreatingShape, OnTapsCreatingShape, OnCreatingCancelled));
                break;
             case "HingeJoint":

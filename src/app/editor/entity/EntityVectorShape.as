@@ -742,7 +742,8 @@ package editor.entity {
          {
             SetAiType (Define.ShapeAiType_Movable);
             SetFilledColor (Define.ColorMovableObject);
-            SetDrawBorder (true);
+            //SetDrawBorder (true);
+            //SetBuildBorder (true);
             UpdateAppearance ();
          }
 
@@ -750,28 +751,43 @@ package editor.entity {
          {
             SetAiType (Define.ShapeAiType_Static);
             SetFilledColor (Define.ColorStaticObject);
-            SetDrawBorder (false);
+            //SetDrawBorder (false);
+            //SetBuildBorder (false);
             UpdateAppearance ();
          }
 
          super.SetStatic (isStatic);
       }
       
-      //
-      public function Validate ():void
+      // for creating stage
+      public function ValidateAfterJustCreated ():void
       {
-         if (mAiType == Define.ShapeAiType_Movable)
-         {
-            SetStatic (false);
-            SetFilledColor (Define.ColorMovableObject);
-            SetDrawBorder (true);
-         }
+         SetBorderThickness (0);
+         SetBuildBorder (false);
          
-         if (mAiType == Define.ShapeAiType_Static)
+         if (mAiType != Define.ShapeAiType_Unknown)
          {
-            SetStatic (true);
-            SetFilledColor (Define.ColorStaticObject);
-            SetDrawBorder (false);
+            SetFilledColor (Define.GetShapeFilledColor (mAiType));
+            
+            if (mAiType == Define.ShapeAiType_Static)
+            {
+               SetStatic (true);
+            }
+            else if (mAiType == Define.ShapeAiType_Movable)
+            {
+               SetStatic (false);
+            }
+            else if (mAiType == Define.ShapeAiType_Breakable)
+            {
+               SetStatic (! (this is EntityVectorShapeCircle));
+            }
+         }
+           
+         SetDrawBorder (! IsStatic ());
+         
+         if (this is EntityVectorShapePolyline)
+         {
+            (this as EntityVectorShapePolyline).SetCurveThickness (IsStatic () ? 0 : 2);
          }
       }
 

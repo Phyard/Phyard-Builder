@@ -603,11 +603,11 @@ package editor.entity {
 
          var circle:EntityVectorShapeCircle = new EntityVectorShapeCircle (this);
          circle.SetAiType (aiType);
-         circle.Validate ();
          addChild (circle);
 
          if (selectIt)
          {
+            circle.ValidateAfterJustCreated ();
             circle.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
             
             circle.SetPosition (mouseX, mouseY);
@@ -624,11 +624,11 @@ package editor.entity {
 
          var rect:EntityVectorShapeRectangle = new EntityVectorShapeRectangle (this);
          rect.SetAiType (aiType);
-         rect.Validate ();
          addChild (rect);
 
          if (selectIt)
          {
+            rect.ValidateAfterJustCreated ();
             rect.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
             
             rect.SetPosition (mouseX, mouseY);
@@ -645,11 +645,11 @@ package editor.entity {
 
          var polygon:EntityVectorShapePolygon = new EntityVectorShapePolygon (this);
          polygon.SetAiType (aiType);
-         polygon.Validate ();
          addChild (polygon);
 
          if (selectIt)
          {
+            polygon.ValidateAfterJustCreated ();
             polygon.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
             
             polygon.SetPosition (mouseX, mouseY);
@@ -666,11 +666,11 @@ package editor.entity {
 
          var polyline:EntityVectorShapePolyline = new EntityVectorShapePolyline (this);
          polyline.SetAiType (aiType);
-         polyline.Validate ();
          addChild (polyline);
 
          if (selectIt)
          {
+            polyline.ValidateAfterJustCreated ();
             polyline.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
             
             polyline.SetPosition (mouseX, mouseY);

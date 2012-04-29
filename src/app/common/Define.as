@@ -576,6 +576,7 @@ package common {
             case ShapeAiType_Bomb:
             case ShapeAiType_BombParticle:
                return ColorBombObject;
+            case ShapeAiType_Unknown:
             default:
                return 0xFFFFFF;
          }

@@ -255,9 +255,12 @@ package player.world {
       
       public function UpdateImageModuleAppearances ():void
       {
-         mEntityList.UpdateImageModuleAppearances ();
-         
-         Repaint ();
+         if (mInitialized)
+         {
+            mEntityList.UpdateImageModuleAppearances ();
+            
+            Repaint ();
+         }
       }
 
 //==============================================================================
@@ -623,9 +626,16 @@ package player.world {
       {
          return mShouldInitRuntimeCteatedEntitiesManually;
       }
+      
+      private var mInitialized:Boolean = false;
 
       public function Initialize ():void
       {
+         if (mInitialized)
+            return;
+         
+         mInitialized = true;
+         
       //------------------------------------
       // init some structures
       //------------------------------------

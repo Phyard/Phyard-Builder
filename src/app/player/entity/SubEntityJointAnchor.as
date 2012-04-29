@@ -186,12 +186,19 @@ package player.entity {
       
       private function ConfirmRebuildAppearanceFunction ():void
       {
+trace ("ConfirmRebuildAppearanceFunction " + new Error ().getStackTrace ());
          if (mJoint is EntityJointHinge)
          {
             if (mAnchorIndex == 0)
+            {
+trace ("111");
                mRebuildAppearanceFunc = RebuildAppearance_HingeOuter;
+            }
             else
+            {
+trace ("222 mAnchorIndex = " + mAnchorIndex);
                mRebuildAppearanceFunc = RebuildAppearance_HingeInner;
+            }
          }
          else if (mJoint is EntityJointSlider)
          {

@@ -365,6 +365,7 @@ package player.entity {
       // maybe it is a good idea to write a new hinge joint, which is like other joints, the 2 anchors can be different.
       protected function ConfirmConnectedShapes_OneAnchor (anchorWorldPhysicsX:Number, anchorWorldPhysicsY:Number):void
       {
+trace ("ConfirmConnectedShapes_OneAnchor " + new Error ().getStackTrace ());
          // ...
          var shapeIndex1:int = mAnchor1.mAnchorIndex;
          var shapeIndex2:int = mAnchor2.mAnchorIndex;

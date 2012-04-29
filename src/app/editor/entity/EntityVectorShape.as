@@ -293,7 +293,7 @@ package editor.entity {
          //shape.SetBuildBorder (IsBuildBorder ());
          
          shape.SetBodyTextureModule (GetBodyTextureModule ());
-         shape.SetBodyTextureTransform (GetBodyTextureTransform ().Clone ()); // must be clone
+         shape.SetBodyTextureTransform (GetBodyTextureTransform () == null ? null : GetBodyTextureTransform ().Clone ()); // must be clone
       }
 
 //======================================================

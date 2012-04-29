@@ -218,6 +218,8 @@ package editor.entity.dialog {
       // return true to indicate handled successfully
       override protected function OnKeyDownInternal (keyCode:int, ctrlHold:Boolean, shiftHold:Boolean):Boolean
       {
+         var handled:Boolean = true;
+         
          switch (keyCode)
          {
             case Keyboard.ESCAPE:
@@ -239,7 +241,11 @@ package editor.entity.dialog {
                   CloneSelectedEntities ();
                break;
             case 67: // C
-               CloneSelectedEntities ();
+               if (ctrlHold)
+                  handled = false;
+               else
+                  CloneSelectedEntities ();
+               
                break;
             case 68: // D
                DeleteSelectedEntities ();
@@ -257,11 +263,15 @@ package editor.entity.dialog {
                break;
             default:
             {
-               return super.OnKeyDownInternal (keyCode, ctrlHold, shiftHold);
+               handled = false;
+               break;
             }
          }
          
-         return true;
+         if (handled)
+            return true;
+         
+         return super.OnKeyDownInternal (keyCode, ctrlHold, shiftHold);
       }
 
 //=====================================================================

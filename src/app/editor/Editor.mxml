@@ -235,7 +235,9 @@
                      horizontalScrollPolicy="off" verticalScrollPolicy="off"
                      horizontalGap="0" verticalGap="0" borderThickness="1">
                <!-- it seems flex has bug. Replacing the panels dynamically at runtime will crush the app. -->
-               <mx:VBox id="Box_SceneEdit" height="100%" width="100%"><entity:SceneEditPanel id="mCurrentSceneEditPanel" height="100%" width="100%" /></mx:VBox>
+               <mx:VBox id="Box_SceneEdit" height="100%" width="100%">
+                  <entity:SceneEditPanel id="mCurrentSceneEditPanel" height="100%" width="100%" />
+               </mx:VBox>
                <mx:VBox id="Box_ScenePlay" height="100%" width="100%"><entity:ScenePlayPanel id="mCurrentScenePlayPanel" height="100%" width="100%" /></mx:VBox>
             </mx:ViewStack>
             <mx:ViewStack id="ViewStack_StatusBar" borderStyle="solid" creationPolicy="all"
@@ -1196,14 +1198,19 @@
             for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
             {
                entities = (mWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
-               entitiesToSelect = entitiesToSelect.concat (entities);
                
                for (j = 0; j < entities.length; ++ j)
                {
                   entity = entities [j] as Entity;
-                  centerX += entity.GetPositionX ();
-                  centerY += entity.GetPositionY ();
-                  ++ numSelecteds;
+                  
+                  if (entitiesToSelect.indexOf (entity) < 0)
+                  {
+                     entitiesToSelect.push(entity);
+                     
+                     centerX += entity.GetPositionX ();
+                     centerY += entity.GetPositionY ();
+                     ++ numSelecteds;
+                  }
                }
             }
             

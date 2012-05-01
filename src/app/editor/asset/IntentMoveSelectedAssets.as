@@ -8,11 +8,15 @@ package editor.asset {
       
       protected var mMoveBodyTexture:Boolean;
       
-      public function IntentMoveSelectedAssets (assetManagerPanel:AssetManagerPanel, moveBodyTexture:Boolean)
+      protected var mPerformPointSelectOnUpIfZeroMouseMove:Boolean;
+      
+      public function IntentMoveSelectedAssets (assetManagerPanel:AssetManagerPanel, moveBodyTexture:Boolean, performPointSelectOnUpIfZeroMouseMove:Boolean)
       {
          mAssetManagerPanel = assetManagerPanel;
          
          mMoveBodyTexture = moveBodyTexture;
+         
+         mPerformPointSelectOnUpIfZeroMouseMove = performPointSelectOnUpIfZeroMouseMove;
       }
       
    //================================================================
@@ -60,7 +64,8 @@ package editor.asset {
          if (! passively)
          {
             //if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDown ())
-            if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
+            //if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
+            if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDown () && (mPerformPointSelectOnUpIfZeroMouseMove || mAssetManagerPanel.IsCookieSelectMode ()))
                mAssetManagerPanel.PointSelectAsset (mCurrentX, mCurrentY); //mAssetManager.mouseX, mAssetManager.mouseY);
          }
          

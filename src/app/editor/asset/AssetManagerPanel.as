@@ -456,6 +456,11 @@ package editor.asset {
          mInCookieSelectMode = cookieMode;
       }
       
+      public function IsCookieSelectMode ():Boolean
+      {
+         return mInCookieSelectMode;
+      }
+      
       public function SetShowAllAssetIDs (show:Boolean):void
       {
          if (mShowAllAssetIDs != show)
@@ -560,7 +565,7 @@ package editor.asset {
          
          if (mAssetManager.AreSelectedAssetsContainingPoint (managerX, managerY))
          {
-            SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown));
+            SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, true));
             mCurrentIntent.OnMouseDown (managerX, managerY);
           
             return;
@@ -585,7 +590,7 @@ package editor.asset {
 
          if (PointSelectAsset (managerX, managerY))
          {
-            SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown));
+            SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, false));
             mCurrentIntent.OnMouseDown (managerX, managerY);
    
             return;

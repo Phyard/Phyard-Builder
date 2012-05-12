@@ -276,7 +276,7 @@ package common.trigger {
       public static const CoreApiId_610:int = 610; // design
       public static const CoreApiId_612:int = 612; // design
       public static const CoreApiId_614:int = 614; // design
-      public static const CoreApiId_615:int = 615; // design
+      public static const CoreApiId_615:int = 615; // gesture
 
       public static const CoreApiId_700:int = 700; // world
 

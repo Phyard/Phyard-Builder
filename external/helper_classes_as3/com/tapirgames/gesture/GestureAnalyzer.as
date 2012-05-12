@@ -4,6 +4,14 @@ package com.tapirgames.gesture {
    {
       public static const kRadiansToDegrees:Number = 180.0 / Math.PI;
       
+      // DON'T change these names, they are also used in player.world plugin (in fact, GesttureIDs.as)
+      public static const kGestureName_LongPress:String = "longpress";
+      public static const kGestureName_Line:String = "line";
+      public static const kGestureName_LineBack:String = "lineback";
+      public static const kGestureName_Arrow:String = "arrow";
+      public static const kGestureName_Triangle:String = "triangle";
+      public static const kGestureName_Circle:String = "circle";
+      
    //===================================================
 
       public function GestureAnalyzer (minGestureSize:Number, minPointDistance:Number, minTimerInterval:Number = 10.0, maxTimeDuration:Number = 2000.0, maxPointCount:int = 500):void
@@ -197,11 +205,13 @@ package com.tapirgames.gesture {
       private var mObbHeight:Number;
       private var mObbDiagLength:Number;
       
-      private function NewAnalyzeResult (type:String, angle:Number, message:String):Object
+      private function NewAnalyzeResult (type:String, angle:Number, message:String, isCW:Boolean = true):Object
       {
+//trace ("isCW = " + isCW + " ***** " + new Error ().getStackTrace ());
          return {
-                   mGestureType: type, 
-                   mGestureAngle: angle, 
+                   mGestureType: type, // the name "mGestureType" is also used at the end of Analyze
+                   mGestureAngle: angle, // the name of "mGestureAngle" is also used at the end of Analyze
+                   mIsClockWise: isCW,
                    mAnalyzeMessage: message,
                    
                    mNumPoints: mNumPoints
@@ -214,7 +224,10 @@ package com.tapirgames.gesture {
 
          if (mStartPoint == mEndPoint) // 0 or 1 point
          {
-            return NewAnalyzeResult (null, NaN, "too few points");
+            if (mEndPoint == null || mEndPoint.mTime < 2000)
+               return NewAnalyzeResult (null, NaN, "too few points");
+            else
+               return NewAnalyzeResult (kGestureName_LongPress, NaN, "one point");
          }
 
          // aabb box
@@ -235,7 +248,7 @@ package com.tapirgames.gesture {
          
          if (GetPointDistance (mStartPoint, mEndPoint) / mEndPoint.mAccumulatedLength > kLengthToAccLengthRatioToFindSegment)
          {
-            return NewAnalyzeResult ("line", angleFromtStartToend, "simplest");
+            return NewAnalyzeResult (kGestureName_Line, angleFromtStartToend, "simplest");
          }
          
          // obb box (http://www.efunda.com/math/leastsquares/lstsqr1dcurve.cfm)
@@ -334,20 +347,20 @@ package com.tapirgames.gesture {
          var numSegments:int = mEndSegment.mIndex + 1;
          
          if (numSegments == 1)
-            return NewAnalyzeResult ("line", GetAbsoluteAngle (mStartSegment.mDx, mStartSegment.mDy), "numSegments == 1");
+            return NewAnalyzeResult (kGestureName_Line, GetAbsoluteAngle (mStartSegment.mDx, mStartSegment.mDy), "numSegments == 1");
          
          if (numSegments == 2)
          {
             var absIncludeAngle:Number = Math.abs (mEndSegment.mDeltaAngle);
             
             if (absIncludeAngle < 35)
-               return NewAnalyzeResult ("line", GetAbsoluteAngle (mStartSegment.mDx, mStartSegment.mDy), "numSegments == 2");
+               return NewAnalyzeResult (kGestureName_Line, GetAbsoluteAngle (mStartSegment.mDx, mStartSegment.mDy), "numSegments == 2");
             
             if (absIncludeAngle > 165)
-               return NewAnalyzeResult ("return", directionAbsoluteAngle, "numSegments == 2");
+               return NewAnalyzeResult (kGestureName_LineBack, directionAbsoluteAngle, "numSegments == 2");
             
             if (absIncludeAngle > 50 && absIncludeAngle < 150)
-               return NewAnalyzeResult ("arrow", directionAbsoluteAngle, "numSegments >= 2");
+               return NewAnalyzeResult (kGestureName_Arrow, directionAbsoluteAngle, "numSegments >= 2", mNumPositiveDeltaAngleSegments > 0);
          }
          
          if ((mObbWidth / mObbDiagLength > 0.3) && (mNumPositiveDeltaAngleSegments * mNumNegativeDeltaAngleSegments == 0))
@@ -357,19 +370,19 @@ package com.tapirgames.gesture {
             if (numSegments >= 3)
             {
                if (absFinalAccumulatedAngle < 190)
-                  return NewAnalyzeResult ("arrow", directionAbsoluteAngle, "numSegments >= 3");
+                  return NewAnalyzeResult (kGestureName_Arrow, directionAbsoluteAngle, "numSegments >= 3", mNumPositiveDeltaAngleSegments > 0);
             }
             
             if (numSegments == 3)
             {
                if (absFinalAccumulatedAngle > 190)
-                  return NewAnalyzeResult ("triangle", invDirectionAbsoluteAngle, "numSegments == 3");
+                  return NewAnalyzeResult (kGestureName_Triangle, directionAbsoluteAngle, "numSegments == 3", mNumPositiveDeltaAngleSegments > 0);
             }
             
             if (numSegments >= 5)
             {
                if (absFinalAccumulatedAngle > 190)
-                  return NewAnalyzeResult ("circle", invDirectionAbsoluteAngle, "numSegments >= 5");
+                  return NewAnalyzeResult (kGestureName_Circle, directionAbsoluteAngle, "numSegments >= 5", mNumPositiveDeltaAngleSegments > 0);
             }
          }
          
@@ -396,18 +409,19 @@ package com.tapirgames.gesture {
          if (accSegmentAngles.length == 0)
             accSegmentAngles.push (0);
          
-         var type:String = FindBestFittedGestureType (deltaSegmentAngles, accSegmentAngles);
+         var result:Object = FindBestFittedGestureType (deltaSegmentAngles, accSegmentAngles);
+         var type:String = result.mGestureType;
          var angle:Number;
-         if (type == "line")
+         if (type == kGestureName_Line)
             angle = angleFromtStartToend;
-         else if (type == "arrow" || type == "return")
+         else if (type == kGestureName_Arrow || type == kGestureName_LineBack || type == kGestureName_Circle || type == kGestureName_Triangle)
             angle = directionAbsoluteAngle;
-         else if (type == "circle" || type == "triangle")
-            angle = invDirectionAbsoluteAngle;
          else
-            angle = NaN;
+            angle = 0; //NaN;
          
-         return NewAnalyzeResult (type, angle, "fitted with standard");
+         result.mGestureAngle = angle;
+         
+         return result;
       }
       
       private var mStartSegment:GestureSegment = null;
@@ -538,7 +552,7 @@ package com.tapirgames.gesture {
             //   point = point.mNextPoint;
             //}
             
-trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle + ", acc angle: " + segment.mAccumulatedAngle);
+//trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle + ", acc angle: " + segment.mAccumulatedAngle);
             
             segment = segment.mNextSegment;
          }
@@ -639,6 +653,7 @@ trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle 
          return kneePoint;
       }
       
+      /*
       private function TraceSegments (title:String):void
       {
          trace ("=================================== segments: " + title);
@@ -654,16 +669,18 @@ trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle 
             segment = segment.mNextSegment;
          }
       }
+      */
       
    //=================================
       
       private static const MaxValidMinError:Number = 128;
       
-      private static function NewGestureStandard (type:String, deltaAngleData:Array, accAngleData:Array, info:String):Object
+      private static function NewGestureStandard (type:String, isCW:Boolean, deltaAngleData:Array, accAngleData:Array, info:String):Object
       {
          var standard:Object = new Object ();
          
          standard.mType = type;
+         standard.mIsCW = isCW;
          standard.mDeltaAngles = deltaAngleData;
          standard.mAccAngles = accAngleData;
          standard.mInfo = info;
@@ -671,27 +688,27 @@ trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle 
          return standard;
       }
       
-      private static var sGestureStandard_Line1     :Object = NewGestureStandard ("line"    , [0         ], [0                    ], "line delta angle");
-      private static var sGestureStandard_Line2     :Object = NewGestureStandard ("line"    , [20        ], [20                   ], "line delta angle");
-      private static var sGestureStandard_Line2N    :Object = NewGestureStandard ("line"    , [-20       ], [-20                  ], "line delta angle");
-      private static var sGestureStandard_Return    :Object = NewGestureStandard ("return"  , [170       ], [170                  ], "go back delta angle");
-      private static var sGestureStandard_ReturnN   :Object = NewGestureStandard ("return"  , [-170      ], [-170                 ], "- go back delta angle");
-      private static var sGestureStandard_Arrow1    :Object = NewGestureStandard ("arrow"   , [150       ], [150                  ], "arrow delta angle");
-      private static var sGestureStandard_Arrow1N   :Object = NewGestureStandard ("arrow"   , [-150      ], [-150                 ], "- arrow delta angle");
-      //private static var sGestureStandard_Arrow2    :Object = NewGestureStandard ("arrow"   , [90        ], [90                   ], "arrow delta angle");
-      //private static var sGestureStandard_Arrow2N   :Object = NewGestureStandard ("arrow"   , [-90       ], [-90                  ], "- arrow delta angle");
-      private static var sGestureStandard_Arrow3    :Object = NewGestureStandard ("arrow"   , [35        ], [35                   ], "arrow delta angle");
-      private static var sGestureStandard_Arrow3N   :Object = NewGestureStandard ("arrow"   , [-35       ], [-35                  ], "- arrow delta angle");
-      private static var sGestureStandard_Triangle1 :Object = NewGestureStandard ("triangle", [120, 120  ], [120, 240             ], "triangle delta angle");
-      private static var sGestureStandard_Triangle1N:Object = NewGestureStandard ("triangle", [-120, -120], [-120, -240           ], "- triangle delta angle");
-      private static var sGestureStandard_Triangle2 :Object = NewGestureStandard ("triangle", [150, 90   ], [150, 240             ], "triangle delta angle");
-      private static var sGestureStandard_Triangle2N:Object = NewGestureStandard ("triangle", [-150, -90 ], [-150, -240           ], "- triangle delta angle");
-      private static var sGestureStandard_Triangle3 :Object = NewGestureStandard ("triangle", [70, 150   ], [70, 220              ], "triangle delta angle");
-      private static var sGestureStandard_Triangle3N:Object = NewGestureStandard ("triangle", [-70, -150 ], [-70, -220            ], "- triangle delta angle");
-      private static var sGestureStandard_Circle1    :Object = NewGestureStandard ("circle"  , [75        ], [75, 150, 225, 300    ], "circle delta angle");
-      private static var sGestureStandard_Circle1N   :Object = NewGestureStandard ("circle"  , [-75       ], [-75, -150, -225, -300], "- circle delta angle");
-      private static var sGestureStandard_Circle2    :Object = NewGestureStandard ("circle"  , [100       ], [100, 200, 300    ], "circle delta angle");
-      private static var sGestureStandard_Circle2N   :Object = NewGestureStandard ("circle"  , [-100      ], [-100, -200, -300 ], "- circle delta angle");
+      private static var sGestureStandard_Line1     :Object = NewGestureStandard (kGestureName_Line     , true , [0         ], [0                    ], "line delta angle");
+      private static var sGestureStandard_Line2     :Object = NewGestureStandard (kGestureName_Line     , true , [20        ], [20                   ], "line delta angle");
+      private static var sGestureStandard_Line2N    :Object = NewGestureStandard (kGestureName_Line     , false, [-20       ], [-20                  ], "line delta angle");
+      private static var sGestureStandard_Return    :Object = NewGestureStandard (kGestureName_LineBack , true , [170       ], [170                  ], "go back delta angle");
+      private static var sGestureStandard_ReturnN   :Object = NewGestureStandard (kGestureName_LineBack , false, [-170      ], [-170                 ], "- go back delta angle");
+      private static var sGestureStandard_Arrow1    :Object = NewGestureStandard (kGestureName_Arrow    , true , [150       ], [150                  ], "arrow delta angle");
+      private static var sGestureStandard_Arrow1N   :Object = NewGestureStandard (kGestureName_Arrow    , false, [-150      ], [-150                 ], "- arrow delta angle");
+      //private static var sGestureStandard_Arrow2    :Object = NewGestureStandard (kGestureName_Arrow  , true , [90        ], [90                   ], "arrow delta angle");
+      //private static var sGestureStandard_Arrow2N   :Object = NewGestureStandard (kGestureName_Arrow  , false, [-90       ], [-90                  ], "- arrow delta angle");
+      private static var sGestureStandard_Arrow3    :Object = NewGestureStandard (kGestureName_Arrow    , true , [35        ], [35                   ], "arrow delta angle");
+      private static var sGestureStandard_Arrow3N   :Object = NewGestureStandard (kGestureName_Arrow    , false, [-35       ], [-35                  ], "- arrow delta angle");
+      private static var sGestureStandard_Triangle1 :Object = NewGestureStandard (kGestureName_Triangle , true , [120, 120  ], [120, 240             ], "triangle delta angle");
+      private static var sGestureStandard_Triangle1N:Object = NewGestureStandard (kGestureName_Triangle , false, [-120, -120], [-120, -240           ], "- triangle delta angle");
+      private static var sGestureStandard_Triangle2 :Object = NewGestureStandard (kGestureName_Triangle , true , [150, 90   ], [150, 240             ], "triangle delta angle");
+      private static var sGestureStandard_Triangle2N:Object = NewGestureStandard (kGestureName_Triangle , false, [-150, -90 ], [-150, -240           ], "- triangle delta angle");
+      private static var sGestureStandard_Triangle3 :Object = NewGestureStandard (kGestureName_Triangle , true , [70, 150   ], [70, 220              ], "triangle delta angle");
+      private static var sGestureStandard_Triangle3N:Object = NewGestureStandard (kGestureName_Triangle , false, [-70, -150 ], [-70, -220            ], "- triangle delta angle");
+      private static var sGestureStandard_Circle1    :Object = NewGestureStandard (kGestureName_Circle  , true , [75        ], [75, 150, 225, 300    ], "circle delta angle");
+      private static var sGestureStandard_Circle1N   :Object = NewGestureStandard (kGestureName_Circle  , false, [-75       ], [-75, -150, -225, -300], "- circle delta angle");
+      private static var sGestureStandard_Circle2    :Object = NewGestureStandard (kGestureName_Circle  , true , [100       ], [100, 200, 300        ], "circle delta angle");
+      private static var sGestureStandard_Circle2N   :Object = NewGestureStandard (kGestureName_Circle  , false, [-100      ], [-100, -200, -300     ], "- circle delta angle");
       private static var sGestureStandards:Array = [
          sGestureStandard_Line1,
          sGestureStandard_Line2,
@@ -716,12 +733,13 @@ trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle 
          sGestureStandard_Circle2N,
       ];
       
-      private function FindBestFittedGestureType (deltaAngles:Array, accAngles:Array):String
+      private function FindBestFittedGestureType (deltaAngles:Array, accAngles:Array):Object
       {
-trace ("=========================== errors with standards: ");
+//trace ("=========================== errors with standards: ");
          
          var minError:Number = Number.POSITIVE_INFINITY;
          var bestType:String = null;
+         var bestTypeIsCW:Boolean = true;
          
          for each (var standard:Object in sGestureStandards)
          {
@@ -732,12 +750,13 @@ trace ("=========================== errors with standards: ");
             {
                minError = sumError;
                bestType = standard.mType;
+               bestTypeIsCW = standard.mIsCW;
             }
             
-            trace ("Error to standard '" + standard.mType + "'(" + standard.mInfo + "): delta error: " + deltaError + ", accError: " + accError + ", sumError: " + sumError);
+//trace ("Error to standard '" + standard.mType + "'(" + standard.mInfo + "): delta error: " + deltaError + ", accError: " + accError + ", sumError: " + sumError);
          }
          
-         return bestType;
+         return NewAnalyzeResult (bestType, 0, "fitted with standard", bestTypeIsCW); // angle is temp
       }
       
       private static var mErrorsTable:Array = null;

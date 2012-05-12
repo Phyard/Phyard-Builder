@@ -287,6 +287,9 @@ package editor.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnMouseGesture, "OnMouseGestureDone", "When a ,ouse gesture is performed",
                     [
                         new VariableDefinitionNumber ("Gesture Type ID"),
+                        new VariableDefinitionNumber ("Gesture Angle"),
+                        new VariableDefinitionBoolean ("CW/CCW (true/false)"),
+                        new VariableDefinitionString ("Gesture Name"),
                     ]);
 
       // event settings

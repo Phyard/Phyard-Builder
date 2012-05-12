@@ -40,8 +40,14 @@
       if (handlerList == null)
          return;
       
-      var valueSource0:Parameter_Direct = new Parameter_Direct (null);
+      var valueSource3:Parameter_Direct = new Parameter_Direct (null); // name
+      var valueSource2:Parameter_Direct = new Parameter_Direct (null, valueSource3); // cw / ccw
+      var valueSource1:Parameter_Direct = new Parameter_Direct (null, valueSource2); // angle
+      var valueSource0:Parameter_Direct = new Parameter_Direct (null, valueSource1);
       
+      valueSource3.mValueObject = gestureAnalyzeResult.mGestureType;
+      valueSource2.mValueObject = gestureAnalyzeResult.mIsClockWise;
+      valueSource1.mValueObject = gestureAnalyzeResult.mGestureAngle;
       valueSource0.mValueObject = exactGestureId;
       
       RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);

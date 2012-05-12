@@ -55,6 +55,7 @@ package common.trigger {
       public static const ID_SetMouseVisible:int                        = IdPool.CoreApiId_75; // from v1.56
       public static const ID_IsAccelerometerSupported:int                        = IdPool.CoreApiId_76; // from v1.60
       public static const ID_GetAcceleration:int                                 = IdPool.CoreApiId_77; // from v1.60
+      public static const ID_Design_SetMouseGestureEnabled:int            = IdPool.CoreApiId_615; // from v1.60
 
    // string
 
@@ -228,7 +229,6 @@ package common.trigger {
       public static const ID_Design_IsLevelSuccessed:int                         = IdPool.CoreApiId_610;
       public static const ID_Design_IsLevelFailed:int                            = IdPool.CoreApiId_612;
       public static const ID_Design_IsLevelUnfinished:int                        = IdPool.CoreApiId_614;
-      public static const ID_Design_SetMouseGestureEnabled:int                   = IdPool.CoreApiId_615; // from v1.60
 
    // game / world
 

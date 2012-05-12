@@ -70,6 +70,8 @@ package player
                   mPreferredFPS : world.GetPreferredFPS (), // from v1.60
                   mPauseOnFocusLost : world.IsPauseOnFocusLost (), // from v1.60 
                   
+                  RegisterGestureEvent : world.RegisterGestureEvent, // from v1.60
+                  
                   "" : null
                };
             case "SetUiParams":
@@ -88,6 +90,8 @@ package player
                Global.Viewer_IsAccelerometerSupported = params.IsAccelerometerSupported; // from v1.60
                Global.Viewer_GetAcceleration = params.GetAcceleration as Function; // from v1.60
                Global._GetDebugString = params.GetDebugString as Function; // from v1.60
+               
+               Global.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
                
                break;
             default:

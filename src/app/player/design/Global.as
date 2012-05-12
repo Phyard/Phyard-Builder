@@ -79,6 +79,7 @@ package player.design
       public static var Viewer_IsAccelerometerSupported;
       public static var Viewer_GetAcceleration;
       public static var _GetDebugString;
+      public static var Viewer_SetMouseGestureSupported;
       
 //==============================================================================
 // static values

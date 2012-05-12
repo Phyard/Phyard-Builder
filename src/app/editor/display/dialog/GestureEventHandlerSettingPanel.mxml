@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ed="editor.display.control.*"
+      borderStyle="solid" borderThickness="0"
+      width="100%" height="100%" horizontalAlign="center"
+      creationComplete="OnInitPanel()"
+      >
+
+   <!--mx:HBox width="100%" height="150">
+      <ed:KeyboardForSelecting id="KeyboardPanel"/>
+   </mx:HBox-->
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingLeft="15" paddingRight="15" paddingTop="5" paddingBottom="5">
+         <mx:VBox>
+            <mx:CheckBox id="CheckBox_LongPress" label="Long Press"/>
+            <mx:Spacer height="10"/>
+            <mx:CheckBox id="CheckBox_Line0" label="Line Right"/>
+            <mx:CheckBox id="CheckBox_Line45" label="Line Down Right"/>
+            <mx:CheckBox id="CheckBox_Line90" label="Line Down"/>
+            <mx:CheckBox id="CheckBox_Line135" label="Line Down Left"/>
+            <mx:CheckBox id="CheckBox_Line180" label="Line Left"/>
+            <mx:CheckBox id="CheckBox_Line225" label="Line Up Left"/>
+            <mx:CheckBox id="CheckBox_Line270" label="Line Up"/>
+            <mx:CheckBox id="CheckBox_Line315" label="Line Up Right"/>
+         </mx:VBox>
+         <mx:VBox>
+            <mx:CheckBox id="CheckBox_Triangle" label="Triangle"/>
+            <mx:Spacer height="10"/>
+            <mx:CheckBox id="CheckBox_Wedge0" label="Wedge Right"/>
+            <mx:CheckBox id="CheckBox_Wedge45" label="Wedge Down Right"/>
+            <mx:CheckBox id="CheckBox_Wedge90" label="Wedge Down"/>
+            <mx:CheckBox id="CheckBox_Wedge135" label="Wedge Down Left"/>
+            <mx:CheckBox id="CheckBox_Wedge180" label="Wedge Left"/>
+            <mx:CheckBox id="CheckBox_Wedge225" label="Wedge Up Left"/>
+            <mx:CheckBox id="CheckBox_Wedge270" label="Wedge Up"/>
+            <mx:CheckBox id="CheckBox_Wedge315" label="Wedge Up Right"/>
+         </mx:VBox>
+         <mx:VBox>
+            <mx:CheckBox id="CheckBox_Circle" label="Circle"/>
+            <mx:Spacer height="10"/>
+            <mx:CheckBox id="CheckBox_Arrow0" label="Arrow Right"/>
+            <mx:CheckBox id="CheckBox_Arrow45" label="Arrow Down Right"/>
+            <mx:CheckBox id="CheckBox_Arrow90" label="Arrow Down"/>
+            <mx:CheckBox id="CheckBox_Arrow135" label="Arrow Down Left"/>
+            <mx:CheckBox id="CheckBox_Arrow180" label="Arrow Left"/>
+            <mx:CheckBox id="CheckBox_Arrow225" label="Arrow Up Left"/>
+            <mx:CheckBox id="CheckBox_Arrow270" label="Arrow Up"/>
+            <mx:CheckBox id="CheckBox_Arrow315" label="Arrow Up Right"/>
+         </mx:VBox>
+      </mx:HBox>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_AnyGestures" label="Any Above Gestures"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:Script>
+      <![CDATA[       
+         
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+         
+         import common.Define;
+         import common.GestureIDs;
+         import common.trigger.CoreEventIds;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mParams:Object;
+         
+         public function OnInitPanel ():void
+         {
+         }
+         
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+            
+            //KeyboardPanel.selectedKeyCodes = initialValues.mGestureIDs;
+            
+            CheckBox_LongPress.selected = mParams.mGestureIDs.indexOf (GestureIDs.LongPress) >= 0;
+            CheckBox_Triangle.selected = mParams.mGestureIDs.indexOf (GestureIDs.Triangle) >= 0;
+            CheckBox_Circle.selected = mParams.mGestureIDs.indexOf (GestureIDs.Circle) >= 0;
+            
+            CheckBox_Line0.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line0) >= 0;
+            CheckBox_Line45.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line45) >= 0;
+            CheckBox_Line90.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line90) >= 0;
+            CheckBox_Line135.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line135) >= 0;
+            CheckBox_Line180.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line180) >= 0;
+            CheckBox_Line225.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line225) >= 0;
+            CheckBox_Line270.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line270) >= 0;
+            CheckBox_Line315.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line315) >= 0;
+            
+            CheckBox_Wedge0.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wedge0) >= 0;
+            CheckBox_Wedge45.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wedge45) >= 0;
+            CheckBox_Wedge90.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wedge90) >= 0;
+            CheckBox_Wedge135.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wedge135) >= 0;
+            CheckBox_Wedge180.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wedge180) >= 0;
+            CheckBox_Wedge225.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wedge225) >= 0;
+            CheckBox_Wedge270.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wedge270) >= 0;
+            CheckBox_Wedge315.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wedge315) >= 0;
+            
+            CheckBox_Arrow0.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow0) >= 0;
+            CheckBox_Arrow45.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow45) >= 0;
+            CheckBox_Arrow90.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow90) >= 0;
+            CheckBox_Arrow135.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow135) >= 0;
+            CheckBox_Arrow180.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow180) >= 0;
+            CheckBox_Arrow225.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow225) >= 0;
+            CheckBox_Arrow270.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow270) >= 0;
+            CheckBox_Arrow315.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow315) >= 0;
+            
+            CheckBox_AnyGestures.selected = initialValues.mGestureIDs.indexOf (GestureIDs.VirtualAnyGestures) >= 0;
+         }
+         
+         public function GetValues (returnValues:Object):void
+         {
+            //mParams.mKeyCodes = KeyboardPanel.selectedKeyCodes;
+            
+            mParams.mGestureIDs = new Array ();
+            
+            if (CheckBox_LongPress.selected) mParams.mGestureIDs.push (GestureIDs.LongPress);
+            if (CheckBox_Triangle.selected) mParams.mGestureIDs.push (GestureIDs.Triangle);
+            if (CheckBox_Circle.selected) mParams.mGestureIDs.push (GestureIDs.Circle);
+            
+            if (CheckBox_Line0.selected) mParams.mGestureIDs.push (GestureIDs.Line0);
+            if (CheckBox_Line45.selected) mParams.mGestureIDs.push (GestureIDs.Line45);
+            if (CheckBox_Line90.selected) mParams.mGestureIDs.push (GestureIDs.Line90);
+            if (CheckBox_Line135.selected) mParams.mGestureIDs.push (GestureIDs.Line135);
+            if (CheckBox_Line180.selected) mParams.mGestureIDs.push (GestureIDs.Line180);
+            if (CheckBox_Line225.selected) mParams.mGestureIDs.push (GestureIDs.Line225);
+            if (CheckBox_Line270.selected) mParams.mGestureIDs.push (GestureIDs.Line270);
+            if (CheckBox_Line315.selected) mParams.mGestureIDs.push (GestureIDs.Line315);
+            
+            if (CheckBox_Wedge0.selected) mParams.mGestureIDs.push (GestureIDs.Wedge0);
+            if (CheckBox_Wedge45.selected) mParams.mGestureIDs.push (GestureIDs.Wedge45);
+            if (CheckBox_Wedge90.selected) mParams.mGestureIDs.push (GestureIDs.Wedge90);
+            if (CheckBox_Wedge135.selected) mParams.mGestureIDs.push (GestureIDs.Wedge135);
+            if (CheckBox_Wedge180.selected) mParams.mGestureIDs.push (GestureIDs.Wedge180);
+            if (CheckBox_Wedge225.selected) mParams.mGestureIDs.push (GestureIDs.Wedge225);
+            if (CheckBox_Wedge270.selected) mParams.mGestureIDs.push (GestureIDs.Wedge270);
+            if (CheckBox_Wedge315.selected) mParams.mGestureIDs.push (GestureIDs.Wedge315);
+            
+            if (CheckBox_Arrow0.selected) mParams.mGestureIDs.push (GestureIDs.Arrow0);
+            if (CheckBox_Arrow45.selected) mParams.mGestureIDs.push (GestureIDs.Arrow45);
+            if (CheckBox_Arrow90.selected) mParams.mGestureIDs.push (GestureIDs.Arrow90);
+            if (CheckBox_Arrow135.selected) mParams.mGestureIDs.push (GestureIDs.Arrow135);
+            if (CheckBox_Arrow180.selected) mParams.mGestureIDs.push (GestureIDs.Arrow180);
+            if (CheckBox_Arrow225.selected) mParams.mGestureIDs.push (GestureIDs.Arrow225);
+            if (CheckBox_Arrow270.selected) mParams.mGestureIDs.push (GestureIDs.Arrow270);
+            if (CheckBox_Arrow315.selected) mParams.mGestureIDs.push (GestureIDs.Arrow315);
+            
+            if (CheckBox_AnyGestures.selected)
+            {
+               mParams.mGestureIDs.push (GestureIDs.VirtualAnyGestures);
+            }
+            else
+            {
+               var index:int = mParams.mGestureIDs.indexOf (GestureIDs.VirtualAnyGestures);
+               if (index >= 0)
+                  mParams.mGestureIDs.splice (index, 1);
+            }
+         }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:VBox>

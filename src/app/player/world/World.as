@@ -44,6 +44,7 @@ package player.world {
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.entity.EntityEventHandler_Timer;
    import player.trigger.entity.EntityEventHandler_Keyboard;
+   import player.trigger.entity.EntityEventHandler_Gesture;
    import player.trigger.entity.EntitySelector;
 
    import player.trigger.data.ShapeContactInfo;
@@ -65,7 +66,9 @@ package player.world {
 
    import common.Define;
    import common.ValueAdjuster;
+   
    import common.KeyCodes;
+   import common.GestureIDs;
 
    import common.DataFormat2;
 
@@ -81,6 +84,7 @@ package player.world {
       include "World_Task.as";
       include "World_ContactEventHandling.as";
       include "World_KeyboardEventHandling.as";
+      include "World_GestureEventHandling.as";
       include "World_GeneralEventHandling.as";
       include "World_Misc.as";
 

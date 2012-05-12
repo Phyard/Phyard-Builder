@@ -200,6 +200,7 @@ package univiewer
          paramsFromUniViewer.mLoadingProgress = EndLoadingViewerPercent;
          paramsFromUniViewer.SetLoadingText = SetInfoText;
          paramsFromUniViewer.GetViewportSize = GetViewportSize;
+         paramsFromUniViewer.mBackgroundColor = 0xDDDDA0;
 
          var viewer:Sprite = (MainClass.Call as Function) ("NewViewer", {mParamsFromUniViewer: paramsFromUniViewer}) as Sprite;
          viewer.alpha = 0.0;

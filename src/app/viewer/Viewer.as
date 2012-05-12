@@ -14,6 +14,7 @@ package viewer {
    import flash.display.MovieClip;
    import flash.display.Stage;
    import flash.events.Event;
+   import flash.events.MouseEvent;
    import flash.events.ProgressEvent;
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
@@ -37,6 +38,7 @@ package viewer {
    import flash.system.LoaderContext;
    
    import flash.system.Capabilities;
+   import flash.utils.getTimer;
 
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
@@ -45,6 +47,10 @@ package viewer {
    import com.tapirgames.display.TextFieldEx;
    import com.tapirgames.display.TextButton;
    import com.tapirgames.display.ImageButton;
+   
+   import com.tapirgames.gesture.GestureAnalyzer;
+   import com.tapirgames.gesture.GesturePoint;
+   import com.tapirgames.gesture.GestureSegment;
 
    import common.DataFormat3;
    import common.Define;
@@ -100,11 +106,14 @@ package viewer {
       private var mPlayerWorldZoomScale:Number = 1.0;
       private var mPlayerWorldZoomScaleChangedSpeed:Number = 0.0;
 
-      private var mContentLayer:Sprite = new Sprite ();
-         private var mWorldLayer:Sprite = new Sprite ();
-         private var mViewportMaskShape:Sprite = new Sprite ();
-      private var mSkinLayer:Sprite = new Sprite ();
-      private var mErrorMessageLayer:Sprite = new Sprite ();
+      private var mBackgroundLayer:Sprite = new Sprite ();
+      private var mMiddleLayer:Sprite = new Sprite ();
+         private var mContentLayer:Sprite = new Sprite ();
+            private var mWorldLayer:Sprite = new Sprite ();
+            private var mViewportMaskShape:Sprite = new Sprite ();
+         private var mSkinLayer:Sprite = new Sprite ();
+      private var mForegroundLayer:Sprite = new Sprite ();
+         private var mErrorMessageLayer:Sprite = new Sprite ();
 
 //======================================================================
 //
@@ -117,10 +126,14 @@ package viewer {
          if (params == null) // strange: flash auto instance this class when loading done. shit!
             return;
 
-         addChild (mContentLayer)
-            mContentLayer.addChild (mWorldLayer);
-         addChild (mSkinLayer);
-         addChild (mErrorMessageLayer);
+         addChild (mBackgroundLayer);
+         addChild (mMiddleLayer);
+            mMiddleLayer.addChild (mContentLayer)
+               mContentLayer.addChild (mWorldLayer);
+            mMiddleLayer.addChild (mSkinLayer);
+         addChild (mForegroundLayer);
+            mForegroundLayer.addChild (mErrorMessageLayer);
+         
          mErrorMessageLayer.visible = false;
 
          mParamsFromUniViewer = params.mParamsFromUniViewer;
@@ -140,14 +153,20 @@ package viewer {
       private function OnAddedToStage (e:Event):void
       {
          CheckPlatformCapabilities ();
+
+         ParseParams ();
          
          addEventListener (Event.ENTER_FRAME, Update);
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
+         addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
+         addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
+         addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
          
          stage.addEventListener (Event.ACTIVATE, OnActivated);
          stage.addEventListener (Event.DEACTIVATE, OnDeactivated);
-
-         ParseParams ();
+         
+         var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+         ReapintBackground (containerSize.x, containerSize.y);
       }
 
       private function OnRemovedFromFrame (e:Event):void
@@ -158,6 +177,9 @@ package viewer {
          removeEventListener (Event.ENTER_FRAME, Update);
          removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
          removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+         removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
+         removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
+         removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
       }
 
 //======================================================================
@@ -351,6 +373,99 @@ package viewer {
          }
                   
          return "null";
+      }
+
+//======================================================================
+// gesture lib
+//======================================================================
+
+      // for game template
+      public static function CreateGestureAnalyzer ():GestureAnalyzer
+      {
+         return new GestureAnalyzer (Capabilities.screenDPI * 0.2, Capabilities.screenDPI * 0.02);
+      }
+      
+      // for world
+      private var mEnabledMouseGesture:Boolean = false;
+      private var mDrawdMouseGesture:Boolean = false;
+      
+      private function SetMouseGestureSupported (supported:Boolean, draw:Boolean):void
+      {
+         mEnabledMouseGesture = supported;
+         mDrawdMouseGesture = draw;
+         
+         if (! mEnabledMouseGesture)
+            mGestureAnalyzer = null;
+      }
+      
+      private var mGestureAnalyzer:GestureAnalyzer = null;
+      
+      private function OnMouseDown (event:MouseEvent):void
+      {
+         if (mEnabledMouseGesture)
+         {
+            mGestureAnalyzer = CreateGestureAnalyzer ();
+            
+            RegisterGesturePoint (event);
+         }
+      }
+      
+      private function OnMouseMove (event:MouseEvent):void
+      {
+         if (mGestureAnalyzer != null)
+         {
+            if (mEnabledMouseGesture && event.buttonDown)
+            {
+               RegisterGesturePoint (event);
+            }
+            else
+            {
+               mGestureAnalyzer = null;
+            }
+         }
+      }
+      
+      private function OnMouseUp (event:MouseEvent):void
+      {
+         if (mGestureAnalyzer != null)
+         {
+            if (mEnabledMouseGesture)
+            {
+               RegisterGesturePoint (event);
+
+               var result:Object = mGestureAnalyzer.Analyze ();
+               
+               if (mPlayerWorld != null && result.mGestureType != null)
+                  mWorldDesignProperties.RegisterGestureEvent (result);
+            }
+            
+            mGestureAnalyzer = null;
+         }
+      }
+      
+      private function RegisterGesturePoint (event:MouseEvent):void
+      {  
+         if (mGestureAnalyzer == null)
+            return;
+         
+         var gesturePoint:GesturePoint = mGestureAnalyzer.RegisterPoint (event.stageX / stage.scaleX, event.stageY / stage.scaleY, getTimer ());
+         if (gesturePoint != null)
+         {
+            /*
+            mPointLayer.graphics.beginFill(0x00FF00);
+            mPointLayer.graphics.drawCircle(pixelX, pixelY, 6);
+            mPointLayer.graphics.endFill();
+            
+            if (gesturePoint.mPrevPoint != null)
+            {
+               var lastPixelX:Number = gesturePoint.mPrevPoint.mX;
+               var lastPixelY:Number = gesturePoint.mPrevPoint.mY;
+               mLineLayer.graphics.lineStyle(0, 0x000000);
+               mLineLayer.graphics.moveTo(lastPixelX, lastPixelY);
+               mLineLayer.graphics.lineTo(pixelX, pixelY);
+            }
+            */
+         }
       }
 
 //======================================================================
@@ -785,6 +900,7 @@ package viewer {
          if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
          if (mWorldDesignProperties.mPreferredFPS == undefined)              mWorldDesignProperties.mPreferredFPS = 30;
          if (mWorldDesignProperties.mPauseOnFocusLost == undefined)          mWorldDesignProperties.mPauseOnFocusLost = false;
+         if (mWorldDesignProperties.RegisterGestureEvent == undefined)       mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -855,7 +971,10 @@ package viewer {
       private function ReloadPlayerWorld (restartLevel:Boolean = false):void
       {
       trace ("ReloadPlayerWorld");
-
+         
+         // reset
+         SetMouseGestureSupported (false, false);
+         
          //var isFirstTime:Boolean = (mPlayerWorld == null);
          mFirstTimePlaying = (mPlayerWorld == null);
 
@@ -936,7 +1055,8 @@ package viewer {
                SetSoundEnabled : mSkin.SetSoundEnabled,
                IsAccelerometerSupported: IsAccelerometerSupported,
                GetAcceleration: GetAcceleration,
-               GetDebugString: GetDebugString
+               GetDebugString: GetDebugString,
+               SetMouseGestureSupported: SetMouseGestureSupported
             });
 
             // ...
@@ -1095,7 +1215,7 @@ package viewer {
       }
 
 //======================================================================
-//
+// skin and background
 //======================================================================
 
       private var mSkin:Skin = null;
@@ -1146,6 +1266,8 @@ package viewer {
          var containerWidth :Number = containerSize.x;
          var containerHeight:Number = containerSize.y;
          
+         ReapintBackground (containerWidth, containerHeight);
+         
          try
          {
             if (mSkin != null && mPlayerWorld != null && mWorldDesignProperties != null)
@@ -1164,8 +1286,8 @@ package viewer {
                   viewerWidth  = preferredViewerSize.x;
                   viewerHeight = preferredViewerSize.y;
                
-                  this.x = Math.round ((containerWidth  - viewerWidth ) / 2);
-                  this.y = Math.round ((containerHeight - viewerHeight) / 2);
+                  mMiddleLayer.x = Math.round ((containerWidth  - viewerWidth ) / 2);
+                  mMiddleLayer.y = Math.round ((containerHeight - viewerHeight) / 2);
                }
                else //if (mParamsFromUniViewer != null || mParamsFromGamePackage != null)
                {
@@ -1174,7 +1296,7 @@ package viewer {
                   viewerWidth  = containerWidth;
                   viewerHeight = containerHeight;
                   
-                  this.x = this.y = 0.0;
+                  mMiddleLayer.x = mMiddleLayer.y = 0.0;
                }
                
                // rebuild skin
@@ -1273,6 +1395,11 @@ package viewer {
             CenterErrorMessageText ();
          }
       }
+      
+      private function ReapintBackground (newWidth:Number, newHeight:Number):void
+      {
+         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, mParamsFromContainer.mBackgroundColor);
+      }
 
 //======================================================================
 //
@@ -1310,9 +1437,6 @@ package viewer {
       {
          if (mErrorMessageText != null)
          {
-            mErrorMessageLayer.x = - this.x;
-            mErrorMessageLayer.y = - this.y;
-            
             var containerSize:Point = mParamsFromContainer.GetViewportSize ();
             
             mErrorMessageText.x = 0.5 * (containerSize.x - mErrorMessageText.width );

@@ -282,6 +282,13 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Number,       0],
                     ]);
 
+     // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnMouseGesture,
+                    [
+                        [ValueTypeDefine.ValueType_Number,       0],
+                    ]);
+
 //===========================================================
 // util functions
 //===========================================================

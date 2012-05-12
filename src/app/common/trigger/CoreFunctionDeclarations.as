@@ -1337,6 +1337,13 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetMouseGestureEnabled,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
 
       // game / world
 

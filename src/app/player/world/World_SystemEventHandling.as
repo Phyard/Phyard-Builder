@@ -469,6 +469,8 @@ public function OnKeyUp (event:KeyboardEvent):void
 
 private function GetExactKeyCode (event:KeyboardEvent):int
 {
+   // seems flash has bug in distinguishing the left and right ctrl
+   
    //if (event.keyCode == Keyboard.CONTROL)
    //{
    //   if (event.keyLocation == KeyLocation.RIGHT)

@@ -244,6 +244,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelSuccessed,                 IsLevelSuccessed);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelFailed,                    IsLevelFailed);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelUnfinished,                IsLevelUnfinished);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetMouseGestureEnabled,                SetMouseGestureEnabled);
 
       // game / world
 
@@ -2143,6 +2144,16 @@ package player.trigger {
       public static function IsLevelUnfinished (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelUnfinished ());
+      }
+
+      public static function SetMouseGestureEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var enableGesture:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var drawGesture:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         Global.Viewer_SetMouseGestureSupported (enableGesture, drawGesture);
       }
 
    //*******************************************************************

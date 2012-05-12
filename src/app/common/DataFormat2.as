@@ -52,6 +52,7 @@ package common {
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.entity.EntityEventHandler_Timer;
    import player.trigger.entity.EntityEventHandler_Keyboard;
+   import player.trigger.entity.EntityEventHandler_Gesture;
 
    import player.trigger.data.ListElement_EventHandler;
 
@@ -209,6 +210,9 @@ package common {
                   case CoreEventIds.ID_OnWorldKeyUp:
                   case CoreEventIds.ID_OnWorldKeyHold:
                      entity = new EntityEventHandler_Keyboard (playerWorld);
+                     break;
+                  case CoreEventIds.ID_OnMouseGesture:
+                     entity = new EntityEventHandler_Gesture (playerWorld);
                      break;
                   default:
                      entity = new EntityEventHandler (playerWorld);
@@ -1309,6 +1313,9 @@ package common {
                      case CoreEventIds.ID_OnWorldKeyHold:
                         element.@key_codes = IntegerArray2IndicesString (entityDefine.mKeyCodes);
                         break;
+                     case CoreEventIds.ID_OnMouseGesture:
+                        element.@gesture_ids = IntegerArray2IndicesString (entityDefine.mGestureIDs);
+                        break;
                      default:
                         break;
                   }
@@ -1969,6 +1976,9 @@ package common {
                         case CoreEventIds.ID_OnWorldKeyUp:
                         case CoreEventIds.ID_OnWorldKeyHold:
                            entityDefine.mKeyCodes = ReadShortArrayFromBinFile (byteArray);
+                           break;
+                        case CoreEventIds.ID_OnMouseGesture:
+                           entityDefine.mGestureIDs = ReadShortArrayFromBinFile (byteArray);
                            break;
                         default:
                            break;

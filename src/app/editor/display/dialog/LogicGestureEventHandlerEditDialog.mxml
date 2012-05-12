@@ -21,7 +21,7 @@
          <mx:Spacer height="100%" />
          <mx:HRule strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
          <mx:Spacer height="100%" />
-         <KeyboardEventHandlerSettingPanel id="theKeyboardSettingPanel" creationComplete="OnKeyboardSettingPanelCreationComplete()"/>
+         <GestureEventHandlerSettingPanel id="theGestureSettingPanel" creationComplete="OnGestureSettingPanelCreationComplete()"/>
          <mx:Spacer height="100%" />
       </mx:VBox>
    </mx:TabNavigator>
@@ -84,9 +84,9 @@
             BasicSettingPanel.SetValues (mParams);
          }
 
-         private function OnKeyboardSettingPanelCreationComplete ():void
+         private function OnGestureSettingPanelCreationComplete ():void
          {
-            theKeyboardSettingPanel.SetValues (mParams);
+            theGestureSettingPanel.SetValues (mParams);
          }
 
          public function SetConfirmFunc (onConfirm:Function):void
@@ -108,9 +108,9 @@
                BasicSettingPanel.GetValues (mParams);
             }
 
-            if (theKeyboardSettingPanel != null)
+            if (theGestureSettingPanel != null)
             {
-               theKeyboardSettingPanel.GetValues (mParams);
+               theGestureSettingPanel.GetValues (mParams);
             }
 
             PopUpManager.removePopUp(this);

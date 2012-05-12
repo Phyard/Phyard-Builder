@@ -261,6 +261,11 @@ package editor.entity.dialog {
             case Keyboard.NUMPAD_SUBTRACT:
                RoundPositionForSelectedEntities ();
                break;
+            case 71: // G
+            case 77: // M
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMouseGesture), OnPutCreating, OnCreatingCancelled));
+               break;
             default:
             {
                handled = false;
@@ -464,6 +469,9 @@ package editor.entity.dialog {
             case CoreEventIds.ID_OnGameActivated:
             case CoreEventIds.ID_OnGameDeactivated:
                handler = mScene.CreateEntityEventHandler_GameLostOrGotFocus (eventId, null, true);
+               break;
+            case CoreEventIds.ID_OnMouseGesture:
+               handler = mScene.CreateEntityEventHandler_MouseGesture (eventId, null, true);
                break;
             default:
             {
@@ -1156,6 +1164,14 @@ package editor.entity.dialog {
                   
                   EditorContext.ShowModalDialog (LogicKeyboardEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
+               else if (entity is EntityEventHandler_MouseGesture)
+               {
+                  var gesture_event_handler:EntityEventHandler_MouseGesture = entity as EntityEventHandler_MouseGesture;
+                  
+                  values.mGestureIDs = gesture_event_handler.GetGestureIDs ();
+                  
+                  EditorContext.ShowModalDialog (LogicGestureEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+               }
                else if (entity is EntityEventHandler_Mouse)
                {
                   EditorContext.ShowModalDialog (LogicMouseEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
@@ -1654,6 +1670,12 @@ package editor.entity.dialog {
                   
                   //keyboard_event_handler.ChangeKeyboardEventId (params.mEventId);
                   keyboard_event_handler.SetKeyCodes (params.mKeyCodes);
+               }
+               else if (entity is EntityEventHandler_MouseGesture)
+               {
+                  var gesture_event_handler:EntityEventHandler_MouseGesture = entity as EntityEventHandler_MouseGesture;
+                  
+                  gesture_event_handler.SetGestureIDs (params.mGestureIDs);
                }
                else if (entity is EntityEventHandler_Mouse)
                {

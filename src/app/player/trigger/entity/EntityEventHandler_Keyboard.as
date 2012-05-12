@@ -33,7 +33,7 @@ package player.trigger.entity
          {
             if (entityDefine.mKeyCodes != undefined)
             {
-               mKeyCodes = KeyCodes.GetKeyCodesFromSelectedKeyCodes (entityDefine.mKeyCodes)
+               mKeyCodes = KeyCodes.GetKeyCodesFromSelectedKeyCodes (entityDefine.mKeyCodes);
                //trace ("mKeyCodes = " + mKeyCodes);
                mWorld.RegisterKeyboardEventHandler (this, mKeyCodes);
             }

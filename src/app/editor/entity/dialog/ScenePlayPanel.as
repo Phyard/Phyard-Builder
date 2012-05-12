@@ -37,7 +37,7 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      public function SetWorldViewerParams (worldBinaryData:ByteArray, maskFieldInPlaying:Boolean):void
+      public function SetWorldViewerParams (worldBinaryData:ByteArray, maskFieldInPlaying:Boolean, surroudingBackgroundColor:uint):void
       {
          CloseViewer ();
          
@@ -46,7 +46,8 @@ package editor.entity.dialog {
                                          mWorldBinaryData: worldBinaryData, 
                                          GetViewportSize: GetViewportSize, 
                                          mStartRightNow: true, 
-                                         mMaskViewport: maskFieldInPlaying
+                                         mMaskViewport: maskFieldInPlaying,
+                                         mBackgroundColor: surroudingBackgroundColor
                                          }
                              });
          

@@ -55,6 +55,7 @@ package editor.entity {
    import editor.trigger.entity.EntityEventHandler_JointReachLimit;
    import editor.trigger.entity.EntityEventHandler_ModuleLoopToEnd;
    import editor.trigger.entity.EntityEventHandler_GameLostOrGotFocus;
+   import editor.trigger.entity.EntityEventHandler_MouseGesture;
    import editor.trigger.entity.EntityAction;
 
    //import editor.trigger.entity.EntityFunctionPackage;
@@ -1184,6 +1185,23 @@ package editor.entity {
             return null;
 
          var handler:EntityEventHandler_GameLostOrGotFocus = new EntityEventHandler_GameLostOrGotFocus (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
+
+         return handler;
+      }
+      
+      public function CreateEntityEventHandler_MouseGesture (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_MouseGesture
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+
+         var handler:EntityEventHandler_MouseGesture = new EntityEventHandler_MouseGesture (this, defaultEventId, potientialEventIds);
          addChild (handler);
          
          if (selectIt)

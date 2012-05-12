@@ -282,6 +282,13 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Holding Ticks"),
                     ]);
 
+      // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnMouseGesture, "OnMouseGestureDone", "When a ,ouse gesture is performed",
+                    [
+                        new VariableDefinitionNumber ("Gesture Type ID"),
+                    ]);
+
       // event settings
 
          //Max Allowed Instances

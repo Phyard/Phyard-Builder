@@ -9,59 +9,6 @@ package editor.world {
 
    import com.tapirgames.util.Logger;
 
-   import editor.entity.Entity;
-
-   import editor.entity.EntityVectorShape;
-   import editor.entity.EntityVectorShapeCircle;
-   import editor.entity.EntityVectorShapeRectangle;
-   import editor.entity.EntityVectorShapePolygon;
-   import editor.entity.EntityVectorShapePolyline;
-   import editor.entity.EntityVectorShapeText;
-   import editor.entity.EntityVectorShapeTextButton;
-   import editor.entity.EntityVectorShapeGravityController;
-   
-   import editor.entity.EntityShapeImageModule;
-   import editor.entity.EntityShapeImageModuleButton;
-
-   import editor.entity.EntityUtility;
-   import editor.entity.EntityUtilityCamera;
-   import editor.entity.EntityUtilityPowerSource;
-
-   import editor.entity.EntityJoint;
-   import editor.entity.EntityJointDistance;
-   import editor.entity.EntityJointHinge;
-   import editor.entity.EntityJointSlider;
-   import editor.entity.EntityJointSpring;
-   import editor.entity.EntityJointWeld;
-   import editor.entity.EntityJointDummy;
-
-   import editor.entity.SubEntityJointAnchor;
-
-   import editor.trigger.entity.EntityLogic;
-   import editor.trigger.entity.EntityBasicCondition;
-   import editor.trigger.entity.EntityConditionDoor;
-   import editor.trigger.entity.EntityTask;
-   import editor.trigger.entity.EntityInputEntityAssigner;
-   import editor.trigger.entity.EntityInputEntityPairAssigner;
-   import editor.trigger.entity.EntityInputEntityScriptFilter;
-   import editor.trigger.entity.EntityInputEntityPairScriptFilter;
-   import editor.trigger.entity.EntityInputEntityRegionSelector;
-   import editor.trigger.entity.EntityEventHandler;
-   import editor.trigger.entity.EntityEventHandler_Timer;
-   import editor.trigger.entity.EntityEventHandler_TimerWithPrePostHandling;
-   import editor.trigger.entity.EntityEventHandler_Keyboard;
-   import editor.trigger.entity.EntityEventHandler_Mouse;
-   import editor.trigger.entity.EntityEventHandler_Contact;
-   import editor.trigger.entity.EntityEventHandler_JointReachLimit;
-   import editor.trigger.entity.EntityEventHandler_ModuleLoopToEnd;
-   import editor.trigger.entity.EntityEventHandler_GameLostOrGotFocus;
-   import editor.trigger.entity.EntityAction;
-
-   //import editor.trigger.entity.EntityFunctionPackage;
-   //import editor.trigger.entity.EntityFunction;
-
-   //import editor.entity.EntityCollisionCategory;
-
    import editor.selection.SelectionEngine;
 
    import editor.trigger.TriggerEngine;

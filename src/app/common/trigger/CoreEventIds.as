@@ -89,6 +89,10 @@ package common.trigger {
       public static const ID_OnWorldKeyUp:int = IdPool.EventId_221;
       public static const ID_OnWorldKeyHold:int = IdPool.EventId_222;
 
+   // mouse gesture
+
+      public static const ID_OnMouseGesture:int = IdPool.EventId_190;
+
    // ================================
    }
 }

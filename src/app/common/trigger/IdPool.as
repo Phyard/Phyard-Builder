@@ -48,6 +48,8 @@ package common.trigger {
 
       public static const EventId_150:int = 150;
 
+      public static const EventId_190:int = 190;
+
       public static const EventId_200:int = 200;
       public static const EventId_201:int = 201;
       public static const EventId_202:int = 202;
@@ -274,6 +276,7 @@ package common.trigger {
       public static const CoreApiId_610:int = 610; // design
       public static const CoreApiId_612:int = 612; // design
       public static const CoreApiId_614:int = 614; // design
+      public static const CoreApiId_615:int = 615; // design
 
       public static const CoreApiId_700:int = 700; // world
 

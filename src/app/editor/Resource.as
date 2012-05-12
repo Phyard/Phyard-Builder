@@ -147,6 +147,11 @@ package editor {
       [Embed("../res/create/event_on_world_timer.png")]
       public static const IconOnWorldTimerEvent:Class;
       
+      // gesture
+      
+      [Embed("../res/create/event_on_mouse_gesture.png")]
+      public static const IconOnMouseGesture:Class;
+      
    // event id -> icon
       
       private static var sEventId2IconClass:Dictionary = null;
@@ -200,6 +205,8 @@ package editor {
             sEventId2IconClass [CoreEventIds.ID_OnEntityTimer    ] = IconOnEntityTimerEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityPairTimer] = IconOnEntityPairTimerEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldTimer     ] = IconOnWorldTimerEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnMouseGesture   ] = IconOnMouseGesture;
          }
          
          var iconClass:Class = sEventId2IconClass [eventId];

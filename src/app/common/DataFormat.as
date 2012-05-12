@@ -86,6 +86,7 @@ package common {
    import editor.trigger.entity.EntityEventHandler_Timer;
    import editor.trigger.entity.EntityEventHandler_TimerWithPrePostHandling;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
+   import editor.trigger.entity.EntityEventHandler_MouseGesture;
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
    import editor.trigger.entity.EntityEventHandler_JointReachLimit;
@@ -367,6 +368,12 @@ package common {
                      var keyboardEventHandler:EntityEventHandler_Keyboard = eventHandler as EntityEventHandler_Keyboard;
                      
                      entityDefine.mKeyCodes = keyboardEventHandler.GetKeyCodes ();
+                  }
+                  else if (editorEntity is EntityEventHandler_MouseGesture)
+                  {
+                     var gestureEventHandler:EntityEventHandler_MouseGesture = eventHandler as EntityEventHandler_MouseGesture;
+                     
+                     entityDefine.mGestureIDs = gestureEventHandler.GetGestureIDs ();
                   }
                   else if (editorEntity is EntityEventHandler_Mouse)
                   {
@@ -1639,6 +1646,9 @@ package common {
                      case CoreEventIds.ID_OnWorldKeyHold:
                         entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_Keyboard (entityDefine.mEventId);
                         break;
+                     case CoreEventIds.ID_OnMouseGesture:
+                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_MouseGesture (entityDefine.mEventId);
+                        break;
                      case CoreEventIds.ID_OnPhysicsShapeMouseDown:
                      case CoreEventIds.ID_OnPhysicsShapeMouseUp:
                      case CoreEventIds.ID_OnEntityMouseClick:
@@ -2300,6 +2310,12 @@ package common {
                         var keyboardEventHandler:EntityEventHandler_Keyboard = eventHandler as EntityEventHandler_Keyboard;
                         
                         keyboardEventHandler.SetKeyCodes (entityDefine.mKeyCodes);
+                     }
+                     else if (eventHandler is EntityEventHandler_MouseGesture)
+                     {
+                        var gestureEventHandler:EntityEventHandler_MouseGesture = eventHandler as EntityEventHandler_MouseGesture;
+                        
+                        gestureEventHandler.SetGestureIDs (entityDefine.mGestureIDs);
                      }
                      else if (eventHandler is EntityEventHandler_Mouse)
                      {
@@ -3089,6 +3105,9 @@ package common {
                      case CoreEventIds.ID_OnWorldKeyHold:
                         entityDefine.mKeyCodes = IndicesString2IntegerArray (element.@key_codes);
                         break;
+                     case CoreEventIds.ID_OnMouseGesture:
+                        entityDefine.mGestureIDs = IndicesString2IntegerArray (element.@gesture_ids);
+                        break;
                      default:
                         break;
                   }
@@ -3723,6 +3742,9 @@ package common {
                         case CoreEventIds.ID_OnWorldKeyUp:
                         case CoreEventIds.ID_OnWorldKeyHold:
                            WriteShortArrayIntoBinFile (entityDefine.mKeyCodes, byteArray);
+                           break;
+                        case CoreEventIds.ID_OnMouseGesture:
+                           WriteShortArrayIntoBinFile (entityDefine.mGestureIDs, byteArray);
                            break;
                         default:
                            break;

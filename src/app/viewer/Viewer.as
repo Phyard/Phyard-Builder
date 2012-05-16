@@ -114,6 +114,7 @@ package viewer {
          private var mSkinLayer:Sprite = new Sprite ();
       private var mForegroundLayer:Sprite = new Sprite ();
          private var mErrorMessageLayer:Sprite = new Sprite ();
+         private var mGesturePaintLayer:Sprite = new Sprite ();
 
 //======================================================================
 //
@@ -133,8 +134,10 @@ package viewer {
             mMiddleLayer.addChild (mSkinLayer);
          addChild (mForegroundLayer);
             mForegroundLayer.addChild (mErrorMessageLayer);
+            mForegroundLayer.addChild (mGesturePaintLayer);
          
          mErrorMessageLayer.visible = false;
+         mGesturePaintLayer.visible = false;
 
          mParamsFromUniViewer = params.mParamsFromUniViewer;
          if (mParamsFromUniViewer != null)
@@ -394,8 +397,36 @@ package viewer {
          mEnabledMouseGesture = supported;
          mDrawdMouseGesture = draw;
          
+         mGesturePaintLayer.visible = mEnabledMouseGesture && mDrawdMouseGesture;
+         
          if (! mEnabledMouseGesture)
+         {
             mGestureAnalyzer = null;
+            ClearGesturePaintLayer ();
+         }
+      }
+      
+      // ...
+      
+      private var mGestureInBuilding:Boolean = false;
+      
+      private function ClearGesturePaintLayer ():void
+      {
+         mGesturePaintLayer.graphics.clear ();
+         mGesturePaintLayer.alpha = 1.0;
+         mGesturePaintLayer.visible = false;
+      }
+      
+      private function UpdateGesturePaintLayer ():void
+      {  
+         if (mGesturePaintLayer.visible && mGestureAnalyzer == null)
+         {
+            mGesturePaintLayer.alpha -= 1.0 / stage.frameRate; // mWorldDesignProperties.mPreferredFPS
+            if (mGesturePaintLayer.alpha < 0)
+            {
+               ClearGesturePaintLayer ();
+            }
+         }
       }
       
       private var mGestureAnalyzer:GestureAnalyzer = null;
@@ -405,6 +436,8 @@ package viewer {
          if (mEnabledMouseGesture)
          {
             mGestureAnalyzer = CreateGestureAnalyzer ();
+            ClearGesturePaintLayer ();
+            mGesturePaintLayer.visible = true;
             
             RegisterGesturePoint (event);
          }
@@ -421,6 +454,7 @@ package viewer {
             else
             {
                mGestureAnalyzer = null;
+               ClearGesturePaintLayer ();
             }
          }
       }
@@ -438,9 +472,13 @@ package viewer {
                if (mPlayerWorld != null && result.mGestureType != null)
                   mWorldDesignProperties.RegisterGestureEvent (result);
             }
-            
-            mGestureAnalyzer = null;
          }
+         else
+         {
+            ClearGesturePaintLayer ();
+         }
+         
+         mGestureAnalyzer = null;
       }
       
       private function RegisterGesturePoint (event:MouseEvent):void
@@ -451,20 +489,22 @@ package viewer {
          var gesturePoint:GesturePoint = mGestureAnalyzer.RegisterPoint (event.stageX / stage.scaleX, event.stageY / stage.scaleY, getTimer ());
          if (gesturePoint != null)
          {
-            /*
-            mPointLayer.graphics.beginFill(0x00FF00);
-            mPointLayer.graphics.drawCircle(pixelX, pixelY, 6);
-            mPointLayer.graphics.endFill();
-            
-            if (gesturePoint.mPrevPoint != null)
+            var point:Point = globalToLocal (new Point (gesturePoint.mX * stage.scaleX, gesturePoint.mY * stage.scaleY));
+            if (gesturePoint.mPrevPoint == null)
             {
-               var lastPixelX:Number = gesturePoint.mPrevPoint.mX;
-               var lastPixelY:Number = gesturePoint.mPrevPoint.mY;
-               mLineLayer.graphics.lineStyle(0, 0x000000);
-               mLineLayer.graphics.moveTo(lastPixelX, lastPixelY);
-               mLineLayer.graphics.lineTo(pixelX, pixelY);
+               mGesturePaintLayer.graphics.lineStyle ();
+               mGesturePaintLayer.graphics.beginFill (0x00FF00);
+               mGesturePaintLayer.graphics.drawCircle (point.x, point.y, 9);
+               mGesturePaintLayer.graphics.endFill ();
             }
-            */
+            else
+            {
+               mGesturePaintLayer.graphics.lineStyle(9, 0x00FF00);
+               mGesturePaintLayer.graphics.moveTo (point.x, point.y);
+
+               point = globalToLocal (new Point (gesturePoint.mPrevPoint.mX * stage.scaleX, gesturePoint.mPrevPoint.mY * stage.scaleY));
+               mGesturePaintLayer.graphics.lineTo (point.x, point.y);
+            }
          }
       }
 
@@ -972,7 +1012,7 @@ package viewer {
       {
       trace ("ReloadPlayerWorld");
          
-         // reset
+         // reset gesture shapes
          SetMouseGestureSupported (false, false);
          
          //var isFirstTime:Boolean = (mPlayerWorld == null);
@@ -1136,6 +1176,8 @@ package viewer {
          
          if (mPlayerWorld == null)
             return;
+
+         UpdateGesturePaintLayer ();
 
          // update scale
          if (mWorldDesignProperties.GetZoomScale () != mPlayerWorldZoomScale)

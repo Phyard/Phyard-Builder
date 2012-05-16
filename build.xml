@@ -27,6 +27,7 @@
    <property name="dir.release.editor"        value="${basedir}/.release_editor" />
    <property name="dir.release.unieditor"        value="${basedir}/.release_unieditor" />
    <property name="dir.release.univiewer"        value="${basedir}/.release_univiewer" />
+   <property name="dir.release-for-test"        value="${basedir}/.test" />
    
    <!-- -DForAir=true -->
    <condition property="program.as3compiler" value="${dir.flexsdk}/bin/amxmlc" else="${dir.flexsdk}/bin/mxmlc">
@@ -454,6 +455,49 @@
    <target name="release-plugin-editor">
       <antcall target="release-plugin">
          <param name="plugin-name" value="editor" />
+      </antcall>
+   </target>
+
+   <!-- ============================================= tests =========================================================== -->
+
+   <target name="--compile-test">
+      <delete dir="${dir.release-for-test}.${--test-name}" quiet="true" />
+      <mkdir dir="${dir.release-for-test}.${--test-name}" />
+
+      <antcall target="--pre-compile" />
+
+      <copy todir="${dir.build.src}" overwrite="true">
+         <fileset dir="${dir.src}/tests/${--test-name}">
+            <exclude name="**/.svn/**"/>
+         </fileset>
+      </copy>
+
+      <exec dir="${dir.build.src}" executable="${program.as3compiler}">
+         <arg line="-debug=true"/>
+         <arg line="-default-script-limits 100 8"/>
+         <!-- two continious - is not allowed in comments, so use ## instead -->
+         <!--arg line="-define+=App::Default_Width,${##width}" /-->
+         <!--arg line="-define+=App::Default_Height,${##height}" /-->
+         <arg line="-output=${dir.release-for-test}.${--test-name}/${--test-name}_unsecure.swf"/>
+         <arg line="-default-background-color 0xDDDDA0"/>
+         <arg line="-default-frame-rate 30"/>
+         <arg line="-optimize=true" />
+         <arg line="--target-player=10.0.0" />
+         <arg line="-use-network" />
+         <!-- two continious - is not allowed in comments, so use ## instead -->
+         <!--arg line="-default-size ${##width} ${##height}" /-->
+         <arg line="-source-path=${dir.build.src}" />
+         <arg line="-locale=en_US" />
+         <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
+         <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+
+         <arg line="Main.as" />
+      </exec>
+   </target>
+
+   <target name="test-gesture">
+      <antcall target="--compile-test">
+         <param name="--test-name" value="gesture" />
       </antcall>
    </target>
 

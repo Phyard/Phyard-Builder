@@ -5,4 +5,5 @@
 .release_editor
 .classpath
 .project
+.test.*
 

@@ -276,6 +276,13 @@ package editor.trigger {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetMouseGestureEnabled, system_package, "Enable Gesture Events", null, null,
+                     [
+                        new VariableDefinitionBoolean ("Enable Gesture Events?"),
+                        new VariableDefinitionBoolean ("Draw Gesture?"),
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsAccelerometerSupported, system_package, "Is Accelerometer Supported", null, null,
                      null,
                      [
@@ -1409,13 +1416,6 @@ package editor.trigger {
                      [
                         new VariableDefinitionBoolean ("Unfinished?"),
                      ]
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetMouseGestureEnabled, level_package, "Enable Gesture Events", null, null,
-                     [
-                        new VariableDefinitionBoolean ("Enable Gesture Events?"),
-                        new VariableDefinitionBoolean ("Draw Gesture?"),
-                     ],
-                     null
                   );
 
       // game / world

@@ -201,6 +201,13 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetMouseGestureEnabled,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_IsAccelerometerSupported,
                      null,
                      [
@@ -1336,13 +1343,6 @@ package common.trigger {
                      [
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetMouseGestureEnabled,
-                     [
-                        [ValueTypeDefine.ValueType_Boolean,       false],
-                        [ValueTypeDefine.ValueType_Boolean,       true],
-                     ],
-                     null
                   );
 
       // game / world

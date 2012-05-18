@@ -1616,16 +1616,6 @@
             UpdateInterface (null);
          else
          {
-            var box:VBox = new VBox ();
-            box.percentWidth = 100;
-            box.percentHeight = 100;
-            ViewStack_Scenes.addChild (box);
-            
-            //mCurrentSceneEditPanel = new SceneEditPanel ();
-            //mCurrentSceneEditPanel.percentWidth = 100;
-            //mCurrentSceneEditPanel.percentHeight = 100;
-            //box.addChild (mCurrentSceneEditPanel);
-            
             mCurrentSceneEditPanel.SetScene (mWorld.GetEntityContainer ());
             mCurrentSceneEditPanel.SetDialogCallbacks ({
                                           UpdateInterface: UpdateInterface,

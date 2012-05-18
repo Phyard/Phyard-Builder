@@ -316,7 +316,7 @@ package editor {
          if (mCurrentFocusedTitleWindow == null)
          {
             if (GetEditorApp ().stage.focus == null || (! GetEditorApp ().contains (GetEditorApp ().stage.focus)))
-               GetEditorApp ().stage.focus = GetEditorApp ().GetCurrentSceneEditPanel ();
+               GetEditorApp ().stage.focus = GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ();
          }
          else
          {

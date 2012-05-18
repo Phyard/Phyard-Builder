@@ -31,7 +31,9 @@
       </mx:HBox>
       <mx:Spacer width="100%" />
       <mx:HBox id="Box_SwitchViewCommands" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
-         <mx:Button id="Button_CollisionCategoryHelp" toolTip="Help" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" click="OnClickOpenLinksButton()" />
+         <mx:Button id="Button_ShowModuleEditDialog" toolTip="Edit Image Modules" click="ShowAssetImageModuleListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" />
+         <mx:Button id="Button_ShowSoundEditDialog" toolTip="Edit Sounds" click="ShowAssetSoundListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" />
+         <mx:Button id="Button_Help" toolTip="Help" click="OnClickOpenLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" />
          <mx:Spacer width="2"/>
       </mx:HBox>
       

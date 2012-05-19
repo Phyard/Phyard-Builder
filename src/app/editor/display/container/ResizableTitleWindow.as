@@ -53,9 +53,17 @@ package editor.display.container
          addEventListener (MouseEvent.ROLL_OUT, OnMouseOut);
 		}
 		
+		protected function CanBeSetAsCurrentFocusedTitleWindow ():Boolean
+		{
+		   return true;
+		}
+		
 		public function SetAsCurrentFocusedTitleWindow ():void
 		{
-         EditorContext.GetSingleton ().SetCurrentFocusedTitleWindow (this);
+		   if (CanBeSetAsCurrentFocusedTitleWindow ())
+		   {
+            EditorContext.GetSingleton ().SetCurrentFocusedTitleWindow (this);
+         }
       }
 		
 		private var mFocused:Boolean = false;

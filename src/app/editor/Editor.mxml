@@ -21,22 +21,19 @@
    
    <mx:Style source="editor.css"/>
 
-   <mx:ApplicationControlBar backgroundColor="0xA0A0A0" dock="true" paddingTop="5" paddingBottom="1" verticalAlign="bottom">
-
-      <mx:HBox id="Box_DesignCommands" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
-         <mx:Spacer width="2"/>
+   <mx:ApplicationControlBar backgroundColor="0xA0A0A0" left="0" top="0" dock="false" paddingTop="5" paddingBottom="1" verticalAlign="bottom">
+      <mx:HBox verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
          <mx:Button id="Button_LoadWorld" toolTip="Open Design" click="OnClicLoadWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-open.png')" />
          <mx:Button id="Button_SaveWorld" toolTip="Save Design" click="OnClicSaveWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-save.png')" />
          <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-info.png')" />
       </mx:HBox>
-      <mx:Spacer width="100%" />
-      <mx:HBox id="Box_SwitchViewCommands" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
-         <mx:Button id="Button_ShowModuleEditDialog" toolTip="Edit Image Modules" click="ShowAssetImageModuleListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" />
-         <mx:Button id="Button_ShowSoundEditDialog" toolTip="Edit Sounds" click="ShowAssetSoundListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" />
-         <mx:Button id="Button_Help" toolTip="Help" click="OnClickOpenLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" />
-         <mx:Spacer width="2"/>
+      <mx:HBox borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
+         <mx:Button id="Button_ShowModuleEditDialog" toolTip="Edit Image Modules" click="ShowAssetImageModuleListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-edit-modules.png')" />
+         <mx:Button id="Button_ShowSoundEditDialog" toolTip="Edit Sounds" click="ShowAssetSoundListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-edit-sounds.png')" />
       </mx:HBox>
-      
+      <mx:HBox borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
+         <mx:Button id="Button_Help" toolTip="Help" click="OnClickOpenLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" />
+      </mx:HBox>
    </mx:ApplicationControlBar>
 
    <mx:XML id="SaveWorldMenuData">
@@ -295,7 +292,7 @@
          }
       }
       
-      private function ShowCollisionCategoryListDialog ():void
+      public function ShowCollisionCategoryListDialog ():void
       {
          if (EditorContext.GetSingleton () != null)
          {
@@ -303,7 +300,7 @@
          }
       }
    
-      private function ShowCodeLibListDialog ():void
+      public function ShowCodeLibListDialog ():void
       {
          if (EditorContext.GetSingleton () != null)
          {

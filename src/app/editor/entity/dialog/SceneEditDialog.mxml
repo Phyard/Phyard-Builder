@@ -309,18 +309,42 @@
       </mx:HBox>
    </mx:VBox>
    
+   <!-- Menu Item Attributes
+   Attribute   Type     Description
+   =======================================================================
+   label       String   Specifies the text that appears in the control. 
+                        (If the data provider is in E4X XML format, 
+                        you must specify one of these properties to display a label.) 
+                        (If the data provider is an Array of Strings, 
+                        Flex uses the String value as the label.)
+   icon        Class    Specifies the class identifier of an image asset.
+   enabled     Boolean  Specifies whether the user can select the 
+                        menu item (true, default), or not (false).
+   type        String   Specifies the type of menu item: (none), separator, 
+                        check, or radio. Flex treats all other values, or nodes 
+                        with no type entry, as normal menu entries.
+   toggled     Boolean  Specifies whether a check or radio item is selected. 
+                        If not specified, Flex treats the item as if the 
+                        value were false and the item is not selected. 
+                        If you use the default data descriptor, 
+                        data providers must use a toggled XML attribute 
+                        or object field to specify this characteristic.
+   groupName   String   (Required, and meaningful, for radio type only) 
+                        The identifier that associates radio button items in a radio group.
+   -->
+   
    <!--mx:XML id="ClearOrResetSceneMenuData">
       <root>
          <menuitem label="Create A New Scene" data="create_scene"/>
-         <menuitem type="separator"/>
-         <menuitem label="Clear All Entities In Current Scene" data="clear_all"/>
-         <menuitem label="Clear All Entities and Reset Current Scene" data="clear_all_and_reset"/>
          <menuitem type="separator"/>
          <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Simulation Settings ..." data="physics"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
          <menuitem label="Config World Appearance ..." data="appearance"/>
          <menuitem label="Config Viewport ..." data="viewport"/>
+         <menuitem type="separator"/>
+         <menuitem label="Clear All Entities In Current Scene" data="clear_all"/>
+         <menuitem label="Clear All Entities and Reset Current Scene" data="clear_all_and_reset"/>
          <menuitem type="separator"/>
          <menuitem label="Delete Current Scene" data="delete_scene"/>
       </root>

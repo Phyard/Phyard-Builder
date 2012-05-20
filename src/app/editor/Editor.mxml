@@ -346,7 +346,7 @@
             mLoadWorldMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectLoadWorldMenu);
          }
          
-         var point:Point = Button_LoadWorld.localToGlobal (new Point (Button_LoadWorld.width, Button_LoadWorld.height));
+         var point:Point = Button_LoadWorld.localToGlobal (new Point (Button_LoadWorld.width, 0.5 * Button_LoadWorld.height));
          
          mLoadWorldMenu.show(point.x, point.y);
       }
@@ -398,7 +398,7 @@
             mSaveWorldMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectSaveWorldMenu);
          }
          
-         var point:Point = Button_SaveWorld.localToGlobal (new Point (Button_SaveWorld.width, Button_SaveWorld.height));
+         var point:Point = Button_SaveWorld.localToGlobal (new Point (Button_SaveWorld.width, 0.5 * Button_SaveWorld.height));
          
          mSaveWorldMenu.show(point.x, point.y);
       }

@@ -333,7 +333,7 @@
                         The identifier that associates radio button items in a radio group.
    -->
    
-   <!--mx:XML id="ClearOrResetSceneMenuData">
+   <mx:XML id="ClearOrResetSceneMenuData">
       <root>
          <menuitem label="Create A New Scene" data="create_scene"/>
          <menuitem type="separator"/>
@@ -348,9 +348,9 @@
          <menuitem type="separator"/>
          <menuitem label="Delete Current Scene" data="delete_scene"/>
       </root>
-   </mx:XML-->
+   </mx:XML>
    
-   <mx:XML id="ClearOrResetSceneMenuData">
+   <!--mx:XML id="ClearOrResetSceneMenuData">
       <root>
          <menuitem label="Clear All Entities" data="clear_all"/>
          <menuitem label="Clear All Entities and Reset" data="clear_all_and_reset"/>
@@ -361,7 +361,7 @@
          <menuitem label="Config World Appearance ..." data="appearance"/>
          <menuitem label="Config Viewport ..." data="viewport"/>
       </root>
-   </mx:XML>
+   </mx:XML-->
 
   <mx:Script><![CDATA[
       

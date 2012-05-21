@@ -20,8 +20,9 @@
             >
       <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
          <mx:Spacer width="2"/>
-         <mx:Button id="Button_EditCCats" toolTip="Switch Scene" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
-         <mx:Button id="Button_EditFunctions" toolTip="Switch Scene" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
+         <!--mx:ComboBox width="150" change="OnSwitchScene ();"/>
+         <mx:Spacer width="2"/-->
+         <mx:Button id="Button_SceneEditMenu" toolTip="New Design" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
          <mx:Spacer width="5"/>
          <mx:Spacer width="100%"/>
          <mx:Spacer width="5"/>
@@ -37,15 +38,17 @@
          <mx:Spacer width="5"/>
          <mx:Spacer width="100%"/>
          <mx:Spacer width="5"/>
-         <mx:Button id="Button_ClearOrResetScene" toolTip="New Design" click="OnClickClearOrResetSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
-         <mx:Button id="Button_ConfigScene" toolTip="Config Design" click="OnClickConfigSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-config.png')" />
-         <mx:Spacer width="10"/>
          <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
          <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
          <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
          <mx:Spacer width="10"/>
          <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
          <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
+         <mx:Spacer width="5"/>
+         <mx:Spacer width="100%"/>
+         <mx:Spacer width="5"/>
+         <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
+         <mx:Button id="Button_EditFunctions" toolTip="Edit Functions" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
          <mx:Spacer width="2"/>
       </mx:HBox>
       <mx:HBox id="EntityDesignView" direction="horizontal" backgroundColor="0xE0E0E0"
@@ -306,15 +309,28 @@
       </mx:HBox>
    </mx:VBox>
    
+   <!--mx:XML id="ClearOrResetSceneMenuData">
+      <root>
+         <menuitem label="Create A New Scene" data="create_scene"/>
+         <menuitem type="separator"/>
+         <menuitem label="Clear All Entities In Current Scene" data="clear_all"/>
+         <menuitem label="Clear All Entities and Reset Current Scene" data="clear_all_and_reset"/>
+         <menuitem type="separator"/>
+         <menuitem label="General Settings ..." data="general"/>
+         <menuitem label="Simulation Settings ..." data="physics"/>
+         <menuitem label="Config Coordinate System ..." data="coordinate"/>
+         <menuitem label="Config World Appearance ..." data="appearance"/>
+         <menuitem label="Config Viewport ..." data="viewport"/>
+         <menuitem type="separator"/>
+         <menuitem label="Delete Current Scene" data="delete_scene"/>
+      </root>
+   </mx:XML-->
+   
    <mx:XML id="ClearOrResetSceneMenuData">
       <root>
          <menuitem label="Clear All Entities" data="clear_all"/>
-         <menuitem label="Clear All Entities and Reset Scene" data="clear_all_and_reset"/>
-      </root>
-   </mx:XML>
-
-   <mx:XML id="ConfigSceneMenuData">
-      <root>
+         <menuitem label="Clear All Entities and Reset" data="clear_all_and_reset"/>
+         <menuitem type="separator"/>
          <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Simulation Settings ..." data="physics"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
@@ -351,13 +367,10 @@
 //========================================================================================
 // 
 //========================================================================================
-
-      [Bindable]
-      private var mSceneListDataProvider:Object = [];
    
-//========================================================================================
-// scene
-//========================================================================================
+   //========================================================================================
+   // 
+   //========================================================================================
       
       //private var mCurrentSceneEditPanel:SceneEditPanel = null;
       
@@ -513,6 +526,18 @@
    // event handlers, editing
    //========================================================================================
       
+      private function OnSwitchScene ():void
+      {
+      }
+      
+      private function OnCreateNewScene ():void
+      {
+      }
+      
+      private function OnDeleteCurrentScene ():void
+      {
+      }
+      
       private function OnClickSwitchSceneButton ():void
       {
       }
@@ -542,23 +567,31 @@
       // 
       private var mClearOrResetSceneMenu:Menu = null;
       
-      private function OnClickClearOrResetSceneButton ():void
+      private function OnClickEditSceneButton ():void
       {
          if (mClearOrResetSceneMenu == null)
          {
-            mClearOrResetSceneMenu = Menu.createMenu(Button_ClearOrResetScene, ClearOrResetSceneMenuData, false);
+            mClearOrResetSceneMenu = Menu.createMenu(Button_SceneEditMenu, ClearOrResetSceneMenuData, false);
             mClearOrResetSceneMenu.labelField="@label";
             mClearOrResetSceneMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectClearOrResetSceneMenu);
          }
          
-         var point:Point = Button_ClearOrResetScene.localToGlobal (new Point (0, Button_ClearOrResetScene.height));
+         var point:Point = Button_SceneEditMenu.localToGlobal (new Point (0, Button_SceneEditMenu.height));
          
          mClearOrResetSceneMenu.show(point.x, point.y);
       }
       
       private function OnSelectClearOrResetSceneMenu (event:MenuEvent):void
       {
-         if (event.item.@data == "clear_all")
+         if (event.item.@data == "create_scene")
+         {
+            OnCreateNewScene ();
+         }
+         else if (event.item.@data == "delete_scene")
+         {
+            OnDeleteCurrentScene ();
+         }
+         else if (event.item.@data == "clear_all")
          {
             EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, mCurrentSceneEditPanel.ClearAllEntities);
          }
@@ -566,27 +599,7 @@
          {
             EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, EditorContext.GetEditorApp ().NewWorld);
          }
-      }
-      
-      private var mConfigSceneMenu:Menu = null;
-      
-      private function OnClickConfigSceneButton ():void
-      {
-         if (mConfigSceneMenu == null)
-         {
-            mConfigSceneMenu = Menu.createMenu(Button_ConfigScene, ConfigSceneMenuData, false);
-            mConfigSceneMenu.labelField="@label";
-            mConfigSceneMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectConfigSceneMemu);
-         }
-         
-         var point:Point = Button_ConfigScene.localToGlobal (new Point (0, Button_ConfigScene.height));
-         
-         mConfigSceneMenu.show(point.x, point.y);
-      }
-      
-      private function OnSelectConfigSceneMemu (event:MenuEvent):void
-      {
-         if (event.item.@data == "general")
+         else if (event.item.@data == "general")
          {
             mCurrentSceneEditPanel.ShowLevelRulesEditDialog ();
          }

@@ -289,6 +289,7 @@
                      <mx:Label id="Label_PlaySpeed" textAlign="center" text="Speed X2"/>
                      <mx:Button id="Button_PlayFaster" click="PlayFaster ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-faster.png')" disabledIcon="@Embed('../../../res/edit/play-faster-disabled.png')"/>
                      <mx:Spacer width="100%"/>
+                     <mx:Spacer width="2" />
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Label id="Label_MaskViewerField" text="Mask Player Field" click="ToggleMaskPlayerField ();" toolTip="Toggle Mask Player Field" focusEnabled="false" color="0x808080"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>

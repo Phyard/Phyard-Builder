@@ -68,7 +68,7 @@
             }
             else
             {
-               PopUpManager.addPopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog, EditorContext.GetEditorApp (), OnCCatPicked != null);
+               PopUpManager.addPopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog, EditorContext.GetEditorApp (), true || OnCCatPicked != null);
                PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
             }
             
@@ -122,6 +122,11 @@
          public function GetCollisionCategoryListPanel ():CollisionCategoryListPanel
          {
             return panelCollisionCategoryList;
+         }
+      
+         override protected function CanBeSetAsCurrentFocusedTitleWindow ():Boolean
+         {
+            return false;
          }
          
       //======================================================

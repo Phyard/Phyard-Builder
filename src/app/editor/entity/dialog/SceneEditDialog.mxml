@@ -5,7 +5,9 @@
 
 <container:ResizableTitleWindow xmlns:container="editor.display.container.*"
     xmlns:mx="http://www.adobe.com/2006/mxml"
-    xmlns:entity="editor.entity.dialog.*"  
+    xmlns:entity="editor.entity.dialog.*"
+    xmlns:ccat="editor.ccat.dialog.*"
+    xmlns:codelib="editor.codelib.dialog.*"
     title="Scene Manager"
     width="816" height="656"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
@@ -17,6 +19,10 @@
             horizontalGap="0" verticalGap="0" borderThickness="0"
             >
       <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+         <mx:Spacer width="2"/>
+         <mx:Button id="Button_EditCCats" toolTip="Switch Scene" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
+         <mx:Button id="Button_EditFunctions" toolTip="Switch Scene" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
+         <mx:Spacer width="5"/>
          <mx:Spacer width="100%"/>
          <mx:Spacer width="5"/>
          <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" click="OnClickCloneEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-clone.png')" disabledIcon="@Embed('../../../res/command/command-clone-disabled.png')" />
@@ -40,8 +46,7 @@
          <mx:Spacer width="10"/>
          <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
          <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
-         <mx:Spacer width="5"/>
-         <mx:Spacer width="100%"/>
+         <mx:Spacer width="2"/>
       </mx:HBox>
       <mx:HBox id="EntityDesignView" direction="horizontal" backgroundColor="0xE0E0E0"
              borderStyle="solid" height="100%" width="100%" 
@@ -202,95 +207,102 @@
                
             </mx:Box>
          </mx:TabNavigator>
-         <mx:Box direction="vertical" borderStyle="solid" height="100%"  width="100%"
-            paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-            horizontalGap="0" verticalGap="0" borderThickness="0" clipContent="true">
-            <mx:ViewStack id="ViewStack_Scenes" borderStyle="solid" creationPolicy="all"
-                     height="100%" width="100%"
-                     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-                     horizontalScrollPolicy="off" verticalScrollPolicy="off"
-                     horizontalGap="0" verticalGap="0" borderThickness="1">
-               <!-- it seems flex has bug. Replacing the panels dynamically at runtime will crush the app. -->
-               <mx:VBox id="Box_SceneEdit" height="100%" width="100%">
-                  <entity:SceneEditPanel id="mCurrentSceneEditPanel" height="100%" width="100%" />
-               </mx:VBox>
-               <mx:VBox id="Box_ScenePlay" height="100%" width="100%"><entity:ScenePlayPanel id="mCurrentScenePlayPanel" height="100%" width="100%" /></mx:VBox>
-            </mx:ViewStack>
-            <mx:ViewStack id="ViewStack_StatusBar" borderStyle="solid" creationPolicy="all"
-                     height="35" width="100%"
-                     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-                     horizontalScrollPolicy="off" verticalScrollPolicy="off"
-                     horizontalGap="0" verticalGap="0" borderThickness="0">
-               <mx:Box id="Box_StatusBarForEditing" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" 
-                           height="100%" width="100%"
-                           paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
-                           horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
-                           horizontalGap="0" verticalGap="0" borderThickness="1">
-                  <mx:Button id="Button_Play" toolTip="Play" click="OnClickPlayCurrentSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-run.png')" disabledIcon="@Embed('../../../res/play/play-run-disabled.png')" />
-                  <mx:Spacer width="2" />
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Spacer width="2" />
-                  <mx:Label id="Label_SelectedEntitiesInfos" text="" width="100%"/>
-                  <mx:Spacer width="100%"/>
-                  <!--  focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);" -->
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Spacer width="2" />
-                  <mx:Label id="Label_GoToEntity" text="Select Entity#" />
-                  <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnEnterEntityIDsToSelect ();"/>
-                  <mx:Spacer width="2" />
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Label id="Label_MouseDisplayPosition" text="" minWidth="100"/>
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Label id="Label_MousePhysicsPosition" text="" minWidth="116"/>
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Spacer width="2" />
-                  <mx:Button id="Button_ZoomIn" click="OnClickZoomInButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/zoom-in.png')" disabledIcon="@Embed('../../../res/edit/zoom-in-disabled.png')" />
-                  <mx:Label id="Label_ZoomScale" textAlign="center" text=" 1.00"/>
-                  <mx:Button id="Button_ZoomOut" click="OnClickZoomOutButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/zoom-out.png')" disabledIcon="@Embed('../../../res/edit/zoom-out-disabled.png')" />
-               </mx:Box>
-               <mx:Box id="Box_StatusBarForPlaying" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" 
-                           height="100%" width="100%"
-                           paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
-                           horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
-                           horizontalGap="0" verticalGap="0" borderThickness="1">
-                  <mx:Label id="Label_RunningSteps" text="step: 100" minWidth="86"/>
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Spacer width="2" />
-                  <mx:Button id="Button_Stop" toolTip="Stop" click="OnClickStopCurrentSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-stop.png')" disabledIcon="@Embed('../../../res/play/play-stop-disabled.png')" />
-                  <mx:Spacer width="2" />
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Label id="Label_RunningFps" text="fps: 30.01" minWidth="76" textAlign="center"/>
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Spacer width="100%" />
-                  <mx:Button id="Button_PlayRestart" click="PlayRestart ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-restart.png')" disabledIcon="@Embed('../../../res/edit/play-restart-disabled.png')" />
-                  <mx:Spacer width="20"/>
-                  <mx:ViewStack id="ViewStack_PlayResumePause" borderStyle="none" creationPolicy="all">
-                     <mx:HBox id="Box_PlayResume" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
-                        <mx:Button id="Button_PlayResume" click="PlayResume ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-start.png')"/>
-                     </mx:HBox>
-                     <mx:HBox id="Box_PlayPause" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
-                        <mx:Button id="Button_PlayPause" click="PlayPause ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-pause.png')"/>
-                     </mx:HBox>
-                  </mx:ViewStack>
-                  <mx:Spacer width="20"/>
-                  <mx:Button id="Button_AdvanceOneFrame" click="PlayAdvanceOneFrame ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-one-step.png')" disabledIcon="@Embed('../../../res/edit/play-one-step-disabled.png')"/>
-                  <mx:Spacer width="20"/>
-                  <mx:Button id="Button_PlaySlower" click="PlaySlower ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-slower.png')" disabledIcon="@Embed('../../../res/edit/play-slower-disabled.png')"/>
-                  <mx:Label id="Label_PlaySpeed" textAlign="center" text="Speed X2"/>
-                  <mx:Button id="Button_PlayFaster" click="PlayFaster ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-faster.png')" disabledIcon="@Embed('../../../res/edit/play-faster-disabled.png')"/>
-                  <mx:Spacer width="100%"/>
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Label id="Label_MaskViewerField" text="Mask Player Field" click="ToggleMaskPlayerField ();" toolTip="Toggle Mask Player Field" focusEnabled="false" color="0x808080"/>
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Label id="Label_MouseDisplayPositionForPlaying" text="" minWidth="100"/>
-                  <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                  <mx:Label id="Label_MousePhysicsPositionForPlaying" text="" minWidth="116"/>
-               </mx:Box>
-            </mx:ViewStack>
-         </mx:Box>
-         <mx:VBox width="200">
-            
-         </mx:VBox>
+
+         <mx:VDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
+            <mx:Box direction="vertical" borderStyle="solid" width="100%" height="100%"
+               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+               horizontalGap="0" verticalGap="0" borderThickness="0" clipContent="true">
+               <mx:ViewStack id="ViewStack_Scenes" borderStyle="solid" creationPolicy="all"
+                        height="100%" width="100%"
+                        paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                        horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                        horizontalGap="0" verticalGap="0" borderThickness="1">
+                  <!-- it seems flex has bug. Replacing the panels dynamically at runtime will crush the app. -->
+                  <mx:VBox id="Box_SceneEdit" height="100%" width="100%">
+                     <entity:SceneEditPanel id="mCurrentSceneEditPanel" height="100%" width="100%" />
+                  </mx:VBox>
+                  <mx:VBox id="Box_ScenePlay" height="100%" width="100%"><entity:ScenePlayPanel id="mCurrentScenePlayPanel" height="100%" width="100%" /></mx:VBox>
+               </mx:ViewStack>
+               <mx:ViewStack id="ViewStack_StatusBar" borderStyle="solid" creationPolicy="all"
+                        height="35" width="100%"
+                        paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                        horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                        horizontalGap="0" verticalGap="0" borderThickness="0">
+                  <mx:Box id="Box_StatusBarForEditing" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" 
+                              height="100%" width="100%"
+                              paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
+                              horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
+                              horizontalGap="0" verticalGap="0" borderThickness="1">
+                     <mx:Button id="Button_Play" toolTip="Play" click="OnClickPlayCurrentSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-run.png')" disabledIcon="@Embed('../../../res/play/play-run-disabled.png')" />
+                     <mx:Spacer width="2" />
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Spacer width="2" />
+                     <mx:Label id="Label_SelectedEntitiesInfos" text="" width="100%"/>
+                     <mx:Spacer width="100%"/>
+                     <!--  focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);" -->
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Spacer width="2" />
+                     <mx:Label id="Label_GoToEntity" text="Select Entity#" />
+                     <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnEnterEntityIDsToSelect ();"/>
+                     <mx:Spacer width="2" />
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Label id="Label_MouseDisplayPosition" text="" minWidth="100"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Label id="Label_MousePhysicsPosition" text="" minWidth="116"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Spacer width="2" />
+                     <mx:Button id="Button_ZoomIn" click="OnClickZoomInButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/zoom-in.png')" disabledIcon="@Embed('../../../res/edit/zoom-in-disabled.png')" />
+                     <mx:Label id="Label_ZoomScale" textAlign="center" text=" 1.00"/>
+                     <mx:Button id="Button_ZoomOut" click="OnClickZoomOutButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/zoom-out.png')" disabledIcon="@Embed('../../../res/edit/zoom-out-disabled.png')" />
+                  </mx:Box>
+                  <mx:Box id="Box_StatusBarForPlaying" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" 
+                              height="100%" width="100%"
+                              paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
+                              horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
+                              horizontalGap="0" verticalGap="0" borderThickness="1">
+                     <mx:Label id="Label_RunningSteps" text="step: 100" minWidth="86"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Spacer width="2" />
+                     <mx:Button id="Button_Stop" toolTip="Stop" click="OnClickStopCurrentSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-stop.png')" disabledIcon="@Embed('../../../res/play/play-stop-disabled.png')" />
+                     <mx:Spacer width="2" />
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Label id="Label_RunningFps" text="fps: 30.01" minWidth="76" textAlign="center"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Spacer width="100%" />
+                     <mx:Button id="Button_PlayRestart" click="PlayRestart ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-restart.png')" disabledIcon="@Embed('../../../res/edit/play-restart-disabled.png')" />
+                     <mx:Spacer width="20"/>
+                     <mx:ViewStack id="ViewStack_PlayResumePause" borderStyle="none" creationPolicy="all">
+                        <mx:HBox id="Box_PlayResume" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+                           <mx:Button id="Button_PlayResume" click="PlayResume ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-start.png')"/>
+                        </mx:HBox>
+                        <mx:HBox id="Box_PlayPause" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+                           <mx:Button id="Button_PlayPause" click="PlayPause ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-pause.png')"/>
+                        </mx:HBox>
+                     </mx:ViewStack>
+                     <mx:Spacer width="20"/>
+                     <mx:Button id="Button_AdvanceOneFrame" click="PlayAdvanceOneFrame ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-one-step.png')" disabledIcon="@Embed('../../../res/edit/play-one-step-disabled.png')"/>
+                     <mx:Spacer width="20"/>
+                     <mx:Button id="Button_PlaySlower" click="PlaySlower ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-slower.png')" disabledIcon="@Embed('../../../res/edit/play-slower-disabled.png')"/>
+                     <mx:Label id="Label_PlaySpeed" textAlign="center" text="Speed X2"/>
+                     <mx:Button id="Button_PlayFaster" click="PlayFaster ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-faster.png')" disabledIcon="@Embed('../../../res/edit/play-faster-disabled.png')"/>
+                     <mx:Spacer width="100%"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Label id="Label_MaskViewerField" text="Mask Player Field" click="ToggleMaskPlayerField ();" toolTip="Toggle Mask Player Field" focusEnabled="false" color="0x808080"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Label id="Label_MouseDisplayPositionForPlaying" text="" minWidth="100"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                     <mx:Label id="Label_MousePhysicsPositionForPlaying" text="" minWidth="116"/>
+                  </mx:Box>
+               </mx:ViewStack>
+            </mx:Box>
+            <!--mx:HDividedBox id="theBottomDividedBox" liveDragging="true" width="100%" height="256" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
+               <ccat:CollisionCategoryListDialog>
+               </ccat:CollisionCategoryListDialog>
+               <codelib:CodeLibListDialog>
+               </codelib:CodeLibListDialog>
+            </mx:HDividedBox-->
+         </mx:VDividedBox>
+         
       </mx:HBox>
    </mx:VBox>
    
@@ -335,6 +347,13 @@
       import common.ValueAdjuster;
       import common.Define;
       import common.Version;
+   
+//========================================================================================
+// 
+//========================================================================================
+
+      [Bindable]
+      private var mSceneListDataProvider:Object = [];
    
 //========================================================================================
 // scene
@@ -493,6 +512,20 @@
    //========================================================================================
    // event handlers, editing
    //========================================================================================
+      
+      private function OnClickSwitchSceneButton ():void
+      {
+      }
+      
+      private function OnClickEditCCatsButton ():void
+      {
+         EditorContext.GetEditorApp ().ShowCollisionCategoryListDialog ();
+      }
+      
+      private function OnClickEditFunctionsButton ():void
+      {
+         EditorContext.GetEditorApp ().ShowCodeLibListDialog ();
+      }
       
       // undo / redo
       

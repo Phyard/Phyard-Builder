@@ -20,9 +20,14 @@
             >
       <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
          <mx:Spacer width="2"/>
-         <mx:ComboBox width="150" change="OnSwitchScene ();"/>
-         <mx:Spacer width="2"/>
-         <mx:Button id="Button_SceneEditMenu" toolTip="New Design" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
+         <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
+         <mx:Spacer width="10"/>
+         <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
+         <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
+         <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
+         <mx:Spacer width="10"/>
+         <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
+         <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
          <mx:Spacer width="5"/>
          <mx:Spacer width="100%"/>
          <mx:Spacer width="5"/>
@@ -38,17 +43,9 @@
          <mx:Spacer width="5"/>
          <mx:Spacer width="100%"/>
          <mx:Spacer width="5"/>
-         <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
-         <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
-         <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
-         <mx:Spacer width="10"/>
-         <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
-         <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
-         <mx:Spacer width="5"/>
-         <mx:Spacer width="100%"/>
-         <mx:Spacer width="5"/>
          <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
          <mx:Button id="Button_EditFunctions" toolTip="Edit Functions" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
+         <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
          <mx:Spacer width="2"/>
       </mx:HBox>
       <mx:HBox id="EntityDesignView" direction="horizontal" backgroundColor="0xE0E0E0"
@@ -58,7 +55,7 @@
             horizontalGap="0" verticalGap="0" borderThickness="0"
             >
          <mx:TabNavigator id="Box_CreateCommands" backgroundColor="0xE0E0E0" width="79" height="100%" creationPolicy="all" textAlign="center">
-            <mx:Box icon="@Embed('../../../res/create/create-panel-normal.png')" toolTip="General Components" direction="vertical" borderStyle="solid" width="100%" height="100%"
+            <mx:VBox icon="@Embed('../../../res/create/create-panel-normal.png')" toolTip="General Components" borderStyle="solid" width="100%" height="100%"
                      paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
                      horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
                <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="73" 
@@ -160,8 +157,8 @@
                   <mx:Button id="Button_CreateModuleShapeButton" click="OnClickCreateEntityButton (event, &quot;ImageModuleButton&quot;);" toolTip="Create Module Button" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/module-shape-button.png')" downIcon="@Embed('../../../res/create/module-shape-button-sel.png')" overIcon="@Embed('../../../res/create/module-shape-button.png')" selectedUpIcon="@Embed('../../../res/create/module-shape-button-sel.png')" selectedOverIcon="@Embed('../../../res/create/module-shape-button-sel.png')" selectedDownIcon="@Embed('../../../res/create/module-shape-button.png')"   />
                </mx:Tile>
                <mx:Spacer height="100%"/>
-            </mx:Box>
-            <mx:Box icon="@Embed('../../../res/create/create-panel-trigger.png')" toolTip="Trigger Components" direction="vertical" borderStyle="solid" width="83" height="100%"
+            </mx:VBox>
+            <mx:VBox icon="@Embed('../../../res/create/create-panel-trigger.png')" toolTip="Trigger Components" borderStyle="solid" width="83" height="100%"
                      paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
                      horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
                <mx:VBox verticalAlign="middle" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="none">
@@ -208,11 +205,15 @@
                   <mx:Spacer height="10"/>
                </mx:VBox>
                
-            </mx:Box>
+            </mx:VBox>
          </mx:TabNavigator>
-
-         <mx:VDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
-            <mx:Box direction="vertical" borderStyle="solid" width="100%" height="100%"
+         
+         <mx:HBox backgroundColor="0xE0E0E0" borderStyle="solid" 
+                              height="100%" width="100%"
+                              paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
+                              horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
+                              horizontalGap="0" verticalGap="0" borderThickness="1">
+            <mx:VBox borderStyle="solid" width="100%" height="100%"
                paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                horizontalGap="0" verticalGap="0" borderThickness="0" clipContent="true">
                <mx:ViewStack id="ViewStack_Scenes" borderStyle="solid" creationPolicy="all"
@@ -231,7 +232,7 @@
                         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                         horizontalScrollPolicy="off" verticalScrollPolicy="off"
                         horizontalGap="0" verticalGap="0" borderThickness="0">
-                  <mx:Box id="Box_StatusBarForEditing" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" 
+                  <mx:HBox id="Box_StatusBarForEditing" backgroundColor="0xE0E0E0" borderStyle="solid" 
                               height="100%" width="100%"
                               paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
@@ -257,8 +258,8 @@
                      <mx:Button id="Button_ZoomIn" click="OnClickZoomInButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/zoom-in.png')" disabledIcon="@Embed('../../../res/edit/zoom-in-disabled.png')" />
                      <mx:Label id="Label_ZoomScale" textAlign="center" text=" 1.00"/>
                      <mx:Button id="Button_ZoomOut" click="OnClickZoomOutButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/zoom-out.png')" disabledIcon="@Embed('../../../res/edit/zoom-out-disabled.png')" />
-                  </mx:Box>
-                  <mx:Box id="Box_StatusBarForPlaying" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" 
+                  </mx:HBox>
+                  <mx:HBox id="Box_StatusBarForPlaying" backgroundColor="0xE0E0E0" borderStyle="solid" 
                               height="100%" width="100%"
                               paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
@@ -296,17 +297,11 @@
                      <mx:Label id="Label_MouseDisplayPositionForPlaying" text="" minWidth="100"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Label id="Label_MousePhysicsPositionForPlaying" text="" minWidth="116"/>
-                  </mx:Box>
+                  </mx:HBox>
                </mx:ViewStack>
-            </mx:Box>
-            <!--mx:HDividedBox id="theBottomDividedBox" liveDragging="true" width="100%" height="256" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
-               <ccat:CollisionCategoryListDialog>
-               </ccat:CollisionCategoryListDialog>
-               <codelib:CodeLibListDialog>
-               </codelib:CodeLibListDialog>
-            </mx:HDividedBox-->
-         </mx:VDividedBox>
-         
+            </mx:VBox>
+            <mx:List width="168" height="100%" change="OnSwitchScene ();" />
+         </mx:HBox>
       </mx:HBox>
    </mx:VBox>
    
@@ -583,6 +578,10 @@
       private function OnClickEditFunctionsButton ():void
       {
          EditorContext.GetEditorApp ().ShowCodeLibListDialog ();
+      }
+      
+      private function OnClickEditScenesButton ():void
+      {
       }
       
       // undo / redo

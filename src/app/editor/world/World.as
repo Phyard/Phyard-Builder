@@ -213,7 +213,7 @@ package editor.world {
          return newScene;
       }
       
-      public function GetSceneListDataProvider ():
+      //public function GetSceneListDataProvider ():
       
 //=================================================================================
 //   collision categories

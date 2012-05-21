@@ -22,7 +22,7 @@
          <mx:Spacer width="2"/>
          <!--mx:ComboBox width="150" change="OnSwitchScene ();"/>
          <mx:Spacer width="2"/-->
-         <mx:Button id="Button_SceneEditMenu" toolTip="New Design" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
+         <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
          <mx:Spacer width="5"/>
          <mx:Spacer width="100%"/>
          <mx:Spacer width="5"/>

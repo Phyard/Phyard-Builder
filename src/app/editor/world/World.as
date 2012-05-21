@@ -38,6 +38,7 @@ package editor.world {
    public class World // extends EntityContainer
    {
       public var mEntityContainer:Scene;
+      public var mScenes:Array;
       
       //public var mCollisionManager:CollisionManager;
       public var mCollisionCategoryManager:CollisionCategoryManager;
@@ -64,6 +65,8 @@ package editor.world {
 
       //
          mEntityContainer = new Scene ();
+         mScenes = new Array ();
+         mScenes.push (mScenes);
          
          //mCollisionManager = new CollisionManager ();
          mCollisionCategoryManager = new CollisionCategoryManager ();
@@ -188,6 +191,29 @@ package editor.world {
       {
          return mEntityContainer;
       }
+      
+      public function CreateNewScene (beforeScene:Scene):Scene
+      {
+         var newScene:Scene = new Scene ();
+         
+         mScenes.push (newScene);
+
+         var index:int = mScenes.indexOf (beforeScene);
+         if (index >= 0)
+         {
+            var i:int = mScenes.length;
+            while (-- i > index)
+            {
+               mScenes [i] = mScenes [i - 1];
+            }  
+            
+            mScenes [index] = newScene;
+         }
+         
+         return newScene;
+      }
+      
+      public function GetSceneListDataProvider ():
       
 //=================================================================================
 //   collision categories

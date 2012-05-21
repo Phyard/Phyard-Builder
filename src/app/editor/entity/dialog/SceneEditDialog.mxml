@@ -20,8 +20,8 @@
             >
       <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
          <mx:Spacer width="2"/>
-         <!--mx:ComboBox width="150" change="OnSwitchScene ();"/>
-         <mx:Spacer width="2"/-->
+         <mx:ComboBox width="150" change="OnSwitchScene ();"/>
+         <mx:Spacer width="2"/>
          <mx:Button id="Button_SceneEditMenu" toolTip="New Design" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
          <mx:Spacer width="5"/>
          <mx:Spacer width="100%"/>
@@ -337,6 +337,8 @@
       <root>
          <menuitem label="Create A New Scene" data="create_scene"/>
          <menuitem type="separator"/>
+         <menuitem label="Set Current Scene As Entry Scene" data="set_as_entry"/>
+         <menuitem type="separator"/>
          <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Simulation Settings ..." data="physics"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
@@ -408,7 +410,12 @@
          return ViewStack_Scenes.selectedChild == Box_SceneEdit;
       }
       
-      public function SetScene (scene:editor.entity.Scene):void
+      public function GetCurrentScene ():editor.entity.Scene
+      {
+         return mCurrentSceneEditPanel.GetScene ();
+      }
+      
+      public function SetCurrentScene (scene:editor.entity.Scene):void
       {
          mCurrentSceneEditPanel.SetScene (scene);
          
@@ -556,13 +563,14 @@
       
       private function OnCreateNewScene ():void
       {
+         EditorContext.GetEditorApp ().CreateNewScene ();
       }
       
       private function OnDeleteCurrentScene ():void
       {
       }
       
-      private function OnClickSwitchSceneButton ():void
+      private function OnSetCurrentSceneAsEntry ():void
       {
       }
       
@@ -614,6 +622,10 @@
          else if (event.item.@data == "delete_scene")
          {
             OnDeleteCurrentScene ();
+         }
+         else if (event.item.@data == "set_as_entry")
+         {
+            OnSetCurrentSceneAsEntry ();
          }
          else if (event.item.@data == "clear_all")
          {

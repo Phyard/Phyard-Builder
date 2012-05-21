@@ -245,12 +245,12 @@
          
          mWorld = world;
          
-         mSceneEditDialog.SetScene (mWorld == null ? null : mWorld.GetEntityContainer ());
+         mSceneEditDialog.SetCurrentScene (mWorld == null ? null : mWorld.GetEntityContainer ());
       }
       
       public function CloseWorld ():void
       {
-         mSceneEditDialog.SetScene (null);
+         mSceneEditDialog.SetCurrentScene (null);
 
          mWorld = null;
          
@@ -1305,6 +1305,22 @@
       private function Dummy ():void
       {
          new WorldPlugin (); // to make mxmlc include WorldPlugin, so the all player.* package, ...
+      }
+      
+//========================================================================================
+// scenes
+//========================================================================================
+      
+      public function CreateNewScene ():void
+      {
+         if (mWorld == null)
+            return;
+         
+         var scene:editor.entity.Scene = mWorld.CreateNewScene (mSceneEditDialog.GetCurrentScene ());
+         if (scene != null)
+         {
+            mSceneEditDialog.SetCurrentScene (scene);
+         }
       }
       
 //========================================================================================

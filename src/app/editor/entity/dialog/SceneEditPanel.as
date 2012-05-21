@@ -75,6 +75,11 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
+      public function GetScene ():Scene
+      {
+         return mScene;
+      }
+      
       public function SetScene (scene:Scene):void
       {
          mScene = scene;

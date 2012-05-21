@@ -52,7 +52,6 @@
          <!--menuitem label="Load Local ..." data="load_local"/-->
          <!--menuitem label="Quick Load ..." data="load_quick"/-->
          <menuitem label="Import ..." data="import"/>
-         <!--menuitem label="Import Functions Only ..." data="import_functions"/-->
       </root>
    </mx:XML>
 
@@ -244,15 +243,13 @@
          EditorContext.sEditorContext = new EditorContext ();
          
          mWorld = world;
-         
-         mSceneEditDialog.SetCurrentScene (mWorld == null ? null : mWorld.GetEntityContainer ());
+         mSceneEditDialog.OnWorldChanged (0);
       }
       
       public function CloseWorld ():void
       {
-         mSceneEditDialog.SetCurrentScene (null);
-
          mWorld = null;
+         mSceneEditDialog.OnWorldChanged ();
          
          if (EditorContext.sEditorContext != null)
             EditorContext.sEditorContext.Cleanup ();
@@ -1305,22 +1302,6 @@
       private function Dummy ():void
       {
          new WorldPlugin (); // to make mxmlc include WorldPlugin, so the all player.* package, ...
-      }
-      
-//========================================================================================
-// scenes
-//========================================================================================
-      
-      public function CreateNewScene ():void
-      {
-         if (mWorld == null)
-            return;
-         
-         var scene:editor.entity.Scene = mWorld.CreateNewScene (mSceneEditDialog.GetCurrentScene ());
-         if (scene != null)
-         {
-            mSceneEditDialog.SetCurrentScene (scene);
-         }
       }
       
 //========================================================================================

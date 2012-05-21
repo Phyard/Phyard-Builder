@@ -169,6 +169,20 @@ package editor.entity {
       //>>v1.60
       private var mPauseOnFocusLost:Boolean = false;
       //<<
+      
+      //>>v1.20
+      private var mName:String = "";
+      //<<
+      
+      public function SetName (name:String):void
+      {
+         mName = (name == null ? "" : name);
+      }
+      
+      public function GetName ():String
+      {
+         return mName == null ? "" : mName;
+      }
 
       public function SetWorldLeft (left:int):void
       {

@@ -20,7 +20,7 @@
             >
       <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
          <mx:Spacer width="2"/>
-         <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
+         <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-settings.png')" />
          <mx:Spacer width="10"/>
          <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
          <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
@@ -45,7 +45,8 @@
          <mx:Spacer width="5"/>
          <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
          <mx:Button id="Button_EditFunctions" toolTip="Edit Functions" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
-         <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
+         <mx:Spacer width="10"/>
+         <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-scenes.png')" selectedDownIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')" />
          <mx:Spacer width="2"/>
       </mx:HBox>
       <mx:HBox id="EntityDesignView" direction="horizontal" backgroundColor="0xE0E0E0"
@@ -213,9 +214,9 @@
                               paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
                               horizontalGap="0" verticalGap="0" borderThickness="1">
-            <mx:VBox borderStyle="solid" width="100%" height="100%"
+            <mx:VBox width="100%" height="100%"
                paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-               horizontalGap="0" verticalGap="0" borderThickness="0" clipContent="true">
+               horizontalGap="0" verticalGap="0" borderThickness="0">
                <mx:ViewStack id="ViewStack_Scenes" borderStyle="solid" creationPolicy="all"
                         height="100%" width="100%"
                         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
@@ -300,7 +301,19 @@
                   </mx:HBox>
                </mx:ViewStack>
             </mx:VBox>
-            <mx:List width="168" height="100%" change="OnSwitchScene ();" />
+            <mx:VBox id="Box_Scenes" width="0" height="100%"
+               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+               <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="2" paddingBottom="2" paddingLeft="3" paddingRight="3">
+                  <mx:Button id="Button_SetSceneAsEntry" click="OnSetCurrentSceneAsEntry ();" toolTip="Set As Entry Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movetotop.png')" disabledIcon="@Embed('../../../res/action/command_movetotop-disabled.png')" />
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_MoveUpScene" click="OnMoveUpScene ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
+                  <mx:Button id="Button_MoveDownScene" click="OnMoveDownScene ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CreateScene" click="OnCreateNewScene ();" toolTip="New Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
+               </mx:HBox>
+               <mx:List id="List_Scenes" width="100%" height="100%" change="OnCurrentSceneSwitched ();"  labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false" />
+            </mx:VBox>
          </mx:HBox>
       </mx:HBox>
    </mx:VBox>
@@ -329,30 +342,26 @@
                         The identifier that associates radio button items in a radio group.
    -->
    
-   <mx:XML id="ClearOrResetSceneMenuData">
+   <mx:XML id="SceneSettingsMenuData">
       <root>
-         <menuitem label="Create A New Scene" data="create_scene"/>
-         <menuitem type="separator"/>
-         <menuitem label="Set Current Scene As Entry Scene" data="set_as_entry"/>
-         <menuitem type="separator"/>
          <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Simulation Settings ..." data="physics"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
          <menuitem label="Config World Appearance ..." data="appearance"/>
          <menuitem label="Config Viewport ..." data="viewport"/>
-         <menuitem type="separator"/>
+         <menuitem type="separator" data=""/>
          <menuitem label="Clear All Entities In Current Scene" data="clear_all"/>
          <menuitem label="Clear All Entities and Reset Current Scene" data="clear_all_and_reset"/>
-         <menuitem type="separator"/>
-         <menuitem label="Delete Current Scene" data="delete_scene"/>
+         <menuitem type="separator" data=""/>
+         <menuitem id="MenuItem_DeleteScene" label="Delete Current Scene" data="delete_scene" enabled="true"/>
       </root>
    </mx:XML>
    
-   <!--mx:XML id="ClearOrResetSceneMenuData">
+   <!--mx:XML id="SceneSettingsMenuData">
       <root>
          <menuitem label="Clear All Entities" data="clear_all"/>
          <menuitem label="Clear All Entities and Reset" data="clear_all_and_reset"/>
-         <menuitem type="separator"/>
+         <menuitem type="separator" data=""/>
          <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Simulation Settings ..." data="physics"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
@@ -379,6 +388,8 @@
       import editor.entity.dialog.ScenePlayPanel;
       import editor.entity.Scene;
       
+      import editor.world.World;
+      
       import editor.EditorContext;
       
       import common.trigger.CoreEventIds;
@@ -390,6 +401,11 @@
 // 
 //========================================================================================
    
+      public function SetAsFocus ():void
+      {
+         EditorContext.GetEditorApp ().stage.focus = mCurrentSceneEditPanel;
+      }
+      
    //========================================================================================
    // 
    //========================================================================================
@@ -406,13 +422,42 @@
          return ViewStack_Scenes.selectedChild == Box_SceneEdit;
       }
       
-      public function GetCurrentScene ():editor.entity.Scene
+      public function OnWorldChanged (selectedSceneIndex:int = -1):void
       {
-         return mCurrentSceneEditPanel.GetScene ();
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+         {
+            List_Scenes.dataProvider = null;
+            List_Scenes.selectedIndex = -1;
+         }
+         else
+         {
+            var dataProvider:Array = world.GetSceneListDataProvider ();;
+            List_Scenes.dataProvider = dataProvider;
+            if (selectedSceneIndex < 0 || selectedSceneIndex >= dataProvider.length)
+               selectedSceneIndex = 0;
+            
+            List_Scenes.selectedIndex = selectedSceneIndex;
+         }
+         
+         OnCurrentSceneSwitched ();
+         UpdateSceneListInterface ();
       }
       
-      public function SetCurrentScene (scene:editor.entity.Scene):void
+      public function OnCurrentSceneSwitched ():void
       {
+         var scene:editor.entity.Scene = null;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var item:Object = List_Scenes.dataProvider.getItemAt (List_Scenes.selectedIndex);
+            
+            scene = item.mData as editor.entity.Scene;
+         }
+         
+         // ...
+         
          mCurrentSceneEditPanel.SetScene (scene);
          
          if (scene == null)
@@ -431,6 +476,21 @@
             SetCurrentSceneScale (scene.GetScale ());
             SetMousePosition (null);
          }
+      }
+      
+      // ...
+      private function UpdateSceneListInterface ():void
+      {
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            List_Scenes.scrollToIndex (List_Scenes.selectedIndex);
+         }
+
+         SceneSettingsMenuData.menuitem.(@data == "delete_scene").@enabled = List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;
+
+         Button_SetSceneAsEntry.enabled = List_Scenes.selectedIndex >= 1;
+         Button_MoveUpScene.enabled = List_Scenes.selectedIndex >= 1;
+         Button_MoveDownScene.enabled = List_Scenes.selectedIndex >= 0 && List_Scenes.selectedIndex < List_Scenes.dataProvider.length - 1;
       }
 
    //========================================================================================
@@ -553,22 +613,82 @@
    // event handlers, editing
    //========================================================================================
       
-      private function OnSwitchScene ():void
+      private function OnClickEditScenesButton ():void
       {
+         if (Box_Scenes.width == 0)
+         {
+            Box_Scenes.width = 200;
+            Button_EditScenes.selected = true;
+         }
+         else
+         {
+            Box_Scenes.width = 0;
+            Button_EditScenes.selected = false;
+         }
       }
       
       private function OnCreateNewScene ():void
       {
-         EditorContext.GetEditorApp ().CreateNewScene ();
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         var newIndex:int = world.CreateNewSceneAfterIndex ("untitled", List_Scenes.selectedIndex);
+         OnWorldChanged (newIndex);
       }
       
       private function OnDeleteCurrentScene ():void
       {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var newSelectedIndex:int = world.DeleteSceneByIndex (List_Scenes.selectedIndex);
+            OnWorldChanged (newSelectedIndex);
+         }
+      }
+      
+      private function OnMoveUpScene ():void
+      {
+         ChangeCurrentSceneIndex (-1);
+      }
+      
+      private function OnMoveDownScene ():void
+      {
+         ChangeCurrentSceneIndex (1);
       }
       
       private function OnSetCurrentSceneAsEntry ():void
       {
+         ChangeCurrentSceneIndex (0);
       }
+      
+      private function ChangeCurrentSceneIndex (deltaInex:int):void
+      {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var targetIndex:int = (deltaInex == 0 ? 0 : List_Scenes.selectedIndex + deltaInex);
+            if (targetIndex != List_Scenes.selectedIndex && targetIndex >=0 && targetIndex < List_Scenes.dataProvider.length)
+            {
+               var newSelectedIndex:int = world.ChangeSceneIndex (List_Scenes.selectedIndex, targetIndex);
+               if (newSelectedIndex >= 0)
+               {
+                  OnWorldChanged (newSelectedIndex);
+               }
+            }
+         }
+      }
+      
+      /// ....
       
       private function OnClickEditCCatsButton ():void
       {
@@ -578,10 +698,6 @@
       private function OnClickEditFunctionsButton ():void
       {
          EditorContext.GetEditorApp ().ShowCodeLibListDialog ();
-      }
-      
-      private function OnClickEditScenesButton ():void
-      {
       }
       
       // undo / redo
@@ -603,7 +719,7 @@
       {
          if (mClearOrResetSceneMenu == null)
          {
-            mClearOrResetSceneMenu = Menu.createMenu(Button_SceneEditMenu, ClearOrResetSceneMenuData, false);
+            mClearOrResetSceneMenu = Menu.createMenu(Button_SceneEditMenu, SceneSettingsMenuData, false);
             mClearOrResetSceneMenu.labelField="@label";
             mClearOrResetSceneMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectClearOrResetSceneMenu);
          }
@@ -615,19 +731,7 @@
       
       private function OnSelectClearOrResetSceneMenu (event:MenuEvent):void
       {
-         if (event.item.@data == "create_scene")
-         {
-            OnCreateNewScene ();
-         }
-         else if (event.item.@data == "delete_scene")
-         {
-            OnDeleteCurrentScene ();
-         }
-         else if (event.item.@data == "set_as_entry")
-         {
-            OnSetCurrentSceneAsEntry ();
-         }
-         else if (event.item.@data == "clear_all")
+         if (event.item.@data == "clear_all")
          {
             EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, mCurrentSceneEditPanel.ClearAllEntities);
          }
@@ -654,6 +758,10 @@
          else if (event.item.@data == "viewport")
          {
             mCurrentSceneEditPanel.ShowLevelViewportEditDialog ();
+         }
+         else if (event.item.@data == "delete_scene")
+         {
+            OnDeleteCurrentScene ();
          }
       }
       
@@ -800,7 +908,7 @@
       {
          ViewStack_Scenes.selectedChild = Box_ScenePlay;
          
-         Box_BasicToolbar.enabled = Box_CreateCommands.enabled = false;
+         Box_BasicToolbar.enabled = Box_CreateCommands.enabled = Box_Scenes.enabled = false;
          ViewStack_StatusBar.selectedChild = Box_StatusBarForPlaying;
 
          //var scenePlayPanel:ScenePlayPanel = new ScenePlayPanel ();
@@ -826,7 +934,7 @@
             
          ViewStack_StatusBar.selectedChild = Box_StatusBarForEditing;
          
-         Box_BasicToolbar.enabled = Box_CreateCommands.enabled = true;
+         Box_BasicToolbar.enabled = Box_CreateCommands.enabled = Box_Scenes.enabled = true;
       }
 
    //========================================================================================

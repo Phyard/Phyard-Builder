@@ -66,7 +66,8 @@ package editor.world {
       //
          mEntityContainer = new Scene ();
          mScenes = new Array ();
-         mScenes.push (mScenes);
+         mScenes.push (mEntityContainer);
+         UpdateSceneListDataProvider ();
          
          //mCollisionManager = new CollisionManager ();
          mCollisionCategoryManager = new CollisionCategoryManager ();
@@ -192,28 +193,90 @@ package editor.world {
          return mEntityContainer;
       }
       
-      public function CreateNewScene (beforeScene:Scene):Scene
+      public function GetNumScenes ():int
       {
-         var newScene:Scene = new Scene ();
-         
-         mScenes.push (newScene);
-
-         var index:int = mScenes.indexOf (beforeScene);
-         if (index >= 0)
-         {
-            var i:int = mScenes.length;
-            while (-- i > index)
-            {
-               mScenes [i] = mScenes [i - 1];
-            }  
-            
-            mScenes [index] = newScene;
-         }
-         
-         return newScene;
+         return mScenes.length;
       }
       
-      //public function GetSceneListDataProvider ():
+      public function GetSceneByIndex (index:int):Scene
+      {
+         if (index < 0 || index >= mScenes.length)
+            return null;
+         
+         return mScenes [index] as Scene;
+      }
+      
+      public function CreateNewSceneAfterIndex (name:String, afterIndex:int):int
+      {
+         var newScene:Scene = new Scene ();
+         newScene.SetName (name);
+         
+         if (afterIndex >= 0)
+            ++ afterIndex;
+         
+         if (afterIndex < 0 || afterIndex > mScenes.length)
+            afterIndex = mScenes.length;
+            
+         mScenes.splice (afterIndex, 0, newScene);
+         
+         UpdateSceneListDataProvider ();
+         
+         return afterIndex;
+      }
+      
+      public function DeleteSceneByIndex (index:int):int
+      {
+         if (index < 0 || index >= mScenes.length)
+            return -1;
+         
+         if (mScenes.length <= 1)
+            return -1;
+         
+         mScenes.splice (index, 1);
+         
+         UpdateSceneListDataProvider ();
+         
+         return mScenes.length >= index ? mScenes.length - 1 : index;
+      }
+      
+      public function ChangeSceneIndex (fromIndex:int, targetIndex:int):int
+      {
+         if (fromIndex < 0 || fromIndex >= mScenes.length)
+            return -1;
+         
+         if (targetIndex < 0 || targetIndex >= mScenes.length)
+            return -1;
+         
+         if (targetIndex == fromIndex)
+            return -1;
+         
+         var scene:Scene = mScenes [targetIndex];
+         mScenes [targetIndex] = mScenes [fromIndex];
+         mScenes [fromIndex] = scene;
+         
+         UpdateSceneListDataProvider ();
+         
+         return targetIndex;
+      }
+      
+      private var mSceneListDataProvider:Array = new Array ();
+      
+      public function GetSceneListDataProvider ():Array
+      {
+         return mSceneListDataProvider;
+      }
+      
+      private function UpdateSceneListDataProvider ():void
+      {
+         mSceneListDataProvider.splice (0, mSceneListDataProvider.length);
+         
+         for (var i:int = 0; i < mScenes.length; ++ i)
+         {
+            var scene:Scene = mScenes [i] as Scene;
+            
+            mSceneListDataProvider.push ({mName: i + "> " + scene.GetName (), mIndex: i, mDataTip: scene.GetName (), mData: scene});
+         }
+      }
       
 //=================================================================================
 //   collision categories

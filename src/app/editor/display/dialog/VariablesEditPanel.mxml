@@ -12,7 +12,7 @@
             <mx:Spacer width="100%" />
             <mx:Button id="Button_DeleteCommmand" click="OnDeleteVariable ();" toolTip="Delete Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
          </mx:HBox>
-         <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false"  width="100%" height="100%" editable="false" change="OnChangeVariable ()"/>
+         <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" width="100%" height="100%" change="OnChangeVariable ()"  labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false"/>
       </mx:VBox>
       <mx:ViewStack id="ViewStack_VariableProperties" creationPolicy="all" width="100%" height="100%" borderStyle="solid" borderThickness="1">
          <mx:VBox id="Box_BlankPanel" width="100%" height="100%">

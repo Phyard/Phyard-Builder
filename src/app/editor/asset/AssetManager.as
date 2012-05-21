@@ -610,6 +610,11 @@ package editor.asset {
       {
          var objectArray:Array = mSelectionEngine.GetObjectsAtPoint (managerX, managerY);
          
+         return FilterAssets (objectArray);
+      }
+      
+      public function FilterAssets (objectArray:Array):Array
+      {
          var assetArray:Array = ConvertObjectArrayToAssetArray (objectArray);
          assetArray.sort (Sorter_ByAppearanceOrder);
          
@@ -652,9 +657,11 @@ package editor.asset {
          return assetArray;
       }
       
-      public function GetFirstLinkablesAtPoint (displayX:Number, displayY:Number):Linkable
+      public function GetFirstLinkableAtPoint (displayX:Number, displayY:Number, objectArray:Array = null):Linkable
       {
-         var objectArray:Array = mSelectionEngine.GetObjectsAtPoint (displayX, displayY);
+         if (objectArray == null)
+            objectArray = mSelectionEngine.GetObjectsAtPoint (displayX, displayY);
+         
          objectArray.sort (Sorter_ByAppearanceOrder);
          var linkable:Linkable = null;
          for (var i:uint = 0; i < objectArray.length; ++ i)
@@ -680,6 +687,12 @@ package editor.asset {
       public function GetControlPointsAtPoint (displayX:Number, displayY:Number):Array
       {
          var objectArray:Array = mSelectionEngine.GetObjectsAtPoint (displayX, displayY);
+         
+         return FilterControlPoints (objectArray);
+      }
+      
+      public function FilterControlPoints (objectArray:Array):Array
+      {
          var controlPointArray:Array = new Array ();
          
          for (var i:uint = 0; i < objectArray.length; ++ i)
@@ -689,6 +702,11 @@ package editor.asset {
          }
          
          return controlPointArray;
+      }
+      
+      public function GetSelectableObjectsAtPoint (displayX:Number, displayY:Number):Array
+      {
+         return mSelectionEngine.GetObjectsAtPoint (displayX, displayY);
       }
       
 //=================================================================================

@@ -26,7 +26,8 @@ package editor.selection {
       
       public var _b2Body:b2Body = null; // used within package
       
-      protected var mSelectable:Boolean = true;
+      protected var mPointSelectable:Boolean = true;
+      protected var mRegionSelectable:Boolean = true;
       
       public function SelectionProxy (selEngine:SelectionEngine):void
       {
@@ -38,9 +39,11 @@ package editor.selection {
          mUserData = userData;
       }
       
-      public function SetSelectable (selectable:Boolean):void
+      // either point selection or regions selection
+      public function SetSelectable (pointSelectable:Boolean, regionSelectable:Boolean):void
       {
-         mSelectable = selectable;
+         mPointSelectable = pointSelectable;
+         mRegionSelectable = regionSelectable;
          
          if (_b2Body == null)
             return;
@@ -50,7 +53,8 @@ package editor.selection {
          
          while (fixture != null)
          {
-            fixture.m_filter.groupIndex = mSelectable ? 0 : -1;
+            fixture.m_filter.categoryBits = GetCategoryBits ();
+            fixture.m_filter.maskBits = GetMaskBits ();
             
             fixture = fixture.m_next;
          }
@@ -58,7 +62,40 @@ package editor.selection {
       
       public function IsSelectable ():Boolean
       {
-         return mSelectable;
+         return mPointSelectable || mRegionSelectable;
+      }
+      
+      public function IsPointSelectable ():Boolean
+      {
+         return mPointSelectable;
+      }
+      
+      public function IsRegionSelectable ():Boolean
+      {
+         return mRegionSelectable;
+      }
+      
+      // _SelectionProxyForRegionSelection will override this
+      public function GetCategoryBits ():int
+      {
+         // 1 << 0 is for _SelectionProxyForRegionSelection
+         
+         if (IsPointSelectable () && IsRegionSelectable ())
+            return 1 << 1;
+         else if (IsRegionSelectable ())
+            return 1 << 2;
+         else if (IsPointSelectable ())
+            return 1 << 3;
+         else
+            return 1 << 4;
+      }
+      
+      // _SelectionProxyForRegionSelection will override this
+      public function GetMaskBits ():int
+      {
+         // 0xFFFFFFFE is for _SelectionProxyForRegionSelection
+         
+         return IsRegionSelectable () ? 1 : 0;
       }
       
       protected function Rebuild_b2Body (pointX:Number, pointY:Number, rotation:Number):void
@@ -169,6 +206,16 @@ package editor.selection {
          Rebuild_b2Body (centerX, centerY, rotation);
       }
       
+      protected function CreateFixture (fixture_def:b2FixtureDef):void
+      { 
+         fixture_def.filter.categoryBits = GetCategoryBits ();
+         fixture_def.filter.maskBits = GetMaskBits ();
+         
+         fixture_def.userData = this;
+         
+         _b2Body.CreateFixture (fixture_def);
+      }
+      
       public function AddCircleShape (radius:Number, transform:Transform2D = null):void
       {
          if (EditorContext.mPauseCreateShapeProxy)
@@ -192,9 +239,8 @@ package editor.selection {
             
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          fixture_def.shape = circle_shape;
-         fixture_def.filter.groupIndex =  IsSelectable () ? 0 : -1;
          
-         _b2Body.CreateFixture (fixture_def);
+         CreateFixture (fixture_def);
       }
       
       private static function TransformPolyPoints (transform:Transform2D, points:Array, assureCW:Boolean):void
@@ -246,9 +292,8 @@ package editor.selection {
          
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          fixture_def.shape = polygon_shape;
-         fixture_def.filter.groupIndex =  IsSelectable () ? 0 : -1;
          
-         _b2Body.CreateFixture (fixture_def);
+         CreateFixture (fixture_def);
       }
       
       public function AddConcavePolygonShape (localPoints:Array, transform:Transform2D = null):void
@@ -294,9 +339,8 @@ package editor.selection {
             
             var fixture_def:b2FixtureDef = new b2FixtureDef ();
             fixture_def.shape = polygon_shape;
-            fixture_def.filter.groupIndex =  IsSelectable () ? 0 : -1;
             
-            _b2Body.CreateFixture (fixture_def);
+            CreateFixture (fixture_def);
          }
       }
       
@@ -356,7 +400,7 @@ package editor.selection {
       }
       
 //==========================================================================
-// append shapes (not transformed, to be rmeoved)
+// append shapes (not transformed, old implementation, to be rmeoved)
 //==========================================================================
       
       public function CreateCircleZone (localX:Number, localY:Number, radius:Number):void
@@ -372,9 +416,8 @@ package editor.selection {
          
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          fixture_def.shape = circle_shape;
-         fixture_def.filter.groupIndex =  IsSelectable () ? 0 : -1;
          
-         _b2Body.CreateFixture (fixture_def);
+         CreateFixture (fixture_def);
       }
       
       public function CreateConvexPolygonZone (localPoints:Array):void
@@ -398,9 +441,8 @@ package editor.selection {
          
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          fixture_def.shape = polygon_shape;
-         fixture_def.filter.groupIndex =  IsSelectable () ? 0 : -1;
          
-         _b2Body.CreateFixture (fixture_def);
+         CreateFixture (fixture_def);
       }
       
       public function CreateConcavePolygonZone (localPoints:Array):void
@@ -442,9 +484,8 @@ package editor.selection {
             
             var fixture_def:b2FixtureDef = new b2FixtureDef ();
             fixture_def.shape = polygon_shape;
-            fixture_def.filter.groupIndex =  IsSelectable () ? 0 : -1;
             
-            _b2Body.CreateFixture (fixture_def);
+            CreateFixture (fixture_def);
          }
       }
       
@@ -459,19 +500,32 @@ package editor.selection {
          if (Math.abs (dx) < b2Settings.b2_epsilon && Math.abs (dy) < b2Settings.b2_epsilon) // will cause strange behaviour
             return;
          
-         var rot:Number = Math.atan2 (dy, dx);
-         rot += Math.PI * 0.5;
-         
-         thinkness *= 0.5;
-         dx = thinkness * Math.cos (rot);
-         dy = thinkness * Math.sin (rot);
-         
-         var p1:Point = new Point (localX1 + dx, localY1 + dy);
-         var p2:Point = new Point (localX1 - dx, localY1 - dy);
-         var p3:Point = new Point (localX2 - dx, localY2 - dy);
-         var p4:Point = new Point (localX2 + dx, localY2 + dy);
-         
-         CreateConvexPolygonZone ([p1, p2, p3, p4]);
+         if (thinkness == 0)
+         {
+            var edge_shape:b2EdgeShape = new b2EdgeShape ();
+            edge_shape.Set (b2Vec2.b2Vec2_From2Numbers (localX1, localY1), b2Vec2.b2Vec2_From2Numbers (localX2, localY2));
+            
+            var fixture_def:b2FixtureDef = new b2FixtureDef ();
+            fixture_def.shape = edge_shape;
+            
+            CreateFixture (fixture_def);
+         }
+         else
+         {
+            var rot:Number = Math.atan2 (dy, dx);
+            rot += Math.PI * 0.5;
+            
+            thinkness *= 0.5;
+            dx = thinkness * Math.cos (rot);
+            dy = thinkness * Math.sin (rot);
+            
+            var p1:Point = new Point (localX1 + dx, localY1 + dy);
+            var p2:Point = new Point (localX1 - dx, localY1 - dy);
+            var p3:Point = new Point (localX2 - dx, localY2 - dy);
+            var p4:Point = new Point (localX2 + dx, localY2 + dy);
+            
+            CreateConvexPolygonZone ([p1, p2, p3, p4]);
+         }
       }
       
 //==========================================================================
@@ -543,5 +597,13 @@ package editor.selection {
          CreateConcavePolygonZone (localPoints);
       }
       
+      public function RebuildLineSegment (centerX:Number, centerY:Number, localX1:Number, localY1:Number, localX2:Number, localY2:Number, rotation:Number = 0.0, flipped:Boolean = false, scale:Number = 1.0):void
+      {
+         Rebuild (centerX, centerY, flipped ? - rotation : rotation);
+         
+         // todo: scale and flip
+         
+         CreateLineSegmentZone (localX1, localY1, localX2, localY2);
+      }
    }
 }

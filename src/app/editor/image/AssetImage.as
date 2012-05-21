@@ -108,11 +108,16 @@ package editor.image {
       
       public function CloneBitmapFileData ():ByteArray
       {
-         if (mFileData == null)
+         var data:ByteArray = mFileData;
+         if (data == null)
+            data = _FileData_Temp;
+         
+         if (data == null)
             return null;
          
+         
          var newByteArray:ByteArray = new ByteArray (); 
-         newByteArray.writeBytes (mFileData, 0, mFileData.length);
+         newByteArray.writeBytes (data, 0, data.length);
          
          newByteArray.position = 0;
          return newByteArray;
@@ -143,6 +148,7 @@ package editor.image {
          mBitmapData = newBitmap.bitmapData;
          
          mFileData = _FileData_Temp;
+         _FileData_Temp = null;
          
          NotifyPixelsChanged ();
       }

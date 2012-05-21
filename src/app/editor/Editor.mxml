@@ -21,7 +21,7 @@
    
    <mx:Style source="editor.css"/>
 
-   <mx:ApplicationControlBar backgroundColor="0xA0A0A0" left="0" top="0" dock="false" paddingTop="5" paddingBottom="1" verticalAlign="bottom">
+   <mx:ApplicationControlBar backgroundColor="0xA0A0A0" left="0" top="0" dock="false" paddingTop="8" paddingBottom="8" verticalAlign="bottom">
       <mx:VBox verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
          <mx:Button id="Button_LoadWorld" toolTip="Open Design" click="OnClicLoadWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-open.png')" />
          <mx:Button id="Button_SaveWorld" toolTip="Save Design" click="OnClicSaveWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-save.png')" />
@@ -346,7 +346,7 @@
             mLoadWorldMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectLoadWorldMenu);
          }
          
-         var point:Point = Button_LoadWorld.localToGlobal (new Point (0, Button_LoadWorld.height));
+         var point:Point = Button_LoadWorld.localToGlobal (new Point (Button_LoadWorld.width, Button_LoadWorld.height));
          
          mLoadWorldMenu.show(point.x, point.y);
       }
@@ -398,7 +398,7 @@
             mSaveWorldMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectSaveWorldMenu);
          }
          
-         var point:Point = Button_SaveWorld.localToGlobal (new Point (0, Button_SaveWorld.height));
+         var point:Point = Button_SaveWorld.localToGlobal (new Point (Button_SaveWorld.width, Button_SaveWorld.height));
          
          mSaveWorldMenu.show(point.x, point.y);
       }

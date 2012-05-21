@@ -75,14 +75,22 @@ package editor.selection {
       {
          var centerX:Number = (x1 + x2) * 0.5;
          var centerY:Number = (y1 + y2) * 0.5;
-         var halfWidth:Number = (x2 - x1) * 0.5; if (halfWidth < 0) halfWidth = - halfWidth;
-         var halfHeight:Number = (y2 - y1) * 0.5; if (halfHeight < 0) halfHeight = - halfHeight;
+         var halfWidth:Number = Math.abs (x2 - x1) * 0.5;
+         var halfHeight:Number = Math.abs (y2 - y1) * 0.5;
          
       // ...
          var oldContactListener:b2ContactListener = _b2World.GetContactListener ();
          
-         var selProxyRect:_SelectionProxyRectangleForRegionSelection = new _SelectionProxyRectangleForRegionSelection (this);
-         selProxyRect.RebuildRectangle (centerX, centerY, halfWidth, halfHeight);
+         var selProxyRect:_SelectionProxyForRegionSelection = new _SelectionProxyForRegionSelection (this);
+         if (halfWidth == 0 && halfHeight == 0)
+            selProxyRect.RebuildCircle (centerX, centerY, 0);
+         else if (halfWidth == 0)
+            selProxyRect.RebuildLineSegment (centerX, centerY, 0, -halfHeight, 0, halfHeight);
+         else if (halfHeight == 0)
+            selProxyRect.RebuildLineSegment (centerX, centerY, -halfWidth, 0, halfWidth, 0);
+         else
+            selProxyRect.RebuildRectangle (centerX, centerY, halfWidth, halfHeight);
+         
          var tempContactListener:_ContactListenerForRegionSelection = new _ContactListenerForRegionSelection (selProxyRect._b2Body);
          _b2World.SetContactListener (tempContactListener);
          _b2World.Step (0, 0, 0);
@@ -118,7 +126,7 @@ package editor.selection {
       {
          var fixtures:Array = b2eWorldAABBQueryCallback.GetFixturesContainPoint (_b2World, b2Vec2.b2Vec2_From2Numbers (pointX, pointY));
          
-         return Fixtures2SelectionProxyUserDatas (fixtures);      
+         return Fixtures2SelectionProxyUserDatas (fixtures);
       }
       
       private function Fixtures2SelectionProxyUserDatas (fixtures:Array):Array 
@@ -154,7 +162,7 @@ package editor.selection {
          {
             var contact:b2Contact = mContactsInLastRegionSelecting [i0];
             var fixture:b2Fixture = contact.m_fixtureA;
-            if (fixture.GetBody ().GetUserData () is _SelectionProxyRectangleForRegionSelection)
+            if (fixture.GetBody ().GetUserData () is _SelectionProxyForRegionSelection)
                fixture = contact.m_fixtureB;
             
             var physicsBody:b2Body = fixture.GetBody ();

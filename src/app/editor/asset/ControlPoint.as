@@ -117,6 +117,7 @@ package editor.asset {
          {
             mSelectionProxy = mOwnerAsset.GetAssetManager ().GetSelectionEngine ().CreateProxyGeneral ();
             
+            mSelectionProxy.SetSelectable (true, false);
             mSelectionProxy.SetUserData (this);
          }
          

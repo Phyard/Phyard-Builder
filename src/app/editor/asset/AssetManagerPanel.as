@@ -536,9 +536,12 @@ package editor.asset {
       
       protected function OnMouseDownInternal (managerX:Number, managerY:Number, mIsCtrlDownOnMouseDown:Boolean, mIsShiftDownOnMouseDown:Boolean):void
       {
+         var selectableObjects:Array = mAssetManager.GetSelectableObjectsAtPoint (managerX, managerY);
+         
          // control points
          
-         var controlPoints:Array = mAssetManager.GetControlPointsAtPoint (managerX, managerY);
+         //var controlPoints:Array = mAssetManager.GetControlPointsAtPoint (managerX, managerY);
+         var controlPoints:Array = mAssetManager.FilterControlPoints (selectableObjects.concat ());
          if (controlPoints.length > 0)
          {
             var selectCPs:Array = new Array (1);
@@ -552,7 +555,7 @@ package editor.asset {
          
          // linkables
          
-         var linkable:Linkable = mAssetManager.GetFirstLinkablesAtPoint (managerX, managerY);
+         var linkable:Linkable = mAssetManager.GetFirstLinkableAtPoint (managerX, managerY, selectableObjects.concat ());
          if (linkable != null && linkable.CanStartCreatingLink (managerX, managerY))
          {
             SetCurrentIntent (new IntentDragLink (this, linkable));
@@ -588,7 +591,7 @@ package editor.asset {
             return;
          }
 
-         if (PointSelectAsset (managerX, managerY))
+         if (PointSelectAsset (managerX, managerY, selectableObjects.concat ()))
          {
             SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, false));
             mCurrentIntent.OnMouseDown (managerX, managerY);
@@ -794,12 +797,18 @@ package editor.asset {
          OnAssetSelectionsChanged ();
       }
       
-      public function PointSelectAsset (managerX:Number, managerY:Number):Boolean
+      public function PointSelectAsset (managerX:Number, managerY:Number, selectableObjects:Array = null):Boolean
       {
          if (mAssetManager == null)
             return false;
          
-         var assetArray:Array = mAssetManager.GetAssetsAtPoint (managerX, managerY);
+         var assetArray:Array;
+         
+         if (selectableObjects == null)
+            assetArray = mAssetManager.GetAssetsAtPoint (managerX, managerY);
+         else
+            assetArray = mAssetManager.FilterAssets (selectableObjects);
+         
          if (assetArray != null && assetArray.length > 0)
          {
             var asset:Asset = assetArray[0] as Asset;

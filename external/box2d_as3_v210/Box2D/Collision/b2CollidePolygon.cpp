@@ -390,6 +390,6 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 			++pointCount;
 		}
 	}
-
+	
 	manifold.pointCount = pointCount;
 }

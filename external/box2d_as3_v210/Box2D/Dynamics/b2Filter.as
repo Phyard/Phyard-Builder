@@ -16,5 +16,22 @@ package Box2D.Dynamics
 		/// filtering always wins against the mask bits.
 		public var groupIndex:int; // int16
 		
+		//
+		public function CopyFrom (anotherFilter:b2Filter):void
+		{
+         categoryBits = anotherFilter.categoryBits;
+         maskBits = anotherFilter.maskBits;
+         groupIndex = anotherFilter.groupIndex;
+		}
+		
+		public function Clone ():b2Filter
+		{
+		   var filter:b2Filter = new b2Filter ();
+		   
+		   filter.CopyFrom (this);
+		   
+		   return filter;
+		}
+		
 	} // class
 } // package

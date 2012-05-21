@@ -52,7 +52,8 @@ public function Create(allocator:b2BlockAllocator, body:b2Body, xf:b2Transform, 
 	m_body = body;
 	m_next = null;
 
-	m_filter = def.filter;
+	//m_filter = def.filter; // bug
+	m_filter.CopyFrom (def.filter);
 
 	m_isSensor = def.isSensor;
 
@@ -189,7 +190,8 @@ public function Synchronize(broadPhase:b2BroadPhase, transform1:b2Transform, tra
 
 public function SetFilterData(filter:b2Filter):void
 {
-	m_filter = filter;
+	//m_filter = filter; // bug
+	m_filter.CopyFrom (filter);
 
 	if (m_body == null)
 	{

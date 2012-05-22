@@ -435,6 +435,7 @@ package editor.entity {
          if (referPair == mReferPair_ShapeBodyTexture)
          {
             SetBodyTextureModule (null);
+            UpdateAppearance ();
          }
       }
       

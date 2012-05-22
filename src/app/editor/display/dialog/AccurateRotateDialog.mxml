@@ -4,12 +4,14 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Rotate ..." width="300">
+    title="Rotate Accurately" width="300">
 
    <mx:HBox width="100%">
-      <mx:Label text="Rotation:" textAlign="right" width="60"/>
+      <mx:Spacer width="100%" />
+      <mx:Label text="Rotation:" textAlign="right"/>
       <mx:TextInput id="TextInput_RotationAngle" width="80" text="90"/>
       <mx:Label text="deg. (0-360)" textAlign="left" />
+      <mx:Spacer width="100%" />
    </mx:HBox>
 
    <mx:Spacer height="10"/>

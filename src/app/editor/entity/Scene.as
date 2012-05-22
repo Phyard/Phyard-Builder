@@ -176,12 +176,23 @@ package editor.entity {
       
       public function SetName (name:String):void
       {
-         mName = (name == null ? "" : name);
+         mName = ValidateSceneName (name);
       }
       
       public function GetName ():String
       {
-         return mName == null ? "" : mName;
+         return ValidateSceneName (mName);
+      }
+      
+      private function ValidateSceneName (name:String):String
+      {
+         if (name == null)
+            return "";
+         
+         if (name.length > 32)
+            name = name.substring (0, 32);
+         
+         return name;
       }
 
       public function SetWorldLeft (left:int):void

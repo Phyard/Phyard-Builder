@@ -409,19 +409,6 @@ package editor {
          }
       }
       
-      public function OpenSettingsDialog (DialigClass:Class, initialValues:Object, onConfirmFunc:Function):void
-      {
-         OnOpenModalDialog ();
-         
-         var settingDialog:Object = new DialigClass ();
-         settingDialog.SetValues (initialValues);
-         settingDialog.SetConfirmFunc (onConfirmFunc);
-         settingDialog.SetCloseFunc (OnCloseModalDialog);
-         
-         PopUpManager.addPopUp (settingDialog as UIComponent, sEditorApp, true);
-         PopUpManager.centerPopUp (settingDialog as UIComponent);
-      }
-      
       private var mAlertOnYesCallback:Function = null;
       
       public function SetAlertOnYesCallback (callback:Function):void

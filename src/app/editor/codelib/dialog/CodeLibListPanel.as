@@ -242,7 +242,7 @@ package editor.codelib.dialog {
             values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
             (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
             
-            EditorContext.GetSingleton ().OpenSettingsDialog (FunctionEditDialog, values, ConfirmSettingAssetProperties);
+            EditorContext.ShowModalDialog (FunctionEditDialog, ConfirmSettingAssetProperties, values);
          }
       }
       

@@ -4,13 +4,15 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
-    title="Move ..." width="300"
+    title="Move Accurately" width="300"
     creationComplete="OnInitPanel ()">
 
    <mx:HBox width="100%">
-      <mx:Label id="Label_X" text="Move Offset X:" textAlign="right" width="100"/>
+      <mx:Spacer width="100%" />
+      <mx:Label id="Label_X" text="Move Offset X:" textAlign="right"/>
       <mx:TextInput id="TextInput_MoveX" width="80" text="0"/>
       <mx:Label text="px" textAlign="left" />
+      <mx:Spacer width="100%" />
    </mx:HBox>
 
    <mx:HBox width="100%">

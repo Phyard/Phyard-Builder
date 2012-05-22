@@ -4,13 +4,14 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Scale Accurately" width="300">
+    title="Name Setting" width="300"
+    creationComplete="OnInitPanel()"
+    >
 
    <mx:HBox width="100%">
       <mx:Spacer width="100%" />
-      <mx:Label text="Scale Ratio:" textAlign="right"/>
-      <mx:TextInput id="TextInput_ScaleRatio" width="80" text="100"/>
-      <mx:Label text="% (> 0)" textAlign="left" />
+      <mx:Label text="Name:" textAlign="right"/>
+      <mx:TextInput id="TextInput_Name" width="167" text="100"/>
       <mx:Spacer width="100%" />
    </mx:HBox>
 
@@ -35,6 +36,7 @@
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
+         private var mInputValues:Object;
          
          public function SetConfirmFunc (onConfirm:Function):void
          {
@@ -46,17 +48,23 @@
             OnClose = onClose;
          }
          
+         public function SetValues (inputValues:Object):void
+         {
+            mInputValues = inputValues;
+         }
+         
+         private function OnInitPanel ():void
+         {
+            TextInput_Name.text = (mInputValues.mName == null ? "" : mInputValues.mName);
+         }
+         
          private function OnClickOkButton():void 
          {
             PopUpManager.removePopUp(this);
             
             var params:Object = new Object ();
             
-            var ratio:Number = parseFloat (TextInput_ScaleRatio.text);
-            if ( isNaN (ratio) )
-               params.mScaleRatio = 0;
-            else
-               params.mScaleRatio = ratio * 0.01;
+            params.mName = TextInput_Name.text;
              
            if (OnClose != null)
               OnClose ();

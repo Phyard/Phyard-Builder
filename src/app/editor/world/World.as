@@ -65,6 +65,7 @@ package editor.world {
 
       //
          mEntityContainer = new Scene ();
+         mEntityContainer.SetName ("Default Scene");
          mScenes = new Array ();
          mScenes.push (mEntityContainer);
          UpdateSceneListDataProvider ();
@@ -276,6 +277,19 @@ package editor.world {
             
             mSceneListDataProvider.push ({mName: i + "> " + scene.GetName (), mIndex: i, mDataTip: scene.GetName (), mData: scene});
          }
+      }
+      
+      public function ChangeSceneNameByIndex (index:int, newName:String):int
+      {
+         if (index < 0 || index >= mScenes.length)
+            return -1;
+         
+         var scene:Scene = mScenes [index];
+         scene.SetName (newName);
+         
+         UpdateSceneListDataProvider ();
+         
+         return index;
       }
       
 //=================================================================================

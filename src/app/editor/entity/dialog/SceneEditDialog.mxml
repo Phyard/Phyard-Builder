@@ -344,16 +344,18 @@
    
    <mx:XML id="SceneSettingsMenuData">
       <root>
+         <menuitem label="Change Current Scene Name ..." data="change_name"/>
+         <menuitem type="separator" data=""/>
          <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Simulation Settings ..." data="physics"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
          <menuitem label="Config World Appearance ..." data="appearance"/>
          <menuitem label="Config Viewport ..." data="viewport"/>
          <menuitem type="separator" data=""/>
-         <menuitem label="Clear All Entities In Current Scene" data="clear_all"/>
-         <menuitem label="Clear All Entities and Reset Current Scene" data="clear_all_and_reset"/>
+         <menuitem label="Clear All Entities In Current Scene ..." data="clear_all"/>
+         <menuitem label="Clear All Entities and Reset Current Scene ..." data="clear_all_and_reset"/>
          <menuitem type="separator" data=""/>
-         <menuitem id="MenuItem_DeleteScene" label="Delete Current Scene" data="delete_scene" enabled="true"/>
+         <menuitem id="MenuItem_DeleteScene ..." label="Delete Current Scene" data="delete_scene" enabled="true"/>
       </root>
    </mx:XML>
    
@@ -383,6 +385,8 @@
       import mx.events.MenuEvent;
       
       import com.tapirgames.util.DisplayObjectUtil;
+      
+      import editor.display.dialog.NameSettingDialog;
       
       import editor.entity.dialog.SceneEditPanel;
       import editor.entity.dialog.ScenePlayPanel;
@@ -481,16 +485,19 @@
       // ...
       private function UpdateSceneListInterface ():void
       {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+            return;
+         
          if (List_Scenes.selectedIndex >= 0)
          {
             List_Scenes.scrollToIndex (List_Scenes.selectedIndex);
          }
 
-         SceneSettingsMenuData.menuitem.(@data == "delete_scene").@enabled = List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;
+         SceneSettingsMenuData.menuitem.(@data == "delete_scene").@enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;
 
-         Button_SetSceneAsEntry.enabled = List_Scenes.selectedIndex >= 1;
-         Button_MoveUpScene.enabled = List_Scenes.selectedIndex >= 1;
-         Button_MoveDownScene.enabled = List_Scenes.selectedIndex >= 0 && List_Scenes.selectedIndex < List_Scenes.dataProvider.length - 1;
+         Button_SetSceneAsEntry.enabled = world != null && List_Scenes.selectedIndex >= 1;
+         Button_MoveUpScene.enabled = world != null && List_Scenes.selectedIndex >= 1;
+         Button_MoveDownScene.enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.selectedIndex < List_Scenes.dataProvider.length - 1;
       }
 
    //========================================================================================
@@ -629,13 +636,38 @@
       
       private function OnCreateNewScene ():void
       {
+         EditorContext.ShowModalDialog (NameSettingDialog, ConfirmCreateNewScene, {mName: "untitled"});
+      }
+      
+      private function ConfirmCreateNewScene (params:Object):void
+      {
          var world:World = EditorContext.GetEditorApp ().GetWorld ();
          
          if (world == null)
             return;
          
-         var newIndex:int = world.CreateNewSceneAfterIndex ("untitled", List_Scenes.selectedIndex);
-         OnWorldChanged (newIndex);
+         var newIndex:int = world.CreateNewSceneAfterIndex (params.mName == null ? "untitled" : params.mName, List_Scenes.selectedIndex);
+         if (newIndex >= 0)
+         {
+            OnWorldChanged (newIndex);
+         }
+      }
+      
+      private function ChangeCurrentSceneName (params:Object):void
+      {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var newSelectedIndex:int = world.ChangeSceneNameByIndex (List_Scenes.selectedIndex, params.mName == null ? "untitled" : params.mName);
+            if (newSelectedIndex >= 0)
+            {
+               OnWorldChanged (newSelectedIndex);
+            }
+         }
       }
       
       private function OnDeleteCurrentScene ():void
@@ -648,7 +680,10 @@
          if (List_Scenes.selectedIndex >= 0)
          {
             var newSelectedIndex:int = world.DeleteSceneByIndex (List_Scenes.selectedIndex);
-            OnWorldChanged (newSelectedIndex);
+            if (newSelectedIndex >= 0)
+            {
+               OnWorldChanged (newSelectedIndex);
+            }
          }
       }
       
@@ -761,7 +796,15 @@
          }
          else if (event.item.@data == "delete_scene")
          {
-            OnDeleteCurrentScene ();
+            EditorContext.ShowAlert ("Delete Current Scene", "Do you want to delete current scene?", true, OnDeleteCurrentScene);
+         }
+         else if (event.item.@data == "change_name")
+         {
+            var scene:editor.entity.Scene = mCurrentSceneEditPanel.GetScene ();
+            if (scene != null)
+            {
+               EditorContext.ShowModalDialog (NameSettingDialog, ChangeCurrentSceneName, {mName: scene.GetName ()});
+            }
          }
       }
       

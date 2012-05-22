@@ -503,7 +503,8 @@ package editor.image {
             UpdateAppearance ();
             
             //NotifyModifiedForReferers
-            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+            //mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+            NotifyModifiedForReferers ();
          }
       }
 
@@ -523,9 +524,11 @@ package editor.image {
          else if (referPair == mReferPair_ShapeBodyTexture)
          {
             SetBodyTextureModule (null);
+            UpdateAppearance ();
             
             //NotifyModifiedForReferers
-            mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+            //mAssetImageModuleInstanceManager.NotifyModifiedForReferers ();
+            NotifyModifiedForReferers ();
          }
       }
 

@@ -170,7 +170,7 @@ package editor.entity {
       private var mPauseOnFocusLost:Boolean = false;
       //<<
       
-      //>>v1.20
+      //>>v2.00
       private var mName:String = "";
       //<<
       

@@ -35,88 +35,65 @@ package editor.world {
    import common.Define;
    import common.ValueAdjuster;
 
-   public class World // extends EntityContainer
+   public class World
    {
-      public var mEntityContainer:Scene;
-      public var mScenes:Array;
-      
-      //public var mCollisionManager:CollisionManager;
-      public var mCollisionCategoryManager:CollisionCategoryManager;
-
-      public var mTriggerEngine:TriggerEngine;
-
-      //public var mFunctionManager:FunctionManager;
-      public var mCodeLibManager:CodeLibManager;
-
-      protected var mAssetImageManager:AssetImageManager;
-      protected var mAssetImagePureModuleManager:AssetImagePureModuleManager;
-      protected var mAssetImageAssembledModuleManager:AssetImageCompositeModuleManager;
-      protected var mAssetImageSequencedModuleManager:AssetImageCompositeModuleManager;
-      protected var mAssetSoundManager:AssetSoundManager;
-
-      // temp the 2 is not used
-      // somewhere need to be modified to use the 2
-      public var mNumGravityControllers:int = 0;
-      public var mNumCameraEntities:int = 0;
-
       public function World ()
       {
-         super ();
-
-      //
-         mEntityContainer = new Scene ();
-         mEntityContainer.SetName ("Default Scene");
-         mScenes = new Array ();
-         mScenes.push (mEntityContainer);
-         UpdateSceneListDataProvider ();
+         CreateNewScene ("Default Scene");
          
-         //mCollisionManager = new CollisionManager ();
-         mCollisionCategoryManager = new CollisionCategoryManager ();
-
-         mTriggerEngine = new TriggerEngine ();
-
-         //mFunctionManager = new FunctionManager (this);
-         mCodeLibManager = new CodeLibManager (this);
-
-         mCodeLibManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
-
          mAssetImageManager = new AssetImageManager ();
          mAssetImagePureModuleManager = new AssetImagePureModuleManager ();
          mAssetImageAssembledModuleManager = new AssetImageCompositeModuleManager (false);
          mAssetImageSequencedModuleManager = new AssetImageCompositeModuleManager (true);
          mAssetSoundManager = new AssetSoundManager ();
+         
+         // temp
+         
+         mCollisionCategoryManager = new CollisionCategoryManager ();
+
+         mTriggerEngine = new TriggerEngine ();
+
+         mCodeLibManager = new CodeLibManager (this);
+         mCodeLibManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
       }
 
-      //override 
       public function Destroy ():void
       {
-         mEntityContainer.Destroy ();
-         //mCollisionManager.Destroy ();
-         mCollisionCategoryManager.Destroy ();
-         mCodeLibManager.Destroy ();
+         for each (var aScene:Scene in mScenes)
+         {
+            aScene.Destroy ();
+         }
+         
          mAssetImageManager.Destroy ();
          mAssetImagePureModuleManager.Destroy ();
          mAssetImageAssembledModuleManager.Destroy ();
          mAssetImageSequencedModuleManager.Destroy ();
          mAssetSoundManager.Destroy ();
-
-      //   super.Destroy ();
+         
+         // temp 
+         
+         mCollisionCategoryManager.Destroy ();
+         mCodeLibManager.Destroy ();
       }
 
       //override 
-      public function DestroyAllEntities ():void
+      public function DestroyAllAssets ():void
       {
-         mEntityContainer..DestroyAllAssets ();
-         //mCollisionManager.DestroyAllEntities ();
-         mCollisionCategoryManager.DestroyAllAssets ();
-         mCodeLibManager.DestroyAllAssets ();
+         for each (var aScene:Scene in mScenes)
+         {
+            aScene.Destroy ();
+         }
+         
          mAssetImageSequencedModuleManager.DestroyAllAssets ();
          mAssetImageAssembledModuleManager.DestroyAllAssets ();
          mAssetImagePureModuleManager.DestroyAllAssets ();
          mAssetImageManager.DestroyAllAssets ();
          mAssetSoundManager.DestroyAllAssets ();
-
-      //   super.DestroyAllEntities ();
+         
+         // temp
+         
+         mCollisionCategoryManager.DestroyAllAssets ();
+         mCodeLibManager.DestroyAllAssets ();
       }
 
 //=================================================================================
@@ -186,13 +163,10 @@ package editor.world {
       }
       
 //=================================================================================
-//   collision categories
+//   scenes
 //=================================================================================
-
-      public function GetEntityContainer ():Scene
-      {
-         return mEntityContainer;
-      }
+      
+      private var mScenes:Array = new Array ();
       
       public function GetNumScenes ():int
       {
@@ -207,7 +181,7 @@ package editor.world {
          return mScenes [index] as Scene;
       }
       
-      public function CreateNewSceneAfterIndex (name:String, afterIndex:int):int
+      public function CreateNewScene (name:String, afterIndex:int = -1):int
       {
          var newScene:Scene = new Scene ();
          newScene.SetName (name);
@@ -260,6 +234,19 @@ package editor.world {
          return targetIndex;
       }
       
+      public function ChangeSceneNameByIndex (index:int, newName:String):int
+      {
+         if (index < 0 || index >= mScenes.length)
+            return -1;
+         
+         var scene:Scene = mScenes [index];
+         scene.SetName (newName);
+         
+         UpdateSceneListDataProvider ();
+         
+         return index;
+      }
+      
       private var mSceneListDataProvider:Array = new Array ();
       
       public function GetSceneListDataProvider ():Array
@@ -278,78 +265,16 @@ package editor.world {
             mSceneListDataProvider.push ({mName: i + "> " + scene.GetName (), mIndex: i, mDataTip: scene.GetName (), mData: scene});
          }
       }
-      
-      public function ChangeSceneNameByIndex (index:int, newName:String):int
-      {
-         if (index < 0 || index >= mScenes.length)
-            return -1;
-         
-         var scene:Scene = mScenes [index];
-         scene.SetName (newName);
-         
-         UpdateSceneListDataProvider ();
-         
-         return index;
-      }
-      
-//=================================================================================
-//   collision categories
-//=================================================================================
-
-      //public function GetCollisionManager ():CollisionManager
-      //{
-      //   return mCollisionManager;
-      //}
-      //
-      //public function CreateEntityCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
-      //{
-      //   var category1:EntityCollisionCategory = mCollisionManager.GetCollisionCategoryByIndex (categoryIndex1);
-      //   var category2:EntityCollisionCategory = mCollisionManager.GetCollisionCategoryByIndex (categoryIndex2);
-      //
-      //   if (category1 != null && category2 != null)
-      //      mCollisionManager.CreateEntityCollisionCategoryFriendLink (category1, category2);
-      //}
-      
-      public function GetCollisionCategoryManager ():CollisionCategoryManager
-      {
-         return mCollisionCategoryManager;
-      }
-
-      public function CreateCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
-      {
-         var category1:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex1);
-         var category2:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex2);
-
-         if (category1 != null && category2 != null)
-            mCollisionCategoryManager.CreateCollisionCategoryFriendLink (category1, category2);
-      }
 
 //=================================================================================
-//   functions
+//   image asset and sounds
 //=================================================================================
 
-      //public function GetFunctionManager ():FunctionManager
-      //{
-      //   return mFunctionManager;
-      //}
-      
-      public function GetCodeLibManager ():CodeLibManager
-      {
-         return mCodeLibManager
-      }
-
-//=================================================================================
-//   trigger system
-//=================================================================================
-
-      public function GetTriggerEngine ():TriggerEngine
-      {
-         return mTriggerEngine;
-      }
-
-//=================================================================================
-//   image asset. (Will move to Runtime if multiple worlds is supported later)
-//=================================================================================
+      protected var mAssetImageManager:AssetImageManager;
+      protected var mAssetImagePureModuleManager:AssetImagePureModuleManager;
+      protected var mAssetImageAssembledModuleManager:AssetImageCompositeModuleManager;
+      protected var mAssetImageSequencedModuleManager:AssetImageCompositeModuleManager;
+      protected var mAssetSoundManager:AssetSoundManager;
 
       public function GetAssetImageManager ():AssetImageManager
       {
@@ -473,6 +398,65 @@ package editor.world {
             return null;
          
          return mAssetSoundManager.GetAssetByAppearanceId (soundIndex) as AssetSound;
+      }
+      
+//=================================================================================
+//   session variables and pure functions
+//=================================================================================
+      
+//=================================================================================
+//   temp
+//=================================================================================
+      
+      public function GetEntityContainer ():Scene
+      {
+         return mScenes [0] as Scene;
+      }
+      
+//=================================================================================
+//   temp
+//=================================================================================
+      
+      protected var mCollisionCategoryManager:CollisionCategoryManager;
+
+      protected var mTriggerEngine:TriggerEngine;
+
+      protected var mCodeLibManager:CodeLibManager;
+      
+//=================================================================================
+//   collision categories
+//=================================================================================
+      
+      public function GetCollisionCategoryManager ():CollisionCategoryManager
+      {
+         return mCollisionCategoryManager;
+      }
+
+      public function CreateCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
+      {
+         var category1:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex1);
+         var category2:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex2);
+
+         if (category1 != null && category2 != null)
+            mCollisionCategoryManager.CreateCollisionCategoryFriendLink (category1, category2);
+      }
+
+//=================================================================================
+//   functions
+//=================================================================================
+      
+      public function GetCodeLibManager ():CodeLibManager
+      {
+         return mCodeLibManager;
+      }
+
+//=================================================================================
+//   trigger system
+//=================================================================================
+
+      public function GetTriggerEngine ():TriggerEngine
+      {
+         return mTriggerEngine;
       }
    }
 }

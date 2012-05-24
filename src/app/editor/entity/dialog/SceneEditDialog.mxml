@@ -646,7 +646,7 @@
          if (world == null)
             return;
          
-         var newIndex:int = world.CreateNewSceneAfterIndex (params.mName == null ? "untitled" : params.mName, List_Scenes.selectedIndex);
+         var newIndex:int = world.CreateNewScene (params.mName == null ? "untitled" : params.mName, List_Scenes.selectedIndex);
          if (newIndex >= 0)
          {
             OnWorldChanged (newIndex);

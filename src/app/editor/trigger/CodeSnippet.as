@@ -1,7 +1,9 @@
 package editor.trigger {
    
    import flash.utils.ByteArray;
-   //import flash.utils.Dictionary;
+   import flash.utils.Dictionary;
+   
+   import editor.world.World;
    
    import editor.EditorContext;
    
@@ -199,6 +201,19 @@ package editor.trigger {
          for (i = 0; i < num; ++ i)
          {
            (mFunctionCallings [i] as FunctionCalling).AdjustNumberPrecisions ();
+         }
+      }
+      
+//====================================================================
+//
+//====================================================================
+      
+      public function ConvertRegisterVariablesToGlobalVariables (editorWorld:World):void
+      {
+         var num:int = mFunctionCallings.length;
+         for (var i:int = 0; i < num; ++ i)
+         {
+           (mFunctionCallings [i] as FunctionCalling).ConvertRegisterVariablesToGlobalVariables (editorWorld);
          }
       }
    }

@@ -1,4 +1,7 @@
 package editor.trigger {
+
+   import flash.utils.Dictionary;
+   import editor.world.World;
    
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
@@ -6,6 +9,8 @@ package editor.trigger {
    
    import common.ValueAdjuster;
    import common.CoordinateSystem;
+   
+   import common.TriggerFormatHelper;
    
    public class FunctionCalling
    {
@@ -285,6 +290,96 @@ package editor.trigger {
                directSource.SetValueObject (directValue);
             }
          }
+      }
+      
+//====================================================================
+//
+//====================================================================
+      
+      public function ConvertRegisterVariablesToGlobalVariables (editorWorld:World):void
+      {
+         var i:int;
+         var entityValueSource:ValueSource;
+         
+         var numInputs:int = mInputValueSources.length;
+         for (i = 0; i < numInputs; ++ i)
+         {
+            var source:ValueSource = mInputValueSources [i] as ValueSource;
+            
+            if (source is ValueSource_Variable)
+            {
+               ConvertRegisterVariablesForValueSource (editorWorld, source as ValueSource_Variable);
+            }
+            else if (source is ValueSource_Property)
+            {
+               entityValueSource = (source as ValueSource_Property).GetEntityValueSource ();
+               if (entityValueSource is ValueSource_Variable)
+               {
+                  ConvertRegisterVariablesForValueSource (editorWorld, entityValueSource as ValueSource_Variable);
+               }
+               
+               var propertyValueSource:ValueSource = (source as ValueSource_Property).GetPropertyValueSource ();
+               if (propertyValueSource is ValueSource_Variable)
+               {
+                  ConvertRegisterVariablesForValueSource (editorWorld, propertyValueSource as ValueSource_Variable);
+               }
+            }
+         }
+         
+         var numOutputs:int = mOutputValueTargets.length;
+         for (i = 0; i < numOutputs; ++ i)
+         {
+            var target:ValueTarget = mOutputValueTargets [i] as ValueTarget;
+            
+            if (target is ValueTarget_Variable)
+            {
+               ConvertRegisterVariablesForValueTarget (editorWorld, target as ValueTarget_Variable);
+            }
+            else if (target is ValueTarget_Property)
+            {
+               entityValueSource = (target as ValueTarget_Property).GetEntityValueSource ();
+               if (entityValueSource is ValueSource_Variable)
+               {
+                  ConvertRegisterVariablesForValueSource (editorWorld, entityValueSource as ValueSource_Variable);
+               }
+               
+               var propertyValueTarget:ValueTarget = (target as ValueTarget_Property).GetPropertyValueTarget ();
+               if (propertyValueTarget is ValueTarget_Variable)
+               {
+                  ConvertRegisterVariablesForValueTarget (editorWorld, propertyValueTarget as ValueTarget_Variable);
+               }
+            }
+         }
+      }
+      
+      private function ConvertRegisterVariablesForValueSource (editorWorld:World, variableValueSource:ValueSource_Variable):void
+      {
+         if (variableValueSource == null)
+            return;
+         
+         var vi:VariableInstance = variableValueSource.GetVariableInstance ();
+         if (vi == null)
+            return;
+         
+         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
+            return;
+         
+         variableValueSource.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (editorWorld, vi));
+      }
+      
+      private function ConvertRegisterVariablesForValueTarget (editorWorld:World, variableValueTarget:ValueTarget_Variable):void
+      {
+         if (variableValueTarget == null)
+            return;
+         
+         var vi:VariableInstance = variableValueTarget.GetVariableInstance ();
+         if (vi == null)
+            return;
+         
+         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
+            return;
+         
+         variableValueTarget.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (editorWorld, vi));
       }
    }
 }

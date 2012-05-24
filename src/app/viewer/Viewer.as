@@ -356,7 +356,10 @@ package viewer {
       
       private static function OnAccelerationUpdate (event:Object):void // AccelerometerEvent):void
       {
-         mAccelerationX = - event.accelerationX; // why?
+         //mAccelerationX = - event.accelerationX; // why? // bug
+            // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - now ccats and functions are edit in dialogs
+         
+         mAccelerationX = event.accelerationX;
          mAccelerationY = event.accelerationY;
          mAccelerationZ = event.accelerationZ;
       }

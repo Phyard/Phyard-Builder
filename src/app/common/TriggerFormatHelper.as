@@ -687,52 +687,101 @@ package common {
          {
             //var variableInstanceDefine:VariableInstanceDefine = spaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
             var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
-            var directValueSourceDefine:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
-            
-            var variableDefinition:VariableDefinition = null;
-            var valueObject:Object = supportInitalValues ? ValidateDirectValueObject_Define2Object (editorWorld, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject) : null;
-            
-            switch (directValueSourceDefine.mValueType)
-            {
-               case ValueTypeDefine.ValueType_Boolean:
-                  variableDefinition = new VariableDefinitionBoolean (variableInstanceDefine.mName);
-                  break;
-               case ValueTypeDefine.ValueType_Number:
-                  variableDefinition = new VariableDefinitionNumber (variableInstanceDefine.mName);
-                  break;
-               case ValueTypeDefine.ValueType_String:
-                  variableDefinition = new VariableDefinitionString (variableInstanceDefine.mName);
-                  break;
-               case ValueTypeDefine.ValueType_Entity:
-                  variableDefinition = new VariableDefinitionEntity (variableInstanceDefine.mName);
-                  break;
-               case ValueTypeDefine.ValueType_CollisionCategory:
-                  variableDefinition = new VariableDefinitionCollisionCategory (variableInstanceDefine.mName);
-                  break;
-               case ValueTypeDefine.ValueType_Module:
-                  variableDefinition = new VariableDefinitionModule (variableInstanceDefine.mName);
-                  break;
-               case ValueTypeDefine.ValueType_Sound:
-                  variableDefinition = new VariableDefinitionSound (variableInstanceDefine.mName);
-                  break;
-               case ValueTypeDefine.ValueType_Array:
-                  variableDefinition = new VariableDefinitionArray (variableInstanceDefine.mName);
-                  break;
-               default:
-               {
-                  trace ("error!");
-                  variableDefinition = new VariableDefinitionNumber ("!error");
-               }
-            }
-            
-            if (variableDefinition != null)
-            {
-               var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variableDefinition);
-               vi.SetValueObject (valueObject);
-            }
+
+            VariableDefine2VariableInstance (editorWorld, variableInstanceDefine, variableSpace, supportInitalValues);
          }
       }
       
+      public static function VariableDefine2VariableInstance (editorWorld:World, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean):VariableInstance
+      {
+         var directValueSourceDefine:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
+         
+         var variableDefinition:VariableDefinition = null;
+         var valueObject:Object = supportInitalValue ? ValidateDirectValueObject_Define2Object (editorWorld, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject) : null;
+         
+         switch (directValueSourceDefine.mValueType)
+         {
+            case ValueTypeDefine.ValueType_Boolean:
+               variableDefinition = new VariableDefinitionBoolean (variableInstanceDefine.mName);
+               break;
+            case ValueTypeDefine.ValueType_Number:
+               variableDefinition = new VariableDefinitionNumber (variableInstanceDefine.mName);
+               break;
+            case ValueTypeDefine.ValueType_String:
+               variableDefinition = new VariableDefinitionString (variableInstanceDefine.mName);
+               break;
+            case ValueTypeDefine.ValueType_Entity:
+               variableDefinition = new VariableDefinitionEntity (variableInstanceDefine.mName);
+               break;
+            case ValueTypeDefine.ValueType_CollisionCategory:
+               variableDefinition = new VariableDefinitionCollisionCategory (variableInstanceDefine.mName);
+               break;
+            case ValueTypeDefine.ValueType_Module:
+               variableDefinition = new VariableDefinitionModule (variableInstanceDefine.mName);
+               break;
+            case ValueTypeDefine.ValueType_Sound:
+               variableDefinition = new VariableDefinitionSound (variableInstanceDefine.mName);
+               break;
+            case ValueTypeDefine.ValueType_Array:
+               variableDefinition = new VariableDefinitionArray (variableInstanceDefine.mName);
+               break;
+            default:
+            {
+               trace ("error!");
+               variableDefinition = new VariableDefinitionNumber ("!error");
+             }
+         }
+         
+         if (variableDefinition != null)
+         {
+            var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variableDefinition);
+            vi.SetValueObject (valueObject);
+             
+            return vi;
+         }
+         
+         return null;
+      }
+      
+      // for ConvertRegisterVariablesToGlobalVariables
+      
+      public static function RegisterVariable2GlobalVariable (editorWorld:World, registerVariableInstance:VariableInstance):VariableInstance
+      {
+         // assert (registerVariableInstance != null);
+         // assert (registerVariableInstance.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+         
+         if (registerVariableInstance.GetIndex () < 0)
+            return editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNullVariableInstance ();
+         
+         if (registerVariableInstance.mCorrespondingGlobalVariable != null && registerVariableInstance.mCorrespondingGlobalVariable.GetIndex () < 0)
+            registerVariableInstance.mCorrespondingGlobalVariable = null;
+         
+         if (registerVariableInstance.mCorrespondingGlobalVariable == null)
+         {
+            var variableInstanceDefine:VariableInstanceDefine = new VariableInstanceDefine ();
+            variableInstanceDefine.mName = "Old " + registerVariableInstance.GetCodeStringAsRegisterVariable ();
+            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
+                                       registerVariableInstance.GetValueType (), 
+                                       ValidateDirectValueObject_Object2Define (
+                                             editorWorld, registerVariableInstance.GetValueType (), 
+                                             ValueTypeDefine.GetDefaultDirectDefineValue (registerVariableInstance.GetValueType ())
+                                       )
+                                    );
+            
+            var newGlobalVariableInstance:VariableInstance = VariableDefine2VariableInstance (
+                                                                     editorWorld, variableInstanceDefine, 
+                                                                     editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), true);
+            if (newGlobalVariableInstance == null)
+               registerVariableInstance.mCorrespondingGlobalVariable = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNullVariableInstance ();
+            else
+            {
+               registerVariableInstance.mCorrespondingGlobalVariable = newGlobalVariableInstance;
+            }
+         }
+         
+         return registerVariableInstance.mCorrespondingGlobalVariable;
+      }
+             
 //==============================================================================================
 // define -> byte array
 //==============================================================================================

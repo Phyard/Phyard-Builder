@@ -13,6 +13,7 @@ package editor.world {
 
    import editor.trigger.TriggerEngine;
    import editor.trigger.PlayerFunctionDefinesForEditing;
+   import editor.trigger.CodeSnippet;
 
    import editor.image.AssetImageModule;
    import editor.image.AssetImageNullModule;
@@ -31,6 +32,9 @@ package editor.world {
    import editor.codelib.AssetFunction;
    
    import editor.entity.Scene;
+   import editor.entity.Entity;
+   
+   import editor.trigger.entity.EntityCodeSnippetHolder;
 
    import common.Define;
    import common.ValueAdjuster;
@@ -243,6 +247,56 @@ package editor.world {
       {
          return mTriggerEngine;
       }
+      
+      // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - now ccats and functions are edit in dialogs
+      public function ConvertRegisterVariablesToGlobalVariables ():void
+      {
+         var oldNumGlobalVariables:int = mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ();
+         
+         //
+         
+         var variableMapTable:Dictionary = new Dictionary ();
+         var codeSnippet:CodeSnippet;
+         
+         // check script holders
+         
+         var numAssets:int = GetEntityContainer ().GetNumAssets ();
+         
+         for (var createId:int = 0; createId < numAssets; ++ createId)
+         {
+            var entity:Entity = GetEntityContainer ().GetAssetByCreationId (createId) as Entity;
+            if (entity is EntityCodeSnippetHolder)
+            {
+               codeSnippet = (entity as EntityCodeSnippetHolder).GetCodeSnippet () as CodeSnippet;
+               if (codeSnippet != null)
+               {
+                  codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
+               }
+            }
+         }
+         
+         // check custom functions
+         
+         var numFunctions:int = GetCodeLibManager ().GetNumFunctions ();
+         for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+         {
+            var functionAsset:AssetFunction = GetCodeLibManager ().GetFunctionByIndex (functionId);
+            
+            codeSnippet = functionAsset.GetCodeSnippet ();
+            if (codeSnippet != null)
+            {
+               codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
+            }
+         }
+         
+         // ...
+         
+         if (oldNumGlobalVariables != mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ())
+         {
+            mTriggerEngine.NotifyGlobalVariableSpaceModified ();
+         }
+      }
+      
 
 //=================================================================================
 //   image asset. (Will move to Runtime if multiple worlds is supported later)

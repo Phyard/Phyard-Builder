@@ -20,6 +20,8 @@ package editor.entity.dialog {
    import flash.geom.Matrix;
    import flash.geom.Rectangle;
    
+   import flash.system.Capabilities;
+   
    import mx.controls.Button;
    import mx.controls.CheckBox;
    import mx.controls.Label;
@@ -260,6 +262,11 @@ package editor.entity.dialog {
             case 189:// -
             case Keyboard.NUMPAD_SUBTRACT:
                RoundPositionForSelectedEntities ();
+               break;
+            case 75: // k
+            case 190: // >
+               if (ctrlHold && shiftHold)
+                  ConvertOldRegisterVariablesToGlobalVariables ();
                break;
             case 71: // G
             case 77: // M
@@ -1081,7 +1088,7 @@ package editor.entity.dialog {
       private function RetrieveShapePhysicsProperties (shape:EntityShape, values:Object):void
       {        
          values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
-         values.mCollisionCategoryListDataProvider =  EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
+         values.mCollisionCategoryListDataProvider = EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
          values.mCollisionCategoryListSelectedIndex = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
          
          values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
@@ -2473,6 +2480,24 @@ package editor.entity.dialog {
             CreateUndoPoint ("Round entity positons");
             
             OnAssetSelectionsChanged ();
+         }
+      }
+       
+      public function ConvertOldRegisterVariablesToGlobalVariables ():void
+      {
+         try
+         {
+            EditorContext.GetEditorApp ().GetWorld ().ConvertRegisterVariablesToGlobalVariables ();
+            
+            // ...
+            CreateUndoPoint ("Register variables are converted.");
+         }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
+            
+            PushFloatingMessage (new EffectMessagePopup ("Convert register variables failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetPanelWidth ()))
          }
       }
       

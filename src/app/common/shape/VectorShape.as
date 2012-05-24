@@ -138,20 +138,20 @@ package common.shape
          mBodyOpacityAndColor = (mBodyOpacityAndColor & (~Mask_BodyColor)) | ((color << Shift_BodyColor) & Mask_BodyColor);
       }
 
-      public function GetBodyAlpha ():int
+      public function GetBodyAlpha ():Number
       {
          return Number (GetBodyOpacity ()) / 255.0;
       }
 
-      public function SetBodyAlpha (alpha:Number):void
-      {
-         if (alpha < 0.0)
-            alpha = 0.0;
-         if (alpha > 1.0)
-            alpha = 1.0;
-         
-         return SetBodyOpacity (Math.round (alpha * 255));
-      }
+      //public function SetBodyAlpha (alpha:Number):void
+      //{
+      //   if (alpha < 0.0)
+      //      alpha = 0.0;
+      //   if (alpha > 1.0)
+      //      alpha = 1.0;
+      //   
+      //   return SetBodyOpacity (Math.round (alpha * 255));
+      //}
 
       public function GetBodyOpacity ():int
       {
@@ -170,12 +170,12 @@ package common.shape
 
       public function GetBodyOpacity100 ():int
       {
-         return GetBodyOpacity () * 100 / 255;
+         return GetBodyOpacity () * 100.0 / 255.0;
       }
 
       public function SetBodyOpacity100 (opacity:int):void
       {
-         SetBodyOpacity (opacity * 255 / 100);
+         SetBodyOpacity (opacity * 255.0 / 100.0);
       }
       
       // body texture

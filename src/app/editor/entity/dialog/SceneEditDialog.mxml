@@ -344,7 +344,7 @@
    
    <mx:XML id="SceneSettingsMenuData">
       <root>
-         <menuitem label="Change Current Scene Name ..." data="change_name"/>
+         <menuitem label="Change Current Scene Name ..." data="change_scene_name"/>
          <menuitem type="separator" data=""/>
          <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Simulation Settings ..." data="physics"/>
@@ -355,7 +355,7 @@
          <menuitem label="Clear All Entities In Current Scene ..." data="clear_all"/>
          <menuitem label="Clear All Entities and Reset Current Scene ..." data="clear_all_and_reset"/>
          <menuitem type="separator" data=""/>
-         <menuitem id="MenuItem_DeleteScene ..." label="Delete Current Scene" data="delete_scene" enabled="true"/>
+         <menuitem id="MenuItem_DeleteScene" label="Delete Current Scene" data="delete_current_scene" enabled="true"/>
       </root>
    </mx:XML>
    
@@ -486,6 +486,8 @@
       private function UpdateSceneListInterface ():void
       {
          var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
             return;
          
          if (List_Scenes.selectedIndex >= 0)
@@ -493,7 +495,7 @@
             List_Scenes.scrollToIndex (List_Scenes.selectedIndex);
          }
 
-         SceneSettingsMenuData.menuitem.(@data == "delete_scene").@enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;
+         SceneSettingsMenuData.menuitem.(@data == "delete_current_scene").@enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;
 
          Button_SetSceneAsEntry.enabled = world != null && List_Scenes.selectedIndex >= 1;
          Button_MoveUpScene.enabled = world != null && List_Scenes.selectedIndex >= 1;
@@ -794,11 +796,11 @@
          {
             mCurrentSceneEditPanel.ShowLevelViewportEditDialog ();
          }
-         else if (event.item.@data == "delete_scene")
+         else if (event.item.@data == "delete_current_scene")
          {
             EditorContext.ShowAlert ("Delete Current Scene", "Do you want to delete current scene?", true, OnDeleteCurrentScene);
          }
-         else if (event.item.@data == "change_name")
+         else if (event.item.@data == "change_scene_name")
          {
             var scene:editor.entity.Scene = mCurrentSceneEditPanel.GetScene ();
             if (scene != null)

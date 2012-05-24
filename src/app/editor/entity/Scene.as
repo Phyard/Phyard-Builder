@@ -68,6 +68,12 @@ package editor.entity {
    import editor.asset.Asset;
    import editor.asset.AssetManager;
    
+   //
+   
+   import editor.codelib.CodeLibManager;
+   
+   //
+   
    import common.CoordinateSystem;
    
    import common.Define;
@@ -80,7 +86,7 @@ package editor.entity {
       {
          super ();
          
-         SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium)
+         SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium);
       }
       
 //================================================================================
@@ -1819,6 +1825,7 @@ package editor.entity {
             mAssetLinksChangedCallback ();
          }
       }
+
 
 //=================================================================================
 //   debug info

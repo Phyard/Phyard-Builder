@@ -28,7 +28,6 @@ package editor.world {
    import editor.ccat.CollisionCategory;
    
    import editor.codelib.CodeLibManager;
-   import editor.codelib.AssetFunction;
    
    import editor.entity.Scene;
 
@@ -48,13 +47,12 @@ package editor.world {
          mAssetSoundManager = new AssetSoundManager ();
          
          // temp
-         
-         mCollisionCategoryManager = new CollisionCategoryManager ();
-
-         mTriggerEngine = new TriggerEngine ();
 
          mCodeLibManager = new CodeLibManager (this);
          mCodeLibManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
+         mTriggerEngine = new TriggerEngine ();
+         
+         mCollisionCategoryManager = new CollisionCategoryManager ();
       }
 
       public function Destroy ():void
@@ -412,21 +410,32 @@ package editor.world {
       {
          return mScenes [0] as Scene;
       }
+
+      //public function GetCodeLibManager ():CodeLibManager
+      //{
+      //   return GetEntityContainer ().GetCodeLibManager ();
+      //}
       
 //=================================================================================
 //   temp
 //=================================================================================
+//=================================================================================
+//   functions
+//=================================================================================
       
-      protected var mCollisionCategoryManager:CollisionCategoryManager;
-
-      protected var mTriggerEngine:TriggerEngine;
-
       protected var mCodeLibManager:CodeLibManager;
+
+      public function GetCodeLibManager ():CodeLibManager
+      {
+         return mCodeLibManager;
+      }
       
 //=================================================================================
 //   collision categories
 //=================================================================================
       
+      protected var mCollisionCategoryManager:CollisionCategoryManager;
+
       public function GetCollisionCategoryManager ():CollisionCategoryManager
       {
          return mCollisionCategoryManager;
@@ -440,24 +449,18 @@ package editor.world {
          if (category1 != null && category2 != null)
             mCollisionCategoryManager.CreateCollisionCategoryFriendLink (category1, category2);
       }
-
-//=================================================================================
-//   functions
-//=================================================================================
       
-      public function GetCodeLibManager ():CodeLibManager
-      {
-         return mCodeLibManager;
-      }
-
 //=================================================================================
 //   trigger system
 //=================================================================================
+
+      protected var mTriggerEngine:TriggerEngine;
 
       public function GetTriggerEngine ():TriggerEngine
       {
          return mTriggerEngine;
       }
+
    }
 }
 

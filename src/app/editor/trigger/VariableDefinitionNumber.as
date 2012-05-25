@@ -176,19 +176,20 @@ package editor.trigger {
                {
                   value = parseInt (text.substr (2), 16);
                }
-               else if (text.length > 1 && text.substr (0, 1).toLowerCase() == "#")
-               {
-                  value = parseInt (text.substr (1));
-                  if (isNaN (value))
-                  {
-                     value = mDefaultValue;
-                  }
-                  else
-                  {
-                     var vi:VariableInstance = triggerEngine.GetRegisterVariableSpace (ValueTypeDefine.ValueType_Number).GetVariableInstanceAt (value);
-                     return new ValueSource_Variable (vi);
-                  }
-               }
+               // register variables are disabled now
+               //else if (text.length > 1 && text.substr (0, 1).toLowerCase() == "#")
+               //{
+               //   value = parseInt (text.substr (1));
+               //   if (isNaN (value))
+               //   {
+               //      value = mDefaultValue;
+               //   }
+               //   else
+               //   {
+               //      var vi:VariableInstance = triggerEngine.GetRegisterVariableSpace (ValueTypeDefine.ValueType_Number).GetVariableInstanceAt (value);
+               //      return new ValueSource_Variable (vi);
+               //   }
+               //}
                else
                {
                   value = parseFloat (text);

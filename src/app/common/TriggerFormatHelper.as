@@ -500,7 +500,7 @@ package common {
                   variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
+                  var variable_space:VariableSpace = editorWorld.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
                      variable_instance = variable_space.GetVariableInstanceAt (variable_index);
@@ -567,7 +567,7 @@ package common {
                   variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
+                  var variable_space:VariableSpace = editorWorld.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
                      variable_instance = variable_space.GetVariableInstanceAt (variable_index);

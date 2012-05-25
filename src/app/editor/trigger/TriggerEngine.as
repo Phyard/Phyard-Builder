@@ -30,7 +30,6 @@ package editor.trigger {
    import common.trigger.CoreFunctionDeclarations;
    import common.trigger.CoreEventDeclarations;
    
-   import common.trigger.ValueTypeDefine;
    import editor.trigger.VariableSpace;
    
    import editor.display.dialog.VariablesEditDialog;
@@ -39,15 +38,6 @@ package editor.trigger {
    
    public class TriggerEngine
    {
-      // register variables
-      private var mRegisterVariableSpace_Boolean          :VariableSpaceRegister;
-      private var mRegisterVariableSpace_String           :VariableSpaceRegister;
-      private var mRegisterVariableSpace_Number           :VariableSpaceRegister;
-      private var mRegisterVariableSpace_Entity           :VariableSpaceRegister;
-      private var mRegisterVariableSpace_CollisionCategory:VariableSpaceRegister;
-      private var mRegisterVariableSpace_Module           :VariableSpaceRegister;
-      private var mRegisterVariableSpace_Sound           :VariableSpaceRegister;
-      private var mRegisterVariableSpace_Array            :VariableSpaceRegister;
       
       // custom session variables
       private var mSessionVariableSpace:VariableSpaceSession;
@@ -69,17 +59,6 @@ package editor.trigger {
          InitStaticData ();
          
          PlayerFunctionDefinesForEditing.sCustomMenuGroup.Clear ();
-         
-         // register variable spaces
-         
-         mRegisterVariableSpace_Boolean           = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Boolean);
-         mRegisterVariableSpace_String            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_String);
-         mRegisterVariableSpace_Number            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Number);
-         mRegisterVariableSpace_Entity            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Entity);
-         mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_CollisionCategory);
-         mRegisterVariableSpace_Module            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Module);
-         mRegisterVariableSpace_Sound            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Sound);
-         mRegisterVariableSpace_Array             = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Array);
          
          // custom session variable space
          
@@ -170,35 +149,6 @@ package editor.trigger {
       public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration_PreDefined
       {
          return PlayerFunctionDefinesForEditing.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_EntityPairFilter);
-      }
-      
-   //========================================================================================================
-   // variable spaces
-   //========================================================================================================
-      
-      public function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return mRegisterVariableSpace_Boolean;
-            case ValueTypeDefine.ValueType_String:
-               return mRegisterVariableSpace_String;
-            case ValueTypeDefine.ValueType_Number:
-               return mRegisterVariableSpace_Number;
-            case ValueTypeDefine.ValueType_Entity:
-               return mRegisterVariableSpace_Entity;
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               return mRegisterVariableSpace_CollisionCategory;
-            case ValueTypeDefine.ValueType_Module:
-               return mRegisterVariableSpace_Module;
-            case ValueTypeDefine.ValueType_Sound:
-               return mRegisterVariableSpace_Sound;
-            case ValueTypeDefine.ValueType_Array:
-               return mRegisterVariableSpace_Array;
-            default:
-               return null;
-         }
       }
       
    //========================================================================================================

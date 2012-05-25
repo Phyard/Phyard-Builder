@@ -35,6 +35,11 @@ package editor.world {
    import editor.entity.Entity;
    
    import editor.trigger.entity.EntityCodeSnippetHolder;
+   
+   import editor.trigger.VariableSpaceRegister;
+   import editor.trigger.VariableSpaceSession;
+
+   import common.trigger.ValueTypeDefine;
 
    import common.Define;
    import common.ValueAdjuster;
@@ -45,11 +50,27 @@ package editor.world {
       {
          CreateNewScene ("Default Scene");
          
+         // images
+         
          mAssetImageManager = new AssetImageManager ();
          mAssetImagePureModuleManager = new AssetImagePureModuleManager ();
          mAssetImageAssembledModuleManager = new AssetImageCompositeModuleManager (false);
          mAssetImageSequencedModuleManager = new AssetImageCompositeModuleManager (true);
+         
+         // sounds
+         
          mAssetSoundManager = new AssetSoundManager ();
+         
+         // register variable spaces
+         
+         mRegisterVariableSpace_Boolean           = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Boolean);
+         mRegisterVariableSpace_String            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_String);
+         mRegisterVariableSpace_Number            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Number);
+         mRegisterVariableSpace_Entity            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Entity);
+         mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_CollisionCategory);
+         mRegisterVariableSpace_Module            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Module);
+         mRegisterVariableSpace_Sound            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Sound);
+         mRegisterVariableSpace_Array             = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Array);
          
          // temp
 
@@ -67,10 +88,14 @@ package editor.world {
             aScene.Destroy ();
          }
          
+         // iamges
+         
          mAssetImageManager.Destroy ();
          mAssetImagePureModuleManager.Destroy ();
          mAssetImageAssembledModuleManager.Destroy ();
          mAssetImageSequencedModuleManager.Destroy ();
+         
+         // sounds 
          mAssetSoundManager.Destroy ();
          
          // temp 
@@ -87,10 +112,15 @@ package editor.world {
             aScene.Destroy ();
          }
          
+         // images
+         
          mAssetImageSequencedModuleManager.DestroyAllAssets ();
          mAssetImageAssembledModuleManager.DestroyAllAssets ();
          mAssetImagePureModuleManager.DestroyAllAssets ();
          mAssetImageManager.DestroyAllAssets ();
+         
+         // sounds
+         
          mAssetSoundManager.DestroyAllAssets ();
          
          // temp
@@ -458,6 +488,40 @@ package editor.world {
 //   register variables (in fact, register variables are scene dependent in playing)
 //=================================================================================
       
+      // register variables
+      private var mRegisterVariableSpace_Boolean          :VariableSpaceRegister;
+      private var mRegisterVariableSpace_String           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_Number           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_Entity           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_CollisionCategory:VariableSpaceRegister;
+      private var mRegisterVariableSpace_Module           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_Sound           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_Array            :VariableSpaceRegister;
+      
+      public function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
+      {
+         switch (valueType)
+         {
+            case ValueTypeDefine.ValueType_Boolean:
+               return mRegisterVariableSpace_Boolean;
+            case ValueTypeDefine.ValueType_String:
+               return mRegisterVariableSpace_String;
+            case ValueTypeDefine.ValueType_Number:
+               return mRegisterVariableSpace_Number;
+            case ValueTypeDefine.ValueType_Entity:
+               return mRegisterVariableSpace_Entity;
+            case ValueTypeDefine.ValueType_CollisionCategory:
+               return mRegisterVariableSpace_CollisionCategory;
+            case ValueTypeDefine.ValueType_Module:
+               return mRegisterVariableSpace_Module;
+            case ValueTypeDefine.ValueType_Sound:
+               return mRegisterVariableSpace_Sound;
+            case ValueTypeDefine.ValueType_Array:
+               return mRegisterVariableSpace_Array;
+            default:
+               return null;
+         }
+      }
       
       
 //=================================================================================

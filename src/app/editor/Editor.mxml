@@ -40,8 +40,8 @@
          <menuitem label="Save Offline (xml) ..." data="save_offline"/>
          <!--menuitem label="Save Local ..." data="save_local"/-->
          <!--menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/-->
-         <menuitem label="Export Selected Entities to System Clipborad" data="export_selected_entities"/>
-         <!--menuitem label="Export All Functions to System Clipborad" data="export_all_functions"/-->
+         <menuitem label="Export Selected Entities to System Clipboard" data="export_selected_entities"/>
+         <!--menuitem label="Export All Functions to System Clipboard" data="export_all_functions"/-->
       </root>
    </mx:XML>
 

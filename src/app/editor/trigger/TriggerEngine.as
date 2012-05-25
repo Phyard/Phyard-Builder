@@ -72,26 +72,26 @@ package editor.trigger {
          
          // register variable spaces
          
-         mRegisterVariableSpace_Boolean           = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Boolean);
-         mRegisterVariableSpace_String            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_String);
-         mRegisterVariableSpace_Number            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Number);
-         mRegisterVariableSpace_Entity            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Entity);
-         mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_CollisionCategory);
-         mRegisterVariableSpace_Module            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Module);
-         mRegisterVariableSpace_Sound            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Sound);
-         mRegisterVariableSpace_Array             = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Array);
+         mRegisterVariableSpace_Boolean           = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Boolean);
+         mRegisterVariableSpace_String            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_String);
+         mRegisterVariableSpace_Number            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Number);
+         mRegisterVariableSpace_Entity            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Entity);
+         mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_CollisionCategory);
+         mRegisterVariableSpace_Module            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Module);
+         mRegisterVariableSpace_Sound            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Sound);
+         mRegisterVariableSpace_Array             = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Array);
          
          // custom session variable space
          
-         mSessionVariableSpace = new VariableSpaceSession (this);
+         mSessionVariableSpace = new VariableSpaceSession (/*this*/);
          
          // custom global variable space
          
-         mGlobalVariableSpace = new VariableSpaceGlobal (this);
+         mGlobalVariableSpace = new VariableSpaceGlobal (/*this*/);
          
          // custom entity property space
          
-         mEntityVariableSpace = new VariableSpaceEntity (this);
+         mEntityVariableSpace = new VariableSpaceEntity (/*this*/);
          
          // ...
          

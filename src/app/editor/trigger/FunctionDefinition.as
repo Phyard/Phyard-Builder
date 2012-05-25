@@ -7,7 +7,7 @@ package editor.trigger {
    
    public class FunctionDefinition
    {
-      public var mTriggerEngine:TriggerEngine;
+      //public var mTriggerEngine:TriggerEngine;
       
       public var mFunctionDeclaration:FunctionDeclaration;
       
@@ -22,9 +22,9 @@ package editor.trigger {
       // runtime statistics info, not saved in file
       //public var mPure:Boolean = true;
       
-      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, designDependent:Boolean = false, toDiscardedDefinition:FunctionDefinition = null)
+      public function FunctionDefinition (/*triggerEngine:TriggerEngine, */functionDeclatation:FunctionDeclaration, designDependent:Boolean = false, toDiscardedDefinition:FunctionDefinition = null)
       {
-         mTriggerEngine = triggerEngine;
+         //mTriggerEngine = triggerEngine;
          
          mFunctionDeclaration = functionDeclatation;
          
@@ -32,7 +32,7 @@ package editor.trigger {
          
          if (toDiscardedDefinition == null)
          {
-            mInputVariableSpace = new VariableSpaceInput (mTriggerEngine);
+            mInputVariableSpace = new VariableSpaceInput (/*mTriggerEngine*/);
             
             if (mFunctionDeclaration != null)
             {
@@ -41,7 +41,7 @@ package editor.trigger {
                   mInputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetInputParamDefinitionAt (i));
             }
             
-            mOutputVariableSpace = new VariableSpaceOutput (mTriggerEngine);
+            mOutputVariableSpace = new VariableSpaceOutput (/*mTriggerEngine*/);
             
             if (mFunctionDeclaration != null)
             {
@@ -50,7 +50,7 @@ package editor.trigger {
                   mOutputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetOutputParamDefinitionAt (j));
             }
             
-            mLocalVariableSpace = new VariableSpaceLocal (mTriggerEngine);
+            mLocalVariableSpace = new VariableSpaceLocal (/*mTriggerEngine*/);
          }
          else
          {
@@ -332,13 +332,13 @@ package editor.trigger {
          
          if ((mFunctionDeclaration is FunctionDeclaration_Custom))
          {
-            newFuncDefinition = new FunctionDefinition (mTriggerEngine, (mFunctionDeclaration as FunctionDeclaration_Custom).Clone (), mDesignDependent);
+            newFuncDefinition = new FunctionDefinition (/*mTriggerEngine, */(mFunctionDeclaration as FunctionDeclaration_Custom).Clone (), mDesignDependent);
             
             newFuncDefinition.SybchronizeDeclarationWithDefinition ();
          }
          else
          {
-            newFuncDefinition = new FunctionDefinition (mTriggerEngine, mFunctionDeclaration, mDesignDependent);
+            newFuncDefinition = new FunctionDefinition (/*mTriggerEngine, */mFunctionDeclaration, mDesignDependent);
          }
          
          var num_locals:int = mLocalVariableSpace.GetNumVariableInstances ();

@@ -58,7 +58,7 @@ package editor.trigger {
       //   return new ValueTarget_Variable (mVariableInstance);
       //}
       
-      public function CloneTarget (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
+      public function CloneTarget (/*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
          //var variableDefinition:VariableDefinition;
          var variableInstance:VariableInstance;

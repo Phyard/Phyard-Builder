@@ -70,7 +70,7 @@ package editor.trigger {
             return;
          }
          
-         SetValueObject (mVariableDefinition.GetDefaultValueSource (mVariableSpace.GetTriggerEngine ()).GetValueObject ());
+         SetValueObject (mVariableDefinition.GetDefaultValueSource (/*mVariableSpace.GetTriggerEngine ()*/).GetValueObject ());
          SetName (variableDefinition.GetName ());
       }
       

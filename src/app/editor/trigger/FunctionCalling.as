@@ -14,7 +14,7 @@ package editor.trigger {
    
    public class FunctionCalling
    {
-      public var mTriggerEngine:TriggerEngine;
+      //public var mTriggerEngine:TriggerEngine;
       
       public var mFunctionDeclaration:FunctionDeclaration;
       
@@ -23,9 +23,9 @@ package editor.trigger {
       
       protected var mCommentedOff:Boolean = false;
       
-      public function FunctionCalling (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, createDefaultSourcesAndTargets:Boolean = true)
+      public function FunctionCalling (/*triggerEngine:TriggerEngine, */functionDeclatation:FunctionDeclaration, createDefaultSourcesAndTargets:Boolean = true)
       {
-         mTriggerEngine = triggerEngine;
+         //mTriggerEngine = triggerEngine;
          
          mFunctionDeclaration = functionDeclatation;
          
@@ -43,7 +43,7 @@ package editor.trigger {
             for (i = 0; i < num_inputs; ++ i)
             {
                variable_def = mFunctionDeclaration.GetInputParamDefinitionAt (i);
-               mInputValueSources [i] = variable_def.GetDefaultValueSource (mTriggerEngine);
+               mInputValueSources [i] = variable_def.GetDefaultValueSource (/*mTriggerEngine*/);
             }
             
             for (i = 0; i < num_returns; ++ i)
@@ -169,7 +169,7 @@ package editor.trigger {
       
       public function Clone (targetFunctionDefinition:FunctionDefinition):FunctionCalling
       {
-         var calling:FunctionCalling = new FunctionCalling (mTriggerEngine, mFunctionDeclaration, false);
+         var calling:FunctionCalling = new FunctionCalling (/*mTriggerEngine, */mFunctionDeclaration, false);
          
          var i:int;
          var vi:VariableInstance;
@@ -182,7 +182,7 @@ package editor.trigger {
          {
             source = mInputValueSources [i] as ValueSource;
             
-            sourcesArray [i] = source.CloneSource (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
+            sourcesArray [i] = source.CloneSource (/*mTriggerEngine, */targetFunctionDefinition, mFunctionDeclaration, i);
          }
          
          calling.AssignInputValueSources (sourcesArray);
@@ -195,7 +195,7 @@ package editor.trigger {
          {
             target = mOutputValueTargets [i] as ValueTarget;
             
-            targetsArray [i] = target.CloneTarget (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
+            targetsArray [i] = target.CloneTarget (/*mTriggerEngine, */targetFunctionDefinition, mFunctionDeclaration, i);
          }
          
          calling.AssignOutputValueTargets (targetsArray);

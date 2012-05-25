@@ -12,24 +12,24 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      protected var mTriggerEngine:TriggerEngine;
+      //protected var mTriggerEngine:TriggerEngine;
       
       protected var mNullVariableInstance:VariableInstance;
       protected var mVariableInstances:Array = new Array ();
       
       private var mNumModifiedTimes:int = 0;
       
-      public function VariableSpace (triggerEngine:TriggerEngine)
+      public function VariableSpace (/*triggerEngine:TriggerEngine*/)
       {
-         mTriggerEngine = triggerEngine;
+         //mTriggerEngine = triggerEngine;
          
          mNullVariableInstance = new VariableInstance (this, -1, null, ValueTypeDefine.ValueType_Void, "(null)", null);
       }
       
-      public function GetTriggerEngine ():TriggerEngine
-      {
-         return mTriggerEngine;
-      }
+      //public function GetTriggerEngine ():TriggerEngine
+      //{
+      //   return mTriggerEngine;
+      //}
       
       public function GetSpaceType ():int
       {

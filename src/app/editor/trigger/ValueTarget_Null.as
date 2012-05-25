@@ -20,7 +20,7 @@ package editor.trigger {
       {
       }
       
-      public function CloneTarget (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
+      public function CloneTarget (/*triggerEngine:TriggerEngine, */ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
          return new ValueTarget_Null ();
       }

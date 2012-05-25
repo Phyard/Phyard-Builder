@@ -402,7 +402,7 @@
                func_calling = codeSnippet.GetFunctionCallingAt (i);
 
                var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
-               callingLine.BuildFromFunctionCalling (func_calling, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), mCodeSnippet.GetOwnerFunctionDefinition ());
+               callingLine.BuildFromFunctionCalling (func_calling, /*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */mCodeSnippet.GetOwnerFunctionDefinition ());
 
                List_Commands.dataProvider.addItemAt (callingLine, insertAt ++);
             }
@@ -484,11 +484,11 @@
 
                   if (func_declaration is FunctionDeclaration_Core)
                   {
-                     func_calling = new FunctionCalling_Core (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), func_declaration as FunctionDeclaration_Core, false);
+                     func_calling = new FunctionCalling_Core (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */func_declaration as FunctionDeclaration_Core, false);
                   }
                   else if (func_declaration is FunctionDeclaration_Custom)
                   {
-                     func_calling = new FunctionCalling_Custom (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), func_declaration as FunctionDeclaration_Custom, false);
+                     func_calling = new FunctionCalling_Custom (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */func_declaration as FunctionDeclaration_Custom, false);
                   }
                   else
                   {
@@ -587,7 +587,7 @@
                return;
 
             var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
-            callingLine.BuildFromFunctionDeclaration (func_declaration, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), mCodeSnippet.GetOwnerFunctionDefinition ());
+            callingLine.BuildFromFunctionDeclaration (func_declaration, /*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */mCodeSnippet.GetOwnerFunctionDefinition ());
 
             var insert_index:int;
             if (insertAt < 0)
@@ -1208,7 +1208,7 @@
 
             var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
-            var new_value_source:ValueSource = variable_def.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+            var new_value_source:ValueSource = variable_def.GetDefaultValueSource (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
 
             mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
             CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);

@@ -400,7 +400,7 @@ package common {
             
             if (func_declaration != null)
             {
-               func_calling = new FunctionCalling_Core (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Core, false)
+               func_calling = new FunctionCalling_Core (/*editorWorld.GetTriggerEngine (), */func_declaration as FunctionDeclaration_Core, false)
             }
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
@@ -411,7 +411,7 @@ package common {
             {
                func_declaration = functionAsset.GetFunctionDeclaration ();
                
-               func_calling = new FunctionCalling_Custom (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Custom, false);
+               func_calling = new FunctionCalling_Custom (/*editorWorld.GetTriggerEngine (), */func_declaration as FunctionDeclaration_Custom, false);
             }
          }
          else if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
@@ -424,7 +424,7 @@ package common {
          
          if (func_calling == null)
          {
-            func_calling = new FunctionCalling_Core (editorWorld.GetTriggerEngine (), TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Blank), false)
+            func_calling = new FunctionCalling_Core (/*editorWorld.GetTriggerEngine (), */TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Blank), false)
             
             value_sources = new Array ();
             value_targets = new Array ();
@@ -443,7 +443,7 @@ package common {
             for (i = 0; i < real_num_inputs; ++ i)
             {
                if (i >= funcCallingDefine.mNumInputs)
-                  value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (editorWorld.GetTriggerEngine ());
+                  value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (/*editorWorld.GetTriggerEngine ()*/);
                else
                   value_sources [i] = ValueSourceDefine2ValueSource (editorWorld, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
             }

@@ -14,9 +14,9 @@ package editor.trigger {
       
       private var mValueType:int;
       
-      public function VariableSpaceRegister (triggerEngine:TriggerEngine, valueType:int)
+      public function VariableSpaceRegister (/*triggerEngine:TriggerEngine, */valueType:int)
       {
-         super (triggerEngine);
+         //super (triggerEngine);
          
          mValueType = valueType;
          

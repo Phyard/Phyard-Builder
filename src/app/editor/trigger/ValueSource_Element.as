@@ -70,7 +70,7 @@ package editor.trigger {
          return new ValueSource_Property (mEntityValueSource.CloneSource (), mPropertyValueSource.CloneSource () as ValueSource_Variable);
       }
       
-      public function ClonePropertySource (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      public function ClonePropertySource (/*triggerEngine:TriggerEngine, */ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
          var newEntityValueSource:ValueSource;
          var newPropertyValueSource:ValueSource_Variable;
@@ -81,7 +81,7 @@ package editor.trigger {
          }
          else if (mEntityValueSource is ValueSource_Variable)
          {
-            newEntityValueSource = (mEntityValueSource as ValueSource_Variable).CloneVariableSource (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex);
+            newEntityValueSource = (mEntityValueSource as ValueSource_Variable).CloneVariableSource (/*triggerEngine, */ownerFunctionDefinition, callingFunctionDeclaration, paramIndex);
          }
          else
          {
@@ -89,7 +89,7 @@ package editor.trigger {
          }
          
          // in fact, "newPropertyValueSource = mPropertyValueSource.CloneSource () as ValueSource_Variable;" is ok
-         newPropertyValueSource = mPropertyValueSource.CloneVariableSource (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueSource_Variable;
+         newPropertyValueSource = mPropertyValueSource.CloneVariableSource (/*triggerEngine, */ownerFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueSource_Variable;
          
          return new ValueSource_Property (newEntityValueSource, newPropertyValueSource);
       }

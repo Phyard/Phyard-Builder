@@ -77,7 +77,7 @@ package editor.codelib {
          mouseChildren = false;
          
          mFunctionDeclaration = new FunctionDeclaration_Custom (mName);
-         mFunctionDefinition = new FunctionDefinition (mCodeLibManager.mWorld.GetTriggerEngine (), mFunctionDeclaration, true);
+         mFunctionDefinition = new FunctionDefinition (/*mCodeLibManager.mWorld.GetTriggerEngine (), */mFunctionDeclaration, true);
          mCodeSnippet = new CodeSnippet (mFunctionDefinition);
       }
       

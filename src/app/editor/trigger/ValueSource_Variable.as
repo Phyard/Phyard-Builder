@@ -63,7 +63,7 @@ package editor.trigger {
       //   return new ValueSource_Variable (mVariableInstance);
       //}
       
-      public function CloneSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      public function CloneSource (/*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
          //var variableDefinition:VariableDefinition;
          var variableInstance:VariableInstance;
@@ -130,7 +130,7 @@ package editor.trigger {
             default: // global / register
             {
                if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
-                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
+                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (/*triggerEngine*/);
                else
                   return new ValueSource_Variable (mVariableInstance);
             }

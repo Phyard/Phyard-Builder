@@ -193,7 +193,8 @@ package editor.trigger {
       
       // options
       
-      private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
+      // cancelled to unref TriggerEngine
+      //private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
       
       public function VariableDefinition (valueType:int, name:String, description:String = null, options:Object = null)
       {
@@ -203,8 +204,8 @@ package editor.trigger {
          
          if (options != null)
          {
-            if (options.mDefaultSourceType != undefined)
-               mDefaultSourceType = int (options.mDefaultSourceType);
+            //if (options.mDefaultSourceType != undefined)
+            //   mDefaultSourceType = int (options.mDefaultSourceType);
          }
       }
       
@@ -425,16 +426,18 @@ package editor.trigger {
 // for value source
 //==============================================================================
    
-   public function GetDefaultValueSource (triggerEngine:TriggerEngine):ValueSource
+   public function GetDefaultValueSource (/*triggerEngine:TriggerEngine*/):ValueSource
    {
-      switch (mDefaultSourceType)
-      {
-         case ValueSourceTypeDefine.ValueSource_Variable:
-            return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (mValueType));
-         case ValueSourceTypeDefine.ValueSource_Direct:
-         default:
-            return GetDefaultDirectValueSource ();
-      }
+      //switch (mDefaultSourceType)
+      //{
+      //   //case ValueSourceTypeDefine.ValueSource_Variable:
+      //   //   return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (mValueType));
+      //   case ValueSourceTypeDefine.ValueSource_Direct:
+      //   default:
+      //      return GetDefaultDirectValueSource ();
+      //}
+      
+      return GetDefaultDirectValueSource ();
    }
    
    public function CreateControlForValueSource (valueSource:ValueSource):UIComponent

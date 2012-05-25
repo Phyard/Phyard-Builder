@@ -265,12 +265,12 @@
 
             if (Button_MenuBarSwitch.selected)
             {
-               Button_MenuBarSwitch.toolTip = "Shorter Manu Bar";
+               Button_MenuBarSwitch.toolTip = "Shorter Menu Bar";
                MenuBar_Api.dataProvider = TriggerEngine.GetCoreApiFunctionsMenuBarDataProvider_Longer ();
             }
             else
             {
-               Button_MenuBarSwitch.toolTip = "Longer Manu Bar";
+               Button_MenuBarSwitch.toolTip = "Longer Menu Bar";
                MenuBar_Api.dataProvider = TriggerEngine.GetCoreApiFunctionsMenuBarDataProvider_Shorter ();
             }
          }

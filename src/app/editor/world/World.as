@@ -29,6 +29,7 @@ package editor.world {
    import editor.ccat.CollisionCategory;
    
    import editor.codelib.CodeLibManager;
+   import editor.codelib.AssetFunction;
    
    import editor.entity.Scene;
    import editor.entity.Entity;

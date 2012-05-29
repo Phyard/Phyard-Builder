@@ -141,7 +141,6 @@
             import mx.events.MenuEvent;
 
             import editor.trigger.VariableSpace;
-            import editor.trigger.Lists;
 
             import editor.trigger.VariableInstance;
             import editor.trigger.VariableDefinition;
@@ -167,28 +166,35 @@
             //private var mLastVariableSpace:VariableSpace = null;
             private var mLastVariableSpaceModifiedTimes:int = -1;
 
-            public function SetVariableSpace (variableSpace:VariableSpace):void
-            {
-               if (mVariableSpace != variableSpace || mLastVariableSpaceModifiedTimes < mVariableSpace.GetNumModifiedTimes ())
-               {
-                  mVariableSpace = variableSpace;
-                  NotifyVariableSpaceModified ();
-                  mLastVariableSpaceModifiedTimes = mVariableSpace.GetNumModifiedTimes ();
-               }
-            }
+            //public function SetVariableSpace (variableSpace:VariableSpace):void
+            //{
+            //   if (mVariableSpace != variableSpace || mLastVariableSpaceModifiedTimes < mVariableSpace.GetNumModifiedTimes ())
+            //   {
+            //      mVariableSpace = variableSpace;
+            //      NotifyVariableSpaceModified ();
+            //      mLastVariableSpaceModifiedTimes = mVariableSpace.GetNumModifiedTimes ();
+            //   }
+            //}
 
-            private var mOptions:Object;
-            public function SetOptions (options:Object):void
+            //private var mOptions:Object;
+            //public function SetOptions (options:Object):void
+            //{
+            //   mOptions = options;
+            //
+            //   if (mOptions != null)
+            //   {
+            //      if (mOptions.mSupportEditingInitialValues != undefined && mOptions.mSupportEditingInitialValues == false)
+            //      {
+            //         ViewStack_VariableSetting.visible = false;
+            //      }
+            //   }
+            //}
+            
+            public function UpdateVariableSpace (variableSpace:VariableSpace):void
             {
-               mOptions = options;
-
-               if (mOptions != null)
-               {
-                  if (mOptions.mSupportEditingInitialValues != undefined && mOptions.mSupportEditingInitialValues == false)
-                  {
-                     ViewStack_VariableSetting.visible = false;
-                  }
-               }
+               mVariableSpace = variableSpace;
+               ViewStack_VariableSetting.visible = mVariableSpace != null && mVariableSpace.SupportEditingInitialValues ();
+               NotifyVariableSpaceModified ();
             }
 
             public function NotifyVariableSpaceModified ():void

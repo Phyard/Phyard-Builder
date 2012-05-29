@@ -396,7 +396,7 @@ package common {
          var func_declaration:FunctionDeclaration;
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
-            func_declaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
+            func_declaration = World.GetPlayerCoreFunctionDeclarationById (func_id);
             
             if (func_declaration != null)
             {
@@ -424,7 +424,7 @@ package common {
          
          if (func_calling == null)
          {
-            func_calling = new FunctionCalling_Core (/*editorWorld.GetTriggerEngine (), */TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Blank), false)
+            func_calling = new FunctionCalling_Core (/*editorWorld.GetTriggerEngine (), */World.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Blank), false)
             
             value_sources = new Array ();
             value_targets = new Array ();
@@ -494,7 +494,7 @@ package common {
             switch (variable_source_define.mSpaceType)
             {
                case ValueSpaceTypeDefine.ValueSpace_Session:
-                  variable_instance = editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = editorWorld.GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
@@ -561,7 +561,7 @@ package common {
             switch (variable_target_define.mSpaceType)
             {
                case ValueSpaceTypeDefine.ValueSpace_Session:
-                  variable_instance = editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = editorWorld.GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
@@ -838,7 +838,7 @@ package common {
          
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
+            var func_declaration:FunctionDeclaration = World.GetPlayerCoreFunctionDeclarationById (func_id);
             
             for (i = 0; i < num_inputs; ++ i)
                WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
@@ -1073,7 +1073,7 @@ package common {
          var func_type:int = parseInt (funcCallingElement.@function_type);
          var func_id  :int = parseInt (funcCallingElement.@function_id);
          
-         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
+         var func_declaration:FunctionDeclaration = World.GetPlayerCoreFunctionDeclarationById (func_id);
          
          var i:int;
          var value_source_defines:Array = new Array ();
@@ -1282,7 +1282,7 @@ package common {
             var funcDclaration:FunctionDeclaration;
             if (func_type == FunctionTypeDefine.FunctionType_Core)
             {
-               funcDclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (functionId);
+               funcDclaration = World.GetPlayerCoreFunctionDeclarationById (functionId);
             }
             else // if (func_type == FunctionTypeDefine.FunctionType_Custom)
             {

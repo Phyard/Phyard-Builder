@@ -32,9 +32,11 @@ package editor {
    import editor.sound.dialog.AssetSoundListDialog;
    import editor.ccat.dialog.CollisionCategoryListDialog;
    import editor.codelib.dialog.CodeLibListDialog;
+   import editor.display.dialog.VariablesEditDialog;
    
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDefinition;
+   import editor.trigger.VariableSpace;
    
    import editor.trigger.entity.InputEntitySelector;
    
@@ -140,10 +142,10 @@ package editor {
       
       public static function ShowModalDialog (DialogClass:Class, onConfirmCallback:Function, initialParams:Object = null):void
       {
-         if (sEditorContext.HasSettingDialogOpened ())
+         if (GetSingleton ().HasSettingDialogOpened ())
             return;
          
-         sEditorContext.OnOpenModalDialog ();
+         GetSingleton ().OnOpenModalDialog ();
          
          var settingDialog:Object = new DialogClass ();
          
@@ -153,7 +155,7 @@ package editor {
          if (settingDialog.hasOwnProperty ("SetConfirmFunc"))
             settingDialog.SetConfirmFunc (onConfirmCallback);
          
-         settingDialog.SetCloseFunc (sEditorContext.OnCloseModalDialog);
+         settingDialog.SetCloseFunc (GetSingleton ().OnCloseModalDialog);
          
          PopUpManager.addPopUp (settingDialog as IFlexDisplayObject, sEditorApp, true);
          PopUpManager.centerPopUp (settingDialog as IFlexDisplayObject);
@@ -176,6 +178,34 @@ package editor {
          {
             onYesHandler ();
          }
+      }
+      
+   //=====================================================================
+   // variable space edit dialog
+   //=====================================================================
+      
+      public static function ShowVariableSpaceEditDialog (parent:DisplayObject, variableSpace:VariableSpace, onCloseFunc:Function):void
+      {
+         if (GetSingleton ().mVariablesEditDialog == null)
+         {
+            GetSingleton ().mVariablesEditDialog = new VariablesEditDialog ();
+         }
+         
+         GetSingleton ().mVariablesEditDialog.SetTitle (variableSpace.GetSpaceName ());
+         GetSingleton ().mVariablesEditDialog.SetCloseFunc (onCloseFunc);
+         //GetSingleton ().mVariablesEditDialog.visible = false; // useless, when change to true first time, show-event will not triggered
+         
+         //GetSingleton ().mVariablesEditDialog.SetOptions ({mSupportEditingInitialValues: mSupportEditingInitialValue});
+         
+         //GetSingleton ().mVariablesEditDialog.SetVariableSpace (variableSpace);
+         
+         PopUpManager.addPopUp (GetSingleton ().mVariablesEditDialog, parent, true);
+         PopUpManager.centerPopUp (GetSingleton ().mVariablesEditDialog);
+         PopUpManager.bringToFront (GetSingleton ().mVariablesEditDialog);
+         
+         //GetSingleton ().mVariablesEditDialog.NotifyVariableSpaceModified ();
+         
+         GetSingleton ().mVariablesEditDialog.UpdateVariableSpace (variableSpace);
       }
       
 //=====================================================================
@@ -204,6 +234,9 @@ package editor {
          
          if (mCodeLibListDialog != null)
             CodeLibListDialog.HideCodeLibListDialog ();
+         
+         if (mVariablesEditDialog != null)
+            PopUpManager.removePopUp (mVariablesEditDialog);
          
          CloseOtherPopupModelessDialog ();
       }
@@ -334,7 +367,8 @@ package editor {
       public var mAssetImageModuleListDialog:AssetImageModuleListDialog = null;      
       public var mAssetSoundListDialog:AssetSoundListDialog = null;
       public var mCollisionCategoryListDialog:CollisionCategoryListDialog = null;
-      public var mCodeLibListDialog:CodeLibListDialog  = null;
+      public var mCodeLibListDialog:CodeLibListDialog = null;
+      public var mVariablesEditDialog:VariablesEditDialog = null;
       
       private var mOtherPopupModelessDialogs:Array = new Array ();
       
@@ -425,12 +459,12 @@ package editor {
    //
    //=====================================================================
       
-      public var mSessionVariablesEditingDialogClosedCallBack:Function = null;
-      public var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
-      public var mEntityVariablesEditingDialogClosedCallBack:Function = null;
-      public var mLocalVariablesEditingDialogClosedCallBack:Function = null;
-      public var mInputVariablesEditingDialogClosedCallBack:Function = null;
-      public var mOutputVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mSessionVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mEntityVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mLocalVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mInputVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mOutputVariablesEditingDialogClosedCallBack:Function = null;
       
    //=====================================================================
    // todo: use defines instead so that the (static) copied snippet can be used across worlds.
@@ -491,14 +525,14 @@ package editor {
       
       public function StartSettingEntityProperties ():void
       {
-         mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
+         mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes ();
          mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
          mLastEntityVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
       }
       
       public function CancelSettingEntityProperties ():void
       {
-         var sessionVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
+         var sessionVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
          var globalVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
          var entityVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes () > mLastEntityVariableSpaceModifiedTimes;
          

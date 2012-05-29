@@ -33,6 +33,8 @@ package editor.entity.dialog {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.MathUtil;
    
+   import editor.world.Filters;
+   
    import editor.asset.Asset;
    import editor.asset.AssetManagerPanel;
    import editor.asset.Linkable;
@@ -46,7 +48,6 @@ package editor.entity.dialog {
    import editor.trigger.entity.*;
    
    import editor.trigger.CodeSnippet;
-   import editor.trigger.Filters;
    
    import editor.display.sprite.BackgroundSprite;
    import editor.display.sprite.EffectMessagePopup;

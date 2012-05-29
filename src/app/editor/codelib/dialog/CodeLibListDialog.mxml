@@ -98,7 +98,6 @@
             {
                PopUpManager.removePopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
-            
          }
          
          public static function StartPickingMode (OnCCatPicked:Function):void

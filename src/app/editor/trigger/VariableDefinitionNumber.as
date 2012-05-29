@@ -6,6 +6,8 @@ package editor.trigger {
    
    import com.tapirgames.util.TextUtil;
    
+   import editor.util.DataUtil;
+   
    import common.trigger.ValueTypeDefine;
    
    public class VariableDefinitionNumber extends VariableDefinition
@@ -123,8 +125,8 @@ package editor.trigger {
          {
             var combo_box:ComboBox = new ComboBox ();
             
-            combo_box.dataProvider = Lists.GetListWithDataInLabel (mValueLists);
-            combo_box.selectedIndex = Lists.SelectedValue2SelectedIndex (mValueLists, directValue);
+            combo_box.dataProvider = DataUtil.GetListWithDataInLabel (mValueLists);
+            combo_box.selectedIndex = DataUtil.SelectedValue2SelectedIndex (mValueLists, directValue);
             combo_box.rowCount = 11;
             
             return combo_box;

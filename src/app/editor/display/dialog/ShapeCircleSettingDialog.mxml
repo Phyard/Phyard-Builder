@@ -66,7 +66,8 @@
          import mx.managers.PopUpManager;
          import mx.controls.Menu;
 
-         import editor.trigger.Lists;
+         import editor.util.DataUtil;
+         import editor.world.Lists;
 
          import common.Define;
 
@@ -101,7 +102,7 @@
 
          private function OnAppearanceOtherSettingsCreationComplete():void
          {
-            SelectList_AppearanceType.dataProvider = Lists.GetListWithDataInLabel (Lists.mCircleAppearanceList);
+            SelectList_AppearanceType.dataProvider = DataUtil.GetListWithDataInLabel (Lists.mCircleAppearanceList);
          }
 
          private function OnEntityBasicSettingPanelCreationComplete ():void

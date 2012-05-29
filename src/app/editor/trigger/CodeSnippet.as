@@ -100,7 +100,7 @@ package editor.trigger {
             {
                if (func_calling.Validate ())
                {
-                   mFunctionCallings [i] = new FunctionCalling_Core (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
+                   mFunctionCallings [i] = new FunctionCalling_Core (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
                }
             }
          }

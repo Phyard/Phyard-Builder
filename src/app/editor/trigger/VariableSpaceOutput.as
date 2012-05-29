@@ -14,6 +14,11 @@ package editor.trigger {
          //super(triggerEngine);
       }
       
+      override public function SupportEditingInitialValues ():Boolean
+      {
+         return false;
+      }
+      
       override public function GetSpaceType ():int
       {
          return ValueSpaceTypeDefine.ValueSpace_Output;

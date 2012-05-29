@@ -26,6 +26,11 @@ package editor.trigger {
             CreateVariableInstance(mValueType, "", init_value)
       }
       
+      override public function SupportEditingInitialValues ():Boolean
+      {
+         return false;
+      }
+      
       override public function GetSpaceType ():int
       {
          return ValueSpaceTypeDefine.ValueSpace_GlobalRegister;

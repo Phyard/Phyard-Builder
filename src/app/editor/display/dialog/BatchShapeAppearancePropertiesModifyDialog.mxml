@@ -92,7 +92,8 @@
          import mx.managers.PopUpManager;
          import mx.controls.Menu;
 
-         import editor.trigger.Lists;
+         import editor.util.DataUtil;
+         import editor.world.Lists;
 
          import common.Define;
 
@@ -108,7 +109,7 @@
 
          private function OnInitPanel ():void
          {
-            SelectList_AiType.dataProvider = Lists.GetListWithDataInLabel (Lists.mAiTypeList);
+            SelectList_AiType.dataProvider = DataUtil.GetListWithDataInLabel (Lists.mAiTypeList);
          }
 
          public function GetValues (returnValues:Object):void

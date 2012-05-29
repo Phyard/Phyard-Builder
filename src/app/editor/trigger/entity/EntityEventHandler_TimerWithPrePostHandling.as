@@ -1,6 +1,8 @@
 
 package editor.trigger.entity {
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
    import editor.entity.Entity;
    
@@ -34,11 +36,11 @@ package editor.trigger.entity {
       {
          super (container, defaultEventId, potientialEventIds);
          
-         mPreEventHandlerDefinition  = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */TriggerEngine.GetEventDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
+         mPreEventHandlerDefinition  = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetEventDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
          mPreEventHandlerDefinition.SetLocalVariableSpace (mEventHandlerDefinition.GetLocalVariableSpace ());
          mPreCodeSnippet = new CodeSnippet (mPreEventHandlerDefinition);
          
-         mPostEventHandlerDefinition = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */TriggerEngine.GetEventDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
+         mPostEventHandlerDefinition = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetEventDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
          mPostEventHandlerDefinition.SetLocalVariableSpace (mEventHandlerDefinition.GetLocalVariableSpace ());
          mPostCodeSnippet = new CodeSnippet (mPostEventHandlerDefinition);
       }

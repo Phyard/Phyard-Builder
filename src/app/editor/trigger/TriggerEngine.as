@@ -14,7 +14,6 @@ core,entity.shape.rect
 
 extend.field.
 
-
 //instances
  
 */
@@ -30,6 +29,9 @@ package editor.trigger {
    import common.trigger.CoreFunctionDeclarations;
    import common.trigger.CoreEventDeclarations;
    
+   import editor.world.CoreFunctionDeclarationsForPlaying;
+   import editor.world.CoreEventDeclarationsForPlaying;
+   
    import editor.trigger.VariableSpace;
    
    import editor.display.dialog.VariablesEditDialog;
@@ -37,11 +39,7 @@ package editor.trigger {
    import editor.EditorContext;
    
    public class TriggerEngine
-   {
-      
-      // custom session variables
-      private var mSessionVariableSpace:VariableSpaceSession;
-      
+   {  
       // custom global variables
       private var mGlobalVariableSpace:VariableSpaceGlobal;
       
@@ -56,13 +54,7 @@ package editor.trigger {
       
       public function TriggerEngine ()
       {
-         InitStaticData ();
-         
-         PlayerFunctionDefinesForEditing.sCustomMenuGroup.Clear ();
-         
-         // custom session variable space
-         
-         mSessionVariableSpace = new VariableSpaceSession (/*this*/);
+         CoreFunctionDeclarationsForPlaying.sCustomMenuGroup.Clear ();
          
          // custom global variable space
          
@@ -73,7 +65,7 @@ package editor.trigger {
          mEntityVariableSpace = new VariableSpaceEntity (/*this*/);
          
          // ...
-         
+         /*
          HideSessionVariablesEditDialog ();
          mSessionVariablesEditDialog = null;
          
@@ -82,75 +74,35 @@ package editor.trigger {
          
          HideEntityVariablesEditDialog ();
          mEntityVariablesEditDialog = null;
+         */
       }
       
-      private static var mStaticDataInited:Boolean = false;
-      private static function InitStaticData ():void
+      public function GetGlobalVariableSpace ():VariableSpaceGlobal
       {
-         if (mStaticDataInited)
-            return;
-         
-         // APIs
-         
-         CoreFunctionDeclarations.Initialize ();
-         CoreEventDeclarations.Initialize ();
-         
-         PlayerFunctionDefinesForEditing.Initialize ();
-         PlayerEventDefinesForEditing.Initialize ();
-         
-         // ...
-         mStaticDataInited = true;
+         return mGlobalVariableSpace;
+      }
+      
+      public function GetEntityVariableSpace ():VariableSpaceEntity
+      {
+         return mEntityVariableSpace;
       }
       
       public function UpdateCustomFunctionMenu ():void
       {
-         PlayerFunctionDefinesForEditing.UpdateCustomMenu ();
-      }
-      
-      public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler
-      {
-         return PlayerEventDefinesForEditing.GetEventDeclarationById (event_id);
-      }
-      
-      public static function GetPlayerCoreFunctionDeclarationById (func_id:int):FunctionDeclaration_Core
-      {
-         return PlayerFunctionDefinesForEditing.GetCoreFunctionDeclarationById (func_id);
+         CoreFunctionDeclarationsForPlaying.UpdateCustomMenu ();
       }
       
       public static function GetCoreApiFunctionsMenuBarDataProvider_Shorter ():XML
       {
-         return PlayerFunctionDefinesForEditing.sMenuBarDataProvider_Shorter;
+         return CoreFunctionDeclarationsForPlaying.sMenuBarDataProvider_Shorter;
       }
       
       public static function GetCoreApiFunctionsMenuBarDataProvider_Longer ():XML
       {
-         return PlayerFunctionDefinesForEditing.sMenuBarDataProvider_Longer;
+         return CoreFunctionDeclarationsForPlaying.sMenuBarDataProvider_Longer;
       }
       
-   //========================================================================================================
-   // some special function declarations
-   //========================================================================================================
-      
-      public static function GetVoidFunctionDeclaration ():FunctionDeclaration_PreDefined
-      {
-         return PlayerFunctionDefinesForEditing.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_Void);
-      }
-      
-      public static function GetBoolFunctionDeclaration ():FunctionDeclaration_PreDefined
-      {
-         return PlayerFunctionDefinesForEditing.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_Bool);
-      }
-      
-      public static function GetEntityFilterFunctionDeclaration ():FunctionDeclaration_PreDefined
-      {
-         return PlayerFunctionDefinesForEditing.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_EntityFilter);
-      }
-      
-      public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration_PreDefined
-      {
-         return PlayerFunctionDefinesForEditing.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_EntityPairFilter);
-      }
-      
+      /*
    //========================================================================================================
    // session variable edit dialog
    //========================================================================================================
@@ -201,11 +153,6 @@ package editor.trigger {
          }
          
          mSessionVariablesEditDialogVisible = false;
-      }
-      
-      public function GetSessionVariableSpace ():VariableSpaceSession
-      {
-         return mSessionVariableSpace;
       }
       
       public function NotifySessionVariableSpaceModified ():void
@@ -268,11 +215,6 @@ package editor.trigger {
          mGlobalVariablesEditDialogVisible = false;
       }
       
-      public function GetGlobalVariableSpace ():VariableSpaceGlobal
-      {
-         return mGlobalVariableSpace;
-      }
-      
       public function NotifyGlobalVariableSpaceModified ():void
       {
          if (mGlobalVariablesEditDialog != null)
@@ -331,11 +273,6 @@ package editor.trigger {
          }
          
          mEntityVariablesEditDialogVisible = false;
-      }
-      
-      public function GetEntityVariableSpace ():VariableSpaceEntity
-      {
-         return mEntityVariableSpace;
       }
       
       public function NotifyEntityVariableSpaceModified ():void
@@ -532,5 +469,6 @@ package editor.trigger {
             mOutputVariablesEditDialog.NotifyVariableSpaceModified ();
          }
       }
+      */
    }
 }

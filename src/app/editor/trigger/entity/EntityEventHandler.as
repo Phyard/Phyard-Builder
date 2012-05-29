@@ -14,6 +14,8 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
+   import editor.world.World;
+   
    import editor.asset.Asset;
    
    import editor.entity.Scene;
@@ -64,7 +66,7 @@ package editor.trigger.entity {
          
          mEventId = defaultEventId;
          
-         mEventHandlerDefinition = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */TriggerEngine.GetEventDeclarationById (mEventId));
+         mEventHandlerDefinition = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetEventDeclarationById (mEventId));
          
          mCodeSnippet = new CodeSnippet (mEventHandlerDefinition);
          mBackgroundColor = 0xB0B0FF;
@@ -88,7 +90,7 @@ package editor.trigger.entity {
             mAllPotentialEventDeclarations = new Array (potientialEventIds.length);
             
             for (i = 0; i < potientialEventIds.length; ++ i)
-               mAllPotentialEventDeclarations [i] = TriggerEngine.GetEventDeclarationById (potientialEventIds [i]);
+               mAllPotentialEventDeclarations [i] = World.GetEventDeclarationById (potientialEventIds [i]);
          }
       }
       
@@ -120,7 +122,7 @@ package editor.trigger.entity {
          {
             mEventId = eventId;
             
-            mEventHandlerDefinition = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
+            mEventHandlerDefinition = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
             
             mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
             

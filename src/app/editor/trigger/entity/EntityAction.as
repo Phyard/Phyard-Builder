@@ -12,6 +12,8 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
    import editor.entity.Entity;
    
@@ -36,7 +38,7 @@ package editor.trigger.entity {
       {
          super (container);
          
-         mCodeSnippet = new CodeSnippet (new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */TriggerEngine.GetVoidFunctionDeclaration ()));
+         mCodeSnippet = new CodeSnippet (new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetVoidFunctionDeclaration ()));
          mIconBitmap = new Resource.IconTriggerAction ();
          mBackgroundColor = 0xFFA0A0;
       }

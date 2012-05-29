@@ -31,6 +31,11 @@ package editor.trigger {
       //   return mTriggerEngine;
       //}
       
+      public function SupportEditingInitialValues ():Boolean
+      {
+         return true;
+      }
+      
       public function GetSpaceType ():int
       {
          return -1;

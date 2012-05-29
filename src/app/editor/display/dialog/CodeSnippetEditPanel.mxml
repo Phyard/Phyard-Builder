@@ -91,6 +91,8 @@
 
          import com.tapirgames.util.DisplayObjectUtil;
          import com.tapirgames.util.TextUtil;
+         
+         import editor.world.World;
 
          import editor.display.control.TextForFunctionCallingLine;
          import editor.display.control.FunctionCallingLineData;
@@ -180,7 +182,7 @@
 
          private function OnRemovedFromStage ():void
          {
-            CloseVariableEditingDialogsAndCleanUpRalatedInfo ();
+            //CloseVariableEditingDialogsAndCleanUpRalatedInfo ();
          }
 
          private function OnCopySelectedCallings (event:ContextMenuEvent):void
@@ -576,7 +578,7 @@
 
             if (type == FunctionTypeDefine.FunctionType_Core)
             {
-               func_declaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (id);
+               func_declaration = World.GetPlayerCoreFunctionDeclarationById (id);
             }
             else if (type == FunctionTypeDefine.FunctionType_Custom)
             {
@@ -1155,7 +1157,7 @@
 
                //AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
 
-               if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               if (EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Session Entity Variable", isForTarget ? OnSelectValueSource_SessionVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_SessionVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
 
                if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
@@ -1181,7 +1183,7 @@
 
                   //AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
 
-                  if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  if (EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Session Variable", OnSelectValueSource_SessionVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
 
                   if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
@@ -1460,7 +1462,7 @@
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
                   var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
-                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ()));
+                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
                }
@@ -1468,7 +1470,7 @@
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
                   var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
-                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ()));
+                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
                }
@@ -1476,7 +1478,7 @@
             else
             {
                variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ());
+               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ());
                mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
                CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
@@ -1680,7 +1682,7 @@
 
                //AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
 
-               if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               if (EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Session Variable", OnSelectValueTarget_SessionVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
 
                if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
@@ -1796,7 +1798,7 @@
 
             var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
-            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ());
+            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ());
 
             mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
             CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
@@ -1889,46 +1891,47 @@
 
          public function CollectVariableEditingDialogsRelatedInfo ():void
          {
-            mLastModifyTimesOfSessionVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = OnSessionVariablesEditingDialogClosed;
+            mLastModifyTimesOfSessionVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes ();
+            //EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = OnSessionVariablesEditingDialogClosed;
 
             mLastModifyTimesOfGlobalVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = OnGlobalVariablesEditingDialogClosed;
+            //EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = OnGlobalVariablesEditingDialogClosed;
 
             mLastModifyTimesOfEntityVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = OnEntityVariablesEditingDialogClosed;
+            //EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = OnEntityVariablesEditingDialogClosed;
 
-            EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = OnLocalVariablesEditingDialogClosed;
-            EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = OnInputVariablesEditingDialogClosed;
-            EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = OnOutputVariablesEditingDialogClosed;
+            //EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = OnLocalVariablesEditingDialogClosed;
+            //EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = OnInputVariablesEditingDialogClosed;
+            //EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = OnOutputVariablesEditingDialogClosed;
          }
 
-         private function CloseVariableEditingDialogsAndCleanUpRalatedInfo ():void
-         {
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideSessionVariablesEditDialog ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideGlobalVariablesEditDialog ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
-
-            // ...
-            EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = null;
-         }
+         //private function CloseVariableEditingDialogsAndCleanUpRalatedInfo ():void
+         //{
+         //   EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideSessionVariablesEditDialog ();
+         //   EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideGlobalVariablesEditDialog ();
+         //   EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
+         //
+         //   // ...
+         //   EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = null;
+         //}
 
       // session variables
 
          private function OnEditSessionVariables (event:Event = null):void
          {
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowSessionVariablesEditDialog (this);
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowSessionVariablesEditDialog (this);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace (), OnSessionVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfSessionVariableSpace:int = -1;
          public function OnSessionVariablesEditingDialogClosed ():void
          {
-            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
+            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes ();
             if (mLastModifyTimesOfSessionVariableSpace < newModifyTimes)
             {
                OnCurrentCommandChanged ();
@@ -1943,7 +1946,8 @@
 
          private function OnEditGlobalVariables ():void
          {
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowGlobalVariablesEditDialog (this);
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowGlobalVariablesEditDialog (this);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace (), OnGlobalVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfGlobalVariableSpace:int = -1;
@@ -1964,7 +1968,8 @@
 
          private function OnEditEntityVariables ():void
          {
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowEntityVariablesEditDialog (this);
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowEntityVariablesEditDialog (this);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace (), OnEntityVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfEntityVariableSpace:int = -1;
@@ -1986,7 +1991,8 @@
          private function OnEditLocalVariables ():void
          {
             mLastModifyTimesOfEntityVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ());
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ());
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace (), OnLocalVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfLocalVariableSpace:int = -1;
@@ -2008,7 +2014,8 @@
          private function OnEditInputVariables ():void
          {
             mLastModifyTimesOfEntityVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowInputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ());
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowInputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ());
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace (), OnInputVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfInputVariableSpace:int = -1;
@@ -2037,7 +2044,8 @@
          private function OnEditOutputVariables ():void
          {
             mLastModifyTimesOfEntityVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowOutputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ());
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowOutputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ());
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace (), OnOutputVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfOutputVariableSpace:int = -1;

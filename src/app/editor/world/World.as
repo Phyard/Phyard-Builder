@@ -12,7 +12,6 @@ package editor.world {
    import editor.selection.SelectionEngine;
 
    import editor.trigger.TriggerEngine;
-   import editor.trigger.PlayerFunctionDefinesForEditing;
    import editor.trigger.CodeSnippet;
 
    import editor.image.AssetImageModule;
@@ -38,7 +37,13 @@ package editor.world {
    
    import editor.trigger.VariableSpaceRegister;
    import editor.trigger.VariableSpaceSession;
+   import editor.trigger.FunctionDeclaration_PreDefined;
+   import editor.trigger.FunctionDeclaration_Core;
+   import editor.trigger.FunctionDeclaration_EventHandler;
 
+   import common.trigger.CoreFunctionDeclarations;
+   import common.trigger.CoreEventDeclarations;
+   import common.trigger.CoreFunctionIds;
    import common.trigger.ValueTypeDefine;
 
    import common.Define;
@@ -48,6 +53,12 @@ package editor.world {
    {
       public function World ()
       {
+         // ...
+         
+         InitFunctionDeclarations ();
+         
+         // ...
+         
          CreateNewScene ("Default Scene");
          
          // images
@@ -72,10 +83,14 @@ package editor.world {
          mRegisterVariableSpace_Sound            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Sound);
          mRegisterVariableSpace_Array             = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Array);
          
+         // session variable space
+         
+         mSessionVariableSpace = new VariableSpaceSession (/*this*/);
+         
          // temp
 
          mCodeLibManager = new CodeLibManager (this);
-         mCodeLibManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
+         mCodeLibManager.SetFunctionMenuGroup (CoreFunctionDeclarationsForPlaying.sCustomMenuGroup);
          mTriggerEngine = new TriggerEngine ();
          
          mCollisionCategoryManager = new CollisionCategoryManager ();
@@ -342,10 +357,10 @@ package editor.world {
          
          // ...
          
-         if (oldNumGlobalVariables != mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ())
-         {
-            mTriggerEngine.NotifyGlobalVariableSpaceModified ();
-         }
+         //if (oldNumGlobalVariables != mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ())
+         //{
+         //   mTriggerEngine.NotifyGlobalVariableSpaceModified ();
+         //}
       }
       
 
@@ -484,6 +499,60 @@ package editor.world {
       }
       
 //=================================================================================
+//   function/event declarations
+//=================================================================================
+      
+      private static var mFunctionDeclarationsInited:Boolean = false;
+      private static function InitFunctionDeclarations ():void
+      {
+         if (mFunctionDeclarationsInited)
+            return;
+         
+         // APIs
+         
+         CoreFunctionDeclarations.Initialize ();
+         CoreEventDeclarations.Initialize ();
+         
+         CoreFunctionDeclarationsForPlaying.Initialize ();
+         CoreEventDeclarationsForPlaying.Initialize ();
+         
+         // ...
+         mFunctionDeclarationsInited = true;
+      }
+      
+      public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler
+      {
+         return CoreEventDeclarationsForPlaying.GetEventDeclarationById (event_id);
+      }
+      
+      public static function GetPlayerCoreFunctionDeclarationById (func_id:int):FunctionDeclaration_Core
+      {
+         return CoreFunctionDeclarationsForPlaying.GetCoreFunctionDeclarationById (func_id);
+      }
+      
+      // some special ones
+      
+      public static function GetVoidFunctionDeclaration ():FunctionDeclaration_PreDefined
+      {
+         return CoreFunctionDeclarationsForPlaying.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_Void);
+      }
+      
+      public static function GetBoolFunctionDeclaration ():FunctionDeclaration_PreDefined
+      {
+         return CoreFunctionDeclarationsForPlaying.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_Bool);
+      }
+      
+      public static function GetEntityFilterFunctionDeclaration ():FunctionDeclaration_PreDefined
+      {
+         return CoreFunctionDeclarationsForPlaying.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_EntityFilter);
+      }
+      
+      public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration_PreDefined
+      {
+         return CoreFunctionDeclarationsForPlaying.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_EntityPairFilter);
+      }
+      
+//=================================================================================
 //   session variables and pure functions
 //   register variables (in fact, register variables are scene dependent in playing)
 //=================================================================================
@@ -497,6 +566,9 @@ package editor.world {
       private var mRegisterVariableSpace_Module           :VariableSpaceRegister;
       private var mRegisterVariableSpace_Sound           :VariableSpaceRegister;
       private var mRegisterVariableSpace_Array            :VariableSpaceRegister;
+      
+      // session variables
+      private var mSessionVariableSpace:VariableSpaceSession;
       
       public function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
       {
@@ -523,6 +595,10 @@ package editor.world {
          }
       }
       
+      public function GetSessionVariableSpace ():VariableSpaceSession
+      {
+         return mSessionVariableSpace;
+      }
       
 //=================================================================================
 //   temp

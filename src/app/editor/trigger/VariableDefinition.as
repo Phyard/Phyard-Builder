@@ -6,6 +6,7 @@ package editor.trigger {
    import mx.containers.HBox;
    
    import editor.world.World;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    import editor.ccat.CollisionCategory;
    
@@ -361,7 +362,7 @@ package editor.trigger {
          return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (entityVariableSpace));
       }
       
-      public function CreateControlForPropertyValueTarget (valueTargetProperty:ValueTarget_Property):UIComponent
+      public function CreateControlForPropertyValueTarget (scene:Scene, valueTargetProperty:ValueTarget_Property):UIComponent
       {
          BuildPropertyVaribleDefinition ();
          
@@ -371,7 +372,7 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct, false);
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {
@@ -393,7 +394,7 @@ package editor.trigger {
          return box;
       }
       
-      public function RetrievePropertyValueTargetFromControl (valueTargetProperty:ValueTarget_Property, control:UIComponent):void
+      public function RetrievePropertyValueTargetFromControl (scene:Scene, valueTargetProperty:ValueTarget_Property, control:UIComponent):void
       {
    	   if (control is HBox)
    	   {
@@ -407,7 +408,7 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {
@@ -480,13 +481,13 @@ package editor.trigger {
          return null;
       }
       
-      public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          return null;
       }
       
       // return null for not changed
-      public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
+      public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          return null;
       }
@@ -594,7 +595,7 @@ package editor.trigger {
          return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (entityVariableSpace));
       }
       
-      public function CreateControlForPropertyValueSource (valueSourceProperty:ValueSource_Property):UIComponent
+      public function CreateControlForPropertyValueSource (scene:Scene, valueSourceProperty:ValueSource_Property):UIComponent
       {
          BuildPropertyVaribleDefinition ();
          
@@ -604,7 +605,7 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct, false);
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {
@@ -626,7 +627,7 @@ package editor.trigger {
          return box;
       }
       
-      public function RetrievePropertyValueSourceFromControl (valueSourceProperty:ValueSource_Property, control:UIComponent):void
+      public function RetrievePropertyValueSourceFromControl (scene:Scene, valueSourceProperty:ValueSource_Property, control:UIComponent):void
       {
    	   if (control is HBox)
    	   {
@@ -640,7 +641,7 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {

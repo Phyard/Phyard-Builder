@@ -4,6 +4,8 @@ package editor.trigger {
    import mx.controls.TextInput;
    import mx.controls.ComboBox;
    
+   import editor.entity.Scene;
+   
    import com.tapirgames.util.TextUtil;
    
    import editor.util.DataUtil;
@@ -117,7 +119,7 @@ package editor.trigger {
          return new ValueSource_Direct (mDefaultValue);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var directValue:Number = Number (valueSourceDirect.GetValueObject ());
          
@@ -152,7 +154,7 @@ package editor.trigger {
          }
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          var value:Number = mDefaultValue;
          

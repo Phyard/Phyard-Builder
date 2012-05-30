@@ -80,6 +80,11 @@ package editor.entity {
    
    //
    
+   import editor.ccat.CollisionCategoryManager;
+   import editor.ccat.CollisionCategory;
+   
+   //
+   
    import common.CoordinateSystem;
    
    import common.Define;
@@ -94,8 +99,10 @@ package editor.entity {
          super ();
          
          mWorld = world;
-
+         
          mCodeLibManager = new CodeLibManager (this);
+         
+         mCollisionCategoryManager = new CollisionCategoryManager ();
          
          SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium);
       }
@@ -107,7 +114,9 @@ package editor.entity {
 
       override public function Destroy ():void
       {  
-         mCodeLibManager.Destroy ();
+         mCodeLibManager.Destroy (); 
+         
+         mCollisionCategoryManager.Destroy ();
          
          super.Destroy ();
       }
@@ -116,6 +125,8 @@ package editor.entity {
       override public function DestroyAllAssets ():void
       {
          mCodeLibManager.DestroyAllAssets ();
+         
+         mCollisionCategoryManager.DestroyAllAssets ();
          
          super.DestroyAllAssets ();
       }
@@ -129,6 +140,26 @@ package editor.entity {
       public function GetCodeLibManager ():CodeLibManager
       {
          return mCodeLibManager;
+      }
+      
+//=================================================================================
+//   collision categories
+//=================================================================================
+      
+      protected var mCollisionCategoryManager:CollisionCategoryManager;
+
+      public function GetCollisionCategoryManager ():CollisionCategoryManager
+      {
+         return mCollisionCategoryManager;
+      }
+
+      public function CreateCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
+      {
+         var category1:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex1);
+         var category2:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex2);
+
+         if (category1 != null && category2 != null)
+            mCollisionCategoryManager.CreateCollisionCategoryFriendLink (category1, category2);
       }
       
 //================================================================================
@@ -682,7 +713,7 @@ package editor.entity {
          if (selectIt)
          {
             circle.ValidateAfterJustCreated ();
-            circle.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            circle.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
             
             circle.SetPosition (mouseX, mouseY);
             SetSelectedAsset (circle);
@@ -703,7 +734,7 @@ package editor.entity {
          if (selectIt)
          {
             rect.ValidateAfterJustCreated ();
-            rect.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            rect.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
             
             rect.SetPosition (mouseX, mouseY);
             SetSelectedAsset (rect);
@@ -724,7 +755,7 @@ package editor.entity {
          if (selectIt)
          {
             polygon.ValidateAfterJustCreated ();
-            polygon.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            polygon.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
             
             polygon.SetPosition (mouseX, mouseY);
             SetSelectedAsset (polygon);
@@ -745,7 +776,7 @@ package editor.entity {
          if (selectIt)
          {
             polyline.ValidateAfterJustCreated ();
-            polyline.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            polyline.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
             
             polyline.SetPosition (mouseX, mouseY);
             SetSelectedAsset (polyline);
@@ -904,7 +935,7 @@ package editor.entity {
             SetSelectedAsset (imageModule);
          }
 
-         imageModule.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         imageModule.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return imageModule;
       }
@@ -923,7 +954,7 @@ package editor.entity {
             SetSelectedAsset (imageModuleButton);
          }
 
-         imageModuleButton.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         imageModuleButton.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return imageModuleButton;
       }

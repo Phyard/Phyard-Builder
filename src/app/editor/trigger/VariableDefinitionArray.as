@@ -3,6 +3,8 @@ package editor.trigger {
    import mx.core.UIComponent;
    import mx.controls.Label;
    
+   import editor.entity.Scene;
+   
    import common.trigger.ValueTypeDefine;
    
    import common.Define;
@@ -57,7 +59,7 @@ package editor.trigger {
          return new ValueSource_Direct (null);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var label:Label = new Label ();
          label.text = "null"; // currently, direct array value is not supported
@@ -65,7 +67,7 @@ package editor.trigger {
          return label;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          if (control is Label)
          {

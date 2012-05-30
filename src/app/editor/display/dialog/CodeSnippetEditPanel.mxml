@@ -902,7 +902,7 @@
             var value_control:UIComponent = null;
             if (value_source is ValueSource_Direct)
             {
-               value_control = variable_def.CreateControlForDirectValueSource (value_source as ValueSource_Direct, mIsDesignIndependentCustomFunction);
+               value_control = variable_def.CreateControlForDirectValueSource (mCodeLibManager.GetScene (), value_source as ValueSource_Direct, mIsDesignIndependentCustomFunction);
             }
             else if (value_source is ValueSource_Variable)
             {
@@ -919,7 +919,7 @@
             }
             else if (value_source is ValueSource_Property)
             {
-               value_control = variable_def.CreateControlForPropertyValueSource (value_source as ValueSource_Property);
+               value_control = variable_def.CreateControlForPropertyValueSource (mCodeLibManager.GetScene (), value_source as ValueSource_Property);
             }
 
             if (value_control != null)
@@ -969,7 +969,7 @@
             }
             else if (value_target is ValueTarget_Property)
             {
-               value_control = variable_def.CreateControlForPropertyValueTarget (value_target as ValueTarget_Property);
+               value_control = variable_def.CreateControlForPropertyValueTarget (mCodeLibManager.GetScene (), value_target as ValueTarget_Property);
             }
 
             if (value_control != null)
@@ -1013,7 +1013,7 @@
 
                if (value_source is ValueSource_Direct)
                {
-                  var newValueSource:ValueSource = variable_def.RetrieveDirectValueSourceFromControl (value_source as ValueSource_Direct, source_control/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
+                  var newValueSource:ValueSource = variable_def.RetrieveDirectValueSourceFromControl (mCodeLibManager.GetScene (), value_source as ValueSource_Direct, source_control/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
                   if (newValueSource != null)
                      currentValueSources [j] = newValueSource;
                }
@@ -1023,7 +1023,7 @@
                }
                else if (value_source is ValueSource_Property)
                {
-                  variable_def.RetrievePropertyValueSourceFromControl (value_source as ValueSource_Property, source_control);
+                  variable_def.RetrievePropertyValueSourceFromControl (mCodeLibManager.GetScene (), value_source as ValueSource_Property, source_control);
 
                   if (clearContextMenus)
                   {
@@ -1061,7 +1061,7 @@
                }
                else if (value_target is ValueTarget_Property)
                {
-                  variable_def.RetrievePropertyValueTargetFromControl (value_target as ValueTarget_Property, target_control);
+                  variable_def.RetrievePropertyValueTargetFromControl (mCodeLibManager.GetScene (), value_target as ValueTarget_Property, target_control);
 
                   if (clearContextMenus)
                   {

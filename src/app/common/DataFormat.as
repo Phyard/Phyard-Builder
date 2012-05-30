@@ -784,11 +784,11 @@ package common {
          //>>fromv1.02
          // collision category
          {
-            var numCats:int = editorWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
+            var numCats:int = editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
             
             for (var ccId:int = 0; ccId < numCats; ++ ccId)
             {
-               var collisionCategory:CollisionCategory = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (ccId);
+               var collisionCategory:CollisionCategory = editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetCollisionCategoryByIndex (ccId);
                
                var ccDefine:Object = new Object ();
                
@@ -800,17 +800,17 @@ package common {
                worldDefine.mCollisionCategoryDefines.push (ccDefine);
             }
             
-            worldDefine.mDefaultCollisionCategoryIndex = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (editorWorld.GetCollisionCategoryManager ().GetDefaultCollisionCategory ());
+            worldDefine.mDefaultCollisionCategoryIndex = editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ());
             
-            var ccFriendPairs:Array = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryFriendPairs ();
+            var ccFriendPairs:Array = editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetCollisionCategoryFriendPairs ();
             for (var pairId:int = 0; pairId < ccFriendPairs.length; ++ pairId)
             {
                var friendPair:Object = ccFriendPairs [pairId];
                
                var pairDefine:Object = new Object ();
                
-               pairDefine.mCollisionCategory1Index = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory1);
-               pairDefine.mCollisionCategory2Index = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory2);
+               pairDefine.mCollisionCategory1Index = editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory1);
+               pairDefine.mCollisionCategory2Index = editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory2);
                
                worldDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
             }
@@ -1392,7 +1392,7 @@ package common {
          
          // collision category
          
-         var beginningCollisionCategoryIndex:int = editorWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
+         var beginningCollisionCategoryIndex:int = editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
          
          //>> from v1.02
          {
@@ -1402,7 +1402,7 @@ package common {
             {
                var ccDefine:Object = worldDefine.mCollisionCategoryDefines [ccId];
                
-               collisionCategory = editorWorld.GetCollisionCategoryManager ().CreateCollisionCategory (ccDefine.mName);
+               collisionCategory = editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().CreateCollisionCategory (ccDefine.mName);
                collisionCategory.SetCollideInternally (ccDefine.mCollideInternally);
                
                collisionCategory.SetPosition (ccDefine.mPosX, ccDefine.mPosY);
@@ -1413,7 +1413,7 @@ package common {
             
             if (isNewWorldToLoadAll)
             {
-               collisionCategory = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (worldDefine.mDefaultCollisionCategoryIndex);
+               collisionCategory = editorWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetCollisionCategoryByIndex (worldDefine.mDefaultCollisionCategoryIndex);
                if (collisionCategory != null)
                   collisionCategory.SetAsDefaultCategory (true);
             }
@@ -1423,7 +1423,7 @@ package common {
                var pairDefine:Object = worldDefine.mCollisionCategoryFriendLinkDefines [pairId];
                
                //editorWorld.GetEntityContainer ().CreateEntityCollisionCategoryFriendLink (pairDefine.mCollisionCategory1Index, pairDefine.mCollisionCategory2Index);
-               editorWorld.CreateCollisionCategoryFriendLink (beginningCollisionCategoryIndex + pairDefine.mCollisionCategory1Index, 
+               editorWorld.GetEntityContainer ().CreateCollisionCategoryFriendLink (beginningCollisionCategoryIndex + pairDefine.mCollisionCategory1Index, 
                                                                     beginningCollisionCategoryIndex + pairDefine.mCollisionCategory2Index);
             }
          }

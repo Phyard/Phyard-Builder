@@ -9,10 +9,6 @@ package editor.world {
 
    import com.tapirgames.util.Logger;
 
-   import editor.selection.SelectionEngine;
-
-   import editor.trigger.CodeSnippet;
-
    import editor.image.AssetImageModule;
    import editor.image.AssetImageNullModule;
 
@@ -23,19 +19,11 @@ package editor.world {
    import editor.sound.AssetSound;
    import editor.sound.AssetSoundManager;
    
-   import editor.ccat.CollisionCategoryManager;
-   import editor.ccat.CollisionCategory;
-   
-   import editor.codelib.CodeLibManager;
-   import editor.codelib.AssetFunction;
-   
    import editor.entity.Scene;
-   import editor.entity.Entity;
-   
-   import editor.trigger.entity.EntityCodeSnippetHolder;
    
    import editor.trigger.VariableSpaceRegister;
    import editor.trigger.VariableSpaceSession;
+   
    import editor.trigger.FunctionDeclaration_PreDefined;
    import editor.trigger.FunctionDeclaration_Core;
    import editor.trigger.FunctionDeclaration_EventHandler;
@@ -85,10 +73,6 @@ package editor.world {
          // session variable space
          
          mSessionVariableSpace = new VariableSpaceSession (/*this*/);
-         
-         // temp
-         
-         mCollisionCategoryManager = new CollisionCategoryManager ();
       }
 
       public function Destroy ():void
@@ -107,10 +91,6 @@ package editor.world {
          
          // sounds 
          mAssetSoundManager.Destroy ();
-         
-         // temp 
-         
-         mCollisionCategoryManager.Destroy ();
       }
 
       //override 
@@ -131,10 +111,6 @@ package editor.world {
          // sounds
          
          mAssetSoundManager.DestroyAllAssets ();
-         
-         // temp
-         
-         mCollisionCategoryManager.DestroyAllAssets ();
       }
 
 //=================================================================================
@@ -561,27 +537,6 @@ package editor.world {
       {
          return mScenes [0] as Scene;
       }
-      
-//=================================================================================
-//   collision categories
-//=================================================================================
-      
-      protected var mCollisionCategoryManager:CollisionCategoryManager;
-
-      public function GetCollisionCategoryManager ():CollisionCategoryManager
-      {
-         return mCollisionCategoryManager;
-      }
-
-      public function CreateCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
-      {
-         var category1:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex1);
-         var category2:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex2);
-
-         if (category1 != null && category2 != null)
-            mCollisionCategoryManager.CreateCollisionCategoryFriendLink (category1, category2);
-      }
-
    }
 }
 

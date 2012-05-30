@@ -857,7 +857,7 @@
          try
          {
             var oldEntitiesCount:int = mWorld.GetEntityContainer ().GetNumAssets ();
-            var oldCategoriesCount:int = mWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
+            var oldCategoriesCount:int = mWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
             
             var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
             
@@ -1073,7 +1073,7 @@
             //   }
             //}
             
-            var cm:CollisionCategoryManager = newWorld.GetCollisionCategoryManager ();
+            var cm:CollisionCategoryManager = newWorld.GetEntityContainer ().GetCollisionCategoryManager ();
             cm.CancelAllAssetSelections ();
             var ccId:int;
             numEntities = newWorld.GetEntityContainer ().GetNumAssets ();

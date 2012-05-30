@@ -38,7 +38,7 @@ package editor.entity {
       protected var mLinearVelocityAngle:Number = 0;
       protected var mAngularVelocity:Number = 0;
 
-      protected var mLinearDamping:Number = 0; // 1.08 加入fileForamt中了？
+      protected var mLinearDamping:Number = 0; // 1.08 鍔犲叆fileForamt涓簡锛�
       protected var mAngularDamping:Number = 0;
 
       protected var mAllowSleeping:Boolean = true;
@@ -347,7 +347,7 @@ package editor.entity {
 
       public function GetCollisionCategoryIndex ():int
       {
-         var index:int = EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (mCollisionCategory);
+         var index:int = mEntityContainer.GetCollisionCategoryManager ().GetCollisionCategoryIndex (mCollisionCategory);
 
          if (index == Define.CCatId_Hidden)
             mCollisionCategory = null;
@@ -357,7 +357,7 @@ package editor.entity {
 
       public function SetCollisionCategoryIndex (index:int):void
       {
-         mCollisionCategory = EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryByIndex (index);
+         mCollisionCategory = mEntityContainer.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (index);
       }
 
    }

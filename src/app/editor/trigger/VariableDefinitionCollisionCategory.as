@@ -4,6 +4,7 @@ package editor.trigger {
    import mx.controls.ComboBox;
    
    import editor.world.World;
+   import editor.entity.Scene;
    //import editor.entity.EntityCollisionCategory;
    import editor.ccat.CollisionCategory;
    
@@ -55,10 +56,9 @@ package editor.trigger {
          return new ValueSource_Direct (null);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
-         var world:World = EditorContext.GetEditorApp ().GetWorld ();
-         var category_list:Array = world.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider (isForPureCustomFunction);
+         var category_list:Array = scene.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider (isForPureCustomFunction);
          
          var category:CollisionCategory = valueSourceDirect.GetValueObject () as CollisionCategory;
          var sel_index:int = -1;
@@ -74,7 +74,7 @@ package editor.trigger {
          return combo_box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          if (control is ComboBox)
          {
@@ -84,12 +84,11 @@ package editor.trigger {
                valueSourceDirect.SetValueObject (null);
             else
             {
-               var world:World = EditorContext.GetEditorApp ().GetWorld ();
                var category_index:int = combo_box.selectedItem.mCategoryIndex;
                if (category_index < 0)
                   valueSourceDirect.SetValueObject (null);
                else
-                  valueSourceDirect.SetValueObject (world.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (category_index));
+                  valueSourceDirect.SetValueObject (scene.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (category_index));
             }
          }
          

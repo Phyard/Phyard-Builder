@@ -3,6 +3,8 @@ package editor.trigger {
    import mx.core.UIComponent;
    import mx.controls.TextInput;
    
+   import editor.entity.Scene;
+   
    import common.trigger.ValueTypeDefine;
    
    public class VariableDefinitionString extends VariableDefinition
@@ -80,7 +82,7 @@ package editor.trigger {
          return new ValueSource_Direct (mDefaultValue);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var text_input:TextInput = new TextInput ()
          
@@ -89,7 +91,7 @@ package editor.trigger {
          return text_input;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          var text:String = mDefaultValue;
          

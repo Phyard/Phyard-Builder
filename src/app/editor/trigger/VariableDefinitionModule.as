@@ -2,6 +2,8 @@ package editor.trigger {
 
    import mx.core.UIComponent;
    import mx.controls.Label;
+   
+   import editor.entity.Scene;
 
    import editor.display.control.ModulePickButton;
 
@@ -55,7 +57,7 @@ package editor.trigger {
          return new ValueSource_Direct (null);
       }
 
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          if (isForPureCustomFunction)
          {
@@ -74,7 +76,7 @@ package editor.trigger {
          }
       }
 
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          if (control is ModulePickButton)
          {

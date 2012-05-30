@@ -281,8 +281,7 @@ package common {
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               // to change
-               return scene.GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (valueObject as CollisionCategory);
+               return scene..GetCollisionCategoryManager ().GetCollisionCategoryIndex (valueObject as CollisionCategory);
             case ValueTypeDefine.ValueType_Module:
             {
                var module:AssetImageModule = valueObject as AssetImageModule;
@@ -645,8 +644,7 @@ package common {
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               // to change
-               return scene.GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryByIndex (valueObject as int);
+               return scene.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (valueObject as int);
             case ValueTypeDefine.ValueType_Module:
             {
                var moduleIndex:int = valueObject as int;

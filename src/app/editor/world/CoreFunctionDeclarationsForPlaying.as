@@ -14,14 +14,24 @@ package editor.world {
 
       private static var sFunctionDeclarations:Array = new Array (IdPool.NumPlayerFunctions);
 
-      public static const sGlobalMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Global");
-      public static const sWorldMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("World");
-      public static const sEntityMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Entity");
+      private static const sGlobalMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Global");
+      private static const sWorldMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("World");
+      private static const sEntityMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Entity");
+      
+      private static var sNumberMenuGroup:FunctionMenuGroup;
+      private static var sEntityShapeMenuGroup:FunctionMenuGroup;
 
-      public static const sCustomMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Custom");
+      // ...
 
-      public static var sMenuBarDataProvider_Shorter:XML = null;
-      public static var sMenuBarDataProvider_Longer:XML = null;
+      public static function GetMenuGroupsForShorterMenuBar ():Array
+      {
+         return [sGlobalMenuGroup, sWorldMenuGroup, sEntityMenuGroup];
+      }
+
+      public static function GetMenuGroupsForLongerMenuBar ():Array
+      {
+         return [sGlobalMenuGroup, sNumberMenuGroup, sWorldMenuGroup, sEntityMenuGroup, sEntityShapeMenuGroup];
+      }
 
       public static function Initialize ():void
       {
@@ -78,6 +88,11 @@ package editor.world {
              var shape_module_package:FunctionMenuGroup  = new FunctionMenuGroup ("Module", entity_shape_package);
          var entity_joint_package:FunctionMenuGroup  = new FunctionMenuGroup ("Joint", sEntityMenuGroup);
          var entity_trigger_package:FunctionMenuGroup  = new FunctionMenuGroup ("Trigger", sEntityMenuGroup);
+         
+         // ...
+         
+         sNumberMenuGroup = number_package;
+         sEntityShapeMenuGroup = entity_shape_package;
 
       //================================================
       // functions
@@ -3084,12 +3099,9 @@ package editor.world {
                      ],
                      null
                   );
-
-
-      // ...
-
-         sMenuBarDataProvider_Shorter = CreateXmlFromMenuGroups ([sGlobalMenuGroup, sWorldMenuGroup, sEntityMenuGroup, sCustomMenuGroup])
-         sMenuBarDataProvider_Longer = CreateXmlFromMenuGroups ([sGlobalMenuGroup, number_package, sWorldMenuGroup, sEntityMenuGroup, entity_shape_package, sCustomMenuGroup])
+         
+         // ...
+         
      }
 
 //===========================================================
@@ -3132,82 +3144,6 @@ package editor.world {
             return null;
 
          return sFunctionDeclarations [function_id] as FunctionDeclaration_PreDefined;
-      }
-
-      // top level
-      private static function CreateXmlFromMenuGroups (packages:Array):XML
-      {
-         var xml:XML = <root />;
-
-         for each (var functionMenuGroup:FunctionMenuGroup in packages)
-         {
-            ConvertMenuGroupToXML (functionMenuGroup, xml, packages);
-         }
-
-         return xml;
-      }
-
-      private static function ConvertMenuGroupToXML (functionMenuGroup:FunctionMenuGroup, parentXml:XML, topMenuGroups:Array):void
-      {
-         var package_element:XML = <menuitem />;
-         package_element.@name = functionMenuGroup.GetName ();
-         parentXml.appendChild (package_element);
-
-         var num_items:int = 0;
-
-         var child_packages:Array = functionMenuGroup.GetChildMenuGroups ();
-         for (var i:int = 0; i < child_packages.length; ++ i)
-         {
-            if (topMenuGroups == null || topMenuGroups.indexOf (child_packages [i]) < 0)
-            {
-               ConvertMenuGroupToXML (child_packages [i] as FunctionMenuGroup, package_element, topMenuGroups);
-
-               ++ num_items;
-            }
-         }
-
-         var declarations:Array = functionMenuGroup.GetFunctionDeclarations ();
-         var declaration:FunctionDeclaration;
-         var function_element:XML;
-         for (var j:int = 0; j < declarations.length; ++ j)
-         {
-            declaration = declarations [j] as FunctionDeclaration;
-            if (declaration.IsShowUpInApiMenu ())
-            {
-               function_element = <menuitem />;
-               function_element.@name = declaration.GetName ();
-               function_element.@id = declaration.GetID ();
-               function_element.@type = declaration.GetType ();
-
-               package_element.appendChild (function_element);
-
-               ++ num_items;
-            }
-         }
-
-         if (num_items == 0)
-         {
-            function_element = <menuitem />;
-            function_element.@name = "[nothing]";
-            function_element.@id = -1;
-
-            package_element.appendChild (function_element);
-         }
-      }
-
-      public static function UpdateCustomMenu ():void
-      {
-         var parent:XML;
-
-         parent = sMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0].parent ();
-         delete sMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0];
-
-         ConvertMenuGroupToXML (sCustomMenuGroup, parent, null)
-
-         parent = sMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0].parent ();
-         delete sMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0];
-
-         ConvertMenuGroupToXML (sCustomMenuGroup, parent, null)
       }
    }
 }

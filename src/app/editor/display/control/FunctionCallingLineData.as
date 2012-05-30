@@ -1,7 +1,7 @@
 
 package editor.display.control {
    
-   import editor.trigger.TriggerEngine;
+   //import editor.trigger.TriggerEngine;
    import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableDefinition;
    import editor.trigger.FunctionDeclaration;

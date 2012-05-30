@@ -8,6 +8,8 @@ package editor.entity {
    import flash.utils.Dictionary;
    
    import com.tapirgames.util.Logger;
+   
+   import editor.world.World;
 
    import editor.entity.Entity;
 
@@ -38,6 +40,7 @@ package editor.entity {
    import editor.entity.SubEntityJointAnchor;
 
    import editor.trigger.entity.EntityLogic;
+   import editor.trigger.entity.EntityCodeSnippetHolder;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityTask;
@@ -61,6 +64,8 @@ package editor.entity {
    //import editor.trigger.entity.EntityFunctionPackage;
    //import editor.trigger.entity.EntityFunction;
    
+   import editor.trigger.CodeSnippet;
+   
    import editor.selection.SelectionEngine;
    
    import editor.EditorContext;
@@ -71,6 +76,7 @@ package editor.entity {
    //
    
    import editor.codelib.CodeLibManager;
+   import editor.codelib.AssetFunction;
    
    //
    
@@ -81,12 +87,48 @@ package editor.entity {
    
    public class Scene extends AssetManager //Sprite 
    {
+      protected var mWorld:World;
       
-      public function Scene ()
+      public function Scene (world:World)
       {
          super ();
          
+         mWorld = world;
+
+         mCodeLibManager = new CodeLibManager (this);
+         
          SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium);
+      }
+      
+      public function GetWorld ():World
+      {
+         return mWorld;
+      }
+
+      override public function Destroy ():void
+      {  
+         mCodeLibManager.Destroy ();
+         
+         super.Destroy ();
+      }
+
+      //override 
+      override public function DestroyAllAssets ():void
+      {
+         mCodeLibManager.DestroyAllAssets ();
+         
+         super.DestroyAllAssets ();
+      }
+      
+//=================================================================================
+//   functions
+//=================================================================================
+      
+      protected var mCodeLibManager:CodeLibManager;
+
+      public function GetCodeLibManager ():CodeLibManager
+      {
+         return mCodeLibManager;
       }
       
 //================================================================================
@@ -1610,6 +1652,55 @@ package editor.entity {
                }
             }
          }
+      }
+      
+      // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - now ccats and functions are edit in dialogs
+      public function ConvertRegisterVariablesToGlobalVariables ():void
+      {
+         var oldNumGlobalVariables:int = mCodeLibManager.GetGlobalVariableSpace ().GetNumVariableInstances ();
+         
+         //
+         
+         var variableMapTable:Dictionary = new Dictionary ();
+         var codeSnippet:CodeSnippet;
+         
+         // check script holders
+         
+         var numAssets:int = GetNumAssets ();
+         
+         for (var createId:int = 0; createId < numAssets; ++ createId)
+         {
+            var entity:Entity = GetAssetByCreationId (createId) as Entity;
+            if (entity is EntityCodeSnippetHolder)
+            {
+               codeSnippet = (entity as EntityCodeSnippetHolder).GetCodeSnippet () as CodeSnippet;
+               if (codeSnippet != null)
+               {
+                  codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
+               }
+            }
+         }
+         
+         // check custom functions
+         
+         var numFunctions:int = mCodeLibManager.GetNumFunctions ();
+         for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+         {
+            var functionAsset:AssetFunction = mCodeLibManager.GetFunctionByIndex (functionId);
+            
+            codeSnippet = functionAsset.GetCodeSnippet ();
+            if (codeSnippet != null)
+            {
+               codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
+            }
+         }
+         
+         // ...
+         
+         //if (oldNumGlobalVariables != mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ())
+         //{
+         //   mTriggerEngine.NotifyGlobalVariableSpaceModified ();
+         //}
       }
       
 //=================================================================================

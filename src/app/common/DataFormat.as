@@ -275,7 +275,7 @@ package common {
                   var basicCondition:EntityBasicCondition = editorEntity as EntityBasicCondition;
                   
                   basicCondition.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, basicCondition.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld.GetEntityContainer (), basicCondition.GetCodeSnippet ());
                }
                else if (editorEntity is EntityTask)
                {
@@ -294,7 +294,7 @@ package common {
                   
                   entityDefine.mIsAnd = conditionDoor.IsAnd ();
                   entityDefine.mIsNot = conditionDoor.IsNot ();
-                  TriggerFormatHelper.ConditionAndTargetValueArray2EntityDefineProperties (editorWorld, conditionDoor.GetInputConditions (), entityDefine);
+                  TriggerFormatHelper.ConditionAndTargetValueArray2EntityDefineProperties (editorWorld.GetEntityContainer (), conditionDoor.GetInputConditions (), entityDefine);
                }
                else if (editorEntity is EntityInputEntityAssigner)
                {
@@ -356,10 +356,10 @@ package common {
                         var timerEventHandlerWithPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = eventHandler as EntityEventHandler_TimerWithPrePostHandling;
                         
                         timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().ValidateCallings ();
-                        entityDefine.mPreFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), false);
+                        entityDefine.mPreFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld.GetEntityContainer (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), false);
                         
                         timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().ValidateCallings ();
-                        entityDefine.mPostFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), false);
+                        entityDefine.mPostFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld.GetEntityContainer (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), false);
                      }
                      //<<
                   }
@@ -398,7 +398,7 @@ package common {
                   //<<
                   
                   eventHandler.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, eventHandler.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld.GetEntityContainer (), eventHandler.GetCodeSnippet ());
                }
                else if (editorEntity is EntityAction)
                {
@@ -407,7 +407,7 @@ package common {
                   var action:EntityAction = editorEntity as EntityAction;
                   
                   action.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, action.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld.GetEntityContainer (), action.GetCodeSnippet ());
                }
                //>>from v1.56
                else if (editorEntity is EntityInputEntityScriptFilter)
@@ -417,7 +417,7 @@ package common {
                   var entityFilter:EntityInputEntityScriptFilter = editorEntity as EntityInputEntityScriptFilter;
                   
                   entityFilter.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, entityFilter.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld.GetEntityContainer (), entityFilter.GetCodeSnippet ());
                }
                else if (editorEntity is EntityInputEntityPairScriptFilter)
                {
@@ -426,7 +426,7 @@ package common {
                   var entityPairFilter:EntityInputEntityPairScriptFilter = editorEntity as EntityInputEntityPairScriptFilter;
                   
                   entityPairFilter.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, entityPairFilter.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld.GetEntityContainer (), entityPairFilter.GetCodeSnippet ());
                }
                //<<
             }
@@ -821,14 +821,14 @@ package common {
          // global variables and custom entity properties
          //{
             //>> from v1.57
-            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld, editorWorld.GetSessionVariableSpace (), worldDefine.mSessionVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld.GetEntityContainer (), editorWorld.GetSessionVariableSpace (), worldDefine.mSessionVariableDefines, true);
             //<<
             
-            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld, editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), worldDefine.mGlobalVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld.GetEntityContainer (), editorWorld.GetEntityContainer ().GetCodeLibManager ().GetGlobalVariableSpace (), worldDefine.mGlobalVariableDefines, true);
             
-            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld, editorWorld.GetTriggerEngine ().GetEntityVariableSpace (), worldDefine.mEntityPropertyDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld.GetEntityContainer (), editorWorld.GetEntityContainer ().GetCodeLibManager ().GetEntityVariableSpace (), worldDefine.mEntityPropertyDefines, true);
          //}
-         //<<
+         //<< 
          
          //from v1.53
          // custom functions
@@ -839,13 +839,13 @@ package common {
             
             // functions 
             
-            var numFunctions:int = editorWorld.GetCodeLibManager().GetNumFunctions ();
+            var numFunctions:int = editorWorld.GetEntityContainer ().GetCodeLibManager().GetNumFunctions ();
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
             {
-               var functionAsset:AssetFunction = editorWorld.GetCodeLibManager().GetFunctionByIndex (functionId);
+               var functionAsset:AssetFunction = editorWorld.GetEntityContainer ().GetCodeLibManager().GetFunctionByIndex (functionId);
                
                functionAsset.GetCodeSnippet ().ValidateCallings ();
-               var functionDefine:FunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, functionAsset.GetCodeSnippet ());
+               var functionDefine:FunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld.GetEntityContainer (), functionAsset.GetCodeSnippet ());
                functionDefine.mName = functionAsset.GetName ();
                functionDefine.mPosX = functionAsset.GetPositionX ();
                functionDefine.mPosY = functionAsset.GetPositionY ();
@@ -2104,35 +2104,35 @@ package common {
          //>>> load custom variables
          // from v1.52
          var beginningSessionVariableIndex:int = editorWorld.GetSessionVariableSpace ().GetNumVariableInstances ();
-         var beginningGlobalVariableIndex:int = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumVariableInstances ();
-         var beginningEntityVariableIndex:int = editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumVariableInstances ();
+         var beginningGlobalVariableIndex:int = editorWorld.GetEntityContainer ().GetCodeLibManager ().GetGlobalVariableSpace ().GetNumVariableInstances ();
+         var beginningEntityVariableIndex:int = editorWorld.GetEntityContainer ().GetCodeLibManager ().GetEntityVariableSpace ().GetNumVariableInstances ();
          if (worldDefine.mSessionVariableDefines.length > 0)
          {
             if (mergeVariablesWithSameNames)
                editorWorld.GetSessionVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
-            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mSessionVariableDefines, editorWorld.GetSessionVariableSpace (), true);
+            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld.GetEntityContainer (), worldDefine.mSessionVariableDefines, editorWorld.GetSessionVariableSpace (), true);
          }
          if (worldDefine.mGlobalVariableDefines.length > 0)
          {
             if (mergeVariablesWithSameNames)
-               editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
-            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mGlobalVariableDefines, editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), true);
+               editorWorld.GetEntityContainer ().GetCodeLibManager ().GetGlobalVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
+            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld.GetEntityContainer (), worldDefine.mGlobalVariableDefines, editorWorld.GetEntityContainer ().GetCodeLibManager ().GetGlobalVariableSpace (), true);
          }
          if (worldDefine.mEntityPropertyDefines.length > 0)
          {
             if (mergeVariablesWithSameNames)
-               editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables ();
-            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mEntityPropertyDefines, editorWorld.GetTriggerEngine ().GetEntityVariableSpace (), true);
+               editorWorld.GetEntityContainer ().GetCodeLibManager ().GetEntityVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables ();
+            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld.GetEntityContainer (), worldDefine.mEntityPropertyDefines, editorWorld.GetEntityContainer ().GetCodeLibManager ().GetEntityVariableSpace (), true);
          }
-         //editorWorld.GetTriggerEngine ().NotifySessionVariableSpaceModified ();
-         //editorWorld.GetTriggerEngine ().NotifyGlobalVariableSpaceModified ();
-         //editorWorld.GetTriggerEngine ().NotifyEntityVariableSpaceModified ();
+         //editorWorld.GetEntityContainer ().GetCodeLibManager ().NotifySessionVariableSpaceModified ();
+         //editorWorld.GetEntityContainer ().GetCodeLibManager ().NotifyGlobalVariableSpaceModified ();
+         //editorWorld.GetEntityContainer ().GetCodeLibManager ().NotifyEntityVariableSpaceModified ();
          //<<<
          
          //>>> load custom functions
          // from v1.53
-         editorWorld.GetCodeLibManager().SetDelayUpdateFunctionMenu (true);
-         var beginningCustomFunctionIndex:int = editorWorld.GetCodeLibManager().GetNumFunctions ();
+         editorWorld.GetEntityContainer ().GetCodeLibManager().SetDelayUpdateFunctionMenu (true);
+         var beginningCustomFunctionIndex:int = editorWorld.GetEntityContainer ().GetCodeLibManager().GetNumFunctions ();
          
          var functionId:int;
          var functionAsset:AssetFunction;
@@ -2140,20 +2140,20 @@ package common {
          
          for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
          {
-            functionAsset = editorWorld.GetCodeLibManager ().CreateFunction ();
+            functionAsset = editorWorld.GetEntityContainer ().GetCodeLibManager ().CreateFunction ();
             functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
             
             //>>v1.56
             functionAsset.SetDesignDependent (functionDefine.mDesignDependent);
             //<<
             
-            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
+            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld.GetEntityContainer (), functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
             functionAsset.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
          }
          
          for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
          {
-            functionAsset = editorWorld.GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
+            functionAsset = editorWorld.GetEntityContainer ().GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
             functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
             
             functionAsset.SetFunctionName (functionDefine.mName);
@@ -2162,11 +2162,11 @@ package common {
             functionAsset.UpdateAppearance ();
             functionAsset.UpdateSelectionProxy ();
             
-            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
+            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld.GetEntityContainer (), functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
+            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld.GetEntityContainer (), functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
          }
-         editorWorld.GetCodeLibManager().SetDelayUpdateFunctionMenu (false);
-         editorWorld.GetCodeLibManager().UpdateFunctionMenu ();
+         editorWorld.GetEntityContainer ().GetCodeLibManager().SetDelayUpdateFunctionMenu (false);
+         editorWorld.GetEntityContainer ().GetCodeLibManager().UpdateFunctionMenu ();
          //<<<
          
          // modify, 2nd round
@@ -2238,8 +2238,8 @@ package common {
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, condition.GetCodeSnippet (), condition.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine, condition.GetCodeSnippet (), condition.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -2340,8 +2340,8 @@ package common {
                   }
                   //<<
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                   
                   //>>from v1.56
                   if (eventHandler is EntityEventHandler_TimerWithPrePostHandling)
@@ -2350,14 +2350,14 @@ package common {
             
                      if (entityDefine.mPreFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld.GetEntityContainer (), entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
+                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld.GetEntityContainer (), entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                      
                      if (entityDefine.mPostFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld.GetEntityContainer (), entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
+                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld.GetEntityContainer (), entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                   }
                   //<<
@@ -2366,22 +2366,22 @@ package common {
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, action.GetCodeSnippet (), action.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine, action.GetCodeSnippet (), action.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
                   var entityFilter:EntityInputEntityScriptFilter = entityDefine.mEntity as EntityInputEntityScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, entityFilter.GetCodeSnippet (), entityFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine, entityFilter.GetCodeSnippet (), entityFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
                   var entityPairFilter:EntityInputEntityPairScriptFilter = entityDefine.mEntity as EntityInputEntityPairScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, entityPairFilter.GetCodeSnippet (), entityPairFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld.GetEntityContainer (), entityDefine.mFunctionDefine, entityPairFilter.GetCodeSnippet (), entityPairFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
             }
             
@@ -2423,11 +2423,11 @@ package common {
             }
             if (worldDefine.mGlobalVariableDefines.length > 0)
             {
-               editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+               editorWorld.GetEntityContainer ().GetCodeLibManager ().GetGlobalVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
             }
             if (worldDefine.mEntityPropertyDefines.length > 0)
             {
-               editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+               editorWorld.GetEntityContainer ().GetCodeLibManager ().GetEntityVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
             }
          }
         

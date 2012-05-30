@@ -11,7 +11,6 @@ package editor.world {
 
    import editor.selection.SelectionEngine;
 
-   import editor.trigger.TriggerEngine;
    import editor.trigger.CodeSnippet;
 
    import editor.image.AssetImageModule;
@@ -88,10 +87,6 @@ package editor.world {
          mSessionVariableSpace = new VariableSpaceSession (/*this*/);
          
          // temp
-
-         mCodeLibManager = new CodeLibManager (this);
-         mCodeLibManager.SetFunctionMenuGroup (CoreFunctionDeclarationsForPlaying.sCustomMenuGroup);
-         mTriggerEngine = new TriggerEngine ();
          
          mCollisionCategoryManager = new CollisionCategoryManager ();
       }
@@ -116,7 +111,6 @@ package editor.world {
          // temp 
          
          mCollisionCategoryManager.Destroy ();
-         mCodeLibManager.Destroy ();
       }
 
       //override 
@@ -141,7 +135,6 @@ package editor.world {
          // temp
          
          mCollisionCategoryManager.DestroyAllAssets ();
-         mCodeLibManager.DestroyAllAssets ();
       }
 
 //=================================================================================
@@ -231,7 +224,7 @@ package editor.world {
       
       public function CreateNewScene (name:String, afterIndex:int = -1):int
       {
-         var newScene:Scene = new Scene ();
+         var newScene:Scene = new Scene (this);
          newScene.SetName (name);
          
          if (afterIndex >= 0)
@@ -317,50 +310,10 @@ package editor.world {
       // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - now ccats and functions are edit in dialogs
       public function ConvertRegisterVariablesToGlobalVariables ():void
       {
-         var oldNumGlobalVariables:int = mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ();
-         
-         //
-         
-         var variableMapTable:Dictionary = new Dictionary ();
-         var codeSnippet:CodeSnippet;
-         
-         // check script holders
-         
-         var numAssets:int = GetEntityContainer ().GetNumAssets ();
-         
-         for (var createId:int = 0; createId < numAssets; ++ createId)
+         for each (var scene:Scene in mScenes)
          {
-            var entity:Entity = GetEntityContainer ().GetAssetByCreationId (createId) as Entity;
-            if (entity is EntityCodeSnippetHolder)
-            {
-               codeSnippet = (entity as EntityCodeSnippetHolder).GetCodeSnippet () as CodeSnippet;
-               if (codeSnippet != null)
-               {
-                  codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
-               }
-            }
+            scene.ConvertRegisterVariablesToGlobalVariables ();
          }
-         
-         // check custom functions
-         
-         var numFunctions:int = GetCodeLibManager ().GetNumFunctions ();
-         for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
-         {
-            var functionAsset:AssetFunction = GetCodeLibManager ().GetFunctionByIndex (functionId);
-            
-            codeSnippet = functionAsset.GetCodeSnippet ();
-            if (codeSnippet != null)
-            {
-               codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
-            }
-         }
-         
-         // ...
-         
-         //if (oldNumGlobalVariables != mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ())
-         //{
-         //   mTriggerEngine.NotifyGlobalVariableSpaceModified ();
-         //}
       }
       
 
@@ -608,25 +561,6 @@ package editor.world {
       {
          return mScenes [0] as Scene;
       }
-
-      //public function GetCodeLibManager ():CodeLibManager
-      //{
-      //   return GetEntityContainer ().GetCodeLibManager ();
-      //}
-      
-//=================================================================================
-//   temp
-//=================================================================================
-//=================================================================================
-//   functions
-//=================================================================================
-      
-      protected var mCodeLibManager:CodeLibManager;
-
-      public function GetCodeLibManager ():CodeLibManager
-      {
-         return mCodeLibManager;
-      }
       
 //=================================================================================
 //   collision categories
@@ -646,17 +580,6 @@ package editor.world {
 
          if (category1 != null && category2 != null)
             mCollisionCategoryManager.CreateCollisionCategoryFriendLink (category1, category2);
-      }
-      
-//=================================================================================
-//   trigger system
-//=================================================================================
-
-      protected var mTriggerEngine:TriggerEngine;
-
-      public function GetTriggerEngine ():TriggerEngine
-      {
-         return mTriggerEngine;
       }
 
    }

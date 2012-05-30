@@ -47,7 +47,6 @@ package editor.codelib {
    
    import editor.trigger.FunctionDefinition;
    import editor.trigger.CodeSnippet;
-   import editor.trigger.TriggerEngine;
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.FunctionDeclaration_Custom;
    

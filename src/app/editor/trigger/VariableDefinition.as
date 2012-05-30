@@ -354,10 +354,11 @@ package editor.trigger {
    // todo: property target
    //==============================================================================
       
-      public function GetDefaultPropertyValueTarget ():ValueTarget_Property
+      public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpaceEntity):ValueTarget_Property
       {
          BuildPropertyVaribleDefinition ();
-         return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         //return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (entityVariableSpace));
       }
       
       public function CreateControlForPropertyValueTarget (valueTargetProperty:ValueTarget_Property):UIComponent
@@ -406,7 +407,7 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {
@@ -485,7 +486,7 @@ package editor.trigger {
       }
       
       // return null for not changed
-      public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
+      public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          return null;
       }
@@ -586,10 +587,11 @@ package editor.trigger {
          }
       }
       
-      public function GetDefaultPropertyValueSource ():ValueSource_Property
+      public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpaceEntity):ValueSource_Property
       {
          BuildPropertyVaribleDefinition ();
-         return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         //return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (entityVariableSpace));
       }
       
       public function CreateControlForPropertyValueSource (valueSourceProperty:ValueSource_Property):UIComponent
@@ -638,7 +640,7 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {

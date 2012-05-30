@@ -4,6 +4,7 @@ package common {
    import flash.utils.ByteArray;
    
    import editor.world.World;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    //import editor.entity.EntityCollisionCategory;
    import editor.ccat.CollisionCategory;
@@ -16,7 +17,7 @@ package common {
    //import editor.trigger.entity.EntityFunction;
    import editor.codelib.AssetFunction;
    
-   import editor.trigger.TriggerEngine;
+   //import editor.trigger.TriggerEngine;
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.FunctionDeclaration_Core;
@@ -79,7 +80,7 @@ package common {
 // editor world -> define
 //==============================================================================================
       
-      public static function ConditionAndTargetValueArray2EntityDefineProperties (editorWorld:World, conditionAndTargetValueArray:Array, entityDefine:Object):void
+      public static function ConditionAndTargetValueArray2EntityDefineProperties (scene:Scene, conditionAndTargetValueArray:Array, entityDefine:Object):void
       {
          if (conditionAndTargetValueArray == null)
          {
@@ -98,7 +99,7 @@ package common {
             {
                conditionAndValue = conditionAndTargetValueArray [i] as ConditionAndTargetValue;
                
-               indexes [i] = editorWorld.GetEntityContainer ().GetAssetCreationId (conditionAndValue.mConditionEntity as Entity);
+               indexes [i] = scene.GetAssetCreationId (conditionAndValue.mConditionEntity as Entity);
                values [i] = conditionAndValue.mTargetValue;
             }
             
@@ -108,7 +109,7 @@ package common {
          }
       }
       
-      public static function Function2FunctionDefine (editorWorld:World, codeSnippet:CodeSnippet, createLocalVariableDefines:Boolean = true):FunctionDefine
+      public static function Function2FunctionDefine (scene:Scene, codeSnippet:CodeSnippet, createLocalVariableDefines:Boolean = true):FunctionDefine
       {
          var functionDefine:FunctionDefine = new FunctionDefine ();
          
@@ -118,33 +119,33 @@ package common {
          if (functionDefinition.GetFunctionDeclaration () is FunctionDeclaration_Custom)
          {
             functionDefine.mInputVariableDefines = new Array ();
-            VariableSpace2VariableDefines (editorWorld, functionDefinition.GetInputVariableSpace (), functionDefine.mInputVariableDefines, true);
+            VariableSpace2VariableDefines (scene, functionDefinition.GetInputVariableSpace (), functionDefine.mInputVariableDefines, true);
             
             functionDefine.mOutputVariableDefines = new Array ();
-            VariableSpace2VariableDefines (editorWorld, functionDefinition.GetOutputVariableSpace (), functionDefine.mOutputVariableDefines, false);
+            VariableSpace2VariableDefines (scene, functionDefinition.GetOutputVariableSpace (), functionDefine.mOutputVariableDefines, false);
          }
          
          if (createLocalVariableDefines)
          {
             //>>from v1.56
             functionDefine.mLocalVariableDefines = new Array ();
-            VariableSpace2VariableDefines (editorWorld, functionDefinition.GetLocalVariableSpace (), functionDefine.mLocalVariableDefines, false);
+            VariableSpace2VariableDefines (scene, functionDefinition.GetLocalVariableSpace (), functionDefine.mLocalVariableDefines, false);
             //<<
          }
          //<<
          
-         functionDefine.mCodeSnippetDefine = CodeSnippet2CodeSnippetDefine (editorWorld, codeSnippet);
+         functionDefine.mCodeSnippetDefine = CodeSnippet2CodeSnippetDefine (scene, codeSnippet);
          
          return functionDefine;
       }
       
-      public static function CodeSnippet2CodeSnippetDefine (editorWorld:World, codeSnippet:CodeSnippet):CodeSnippetDefine
+      public static function CodeSnippet2CodeSnippetDefine (scene:Scene, codeSnippet:CodeSnippet):CodeSnippetDefine
       {
          var num:int = codeSnippet.GetNumFunctionCallings ();
          var func_calling_defines:Array = new Array (num);
          
          for (var i:int = 0; i < num; ++ i)
-            func_calling_defines [i] = FunctionCalling2FunctionCallingDefine (editorWorld, codeSnippet.GetFunctionCallingAt (i));
+            func_calling_defines [i] = FunctionCalling2FunctionCallingDefine (scene, codeSnippet.GetFunctionCallingAt (i));
          
          var code_snippet_define:CodeSnippetDefine = new CodeSnippetDefine ();
          
@@ -155,7 +156,7 @@ package common {
          return code_snippet_define;
       }
       
-      public static function FunctionCalling2FunctionCallingDefine (editorWorld:World, funcCalling:FunctionCalling):FunctionCallingDefine
+      public static function FunctionCalling2FunctionCallingDefine (scene:Scene, funcCalling:FunctionCalling):FunctionCallingDefine
       {
          var func_declaration:FunctionDeclaration = funcCalling.GetFunctionDeclaration ();
          var num_inputs:int = func_declaration.GetNumInputs ();
@@ -164,11 +165,11 @@ package common {
          
          var value_source_defines:Array = new Array (num_inputs);
          for (i = 0; i < num_inputs; ++ i)
-            value_source_defines [i] = ValueSource2ValueSourceDefine (editorWorld, funcCalling.GetInputValueSource (i), func_declaration.GetInputParamValueType (i));
+            value_source_defines [i] = ValueSource2ValueSourceDefine (scene, funcCalling.GetInputValueSource (i), func_declaration.GetInputParamValueType (i));
          
          var value_target_defines:Array = new Array (num_outputs);
          for (i = 0; i < num_outputs; ++ i)
-            value_target_defines [i] = ValueTarget2ValueTargetDefine (editorWorld, funcCalling.GetOutputValueTarget (i), func_declaration.GetInputParamValueType (i));
+            value_target_defines [i] = ValueTarget2ValueTargetDefine (scene, funcCalling.GetOutputValueTarget (i), func_declaration.GetInputParamValueType (i));
          
          var func_calling_define:FunctionCallingDefine = new FunctionCallingDefine ();
          func_calling_define.mFunctionType = func_declaration.GetType ();
@@ -181,7 +182,7 @@ package common {
          return func_calling_define;
       }
       
-      public static function ValueSource2ValueSourceDefine (editorWorld:World, valueSource:ValueSource, valueType:int):ValueSourceDefine
+      public static function ValueSource2ValueSourceDefine (scene:Scene, valueSource:ValueSource, valueType:int):ValueSourceDefine
       {
          var value_source_define:ValueSourceDefine = null;
          
@@ -193,7 +194,7 @@ package common {
             
             try
             {
-               value_source_define = new ValueSourceDefine_Direct (valueType, ValidateDirectValueObject_Object2Define (editorWorld, valueType, direct_source.GetValueObject ()));
+               value_source_define = new ValueSourceDefine_Direct (valueType, ValidateDirectValueObject_Object2Define (scene, valueType, direct_source.GetValueObject ()));
             }
             catch (err:Error)
             {
@@ -211,7 +212,7 @@ package common {
             var property_source:ValueSource_Property = valueSource as ValueSource_Property;
             
             
-            value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (editorWorld, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+            value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
                                             , 0, property_source.GetPropertyVariableIndex ());
          }
          
@@ -225,7 +226,7 @@ package common {
          return value_source_define;
       }
       
-      public static function ValueTarget2ValueTargetDefine (editorWorld:World, valueTarget:ValueTarget, valueType:int):ValueTargetDefine
+      public static function ValueTarget2ValueTargetDefine (scene:Scene, valueTarget:ValueTarget, valueType:int):ValueTargetDefine
       {
          var value_target_define:ValueTargetDefine = null;
          
@@ -241,7 +242,7 @@ package common {
          {
             var property_target:ValueTarget_Property = valueTarget as ValueTarget_Property;
             
-            value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (editorWorld, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+            value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
                                             , 0, property_target.GetPropertyVariableIndex ());
          }
          
@@ -253,7 +254,7 @@ package common {
          return value_target_define;
       }
       
-      private static function ValidateDirectValueObject_Object2Define (editorWorld:World, valueType:int, valueObject:Object):Object
+      private static function ValidateDirectValueObject_Object2Define (scene:Scene, valueType:int, valueObject:Object):Object
       {
          switch (valueType)
          {
@@ -276,22 +277,23 @@ package common {
                }
                else
                {
-                  return editorWorld.GetEntityContainer ().GetAssetCreationId (entity);
+                  return scene.GetAssetCreationId (entity);
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (valueObject as CollisionCategory);
+               // to change
+               return scene.GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (valueObject as CollisionCategory);
             case ValueTypeDefine.ValueType_Module:
             {
                var module:AssetImageModule = valueObject as AssetImageModule;
                
-               return editorWorld.GetImageModuleIndex (module);
+               return scene.GetWorld ().GetImageModuleIndex (module);
             }
             case ValueTypeDefine.ValueType_Sound:
             {
                var sound:AssetSound = valueObject as AssetSound;
                
-               return editorWorld.GetSoundIndex (sound);
+               return scene.GetWorld ().GetSoundIndex (sound);
             }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
@@ -309,7 +311,7 @@ package common {
          }
       }
       
-      public static function VariableSpace2VariableDefines (editorWorld:World, variableSpace:VariableSpace, outputVariableDefines:Array, supportInitalValues:Boolean):void
+      public static function VariableSpace2VariableDefines (scene:Scene, variableSpace:VariableSpace, outputVariableDefines:Array, supportInitalValues:Boolean):void
       {
          var numVariables:int = variableSpace.GetNumVariableInstances ();
          
@@ -328,7 +330,7 @@ package common {
             
             var variableInstanceDefine:VariableInstanceDefine = new VariableInstanceDefine ();
             variableInstanceDefine.mName = variableInstance.GetName ();
-            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), ValidateDirectValueObject_Object2Define (editorWorld, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : ValueTypeDefine.GetDefaultDirectDefineValue (variableInstance.GetValueType ())));
+            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), ValidateDirectValueObject_Object2Define (scene, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : ValueTypeDefine.GetDefaultDirectDefineValue (variableInstance.GetValueType ())));
             
             //spaceDefine.mVariableDefines [variableId] = variableInstanceDefine; // 1.52 only
             
@@ -342,21 +344,21 @@ package common {
 // define -> definition (editor)
 //==============================================================================================
       
-      public static function FunctionDefine2FunctionDefinition (editorWorld:World, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true, localVariableSpace:VariableSpaceLocal = null):void
+      public static function FunctionDefine2FunctionDefinition (scene:Scene, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true, localVariableSpace:VariableSpaceLocal = null):void
       {
          if (createVariables)
          {
             //>> from v`1.53
             if (functionDefinition.GetFunctionDeclaration () is FunctionDeclaration_Custom)
             {
-               VariableDefines2VariableSpace (editorWorld, functionDefine.mInputVariableDefines, functionDefinition.GetInputVariableSpace (), true);
+               VariableDefines2VariableSpace (scene, functionDefine.mInputVariableDefines, functionDefinition.GetInputVariableSpace (), true);
                
-               VariableDefines2VariableSpace (editorWorld, functionDefine.mOutputVariableDefines, functionDefinition.GetOutputVariableSpace (), false);
+               VariableDefines2VariableSpace (scene, functionDefine.mOutputVariableDefines, functionDefinition.GetOutputVariableSpace (), false);
             }
             
             if (localVariableSpace == null)
             {
-               VariableDefines2VariableSpace (editorWorld, functionDefine.mLocalVariableDefines, functionDefinition.GetLocalVariableSpace (), false);
+               VariableDefines2VariableSpace (scene, functionDefine.mLocalVariableDefines, functionDefinition.GetLocalVariableSpace (), false);
             }
             //>> from v1.56
             else
@@ -368,11 +370,11 @@ package common {
          
          if (createCodeSnippet)
          {
-            LoadCodeSnippetFromCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, codeSnippet);
+            LoadCodeSnippetFromCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, codeSnippet);
          }
       }
       
-      public static function LoadCodeSnippetFromCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, codeSnippet:CodeSnippet):void
+      public static function LoadCodeSnippetFromCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, codeSnippet:CodeSnippet):void
       {
          var function_definition:FunctionDefinition = codeSnippet.GetOwnerFunctionDefinition ();
          
@@ -380,13 +382,13 @@ package common {
          var num:int = codeSnippetDefine.mNumCallings;
          var func_callings:Array = new Array (num);
          for (var i:int = 0; i < num; ++ i)
-            func_callings [i] = FunctionCallingDefine2FunctionCalling (editorWorld,func_calling_defines [i], function_definition);
+            func_callings [i] = FunctionCallingDefine2FunctionCalling (scene,func_calling_defines [i], function_definition);
          
          codeSnippet.SetName (codeSnippetDefine.mName);
          codeSnippet.AssignFunctionCallings (func_callings);
       }
       
-      public static function FunctionCallingDefine2FunctionCalling (editorWorld:World, funcCallingDefine:FunctionCallingDefine, functionDefinition:FunctionDefinition):FunctionCalling
+      public static function FunctionCallingDefine2FunctionCalling (scene:Scene, funcCallingDefine:FunctionCallingDefine, functionDefinition:FunctionDefinition):FunctionCalling
       {
          var func_type:int = funcCallingDefine.mFunctionType;
          var func_id:int = funcCallingDefine.mFunctionId;
@@ -405,7 +407,7 @@ package common {
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
-            var functionAsset:AssetFunction = editorWorld.GetCodeLibManager ().GetFunctionByIndex (func_id) as AssetFunction;
+            var functionAsset:AssetFunction = scene.GetCodeLibManager ().GetFunctionByIndex (func_id) as AssetFunction;
             
             if (functionAsset != null)
             {
@@ -445,7 +447,7 @@ package common {
                if (i >= funcCallingDefine.mNumInputs)
                   value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (/*editorWorld.GetTriggerEngine ()*/);
                else
-                  value_sources [i] = ValueSourceDefine2ValueSource (editorWorld, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
+                  value_sources [i] = ValueSourceDefine2ValueSource (scene, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
             }
             
             value_targets = new Array (funcCallingDefine.mNumOutputs);
@@ -454,7 +456,7 @@ package common {
                if (i >= funcCallingDefine.mNumOutputs)
                   value_targets [i] = func_declaration.GetOutputParamDefinitionAt (i).GetDefaultValueTarget ();
                else
-                  value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
+                  value_targets [i] = ValueTargetDefine2ValueTarget (scene, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
             }
          }
          
@@ -464,7 +466,7 @@ package common {
          return func_calling;
       }
       
-      public static function ValueSourceDefine2ValueSource (editorWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int, functionDefinition:FunctionDefinition):ValueSource
+      public static function ValueSourceDefine2ValueSource (scene:Scene, valueSourceDefine:ValueSourceDefine, valueType:int, functionDefinition:FunctionDefinition):ValueSource
       {
          var value_source:ValueSource = null;
          
@@ -476,7 +478,7 @@ package common {
             
             try
             {
-               value_source = new ValueSource_Direct (ValidateDirectValueObject_Define2Object (editorWorld, valueType, direct_source_define.mValueObject));
+               value_source = new ValueSource_Direct (ValidateDirectValueObject_Define2Object (scene, valueType, direct_source_define.mValueObject));
             }
             catch (err:Error)
             {
@@ -494,13 +496,13 @@ package common {
             switch (variable_source_define.mSpaceType)
             {
                case ValueSpaceTypeDefine.ValueSpace_Session:
-                  variable_instance = editorWorld.GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetWorld ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  var variable_space:VariableSpace = editorWorld.GetRegisterVariableSpace (valueType);
+                  var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
                      variable_instance = variable_space.GetVariableInstanceAt (variable_index);
@@ -530,8 +532,8 @@ package common {
          {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
-            value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (editorWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
-                                                   , new ValueSource_Variable (editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+            value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueSource_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
          }
          
          if (value_source == null)
@@ -544,7 +546,7 @@ package common {
          return value_source;
       }
       
-      public static function ValueTargetDefine2ValueTarget (editorWorld:World, valueTargetDefine:ValueTargetDefine, valueType:int, functionDefinition:FunctionDefinition):ValueTarget
+      public static function ValueTargetDefine2ValueTarget (scene:Scene, valueTargetDefine:ValueTargetDefine, valueType:int, functionDefinition:FunctionDefinition):ValueTarget
       {
          var value_target:ValueTarget = null;
          
@@ -561,13 +563,13 @@ package common {
             switch (variable_target_define.mSpaceType)
             {
                case ValueSpaceTypeDefine.ValueSpace_Session:
-                  variable_instance = editorWorld.GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetWorld ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  var variable_space:VariableSpace = editorWorld.GetRegisterVariableSpace (valueType);
+                  var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
                      variable_instance = variable_space.GetVariableInstanceAt (variable_index);
@@ -596,8 +598,8 @@ package common {
          {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             
-            value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (editorWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
-                                                   , new ValueTarget_Variable (editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+            value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueTarget_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
          }
          
          if (value_target == null)
@@ -608,7 +610,7 @@ package common {
          return value_target;
       }
       
-      private static function ValidateDirectValueObject_Define2Object (editorWorld:World, valueType:int, valueObject:Object):Object
+      private static function ValidateDirectValueObject_Define2Object (scene:Scene, valueType:int, valueObject:Object):Object
       {
          switch (valueType)
          {
@@ -630,7 +632,7 @@ package common {
                {
                   if (entityIndex == Define.EntityId_Ground)
                   {
-                     return editorWorld;
+                     return scene.GetWorld ();
                   }
                   else if (entityIndex == Define.EntityId_None)
                   {
@@ -639,20 +641,21 @@ package common {
                }
                else
                {
-                  return editorWorld.GetEntityContainer ().GetAssetByCreationId (entityIndex);
+                  return scene.GetAssetByCreationId (entityIndex);
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (valueObject as int);
+               // to change
+               return scene.GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryByIndex (valueObject as int);
             case ValueTypeDefine.ValueType_Module:
             {
                var moduleIndex:int = valueObject as int;
-               return editorWorld.GetImageModuleByIndex (moduleIndex);
+               return scene.GetWorld ().GetImageModuleByIndex (moduleIndex);
             }
             case ValueTypeDefine.ValueType_Sound:
             {
                var soundIndex:int = valueObject as int;
-               return editorWorld.GetSoundByIndex (soundIndex);
+               return scene.GetWorld ().GetSoundByIndex (soundIndex);
             }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
@@ -670,8 +673,8 @@ package common {
          }
       }
       
-      //public static function VariableSpaceDefine2VariableSpace (editorWorld:World, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void // v1.52 only
-      public static function VariableDefines2VariableSpace (editorWorld:World, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean):void
+      //public static function VariableSpaceDefine2VariableSpace (scene:Scene, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void // v1.52 only
+      public static function VariableDefines2VariableSpace (scene:Scene, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean):void
       {
          //>> v1.52 only
          //var numVariables:int = spaceDefine.mVariableDefines.length;
@@ -688,16 +691,16 @@ package common {
             //var variableInstanceDefine:VariableInstanceDefine = spaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
             var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
 
-            VariableDefine2VariableInstance (editorWorld, variableInstanceDefine, variableSpace, supportInitalValues);
+            VariableDefine2VariableInstance (scene, variableInstanceDefine, variableSpace, supportInitalValues);
          }
       }
       
-      public static function VariableDefine2VariableInstance (editorWorld:World, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean):VariableInstance
+      public static function VariableDefine2VariableInstance (scene:Scene, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean):VariableInstance
       {
          var directValueSourceDefine:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
          
          var variableDefinition:VariableDefinition = null;
-         var valueObject:Object = supportInitalValue ? ValidateDirectValueObject_Define2Object (editorWorld, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject) : null;
+         var valueObject:Object = supportInitalValue ? ValidateDirectValueObject_Define2Object (scene, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject) : null;
          
          switch (directValueSourceDefine.mValueType)
          {
@@ -745,13 +748,13 @@ package common {
       
       // for ConvertRegisterVariablesToGlobalVariables
       
-      public static function RegisterVariable2GlobalVariable (editorWorld:World, registerVariableInstance:VariableInstance):VariableInstance
+      public static function RegisterVariable2GlobalVariable (scene:Scene, registerVariableInstance:VariableInstance):VariableInstance
       {
          // assert (registerVariableInstance != null);
          // assert (registerVariableInstance.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
          
          if (registerVariableInstance.GetIndex () < 0)
-            return editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNullVariableInstance ();
+            return scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetNullVariableInstance ();
          
          if (registerVariableInstance.mCorrespondingGlobalVariable != null && registerVariableInstance.mCorrespondingGlobalVariable.GetIndex () < 0)
             registerVariableInstance.mCorrespondingGlobalVariable = null;
@@ -763,16 +766,16 @@ package common {
             variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
                                        registerVariableInstance.GetValueType (), 
                                        ValidateDirectValueObject_Object2Define (
-                                             editorWorld, registerVariableInstance.GetValueType (), 
+                                             scene, registerVariableInstance.GetValueType (), 
                                              ValueTypeDefine.GetDefaultDirectDefineValue (registerVariableInstance.GetValueType ())
                                        )
                                     );
             
             var newGlobalVariableInstance:VariableInstance = VariableDefine2VariableInstance (
-                                                                     editorWorld, variableInstanceDefine, 
-                                                                     editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), true);
+                                                                     scene, variableInstanceDefine, 
+                                                                     scene.GetCodeLibManager ().GetGlobalVariableSpace (), true);
             if (newGlobalVariableInstance == null)
-               registerVariableInstance.mCorrespondingGlobalVariable = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNullVariableInstance ();
+               registerVariableInstance.mCorrespondingGlobalVariable = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetNullVariableInstance ();
             else
             {
                registerVariableInstance.mCorrespondingGlobalVariable = newGlobalVariableInstance;
@@ -1264,7 +1267,7 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftReferenceIndexesInCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int):void
       {
 
          var funcCallingDefine:FunctionCallingDefine;
@@ -1288,7 +1291,7 @@ package common {
             {
                functionId += beginningCustomFunctionIndex;
                funcCallingDefine.mFunctionId = functionId;
-               funcDclaration = editorWorld.GetCodeLibManager ().GetFunctionByIndex (functionId).GetFunctionDeclaration ();
+               funcDclaration = scene.GetCodeLibManager ().GetFunctionByIndex (functionId).GetFunctionDeclaration ();
             }
             
             if (isCustomCodeSnippet)

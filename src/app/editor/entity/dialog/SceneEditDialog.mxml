@@ -421,6 +421,11 @@
          return mCurrentSceneEditPanel;
       }
       
+      public function GetCurrentSceneInEditing ():editor.entity.Scene
+      {
+         return mCurrentSceneEditPanel.GetScene ();
+      }
+      
       public function IsInEditingMode ():Boolean
       {
          return ViewStack_Scenes.selectedChild == Box_SceneEdit;

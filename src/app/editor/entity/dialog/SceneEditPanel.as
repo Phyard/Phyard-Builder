@@ -1143,6 +1143,7 @@ package editor.entity.dialog {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
                event_handler.GetCodeSnippet ().ValidateCallings ();
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
                values.mEventId = event_handler.GetEventId ();
                values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (null);
@@ -1212,6 +1213,7 @@ package editor.entity.dialog {
                var condition:EntityBasicCondition = entity as EntityBasicCondition;
                condition.GetCodeSnippet ().ValidateCallings ();
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = condition.GetCodeSnippetName ();
                values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
@@ -1223,6 +1225,7 @@ package editor.entity.dialog {
                var action:EntityAction = entity as EntityAction;
                action.GetCodeSnippet ().ValidateCallings ();
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = action.GetCodeSnippetName ();
                values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
@@ -1233,6 +1236,7 @@ package editor.entity.dialog {
             {
                var entityFilter:EntityInputEntityScriptFilter = entity as EntityInputEntityScriptFilter;
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = entityFilter.GetCodeSnippetName ();
                values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
@@ -1243,6 +1247,7 @@ package editor.entity.dialog {
             {
                var pairFilter:EntityInputEntityPairScriptFilter = entity as EntityInputEntityPairScriptFilter;
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = pairFilter.GetCodeSnippetName ();
                values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());

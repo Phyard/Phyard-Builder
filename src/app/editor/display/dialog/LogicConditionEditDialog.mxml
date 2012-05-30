@@ -56,7 +56,7 @@
 
          public function OnCodeSnippetSettingPanelCreationComplete ():void
          {
-            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
+            theCodeSnippetEditPanel.SetCodeSnippetAndCodeLibManager (mParams.mCodeSnippet, mParams.mCodeLibManager);
          }
 
          public function GetValues (returnValues:Object):void

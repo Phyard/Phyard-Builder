@@ -519,19 +519,20 @@ package editor {
    // hooks to detect if any variable definitions are changed
    //=====================================================================
       
-      private var mLastSessionVariableSpaceModifiedTimes:int = 0;
-      private var mLastGlobalVariableSpaceModifiedTimes:int = 0;
-      private var mLastEntityVariableSpaceModifiedTimes:int = 0;
+      //private var mLastSessionVariableSpaceModifiedTimes:int = 0;
+      //private var mLastGlobalVariableSpaceModifiedTimes:int = 0;
+      //private var mLastEntityVariableSpaceModifiedTimes:int = 0;
       
       public function StartSettingEntityProperties ():void
       {
-         mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes ();
-         mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
-         mLastEntityVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
+         //mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes ();
+         //mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+         //mLastEntityVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
       }
       
       public function CancelSettingEntityProperties ():void
       {
+         /*
          var sessionVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
          var globalVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
          var entityVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes () > mLastEntityVariableSpaceModifiedTimes;
@@ -561,6 +562,7 @@ package editor {
             
             GetEditorApp ().CreateWorldSnapshot (message);
          }
+         */
       }
       
       

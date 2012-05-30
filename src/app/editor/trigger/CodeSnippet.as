@@ -4,6 +4,7 @@ package editor.trigger {
    import flash.utils.Dictionary;
    
    import editor.world.World;
+   import editor.entity.Scene;
    
    import editor.EditorContext;
    
@@ -208,12 +209,12 @@ package editor.trigger {
 //
 //====================================================================
       
-      public function ConvertRegisterVariablesToGlobalVariables (editorWorld:World):void
+      public function ConvertRegisterVariablesToGlobalVariables (scene:Scene):void
       {
          var num:int = mFunctionCallings.length;
          for (var i:int = 0; i < num; ++ i)
          {
-           (mFunctionCallings [i] as FunctionCalling).ConvertRegisterVariablesToGlobalVariables (editorWorld);
+           (mFunctionCallings [i] as FunctionCalling).ConvertRegisterVariablesToGlobalVariables (scene);
          }
       }
    }

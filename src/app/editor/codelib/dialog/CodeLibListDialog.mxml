@@ -78,7 +78,7 @@
                PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
             
-            EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager ());
+            EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCodeLibManager ());
             
             if (OnCCatPicked != null)
             {

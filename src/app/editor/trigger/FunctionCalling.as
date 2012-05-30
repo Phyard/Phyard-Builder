@@ -1,7 +1,7 @@
 package editor.trigger {
 
    import flash.utils.Dictionary;
-   import editor.world.World;
+   import editor.entity.Scene;
    
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
@@ -296,7 +296,7 @@ package editor.trigger {
 //
 //====================================================================
       
-      public function ConvertRegisterVariablesToGlobalVariables (editorWorld:World):void
+      public function ConvertRegisterVariablesToGlobalVariables (scene:Scene):void
       {
          var i:int;
          var entityValueSource:ValueSource;
@@ -308,20 +308,20 @@ package editor.trigger {
             
             if (source is ValueSource_Variable)
             {
-               ConvertRegisterVariablesForValueSource (editorWorld, source as ValueSource_Variable);
+               ConvertRegisterVariablesForValueSource (scene, source as ValueSource_Variable);
             }
             else if (source is ValueSource_Property)
             {
                entityValueSource = (source as ValueSource_Property).GetEntityValueSource ();
                if (entityValueSource is ValueSource_Variable)
                {
-                  ConvertRegisterVariablesForValueSource (editorWorld, entityValueSource as ValueSource_Variable);
+                  ConvertRegisterVariablesForValueSource (scene, entityValueSource as ValueSource_Variable);
                }
                
                var propertyValueSource:ValueSource = (source as ValueSource_Property).GetPropertyValueSource ();
                if (propertyValueSource is ValueSource_Variable)
                {
-                  ConvertRegisterVariablesForValueSource (editorWorld, propertyValueSource as ValueSource_Variable);
+                  ConvertRegisterVariablesForValueSource (scene, propertyValueSource as ValueSource_Variable);
                }
             }
          }
@@ -333,26 +333,26 @@ package editor.trigger {
             
             if (target is ValueTarget_Variable)
             {
-               ConvertRegisterVariablesForValueTarget (editorWorld, target as ValueTarget_Variable);
+               ConvertRegisterVariablesForValueTarget (scene, target as ValueTarget_Variable);
             }
             else if (target is ValueTarget_Property)
             {
                entityValueSource = (target as ValueTarget_Property).GetEntityValueSource ();
                if (entityValueSource is ValueSource_Variable)
                {
-                  ConvertRegisterVariablesForValueSource (editorWorld, entityValueSource as ValueSource_Variable);
+                  ConvertRegisterVariablesForValueSource (scene, entityValueSource as ValueSource_Variable);
                }
                
                var propertyValueTarget:ValueTarget = (target as ValueTarget_Property).GetPropertyValueTarget ();
                if (propertyValueTarget is ValueTarget_Variable)
                {
-                  ConvertRegisterVariablesForValueTarget (editorWorld, propertyValueTarget as ValueTarget_Variable);
+                  ConvertRegisterVariablesForValueTarget (scene, propertyValueTarget as ValueTarget_Variable);
                }
             }
          }
       }
       
-      private function ConvertRegisterVariablesForValueSource (editorWorld:World, variableValueSource:ValueSource_Variable):void
+      private function ConvertRegisterVariablesForValueSource (scene:Scene, variableValueSource:ValueSource_Variable):void
       {
          if (variableValueSource == null)
             return;
@@ -364,10 +364,10 @@ package editor.trigger {
          if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
             return;
          
-         variableValueSource.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (editorWorld, vi));
+         variableValueSource.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (scene, vi));
       }
       
-      private function ConvertRegisterVariablesForValueTarget (editorWorld:World, variableValueTarget:ValueTarget_Variable):void
+      private function ConvertRegisterVariablesForValueTarget (scene:Scene, variableValueTarget:ValueTarget_Variable):void
       {
          if (variableValueTarget == null)
             return;
@@ -379,7 +379,7 @@ package editor.trigger {
          if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
             return;
          
-         variableValueTarget.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (editorWorld, vi));
+         variableValueTarget.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (scene, vi));
       }
    }
 }

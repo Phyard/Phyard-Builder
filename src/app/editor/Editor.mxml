@@ -869,10 +869,10 @@
             
             DataFormat.WorldDefine2EditorWorld (false, mWorld, worldDefine, true, mergeVariablesWithSameNames);
             
-            if (mWorld.GetCodeLibManager ().IsChanged ())
+            if (mWorld.GetEntityContainer ().GetCodeLibManager ().IsChanged ())
             {
-               mWorld.GetCodeLibManager ().UpdateFunctionMenu ();
-               mWorld.GetCodeLibManager ().SetChanged (false);
+               mWorld.GetEntityContainer ().GetCodeLibManager ().UpdateFunctionMenu ();
+               mWorld.GetEntityContainer ().GetCodeLibManager ().SetChanged (false);
             }
             
             if (oldEntitiesCount == mWorld.GetEntityContainer ().GetNumAssets ())

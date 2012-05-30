@@ -10,7 +10,7 @@ package editor.trigger {
       private var mEntityValueSource:ValueSource;
       private var mPropertyValueTarget:ValueTarget_Variable;
       
-      public function ValueTarget_Property  (entityValueSource:ValueSource, propertyValueTarget:ValueTarget_Variable)
+      public function ValueTarget_Property (entityValueSource:ValueSource, propertyValueTarget:ValueTarget_Variable)
       {
          SetEntityValueSource (entityValueSource);
          SetPropertyValueTarget(propertyValueTarget);

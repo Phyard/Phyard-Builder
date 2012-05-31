@@ -238,7 +238,7 @@ package editor.codelib.dialog {
          {
             var aFunction:AssetFunction = asset as AssetFunction;
             
-            values.mCodeLibManager = this;
+            values.mCodeLibManager = mCodeLibManager;
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
             values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
             (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());

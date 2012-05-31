@@ -66,6 +66,7 @@
             this.title = "Event Handler Setting - " + mParams.mCodeSnippet.GetOwnerFunctionDefinition ().GetName ();
 
             theCodeSnippetEditPanel.SetCodeSnippetAndCodeLibManager (mParams.mCodeSnippet, mParams.mCodeLibManager);
+            theCodeSnippetEditPanel.OnCodeLibManagerSwitched ();
          }
 
          public function GetValues (returnValues:Object):void

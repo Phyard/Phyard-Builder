@@ -6,6 +6,7 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ed="editor.display.control.*"
       borderStyle="solid" borderThickness="0"
       width="100%" height="100%"
+      creationComplete="OnInitPanel ();"
       addedToStage="OnAddedToStage ();"
       removedFromStage="OnRemovedFromStage ();"
       >
@@ -151,9 +152,6 @@
             MenuBar_Api.labelField="@name"
             MenuBar_Api.showRoot = false;
 
-            Button_MenuBarSwitch.selected = EditorContext.mLongerCodeEditorMenuBar;
-            OnSwitchMenuBar ();
-
             mCopySelectedMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy Selected Calling(s)", OnCopySelectedCallings, false);
             mCopyAllMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy All Callings", OnCopyAllCallings);
             mPasteBeforeMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Paste Callings Before The Selected", OnPasteCallingsBefore);
@@ -173,20 +171,25 @@
             mTraditionalFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Traditional Coding Format", OnSwitchToTraditionalFormat, true);
             //mObjectOrientedFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "OO Coding Format (not implemented yet)", OnSwitchToObjectOrientedFormat);
             mPoemFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Poem Coding Format (Partially Support)", OnSwitchToPoemFormat);
-
-            UpdateInterface ();
          }
 
          private function OnAddedToStage ():void
          {
-            OnInitPanel();
-            
             CollectVariableEditingDialogsRelatedInfo ();
          }
 
          private function OnRemovedFromStage ():void
          {
             //CloseVariableEditingDialogsAndCleanUpRalatedInfo ();
+         }
+         
+         // from v2.0
+         public function OnCodeLibManagerSwitched ():void
+         {
+            Button_MenuBarSwitch.selected = EditorContext.mLongerCodeEditorMenuBar;
+            OnSwitchMenuBar ();
+
+            UpdateInterface ();
          }
 
          private function OnCopySelectedCallings (event:ContextMenuEvent):void

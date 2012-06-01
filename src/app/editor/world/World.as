@@ -72,7 +72,7 @@ package editor.world {
          
          // session variable space
          
-         mSessionVariableSpace = new VariableSpaceSession (/*this*/);
+         //mSessionVariableSpace = new VariableSpaceSession (/*this*/);
       }
 
       public function Destroy ():void
@@ -497,7 +497,7 @@ package editor.world {
       private var mRegisterVariableSpace_Array            :VariableSpaceRegister;
       
       // session variables
-      private var mSessionVariableSpace:VariableSpaceSession;
+      //private var mSessionVariableSpace:VariableSpaceSession;
       
       public function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
       {
@@ -524,10 +524,10 @@ package editor.world {
          }
       }
       
-      public function GetSessionVariableSpace ():VariableSpaceSession
-      {
-         return mSessionVariableSpace;
-      }
+      //public function GetSessionVariableSpace ():VariableSpaceSession
+      //{
+      //   return mSessionVariableSpace;
+      //}
       
 //=================================================================================
 //   temp

@@ -32,9 +32,10 @@ package editor.codelib {
    import editor.entity.Scene;
    
    import editor.trigger.FunctionMenuGroup;
+   import editor.trigger.FunctionDeclaration;
+   import editor.trigger.VariableSpaceSession;
    import editor.trigger.VariableSpaceGlobal;
    import editor.trigger.VariableSpaceEntity;
-   import editor.trigger.FunctionDeclaration
    
    import editor.EditorContext;
    
@@ -52,6 +53,10 @@ package editor.codelib {
          super ();
          
          mScene = scene;
+         
+         // session variable space
+         
+         mSessionVariableSpace = new VariableSpaceSession (/*this*/);
          
          // custom global variable space
          
@@ -109,6 +114,9 @@ package editor.codelib {
 // 
 //==============================
       
+      // session variables
+      private var mSessionVariableSpace:VariableSpaceSession;
+      
       // custom global variables
       private var mGlobalVariableSpace:VariableSpaceGlobal;
       
@@ -117,6 +125,11 @@ package editor.codelib {
       
       // register variables
       // put in World now.
+      
+      public function GetSessionVariableSpace ():VariableSpaceSession
+      {
+         return mSessionVariableSpace;
+      }
       
       public function GetGlobalVariableSpace ():VariableSpaceGlobal
       {

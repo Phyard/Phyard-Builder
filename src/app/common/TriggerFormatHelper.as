@@ -495,7 +495,7 @@ package common {
             switch (variable_source_define.mSpaceType)
             {
                case ValueSpaceTypeDefine.ValueSpace_Session:
-                  variable_instance = scene.GetWorld ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
@@ -562,7 +562,7 @@ package common {
             switch (variable_target_define.mSpaceType)
             {
                case ValueSpaceTypeDefine.ValueSpace_Session:
-                  variable_instance = scene.GetWorld ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);

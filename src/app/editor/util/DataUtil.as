@@ -32,5 +32,20 @@ package editor.util {
          
          return newList;
       }
+      
+      //public static const kBornTimeOfCIE:Date = new Date (2009); 
+      //
+      //public static function MakeUUID ()
+      //{
+      //   author
+      //     1. on phyard: /tapir
+      //     2. offline  : tapir
+      //   int (new Date ().getTime ()) & 0xFFFFFFFFFFFF
+      //   Math.random () * 0xFFFFFF
+      //   asset type
+      //   asset acc id
+      //   
+      //   DataFormat3.EncodeByteArray2String ();
+      //}
    }
 }

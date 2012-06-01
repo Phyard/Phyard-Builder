@@ -821,7 +821,7 @@ package common {
          // global variables and custom entity properties
          //{
             //>> from v1.57
-            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld.GetEntityContainer (), editorWorld.GetSessionVariableSpace (), worldDefine.mSessionVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld.GetEntityContainer (), editorWorld.GetEntityContainer ().GetCodeLibManager ().GetSessionVariableSpace (), worldDefine.mSessionVariableDefines, true);
             //<<
             
             TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld.GetEntityContainer (), editorWorld.GetEntityContainer ().GetCodeLibManager ().GetGlobalVariableSpace (), worldDefine.mGlobalVariableDefines, true);
@@ -2103,14 +2103,14 @@ package common {
          
          //>>> load custom variables
          // from v1.52
-         var beginningSessionVariableIndex:int = editorWorld.GetSessionVariableSpace ().GetNumVariableInstances ();
+         var beginningSessionVariableIndex:int = editorWorld.GetEntityContainer ().GetCodeLibManager ().GetSessionVariableSpace ().GetNumVariableInstances ();
          var beginningGlobalVariableIndex:int = editorWorld.GetEntityContainer ().GetCodeLibManager ().GetGlobalVariableSpace ().GetNumVariableInstances ();
          var beginningEntityVariableIndex:int = editorWorld.GetEntityContainer ().GetCodeLibManager ().GetEntityVariableSpace ().GetNumVariableInstances ();
          if (worldDefine.mSessionVariableDefines.length > 0)
          {
             if (mergeVariablesWithSameNames)
-               editorWorld.GetSessionVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
-            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld.GetEntityContainer (), worldDefine.mSessionVariableDefines, editorWorld.GetSessionVariableSpace (), true);
+               editorWorld.GetEntityContainer ().GetCodeLibManager ().GetSessionVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
+            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld.GetEntityContainer (), worldDefine.mSessionVariableDefines, editorWorld.GetEntityContainer ().GetCodeLibManager ().GetSessionVariableSpace (), true);
          }
          if (worldDefine.mGlobalVariableDefines.length > 0)
          {
@@ -2419,7 +2419,7 @@ package common {
          {
             if (worldDefine.mSessionVariableDefines.length > 0)
             {
-               editorWorld.GetSessionVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+               editorWorld.GetEntityContainer ().GetCodeLibManager ().GetSessionVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
             }
             if (worldDefine.mGlobalVariableDefines.length > 0)
             {

@@ -563,305 +563,31 @@ package common {
                xml.@permit_publishing = worldDefine.mPermitPublishing ? 1 : 0;
             }
          }
+         
+         // scenes
 
-         xml.Settings = <Settings />
-         var Setting:Object;
-
-         // settings
-         if (worldDefine.mVersion >= 0x0151)
+         if (worldDefine.mVersion >= 0x200)
          {
-            element = IntSetting2XmlElement ("ui_flags", worldDefine.mSettings.mViewerUiFlags);
-            xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("play_bar_color", worldDefine.mSettings.mPlayBarColor, true);
-            xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("viewport_width", worldDefine.mSettings.mViewportWidth);
-            xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("viewport_height", worldDefine.mSettings.mViewportHeight);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("zoom_scale", worldDefine.mSettings.mZoomScale, true);
-            xml.Settings.appendChild (element);
-         }
-
-         if (worldDefine.mVersion >= 0x0104)
-         {
-            element = IntSetting2XmlElement ("camera_center_x", worldDefine.mSettings.mCameraCenterX);
-            xml.Settings.appendChild (element);
-
-            element = IntSetting2XmlElement ("camera_center_y", worldDefine.mSettings.mCameraCenterY);
-            xml.Settings.appendChild (element);
-
-            element = IntSetting2XmlElement ("world_left", worldDefine.mSettings.mWorldLeft);
-            xml.Settings.appendChild (element);
-
-            element = IntSetting2XmlElement ("world_top", worldDefine.mSettings.mWorldTop);
-            xml.Settings.appendChild (element);
-
-            element = IntSetting2XmlElement ("world_width", worldDefine.mSettings.mWorldWidth);
-            xml.Settings.appendChild (element);
-
-            element = IntSetting2XmlElement ("world_height", worldDefine.mSettings.mWorldHeight);
-            xml.Settings.appendChild (element);
-
-            element = IntSetting2XmlElement ("background_color", worldDefine.mSettings.mBackgroundColor, true);
-            xml.Settings.appendChild (element);
-
-            element = BoolSetting2XmlElement ("build_border", worldDefine.mSettings.mBuildBorder);
-            xml.Settings.appendChild (element);
-
-            element = IntSetting2XmlElement ("border_color", worldDefine.mSettings.mBorderColor, true);
-            xml.Settings.appendChild (element);
-         }
-
-         if (worldDefine.mVersion >= 0x0106 && worldDefine.mVersion < 0x0108)
-         {
-            element = IntSetting2XmlElement ("physics_shapes_potential_max_count", worldDefine.mSettings.mPhysicsShapesPotentialMaxCount);
-            xml.Settings.appendChild (element);
-
-            element = IntSetting2XmlElement ("physics_shapes_population_density_level", worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
-            xml.Settings.appendChild (element);
-         }
-
-         if (worldDefine.mVersion >= 0x0108)
-         {
-            element = BoolSetting2XmlElement ("infinite_scene_size", worldDefine.mSettings.mIsInfiniteWorldSize);
-            xml.Settings.appendChild (element);
-
-            element = BoolSetting2XmlElement ("border_at_top_layer", worldDefine.mSettings.mBorderAtTopLayer);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("border_left_thinckness", worldDefine.mSettings.mWorldBorderLeftThickness);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("border_top_thinckness", worldDefine.mSettings.mWorldBorderTopThickness);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("border_right_thinckness", worldDefine.mSettings.mWorldBorderRightThickness);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("border_bottom_thinckness", worldDefine.mSettings.mWorldBorderBottomThickness);
-            xml.Settings.appendChild (element);
-
-            element = FloatSetting2XmlElement ("gravity_acceleration_magnitude", worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("gravity_acceleration_angle", worldDefine.mSettings.mDefaultGravityAccelerationAngle);
-            xml.Settings.appendChild (element);
-
-            element = BoolSetting2XmlElement ("right_hand_coordinates", worldDefine.mSettings.mRightHandCoordinates);
-            xml.Settings.appendChild (element);
-
-            element = FloatSetting2XmlElement ("coordinates_origin_x", worldDefine.mSettings.mCoordinatesOriginX, true);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("coordinates_origin_y", worldDefine.mSettings.mCoordinatesOriginY, true);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("coordinates_scale", worldDefine.mSettings.mCoordinatesScale, true);
-            xml.Settings.appendChild (element);
-
-            element = BoolSetting2XmlElement ("ci_rules_enabled", worldDefine.mSettings.mIsCiRulesEnabled);
-            xml.Settings.appendChild (element);
-         }
-
-         if (worldDefine.mVersion >= 0x0155)
-         {
-            element = BoolSetting2XmlElement ("auto_sleeping_enabled", worldDefine.mSettings.mAutoSleepingEnabled);
-            xml.Settings.appendChild (element);
-            element = BoolSetting2XmlElement ("camera_rotating_enabled", worldDefine.mSettings.mCameraRotatingEnabled);
-            xml.Settings.appendChild (element);
-         }
-
-         if (worldDefine.mVersion >= 0x0160)
-         {
-            element = IntSetting2XmlElement ("initial_speedx", worldDefine.mSettings.mInitialSpeedX);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("preferred_fps", worldDefine.mSettings.mPreferredFPS);
-            xml.Settings.appendChild (element);
-            element = BoolSetting2XmlElement ("pause_on_focus_lost", worldDefine.mSettings.mPauseOnFocusLost);
-            xml.Settings.appendChild (element);
-            
-            element = BoolSetting2XmlElement ("physics_simulation_enabled", worldDefine.mSettings.mPhysicsSimulationEnabled);
-            xml.Settings.appendChild (element);
-            element = FloatSetting2XmlElement ("physics_simulation_time_step", worldDefine.mSettings.mPhysicsSimulationStepTimeLength);
-            xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("physics_simulation_quality", worldDefine.mSettings.mPhysicsSimulationQuality, true);
-            xml.Settings.appendChild (element);
-            element = BoolSetting2XmlElement ("physics_simulation_check_toi", worldDefine.mSettings.mCheckTimeOfImpact);
-            xml.Settings.appendChild (element);
-         }
-
-         // precreate some nodes
-
-         xml.Entities = <Entities />
-
-         if (worldDefine.mVersion >= 0x0107)
-            xml.EntityAppearingOrder = <EntityAppearingOrder />;
-
-         xml.BrotherGroups = <BrotherGroups />
-
-         if (worldDefine.mVersion >= 0x0102)
-         {
-            xml.CollisionCategories = <CollisionCategories />;
-            xml.CollisionCategoryFriendPairs = <CollisionCategoryFriendPairs />;
-         }
-
-         if (worldDefine.mVersion >= 0x0152)
-         {
-            if (worldDefine.mVersion >= 0x0157)
-            {
-               xml.SessionVariables = <SessionVariables />;
+            xml.Scenes = <Scenes />;
+            for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {  
+               xml.Scenes.appendChild (SceneDefine2XmlElement (worldDefine, worldDefine.mSceneDefines [sceneId], null));
             }
-            
-            xml.GlobalVariables = <GlobalVariables />;
-            xml.EntityProperties = <EntityProperties />;
          }
-
-         if (worldDefine.mVersion >= 0x0153)
-            xml.CustomFunctions = <CustomFunctions />;
-
+         else
+         {
+            SceneDefine2XmlElement (worldDefine, worldDefine.mSceneDefines [0], xml);
+         }
+         
+         // image modules
+         
          if (worldDefine.mVersion >= 0x0158)
          {
             xml.Images = <Images />;
             xml.ImageDivisions = <ImageDivisions />;
             xml.AssembledModules = <AssembledModules />;
             xml.SequencedModules = <SequencedModules />;
-         }
-         
-         if (worldDefine.mVersion >= 0x0158)
-         {
-            xml.Sounds = <Sounds />;
-         }
-
-         //
-
-         if (worldDefine.mVersion >= 0x0153)
-         {
-            for (var functionId:int = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
-            {
-               var functionDefine:FunctionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
-
-               element = <Function />;
-               TriggerFormatHelper2.FunctionDefine2Xml (functionDefine, element, true, true, worldDefine.mFunctionDefines);
-
-               element.@name = functionDefine.mName;
-               element.@x = functionDefine.mPosX;
-               element.@y = functionDefine.mPosY;
-               if (worldDefine.mVersion >= 0x0156)
-               {
-                  element.@design_dependent = functionDefine.mDesignDependent ? 1 : 0;
-               }
-
-               xml.CustomFunctions.appendChild (element);
-            }
-         }
-
-         // entities ...
-
-         var appearId:int;
-         var createId:int;
-
-         var numEntities:int = worldDefine.mEntityDefines.length;
-
-         for (createId = 0; createId < numEntities; ++ createId)
-         {
-            var entityDefine:Object = worldDefine.mEntityDefines [createId];
-            element = EntityDefine2XmlElement (entityDefine, worldDefine, createId);
-
-            xml.Entities.appendChild (element);
-         }
-
-         // ...
-         if (worldDefine.mVersion >= 0x0107)
-         {
-            xml.EntityAppearingOrder.@entity_indices = IntegerArray2IndicesString (worldDefine.mEntityAppearanceOrder);
-         }
-
-         // ...
-
-         var groupId:int;
-         var brotherIDs:Array;
-         var idsStr:String;
-
-         for (groupId = 0; groupId < worldDefine.mBrotherGroupDefines.length; ++ groupId)
-         {
-            brotherIDs = worldDefine.mBrotherGroupDefines [groupId];
-
-            element = <BrotherGroup />;
-            element.@num_brothers = brotherIDs.length;
-            element.@brother_indices = IntegerArray2IndicesString (brotherIDs);
             
-            xml.BrotherGroups.appendChild (element);
-         }
-
-         // collision category
-
-         if (worldDefine.mVersion >= 0x0102)
-         {
-            for (var ccId:int = 0; ccId < worldDefine.mCollisionCategoryDefines.length; ++ ccId)
-            {
-               var ccDefine:Object = worldDefine.mCollisionCategoryDefines [ccId];
-
-               element = <CollisionCategory />;
-               element.@name = ccDefine.mName;
-               element.@collide_internally = ccDefine.mCollideInternally ? 1 : 0;
-               element.@x = ccDefine.mPosX;
-               element.@y = ccDefine.mPosY;
-
-               xml.CollisionCategories.appendChild (element);
-            }
-
-            xml.CollisionCategories.@default_category_index = worldDefine.mDefaultCollisionCategoryIndex;
-
-            for (var pairId:int = 0; pairId < worldDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
-            {
-               var pairDefine:Object = worldDefine.mCollisionCategoryFriendLinkDefines [pairId];
-
-               element = <CollisionCategoryFriendPair />;
-               element.@category1_index = pairDefine.mCollisionCategory1Index;
-               element.@category2_index = pairDefine.mCollisionCategory2Index;
-               
-               xml.CollisionCategoryFriendPairs.appendChild (element);
-            }
-         }
-
-         // custom variables
-
-         if (worldDefine.mVersion >= 0x0152)
-         {
-            // v1.52 only
-            //for (var globalSpaceId:int = 0; globalSpaceId < worldDefine.mGlobalVariableSpaceDefines.length; ++ globalSpaceId)
-            //{
-            //   element = TriggerFormatHelper2.VariableSpaceDefine2Xml (worldDefine.mGlobalVariableSpaceDefines [globalSpaceId]);
-            //   xml.GlobalVariables.appendChild (element);
-            //}
-            //
-            //for (var propertySpaceId:int = 0; propertySpaceId < worldDefine.mEntityPropertySpaceDefines.length; ++ propertySpaceId)
-            //{
-            //   element = TriggerFormatHelper2.VariableSpaceDefine2Xml (worldDefine.mEntityPropertySpaceDefines [propertySpaceId]);
-            //   xml.EntityProperties.appendChild (element);
-            //}
-            //<<
-
-            if (worldDefine.mVersion == 0x0152)
-            {
-               xml.GlobalVariables.VariablePackage = <VariablePackage />;
-               //xml.GlobalVariables.VariablePackage.@name = "";
-               //xml.GlobalVariables.VariablePackage.@package_id = 0;
-               //xml.GlobalVariables.VariablePackage.@parent_package_id = -1;
-               TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mGlobalVariableDefines, xml.GlobalVariables.VariablePackage[0], true);
-
-               xml.EntityProperties.VariablePackage = <VariablePackage />;
-               //xml.EntityProperties.VariablePackage.@name = "";
-               //xml.EntityProperties.VariablePackage.@package_id = 0;
-               //xml.EntityProperties.VariablePackage.@parent_package_id = -1;
-               TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mEntityPropertyDefines, xml.EntityProperties.VariablePackage [0], true);
-            }
-            else
-            {
-               if (worldDefine.mVersion >= 0x0157)
-               {
-                  TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mSessionVariableDefines, xml.SessionVariables [0], true);
-               }
-               TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mGlobalVariableDefines, xml.GlobalVariables [0], true);
-               TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mEntityPropertyDefines, xml.EntityProperties [0], true);
-            }
-         }
-         
-         if (worldDefine.mVersion >= 0x0158)
-         {
             for (var imageId:int = 0; imageId < worldDefine.mImageDefines.length; ++ imageId)
             {
                var imageDefine:Object = worldDefine.mImageDefines [imageId];
@@ -923,6 +649,8 @@ package common {
          
          if (worldDefine.mVersion >= 0x0159)
          {
+            xml.Sounds = <Sounds />;
+            
             for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
             {
                var soundDefine:Object = worldDefine.mSoundDefines [soundId];
@@ -945,6 +673,303 @@ package common {
             }
          }
 
+         return xml;
+      }
+      
+      public static function SceneDefine2XmlElement (worldDefine:WorldDefine, sceneDefine:SceneDefine, xml:XML):XML
+      {
+         if (xml == null)
+            xml = <Scene />;
+         
+         var element:XML;
+         
+         // ...
+         
+         xml.Settings = <Settings />
+         var Setting:Object;
+
+         // settings
+         if (worldDefine.mVersion >= 0x0151)
+         {
+            element = IntSetting2XmlElement ("ui_flags", sceneDefine.mSettings.mViewerUiFlags);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("play_bar_color", sceneDefine.mSettings.mPlayBarColor, true);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("viewport_width", sceneDefine.mSettings.mViewportWidth);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("viewport_height", sceneDefine.mSettings.mViewportHeight);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("zoom_scale", sceneDefine.mSettings.mZoomScale, true);
+            xml.Settings.appendChild (element);
+         }
+
+         if (worldDefine.mVersion >= 0x0104)
+         {
+            element = IntSetting2XmlElement ("camera_center_x", sceneDefine.mSettings.mCameraCenterX);
+            xml.Settings.appendChild (element);
+
+            element = IntSetting2XmlElement ("camera_center_y", sceneDefine.mSettings.mCameraCenterY);
+            xml.Settings.appendChild (element);
+
+            element = IntSetting2XmlElement ("world_left", sceneDefine.mSettings.mWorldLeft);
+            xml.Settings.appendChild (element);
+
+            element = IntSetting2XmlElement ("world_top", sceneDefine.mSettings.mWorldTop);
+            xml.Settings.appendChild (element);
+
+            element = IntSetting2XmlElement ("world_width", sceneDefine.mSettings.mWorldWidth);
+            xml.Settings.appendChild (element);
+
+            element = IntSetting2XmlElement ("world_height", sceneDefine.mSettings.mWorldHeight);
+            xml.Settings.appendChild (element);
+
+            element = IntSetting2XmlElement ("background_color", sceneDefine.mSettings.mBackgroundColor, true);
+            xml.Settings.appendChild (element);
+
+            element = BoolSetting2XmlElement ("build_border", sceneDefine.mSettings.mBuildBorder);
+            xml.Settings.appendChild (element);
+
+            element = IntSetting2XmlElement ("border_color", sceneDefine.mSettings.mBorderColor, true);
+            xml.Settings.appendChild (element);
+         }
+
+         if (worldDefine.mVersion >= 0x0106 && worldDefine.mVersion < 0x0108)
+         {
+            element = IntSetting2XmlElement ("physics_shapes_potential_max_count", sceneDefine.mSettings.mPhysicsShapesPotentialMaxCount);
+            xml.Settings.appendChild (element);
+
+            element = IntSetting2XmlElement ("physics_shapes_population_density_level", sceneDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
+            xml.Settings.appendChild (element);
+         }
+
+         if (worldDefine.mVersion >= 0x0108)
+         {
+            element = BoolSetting2XmlElement ("infinite_scene_size", sceneDefine.mSettings.mIsInfiniteWorldSize);
+            xml.Settings.appendChild (element);
+
+            element = BoolSetting2XmlElement ("border_at_top_layer", sceneDefine.mSettings.mBorderAtTopLayer);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("border_left_thinckness", sceneDefine.mSettings.mWorldBorderLeftThickness);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("border_top_thinckness", sceneDefine.mSettings.mWorldBorderTopThickness);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("border_right_thinckness", sceneDefine.mSettings.mWorldBorderRightThickness);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("border_bottom_thinckness", sceneDefine.mSettings.mWorldBorderBottomThickness);
+            xml.Settings.appendChild (element);
+
+            element = FloatSetting2XmlElement ("gravity_acceleration_magnitude", sceneDefine.mSettings.mDefaultGravityAccelerationMagnitude);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("gravity_acceleration_angle", sceneDefine.mSettings.mDefaultGravityAccelerationAngle);
+            xml.Settings.appendChild (element);
+
+            element = BoolSetting2XmlElement ("right_hand_coordinates", sceneDefine.mSettings.mRightHandCoordinates);
+            xml.Settings.appendChild (element);
+
+            element = FloatSetting2XmlElement ("coordinates_origin_x", sceneDefine.mSettings.mCoordinatesOriginX, true);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("coordinates_origin_y", sceneDefine.mSettings.mCoordinatesOriginY, true);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("coordinates_scale", sceneDefine.mSettings.mCoordinatesScale, true);
+            xml.Settings.appendChild (element);
+
+            element = BoolSetting2XmlElement ("ci_rules_enabled", sceneDefine.mSettings.mIsCiRulesEnabled);
+            xml.Settings.appendChild (element);
+         }
+
+         if (worldDefine.mVersion >= 0x0155)
+         {
+            element = BoolSetting2XmlElement ("auto_sleeping_enabled", sceneDefine.mSettings.mAutoSleepingEnabled);
+            xml.Settings.appendChild (element);
+            element = BoolSetting2XmlElement ("camera_rotating_enabled", sceneDefine.mSettings.mCameraRotatingEnabled);
+            xml.Settings.appendChild (element);
+         }
+
+         if (worldDefine.mVersion >= 0x0160)
+         {
+            element = IntSetting2XmlElement ("initial_speedx", sceneDefine.mSettings.mInitialSpeedX);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("preferred_fps", sceneDefine.mSettings.mPreferredFPS);
+            xml.Settings.appendChild (element);
+            element = BoolSetting2XmlElement ("pause_on_focus_lost", sceneDefine.mSettings.mPauseOnFocusLost);
+            xml.Settings.appendChild (element);
+            
+            element = BoolSetting2XmlElement ("physics_simulation_enabled", sceneDefine.mSettings.mPhysicsSimulationEnabled);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("physics_simulation_time_step", sceneDefine.mSettings.mPhysicsSimulationStepTimeLength);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("physics_simulation_quality", sceneDefine.mSettings.mPhysicsSimulationQuality, true);
+            xml.Settings.appendChild (element);
+            element = BoolSetting2XmlElement ("physics_simulation_check_toi", sceneDefine.mSettings.mCheckTimeOfImpact);
+            xml.Settings.appendChild (element);
+         }
+
+         // precreate some nodes
+
+         xml.Entities = <Entities />
+
+         if (worldDefine.mVersion >= 0x0107)
+            xml.EntityAppearingOrder = <EntityAppearingOrder />;
+
+         xml.BrotherGroups = <BrotherGroups />
+
+         if (worldDefine.mVersion >= 0x0102)
+         {
+            xml.CollisionCategories = <CollisionCategories />;
+            xml.CollisionCategoryFriendPairs = <CollisionCategoryFriendPairs />;
+         }
+
+         if (worldDefine.mVersion >= 0x0152)
+         {
+            if (worldDefine.mVersion >= 0x0157)
+            {
+               xml.SessionVariables = <SessionVariables />;
+            }
+            
+            xml.GlobalVariables = <GlobalVariables />;
+            xml.EntityProperties = <EntityProperties />;
+         }
+
+         if (worldDefine.mVersion >= 0x0153)
+            xml.CustomFunctions = <CustomFunctions />;
+
+         //
+
+         if (worldDefine.mVersion >= 0x0153)
+         {
+            for (var functionId:int = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
+            {
+               var functionDefine:FunctionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
+
+               element = <Function />;
+               TriggerFormatHelper2.FunctionDefine2Xml (functionDefine, element, true, true, sceneDefine.mFunctionDefines);
+
+               element.@name = functionDefine.mName;
+               element.@x = functionDefine.mPosX;
+               element.@y = functionDefine.mPosY;
+               if (worldDefine.mVersion >= 0x0156)
+               {
+                  element.@design_dependent = functionDefine.mDesignDependent ? 1 : 0;
+               }
+
+               xml.CustomFunctions.appendChild (element);
+            }
+         }
+
+         // entities ...
+
+         var appearId:int;
+         var createId:int;
+
+         var numEntities:int = sceneDefine.mEntityDefines.length;
+
+         for (createId = 0; createId < numEntities; ++ createId)
+         {
+            var entityDefine:Object = sceneDefine.mEntityDefines [createId];
+            element = EntityDefine2XmlElement (entityDefine, worldDefine, sceneDefine, createId);
+
+            xml.Entities.appendChild (element);
+         }
+
+         // ...
+         if (worldDefine.mVersion >= 0x0107)
+         {
+            xml.EntityAppearingOrder.@entity_indices = IntegerArray2IndicesString (sceneDefine.mEntityAppearanceOrder);
+         }
+
+         // ...
+
+         var groupId:int;
+         var brotherIDs:Array;
+         var idsStr:String;
+
+         for (groupId = 0; groupId < sceneDefine.mBrotherGroupDefines.length; ++ groupId)
+         {
+            brotherIDs = sceneDefine.mBrotherGroupDefines [groupId];
+
+            element = <BrotherGroup />;
+            element.@num_brothers = brotherIDs.length;
+            element.@brother_indices = IntegerArray2IndicesString (brotherIDs);
+            
+            xml.BrotherGroups.appendChild (element);
+         }
+
+         // collision category
+
+         if (worldDefine.mVersion >= 0x0102)
+         {
+            for (var ccId:int = 0; ccId < sceneDefine.mCollisionCategoryDefines.length; ++ ccId)
+            {
+               var ccDefine:Object = sceneDefine.mCollisionCategoryDefines [ccId];
+
+               element = <CollisionCategory />;
+               element.@name = ccDefine.mName;
+               element.@collide_internally = ccDefine.mCollideInternally ? 1 : 0;
+               element.@x = ccDefine.mPosX;
+               element.@y = ccDefine.mPosY;
+
+               xml.CollisionCategories.appendChild (element);
+            }
+
+            xml.CollisionCategories.@default_category_index = sceneDefine.mDefaultCollisionCategoryIndex;
+
+            for (var pairId:int = 0; pairId < sceneDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
+            {
+               var pairDefine:Object = sceneDefine.mCollisionCategoryFriendLinkDefines [pairId];
+
+               element = <CollisionCategoryFriendPair />;
+               element.@category1_index = pairDefine.mCollisionCategory1Index;
+               element.@category2_index = pairDefine.mCollisionCategory2Index;
+               
+               xml.CollisionCategoryFriendPairs.appendChild (element);
+            }
+         }
+
+         // custom variables
+
+         if (worldDefine.mVersion >= 0x0152)
+         {
+            // v1.52 only
+            //for (var globalSpaceId:int = 0; globalSpaceId < sceneDefine.mGlobalVariableSpaceDefines.length; ++ globalSpaceId)
+            //{
+            //   element = TriggerFormatHelper2.VariableSpaceDefine2Xml (sceneDefine.mGlobalVariableSpaceDefines [globalSpaceId]);
+            //   xml.GlobalVariables.appendChild (element);
+            //}
+            //
+            //for (var propertySpaceId:int = 0; propertySpaceId < sceneDefine.mEntityPropertySpaceDefines.length; ++ propertySpaceId)
+            //{
+            //   element = TriggerFormatHelper2.VariableSpaceDefine2Xml (sceneDefine.mEntityPropertySpaceDefines [propertySpaceId]);
+            //   xml.EntityProperties.appendChild (element);
+            //}
+            //<<
+
+            if (worldDefine.mVersion == 0x0152)
+            {
+               xml.GlobalVariables.VariablePackage = <VariablePackage />;
+               //xml.GlobalVariables.VariablePackage.@name = "";
+               //xml.GlobalVariables.VariablePackage.@package_id = 0;
+               //xml.GlobalVariables.VariablePackage.@parent_package_id = -1;
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables.VariablePackage[0], true);
+
+               xml.EntityProperties.VariablePackage = <VariablePackage />;
+               //xml.EntityProperties.VariablePackage.@name = "";
+               //xml.EntityProperties.VariablePackage.@package_id = 0;
+               //xml.EntityProperties.VariablePackage.@parent_package_id = -1;
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties.VariablePackage [0], true);
+            }
+            else
+            {
+               if (worldDefine.mVersion >= 0x0157)
+               {
+                  TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mSessionVariableDefines, xml.SessionVariables [0], true);
+               }
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables [0], true);
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties [0], true);
+            }
+         }
+         
+         // ...
+         
          return xml;
       }
       
@@ -1176,7 +1201,7 @@ package common {
          return element;
       }
 
-      public static function EntityDefine2XmlElement (entityDefine:Object, worldDefine:WorldDefine, createId:int):XML
+      public static function EntityDefine2XmlElement (entityDefine:Object, worldDefine:WorldDefine, sceneDefine:SceneDefine, createId:int):XML
       {
          var vertexId:int;
          var i:int;
@@ -1233,9 +1258,9 @@ package common {
             if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
             {
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
                else
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
@@ -1301,9 +1326,9 @@ package common {
                            if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                            {
                               var preHandlingCodeSnippetXML:XML = <PreHandlingCodeSnippet/>
-                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPreFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines, false, preHandlingCodeSnippetXML);
+                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPreFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, false, preHandlingCodeSnippetXML);
                               var postHandlingCodeSnippetXML:XML = <PostHandlingCodeSnippet/>
-                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPostFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines, false, postHandlingCodeSnippetXML);
+                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPostFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, false, postHandlingCodeSnippetXML);
                            }
                         }
 
@@ -1323,28 +1348,28 @@ package common {
 
                if (worldDefine.mVersion >= 0x0153)
                {
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
                }
                else
                {
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines);
                }
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
             {
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
                else
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines);
             }
             //>>from v1.56
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
             {
-               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
+               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
             {
-               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
+               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
             }
             //<<
          }

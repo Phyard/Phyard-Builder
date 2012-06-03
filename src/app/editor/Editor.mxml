@@ -239,7 +239,6 @@
       public function SetWorld (world:World):void
       {
          CloseWorld ();
-         
          EditorContext.sEditorContext = new EditorContext ();
          
          mWorld = world;
@@ -602,6 +601,7 @@
                var newWorld:World = new World ();
                SetWorld (newWorld);
                DataFormat.WorldDefine2EditorWorld (true, newWorld, DataFormat2.ByteArray2WorldDefine (designDataForEditing));
+               mSceneEditDialog.OnCurrentSceneSwitched ();
                
                CreateWorldSnapshot ("Online loading is done");
                
@@ -821,6 +821,7 @@
             var newWorld:World = new World ();
             SetWorld (newWorld);
             DataFormat.WorldDefine2EditorWorld (true, newWorld, newWorldDefine);
+            mSceneEditDialog.OnCurrentSceneSwitched ();
             
             //mWorldHistoryManager.ClearHistories ();
             
@@ -856,8 +857,8 @@
          
          try
          {
-            var oldEntitiesCount:int = mWorld.GetEntityContainer ().GetNumAssets ();
-            var oldCategoriesCount:int = mWorld.GetEntityContainer ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
+            var oldEntitiesCount:int = GetSceneEditDialog ().GetCurrentSceneInEditing ().GetNumAssets ();
+            var oldCategoriesCount:int = GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
             
             var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
             
@@ -867,18 +868,18 @@
             if (oldCategoriesCount + worldDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
                return;
             
-            DataFormat.WorldDefine2EditorWorld (false, mWorld, worldDefine, true, mergeVariablesWithSameNames);
+            DataFormat.WorldDefine2EditorWorld (false, mWorld, worldDefine, /*false*/GetSceneEditDialog ().GetCurrentSceneInEditing (), true, mergeVariablesWithSameNames);
             
-            if (mWorld.GetEntityContainer ().GetCodeLibManager ().IsChanged ())
+            if (GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCodeLibManager ().IsChanged ())
             {
-               mWorld.GetEntityContainer ().GetCodeLibManager ().UpdateFunctionMenu ();
-               mWorld.GetEntityContainer ().GetCodeLibManager ().SetChanged (false);
+               GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCodeLibManager ().UpdateFunctionMenu ();
+               GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCodeLibManager ().SetChanged (false);
             }
             
-            if (oldEntitiesCount == mWorld.GetEntityContainer ().GetNumAssets ())
+            if (oldEntitiesCount == GetSceneEditDialog ().GetCurrentSceneInEditing ().GetNumAssets ())
                return;
             
-            mWorld.GetEntityContainer ().CancelAllAssetSelections ();
+            GetSceneEditDialog ().GetCurrentSceneInEditing ().CancelAllAssetSelections ();
             
             var i:int;
             var j:int;
@@ -888,12 +889,12 @@
             var centerY:Number = 0;
             var numSelecteds:int = 0;
             
-            var newEntitiesCount:int = mWorld.GetEntityContainer ().GetNumAssets ();
+            var newEntitiesCount:int = GetSceneEditDialog ().GetCurrentSceneInEditing ().GetNumAssets ();
             
             var entitiesToSelect:Array = new Array ();
             for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
             {
-               entities = (mWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
+               entities = (GetSceneEditDialog ().GetCurrentSceneInEditing ().GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
                
                for (j = 0; j < entities.length; ++ j)
                {
@@ -910,7 +911,7 @@
                }
             }
             
-            mWorld.GetEntityContainer ().SetSelectedAssets (entitiesToSelect);
+            GetSceneEditDialog ().GetCurrentSceneInEditing ().SetSelectedAssets (entitiesToSelect);
 
             if (centerNewEntitiesInScreen && numSelecteds > 0)
             {
@@ -1196,7 +1197,8 @@
             
             var newWorld:World = new World ();
             SetWorld (newWorld);
-            DataFormat.WorldDefine2EditorWorld (true, newWorld, object.mWorldDefine, false);
+            DataFormat.WorldDefine2EditorWorld (true, newWorld, object.mWorldDefine, null, false);
+            mSceneEditDialog.OnCurrentSceneSwitched ();
             
             mSceneEditDialog.GetSceneEditPanel ().MoveManagerTo (currentSceneX, currentSceneY);
             mSceneEditDialog.GetSceneEditPanel ().ScaleManagerTo (currentSceneScale);

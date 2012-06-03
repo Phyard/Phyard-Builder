@@ -9,7 +9,7 @@
     xmlns:ccat="editor.ccat.dialog.*"
     xmlns:codelib="editor.codelib.dialog.*"
     title="Scene Manager"
-    width="816" height="656"
+    width="856" height="656"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="false"
     >

@@ -37,13 +37,14 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      public function SetWorldViewerParams (worldBinaryData:ByteArray, maskFieldInPlaying:Boolean, surroudingBackgroundColor:uint):void
+      public function SetWorldViewerParams (worldBinaryData:ByteArray, currentSceneId:int, maskFieldInPlaying:Boolean, surroudingBackgroundColor:uint):void
       {
          CloseViewer ();
          
          mDesignViewer = new Viewer ({mParamsFromEditor: {
                                          mWorldDomain: ApplicationDomain.currentDomain, 
                                          mWorldBinaryData: worldBinaryData, 
+                                         mCurrentSceneId: currentSceneId, 
                                          GetViewportSize: GetViewportSize, 
                                          mStartRightNow: true, 
                                          mMaskViewport: maskFieldInPlaying,

@@ -5,11 +5,14 @@ package common {
    {
    // ...
       
-      public var mForRestartLevel:Boolean = false;
+      public var mCurrentSceneId:int = 0; // for editing, added from v2.00
       
-      public var mPlayerWorldHints:Object; // not used now. When and why is it added? 
+      public var mForRestartLevel:Boolean = false; // for playing
+      
+      public var mPlayerWorldHints:Object; // not used now. When and why it is added? 
       
    // ...
+      
       public var mVersion:int;
       
       public var mAuthorName:String = "";

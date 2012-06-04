@@ -2794,7 +2794,7 @@ package common {
          
          for each (element in sceneXML.Entities.Entity)
          {
-            var entityDefine:Object = XmlElement2EntityDefine (element, worldDefine);
+            var entityDefine:Object = XmlElement2EntityDefine (element, worldDefine, sceneDefine);
             
             sceneDefine.mEntityDefines.push (entityDefine);
          }
@@ -3075,7 +3075,7 @@ package common {
          return idArray;
       }
       
-      public static function XmlElement2EntityDefine (element:XML, worldDefine:WorldDefine):Object
+      public static function XmlElement2EntityDefine (element:XML, worldDefine:WorldDefine, sceneDefine:SceneDefine):Object
       {
          var elementLocalVertex:XML;
          
@@ -3127,9 +3127,9 @@ package common {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                else
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
@@ -3183,10 +3183,10 @@ package common {
                            if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                            {
                               entityDefine.mPreFunctionDefine = new FunctionDefine ();
-                              TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mPreFunctionDefine, false, true, worldDefine.mFunctionDefines, false, element.PreHandlingCodeSnippet [0]);
+                              TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mPreFunctionDefine, false, true, sceneDefine.mFunctionDefines, false, element.PreHandlingCodeSnippet [0]);
                               
                               entityDefine.mPostFunctionDefine = new FunctionDefine ();
-                              TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mPostFunctionDefine, false, true, worldDefine.mFunctionDefines, false, element.PostHandlingCodeSnippet [0]);
+                              TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mPostFunctionDefine, false, true, sceneDefine.mFunctionDefines, false, element.PostHandlingCodeSnippet [0]);
                            }
                         }
                         
@@ -3207,11 +3207,11 @@ package common {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                if (worldDefine.mVersion >= 0x0153)
                {
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                }
                else
                {
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
                }
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
@@ -3219,22 +3219,22 @@ package common {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                else
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
             }
             //>>from v1.56
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
             {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                
-               TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+               TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
             {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                
-               TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+               TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
             }
             //<<     
          }
@@ -3562,73 +3562,171 @@ package common {
             }
          }
          
+         // scenes
+
+         if (worldDefine.mVersion >= 0x200)
+         {
+            byteArray.writeShort (worldDefine.mSceneDefines.length);
+            for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {  
+               SceneDefine2ByteArray (worldDefine, worldDefine.mSceneDefines [sceneId], byteArray);
+            }
+         }
+         else
+         {
+            SceneDefine2ByteArray (worldDefine, worldDefine.mSceneDefines [0], byteArray);
+         }
+         
+         // modules
+         
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            byteArray.writeShort (worldDefine.mImageDefines.length);
+            for (var imageId:int = 0; imageId < worldDefine.mImageDefines.length; ++ imageId)
+            {
+               var imageDefine:Object = worldDefine.mImageDefines [imageId];
+               
+               byteArray.writeUTF (imageDefine.mName == null ? "" : imageDefine.mName);
+               
+               if (imageDefine.mFileData == null || imageDefine.mFileData.length == 0)
+               {
+                  byteArray.writeInt (0);
+               }
+               else
+               {
+                  byteArray.writeInt (imageDefine.mFileData.length);
+                  byteArray.writeBytes (imageDefine.mFileData, 0, imageDefine.mFileData.length);
+               }
+            }
+
+            byteArray.writeShort (worldDefine.mPureImageModuleDefines.length);
+            for (var divisionId:int = 0; divisionId < worldDefine.mPureImageModuleDefines.length; ++ divisionId)
+            {
+               var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
+
+               byteArray.writeShort (divisionDefine.mImageIndex);
+               byteArray.writeShort (divisionDefine.mLeft);
+               byteArray.writeShort (divisionDefine.mTop);
+               byteArray.writeShort (divisionDefine.mRight);
+               byteArray.writeShort (divisionDefine.mBottom);
+            }
+
+            byteArray.writeShort (worldDefine.mAssembledModuleDefines.length);
+            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
+            {
+               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+
+               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, assembledModuleDefine.mModulePartDefines, false);
+            }
+
+            byteArray.writeShort (worldDefine.mSequencedModuleDefines.length);
+            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
+            {
+               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+
+               //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
+               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
+            }
+         }
+         
+         // sounds
+         
+         if (worldDefine.mVersion >= 0x0159)
+         {
+            byteArray.writeShort (worldDefine.mSoundDefines.length);
+            for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
+            {
+               var soundDefine:Object = worldDefine.mSoundDefines [soundId];
+               
+               byteArray.writeUTF (soundDefine.mName == null ? "" : soundDefine.mName);
+               byteArray.writeInt (soundDefine.mAttributeBits);
+               byteArray.writeInt (soundDefine.mNumSamples);
+               
+               if (soundDefine.mFileData == null || soundDefine.mFileData == 0)
+               {
+                  byteArray.writeInt (0);
+               }
+               else
+               {
+                  byteArray.writeInt (soundDefine.mFileData.length);
+                  byteArray.writeBytes (soundDefine.mFileData, 0, soundDefine.mFileData.length);
+               }
+            }
+         }
+         
+         // ...
+         return byteArray;
+      }
+      
+      public static function SceneDefine2ByteArray (worldDefine:WorldDefine, sceneDefine:SceneDefine, byteArray:ByteArray):void
+      {
          // settings
          {
             if (worldDefine.mVersion >= 0x0151)
             {
-               byteArray.writeInt (worldDefine.mSettings.mViewerUiFlags);
-               byteArray.writeUnsignedInt (worldDefine.mSettings.mPlayBarColor);
-               byteArray.writeShort (worldDefine.mSettings.mViewportWidth);
-               byteArray.writeShort (worldDefine.mSettings.mViewportHeight);
-               byteArray.writeFloat (worldDefine.mSettings.mZoomScale);
+               byteArray.writeInt (sceneDefine.mSettings.mViewerUiFlags);
+               byteArray.writeUnsignedInt (sceneDefine.mSettings.mPlayBarColor);
+               byteArray.writeShort (sceneDefine.mSettings.mViewportWidth);
+               byteArray.writeShort (sceneDefine.mSettings.mViewportHeight);
+               byteArray.writeFloat (sceneDefine.mSettings.mZoomScale);
             }
             
             if (worldDefine.mVersion >= 0x0104)
             {
-               byteArray.writeInt (worldDefine.mSettings.mCameraCenterX);
-               byteArray.writeInt (worldDefine.mSettings.mCameraCenterY);
-               byteArray.writeInt (worldDefine.mSettings.mWorldLeft);
-               byteArray.writeInt (worldDefine.mSettings.mWorldTop);
-               byteArray.writeInt (worldDefine.mSettings.mWorldWidth);
-               byteArray.writeInt (worldDefine.mSettings.mWorldHeight);
-               byteArray.writeUnsignedInt (worldDefine.mSettings.mBackgroundColor);
-               byteArray.writeByte (worldDefine.mSettings.mBuildBorder ? 1 : 0);
-               byteArray.writeUnsignedInt (worldDefine.mSettings.mBorderColor);
+               byteArray.writeInt (sceneDefine.mSettings.mCameraCenterX);
+               byteArray.writeInt (sceneDefine.mSettings.mCameraCenterY);
+               byteArray.writeInt (sceneDefine.mSettings.mWorldLeft);
+               byteArray.writeInt (sceneDefine.mSettings.mWorldTop);
+               byteArray.writeInt (sceneDefine.mSettings.mWorldWidth);
+               byteArray.writeInt (sceneDefine.mSettings.mWorldHeight);
+               byteArray.writeUnsignedInt (sceneDefine.mSettings.mBackgroundColor);
+               byteArray.writeByte (sceneDefine.mSettings.mBuildBorder ? 1 : 0);
+               byteArray.writeUnsignedInt (sceneDefine.mSettings.mBorderColor);
             }
             
             if (worldDefine.mVersion >= 0x0106 && worldDefine.mVersion < 0x0108)
             {
-               byteArray.writeInt (worldDefine.mSettings.mPhysicsShapesPotentialMaxCount);
-               byteArray.writeShort (worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
+               byteArray.writeInt (sceneDefine.mSettings.mPhysicsShapesPotentialMaxCount);
+               byteArray.writeShort (sceneDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
             }
             
             if (worldDefine.mVersion >= 0x0108)
             {
-               byteArray.writeByte (worldDefine.mSettings.mIsInfiniteWorldSize ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mIsInfiniteWorldSize ? 1 : 0);
                
-               byteArray.writeByte (worldDefine.mSettings.mBorderAtTopLayer ? 1 : 0);
-               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderLeftThickness);
-               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderTopThickness);
-               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderRightThickness);
-               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderBottomThickness);
+               byteArray.writeByte (sceneDefine.mSettings.mBorderAtTopLayer ? 1 : 0);
+               byteArray.writeFloat (sceneDefine.mSettings.mWorldBorderLeftThickness);
+               byteArray.writeFloat (sceneDefine.mSettings.mWorldBorderTopThickness);
+               byteArray.writeFloat (sceneDefine.mSettings.mWorldBorderRightThickness);
+               byteArray.writeFloat (sceneDefine.mSettings.mWorldBorderBottomThickness);
                
-               byteArray.writeFloat (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
-               byteArray.writeFloat (worldDefine.mSettings.mDefaultGravityAccelerationAngle);
+               byteArray.writeFloat (sceneDefine.mSettings.mDefaultGravityAccelerationMagnitude);
+               byteArray.writeFloat (sceneDefine.mSettings.mDefaultGravityAccelerationAngle);
                
-               byteArray.writeByte (worldDefine.mSettings.mRightHandCoordinates ? 1 : 0);
-               byteArray.writeDouble (worldDefine.mSettings.mCoordinatesOriginX);
-               byteArray.writeDouble (worldDefine.mSettings.mCoordinatesOriginY);
-               byteArray.writeDouble (worldDefine.mSettings.mCoordinatesScale);
+               byteArray.writeByte (sceneDefine.mSettings.mRightHandCoordinates ? 1 : 0);
+               byteArray.writeDouble (sceneDefine.mSettings.mCoordinatesOriginX);
+               byteArray.writeDouble (sceneDefine.mSettings.mCoordinatesOriginY);
+               byteArray.writeDouble (sceneDefine.mSettings.mCoordinatesScale);
                
-               byteArray.writeByte (worldDefine.mSettings.mIsCiRulesEnabled ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mIsCiRulesEnabled ? 1 : 0);
             }
             
             if (worldDefine.mVersion >= 0x0155)
             {
-               byteArray.writeByte (worldDefine.mSettings.mAutoSleepingEnabled ? 1 : 0);
-               byteArray.writeByte (worldDefine.mSettings.mCameraRotatingEnabled ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mAutoSleepingEnabled ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mCameraRotatingEnabled ? 1 : 0);
             }
             
             if (worldDefine.mVersion >= 0x0160)
             {
-               byteArray.writeByte (worldDefine.mSettings.mInitialSpeedX);
-               byteArray.writeFloat (worldDefine.mSettings.mPreferredFPS);
-               byteArray.writeByte (worldDefine.mSettings.mPauseOnFocusLost ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mInitialSpeedX);
+               byteArray.writeFloat (sceneDefine.mSettings.mPreferredFPS);
+               byteArray.writeByte (sceneDefine.mSettings.mPauseOnFocusLost ? 1 : 0);
                
-               byteArray.writeByte (worldDefine.mSettings.mPhysicsSimulationEnabled ? 1 : 0);
-               byteArray.writeFloat (worldDefine.mSettings.mPhysicsSimulationStepTimeLength);
-               byteArray.writeUnsignedInt (worldDefine.mSettings.mPhysicsSimulationQuality);
-               byteArray.writeByte (worldDefine.mSettings.mCheckTimeOfImpact ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mPhysicsSimulationEnabled ? 1 : 0);
+               byteArray.writeFloat (sceneDefine.mSettings.mPhysicsSimulationStepTimeLength);
+               byteArray.writeUnsignedInt (sceneDefine.mSettings.mPhysicsSimulationQuality);
+               byteArray.writeByte (sceneDefine.mSettings.mCheckTimeOfImpact ? 1 : 0);
             }
          }
          
@@ -3636,10 +3734,10 @@ package common {
          
          if (worldDefine.mVersion >= 0x0102)
          {
-            byteArray.writeShort (worldDefine.mCollisionCategoryDefines.length);
-            for (var ccId:int = 0; ccId < worldDefine.mCollisionCategoryDefines.length; ++ ccId)
+            byteArray.writeShort (sceneDefine.mCollisionCategoryDefines.length);
+            for (var ccId:int = 0; ccId < sceneDefine.mCollisionCategoryDefines.length; ++ ccId)
             {
-               var ccDefine:Object = worldDefine.mCollisionCategoryDefines [ccId];
+               var ccDefine:Object = sceneDefine.mCollisionCategoryDefines [ccId];
                
                byteArray.writeUTF (ccDefine.mName);
                byteArray.writeByte (ccDefine.mCollideInternally ? 1 : 0);
@@ -3647,12 +3745,12 @@ package common {
                byteArray.writeFloat (ccDefine.mPosY);
             }
             
-            byteArray.writeShort (worldDefine.mDefaultCollisionCategoryIndex);
+            byteArray.writeShort (sceneDefine.mDefaultCollisionCategoryIndex);
             
-            byteArray.writeShort (worldDefine.mCollisionCategoryFriendLinkDefines.length);
-            for (var pairId:int = 0; pairId < worldDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
+            byteArray.writeShort (sceneDefine.mCollisionCategoryFriendLinkDefines.length);
+            for (var pairId:int = 0; pairId < sceneDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
             {
-               var pairDefine:Object = worldDefine.mCollisionCategoryFriendLinkDefines [pairId];
+               var pairDefine:Object = sceneDefine.mCollisionCategoryFriendLinkDefines [pairId];
                
                byteArray.writeShort (pairDefine.mCollisionCategory1Index);
                byteArray.writeShort (pairDefine.mCollisionCategory2Index);
@@ -3666,18 +3764,18 @@ package common {
             var functionId:int;
             var functionDefine:FunctionDefine;
             
-            byteArray.writeShort (worldDefine.mFunctionDefines.length);
+            byteArray.writeShort (sceneDefine.mFunctionDefines.length);
             
-            for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+            for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
             {
-               functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+               functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
                
                TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, true, true, null);
             }
             
-            for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+            for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
             {
-               functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+               functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
                
                byteArray.writeUTF (functionDefine.mName);
                byteArray.writeFloat (functionDefine.mPosX);
@@ -3688,7 +3786,7 @@ package common {
                   byteArray.writeByte (functionDefine.mDesignDependent ? 1 : 0);
                }
                
-               TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, true, false, worldDefine.mFunctionDefines);
+               TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, true, false, sceneDefine.mFunctionDefines);
             }
          }
          
@@ -3700,13 +3798,13 @@ package common {
          
          var i:int;
          
-         var numEntities:int = worldDefine.mEntityDefines.length;
+         var numEntities:int = sceneDefine.mEntityDefines.length;
          
-         byteArray.writeShort (worldDefine.mEntityDefines.length);
+         byteArray.writeShort (sceneDefine.mEntityDefines.length);
          
          for (createId = 0; createId < numEntities; ++ createId)
          {
-            var entityDefine:Object = worldDefine.mEntityDefines [createId];
+            var entityDefine:Object = sceneDefine.mEntityDefines [createId];
             
             byteArray.writeShort (entityDefine.mEntityType);
             if (worldDefine.mVersion >= 0x0103)
@@ -3760,9 +3858,9 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                   else
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -3823,8 +3921,8 @@ package common {
                            {
                               if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                               {
-                                 TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mPreFunctionDefine, false, true, worldDefine.mFunctionDefines, false);
-                                 TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mPostFunctionDefine, false, true, worldDefine.mFunctionDefines, false);
+                                 TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mPreFunctionDefine, false, true, sceneDefine.mFunctionDefines, false);
+                                 TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mPostFunctionDefine, false, true, sceneDefine.mFunctionDefines, false);
                               }
                            }
                            
@@ -3844,28 +3942,28 @@ package common {
                   
                   if (worldDefine.mVersion >= 0x0153)
                   {
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                   }
                   else
                   {
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
                   }
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                   else
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
                }
                //>>from v1.56
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
-                  TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
-                  TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                }
                //<<  
             }
@@ -4131,7 +4229,7 @@ package common {
          // ...
          if (worldDefine.mVersion >= 0x0107)
          {
-            WriteShortArrayIntoBinFile (worldDefine.mEntityAppearanceOrder, byteArray);
+            WriteShortArrayIntoBinFile (sceneDefine.mEntityAppearanceOrder, byteArray);
          }
          
          // ...
@@ -4139,11 +4237,11 @@ package common {
          var groupId:int;
          var brotherIDs:Array;
          
-         byteArray.writeShort (worldDefine.mBrotherGroupDefines.length);
+         byteArray.writeShort (sceneDefine.mBrotherGroupDefines.length);
          
-         for (groupId = 0; groupId < worldDefine.mBrotherGroupDefines.length; ++ groupId)
+         for (groupId = 0; groupId < sceneDefine.mBrotherGroupDefines.length; ++ groupId)
          {
-            brotherIDs = worldDefine.mBrotherGroupDefines [groupId] as Array;
+            brotherIDs = sceneDefine.mBrotherGroupDefines [groupId] as Array;
             
             WriteShortArrayIntoBinFile (brotherIDs, byteArray);
          }
@@ -4153,7 +4251,7 @@ package common {
          {
             if (worldDefine.mVersion >= 0x0157)
             {
-               TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mSessionVariableDefines, true);
+               TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mSessionVariableDefines, true);
             }
             
             if (worldDefine.mVersion == 0x0152)
@@ -4162,7 +4260,7 @@ package common {
                byteArray.writeUTF ("");//variableSpaceDefine.mName);
                byteArray.writeShort (-1);//variableSpaceDefine.mParentPackageId);
             }
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mGlobalVariableDefines, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mGlobalVariableDefines, true);
             
             if (worldDefine.mVersion == 0x0152)
             {
@@ -4170,88 +4268,8 @@ package common {
                byteArray.writeUTF ("");//variableSpaceDefine.mName);
                byteArray.writeShort (-1);//variableSpaceDefine.mParentPackageId);
             }
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mEntityPropertyDefines, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mEntityPropertyDefines, true);
          }
-         
-         // modules
-         
-         if (worldDefine.mVersion >= 0x0158)
-         {
-            byteArray.writeShort (worldDefine.mImageDefines.length);
-            for (var imageId:int = 0; imageId < worldDefine.mImageDefines.length; ++ imageId)
-            {
-               var imageDefine:Object = worldDefine.mImageDefines [imageId];
-               
-               byteArray.writeUTF (imageDefine.mName == null ? "" : imageDefine.mName);
-               
-               if (imageDefine.mFileData == null || imageDefine.mFileData.length == 0)
-               {
-                  byteArray.writeInt (0);
-               }
-               else
-               {
-                  byteArray.writeInt (imageDefine.mFileData.length);
-                  byteArray.writeBytes (imageDefine.mFileData, 0, imageDefine.mFileData.length);
-               }
-            }
-
-            byteArray.writeShort (worldDefine.mPureImageModuleDefines.length);
-            for (var divisionId:int = 0; divisionId < worldDefine.mPureImageModuleDefines.length; ++ divisionId)
-            {
-               var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
-
-               byteArray.writeShort (divisionDefine.mImageIndex);
-               byteArray.writeShort (divisionDefine.mLeft);
-               byteArray.writeShort (divisionDefine.mTop);
-               byteArray.writeShort (divisionDefine.mRight);
-               byteArray.writeShort (divisionDefine.mBottom);
-            }
-
-            byteArray.writeShort (worldDefine.mAssembledModuleDefines.length);
-            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
-            {
-               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
-
-               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, assembledModuleDefine.mModulePartDefines, false);
-            }
-
-            byteArray.writeShort (worldDefine.mSequencedModuleDefines.length);
-            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
-            {
-               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
-
-               //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
-               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
-            }
-         }
-         
-         // sounds
-         
-         if (worldDefine.mVersion >= 0x0159)
-         {
-            byteArray.writeShort (worldDefine.mSoundDefines.length);
-            for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
-            {
-               var soundDefine:Object = worldDefine.mSoundDefines [soundId];
-               
-               byteArray.writeUTF (soundDefine.mName == null ? "" : soundDefine.mName);
-               byteArray.writeInt (soundDefine.mAttributeBits);
-               byteArray.writeInt (soundDefine.mNumSamples);
-               
-               if (soundDefine.mFileData == null || soundDefine.mFileData == 0)
-               {
-                  byteArray.writeInt (0);
-               }
-               else
-               {
-                  byteArray.writeInt (soundDefine.mFileData.length);
-                  byteArray.writeBytes (soundDefine.mFileData, 0, soundDefine.mFileData.length);
-               }
-            }
-         }
-         
-         // ...
-         return byteArray;
       }
       
       public static function WriteShapePhysicsPropertiesAndAiType (byteArray:ByteArray, entityDefine:Object, worldDefine:WorldDefine, writeAiType:Boolean):void

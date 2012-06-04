@@ -1058,6 +1058,10 @@ package viewer {
             {
                worldDefine.mForRestartLevel = restartLevel;
             }
+            if (mParamsFromEditor != null && mParamsFromEditor.mCurrentSceneId != undefined)
+            {
+               worldDefine.mCurrentSceneId = mParamsFromEditor.mCurrentSceneId;
+            }
             mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);
 
             if (mPlayerWorld == null)

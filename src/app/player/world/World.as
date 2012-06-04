@@ -125,13 +125,13 @@ package player.world {
 
       public function World (worldDefine:Object)
       {
-      // basic
-
-         mVersion          = worldDefine.mVersion;
-         mAuthorName       = worldDefine.mAuthorName;
-         mAuthorHonepage   = worldDefine.mAuthorHomepage;
-         mShareSourceCode  = worldDefine.mShareSourceCode;
-         mPermitPublishing = worldDefine.mPermitPublishing;
+         // basic
+         //
+         //mVersion          = worldDefine.mVersion;
+         //mAuthorName       = worldDefine.mAuthorName;
+         //mAuthorHonepage   = worldDefine.mAuthorHomepage;
+         //mShareSourceCode  = worldDefine.mShareSourceCode;
+         //mPermitPublishing = worldDefine.mPermitPublishing;
          
          // ...
          
@@ -270,6 +270,16 @@ package player.world {
 //==============================================================================
 //
 //==============================================================================
+      
+      // temp function
+      public function SetBasicInfos (worldDefine:Object):void
+      {
+         mVersion          = worldDefine.mVersion;
+         mAuthorName       = worldDefine.mAuthorName;
+         mAuthorHonepage   = worldDefine.mAuthorHomepage;
+         mShareSourceCode  = worldDefine.mShareSourceCode;
+         mPermitPublishing = worldDefine.mPermitPublishing;
+      }
 
       public function GetVersion ():int
       {

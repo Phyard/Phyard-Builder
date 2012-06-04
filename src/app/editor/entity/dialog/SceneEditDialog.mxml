@@ -966,7 +966,7 @@
          //scenePlayPanel.percentHeight = 100;
          //Box_ScenePlay.addChild (scenePlayPanel);
 
-         mCurrentScenePlayPanel.SetWorldViewerParams (EditorContext.GetEditorApp ().GetWorldBinaryData (), mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 0xFFFFFF);            
+         mCurrentScenePlayPanel.SetWorldViewerParams (EditorContext.GetEditorApp ().GetWorldBinaryData (), GetCurrentSceneInEditing ().GetSceneId (), mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 0xFFFFFF);            
             
          mCurrentScenePlayPanel.SetDialogCallbacks ({
                                        UpdateInterface: UpdateInterfaceForPlaying, 

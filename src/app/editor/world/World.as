@@ -278,6 +278,7 @@ package editor.world {
          for (var i:int = 0; i < mScenes.length; ++ i)
          {
             var scene:Scene = mScenes [i] as Scene;
+            scene.SetSceneId (i);
             
             mSceneListDataProvider.push ({mName: i + "> " + scene.GetName (), mIndex: i, mDataTip: scene.GetName (), mData: scene});
          }

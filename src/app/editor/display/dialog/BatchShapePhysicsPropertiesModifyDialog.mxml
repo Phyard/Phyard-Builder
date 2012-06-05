@@ -141,14 +141,14 @@
 
          private var mParams:Object = new Object ();
 
-         //public function SetValues (initialValues:Object):void
-         //{
-         //   mParams = initialValues;
-         //}
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+         }
 
          private function OnInitPanel ():void
          {
-            SelectList_CollisionCategory.dataProvider = EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
+            SelectList_CollisionCategory.dataProvider = mParams.mScene.GetCollisionCategoryListDataProvider ();
             SelectList_CollisionCategory.selectedIndex = 0;
          }
 

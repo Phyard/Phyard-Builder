@@ -23,8 +23,7 @@
 
    <mx:ApplicationControlBar backgroundColor="0xA0A0A0" left="0" top="0" dock="false" paddingTop="8" paddingBottom="8" verticalAlign="bottom">
       <mx:VBox verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
-         <mx:Button id="Button_LoadWorld" toolTip="Open Design" click="OnClicLoadWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-open.png')" />
-         <mx:Button id="Button_SaveWorld" toolTip="Save Design" click="OnClicSaveWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-save.png')" />
+         <mx:Button id="Button_WorldFile" toolTip="Load / Save ..." click="OnClicWorldFileButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-world-file.png')" />
          <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-info.png')" />
          <mx:Spacer height="10" />
          <mx:Button id="Button_ShowModuleEditDialog" toolTip="Edit Image Modules" click="ShowAssetImageModuleListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-edit-modules.png')" />
@@ -34,24 +33,23 @@
       </mx:VBox>
    </mx:ApplicationControlBar>
 
-   <mx:XML id="SaveWorldMenuData">
-      <root>
-         <menuitem label="Save Online ..." data="save_online" for_online="true"/>
-         <menuitem label="Save Offline (xml) ..." data="save_offline"/>
-         <!--menuitem label="Save Local ..." data="save_local"/-->
-         <!--menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/-->
-         <menuitem label="Export Selected Entities to System Clipboard" data="export_selected_entities"/>
-         <!--menuitem label="Export All Functions to System Clipboard" data="export_all_functions"/-->
-      </root>
-   </mx:XML>
-
-   <mx:XML id="LoadWorldMenuData">
+   <mx:XML id="WorldFileMenuData">
       <root>
          <menuitem label="Load Online ..." data="load_online" for_online="true"/>
          <menuitem label="Load Offline (xml) ..." data="load_offline"/>
          <!--menuitem label="Load Local ..." data="load_local"/-->
          <!--menuitem label="Quick Load ..." data="load_quick"/-->
-         <menuitem label="Import ..." data="import"/>
+         
+         <menuitem type="separator" data=""/>
+         
+         <menuitem label="Save Online ..." data="save_online" for_online="true"/>
+         <menuitem label="Save Offline (xml) ..." data="save_offline"/>
+         <!--menuitem label="Save Local ..." data="save_local"/-->
+         <!--menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/-->
+         
+         <menuitem type="separator" data=""/>
+         
+         <menuitem label="About" data="about"/>
       </root>
    </mx:XML>
 
@@ -322,14 +320,14 @@
    // load / save
    //========================================================================================
       
-      private var mLoadWorldMenu:Menu = null;
+      private var mWorldFileMenu:Menu = null;
       
-      private function OnClicLoadWorldButton ():void
+      public function OnClicWorldFileButton ():void
       {
-         if (mLoadWorldMenu == null)
+         if (mWorldFileMenu == null)
          {
             var xml:XML = <root />;
-            for each (var menuItem:Object in LoadWorldMenuData.menuitem)
+            for each (var menuItem:Object in WorldFileMenuData.menuitem)
             {
                if (IsOnlineEditing () || menuItem.@["for_online"] != "true")
                {
@@ -337,93 +335,56 @@
                }
             }
             
-            mLoadWorldMenu = Menu.createMenu(Button_LoadWorld, xml, false);
-            mLoadWorldMenu.labelField="@label";
-            mLoadWorldMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectLoadWorldMenu);
+            mWorldFileMenu = Menu.createMenu(Button_WorldFile, xml, false);
+            mWorldFileMenu.labelField="@label";
+            mWorldFileMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectWorldFileMenu);
          }
          
-         var point:Point = Button_LoadWorld.localToGlobal (new Point (Button_LoadWorld.width, 0.5 * Button_LoadWorld.height));
+         var point:Point = Button_WorldFile.localToGlobal (new Point (Button_WorldFile.width, 0.5 * Button_WorldFile.height));
          
-         mLoadWorldMenu.show(point.x, point.y);
+         mWorldFileMenu.show (point.x, point.y);
       }
       
-      private function OnSelectLoadWorldMenu (event:MenuEvent):void
+      private function OnSelectWorldFileMenu (event:MenuEvent):void
       {
-         if (event.item.@data == "load_online")
+         var itemData:String = event.item.@data;
+         
+         if (itemData == "load_online")
          {
             OnlineLoad ();
          }
-         else if (event.item.@data == "load_offline")
+         else if (itemData == "load_offline")
          {
             OnStartOfflineLoading ();
          }
-         //else if (event.item.@data == "load_local")
+         //else if (itemData == "load_local")
          //{
          //}
-         //else if (event.item.@data == "load_quick")
+         //else if (itemData == "load_quick")
          //{
          //   MainView.QuickLoad ();
          //}
-         else if (event.item.@data == "import")
-         {
-            OnStartOfflineImporting ();
-         }
-         //else if (event.item.@data == "import_functions")
-         //{
-         //   MainView.OpenImportSourceCodeDialog (true);
-         //}
-      }
-      
-      private var mSaveWorldMenu:Menu = null;
-      
-      private function OnClicSaveWorldButton ():void
-      {
-         if (mSaveWorldMenu == null)
-         {
-            var xml:XML = <root />;
-            for each (var menuItem:Object in SaveWorldMenuData.menuitem)
-            {
-               if (IsOnlineEditing () || menuItem.@["for_online"] != "true")
-               {
-                  xml.appendChild (menuItem);
-               }
-            }
-            
-            mSaveWorldMenu = Menu.createMenu(Button_SaveWorld, xml, false);
-            mSaveWorldMenu.labelField="@label";
-            mSaveWorldMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectSaveWorldMenu);
-         }
          
-         var point:Point = Button_SaveWorld.localToGlobal (new Point (Button_SaveWorld.width, 0.5 * Button_SaveWorld.height));
-         
-         mSaveWorldMenu.show(point.x, point.y);
-      }
-      
-      private function OnSelectSaveWorldMenu (event:MenuEvent):void
-      {
-         if (event.item.@data == "save_online")
+         else if (itemData == "save_online")
          {
             OnStartOnlineSaving ();
          }
-         else if (event.item.@data == "save_offline")
+         else if (itemData == "save_offline")
          {
             OnStartOfflineSaving ();
          }
-         //else if (event.item.@data == "save_local")
+         //else if (itemData == "save_local")
          //{
          //}
-         //else if (event.item.@data == "save_cookie")
+         //else if (itemData == "save_cookie")
          //{
          //   MainView.QuickSave ();
          //}
-         else if (event.item.@data == "export_selected_entities")
+         
+         else if (itemData == "about")
          {
-            OnStartOfflineExporting ();
+            EditorContext.OnAbout ();
          }
-         //else if (event.item.@data == "export_all_functions")
-         //{
-         //   MainView.ExportSelectedsToSystemMemory ();
-         //}
       }
       
       private function OnStartOfflineLoading ():void
@@ -431,7 +392,7 @@
          EditorContext.ShowModalDialog (WorldLoadingDialog, OfflineLoad);
       }
       
-      private function OnStartOfflineImporting ():void
+      public function OnStartOfflineImporting ():void
       {
          EditorContext.ShowModalDialog (WorldImportDialog, OfflineImport);
       }
@@ -657,10 +618,10 @@
          
          //>> from v1.07 (in fact, the code added in v0110 r003)
          var shareSourceCode:Boolean = mWorld.IsShareSourceCode ();
-         designDataAll.writeShort (mWorld.GetEntityContainer ().GetViewportWidth ()); // view width
-         designDataAll.writeShort (mWorld.GetEntityContainer ().GetViewportHeight ()); // view height
-         //designDataAll.writeByte  ((mWorld.GetEntityContainer ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
-         designDataAll.writeByte  ((mWorld.GetEntityContainer ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin ? 1 : 0);
+         designDataAll.writeShort (mWorld.GetEntryScene ().GetViewportWidth ()); // view width
+         designDataAll.writeShort (mWorld.GetEntryScene ().GetViewportHeight ()); // view height
+         //designDataAll.writeByte  ((mWorld.GetEntryScene ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
+         designDataAll.writeByte  ((mWorld.GetEntryScene ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin ? 1 : 0);
          designDataAll.writeByte  (shareSourceCode ? 1 : 0); // share source code?
          //<<
          
@@ -944,10 +905,10 @@
          try
          {
             // ...
-            var width:int = mWorld.GetEntityContainer ().GetViewportWidth ();
-            var height:int = mWorld.GetEntityContainer ().GetViewportHeight ();
-            //var showPlayBar:Boolean = (mWorld.GetEntityContainer ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
-            var showPlayBar:Boolean = (mWorld.GetEntityContainer ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
+            var width:int = mWorld.GetEntryScene ().GetViewportWidth ();
+            var height:int = mWorld.GetEntryScene ().GetViewportHeight ();
+            //var showPlayBar:Boolean = (mWorld.GetEntryScene ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+            var showPlayBar:Boolean = (mWorld.GetEntryScene ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
             var heightWithPlayBar:int = (showPlayBar ? height + Define.DefaultPlayerSkinPlayBarHeight : height);
             
             var fileFormatVersionString:String = DataFormat3.GetVersionHexString (Version.VersionNumber);
@@ -1007,50 +968,60 @@
             newWorld = DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
                // !!! here may be some bugs: somewhere will call EditorContext.GetCurrentWorld, which is not the newWorld
             
-            var selectedEntities:Array = mWorld.GetEntityContainer ().GetSelectedAssets ();
+            var currentScene:editor.entity.Scene = GetSceneEditDialog ().GetCurrentSceneInEditing ();
+            var sceneIndex:int = currentScene.GetSceneIndex ();
             
+            while (newWorld.GetNumScenes () > sceneIndex + 1)
+               newWorld.DeleteSceneByIndex (newWorld.GetNumScenes () - 1, false);
+            while (newWorld.GetNumScenes () > 1)
+               newWorld.DeleteSceneByIndex (0, false);
+            
+            var newScene:editor.entity.Scene = newWorld.GetSceneByIndex (0);
+            
+            var selectedEntities:Array = currentScene.GetSelectedAssets ();
             if (selectedEntities.length == 0)
                return;
             
             var numEntities:int = selectedEntities.length;
+            var entity:Entity;
             var i:int;
             var index:int;
-            var entity:Entity;
+
             for (i = 0; i < numEntities; ++ i)
             {
                //trace ("selectedEntities[i] = " + selectedEntities[i]);
                //trace ("selectedEntities[i].parent = " + selectedEntities[i].parent);
                
-               index = mWorld.GetEntityContainer ().GetAssetCreationId (selectedEntities[i]);
-               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (index) as Entity;
+               index = currentScene.GetAssetCreationId (selectedEntities[i]);
+               entity = newScene.GetAssetByCreationId (index) as Entity;
                
                entity = entity.GetMainAsset () as Entity;
-               newWorld.GetEntityContainer ().AddAssetSelection (entity);
-               newWorld.GetEntityContainer ().AddAssetSelections (entity.GetSelectableAssets ());
+               newScene.AddAssetSelection (entity);
+               newScene.AddAssetSelections (entity.GetSelectableAssets ());
             }
             
             i = 0;
-            //numEntities = newWorld.GetEntityContainer ().GetNumAssets (); // this is bug
-            while (i < newWorld.GetEntityContainer ().GetNumAssets ()) // numEntities)
+            //numEntities = newScene.GetNumAssets (); // this is bug
+            while (i < newScene.GetNumAssets ()) // numEntities)
             {
-               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity;
+               entity = newScene.GetAssetByCreationId (i) as Entity;
                if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
                {
                   ++ i;
                }
                else
                {
-                  newWorld.GetEntityContainer ().DestroyAsset (entity);
+                  newScene.DestroyAsset (entity);
                }
             }
             
             //var cm:CollisionCManager = newWorld.GetCollisionManager ();
             //var ccId:int;
-            //numEntities = newWorld.GetEntityContainer ().GetNumAssets ();
+            //numEntities = newScene.GetNumAssets ();
             //
             //for (i = 0; i < numEntities; ++ i)
             //{
-            //   entity = newWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity;
+            //   entity = newScene.GetAssetByCreationId (i) as Entity;
             //   if (entity is EntityVectorShape)
             //   {
             //      ccId = (entity as EntityVectorShape).GetCollisionCategoryIndex ();
@@ -1074,14 +1045,14 @@
             //   }
             //}
             
-            var cm:CollisionCategoryManager = newWorld.GetEntityContainer ().GetCollisionCategoryManager ();
+            var cm:CollisionCategoryManager = newScene.GetCollisionCategoryManager ();
             cm.CancelAllAssetSelections ();
             var ccId:int;
-            numEntities = newWorld.GetEntityContainer ().GetNumAssets ();
+            numEntities = newScene.GetNumAssets ();
             
             for (i = 0; i < numEntities; ++ i)
             {
-               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity;
+               entity = newScene.GetAssetByCreationId (i) as Entity;
                if (entity is EntityShape)
                {
                   ccId = (entity as EntityShape).GetCollisionCategoryIndex ();

@@ -285,26 +285,19 @@ package editor.codelib {
 // menu
 //=============================================
       
-      private var mFunctionMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Custom");
-      
-      //public function GetFunctionMenuGroup ()::FunctionMenuGroup
-      //{
-      //   return mFunctionMenuGroup;
-      //}
-      
       public function UpdateFunctionMenu ():void
       {
-         if (mFunctionMenuGroup == null)
+         if (mCustomMenuGroup == null)
             return;
          
-         mFunctionMenuGroup.Clear ();
+         mCustomMenuGroup.Clear ();
          
-         // mFunctionMenuGroup.AddChildMenuGroup ();
-         // mFunctionMenuGroup.AddFunctionDeclaration ();
+         // mCustomMenuGroup.AddChildMenuGroup ();
+         // mCustomMenuGroup.AddFunctionDeclaration ();
          
          for (var i:int = 0; i < mFunctionAssets.length; ++ i)
          {
-            mFunctionMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
+            mCustomMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
          }
          
          //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();

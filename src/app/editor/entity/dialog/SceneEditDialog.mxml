@@ -345,16 +345,28 @@
    <mx:XML id="SceneSettingsMenuData">
       <root>
          <menuitem label="Change Current Scene Name ..." data="change_scene_name"/>
+         
          <menuitem type="separator" data=""/>
+         
          <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Simulation Settings ..." data="physics"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
          <menuitem label="Config World Appearance ..." data="appearance"/>
          <menuitem label="Config Viewport ..." data="viewport"/>
+         
          <menuitem type="separator" data=""/>
+         
+         <menuitem label="Import ..." data="import"/>
+         <menuitem label="Export Selected Entities to System Clipboard" data="export_selected_entities"/>
+         <!--menuitem label="Export All Functions to System Clipboard" data="export_all_functions"/-->
+         
+         <menuitem type="separator" data=""/>
+         
          <menuitem label="Clear All Entities In Current Scene ..." data="clear_all"/>
          <menuitem label="Clear All Entities and Reset Current Scene ..." data="clear_all_and_reset"/>
+         
          <menuitem type="separator" data=""/>
+         
          <menuitem id="MenuItem_DeleteScene" label="Delete Current Scene" data="delete_current_scene" enabled="true"/>
       </root>
    </mx:XML>
@@ -485,6 +497,8 @@
             SetCurrentSceneScale (scene.GetScale ());
             SetMousePosition (null);
          }
+         
+         UpdateSceneListInterface ();
       }
       
       // ...
@@ -773,39 +787,40 @@
       
       private function OnSelectClearOrResetSceneMenu (event:MenuEvent):void
       {
-         if (event.item.@data == "clear_all")
+         var itemData:String = event.item.@data;
+         if (itemData == "clear_all")
          {
             EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, mCurrentSceneEditPanel.ClearAllEntities);
          }
-         else if (event.item.@data == "clear_all_and_reset")
+         else if (itemData == "clear_all_and_reset")
          {
             EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, EditorContext.GetEditorApp ().NewWorld);
          }
-         else if (event.item.@data == "general")
+         else if (itemData == "general")
          {
             mCurrentSceneEditPanel.ShowLevelRulesEditDialog ();
          }
-         else if (event.item.@data == "coordinate")
+         else if (itemData == "coordinate")
          {
             mCurrentSceneEditPanel.ShowLevelCoordinateSystemEditDialog ();
          }
-         else if (event.item.@data == "physics")
+         else if (itemData == "physics")
          {
             mCurrentSceneEditPanel.ShowLevelPhysicsEditDialog ();
          }
-         else if (event.item.@data == "appearance")
+         else if (itemData == "appearance")
          {
             mCurrentSceneEditPanel.ShowLevelAppearanceEditDialog ();
          }
-         else if (event.item.@data == "viewport")
+         else if (itemData == "viewport")
          {
             mCurrentSceneEditPanel.ShowLevelViewportEditDialog ();
          }
-         else if (event.item.@data == "delete_current_scene")
+         else if (itemData == "delete_current_scene")
          {
             EditorContext.ShowAlert ("Delete Current Scene", "Do you want to delete current scene?", true, OnDeleteCurrentScene);
          }
-         else if (event.item.@data == "change_scene_name")
+         else if (itemData == "change_scene_name")
          {
             var scene:editor.entity.Scene = mCurrentSceneEditPanel.GetScene ();
             if (scene != null)
@@ -813,6 +828,22 @@
                EditorContext.ShowModalDialog (NameSettingDialog, ChangeCurrentSceneName, {mName: scene.GetName ()});
             }
          }
+         else if (itemData == "import")
+         {
+            EditorContext.GetEditorApp ().OnStartOfflineImporting ();
+         }
+         //else if (itemData == "import_functions")
+         //{
+         //   MainView.OpenImportSourceCodeDialog (true);
+         //}
+         else if (itemData == "export_selected_entities")
+         {
+            EditorContext.GetEditorApp ().OnStartOfflineExporting ();
+         }
+         //else if (itemData == "export_all_functions")
+         //{
+         //   MainView.ExportSelectedsToSystemMemory ();
+         //}
       }
       
       private function OnClickMoveSceneModeButton ():void
@@ -966,7 +997,7 @@
          //scenePlayPanel.percentHeight = 100;
          //Box_ScenePlay.addChild (scenePlayPanel);
 
-         mCurrentScenePlayPanel.SetWorldViewerParams (EditorContext.GetEditorApp ().GetWorldBinaryData (), GetCurrentSceneInEditing ().GetSceneId (), mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 0xFFFFFF);            
+         mCurrentScenePlayPanel.SetWorldViewerParams (EditorContext.GetEditorApp ().GetWorldBinaryData (), GetCurrentSceneInEditing ().GetSceneIndex (), mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 0xFFFFFF);            
             
          mCurrentScenePlayPanel.SetDialogCallbacks ({
                                        UpdateInterface: UpdateInterfaceForPlaying, 

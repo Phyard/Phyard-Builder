@@ -23,9 +23,11 @@ package editor {
    
    import editor.world.World;
    
+   import editor.asset.Asset;
+   
    import editor.entity.Entity;
    
-   import editor.asset.Asset;
+   import editor.codelib.CodeLibManager;
    
    import editor.image.dialog.AssetImageModuleListDialog;
    import editor.image.AssetImageModule;
@@ -105,7 +107,7 @@ package editor {
          return menuItemAbout;
       }
       
-      private static function OnAbout (event:ContextMenuEvent):void
+      public static function OnAbout (event:ContextMenuEvent = null):void
       {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
@@ -482,7 +484,7 @@ package editor {
          return mCopiedCodeSnippet != null;
       }
       
-      public function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array):void
+      public function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array, codelibManager:CodeLibManager):void
       {
          if (copiedCallings == null || copiedCallings.length == 0)
          {
@@ -492,13 +494,13 @@ package editor {
          {
             var codeSnippet:CodeSnippet =  new CodeSnippet (ownerFunctionDefinition);
             codeSnippet.AssignFunctionCallings (copiedCallings);
-            codeSnippet.PhysicsValues2DisplayValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            codeSnippet.PhysicsValues2DisplayValues (codelibManager.GetScene ().GetCoordinateSystem ());
             
             mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
          }
       }
       
-      public function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition):CodeSnippet
+      public function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, codelibManager:CodeLibManager):CodeSnippet
       {
          if (mCopiedCodeSnippet == null)
          {
@@ -509,7 +511,7 @@ package editor {
             mCopiedCodeSnippet.ValidateCallings ();
             
             var codeSnippet:CodeSnippet = mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
-            codeSnippet.DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            codeSnippet.DisplayValues2PhysicsValues (codelibManager.GetScene ().GetCoordinateSystem ());
             
             return codeSnippet;
          }

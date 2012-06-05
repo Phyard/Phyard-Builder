@@ -2651,6 +2651,13 @@ package common {
          
          var element:XML;
          
+         // ...
+         
+         if (worldDefine.mVersion >= 0x0200)
+         {
+            sceneDefine.mName = sceneXML.@name;
+         }
+         
          // settings
          if (worldDefine.mVersion >= 0x0104)
          {
@@ -3660,6 +3667,14 @@ package common {
       
       public static function SceneDefine2ByteArray (worldDefine:WorldDefine, sceneDefine:SceneDefine, byteArray:ByteArray):void
       {
+         
+         // ...
+         
+         if (worldDefine.mVersion >= 0x0200)
+         {
+            byteArray.writeUTF (sceneDefine.mName);
+         }
+         
          // settings
          {
             if (worldDefine.mVersion >= 0x0151)

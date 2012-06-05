@@ -135,16 +135,16 @@ package editor.entity {
 //   scene id
 //=================================================================================
       
-      private var mSceneId:int = 0;
+      private var mSceneIndex:int = 0;
       
-      public function GetSceneId ():int
+      public function GetSceneIndex ():int
       {
-         return mSceneId;
+         return mSceneIndex;
       }
       
-      public function SetSceneId (sceneId:int):void
+      public function SetSceneIndex (sceneIndex:int):void
       {
-         mSceneId = sceneId;
+         mSceneIndex = sceneIndex;
       }
       
 //=================================================================================

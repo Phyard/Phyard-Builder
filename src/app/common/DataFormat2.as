@@ -253,6 +253,7 @@ package common {
             worldDefine.mCurrentSceneId = 0;
          
          var sceneDefine:SceneDefine = worldDefine.mSceneDefines [worldDefine.mCurrentSceneId];
+         // sceneDefine.mName
          
    //*********************************************************************************************************************************
    //
@@ -693,6 +694,13 @@ package common {
             xml = <Scene />;
          
          var element:XML;
+         
+         // ...
+         
+         if (worldDefine.mVersion >= 0x0200)
+         {
+            xml.@name = sceneDefine.mName;
+         }
          
          // ...
          
@@ -1843,6 +1851,13 @@ package common {
       public static function ByteArray2SceneDefine (byteArray:ByteArray, worldDefine:WorldDefine):SceneDefine
       {
          var sceneDefine:SceneDefine = new SceneDefine ();
+         
+         // ...
+         
+         if (worldDefine.mVersion >= 0x0200)
+         {
+            sceneDefine.mName = byteArray.readUTF ();
+         }
          
          // ...
 
@@ -3204,6 +3219,13 @@ package common {
          for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
          {
             var sceneDefine:SceneDefine = worldDefine.mSceneDefines [sceneId];
+         
+            // ...
+            
+            if (worldDefine.mVersion < 0x0200)
+            {
+               sceneDefine.mName = "Default Scene";
+            }
             
             if (worldDefine.mVersion < 0x0151)
             {

@@ -185,6 +185,11 @@ package editor.world {
       
       private var mScenes:Array = new Array ();
       
+      public function GetEntryScene ():Scene
+      {
+         return mScenes [0] as Scene;
+      }
+      
       public function GetNumScenes ():int
       {
          return mScenes.length;
@@ -208,7 +213,7 @@ package editor.world {
          
          if (afterIndex < 0 || afterIndex > mScenes.length)
             afterIndex = mScenes.length;
-            
+         
          mScenes.splice (afterIndex, 0, newScene);
          
          UpdateSceneListDataProvider ();
@@ -216,7 +221,7 @@ package editor.world {
          return afterIndex;
       }
       
-      public function DeleteSceneByIndex (index:int):int
+      public function DeleteSceneByIndex (index:int, updateDataProvider:Boolean = true):int
       {
          if (index < 0 || index >= mScenes.length)
             return -1;
@@ -224,9 +229,12 @@ package editor.world {
          if (mScenes.length <= 1)
             return -1;
          
+         var sceneToDelete:Scene = mScenes [index];
+         sceneToDelete.Destroy ();
          mScenes.splice (index, 1);
          
-         UpdateSceneListDataProvider ();
+         if (updateDataProvider)
+            UpdateSceneListDataProvider ();
          
          return mScenes.length >= index ? mScenes.length - 1 : index;
       }
@@ -242,9 +250,9 @@ package editor.world {
          if (targetIndex == fromIndex)
             return -1;
          
-         var scene:Scene = mScenes [targetIndex];
-         mScenes [targetIndex] = mScenes [fromIndex];
-         mScenes [fromIndex] = scene;
+         var scene:Scene = mScenes [fromIndex];
+         mScenes.splice (fromIndex, 1);
+         mScenes.splice (targetIndex, 0, scene);
          
          UpdateSceneListDataProvider ();
          
@@ -278,7 +286,7 @@ package editor.world {
          for (var i:int = 0; i < mScenes.length; ++ i)
          {
             var scene:Scene = mScenes [i] as Scene;
-            scene.SetSceneId (i);
+            scene.SetSceneIndex (i);
             
             mSceneListDataProvider.push ({mName: i + "> " + scene.GetName (), mIndex: i, mDataTip: scene.GetName (), mData: scene});
          }

@@ -2098,7 +2098,7 @@ package editor.entity.dialog {
       
       public function ShowBatchModifyShapePhysicsPropertiesDialog ():void
       {
-         EditorContext.ShowModalDialog (BatchShapePhysicsPropertiesModifyDialog, OnBatchModifyShapePhysicsProperties, null);
+         EditorContext.ShowModalDialog (BatchShapePhysicsPropertiesModifyDialog, OnBatchModifyShapePhysicsProperties, {mScene: mScene});
       }
       
       public function ShowBatchModifyShapeAppearancePropertiesDialog ():void

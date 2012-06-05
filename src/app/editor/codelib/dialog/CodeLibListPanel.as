@@ -241,7 +241,7 @@ package editor.codelib.dialog {
             values.mCodeLibManager = mCodeLibManager;
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
             values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
-            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mCodeLibManager.GetScene ().GetCoordinateSystem ());
             
             EditorContext.ShowModalDialog (FunctionEditDialog, ConfirmSettingAssetProperties, values);
          }
@@ -261,7 +261,7 @@ package editor.codelib.dialog {
             
             var code_snippet:CodeSnippet = aFunction.GetCodeSnippet ();
             code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-            code_snippet.PhysicsValues2DisplayValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            code_snippet.PhysicsValues2DisplayValues (mCodeLibManager.GetScene ().GetCoordinateSystem ());
          }
       }
       

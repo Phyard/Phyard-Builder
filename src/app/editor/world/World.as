@@ -537,15 +537,6 @@ package editor.world {
       //{
       //   return mSessionVariableSpace;
       //}
-      
-//=================================================================================
-//   temp
-//=================================================================================
-      
-      public function GetEntityContainer ():Scene
-      {
-         return mScenes [0] as Scene;
-      }
    }
 }
 

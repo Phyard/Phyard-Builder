@@ -636,7 +636,7 @@ package viewer {
                mStartRightNow = mParamsFromContainer.mStartRightNow == undefined ? true : mParamsFromContainer.mStartRightNow;
                mWorldPluginDomain = mParamsFromContainer.mWorldDomain;
 
-               ReloadPlayerWorld ();
+               ReloadPlayerWorld (false, mParamsFromEditor.mCurrentSceneId);
             }
             else if (mParamsFromUniViewer != null)
             {
@@ -1010,8 +1010,10 @@ package viewer {
 //======================================================================
 //
 //======================================================================
+      
+      private var mCurrentSceneID:int = 0;
 
-      private function ReloadPlayerWorld (restartLevel:Boolean = false):void
+      private function ReloadPlayerWorld (restartLevel:Boolean = false, sceneId:int = 0):void
       {
       trace ("ReloadPlayerWorld");
          
@@ -1023,6 +1025,8 @@ package viewer {
 
          try
          {
+            mCurrentSceneID = sceneId;
+               
             if (mFirstTimePlaying)
             {
                RetrieveWorldPluginProperties ();
@@ -1054,14 +1058,19 @@ package viewer {
 
             mWorldBinaryData.position = 0;
             var worldDefine:Object = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
-            if (worldDefine != null && worldDefine.hasOwnProperty ("mForRestartLevel"))
+            if (worldDefine != null)
             {
-               worldDefine.mForRestartLevel = restartLevel;
+               if (worldDefine.hasOwnProperty ("mForRestartLevel"))
+               {
+                  worldDefine.mForRestartLevel = restartLevel;
+               }
+               
+               if (worldDefine.hasOwnProperty ("mCurrentSceneId"))
+               {
+                  worldDefine.mCurrentSceneId = sceneId;
+               }
             }
-            if (mParamsFromEditor != null && mParamsFromEditor.mCurrentSceneId != undefined)
-            {
-               worldDefine.mCurrentSceneId = mParamsFromEditor.mCurrentSceneId;
-            }
+            
             mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);
 
             if (mPlayerWorld == null)
@@ -1091,6 +1100,7 @@ package viewer {
             // from v1.5
             mWorldPlugin.Call ("SetUiParams", {
                mWorld : mPlayerWorld,
+               OnLoadScene : OnLoadScene, 
                OnClickRestart : mSkin.Restart,
                IsPlaying : mSkin.IsPlaying,
                SetPlaying : mSkin.SetPlaying,
@@ -1757,25 +1767,17 @@ package viewer {
 //
 //======================================================================
 
-      public function IsPlaying ():Boolean
+      private function OnLoadScene (sceneId:int):void
       {
-         if(mSkin == null)
-            return false;
+         ReloadPlayerWorld (false, sceneId);
 
-         return mSkin.IsPlaying ();
-      }
-
-      public function GetPlayingSpeedX ():int
-      {
-         if (mSkin == null)
-            return 2;
-
-         return mSkin.GetPlayingSpeedX ();
+         if (_onPlayStatusChanged != null)
+            _onPlayStatusChanged ();
       }
 
       private function OnRestart (data:Object = null):void
       {
-         ReloadPlayerWorld (true);
+         ReloadPlayerWorld (true, mCurrentSceneID);
 
          if (_onPlayStatusChanged != null)
             _onPlayStatusChanged ();
@@ -1791,6 +1793,22 @@ package viewer {
       {
          if (_onPlayStatusChanged != null)
             _onPlayStatusChanged ();
+      }
+
+      public function IsPlaying ():Boolean
+      {
+         if(mSkin == null)
+            return false;
+
+         return mSkin.IsPlaying ();
+      }
+
+      public function GetPlayingSpeedX ():int
+      {
+         if (mSkin == null)
+            return 2;
+
+         return mSkin.GetPlayingSpeedX ();
       }
 
       private function OnSpeedChanged (data:Object = null):void

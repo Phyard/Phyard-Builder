@@ -226,6 +226,8 @@ package player.trigger {
 
       // game / design
 
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
+
          RegisterCoreFunction (CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelPaused,            SetLevelPaused);
@@ -2037,6 +2039,13 @@ package player.trigger {
    //*******************************************************************
    // game / design
    //*******************************************************************
+
+      public static function LoadLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = int (valueSource.EvaluateValueObject ());
+
+         Global.UI_OnLoadScene (levelIndex);
+      }
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void
       {

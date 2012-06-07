@@ -16,7 +16,7 @@ package player
          {
             case "GetStaticProperties":
                return {
-                  mWorldVersion : Version.VersionNumber,
+                  mWorldVersion : Version.VersionNumber, // version of the world plugin, not the world file format
                   //WorldFormat_HexString2ByteArray : DataFormat2.HexString2ByteArray, // from v1.00 to v1.55 (excluding 1.55)
                   WorldFormat_ByteArray2WorldDefine : DataFormat2.ByteArray2WorldDefine, // from v1.00
                   WorldFormat_WorldDefine2Xml : DataFormat2.WorldDefine2Xml,  // from v1.02
@@ -76,6 +76,8 @@ package player
                };
             case "SetUiParams":
                world = params.mWorld as World;
+               
+               Global.UI_OnLoadScene = params.OnLoadScene as Function; // from v2.00
                
                Global.UI_RestartPlay = params.OnClickRestart as Function;
                Global.UI_IsPlaying = params.IsPlaying as Function;

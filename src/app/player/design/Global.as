@@ -67,6 +67,7 @@ package player.design
       
    // callbacks from viewer
       
+      public static var UI_OnLoadScene:Function;
       public static var UI_RestartPlay:Function;
       public static var UI_IsPlaying:Function;
       public static var UI_SetPlaying:Function;

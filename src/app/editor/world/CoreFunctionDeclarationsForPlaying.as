@@ -1336,6 +1336,13 @@ package editor.world {
 
       // game / design
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadLevel, world_general_package, "Load Level", null, null,
+                     [
+                        new VariableDefinitionNumber ("Level"),
+                     ],
+                     null
+                  );
+
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_RestartLevel, world_general_package, "Restart Level", null, null,
                      null,
                      null

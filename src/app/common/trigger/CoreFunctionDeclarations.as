@@ -1252,6 +1252,13 @@ package common.trigger {
 
       // game / design
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_LoadLevel,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
+                     null
+                  );
+
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_RestartLevel,
                      null,
                      null

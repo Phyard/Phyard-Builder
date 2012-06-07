@@ -49,6 +49,8 @@ package editor.trigger {
                return ValidateValueObject_Module (value);
             case ValueTypeDefine.ValueType_Sound:
                return ValidateValueObject_Sound (value);
+            case ValueTypeDefine.ValueType_Scene:
+               return ValidateValueObject_Scene (value);
             case ValueTypeDefine.ValueType_Array:
                return ValidateValueObject_Array (value);
             default:
@@ -74,6 +76,8 @@ package editor.trigger {
                return "Module";
             case ValueTypeDefine.ValueType_Sound:
                return "Sound";
+            case ValueTypeDefine.ValueType_Scene:
+               return "Scene";
             case ValueTypeDefine.ValueType_Array:
                return "Array";
             default:
@@ -98,6 +102,8 @@ package editor.trigger {
             case ValueTypeDefine.ValueType_Module:
                return null;
             case ValueTypeDefine.ValueType_Sound:
+               return null;
+            case ValueTypeDefine.ValueType_Scene:
                return null;
             case ValueTypeDefine.ValueType_Array:
                return null;
@@ -124,11 +130,25 @@ package editor.trigger {
                return new VariableDefinitionModule (variableName);
             case ValueTypeDefine.ValueType_Sound:
                return new VariableDefinitionSound (variableName);
+            case ValueTypeDefine.ValueType_Scene:
+               return new VariableDefinitionScene (variableName);
             case ValueTypeDefine.ValueType_Array:
                return new VariableDefinitionArray (variableName);
             default:
                throw new Error ("unknown type in CreateVariableDefinition");
          }
+      }
+      
+      public static function ValidateValueObject_Scene (valueObject:Object):Object
+      {
+         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
+         
+         var scene:Scene = valueObject as Scene;
+         //if (scene != null && scene.GetWorld () != world)
+         if (scene != null && scene.GetSceneIndex () < 0)
+            scene = null;
+         
+         return scene;
       }
       
       public static function ValidateValueObject_Entity (valueObject:Object):Object
@@ -576,6 +596,9 @@ package editor.trigger {
                   break;
                case ValueTypeDefine.ValueType_Sound:
                   mPropertyVariableDefinition = new VariableDefinitionSound ("Sound Property");
+                  break;
+               case ValueTypeDefine.ValueType_Scene:
+                  mPropertyVariableDefinition = new VariableDefinitionScene ("Scene Property");
                   break;
                case ValueTypeDefine.ValueType_Array:
                   mPropertyVariableDefinition = new VariableDefinitionArray ("Array Property");

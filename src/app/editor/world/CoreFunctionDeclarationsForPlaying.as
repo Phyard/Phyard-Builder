@@ -1338,7 +1338,7 @@ package editor.world {
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadLevel, world_general_package, "Load Level", null, null,
                      [
-                        new VariableDefinitionNumber ("Level"),
+                        new VariableDefinitionScene ("Level"),
                      ],
                      null
                   );

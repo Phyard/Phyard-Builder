@@ -1254,7 +1254,7 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_LoadLevel,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Scene,         null],
                      ],
                      null
                   );

@@ -663,6 +663,12 @@ package common {
                //return Global.GetSoundByIndex (soundIndex);
                return soundIndex;
             }
+            case ValueTypeDefine.ValueType_Scene:
+            {
+               var sceneIndex:int = valueObject as int;
+               //return Global.GetSceneByIndex (sceneIndex);
+               return sceneIndex;
+            }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
                //{
@@ -882,6 +888,8 @@ package common {
             case ValueTypeDefine.ValueType_Module:
                return binFile.readInt (); // in fact, short is ok
             case ValueTypeDefine.ValueType_Sound:
+               return binFile.readInt (); // in fact, short is ok
+            case ValueTypeDefine.ValueType_Scene:
                return binFile.readInt (); // in fact, short is ok
             case ValueTypeDefine.ValueType_Array:
                var nullArray:Boolean = binFile.readByte () == 0;
@@ -1145,6 +1153,8 @@ package common {
             case ValueTypeDefine.ValueType_Module:
                return valueObject as int;
             case ValueTypeDefine.ValueType_Sound:
+               return valueObject as int;
+            case ValueTypeDefine.ValueType_Scene:
                return valueObject as int;
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null) 

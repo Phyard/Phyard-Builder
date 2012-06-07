@@ -1846,20 +1846,20 @@ package editor.entity {
       }
       
 //=================================================================================
-//   queries
+//   select list
 //=================================================================================
 
-      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, includeGround:Boolean = false, nullEntityLable:String = null, isForPureCustomFunction:Boolean = false):Array
+      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, includeGround:Boolean = false, nullEntityText:String = null, isForPureCustomFunction:Boolean = false):Array
       {
          var list:Array = new Array ();
 
          if (includeGround)
-            list.push({label:Define.EntityId_Ground + ":{Ground}", mEntityIndex:Define.EntityId_Ground});
+            list.push ({label:Define.EntityId_Ground + ": {Ground}", mEntityIndex:Define.EntityId_Ground});
 
-         if (nullEntityLable == null)
-            nullEntityLable = "(null)";
+         if (nullEntityText == null)
+            nullEntityText = "(null)";
 
-         list.push({label:Define.EntityId_None + ":" + nullEntityLable, mEntityIndex:Define.EntityId_None});
+         list.push ({label:Define.EntityId_None + ": " + nullEntityText, mEntityIndex:Define.EntityId_None});
 
          if (! isForPureCustomFunction)
          {

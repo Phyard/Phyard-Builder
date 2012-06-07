@@ -43,6 +43,7 @@ package common {
    import editor.trigger.VariableDefinitionBoolean;
    import editor.trigger.VariableDefinitionNumber;
    import editor.trigger.VariableDefinitionString;
+   import editor.trigger.VariableDefinitionScene;
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.VariableDefinitionCollisionCategory;
    import editor.trigger.VariableDefinitionArray;
@@ -293,6 +294,12 @@ package common {
                var sound:AssetSound = valueObject as AssetSound;
                
                return scene.GetWorld ().GetSoundIndex (sound);
+            }
+            case ValueTypeDefine.ValueType_Scene:
+            {
+               var scene:Scene = valueObject as Scene;
+               
+               return scene.GetSceneIndex ();
             }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
@@ -655,6 +662,11 @@ package common {
                var soundIndex:int = valueObject as int;
                return scene.GetWorld ().GetSoundByIndex (soundIndex);
             }
+            case ValueTypeDefine.ValueType_Scene:
+            {
+               var sceneIndex:int = valueObject as int;
+               return scene.GetWorld ().GetSceneByIndex (sceneIndex);
+            }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
                //{
@@ -722,6 +734,9 @@ package common {
                break;
             case ValueTypeDefine.ValueType_Sound:
                variableDefinition = new VariableDefinitionSound (variableInstanceDefine.mName);
+               break;
+            case ValueTypeDefine.ValueType_Scene:
+               variableDefinition = new VariableDefinitionScene (variableInstanceDefine.mName);
                break;
             case ValueTypeDefine.ValueType_Array:
                variableDefinition = new VariableDefinitionArray (variableInstanceDefine.mName);
@@ -951,6 +966,9 @@ package common {
                binFile.writeInt (valueObject as int); // short is ok, in fact
                break;
             case ValueTypeDefine.ValueType_Sound:
+               binFile.writeInt (valueObject as int); // short is ok, in fact
+               break;
+            case ValueTypeDefine.ValueType_Scene:
                binFile.writeInt (valueObject as int); // short is ok, in fact
                break;
             case ValueTypeDefine.ValueType_Array:
@@ -1211,6 +1229,8 @@ package common {
                return parseInt (String (direct_value));
             case ValueTypeDefine.ValueType_Sound:
                return parseInt (String (direct_value));
+            case ValueTypeDefine.ValueType_Scene:
+               return parseInt (String (direct_value));
             case ValueTypeDefine.ValueType_Array:
                //if (direct_value == null) 
                //{
@@ -1265,7 +1285,7 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftReferenceIndexesInCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int, sceneIndexShiftedValue:int):void
       {
 
          var funcCallingDefine:FunctionCallingDefine;
@@ -1302,13 +1322,13 @@ package common {
                   var numInputs:int = funcCallingDefine.mNumInputs;
                   for (j = 0; j < numInputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue);
+                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue, sceneIndexShiftedValue);
                   }
                   
                   var numOutputs:int = funcCallingDefine.mNumOutputs;
                   for (j = 0; j < numOutputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue);
+                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue, sceneIndexShiftedValue);
                   }
                //}
                //else
@@ -1318,7 +1338,7 @@ package common {
          }
       }
       
-      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int):void
+      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int, sceneIndexShiftedValue:int):void
       {
          var valueSourceType:int = sourceDefine.GetValueSourceType ();
          
@@ -1354,6 +1374,13 @@ package common {
                if (soundIndex >= 0)
                   directSourceDefine.mValueObject = soundIndex + soundIndexShiftedValue;
             }
+            else if (valueType == ValueTypeDefine.ValueType_Scene)
+            {
+               var sceneIndex:int = int (directSourceDefine.mValueObject);
+               
+               if (sceneIndex >= 0)
+                  directSourceDefine.mValueObject = sceneIndex + sceneIndexShiftedValue;
+            }
          }
          else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -1385,11 +1412,11 @@ package common {
             if (propertyId >= 0)
                propertySourceDefine.mPropertyId = propertyId + entityVariableShiftIndex;
             
-            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue);
+            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue, sceneIndexShiftedValue);
          }
       }
       
-      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int):void
+      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int, sceneIndexShiftedValue:int):void
       {
          var valueTargetType:int = targetDefine.GetValueTargetType ();
          
@@ -1423,7 +1450,7 @@ package common {
             if (propertyId >= 0)
                propertyTargetDefine.mPropertyId = propertyId + entityVariableShiftIndex;
             
-            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue);
+            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue, sceneIndexShiftedValue);
          }
       }
    }

@@ -68,6 +68,7 @@ package editor.world {
          mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_CollisionCategory);
          mRegisterVariableSpace_Module            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Module);
          mRegisterVariableSpace_Sound            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Sound);
+         mRegisterVariableSpace_Scene            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Scene); // useless in fact.
          mRegisterVariableSpace_Array             = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Array);
          
          // session variable space
@@ -231,6 +232,7 @@ package editor.world {
          
          var sceneToDelete:Scene = mScenes [index];
          sceneToDelete.Destroy ();
+         sceneToDelete.SetSceneIndex (-1);
          mScenes.splice (index, 1);
          
          if (updateDataProvider)
@@ -301,6 +303,37 @@ package editor.world {
          }
       }
       
+//=================================================================================
+//   select list
+//=================================================================================
+
+      public function GetESceneSelectListDataProvider ():Array
+      {
+         var list:Array = new Array ();
+
+         list.push ({label:"-1: null", mSceneIndex:-1});
+
+         for each (var scene:Scene in mScenes)
+         {
+            var item:Object = new Object ();
+            item.label = scene.GetSceneIndex () + ": " + scene.GetName ();
+            item.mSceneIndex = scene.GetSceneIndex ();
+            list.push (item);
+         }
+
+         return list;
+      }
+
+      public static function SceneIndex2SelectListSelectedIndex (sceneIndex:int, dataProvider:Array):int
+      {
+         for (var i:int = 0; i < dataProvider.length; ++ i)
+         {
+            if (dataProvider[i].mSceneIndex == sceneIndex)
+               return i;
+         }
+
+         return 0;
+      }
 
 //=================================================================================
 //   image asset and sounds
@@ -503,6 +536,7 @@ package editor.world {
       private var mRegisterVariableSpace_CollisionCategory:VariableSpaceRegister;
       private var mRegisterVariableSpace_Module           :VariableSpaceRegister;
       private var mRegisterVariableSpace_Sound           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_Scene           :VariableSpaceRegister; // useless in fact
       private var mRegisterVariableSpace_Array            :VariableSpaceRegister;
       
       // session variables
@@ -526,6 +560,8 @@ package editor.world {
                return mRegisterVariableSpace_Module;
             case ValueTypeDefine.ValueType_Sound:
                return mRegisterVariableSpace_Sound;
+            case ValueTypeDefine.ValueType_Scene:
+               return mRegisterVariableSpace_Scene;
             case ValueTypeDefine.ValueType_Array:
                return mRegisterVariableSpace_Array;
             default:

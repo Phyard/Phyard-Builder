@@ -2043,6 +2043,8 @@ package player.trigger {
       public static function LoadLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
+         if (levelIndex < 0)
+            return;
 
          Global.UI_OnLoadScene (levelIndex);
       }

@@ -104,6 +104,14 @@
                      <mx:Spacer width="3" />
                   </mx:HBox>
                </mx:VBox>
+               <mx:VBox id="Box_SceneVariableSettingPanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:Label width="65%" text="null" textAlign="left" />
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
                <mx:VBox id="Box_EntityArraySettingPanel" width="100%" height="100%">
                   <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                      <mx:Spacer width="3" />
@@ -124,8 +132,9 @@
          <menuitem label="New String Variable" data="String"/>
          <menuitem label="New Collision Category Variable" data="CCat"/>
          <menuitem label="New Entity Variable" data="Entity"/>
-         <menuitem label="New Module Variable" data="Module"/>
+         <!--menuitem label="New Module Variable" data="Module"/>
          <menuitem label="New Sound Variable" data="Sound"/>
+         <menuitem label="New Scene Variable" data="Scene"/-->
          <menuitem label="New Array Variable" data="Array"/>
       </root>
    </mx:XML>
@@ -147,6 +156,7 @@
             import editor.trigger.VariableDefinitionBoolean;
             import editor.trigger.VariableDefinitionNumber;
             import editor.trigger.VariableDefinitionString;
+            import editor.trigger.VariableDefinitionScene;
             import editor.trigger.VariableDefinitionEntity;
             import editor.trigger.VariableDefinitionCollisionCategory;
             import editor.trigger.VariableDefinitionModule;
@@ -287,6 +297,10 @@
                {
                   variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Sound, "aSound");
                }
+               else if (event.item.@data == "Scene")
+               {
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Scene, "aScene");
+               }
                else if (event.item.@data == "Array")
                {
                   variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Array, "anArray");
@@ -425,6 +439,11 @@
                   {
                      //RadioButton_EntityType.selected = true;
                      ViewStack_VariableSetting.selectedChild = Box_SoundVariableSettingPanel;
+                  }
+                  else if (variableDefinition is VariableDefinitionScene)
+                  {
+                     //RadioButton_EntityType.selected = true;
+                     ViewStack_VariableSetting.selectedChild = Box_SceneVariableSettingPanel;
                   }
                   else if (variableDefinition is VariableDefinitionArray)
                   {

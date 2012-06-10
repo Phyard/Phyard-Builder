@@ -454,8 +454,12 @@
          }
          else
          {
-            var dataProvider:Array = world.GetSceneListDataProvider ();;
+            var oldSelectedIndex:int = List_Scenes.selectedIndex;
+            
+            var dataProvider:Array = world.GetSceneListDataProvider ();
             List_Scenes.dataProvider = dataProvider;
+            if (selectedSceneIndex < 0)
+               selectedSceneIndex = oldSelectedIndex;
             if (selectedSceneIndex < 0 || selectedSceneIndex >= dataProvider.length)
                selectedSceneIndex = 0;
             

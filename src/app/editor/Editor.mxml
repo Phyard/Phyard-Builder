@@ -37,6 +37,7 @@
       <root>
          <menuitem label="Load Online ..." data="load_online" for_online="true"/>
          <menuitem label="Load Offline (xml) ..." data="load_offline"/>
+         <menuitem label="Import Scenes (xml) ..." data="import_scenes"/>
          <!--menuitem label="Load Local ..." data="load_local"/-->
          <!--menuitem label="Quick Load ..." data="load_quick"/-->
          
@@ -44,6 +45,7 @@
          
          <menuitem label="Save Online ..." data="save_online" for_online="true"/>
          <menuitem label="Save Offline (xml) ..." data="save_offline"/>
+         <menuitem label="Export Current Scene (xml) ..." data="export_current_scene"/>
          <!--menuitem label="Save Local ..." data="save_local"/-->
          <!--menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/-->
          
@@ -246,7 +248,7 @@
       public function CloseWorld ():void
       {
          mWorld = null;
-         mSceneEditDialog.OnWorldChanged ();
+         mSceneEditDialog.OnWorldChanged (0);
          
          if (EditorContext.sEditorContext != null)
             EditorContext.sEditorContext.Cleanup ();
@@ -357,6 +359,10 @@
          {
             OnStartOfflineLoading ();
          }
+         else if (itemData == "import_scenes")
+         {
+            OnImportScenes ();
+         }
          //else if (itemData == "load_local")
          //{
          //}
@@ -372,6 +378,10 @@
          else if (itemData == "save_offline")
          {
             OnStartOfflineSaving ();
+         }
+         else if (itemData == "export_current_scene")
+         {
+            OnExportCurrentScene ();
          }
          //else if (itemData == "save_local")
          //{
@@ -397,6 +407,11 @@
          EditorContext.ShowModalDialog (WorldImportDialog, OfflineImport);
       }
       
+      public function OnImportScenes ():void
+      {
+         EditorContext.ShowModalDialog (WorldImportScenesDialog, OfflineImportScenes);
+      }
+      
       public function OnStartOnlineSaving ():void
       {
          EditorContext.ShowModalDialog (WorldOnlineSavingDialog, OnlineSave);
@@ -413,7 +428,12 @@
       
       public function OnStartOfflineExporting ():void
       {
-         OfflineExport ();
+         OfflineExportSelecteds ();
+      }
+      
+      public function OnExportCurrentScene ():void
+      {
+         OfflineExportCurrentScene ();
       }
       
       private function OnClickConfigWorldButton ():void
@@ -805,14 +825,17 @@
       
       public function OfflineImport (params:Object):void
       {
-         ImportFromXmlString (params, true, true);
+         ImportFromXmlString (params, true, true, false);
       }
       
-      private function ImportFromXmlString (params:Object, importEntities:Boolean, importFunctions:Boolean):void
+      public function OfflineImportScenes (params:Object):void
       {
-         var xmlString:String = params.mXmlString;
-         var mergeVariablesWithSameNames:Boolean = params.mMergeVariablesWithSameNames;
-         var centerNewEntitiesInScreen:Boolean = params.mCenterNewEntitiesInScreen;         
+         ImportFromXmlString (params, true, true, true);
+      }
+      
+      private function ImportFromXmlString (params:Object, importEntities:Boolean, importFunctions:Boolean, importIntoNewScenes:Boolean):void
+      {
+         var xmlString:String = params.mXmlString;    
          
          var xml:XML = new XML (xmlString);
          
@@ -829,58 +852,69 @@
             if (oldCategoriesCount + worldDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
                return;
             
-            DataFormat.WorldDefine2EditorWorld (false, mWorld, worldDefine, /*false*/mSceneEditDialog.GetCurrentSceneInEditing (), true, mergeVariablesWithSameNames);
-            
-            if (mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().IsChanged ())
+            if (importIntoNewScenes)
             {
-               mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().UpdateFunctionMenu ();
-               mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().SetChanged (false);
+               DataFormat.WorldDefine2EditorWorld (false, mWorld, worldDefine, /*false*/null, true, true);
+               mSceneEditDialog.OnWorldChanged ();
             }
-            
-            if (oldEntitiesCount == mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ())
-               return;
-            
-            mSceneEditDialog.GetCurrentSceneInEditing ().CancelAllAssetSelections ();
-            
-            var i:int;
-            var j:int;
-            var entity:Entity;
-            var entities:Array;
-            var centerX:Number = 0;
-            var centerY:Number = 0;
-            var numSelecteds:int = 0;
-            
-            var newEntitiesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ();
-            
-            var entitiesToSelect:Array = new Array ();
-            for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
+            else
             {
-               entities = (mSceneEditDialog.GetCurrentSceneInEditing ().GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
+               var mergeVariablesWithSameNames:Boolean = params.mMergeVariablesWithSameNames;
+               var centerNewEntitiesInScreen:Boolean = params.mCenterNewEntitiesInScreen;
                
-               for (j = 0; j < entities.length; ++ j)
+               DataFormat.WorldDefine2EditorWorld (false, mWorld, worldDefine, /*false*/mSceneEditDialog.GetCurrentSceneInEditing (), true, mergeVariablesWithSameNames);
+               
+               if (mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().IsChanged ())
                {
-                  entity = entities [j] as Entity;
+                  mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().UpdateFunctionMenu ();
+                  mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().SetChanged (false);
+               }
+               
+               if (oldEntitiesCount == mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ())
+                  return;
+               
+               mSceneEditDialog.GetCurrentSceneInEditing ().CancelAllAssetSelections ();
+               
+               var i:int;
+               var j:int;
+               var entity:Entity;
+               var entities:Array;
+               var centerX:Number = 0;
+               var centerY:Number = 0;
+               var numSelecteds:int = 0;
+               
+               var newEntitiesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ();
+               
+               var entitiesToSelect:Array = new Array ();
+               for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
+               {
+                  entities = (mSceneEditDialog.GetCurrentSceneInEditing ().GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
                   
-                  if (entitiesToSelect.indexOf (entity) < 0)
+                  for (j = 0; j < entities.length; ++ j)
                   {
-                     entitiesToSelect.push(entity);
+                     entity = entities [j] as Entity;
                      
-                     centerX += entity.GetPositionX ();
-                     centerY += entity.GetPositionY ();
-                     ++ numSelecteds;
+                     if (entitiesToSelect.indexOf (entity) < 0)
+                     {
+                        entitiesToSelect.push(entity);
+                        
+                        centerX += entity.GetPositionX ();
+                        centerY += entity.GetPositionY ();
+                        ++ numSelecteds;
+                     }
                   }
                }
-            }
-            
-            mSceneEditDialog.GetCurrentSceneInEditing ().SetSelectedAssets (entitiesToSelect);
-
-            if (centerNewEntitiesInScreen && numSelecteds > 0)
-            {
-               centerX /= numSelecteds;
-               centerY /= numSelecteds;
                
-               var point:Point = mSceneEditDialog.GetSceneEditPanel ().GetPanelCenterWorldPoint ();
-               mSceneEditDialog.GetSceneEditPanel ().MoveSelectedAssets (false, point.x - centerX, point.y - centerY, true);
+               mSceneEditDialog.GetCurrentSceneInEditing ().SetSelectedAssets (entitiesToSelect);
+   
+               if (centerNewEntitiesInScreen && numSelecteds > 0)
+               {
+                  centerX /= numSelecteds;
+                  centerY /= numSelecteds;
+                  
+                  var point:Point = mSceneEditDialog.GetSceneEditPanel ().GetPanelCenterWorldPoint ();
+                  mSceneEditDialog.GetSceneEditPanel ().MoveSelectedAssets (false, point.x - centerX, point.y - centerY, true);
+               }
             }
             
             mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
@@ -959,7 +993,17 @@
          return null;
       }
       
-      public function OfflineExport ():void
+      public function OfflineExportSelecteds ():void
+      {
+         OfflineExport (true);
+      }
+      
+      public function OfflineExportCurrentScene ():void
+      {
+         OfflineExport (false);
+      }
+      
+      private function OfflineExport (onlyExportSelecteds:Boolean):void
       {
          try
          {
@@ -971,6 +1015,7 @@
             var currentScene:editor.entity.Scene = mSceneEditDialog.GetCurrentSceneInEditing ();
             var sceneIndex:int = currentScene.GetSceneIndex ();
             
+            // remove other scenes
             while (newWorld.GetNumScenes () > sceneIndex + 1)
                newWorld.DeleteSceneByIndex (newWorld.GetNumScenes () - 1, false);
             while (newWorld.GetNumScenes () > 1)
@@ -978,102 +1023,105 @@
             
             var newScene:editor.entity.Scene = newWorld.GetSceneByIndex (0);
             
-            var selectedEntities:Array = currentScene.GetSelectedAssets ();
-            if (selectedEntities.length == 0)
-               return;
-            
-            var numEntities:int = selectedEntities.length;
-            var entity:Entity;
-            var i:int;
-            var index:int;
-
-            for (i = 0; i < numEntities; ++ i)
+            if (onlyExportSelecteds)
             {
-               //trace ("selectedEntities[i] = " + selectedEntities[i]);
-               //trace ("selectedEntities[i].parent = " + selectedEntities[i].parent);
+               var selectedEntities:Array = currentScene.GetSelectedAssets ();
+               if (selectedEntities.length == 0)
+                  return;
                
-               index = currentScene.GetAssetCreationId (selectedEntities[i]);
-               entity = newScene.GetAssetByCreationId (index) as Entity;
+               var numEntities:int = selectedEntities.length;
+               var entity:Entity;
+               var i:int;
+               var index:int;
+   
+               for (i = 0; i < numEntities; ++ i)
+               {
+                  //trace ("selectedEntities[i] = " + selectedEntities[i]);
+                  //trace ("selectedEntities[i].parent = " + selectedEntities[i].parent);
+                  
+                  index = currentScene.GetAssetCreationId (selectedEntities[i]);
+                  entity = newScene.GetAssetByCreationId (index) as Entity;
+                  
+                  entity = entity.GetMainAsset () as Entity;
+                  newScene.AddAssetSelection (entity);
+                  newScene.AddAssetSelections (entity.GetSelectableAssets ());
+               }
                
-               entity = entity.GetMainAsset () as Entity;
-               newScene.AddAssetSelection (entity);
-               newScene.AddAssetSelections (entity.GetSelectableAssets ());
-            }
-            
-            i = 0;
-            //numEntities = newScene.GetNumAssets (); // this is bug
-            while (i < newScene.GetNumAssets ()) // numEntities)
-            {
-               entity = newScene.GetAssetByCreationId (i) as Entity;
-               if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+               i = 0;
+               //numEntities = newScene.GetNumAssets (); // this is bug
+               while (i < newScene.GetNumAssets ()) // numEntities)
                {
-                  ++ i;
+                  entity = newScene.GetAssetByCreationId (i) as Entity;
+                  if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+                  {
+                     ++ i;
+                  }
+                  else
+                  {
+                     newScene.DestroyAsset (entity);
+                  }
                }
-               else
+               
+               //var cm:CollisionCManager = newWorld.GetCollisionManager ();
+               //var ccId:int;
+               //numEntities = newScene.GetNumAssets ();
+               //
+               //for (i = 0; i < numEntities; ++ i)
+               //{
+               //   entity = newScene.GetAssetByCreationId (i) as Entity;
+               //   if (entity is EntityVectorShape)
+               //   {
+               //      ccId = (entity as EntityVectorShape).GetCollisionCategoryIndex ();
+               //      if (ccId >= 0)
+               //         cm.SelectEntity (cm.GetCollisionCategoryByIndex (ccId));
+               //   }
+               //}
+               //
+               //ccId = 0;
+               // //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
+               //while (ccId < cm.GetNumCollisionCategories ()) //numCats)
+               //{
+               //   entity = cm.GetCollisionCategoryByIndex (ccId);
+               //   if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+               //   {
+               //      ++ ccId;
+               //   }
+               //   else
+               //   {
+               //      cm.DestroyEntity (entity);
+               //   }
+               //}
+               
+               var cm:CollisionCategoryManager = newScene.GetCollisionCategoryManager ();
+               cm.CancelAllAssetSelections ();
+               var ccId:int;
+               numEntities = newScene.GetNumAssets ();
+               
+               for (i = 0; i < numEntities; ++ i)
                {
-                  newScene.DestroyAsset (entity);
+                  entity = newScene.GetAssetByCreationId (i) as Entity;
+                  if (entity is EntityShape)
+                  {
+                     ccId = (entity as EntityShape).GetCollisionCategoryIndex ();
+                     if (ccId >= 0)
+                        cm.AddAssetSelection (cm.GetCollisionCategoryByIndex (ccId));
+                  }
                }
-            }
-            
-            //var cm:CollisionCManager = newWorld.GetCollisionManager ();
-            //var ccId:int;
-            //numEntities = newScene.GetNumAssets ();
-            //
-            //for (i = 0; i < numEntities; ++ i)
-            //{
-            //   entity = newScene.GetAssetByCreationId (i) as Entity;
-            //   if (entity is EntityVectorShape)
-            //   {
-            //      ccId = (entity as EntityVectorShape).GetCollisionCategoryIndex ();
-            //      if (ccId >= 0)
-            //         cm.SelectEntity (cm.GetCollisionCategoryByIndex (ccId));
-            //   }
-            //}
-            //
-            //ccId = 0;
-            // //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
-            //while (ccId < cm.GetNumCollisionCategories ()) //numCats)
-            //{
-            //   entity = cm.GetCollisionCategoryByIndex (ccId);
-            //   if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
-            //   {
-            //      ++ ccId;
-            //   }
-            //   else
-            //   {
-            //      cm.DestroyEntity (entity);
-            //   }
-            //}
-            
-            var cm:CollisionCategoryManager = newScene.GetCollisionCategoryManager ();
-            cm.CancelAllAssetSelections ();
-            var ccId:int;
-            numEntities = newScene.GetNumAssets ();
-            
-            for (i = 0; i < numEntities; ++ i)
-            {
-               entity = newScene.GetAssetByCreationId (i) as Entity;
-               if (entity is EntityShape)
+               
+               var ccat:CollisionCategory;
+               ccId = 0;
+               //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
+               while (ccId < cm.GetNumCollisionCategories ()) //numCats)
                {
-                  ccId = (entity as EntityShape).GetCollisionCategoryIndex ();
-                  if (ccId >= 0)
-                     cm.AddAssetSelection (cm.GetCollisionCategoryByIndex (ccId));
-               }
-            }
-            
-            var ccat:CollisionCategory;
-            ccId = 0;
-            //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
-            while (ccId < cm.GetNumCollisionCategories ()) //numCats)
-            {
-               ccat = cm.GetCollisionCategoryByIndex (ccId);
-               if ( ccat.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
-               {
-                  ++ ccId;
-               }
-               else
-               {
-                  cm.DestroyAsset (ccat);
+                  ccat = cm.GetCollisionCategoryByIndex (ccId);
+                  if ( ccat.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+                  {
+                     ++ ccId;
+                  }
+                  else
+                  {
+                     cm.DestroyAsset (ccat);
+                  }
                }
             }
             

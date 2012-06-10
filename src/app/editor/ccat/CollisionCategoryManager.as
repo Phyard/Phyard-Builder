@@ -23,8 +23,10 @@ package editor.ccat {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
-   import editor.asset.Asset; 
-   import editor.asset.AssetManager; 
+   import editor.asset.Asset;
+   import editor.asset.AssetManager;
+   
+   import editor.entity.Scene;
    
    import common.CoordinateSystem;
    
@@ -33,15 +35,25 @@ package editor.ccat {
    
    public class CollisionCategoryManager extends AssetManager
    {
+      protected var mScene:Scene;
       
-      // ..
+      // ...
+      
       private var mLookupTable:Dictionary = new Dictionary ();
       private var mCollisionGroupFriendPairs:Array = new Array ();
       
       private var mDefaultCategory:CollisionCategory = null;
       
-      public function CollisionCategoryManager ()
+      public function CollisionCategoryManager (scene:Scene)
       {
+         super ();
+         
+         mScene = scene;
+      }
+      
+      public function GetScene ():Scene
+      {
+         return mScene;
       }
       
       override public function SupportScaleRotateFlipTransforms ():Boolean

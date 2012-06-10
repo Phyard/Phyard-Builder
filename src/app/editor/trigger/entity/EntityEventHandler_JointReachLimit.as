@@ -37,7 +37,7 @@ package editor.trigger.entity {
       //      
       //      mEventHandlerDefinition = new FunctionDefinition (mEntityContainer.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
       //      
-      //      mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
+      //      mCodeSnippet = mCodeSnippet.Clone (mEntityContainer, mEventHandlerDefinition);
       //      
       //      mIconBitmap = Resource.EventId2IconBitmap (mEventId);
       //   }

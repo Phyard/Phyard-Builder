@@ -167,7 +167,7 @@ package editor.trigger {
          return null; // to override
       }
       
-      public function Clone (targetFunctionDefinition:FunctionDefinition):FunctionCalling
+      public function Clone (scene:Scene, targetFunctionDefinition:FunctionDefinition):FunctionCalling
       {
          var calling:FunctionCalling = new FunctionCalling (/*mTriggerEngine, */mFunctionDeclaration, false);
          
@@ -182,7 +182,7 @@ package editor.trigger {
          {
             source = mInputValueSources [i] as ValueSource;
             
-            sourcesArray [i] = source.CloneSource (/*mTriggerEngine, */targetFunctionDefinition, mFunctionDeclaration, i);
+            sourcesArray [i] = source.CloneSource (scene, /*mTriggerEngine, */targetFunctionDefinition, mFunctionDeclaration, i);
          }
          
          calling.AssignInputValueSources (sourcesArray);
@@ -195,7 +195,7 @@ package editor.trigger {
          {
             target = mOutputValueTargets [i] as ValueTarget;
             
-            targetsArray [i] = target.CloneTarget (/*mTriggerEngine, */targetFunctionDefinition, mFunctionDeclaration, i);
+            targetsArray [i] = target.CloneTarget (scene, /*mTriggerEngine, */targetFunctionDefinition, mFunctionDeclaration, i);
          }
          
          calling.AssignOutputValueTargets (targetsArray);
@@ -293,7 +293,7 @@ package editor.trigger {
       }
       
 //====================================================================
-//
+// register -> global
 //====================================================================
       
       public function ConvertRegisterVariablesToGlobalVariables (scene:Scene):void

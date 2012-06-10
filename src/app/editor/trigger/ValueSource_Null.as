@@ -2,6 +2,8 @@ package editor.trigger {
    
    import mx.core.UIComponent;
    
+   import editor.entity.Scene;
+   
    import common.trigger.ValueSourceTypeDefine;
    
    public class ValueSource_Null implements ValueSource
@@ -31,7 +33,7 @@ package editor.trigger {
       }
       
       // to override
-      public function CloneSource (/*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      public function CloneSource (scene:Scene, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
          return new ValueSource_Null ();
       }

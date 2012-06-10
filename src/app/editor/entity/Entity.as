@@ -7,7 +7,7 @@ package editor.entity {
    
    import editor.selection.SelectionProxy;
    
-   import editor.core.EditorObject;
+   //import editor.core.EditorObject;
    
    import editor.asset.Asset;
    
@@ -27,6 +27,11 @@ package editor.entity {
          super (container);
          
          mEntityContainer = container;
+      }
+      
+      public function GetScene ():Scene
+      {
+         return mEntityContainer;
       }
       
       public function IsUtilityEntity ():Boolean

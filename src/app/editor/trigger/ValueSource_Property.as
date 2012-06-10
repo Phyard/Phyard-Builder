@@ -2,6 +2,8 @@ package editor.trigger {
    
    import mx.core.UIComponent;
    
+   import editor.entity.Scene;
+   
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
    
@@ -70,7 +72,7 @@ package editor.trigger {
       //   return new ValueSource_Property (mEntityValueSource.CloneSource (), mPropertyValueSource.CloneSource () as ValueSource_Variable);
       //}
       
-      public function CloneSource (/*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      public function CloneSource (scene:Scene, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
          if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
          {
@@ -81,9 +83,9 @@ package editor.trigger {
             var newEntityValueSource:ValueSource;
             var newPropertyValueSource:ValueSource_Variable;
             
-            newEntityValueSource = mEntityValueSource.CloneSource (/*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex);
+            newEntityValueSource = mEntityValueSource.CloneSource (scene, /*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex);
             
-            newPropertyValueSource = mPropertyValueSource.CloneSource (/*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueSource_Variable;
+            newPropertyValueSource = mPropertyValueSource.CloneSource (scene, /*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueSource_Variable;
             
             return new ValueSource_Property (newEntityValueSource, newPropertyValueSource);
          }

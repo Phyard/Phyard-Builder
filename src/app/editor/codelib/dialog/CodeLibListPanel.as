@@ -240,7 +240,7 @@ package editor.codelib.dialog {
             
             values.mCodeLibManager = mCodeLibManager;
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
-            values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
+            values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (mCodeLibManager.GetScene (), null);
             (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mCodeLibManager.GetScene ().GetCoordinateSystem ());
             
             EditorContext.ShowModalDialog (FunctionEditDialog, ConfirmSettingAssetProperties, values);

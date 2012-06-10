@@ -167,10 +167,6 @@ package editor.trigger.entity {
          return mSelectionProxy.ContainsPoint (pointX, pointY);
       }
       
-      // these function will be moved to EditorObject
-      
-      
-      
       public function GetWorldPosition ():Point
       {
          return DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point (0, 0))

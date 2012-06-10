@@ -2,6 +2,8 @@ package editor.trigger {
    
    import mx.core.UIComponent;
    
+   import editor.entity.Scene;
+   
    import common.trigger.ValueTargetTypeDefine;
    
    public class ValueTarget_Null implements ValueTarget
@@ -16,11 +18,11 @@ package editor.trigger {
          return "void";
       }
       
-      public function AssignValue (source:ValueSource):void
-      {
-      }
+      //public function AssignValue (source:ValueSource):void
+      //{
+      //}
       
-      public function CloneTarget (/*triggerEngine:TriggerEngine, */ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
+      public function CloneTarget (scene:Scene, /*triggerEngine:TriggerEngine, */ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
          return new ValueTarget_Null ();
       }

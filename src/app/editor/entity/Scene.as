@@ -102,7 +102,7 @@ package editor.entity {
          
          mCodeLibManager = new CodeLibManager (this);
          
-         mCollisionCategoryManager = new CollisionCategoryManager ();
+         mCollisionCategoryManager = new CollisionCategoryManager (this);
          
          SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium);
       }

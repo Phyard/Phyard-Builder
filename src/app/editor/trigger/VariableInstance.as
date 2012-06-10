@@ -10,7 +10,7 @@ package editor.trigger {
    public class VariableInstance // implements ValueSource, ValueTarget
    {
    //========================================================================================================
-   // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - now ccats and functions are edit in dialogs
+   // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - "now ccats and functions are edit in dialogs"
    // for ConvertRegisterVariablesToGlobalVariables
    //========================================================================================================
       

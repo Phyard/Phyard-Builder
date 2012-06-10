@@ -9,12 +9,6 @@ package editor.asset {
    
    import flash.events.Event;
    
-   import editor.selection.SelectionEngine;
-   
-   import editor.core.EditorObject;
-   
-   import common.CoordinateSystem;
-   
    import common.Define;
    import common.ValueAdjuster;
    

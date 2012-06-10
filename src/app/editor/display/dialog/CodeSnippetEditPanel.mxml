@@ -210,7 +210,7 @@
          {
             var copiedCallings:Array = GetFunctionCallings (ids, false);
 
-            EditorContext.GetSingleton ().SetCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), copiedCallings, mCodeLibManager);
+            EditorContext.GetSingleton ().SetCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), copiedCallings, mCodeLibManager.GetScene ());
 
             UpdateInterface (false);
          }
@@ -243,7 +243,7 @@
 
          private function PasteCallingsAt (insertAt:int):void
          {
-            var codeSnippet:CodeSnippet = EditorContext.GetSingleton ().CloneCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), mCodeLibManager);
+            var codeSnippet:CodeSnippet = EditorContext.GetSingleton ().CloneCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), mCodeLibManager.GetScene ());
 
             if (codeSnippet == null)
                return;
@@ -414,7 +414,7 @@
                func_calling = codeSnippet.GetFunctionCallingAt (i);
 
                var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
-               callingLine.BuildFromFunctionCalling (func_calling, /*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */mCodeSnippet.GetOwnerFunctionDefinition ());
+               callingLine.BuildFromFunctionCalling (mCodeLibManager.GetScene (), func_calling, /*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */mCodeSnippet.GetOwnerFunctionDefinition ());
 
                List_Commands.dataProvider.addItemAt (callingLine, insertAt ++);
             }
@@ -600,7 +600,7 @@
                return;
 
             var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
-            callingLine.BuildFromFunctionDeclaration (func_declaration, /*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */mCodeSnippet.GetOwnerFunctionDefinition ());
+            callingLine.BuildFromFunctionDeclaration (mCodeLibManager.GetScene (), func_declaration, /*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */mCodeSnippet.GetOwnerFunctionDefinition ());
 
             var insert_index:int;
             if (insertAt < 0)

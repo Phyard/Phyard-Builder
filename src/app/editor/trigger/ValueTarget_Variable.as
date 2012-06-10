@@ -2,6 +2,8 @@ package editor.trigger {
    
    import mx.core.UIComponent;
    
+   import editor.entity.Scene;
+   
    import common.trigger.ValueTargetTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
    
@@ -48,17 +50,17 @@ package editor.trigger {
          return ValueTargetTypeDefine.ValueTarget_Variable;
       }
       
-      public function AssignValue (source:ValueSource):void
-      {
-         mVariableInstance.SetValueObject (source.GetValueObject ());
-      }
+      //public function AssignValue (source:ValueSource):void
+      //{
+      //   mVariableInstance.SetValueObject (source.GetValueObject ());
+      //}
       
       //public function CloneTarget ():ValueTarget
       //{
       //   return new ValueTarget_Variable (mVariableInstance);
       //}
       
-      public function CloneTarget (/*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
+      public function CloneTarget (scene:Scene, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
          //var variableDefinition:VariableDefinition;
          var variableInstance:VariableInstance;
@@ -122,12 +124,63 @@ package editor.trigger {
                
                return new ValueTarget_Variable (variableInstance);
             }
-            default:
+            case ValueSpaceTypeDefine.ValueSpace_Session:
             {
                if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
                   return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
+
+               if (mVariableInstance.GetIndex () < 0)
+                  variableInstance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetNullVariableInstance ();
                else
-                  return new ValueTarget_Variable (mVariableInstance);
+               {
+                  variableInstance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), true);
+                  variableInstance.SetValueObject (mVariableInstance.GetValueObject ()); // ? meaningful?
+               }
+               
+               return new ValueTarget_Variable (variableInstance);
+            }
+            case ValueSpaceTypeDefine.ValueSpace_Global:
+            {
+               if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
+                  return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
+
+               if (mVariableInstance.GetIndex () < 0)
+                  variableInstance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetNullVariableInstance ();
+               else
+               {
+                  variableInstance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), true);
+                  variableInstance.SetValueObject (mVariableInstance.GetValueObject ()); // ? meaningful?
+               }
+               
+               return new ValueTarget_Variable (variableInstance);
+            }
+            case ValueSpaceTypeDefine.ValueSpace_Entity:
+            {
+               if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
+                  return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
+
+               if (mVariableInstance.GetIndex () < 0)
+                  variableInstance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetNullVariableInstance ();
+               else
+               {
+                  variableInstance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), true);
+                  variableInstance.SetValueObject (mVariableInstance.GetValueObject ()); // ? meaningful?
+               }
+               
+               return new ValueTarget_Variable (variableInstance);
+            }
+            case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
+            {
+               if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
+                  return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
+
+               variableInstance = scene.GetWorld ().GetRegisterVariableSpace (mVariableInstance.GetValueType ()).GetVariableInstanceAt (mVariableInstance.GetIndex ());
+               
+               return new ValueTarget_Variable (variableInstance);
+            }
+            default: // never run here
+            {
+               return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
             }
          }
       }

@@ -2,6 +2,8 @@ package editor.trigger {
    
    import mx.core.UIComponent;
    
+   import editor.entity.Scene;
+   
    import common.trigger.ValueTargetTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
    
@@ -55,17 +57,17 @@ package editor.trigger {
          return ValueTargetTypeDefine.ValueTarget_Property;
       }
       
-      public function AssignValue (source:ValueSource):void
-      {
-         mPropertyValueTarget.AssignValue (source);
-      }
+      //public function AssignValue (source:ValueSource):void
+      //{
+      //   mPropertyValueTarget.AssignValue (source);
+      //}
       
       //public function CloneTarget ():ValueTarget
       //{
       //   return new ValueTarget_Property (mEntityValueSource.CloneSource (), mPropertyValueTarget.CloneTarget () as ValueTarget_Variable);
       //}
       
-      public function CloneTarget (/*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
+      public function CloneTarget (scene:Scene, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
          if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
          {
@@ -76,9 +78,9 @@ package editor.trigger {
             var newEntityValueSource:ValueSource;
             var newPropertyValueTarget:ValueTarget_Variable;
             
-            newEntityValueSource = mEntityValueSource.CloneSource (/*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex);
+            newEntityValueSource = mEntityValueSource.CloneSource (scene, /*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex);
             
-            newPropertyValueTarget = mPropertyValueTarget.CloneTarget (/*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueTarget_Variable;
+            newPropertyValueTarget = mPropertyValueTarget.CloneTarget (scene, /*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueTarget_Variable;
             
             return new ValueTarget_Property (newEntityValueSource, newPropertyValueTarget);
          }

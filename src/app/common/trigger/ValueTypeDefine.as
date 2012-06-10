@@ -105,6 +105,7 @@ package common.trigger {
       
       public static const ValueType_Object:int = 50;
       public static const ValueType_Function:int = 51;
+      public static const ValueType_Class:int = 52; // or "type" type, type is a type
       
       public static const ValueType_Entity:int            = 60;
       public static const ValueType_CollisionCategory:int = 61;

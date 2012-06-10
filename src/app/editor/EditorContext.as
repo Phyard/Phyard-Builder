@@ -27,6 +27,8 @@ package editor {
    
    import editor.entity.Entity;
    
+   import editor.entity.Scene;
+   
    import editor.codelib.CodeLibManager;
    
    import editor.image.dialog.AssetImageModuleListDialog;
@@ -484,7 +486,7 @@ package editor {
          return mCopiedCodeSnippet != null;
       }
       
-      public function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array, codelibManager:CodeLibManager):void
+      public function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array, scene:Scene):void
       {
          if (copiedCallings == null || copiedCallings.length == 0)
          {
@@ -492,15 +494,16 @@ package editor {
          }
          else
          {
-            var codeSnippet:CodeSnippet =  new CodeSnippet (ownerFunctionDefinition);
+            var codeSnippet:CodeSnippet = new CodeSnippet (ownerFunctionDefinition);
             codeSnippet.AssignFunctionCallings (copiedCallings);
-            codeSnippet.PhysicsValues2DisplayValues (codelibManager.GetScene ().GetCoordinateSystem ());
+            //codeSnippet.PhysicsValues2DisplayValues (scene.GetCoordinateSystem ()); 
+               // superfluous? and should it be DisplayValues2PhysicsValues? (removed from v2.00)
             
-            mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
+            mCopiedCodeSnippet = codeSnippet.Clone (scene, ownerFunctionDefinition.Clone ()); // cloning a definition is essential
          }
       }
       
-      public function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, codelibManager:CodeLibManager):CodeSnippet
+      public function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, scene:Scene):CodeSnippet
       {
          if (mCopiedCodeSnippet == null)
          {
@@ -510,8 +513,9 @@ package editor {
          {
             mCopiedCodeSnippet.ValidateCallings ();
             
-            var codeSnippet:CodeSnippet = mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
-            codeSnippet.DisplayValues2PhysicsValues (codelibManager.GetScene ().GetCoordinateSystem ());
+            var codeSnippet:CodeSnippet = mCopiedCodeSnippet.Clone (scene, ownerFunctionDefinition);
+            //codeSnippet.DisplayValues2PhysicsValues (scene.GetCoordinateSystem ());
+               // superfluous? and should it be PhysicsValues2DisplayValues? (removed from v2.00)
             
             return codeSnippet;
          }

@@ -3565,6 +3565,10 @@ package common {
                   {
                      functionDefine.mDesignDependent = false;
                   }
+                  if (worldDefine.mVersion < 0x0200) // for a design mistake, afunction tagged with pure is not sure a real pure function. 
+                  {
+                     functionDefine.mDesignDependent = true;
+                  }
                }
             }
          }

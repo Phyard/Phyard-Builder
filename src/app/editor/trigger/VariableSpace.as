@@ -116,7 +116,7 @@ package editor.trigger {
          if (mVariableIdMapTable != null) // in importing
          {
             var vi:VariableInstance = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
-            if (vi != null)
+            if (vi != null && vi != mNullVariableInstance)
             {
                mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
                return vi;
@@ -137,7 +137,7 @@ package editor.trigger {
          if (mVariableIdMapTable != null) // in importing
          {
             var vi:VariableInstance = GetVariableInstanceByTypeAndName (valueType, variableName);
-            if (vi != null)
+            if (vi!= null && vi != mNullVariableInstance)
             {
                mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
                return vi;

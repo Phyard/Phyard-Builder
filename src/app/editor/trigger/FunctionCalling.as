@@ -358,7 +358,7 @@ package editor.trigger {
             return;
          
          var vi:VariableInstance = variableValueSource.GetVariableInstance ();
-         if (vi == null)
+         if (vi == null) // || vi.IsNull ())
             return;
          
          if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
@@ -373,7 +373,7 @@ package editor.trigger {
             return;
          
          var vi:VariableInstance = variableValueTarget.GetVariableInstance ();
-         if (vi == null)
+         if (vi == null) // || vi.IsNull)
             return;
          
          if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)

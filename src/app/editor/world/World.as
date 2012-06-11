@@ -238,7 +238,7 @@ package editor.world {
          if (updateDataProvider)
             UpdateSceneListDataProvider ();
          
-         return mScenes.length >= index ? mScenes.length - 1 : index;
+         return index >= mScenes.length  ? mScenes.length - 1 : index;
       }
       
       public function ChangeSceneIndex (fromIndex:int, targetIndex:int):int

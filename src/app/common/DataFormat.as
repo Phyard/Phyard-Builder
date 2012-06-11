@@ -1490,7 +1490,7 @@ package common {
 
             for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
             {
-               SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [sceneId], true, editorWorld.GetSceneByIndex (baseSceneIndex + sceneId), mergeVariablesWithSameNames, 
+               SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [sceneId], true, editorWorld.GetSceneByIndex (baseSceneIndex + sceneId), /*mergeVariablesWithSameNames*/false, 
                                   imageModuleRefIndex_CorrectionTable, beginningSoundIndex, baseSceneIndex);
             }
          }

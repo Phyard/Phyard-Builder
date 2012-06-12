@@ -6,6 +6,7 @@ package common {
    import player.design.Global;
    import player.world.World;
    import player.entity.Entity;
+   import player.world.CollisionCategory;
    
    import player.trigger.FunctionDefinition;
    import player.trigger.FunctionDefinition_Core;
@@ -704,6 +705,39 @@ package common {
          }
          
          return variableSpace;
+      }
+      
+      // this function is for validating entity and ccat session variables when restarting a level
+      public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableDefines:Array, variableSpace:VariableSpace):void
+      {
+         //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
+         var numVariables:int = variableDefines.length;
+         //assert (variableSpace.GetNumVariables () == numVariables);
+         
+         for (var variableId:int = 0; variableId < numVariables; ++ variableId)
+         {
+            //var variableInstanceDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
+            var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
+            var direct_source_define:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
+            
+            var variableInstance:VariableInstance = variableSpace.GetVariableAt (variableId);
+            if (direct_source_define.mValueType == ValueTypeDefine.ValueType_Entity)
+            {
+               var entity:Entity = variableInstance.GetValueObject () as Entity;
+               if (entity != null)
+               {
+                  variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, entity.GetCreationId ()));
+               }
+            }
+            else if (direct_source_define.mValueType == ValueTypeDefine.ValueType_CollisionCategory)
+            {
+               var ccat:CollisionCategory = variableInstance.GetValueObject () as CollisionCategory;
+               if (ccat != null)
+               {
+                  variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, ccat.GetIndexInEditor ()));
+               }
+            }
+         }
       }
       
 //==============================================================================================

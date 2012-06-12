@@ -44,6 +44,11 @@ package player.trigger
          return variableSpace;
       }
       
+      public function GetNumVariables ():int
+      {
+         return mVariableInstances.length;
+      }
+      
       public function GetVariableAt (index:int):VariableInstance
       {
          if (index < 0 || index >= mVariableInstances.length)

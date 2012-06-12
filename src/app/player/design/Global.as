@@ -209,6 +209,14 @@ package player.design
          {
             mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines);
          }
+         else
+         {
+            // reevaluate placed-in-editor entities and ccats
+            // nullify non-placed-in-editor entities and ccats
+            // potiential decision: discard session variables since a later version, use Game_Data_Save API alikes instead. 
+
+            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, sessionVariableDefines, mSessionVariableSpace);
+         }
          mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines);
          mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines);
       }

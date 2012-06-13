@@ -226,7 +226,10 @@ package common {
                
                var soundDefine:Object = new Object ();
                
-               soundDefine.mKey = soundAsset.GetKey ()
+               //>>from v2.00
+               soundDefine.mKey = soundAsset.GetKey ();
+               soundDefine.mTimeModified = soundAsset.GetTimeModified ();
+               //<<
                soundDefine.mName = soundAsset.GetName ();
                soundDefine.mAttributeBits = soundAsset.GetSoundAttributeBits ();
                soundDefine.mNumSamples = soundAsset.GetSoundNumSamples ();
@@ -1454,6 +1457,7 @@ package common {
                var soundDefine:Object = worldDefine.mSoundDefines [soundId];
                
                var soundAsset:AssetSound = assetSoundManager.CreateSound (soundDefine.mKey);
+               soundAsset.SetTimeModified (soundDefine.mTimeModified);
                
                soundAsset.SetName (soundDefine.mName);
                soundAsset.SetSoundAttributeBits (soundDefine.mAttributeBits);
@@ -2549,7 +2553,7 @@ package common {
          
          // scenes
 
-         if (worldDefine.mVersion >= 0x200)
+         if (worldDefine.mVersion >= 0x0200)
          {
             for each (element in worldXml.Scenes.Scene)
             {
@@ -2626,8 +2630,11 @@ package common {
             {
                var soundDefine:Object = new Object ();
                
-               if (worldDefine.mVersion >= 0x0200)
-                  soundDefine.mKey = element.@key;
+               //if (worldDefine.mVersion >= 0x020?)
+               //{
+               //   soundDefine.mKey = element.@key;
+               //   soundDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               //}
                soundDefine.mName = element.@name;
                soundDefine.mAttributeBits = parseInt (element.@attribute_bits);
                soundDefine.mNumSamples = parseInt (element.@sample_count);
@@ -2648,6 +2655,25 @@ package common {
          }
          
          return worldDefine;
+      }
+      
+      public static function ParseTimeString (timeText:String):Number
+      {
+         if (timeText == null || timeText.length < 3 || timeText.length > 14 || timeText.substring (0, 2).toLowerCase () != "0x")
+            return 0;
+         
+         timeText = timeText.substring (2);
+         if (timeText.length <= 6)
+         {
+            return parseInt (timeText, 16);
+         }
+         else
+         {
+            var time1:Number = parseInt (timeText.substring (0, timeText.length - 6), 16);
+            var time2:Number = parseInt (timeText.substring (timeText.length - 6), 16);
+            
+            return time1 * 0x1000000 + time2;
+         }
       }
       
       public static function XmlElement2SceneDefine (worldDefine:WorldDefine, sceneXML:XML):Object
@@ -3576,7 +3602,7 @@ package common {
          
          // scenes
 
-         if (worldDefine.mVersion >= 0x200)
+         if (worldDefine.mVersion >= 0x0200)
          {
             byteArray.writeShort (worldDefine.mSceneDefines.length);
             for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
@@ -3650,8 +3676,11 @@ package common {
             {
                var soundDefine:Object = worldDefine.mSoundDefines [soundId];
                
-               if (worldDefine.mVersion >= 0x0200)
-                  byteArray.writeUTF (soundDefine.mKey == null ? "" : soundDefine.mKey);
+               //if (worldDefine.mVersion >= 0x020?)
+               //{
+               //   byteArray.writeUTF (soundDefine.mKey == null ? "" : soundDefine.mKey);
+               //   WriteTimeValue (byteArray, soundDefine.mTimeModified);
+               //}
                
                byteArray.writeUTF (soundDefine.mName == null ? "" : soundDefine.mName);
                byteArray.writeInt (soundDefine.mAttributeBits);
@@ -3671,6 +3700,19 @@ package common {
          
          // ...
          return byteArray;
+      }
+      
+      public static function WriteTimeValue (byteArray:ByteArray, time:Number):void
+      {
+         var v3:Number = time & 0xFFFF;
+         time /= 0x10000;
+         var v2:Number = time & 0xFFFF;
+         time /= 0x10000;
+         var v1:Number = time & 0xFFFF;
+         
+         byteArray.writeShort (v1);
+         byteArray.writeShort (v2);
+         byteArray.writeShort (v3);
       }
       
       public static function SceneDefine2ByteArray (worldDefine:WorldDefine, sceneDefine:SceneDefine, byteArray:ByteArray):void

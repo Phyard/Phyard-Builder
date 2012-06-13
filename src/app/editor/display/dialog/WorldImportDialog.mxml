@@ -21,19 +21,20 @@
       <mx:VBox>
          <mx:CheckBox id="CheckBox_MergeVariablesWithSameNames" label="Merge Custom Variables With Same Name And Type" selected="true"/>
          <mx:CheckBox id="CheckBox_CenterNewEntitiesInScreen" label="Center New Entities In Screen" selected="true"/>
-         <mx:Label text="How To Handle Conflicts Of Image Module and Sound Assets?" />
+         <!--mx:Label text="How To Handle Conflicts Of Image Module and Sound Assets?" />
+         <mx:RadioButtonGroup id="RadioButtonGroup_ConflictsHandleMethod"/>
          <mx:HBox width="100%">
             <mx:Spacer width="10"/>
-            <mx:CheckBox id="CheckBox_ConfilictsUseNewer" label="Use Most Recent Modified"/>
+            <mx:RadioButton groupName="RadioButtonGroup_ConflictsHandleMethod" id="CheckBox_ConfilictsUseNewer" label="Use Most Recent Modified" selected="true"/>
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:Spacer width="10"/>
-            <mx:CheckBox id="CheckBox_ConfilictsUseCurrent" label="Keep Current (Discard Loaded)"/>
+            <mx:RadioButton groupName="RadioButtonGroup_ConflictsHandleMethod" id="CheckBox_ConfilictsUseCurrent" label="Keep Current (Discard Loaded)"/>
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:Spacer width="10"/>
-            <mx:CheckBox id="CheckBox_ConfilictsUseLoaded" label="Override Current (Use Loaded)"/>
-         </mx:HBox>
+            <mx:RadioButton groupName="RadioButtonGroup_ConflictsHandleMethod" id="CheckBox_ConfilictsUseLoaded" label="Override Current (Use Loaded)"/>
+         </mx:HBox-->
       </mx:VBox>
       <mx:Spacer width="100%"/>
    </mx:HBox>

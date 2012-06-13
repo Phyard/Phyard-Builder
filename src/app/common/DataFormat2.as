@@ -578,7 +578,7 @@ package common {
          
          // scenes
 
-         if (worldDefine.mVersion >= 0x200)
+         if (worldDefine.mVersion >= 0x0200)
          {
             xml.Scenes = <Scenes />;
             for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
@@ -677,8 +677,11 @@ package common {
                   element = <Sound>{soundFileDataBase64}</Sound>;
                }
                
-               if (worldDefine.mVersion >= 0x0200)
-                  element.@key = soundDefine.mKey;
+               //if (worldDefine.mVersion >= 0x020?)
+               //{
+               //   element.@key = soundDefine.mKey;
+               //   element.@time_modified = TimeValue2HexString (soundDefine.mTimeModified);
+               //}
                element.@name = soundDefine.mName;
                element.@attribute_bits = soundDefine.mAttributeBits;
                element.@sample_count = soundDefine.mNumSamples;
@@ -689,6 +692,23 @@ package common {
          }
 
          return xml;
+      }
+      
+      private static const TimeValueFillZeroes:Array = ["000000", "00000", "0000", "000", "00", "0"];
+      public static function TimeValue2HexString (time:Number):String
+      {
+         var time1:int = int (time / 0x1000000) & 0xFFFFFF;
+         var time2:int = time & 0xFFFFFF;
+         
+         var str1:String = time1.toString (16);
+         if (str1.length < 6)
+            str1 = TimeValueFillZeroes [str1.length] + str1;
+         
+         var str2:String = time2.toString (16);
+         if (str2.length < 6)
+            str2 = TimeValueFillZeroes [str2.length] + str2;
+         
+         return "0x" + str1 + str2;
       }
       
       public static function SceneDefine2XmlElement (worldDefine:WorldDefine, sceneDefine:SceneDefine, xml:XML):XML
@@ -1743,7 +1763,7 @@ package common {
          
          // scenes
 
-         if (worldDefine.mVersion >= 0x200)
+         if (worldDefine.mVersion >= 0x0200)
          {
             var numScenes:int = byteArray.readShort ();
             for (var sceneId:int = 0; sceneId < numScenes; ++ sceneId)
@@ -1827,8 +1847,11 @@ package common {
             {
                var soundDefine:Object = new Object ();
                
-               if (worldDefine.mVersion >= 0x0200)
-                  soundDefine.mKey = byteArray.readUTF ();
+               //if (worldDefine.mVersion >= 0x020?)
+               //{
+               //   soundDefine.mKey = byteArray.readUTF ();
+               //   soundDefine.mTimeModified = ReadTimeValue (byteArray);
+               //}
                soundDefine.mName = byteArray.readUTF ();
                soundDefine.mAttributeBits = byteArray.readInt ();
                soundDefine.mNumSamples = byteArray.readInt ();
@@ -1851,6 +1874,15 @@ package common {
 
          // ...
          return worldDefine;
+      }
+      
+      public static function ReadTimeValue (byteArray:ByteArray):Number
+      {
+         var v1:Number = byteArray.readUnsignedShort ();
+         var v2:Number = byteArray.readUnsignedShort ();
+         var v3:Number = byteArray.readUnsignedShort ();
+         
+         return (v1 * 0x10000 + v2) * 0x10000 + v3;
       }
       
       public static function ByteArray2SceneDefine (byteArray:ByteArray, worldDefine:WorldDefine):SceneDefine

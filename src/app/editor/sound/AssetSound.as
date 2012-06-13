@@ -454,6 +454,8 @@ package editor.sound {
       
       public function OnLoadLocalSoundFinished (soundData:ByteArray, soundFileName:String):void
       {
+         UpdateTimeModified ();
+         
          SetSoundFileData (soundData);
          //if (mName == null || mName.length == 0)
          //{

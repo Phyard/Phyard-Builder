@@ -36,7 +36,7 @@ package editor.core {
       public static function BuildKey (spaceName:String, accId:int):String
       {
          var time:Number = new Date ().getTime () - kTime20090101;
-         var time1:int = int (time / kShift24bits);
+         var time1:int = int (time / kShift24bits) & (kShift24bits - 1);
          var time2:int = time & (kShift24bits - 1);
          
          var random:int = Math.floor (Math.random () * kShift24bits);
@@ -74,7 +74,15 @@ package editor.core {
       
       public function SetTimeModified (time:Number):void
       {
+         if (isNaN (Number (time)))
+            time = 0;
+         
          mTimeModified = time;
+      }
+      
+      public function UpdateTimeModified ():void
+      {
+         mTimeModified = new Date ().getTime () - kTime20090101;
       }
   
 //=============================================================

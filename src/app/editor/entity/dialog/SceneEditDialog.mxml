@@ -371,6 +371,8 @@
       import flash.ui.ContextMenu;
       import flash.ui.ContextMenuItem;
       
+      import flash.media.SoundMixer;
+      
       import mx.containers.VBox;
       import mx.controls.Button;
       import mx.controls.Menu;
@@ -807,7 +809,9 @@
       }
       
       private function OnClickStopCurrentSceneButton ():void
-      {  
+      {
+         SoundMixer.stopAll ();
+         
          mCurrentScenePlayPanel.CloseViewer ();
          
          ViewStack_Scenes.selectedChild = Box_SceneEdit;

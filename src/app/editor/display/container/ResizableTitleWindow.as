@@ -245,7 +245,8 @@ package editor.display.container
          
          if (newCursorIcon != mLastCursorIcon)
          {
-            if (mResizeCursorID != 0)
+            //if (mResizeCursorID != 0)
+            if (mLastCursorIcon != null)
             {
                CursorManager.removeCursor(mResizeCursorID);
                mResizeCursorID = 0;

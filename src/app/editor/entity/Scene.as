@@ -947,6 +947,7 @@ package editor.entity {
          
          if (selectIt)
          {
+            imageModule.ChangeToCurrentAssetImageModule ();
             imageModule.SetPosition (mouseX, mouseY);
             SetSelectedAsset (imageModule);
          }
@@ -966,6 +967,7 @@ package editor.entity {
          
          if (selectIt)
          {
+            imageModuleButton.ChangeToCurrentAssetImageModule ();
             imageModuleButton.SetPosition (mouseX, mouseY);
             SetSelectedAsset (imageModuleButton);
          }

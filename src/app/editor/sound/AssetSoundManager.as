@@ -22,6 +22,8 @@ package editor.sound {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
+   import editor.core.EditorObject;
+   
    import editor.asset.AssetManager;
    
    import common.CoordinateSystem;
@@ -36,9 +38,14 @@ package editor.sound {
 // 
 //==========================================================      
       
-      public function CreateSound (insertBeforeSelectedThenSelectNew:Boolean = false):AssetSound
+      public function CreateSound (key:String, insertBeforeSelectedThenSelectNew:Boolean = false):AssetSound
       {
-         var soundAsset:AssetSound = new AssetSound (this);
+         if (key != null && key.length == 0)
+            key = null;
+         if (key == null)
+            key = EditorObject.BuildKey ("sound", GetAccAssetId ());
+         
+         var soundAsset:AssetSound = new AssetSound (this, key);
          soundAsset.UpdateAppearance ();
          soundAsset.UpdateSelectionProxy ();
          addChild (soundAsset);
@@ -72,9 +79,10 @@ package editor.sound {
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
+      
       private function OnContextMenuEvent_CreateSound (event:ContextMenuEvent):void
       {
-         CreateSound (true);
+         CreateSound (null, true);
       }
       
       private function OnContextMenuEvent_LocalSounds (event:ContextMenuEvent):void
@@ -156,7 +164,7 @@ package editor.sound {
             fileReference.data.position = 0;
             clonedSoundData.writeBytes (fileReference.data, 0, fileReference.data.length);
             
-            var soundAsset:AssetSound = CreateSound (true);
+            var soundAsset:AssetSound = CreateSound (null, true);
             soundAsset.OnLoadLocalSoundFinished (clonedSoundData, fileReference.name);
          }
          catch (e:Error)

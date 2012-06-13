@@ -28,6 +28,8 @@ package editor.core {
          mKey = key;
       }
       
+      public static const kMaxAccId:int = 0xFFFFFF;
+      
       private static const kTime20090101:Number = new Date (2009, 0, 1, 0, 0, 0, 0).getTime (); // 2009.01.01 00:00:00
       private static const kShift24bits:int = 1 << 24;
       
@@ -42,7 +44,7 @@ package editor.core {
          var bytes:ByteArray = new ByteArray ();
          bytes.length = 12;
          FillByteArrayWith24bits (bytes, 0, random);
-         FillByteArrayWith24bits (bytes, 3, accId);
+         FillByteArrayWith24bits (bytes, 3, accId & kMaxAccId);
          FillByteArrayWith24bits (bytes, 6, time1);
          FillByteArrayWith24bits (bytes, 9, time2);
          var base64String:String = DataFormat3.EncodeByteArray2String (bytes);
@@ -57,6 +59,22 @@ package editor.core {
          bytes [fromIndex ++] = (value >> 16) & 0xFF;
          bytes [fromIndex ++] = (value >>  8) & 0xFF;
          bytes [fromIndex ++] = (value >>  0) & 0xFF;
+      }
+  
+//=============================================================
+//   time modified 
+//=============================================================
+  
+      private var mTimeModified:Number = 0;
+      
+      public function GetTimeModified ():Number
+      {
+         return mTimeModified;
+      }
+      
+      public function SetTimeModified (time:Number):void
+      {
+         mTimeModified = time;
       }
   
 //=============================================================

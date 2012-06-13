@@ -54,9 +54,9 @@ package editor.sound {
    {
       protected var mAssetSoundManager:AssetSoundManager;
       
-      public function AssetSound (assetSoundManager:AssetSoundManager)
+      public function AssetSound (assetSoundManager:AssetSoundManager, key:String)
       {
-         super (assetSoundManager);
+         super (assetSoundManager, key);
          
          mAssetSoundManager = assetSoundManager;
       }

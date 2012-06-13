@@ -226,6 +226,7 @@ package common {
                
                var soundDefine:Object = new Object ();
                
+               soundDefine.mKey = soundAsset.GetKey ()
                soundDefine.mName = soundAsset.GetName ();
                soundDefine.mAttributeBits = soundAsset.GetSoundAttributeBits ();
                soundDefine.mNumSamples = soundAsset.GetSoundNumSamples ();
@@ -1452,7 +1453,7 @@ package common {
             {
                var soundDefine:Object = worldDefine.mSoundDefines [soundId];
                
-               var soundAsset:AssetSound = assetSoundManager.CreateSound ();
+               var soundAsset:AssetSound = assetSoundManager.CreateSound (soundDefine.mKey);
                
                soundAsset.SetName (soundDefine.mName);
                soundAsset.SetSoundAttributeBits (soundDefine.mAttributeBits);
@@ -2625,6 +2626,8 @@ package common {
             {
                var soundDefine:Object = new Object ();
                
+               if (worldDefine.mVersion >= 0x0200)
+                  soundDefine.mKey = element.@key;
                soundDefine.mName = element.@name;
                soundDefine.mAttributeBits = parseInt (element.@attribute_bits);
                soundDefine.mNumSamples = parseInt (element.@sample_count);
@@ -3646,6 +3649,9 @@ package common {
             for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
             {
                var soundDefine:Object = worldDefine.mSoundDefines [soundId];
+               
+               if (worldDefine.mVersion >= 0x0200)
+                  byteArray.writeUTF (soundDefine.mKey == null ? "" : soundDefine.mKey);
                
                byteArray.writeUTF (soundDefine.mName == null ? "" : soundDefine.mName);
                byteArray.writeInt (soundDefine.mAttributeBits);

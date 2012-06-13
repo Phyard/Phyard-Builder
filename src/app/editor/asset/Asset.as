@@ -12,6 +12,8 @@ package editor.asset {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
+   import flash.system.Capabilities;
+   
    import com.tapirgames.display.TextFieldEx;
    
    import editor.core.EditorObject;
@@ -27,6 +29,7 @@ package editor.asset {
    public class Asset extends EditorObject
    {
       protected var mAssetManager:AssetManager;
+      protected var mKey:String = null;
       protected var mCreationOrderId:int = -1; // to reduce random factors
       protected var mAppearanceLayerId:int = -1;
       public function get appearanceLayerId ():int // for MoveSelectedAssetsToTop/Bottom
@@ -50,12 +53,20 @@ package editor.asset {
       private var mAlpha:Number = 1.0;
       private var mIsVisible:Boolean = true;
       
-      public function Asset (assetManager:AssetManager)
+      public function Asset (assetManager:AssetManager, key:String = null)
       {
          mAssetManager = assetManager;
+         SetKey (key);
          
          if (mAssetManager != null) // at some special cases, mAssetManager is null
             mAssetManager.OnAssetCreated (this);
+
+         // really allow mAssetManager == null? seems it is a historical issue.
+         if (Capabilities.isDebugger)
+         {
+            if (mAssetManager == null)
+               throw new Error ("mAssetManager == null");
+         }
          
          //SetName (null);
          

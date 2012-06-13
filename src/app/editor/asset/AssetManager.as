@@ -194,6 +194,67 @@ package editor.asset {
       }
       
 //=================================================================================
+//   
+//=================================================================================
+      
+      private var mAccAssetId:int = 0; // used to create key
+      
+      final public function GetAccAssetId ():int
+      {
+         return mAccAssetId;
+      }
+      
+      final public function OnAssetCreated (asset:Asset):void
+      {
+         if (asset.GetKey () != null)
+         {
+            var oldAsset:Asset = mLookupTableByKey [asset.GetKey ()];
+            if (oldAsset != null)
+            {
+               DestroyAsset (oldAsset);
+            }
+            
+            mLookupTableByKey [asset.GetKey ()] = asset;
+         }
+         
+         // ...
+         
+         ++ mAccAssetId; // never decrease
+         
+         // ...
+         
+         mNeedToCorrectAssetCreationIds = true;
+         
+         if (mIsCreationArrayOpened)
+         {
+            if (mAssetsSortedByCreationId.indexOf (asset) < 0)
+               mAssetsSortedByCreationId.push (asset);
+         }
+      }
+      
+      final public function OnAssetDestroyed (asset:Asset):void
+      {
+         if (asset.GetKey () != null)
+         {
+            delete mLookupTableByKey [asset.GetKey ()];
+         }
+         
+         // ...
+         
+         mNeedToCorrectAssetCreationIds = true;
+         
+         if (mIsCreationArrayOpened)
+         {
+            var index:int = mAssetsSortedByCreationId.indexOf (asset);
+            if (index >= 0)
+            {
+               mAssetsSortedByCreationId.splice (index, 1);
+               asset.SetCreationOrderId (-1);
+            }
+         }
+      }
+      
+//=================================================================================
 //   destroy assets
 //=================================================================================
       
@@ -1256,32 +1317,6 @@ package editor.asset {
          NotifyModifiedForReferers ();
       }
       
-      public function OnAssetCreated (asset:Asset):void
-      {
-         mNeedToCorrectAssetCreationIds = true;
-         
-         if (mIsCreationArrayOpened)
-         {
-            if (mAssetsSortedByCreationId.indexOf (asset) < 0)
-               mAssetsSortedByCreationId.push (asset);
-         }
-      }
-      
-      final public function OnAssetDestroyed (asset:Asset):void
-      {
-         mNeedToCorrectAssetCreationIds = true;
-         
-         if (mIsCreationArrayOpened)
-         {
-            var index:int = mAssetsSortedByCreationId.indexOf (asset);
-            if (index >= 0)
-            {
-               mAssetsSortedByCreationId.splice (index, 1);
-               asset.SetCreationOrderId (-1);
-            }
-         }
-      }
-      
       private var mNeedToCorrectAssetCreationIds:Boolean = false;
       
       public function CorrectAssetCreationIds ():void
@@ -1322,6 +1357,19 @@ package editor.asset {
          if (mIsCreationArrayOpened)
             mAssetsSortedByCreationId.push (asset);
       }
+      
+//============================================================================
+// lookup tables
+//============================================================================
+      
+      private var mLookupTableByKey:Dictionary = new Dictionary ();
+      
+      public function GetAssetByKey (key:String):Asset
+      {
+         return mLookupTableByKey [key] as Asset;
+      }
+      
+      // todo: lookup table by name
       
 //============================================================================
 // utils

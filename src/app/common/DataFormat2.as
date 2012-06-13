@@ -676,6 +676,9 @@ package common {
                   var soundFileDataBase64:String = DataFormat3.EncodeByteArray2String (soundDefine.mFileData);
                   element = <Sound>{soundFileDataBase64}</Sound>;
                }
+               
+               if (worldDefine.mVersion >= 0x0200)
+                  element.@key = soundDefine.mKey;
                element.@name = soundDefine.mName;
                element.@attribute_bits = soundDefine.mAttributeBits;
                element.@sample_count = soundDefine.mNumSamples;
@@ -1824,6 +1827,8 @@ package common {
             {
                var soundDefine:Object = new Object ();
                
+               if (worldDefine.mVersion >= 0x0200)
+                  soundDefine.mKey = byteArray.readUTF ();
                soundDefine.mName = byteArray.readUTF ();
                soundDefine.mAttributeBits = byteArray.readInt ();
                soundDefine.mNumSamples = byteArray.readInt ();

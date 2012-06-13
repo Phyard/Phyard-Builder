@@ -11,17 +11,36 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_SourceCode" width="100%" height="250" editable="true" wordWrap="false">
+      <mx:TextArea id="TextArea_SourceCode" width="100%" height="150" editable="true" wordWrap="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>
+   </mx:HBox>
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:VBox>
+         <mx:Label text="How To Handle Conflicts Of Image Module and Sound Assets?" />
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:CheckBox id="CheckBox_ConfilictsUseNewer" label="Use Most Recent Modified"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:CheckBox id="CheckBox_ConfilictsUseCurrent" label="Keep Current (Discard Loaded)"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:CheckBox id="CheckBox_ConfilictsUseLoaded" label="Override Current (Use Loaded)"/>
+         </mx:HBox>
+      </mx:VBox>
+      <mx:Spacer width="100%"/>
    </mx:HBox>
    
    <mx:Spacer height="10"/>
 
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
-      <mx:Button label="Import" click="OnClickOkButton ();"/>
+      <mx:Button label="Import Scenes" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>
       <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
       <!--

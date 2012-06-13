@@ -11,16 +11,30 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_SourceCode" width="100%" height="250" editable="true" wordWrap="false">
+      <mx:TextArea id="TextArea_SourceCode" width="100%" height="150" editable="true" wordWrap="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>
    </mx:HBox>
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_MergeVariablesWithSameNames" label="Merge Custom Variables With Same Name And Type"/>
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_CenterNewEntitiesInScreen" label="Center New Entities In Screen" selected="true"/>
+      <mx:VBox>
+         <mx:CheckBox id="CheckBox_MergeVariablesWithSameNames" label="Merge Custom Variables With Same Name And Type" selected="true"/>
+         <mx:CheckBox id="CheckBox_CenterNewEntitiesInScreen" label="Center New Entities In Screen" selected="true"/>
+         <mx:Label text="How To Handle Conflicts Of Image Module and Sound Assets?" />
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:CheckBox id="CheckBox_ConfilictsUseNewer" label="Use Most Recent Modified"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:CheckBox id="CheckBox_ConfilictsUseCurrent" label="Keep Current (Discard Loaded)"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:CheckBox id="CheckBox_ConfilictsUseLoaded" label="Override Current (Use Loaded)"/>
+         </mx:HBox>
+      </mx:VBox>
       <mx:Spacer width="100%"/>
    </mx:HBox>
    

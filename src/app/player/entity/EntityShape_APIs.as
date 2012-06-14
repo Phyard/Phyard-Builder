@@ -182,7 +182,9 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    var world:World = seedShape.GetWorld ();
 
    var worldDefine:WorldDefine = new WorldDefine ();
-   var entityDefineArray:Array = worldDefine.mEntityDefines;
+   var sceneDefine:SceneDefine = new SceneDefine ();
+   worldDefine.mSceneDefines.push (sceneDefine);
+   var entityDefineArray:Array = sceneDefine.mEntityDefines;
 
    var entityDefine:Object;
    var entity:Entity;
@@ -239,7 +241,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
 
    var entityDefinesSortByAppearanceId:Array = entityDefineArray.concat ();
    entityDefinesSortByAppearanceId.sortOn ("mAppearanceOrderId", Array.NUMERIC);
-   var appearanceOrderArray:Array = worldDefine.mEntityAppearanceOrder;
+   var appearanceOrderArray:Array = sceneDefine.mEntityAppearanceOrder;
    for (i = 0; i < count; ++ i)
    {
       entityDefine = entityDefinesSortByAppearanceId [i] as Object;
@@ -248,7 +250,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
 
    // create brother groups array
 
-   var brotherGroupDefines:Array = worldDefine.mBrotherGroupDefines;
+   var brotherGroupDefines:Array = sceneDefine.mBrotherGroupDefines;
    count = bodiesToTeleport.length;
    for (i = 0; i < count; ++ i)
    {
@@ -1300,8 +1302,7 @@ public function AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity
    }
 }
 
-// todo: 应该像AddLinearMomentum一样加一个onBodyCenter参数。
-// - 需要调用AddLinearMomentum来做适当调整.
+// todo: 搴旇鍍廇ddLinearMomentum涓�牱鍔犱竴涓猳nBodyCenter鍙傛暟銆�// - 闇�璋冪敤AddLinearMomentum鏉ュ仛閫傚綋璋冩暣.
 public function AddAngularMomentum (value:Number, valueIsVelocity:Boolean = false):void
 {
    // non-physics will also be valid

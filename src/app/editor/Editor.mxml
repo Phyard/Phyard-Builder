@@ -102,7 +102,7 @@
    import common.DataFormat2;
    import common.DataFormat3;
    import common.WorldDefine;
-   
+   import common.SceneDefine;
    import common.trigger.CoreEventIds;
    import common.ValueAdjuster;
    import common.Define;
@@ -845,11 +845,12 @@
             var oldCategoriesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
             
             var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
+            var sceneDefine:SceneDefine = worldDefine.mSceneDefines [0] as SceneDefine;
             
-            if (oldEntitiesCount + worldDefine.mEntityDefines.length > Define.MaxEntitiesCount)
+            if (oldEntitiesCount + sceneDefine.mEntityDefines.length > Define.MaxEntitiesCount)
                return;
             
-            if (oldCategoriesCount + worldDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
+            if (oldCategoriesCount + sceneDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
                return;
             
             if (importIntoNewScenes)

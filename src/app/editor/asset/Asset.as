@@ -62,11 +62,13 @@ package editor.asset {
             mAssetManager.OnAssetCreated (this);
 
          // really allow mAssetManager == null? seems it is a historical issue.
-         if (Capabilities.isDebugger)
-         {
-            if (mAssetManager == null)
-               throw new Error ("mAssetManager == null");
-         }
+         //if (Capabilities.isDebugger)
+         //{
+         //   if (mAssetManager == null)
+         //      throw new Error ("mAssetManager == null");
+         //}
+         //
+         // found it: for AssetImageShapeModule, the mAssetManager is really null.
          
          //SetName (null);
          

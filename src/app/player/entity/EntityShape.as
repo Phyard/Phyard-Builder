@@ -25,6 +25,7 @@ package player.entity {
    import common.Transform2D;
    import common.Define;
    import common.WorldDefine;
+   import common.SceneDefine;
    import common.trigger.CoreEventIds;
    
    // The shape class includes many types. Generally, if a entity has position and rotation and can be glued with other entities, then the entity can be viewed as a shape.

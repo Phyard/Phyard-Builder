@@ -23,7 +23,8 @@ package common {
       
       public var mSceneDefines:Array = new Array ();
       
-      //>>to remove      
+      //>> moved into SceneDefine since v2.00
+      /* 
          public var mSettings:Object = new Object ();
          
          public var mEntityDefines:Array = new Array ();
@@ -43,6 +44,7 @@ package common {
          public var mEntityPropertyDefines:Array = new Array ();
          
          public var mFunctionDefines:Array = new Array ();
+      */
       //<<
       
       public var mImageDefines:Array = new Array ();

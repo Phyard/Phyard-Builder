@@ -1767,6 +1767,15 @@ package viewer {
 //
 //======================================================================
 
+      // restart current scene/level
+      private function OnRestartGame (data:Object = null):void
+      {
+         ReloadPlayerWorld (true, mCurrentSceneID);
+
+         if (_onPlayStatusChanged != null)
+            _onPlayStatusChanged ();
+      }
+
       private function OnLoadScene (sceneId:int):void
       {
          ReloadPlayerWorld (false, sceneId);
@@ -1775,6 +1784,7 @@ package viewer {
             _onPlayStatusChanged ();
       }
 
+      // restart current scene/level
       private function OnRestart (data:Object = null):void
       {
          ReloadPlayerWorld (true, mCurrentSceneID);

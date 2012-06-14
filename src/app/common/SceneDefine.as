@@ -3,6 +3,7 @@ package common {
    
    public class SceneDefine
    {
+      public var mKey:String;
       public var mName:String;
       
       public var mSettings:Object = new Object ();

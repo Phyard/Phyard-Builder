@@ -248,6 +248,7 @@ package common {
          var sceneDefine:SceneDefine = new SceneDefine ();
          
          //>>from v2.0
+         sceneDefine.mKey  = scene.GetKey ();
          sceneDefine.mName = scene.GetName ();
          //<< 
          
@@ -1483,7 +1484,8 @@ package common {
             
             for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
             {
-               editorWorld.CreateNewScene (worldDefine.mSceneDefines [sceneId].mName);
+               var sceneDefine:SceneDefine = worldDefine.mSceneDefines [sceneId];
+               editorWorld.CreateNewScene (sceneDefine.mKey, sceneDefine.mName); // for versions ealier than v2.00, sceneDefine.mKey is undefined
             }
             
             if (isNewWorldToLoadAll)
@@ -2686,6 +2688,7 @@ package common {
          
          if (worldDefine.mVersion >= 0x0200)
          {
+            sceneDefine.mKey = sceneXML.@key;
             sceneDefine.mName = sceneXML.@name;
          }
          
@@ -3722,7 +3725,8 @@ package common {
          
          if (worldDefine.mVersion >= 0x0200)
          {
-            byteArray.writeUTF (sceneDefine.mName);
+            byteArray.writeUTF (sceneDefine.mKey  == null ? "" : sceneDefine.mKey);
+            byteArray.writeUTF (sceneDefine.mName == null ? "" : sceneDefine.mName);
          }
          
          // settings

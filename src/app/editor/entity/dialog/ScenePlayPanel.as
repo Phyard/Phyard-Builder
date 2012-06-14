@@ -17,7 +17,9 @@ package editor.entity.dialog {
    import com.tapirgames.util.GraphicsUtil;
    
    import viewer.Viewer;
+   
    import player.world.World;
+   import player.design.Global;
    
    public class ScenePlayPanel extends UIComponent
    {
@@ -64,6 +66,8 @@ package editor.entity.dialog {
             removeChild (mDesignViewer);
             mDesignViewer = null;
          }
+         
+         Global.ClearAll ();
       }
       
       private function GetViewportSize ():Point

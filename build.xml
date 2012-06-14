@@ -37,6 +37,11 @@
       <os family="windows" />
    </condition>
 
+   <property name="program.secureSWF.nosuffix"        value="${dir.secureswf}/ssCLI" />
+   <condition property="program.secureSWF" value="${program.secureSWF.nosuffix}.exe" else="${program.secureSWF.nosuffix}">
+      <os family="windows" />
+   </condition>
+
    <path id="java-class-path">
       <fileset dir="${dir.third-party}/java_libs" includes="**/*.jar" />
       <fileset dir="${dir.tools}/editor" includes="**/*.jar" />

@@ -275,7 +275,7 @@ package common {
             //
             Global.InitGlobalData (worldDefine.mForRestartLevel);
 
-            playerWorld = new World (sceneDefine) ;; //worldDefine);
+            playerWorld = new World (sceneDefine) ; //worldDefine);
             playerWorld.SetBasicInfos (worldDefine);
             Global.SetCurrentWorld (playerWorld);
          }
@@ -722,7 +722,8 @@ package common {
          
          if (worldDefine.mVersion >= 0x0200)
          {
-            xml.@name = sceneDefine.mName;
+            xml.@key  = sceneDefine.mKey  == null ? "" : sceneDefine.mKey;
+            xml.@name = sceneDefine.mName == null ? "" : sceneDefine.mName;
          }
          
          // ...
@@ -1893,6 +1894,7 @@ package common {
          
          if (worldDefine.mVersion >= 0x0200)
          {
+            sceneDefine.mKey = byteArray.readUTF ();
             sceneDefine.mName = byteArray.readUTF ();
          }
          
@@ -3261,6 +3263,7 @@ package common {
             
             if (worldDefine.mVersion < 0x0200)
             {
+               sceneDefine.mKey = null;
                sceneDefine.mName = "Default Scene";
             }
             

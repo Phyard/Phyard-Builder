@@ -83,6 +83,37 @@ package player.design
       public static var Viewer_SetMouseGestureSupported;
       
 //==============================================================================
+// temp for playing in editor.
+//==============================================================================
+
+   public static function ClearAll ():void
+   {
+      sTheGlobal = null;
+      
+      mSessionVariableSpace = null;
+      mGlobalVariableSpace = null;
+      mEntityVariableSpace = null;
+      
+      mRegisterVariableSpace_Boolean = null;
+      mRegisterVariableSpace_String = null;
+      mRegisterVariableSpace_Number = null;
+      mRegisterVariableSpace_Entity = null;
+      mRegisterVariableSpace_CollisionCategory = null;
+      mRegisterVariableSpace_Array = null;
+      
+      mImageBitmaps = null;
+      mImageBitmapDivisions = null;
+      mAssembledModules = null;
+      mSequencedModules = null;
+      
+      mSounds = null;
+      
+      mRandomNumberGenerators = null;
+      
+      Sound.StopAllSounds ();
+   }
+
+//==============================================================================
 // static values
 //==============================================================================
       

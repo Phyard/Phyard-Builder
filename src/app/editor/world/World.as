@@ -27,6 +27,8 @@ package editor.world {
    import editor.trigger.FunctionDeclaration_PreDefined;
    import editor.trigger.FunctionDeclaration_Core;
    import editor.trigger.FunctionDeclaration_EventHandler;
+   
+   import editor.core.EditorObject;
 
    import common.trigger.CoreFunctionDeclarations;
    import common.trigger.CoreEventDeclarations;
@@ -46,7 +48,7 @@ package editor.world {
          
          // ...
          
-         CreateNewScene ("Default Scene");
+         CreateNewScene (null, "Default Scene");
          
          // images
          
@@ -204,10 +206,24 @@ package editor.world {
          return mScenes [index] as Scene;
       }
       
-      public function CreateNewScene (name:String, afterIndex:int = -1):int
+      private var mAccSceneId:int = 0;
+      
+      public function GetAccAssetId ():int
       {
-         var newScene:Scene = new Scene (this);
+         return mAccSceneId;
+      }
+      
+      public function CreateNewScene (key:String, name:String, afterIndex:int = -1):int
+      {
+         if (key != null && key.length == 0)
+            key = null;
+         if (key == null)
+            key = EditorObject.BuildKey ("scene", GetAccAssetId ());
+         
+         var newScene:Scene = new Scene (this, key);
          newScene.SetName (name);
+         
+         ++ mAccSceneId; // never decrease
          
          if (afterIndex >= 0)
             ++ afterIndex;

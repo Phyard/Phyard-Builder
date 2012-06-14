@@ -94,11 +94,12 @@ package editor.entity {
    {
       protected var mWorld:World;
       
-      public function Scene (world:World)
+      public function Scene (world:World, key:String)
       {
          super ();
          
          mWorld = world;
+         SetKey (key);
          
          mCodeLibManager = new CodeLibManager (this);
          

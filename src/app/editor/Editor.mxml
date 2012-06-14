@@ -35,19 +35,19 @@
 
    <mx:XML id="WorldFileMenuData">
       <root>
-         <menuitem label="Load Online ..." data="load_online" for_online="true"/>
-         <menuitem label="Load Offline (xml) ..." data="load_offline"/>
-         <menuitem label="Import Scenes (xml) ..." data="import_scenes"/>
-         <!--menuitem label="Load Local ..." data="load_local"/-->
-         <!--menuitem label="Quick Load ..." data="load_quick"/-->
-         
-         <menuitem type="separator" data=""/>
-         
          <menuitem label="Save Online ..." data="save_online" for_online="true"/>
          <menuitem label="Save Offline (xml) ..." data="save_offline"/>
          <menuitem label="Export Current Scene (xml) ..." data="export_current_scene"/>
          <!--menuitem label="Save Local ..." data="save_local"/-->
          <!--menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/-->
+         
+         <menuitem type="separator" data=""/>
+         
+         <menuitem label="Load Online ..." data="load_online" for_online="true"/>
+         <menuitem label="Load Offline (xml) ..." data="load_offline"/>
+         <menuitem label="Import Scenes (xml) ..." data="import_scenes"/>
+         <!--menuitem label="Load Local ..." data="load_local"/-->
+         <!--menuitem label="Quick Load ..." data="load_quick"/-->
          
          <menuitem type="separator" data=""/>
          

@@ -391,8 +391,6 @@
       import flash.ui.ContextMenu;
       import flash.ui.ContextMenuItem;
       
-      import flash.media.SoundMixer;
-      
       import mx.containers.VBox;
       import mx.controls.Button;
       import mx.controls.Menu;
@@ -673,7 +671,7 @@
          if (world == null)
             return;
          
-         var newIndex:int = world.CreateNewScene (params.mName == null ? "untitled" : params.mName, List_Scenes.selectedIndex);
+         var newIndex:int = world.CreateNewScene (null, params.mName == null ? "untitled" : params.mName, List_Scenes.selectedIndex);
          if (newIndex >= 0)
          {
             OnWorldChanged (newIndex);
@@ -1014,8 +1012,6 @@
       
       private function OnClickStopCurrentSceneButton ():void
       {
-         SoundMixer.stopAll ();
-         
          mCurrentScenePlayPanel.CloseViewer ();
          
          ViewStack_Scenes.selectedChild = Box_SceneEdit;

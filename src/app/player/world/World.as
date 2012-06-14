@@ -99,10 +99,15 @@ package player.world {
 
       private var mVersion:int = 0x0;
       private var mAuthorName:String = "";
-      private var mAuthorHonepage:String = "";
+      private var mAuthorHomepage:String = "";
       private var mShareSourceCode:Boolean = false;
       private var mPermitPublishing:Boolean = false;
       
+   // ...
+   
+      private var mSceneKey:String;
+      private var mSceneName:String;
+   
    // ...
 
       private var mNumEntitiesInEditor:int;
@@ -123,15 +128,24 @@ package player.world {
 // construct
 //==============================================================================
 
+      // todo:
+      //   World -> Scene
+      //   worldDefine -> sceneDefine
+
       public function World (worldDefine:Object)
       {
          // basic
          //
          //mVersion          = worldDefine.mVersion;
          //mAuthorName       = worldDefine.mAuthorName;
-         //mAuthorHonepage   = worldDefine.mAuthorHomepage;
+         //mAuthorHomepage   = worldDefine.mAuthorHomepage;
          //mShareSourceCode  = worldDefine.mShareSourceCode;
          //mPermitPublishing = worldDefine.mPermitPublishing;
+         
+         // ...
+         
+         mSceneKey  = worldDefine.mKey;
+         mSceneName = worldDefine.mName;
          
          // ...
          
@@ -276,7 +290,7 @@ package player.world {
       {
          mVersion          = worldDefine.mVersion;
          mAuthorName       = worldDefine.mAuthorName;
-         mAuthorHonepage   = worldDefine.mAuthorHomepage;
+         mAuthorHomepage   = worldDefine.mAuthorHomepage;
          mShareSourceCode  = worldDefine.mShareSourceCode;
          mPermitPublishing = worldDefine.mPermitPublishing;
       }
@@ -293,7 +307,7 @@ package player.world {
 
       public function GetAuthorHomepage ():String
       {
-         return mAuthorHonepage;
+         return mAuthorHomepage;
       }
 
       public function IsShareSourceCode ():Boolean
@@ -309,6 +323,20 @@ package player.world {
       public function GetCoordinateSystem ():CoordinateSystem
       {
          return mCoordinateSystem;
+      }
+
+//==============================================================================
+// 
+//==============================================================================
+      
+      public function GetSceneKey ():String
+      {
+         return mSceneKey;
+      }
+      
+      public function GetSceneName ():String
+      {
+         return mSceneName;
       }
 
 //==============================================================================

@@ -1,4 +1,4 @@
-LocalSettings.properties
+LocalSettings.properties*
 .build
 .release
 .release.*

@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <project name="CIEditor" basedir="." default="release-editor">
 
-   <property file="${basedir}/LocalSettings.properties" />
+   <condition property="LocalSettings.properties" value="LocalSettings.properties.Windows" else="LocalSettings.properties.Linux">
+      <os family="windows" />
+   </condition>
+   <property file="${basedir}/${LocalSettings.properties}" />
 
    <property name="dir.flexsdk"        value="${Path.FlexSDK}" />
    <property name="dir.secureswf"        value="${Path.SecureSWF}" />
@@ -34,6 +37,11 @@
       <isset property="ForAir"/>
    </condition>
    <condition property="program.as3compiler" value="${program.as3compiler.nosuffix}.exe" else="${program.as3compiler.nosuffix}">
+      <os family="windows" />
+   </condition>
+
+   <property name="program.secureSWF.nosuffix"        value="${dir.secureswf}/ssCLI" />
+   <condition property="program.secureSWF" value="${program.secureSWF.nosuffix}.exe" else="${program.secureSWF.nosuffix}">
       <os family="windows" />
    </condition>
 

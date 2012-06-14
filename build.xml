@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <project name="CIEditor" basedir="." default="release-editor">
 
-   <condition property="LocalSettings.properties" value="LocalSettings.properties.Windows" else="LocalSettings.properties.Linux">
+   <condition property="file.local.settings" value="LocalSettings.properties.Windows" else="LocalSettings.properties.Linux">
       <os family="windows" />
    </condition>
-   <property file="${basedir}/${LocalSettings.properties}" />
+   <property file="${basedir}/${file.local.settings}" />
 
    <property name="dir.flexsdk"        value="${Path.FlexSDK}" />
    <property name="dir.secureswf"        value="${Path.SecureSWF}" />

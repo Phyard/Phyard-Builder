@@ -132,9 +132,9 @@
          <menuitem label="New String Variable" data="String"/>
          <menuitem label="New Collision Category Variable" data="CCat"/>
          <menuitem label="New Entity Variable" data="Entity"/>
-         <!--menuitem label="New Module Variable" data="Module"/>
+         <menuitem label="New Module Variable" data="Module"/>
          <menuitem label="New Sound Variable" data="Sound"/>
-         <menuitem label="New Scene Variable" data="Scene"/-->
+         <!--menuitem label="New Scene Variable" data="Scene"/-->
          <menuitem label="New Array Variable" data="Array"/>
       </root>
    </mx:XML>

@@ -118,6 +118,10 @@ package common.trigger {
       public static const ID_Array_GetElementAsCCat:int          = IdPool.CoreApiId_94; // v1.54
       public static const ID_Array_SetElementWithEntity:int      = IdPool.CoreApiId_95; // v1.54
       public static const ID_Array_GetElementAsEntity:int        = IdPool.CoreApiId_96; // v1.54
+      public static const ID_Array_SetElementWithModule:int      = IdPool.CoreApiId_105; // v2.00
+      public static const ID_Array_GetElementAsModule:int        = IdPool.CoreApiId_106; // v2.00
+      public static const ID_Array_SetElementWithSound:int      = IdPool.CoreApiId_107; // v2.00
+      public static const ID_Array_GetElementAsSound:int        = IdPool.CoreApiId_108; // v2.00
       public static const ID_Array_SetElementWithArray:int       = IdPool.CoreApiId_97; // v1.54
       public static const ID_Array_GetElementAsArray:int         = IdPool.CoreApiId_98; // v1.54
 

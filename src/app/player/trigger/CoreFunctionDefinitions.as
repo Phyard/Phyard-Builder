@@ -12,6 +12,7 @@ package player.trigger {
    import player.entity.*;
    import player.trigger.entity.*;
 
+   import player.module.Module;
    import player.sound.Sound;
 
    import player.physics.PhysicsEngine;
@@ -145,6 +146,10 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsCCat,       GetArrayElementAsCCat);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithEntity,     SetArrayElementWithEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsEntity,       GetArrayElementAsEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithModule,     SetArrayElementWithModule);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsModule,       GetArrayElementAsModule);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithSound,     SetArrayElementWithSound);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsSound,       GetArrayElementAsSound);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithArray,     SetArrayElementWithArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsArray,       GetArrayElementAsArray);
 
@@ -1492,6 +1497,26 @@ package player.trigger {
       public static function GetArrayElementAsEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
          GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Entity);
+      }
+
+      public static function SetArrayElementWithModule (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Module);
+      }
+
+      public static function GetArrayElementAsModule (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Module);
+      }
+
+      public static function SetArrayElementWithSound (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Sound);
+      }
+
+      public static function GetArrayElementAsSound (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Sound);
       }
 
       public static function SetArrayElementWithArray (valueSource:Parameter, valueTarget:Parameter):void

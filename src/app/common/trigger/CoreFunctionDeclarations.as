@@ -671,6 +671,40 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithModule,
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Module,       Define.ModuleId_None],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsModule,
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Module,       Define.ModuleId_None],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithSound,
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Sound,       Define.SoundId_None],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsSound,
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Sound,       Define.SoundId_None],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithArray,
                      [
                         [ValueTypeDefine.ValueType_Array,       null],
@@ -770,8 +804,8 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Add,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0],
                      ],
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],

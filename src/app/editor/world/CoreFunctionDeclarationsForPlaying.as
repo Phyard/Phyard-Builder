@@ -53,6 +53,7 @@ package editor.world {
             var random_package:FunctionMenuGroup             = new FunctionMenuGroup ("Random", number_package);
          var string_package:FunctionMenuGroup = new FunctionMenuGroup ("String", sGlobalMenuGroup);
          var array_package:FunctionMenuGroup   = new FunctionMenuGroup ("Array", sGlobalMenuGroup);
+            var array_element_package:FunctionMenuGroup   = new FunctionMenuGroup ("Element", array_package);
          var system_package:FunctionMenuGroup = new FunctionMenuGroup ("System", sGlobalMenuGroup);
 
          var world_general_package:FunctionMenuGroup  = new FunctionMenuGroup ("General", sWorldMenuGroup);
@@ -673,7 +674,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean, array_package, "Set Element With Boolean", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean, array_element_package, "Set Element With Boolean", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -681,7 +682,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsBoolean, array_package, "Get Element As Boolean", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsBoolean, array_element_package, "Get Element As Boolean", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -690,7 +691,7 @@ package editor.world {
                               new VariableDefinitionBoolean ("Element Value (Boolean)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber, array_package, "Set Element With Number", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber, array_element_package, "Set Element With Number", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -698,7 +699,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsNumber, array_package, "Get Element As Number", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsNumber, array_element_package, "Get Element As Number", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -707,7 +708,7 @@ package editor.world {
                               new VariableDefinitionNumber ("Element Value (Number)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithString, array_package, "Set Element With String", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithString, array_element_package, "Set Element With String", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -715,7 +716,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsString, array_package, "Get Element As String", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsString, array_element_package, "Get Element As String", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -724,7 +725,7 @@ package editor.world {
                               new VariableDefinitionString ("Element Value (String)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithCCat, array_package, "Set Element With CCat", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithCCat, array_element_package, "Set Element With CCat", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -732,7 +733,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsCCat, array_package, "Get Element As CCat", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsCCat, array_element_package, "Get Element As CCat", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -741,7 +742,7 @@ package editor.world {
                               new VariableDefinitionCollisionCategory ("Element Value (CCat)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithEntity, array_package, "Set Element With Entity", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithEntity, array_element_package, "Set Element With Entity", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -749,7 +750,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsEntity, array_package, "Get Element As Entity", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsEntity, array_element_package, "Get Element As Entity", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -758,7 +759,41 @@ package editor.world {
                               new VariableDefinitionEntity ("Element Value (Entity)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithArray, array_package, "Set Element With Array", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithModule, array_element_package, "Set Element With Module", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"),
+                              new VariableDefinitionNumber ("Element Index"),
+                              new VariableDefinitionModule ("Element Value (Module)"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsModule, array_element_package, "Get Element As Module", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"),
+                              new VariableDefinitionNumber ("Element Index"),
+                     ],
+                     [
+                              new VariableDefinitionModule ("Element Value (Module)"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithSound, array_element_package, "Set Element With Sound", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"),
+                              new VariableDefinitionNumber ("Element Index"),
+                              new VariableDefinitionSound ("Element Value (Sound)"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsSound, array_element_package, "Get Element As Sound", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"),
+                              new VariableDefinitionNumber ("Element Index"),
+                     ],
+                     [
+                              new VariableDefinitionSound ("Element Value (Sound)"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithArray, array_element_package, "Set Element With Array", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),
@@ -766,7 +801,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsArray, array_package, "Get Element As Array", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsArray, array_element_package, "Get Element As Array", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("Element Index"),

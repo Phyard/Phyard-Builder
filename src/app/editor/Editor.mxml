@@ -51,6 +51,10 @@
          
          <menuitem type="separator" data=""/>
          
+         <menuitem label="Reset World ..." data="reset_world"/>
+         
+         <menuitem type="separator" data=""/>
+         
          <menuitem label="About" data="about"/>
       </root>
    </mx:XML>
@@ -390,6 +394,11 @@
          //{
          //   MainView.QuickSave ();
          //}
+         
+         else if (itemData == "reset_world")
+         {
+            EditorContext.ShowAlert ("Reset World", "Do you want to reset world?", true, NewWorld);
+         }
          
          else if (itemData == "about")
          {

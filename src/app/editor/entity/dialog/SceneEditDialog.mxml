@@ -362,27 +362,14 @@
          
          <menuitem type="separator" data=""/>
          
-         <menuitem label="Clear All Entities In Current Scene ..." data="clear_all"/>
-         <menuitem label="Clear All Entities and Reset Current Scene ..." data="clear_all_and_reset"/>
+         <menuitem label="Clear All Entities ..." data="clear_all"/>
+         <!--menuitem label="Reset Current Scene ..." data="reset_scene"/-->
          
          <menuitem type="separator" data=""/>
          
          <menuitem id="MenuItem_DeleteScene" label="Delete Current Scene" data="delete_current_scene" enabled="true"/>
       </root>
    </mx:XML>
-   
-   <!--mx:XML id="SceneSettingsMenuData">
-      <root>
-         <menuitem label="Clear All Entities" data="clear_all"/>
-         <menuitem label="Clear All Entities and Reset" data="clear_all_and_reset"/>
-         <menuitem type="separator" data=""/>
-         <menuitem label="General Settings ..." data="general"/>
-         <menuitem label="Simulation Settings ..." data="physics"/>
-         <menuitem label="Config Coordinate System ..." data="coordinate"/>
-         <menuitem label="Config World Appearance ..." data="appearance"/>
-         <menuitem label="Config Viewport ..." data="viewport"/>
-      </root>
-   </mx:XML-->
 
   <mx:Script><![CDATA[
       
@@ -794,12 +781,12 @@
          var itemData:String = event.item.@data;
          if (itemData == "clear_all")
          {
-            EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, mCurrentSceneEditPanel.ClearAllEntities);
+            EditorContext.ShowAlert ("Clear All Entities", "Do you want to clear all entities?", true, mCurrentSceneEditPanel.ClearAllEntities);
          }
-         else if (itemData == "clear_all_and_reset")
-         {
-            EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, EditorContext.GetEditorApp ().NewWorld);
-         }
+         //else if (itemData == "reset_scene")
+         //{
+         //   EditorContext.ShowAlert ("Reset Scene", "Do you want to reset current scene?", true, mCurrentSceneEditPanel.ResetScene);
+         //}
          else if (itemData == "general")
          {
             mCurrentSceneEditPanel.ShowLevelRulesEditDialog ();

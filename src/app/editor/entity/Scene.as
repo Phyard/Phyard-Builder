@@ -132,6 +132,16 @@ package editor.entity {
          super.DestroyAllAssets ();
       }
       
+      public function DestroyAllEntities ():void
+      {
+         super.DestroyAllAssets ();
+      }
+      
+      public function Reset ():void
+      {
+         // todo
+      }
+      
 //=================================================================================
 //   scene id
 //=================================================================================

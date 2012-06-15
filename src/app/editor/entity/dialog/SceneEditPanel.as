@@ -838,13 +838,22 @@ package editor.entity.dialog {
          mMaskFieldInPlaying = mask; 
       }
       
-      public function ClearAllEntities ():void
+      public function ResetScene ():void
       {
-         mScene.DestroyAllAssets ();
+         mScene.Reset ();
          
          OnAssetSelectionsChanged ();
           
-         CreateUndoPoint ("Clear world");
+         CreateUndoPoint ("Reset Scene");
+      }
+      
+      public function ClearAllEntities ():void
+      {
+         mScene.DestroyAllEntities ();
+         
+         OnAssetSelectionsChanged ();
+          
+         CreateUndoPoint ("Clear Entities");
       }
 
       public function ShowLevelRulesEditDialog ():void

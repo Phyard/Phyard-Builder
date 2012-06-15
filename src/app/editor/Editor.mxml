@@ -37,7 +37,7 @@
       <root>
          <menuitem label="Save Online ..." data="save_online" for_online="true"/>
          <menuitem label="Save Offline (xml) ..." data="save_offline"/>
-         <menuitem label="Export Current Scene (xml) ..." data="export_current_scene"/>
+         <menuitem label="Export Current Scene To System Clipboard" data="export_current_scene"/>
          <!--menuitem label="Save Local ..." data="save_local"/-->
          <!--menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/-->
          

@@ -357,8 +357,8 @@
          <menuitem type="separator" data=""/>
          
          <menuitem label="Import (Merge The First Scene To Be Loaded) ..." data="import"/>
-         <menuitem label="Export Selected Entities to System Clipboard" data="export_selected_entities"/>
-         <!--menuitem label="Export All Functions to System Clipboard" data="export_all_functions"/-->
+         <menuitem label="Export Selected Entities To System Clipboard" data="export_selected_entities"/>
+         <!--menuitem label="Export All Functions To System Clipboard" data="export_all_functions"/-->
          
          <menuitem type="separator" data=""/>
          

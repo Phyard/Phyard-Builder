@@ -2,6 +2,7 @@
 package common {
    
    import flash.utils.ByteArray;
+   import flash.utils.Dictionary;
    
    import player.design.Global;
    import player.world.World;
@@ -708,36 +709,60 @@ package common {
       }
       
       // this function is for validating entity and ccat session variables when restarting a level
-      public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableDefines:Array, variableSpace:VariableSpace):void
+      public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableSpace:VariableSpace/*, variableDefines:Array*/):void
       {
-         //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
-         var numVariables:int = variableDefines.length;
-         //assert (variableSpace.GetNumVariables () == numVariables);
+         var convertedArrays:Dictionary = new Dictionary ();
+         
+         var numVariables:int = variableSpace.GetNumVariables ();
          
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
-         {
-            //var variableInstanceDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
-            var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
-            var direct_source_define:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
-            
+         {  
             var variableInstance:VariableInstance = variableSpace.GetVariableAt (variableId);
-            if (direct_source_define.mValueType == ValueTypeDefine.ValueType_Entity)
+            
+            variableInstance.SetValueObject (ValidateVariableValueObject (playerWorld, variableInstance.GetValueObject (), convertedArrays));
+         }
+      }
+      
+      private static function ValidateVariableValueObject (playerWorld:World, valueObject:Object, convertedArrays:Dictionary):Object
+      {
+         if (valueObject is Entity)
+         {
+            var entity:Entity = valueObject as Entity;
+            if (entity != null)
             {
-               var entity:Entity = variableInstance.GetValueObject () as Entity;
-               if (entity != null)
-               {
-                  variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, entity.GetCreationId ()));
-               }
-            }
-            else if (direct_source_define.mValueType == ValueTypeDefine.ValueType_CollisionCategory)
-            {
-               var ccat:CollisionCategory = variableInstance.GetValueObject () as CollisionCategory;
-               if (ccat != null)
-               {
-                  variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, ccat.GetIndexInEditor ()));
-               }
+               return ValidateDirectValueObject_Define2Object (playerWorld, ValueTypeDefine.ValueType_Entity, entity.GetCreationId ());
             }
          }
+         else if (valueObject is CollisionCategory)
+         {
+            var ccat:CollisionCategory = valueObject as CollisionCategory;
+            if (ccat != null)
+            {
+               return ValidateDirectValueObject_Define2Object (playerWorld, ValueTypeDefine.ValueType_CollisionCategory, ccat.GetIndexInEditor ());
+            }
+         }
+         // sound
+         // module
+         else if (valueObject is Array)
+         {
+            var anArray:Array = valueObject as Array;
+            
+            if (convertedArrays [anArray] == null)
+            {
+               convertedArrays [anArray] = true;
+               
+               for (var i:int = 0; i < anArray.length; ++ i)
+               {
+                  var element:Object = anArray [i];
+                  
+                  anArray [i] =  ValidateVariableValueObject (playerWorld, element, convertedArrays);
+               }
+            }
+            
+            return anArray;
+         }
+         
+         return valueObject;
       }
       
 //==============================================================================================

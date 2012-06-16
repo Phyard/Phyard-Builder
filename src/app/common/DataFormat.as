@@ -1236,7 +1236,7 @@ package common {
                   areaVectorShape.SetBorderThickness (moduleInstanceDefine.mShapeBorderThickness);
                   
                   //>> from v1.60
-                  SetShapeBodyTexture (editorWorld, areaVectorShape, moduleInstanceDefine.mBodyTextureDefine);
+                  SetShapeBodyTexture (editorWorld, areaVectorShape, moduleInstanceDefine.mBodyTextureDefine, imageModuleRefIndex_CorrectionTable);
                   //<<
                }
                
@@ -1267,20 +1267,24 @@ package common {
          return imageModule;
       }
       
-      public static function SetShapeEntityBodyTexture (editorWorld:World, areaVectorShapeEntity:EntityVectorShapeArea, textureDefine:Object):void
+      public static function SetShapeEntityBodyTexture (editorWorld:World, areaVectorShapeEntity:EntityVectorShapeArea, textureDefine:Object, imageModuleRefIndex_CorrectionTable:Array):void
       {
          if (textureDefine.mModuleIndex >= 0)
          {
+            textureDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [textureDefine.mModuleIndex];
+            
             areaVectorShapeEntity.SetBodyTextureModule (editorWorld.GetImageModuleByIndex (textureDefine.mModuleIndex) as AssetImageBitmapModule);
             areaVectorShapeEntity.SetBodyTextureTransform (new Transform2D (textureDefine.mPosX, textureDefine.mPosY, 
                                                      textureDefine.mScale, textureDefine.mIsFlipped, textureDefine.mRotation));
          }
       }
       
-      public static function SetShapeBodyTexture (editorWorld:World, areaVectorShape:VectorShapeArea, textureDefine:Object):void
+      public static function SetShapeBodyTexture (editorWorld:World, areaVectorShape:VectorShapeArea, textureDefine:Object, imageModuleRefIndex_CorrectionTable:Array):void
       {
          if (textureDefine.mModuleIndex >= 0)
          {
+            textureDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [textureDefine.mModuleIndex];
+            
             areaVectorShape.SetBodyTextureModule (editorWorld.GetImageModuleByIndex (textureDefine.mModuleIndex) as AssetImageBitmapModule);
             areaVectorShape.SetBodyTextureTransform (new Transform2D (textureDefine.mPosX, textureDefine.mPosY, 
                                                      textureDefine.mScale, textureDefine.mIsFlipped, textureDefine.mRotation));
@@ -1847,7 +1851,7 @@ package common {
                      //<<
 
                      //>> from v1.60
-                     SetShapeEntityBodyTexture (editorWorld, vectorShape as EntityVectorShapeArea, entityDefine.mBodyTextureDefine);
+                     SetShapeEntityBodyTexture (editorWorld, vectorShape as EntityVectorShapeArea, entityDefine.mBodyTextureDefine, imageModuleRefIndex_CorrectionTable);
                      //<<      
                   }
                   

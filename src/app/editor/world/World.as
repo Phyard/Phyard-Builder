@@ -206,6 +206,14 @@ package editor.world {
          return mScenes [index] as Scene;
       }
       
+      public function GetSceneIndex (scene:Scene):int
+      {
+         if (scene == null || scene.GetWorld () != this)
+            return -1;
+         
+         return scene.GetSceneIndex ();
+      }
+      
       private var mAccSceneId:int = 0;
       
       public function GetAccAssetId ():int

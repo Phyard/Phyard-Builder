@@ -297,9 +297,9 @@ package common {
             }
             case ValueTypeDefine.ValueType_Scene:
             {
-               var scene:Scene = valueObject as Scene;
+               var sceneValue:Scene = valueObject as Scene;
                
-               return scene.GetSceneIndex ();
+               return scene.GetWorld ().GetSceneIndex (sceneValue);
             }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)

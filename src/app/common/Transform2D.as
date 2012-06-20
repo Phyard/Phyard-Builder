@@ -14,7 +14,7 @@ package common {
          
       // offset
       
-         transform1.TransformPoint (transform2, combined); // use transform2 and combined as a Points
+         transform1.TransformPoint (transform2, combined); // use transform2 and combined as a Point
          
       // scale
       
@@ -38,25 +38,7 @@ package common {
          if (combined == null)
             combined = new Transform2D ();
          
-      // offset
-      
-         invTransform1.InverseTransformPoint (transform2, combined); // use transform2 and combined as a Points
-         
-      // scale
-      
-         combined.mScale = (1.0 / invTransform1.mScale) * transform2.mScale;
-      
-      // flipped
-      
-         combined.mFlipped = invTransform1.mFlipped != transform2.mFlipped;
-      
-      // rotation
-      
-         combined.mRotation = (transform2.mFlipped ? invTransform1.mRotation : - invTransform1.mRotation) + transform2.mRotation;
-         
-      // ...
-         
-         return combined;
+         return CombineTransforms (invTransform1.GetInverse (), transform2, combined);
       }
       
 //================================================================
@@ -137,9 +119,10 @@ package common {
       }
       
       //<=> CombineInverseTransformAndTransform (this, I);
-      public function GetInverse ():Transform2D
+      public function GetInverse (inverse:Transform2D = null):Transform2D
       {
-         var inverse:Transform2D = new Transform2D ();
+         if (inverse == null)
+            inverse = new Transform2D ();
          
       // offset
       
@@ -155,7 +138,8 @@ package common {
       
       // rotation
       
-         inverse.mRotation = - this.mRotation;
+         //inverse.mRotation = - this.mRotation; // bug !!! fixed in v1.60
+         inverse.mRotation = this.mFlipped ? this.mRotation : - this.mRotation;
          
       // ...
          

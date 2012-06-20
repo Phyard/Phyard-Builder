@@ -636,7 +636,7 @@ package viewer {
                mStartRightNow = mParamsFromContainer.mStartRightNow == undefined ? true : mParamsFromContainer.mStartRightNow;
                mWorldPluginDomain = mParamsFromContainer.mWorldDomain;
 
-               ReloadPlayerWorld (false, mParamsFromEditor.mCurrentSceneId);
+               ReloadPlayerWorld (false, mParamsFromEditor != null ? mParamsFromEditor.mCurrentSceneId : 0);
             }
             else if (mParamsFromUniViewer != null)
             {
@@ -1864,6 +1864,7 @@ package viewer {
 //===========================================================================
 
       // return: need game tempalte to continue handling or not
+      // also used as a callback for World plugin: (API: System.Back (), not added yet)
       public function OnBackKeyDown ():Boolean
       {
          if (mSkin != null)
@@ -1872,8 +1873,15 @@ package viewer {
                mSkin.CloseAllVisibleDialogs ();
             else if (mSkin.IsPlaying ())
             {
-               mSkin.SetPlaying (false);
-               // disable sounds
+               if (mSkin.IsShowPlayBar ())
+               {
+                  mSkin.SetPlaying (false);
+                  // disable sounds
+               }
+               else
+               {
+                  // mWorld.OnBackKeyPressed
+               }
             }
             else if (mParamsFromContainer.OnExitLevel != null)
             {

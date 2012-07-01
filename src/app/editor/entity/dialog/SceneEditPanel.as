@@ -1006,8 +1006,11 @@ package editor.entity.dialog {
       
       // find entity
       
-      public function SearchEntitiesByIDs (entityIds:Array):void
+      public function SearchEntitiesByIDs (entityIds:Array, addSelections:Boolean, selectBrothers:Boolean):void
       {
+         if (! addSelections)
+            CancelAllAssetSelections ();
+         
          var numIds:int = entityIds.length;
          
          for (var i:int = 0; i < numIds; ++ i)
@@ -1043,7 +1046,7 @@ package editor.entity.dialog {
          
          if (numIds > 0)
          {
-            OnAssetSelectionsChanged ();
+            OnAssetSelectionsChanged (! selectBrothers);
          }
       }
       

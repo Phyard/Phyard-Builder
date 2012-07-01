@@ -247,7 +247,7 @@
                      <!--  focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);" -->
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Spacer width="2" />
-                     <mx:Label id="Label_GoToEntity" text="Select Entity#" />
+                     <mx:Label id="Label_GoToEntity" text="Select Entity#" click="OnClickSelectEntityLabel (event);"/>
                      <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnEnterEntityIDsToSelect ();"/>
                      <mx:Spacer width="2" />
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
@@ -854,7 +854,7 @@
       
       // find entity
       
-      private function OnEnterEntityIDsToSelect ():void
+      private function SelectEntities (isAdd:Boolean, selectBrothers:Boolean):void
       {
          var text:String = Text_FindEntityId.text;
          
@@ -875,9 +875,19 @@
          if (entityIds.length == 0)
             return;
                
-         mCurrentSceneEditPanel.SearchEntitiesByIDs (entityIds);
+         mCurrentSceneEditPanel.SearchEntitiesByIDs (entityIds, isAdd, selectBrothers);
          
          stage.focus = mCurrentSceneEditPanel;
+      }
+      
+      private function OnEnterEntityIDsToSelect ():void
+      {
+         SelectEntities (false, false);
+      }
+      
+      private function OnClickSelectEntityLabel (event:MouseEvent):void
+      {
+         SelectEntities (event.ctrlKey, event.shiftKey);
       }
       
       // zoom in / out

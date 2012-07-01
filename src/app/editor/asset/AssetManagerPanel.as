@@ -147,11 +147,14 @@ package editor.asset {
       
       public static const kMouseWheelFunction_None:int = 0;
       public static const kMouseWheelFunction_Zoom:int = 1;
-      public static const kMouseWheelFunction_Scroll:int = 2;
+      public static const kMouseWheelFunction_Scroll:int = 2; // vertically
       
-      public function GetMouseWheelFunction ():int
+      public function GetMouseWheelFunction (ctrlDown:Boolean, shiftDown:Boolean):int
       {
-         return kMouseWheelFunction_Zoom;
+         if (ctrlDown)
+            return kMouseWheelFunction_Zoom;
+         
+         return kMouseWheelFunction_None;
       }
       
       public function ScaleManagerTo (sceneScale:Number):void
@@ -687,9 +690,9 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
-         var mouseWheelFunction:int = GetMouseWheelFunction ();
+         var mouseWheelFunction:int = GetMouseWheelFunction (event.ctrlKey, event.shiftKey);
          
-         if (mouseWheelFunction == kMouseWheelFunction_Zoom && (! event.ctrlKey))
+         if (mouseWheelFunction == kMouseWheelFunction_Zoom)
          {
             ScaleManagerAroundFixedPoint (event.delta > 0 ? 1.1 : 0.9, mouseX, mouseY);
             OnZoomingDone ();
@@ -697,6 +700,16 @@ package editor.asset {
          else if (mouseWheelFunction == kMouseWheelFunction_Scroll)
          {
             MoveManager (0, 10.0 * event.delta / mAssetManager.GetScale ());
+         }
+         else //  if (mouseWheelFunction == kMouseWheelFunction_None)
+         {
+            mScaleRotateFlipRingRadius += 2.0 * event.delta;
+            if (mScaleRotateFlipRingRadius < 75)
+               mScaleRotateFlipRingRadius = 75;
+            else if (mScaleRotateFlipRingRadius > 150)
+               mScaleRotateFlipRingRadius = 150;
+            
+            RepositionScaleRotateFlipHandlers (1.0, 0.0);
          }
       }
       
@@ -876,8 +889,9 @@ package editor.asset {
          return mAssetManager.SupportScaleRotateFlipTransforms ();
       }
       
-      protected static const ScaleRotateFlipCircleRadius:Number = 100;
+      protected var mScaleRotateFlipRingRadius:Number = 100;
       protected var mScaleRotateFlipHandlersContainer:Sprite = null;
+      protected var mSmallScaleRotateFlipHandlersRing:Boolean = true;
       
       protected function SetScaleRotateFlipHandlersVisible (isVisible:Boolean):void
       {
@@ -1006,7 +1020,7 @@ package editor.asset {
       
       public function RepositionScaleRotateFlipHandlers (radiusScale:Number, rotationRadians:Number):void
       {
-         var radius:Number = ScaleRotateFlipCircleRadius * radiusScale;
+         var radius:Number = mScaleRotateFlipRingRadius * radiusScale;
          var handlersBaseCircle:Sprite = mScaleRotateFlipHandlersContainer.getChildAt (0) as Sprite;
          GraphicsUtil.ClearAndDrawCircle (handlersBaseCircle, 0, 0, radius, 0xC0FFC0, 8, false);
          var deltaRadians:Number = 0.25 * Math.PI;
@@ -1103,7 +1117,7 @@ package editor.asset {
             return;
          
          var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         var handlerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y + ScaleRotateFlipCircleRadius));
+         var handlerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y + mScaleRotateFlipRingRadius));
          SetCurrentIntent (new IntentFlipSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, handlerPoint.y, true, true, false));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
@@ -1114,7 +1128,7 @@ package editor.asset {
             return;
          
          var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         var handlerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y - ScaleRotateFlipCircleRadius));
+         var handlerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y - mScaleRotateFlipRingRadius));
          SetCurrentIntent (new IntentFlipSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, handlerPoint.y, true, true, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }

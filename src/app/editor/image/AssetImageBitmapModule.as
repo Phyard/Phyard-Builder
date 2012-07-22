@@ -26,9 +26,9 @@ package editor.image {
    
    public class AssetImageBitmapModule extends AssetImageModule
    {
-      public function AssetImageBitmapModule (assetImageModuleManager:AssetImageModuleManager)
+      public function AssetImageBitmapModule (assetImageModuleManager:AssetImageModuleManager, key:String)
       {
-         super (assetImageModuleManager);
+         super (assetImageModuleManager, key);
       }
       
       public function GetBitmapData ():BitmapData

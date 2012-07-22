@@ -47,12 +47,12 @@ package common {
       */
       //<<
       
-      public var mImageDefines:Array = new Array ();
-      public var mPureImageModuleDefines:Array = new Array ();
-      public var mAssembledModuleDefines:Array = new Array ();
-      public var mSequencedModuleDefines:Array = new Array ();
+      public var mImageDefines:Array = new Array (); // for undo point, this is a UUID array
+      public var mPureImageModuleDefines:Array = new Array (); // for undo point, this is a UUID array
+      public var mAssembledModuleDefines:Array = new Array (); // for undo point, this is a UUID array
+      public var mSequencedModuleDefines:Array = new Array (); // for undo point, this is a UUID array
       
-      public var mSoundDefines:Array = new Array ();
+      public var mSoundDefines:Array = new Array ();// for undo point, this is a UUID array
    }
 }
 

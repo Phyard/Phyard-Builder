@@ -182,6 +182,19 @@ package editor.world {
          return mPermitPublishing;
       }
       
+//============================================================================
+// scene lookup tables
+//============================================================================
+      
+      private var mSceneLookupTableByKey:Dictionary = new Dictionary ();
+      
+      public function GetSceneByKey (key:String):Scene
+      {
+         return mSceneLookupTableByKey [key] as Scene;
+      }
+      
+      // todo: lookup table by name
+      
 //=================================================================================
 //   scenes
 //=================================================================================
@@ -216,19 +229,29 @@ package editor.world {
       
       private var mAccSceneId:int = 0;
       
-      public function GetAccAssetId ():int
+      public function GetAccSceneId ():int
       {
          return mAccSceneId;
       }
       
       public function CreateNewScene (key:String, name:String, afterIndex:int = -1):int
       {
+         //>> maybe, should be moved into DataFormat2.AdjustNumberValuesInWorldDefine ()
+         var v200SceneKeyPrefix:String = "scene/"; // only in v2.00
+         if (key != null && key.length >= v200SceneKeyPrefix.length && key.substring (0, v200SceneKeyPrefix.length) == v200SceneKeyPrefix)
+            key = key.substring (v200SceneKeyPrefix.length);
+         //<<
+         
          if (key != null && key.length == 0)
             key = null;
-         if (key == null)
-            key = EditorObject.BuildKey ("scene", GetAccAssetId ());
+         while (key == null || mSceneLookupTableByKey [key] != null)
+         {
+            key = EditorObject.BuildKey (GetAccSceneId ());
+         }
          
          var newScene:Scene = new Scene (this, key);
+         mSceneLookupTableByKey [key] = newScene;
+         
          newScene.SetName (name);
          
          ++ mAccSceneId; // never decrease
@@ -258,6 +281,8 @@ package editor.world {
          sceneToDelete.Destroy ();
          sceneToDelete.SetSceneIndex (-1);
          mScenes.splice (index, 1);
+         
+         delete mSceneLookupTableByKey [sceneToDelete.GetKey ()];
          
          if (updateDataProvider)
             UpdateSceneListDataProvider ();

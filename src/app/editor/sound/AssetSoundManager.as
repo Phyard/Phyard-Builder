@@ -40,12 +40,7 @@ package editor.sound {
       
       public function CreateSound (key:String, insertBeforeSelectedThenSelectNew:Boolean = false):AssetSound
       {
-         if (key != null && key.length == 0)
-            key = null;
-         if (key == null)
-            key = EditorObject.BuildKey ("sound", GetAccAssetId ());
-         
-         var soundAsset:AssetSound = new AssetSound (this, key);
+         var soundAsset:AssetSound = new AssetSound (this, ValidateAssetKey (key));
          soundAsset.UpdateAppearance ();
          soundAsset.UpdateSelectionProxy ();
          addChild (soundAsset);

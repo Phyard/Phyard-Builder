@@ -613,6 +613,13 @@ package common {
                   var imageFileDataBase64:String = DataFormat3.EncodeByteArray2String (imageDefine.mFileData);
                   element = <Image>{imageFileDataBase64}</Image>;
                }
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  element.@key = imageDefine.mKey;
+                  element.@time_modified = TimeValue2HexString (imageDefine.mTimeModified);
+               }
+               
                element.@name = imageDefine.mName;
                //element.@file_data = imageDefine.mFileData;
                
@@ -624,6 +631,13 @@ package common {
                var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
 
                element = <ImageDivision />;
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  element.@key = divisionDefine.mKey;
+                  element.@time_modified = TimeValue2HexString (divisionDefine.mTimeModified);
+               }
+               
                element.@image_index = divisionDefine.mImageIndex;
                element.@left = divisionDefine.mLeft;
                element.@top = divisionDefine.mTop;
@@ -639,6 +653,12 @@ package common {
 
                element = <AssembledModule />;
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  element.@key = assembledModuleDefine.mKey;
+                  element.@time_modified = TimeValue2HexString (assembledModuleDefine.mTimeModified);
+               }
+               
                ModuleInstanceDefines2XmlElements (worldDefine.mVersion, assembledModuleDefine.mModulePartDefines, element, "ModulePart", false);
                
                xml.AssembledModules.appendChild (element);
@@ -649,6 +669,12 @@ package common {
                var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
 
                element = <SequencedModule />;
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  element.@key = sequencedModuleDefine.mKey;
+                  element.@time_modified = TimeValue2HexString (sequencedModuleDefine.mTimeModified);
+               }
                
                //element.@looped = sequencedModuleDefine.mIsLooped ? 1 : 0;
                ModuleInstanceDefines2XmlElements (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, element, "ModuleSequence", true);
@@ -677,11 +703,12 @@ package common {
                   element = <Sound>{soundFileDataBase64}</Sound>;
                }
                
-               //if (worldDefine.mVersion >= 0x020?)
-               //{
-               //   element.@key = soundDefine.mKey;
-               //   element.@time_modified = TimeValue2HexString (soundDefine.mTimeModified);
-               //}
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  element.@key = soundDefine.mKey;
+                  element.@time_modified = TimeValue2HexString (soundDefine.mTimeModified);
+               }
+               
                element.@name = soundDefine.mName;
                element.@attribute_bits = soundDefine.mAttributeBits;
                element.@sample_count = soundDefine.mNumSamples;
@@ -887,6 +914,11 @@ package common {
                element = <Function />;
                TriggerFormatHelper2.FunctionDefine2Xml (functionDefine, element, true, true, sceneDefine.mFunctionDefines);
 
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  element.@key = functionDefine.mKey;
+               }
+               
                element.@name = functionDefine.mName;
                element.@x = functionDefine.mPosX;
                element.@y = functionDefine.mPosY;
@@ -946,6 +978,12 @@ package common {
                var ccDefine:Object = sceneDefine.mCollisionCategoryDefines [ccId];
 
                element = <CollisionCategory />;
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  element.@key = ccDefine.mKey;
+               }
+               
                element.@name = ccDefine.mName;
                element.@collide_internally = ccDefine.mCollideInternally ? 1 : 0;
                element.@x = ccDefine.mPosX;
@@ -1786,6 +1824,12 @@ package common {
             {
                var imageDefine:Object = new Object ();
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  imageDefine.mKey = byteArray.readUTF ();
+                  imageDefine.mTimeModified = ReadTimeValue (byteArray);
+               }
+               
                imageDefine.mName = byteArray.readUTF ();
                
                var imageFileSize:int = byteArray.readInt ();
@@ -1807,6 +1851,12 @@ package common {
             for (var divisionId:int = 0; divisionId < numDivisons; ++ divisionId)
             {
                var divisionDefine:Object = new Object ();
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  divisionDefine.mKey = byteArray.readUTF ();
+                  divisionDefine.mTimeModified = ReadTimeValue (byteArray);
+               }
 
                divisionDefine.mImageIndex = byteArray.readShort ();
                divisionDefine.mLeft = byteArray.readShort ();
@@ -1821,6 +1871,12 @@ package common {
             for (var assembledModuleId:int = 0; assembledModuleId < numAssembledModules; ++ assembledModuleId)
             {
                var assembledModuleDefine:Object = new Object ();
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  assembledModuleDefine.mKey = byteArray.readUTF ();
+                  assembledModuleDefine.mTimeModified = ReadTimeValue (byteArray);
+               }
 
                assembledModuleDefine.mModulePartDefines = ReadModuleInstanceDefinesFromBinFile (worldDefine.mVersion, byteArray, false);
                
@@ -1831,6 +1887,12 @@ package common {
             for (var sequencedModuleId:int = 0; sequencedModuleId < numSequencedModules; ++ sequencedModuleId)
             {
                var sequencedModuleDefine:Object = new Object ();
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  sequencedModuleDefine.mKey = byteArray.readUTF ();
+                  sequencedModuleDefine.mTimeModified = ReadTimeValue (byteArray);
+               }
 
                //sequencedModuleDefine.mIsLooped = byteArray.readByte () != 0;
                sequencedModuleDefine.mModuleSequenceDefines = ReadModuleInstanceDefinesFromBinFile (worldDefine.mVersion, byteArray, true);
@@ -1848,11 +1910,12 @@ package common {
             {
                var soundDefine:Object = new Object ();
                
-               //if (worldDefine.mVersion >= 0x020?)
-               //{
-               //   soundDefine.mKey = byteArray.readUTF ();
-               //   soundDefine.mTimeModified = ReadTimeValue (byteArray);
-               //}
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  soundDefine.mKey = byteArray.readUTF ();
+                  soundDefine.mTimeModified = ReadTimeValue (byteArray);
+               }
+               
                soundDefine.mName = byteArray.readUTF ();
                soundDefine.mAttributeBits = byteArray.readInt ();
                soundDefine.mNumSamples = byteArray.readInt ();
@@ -1981,6 +2044,11 @@ package common {
             for (var ccId:int = 0; ccId < numCategories; ++ ccId)
             {
                var ccDefine:Object = new Object ();
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  ccDefine.mKey = byteArray.readUTF ();
+               }
 
                ccDefine.mName = byteArray.readUTF ();
                ccDefine.mCollideInternally = byteArray.readByte () != 0;
@@ -2030,6 +2098,11 @@ package common {
             {
                functionDefine = sceneDefine.mFunctionDefines [functionId];
 
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  functionDefine.mKey = byteArray.readUTF ();
+               }
+               
                functionDefine.mName = byteArray.readUTF ();
                functionDefine.mPosX = byteArray.readFloat ();
                functionDefine.mPosY = byteArray.readFloat ();

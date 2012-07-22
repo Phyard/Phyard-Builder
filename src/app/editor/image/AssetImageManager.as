@@ -45,9 +45,9 @@ package editor.image {
 // 
 //==========================================================      
       
-      public function CreateImage (insertBeforeSelectedThenSelectNew:Boolean = false):AssetImage
+      public function CreateImage (key:String, insertBeforeSelectedThenSelectNew:Boolean = false):AssetImage
       {
-         var image:AssetImage = new AssetImage (this);
+         var image:AssetImage = new AssetImage (this, ValidateAssetKey (key));
          image.UpdateAppearance ();
          image.UpdateSelectionProxy ();
          addChild (image);
@@ -78,10 +78,10 @@ package editor.image {
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      private function OnContextMenuEvent_CreateImage (event:ContextMenuEvent):void
-      {
-         CreateImage (true);
-      }
+      //private function OnContextMenuEvent_CreateImage (event:ContextMenuEvent):void
+      //{
+      //   CreateImage (null, true);
+      //}
       
       private function OnContextMenuEvent_LoadLocalImages (event:ContextMenuEvent):void
       {
@@ -144,7 +144,7 @@ package editor.image {
             fileReference.data.position = 0;
             clonedImageData.writeBytes (fileReference.data, 0, fileReference.data.length);
             
-            var imageAsset:AssetImage = CreateImage (true);
+            var imageAsset:AssetImage = CreateImage (null, true);
             imageAsset.OnLoadLocalImageFinished (clonedImageData, fileReference.name);
          }
          catch (e:Error)

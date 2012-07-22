@@ -988,6 +988,9 @@ package editor.asset {
       
       protected function RepositionScaleRotateFlipHandlersContainer ():void
       {
+         if (mScaleRotateFlipHandlersContainer == null)
+            return;
+         
          var selectedAssets:Array = mAssetManager.GetSelectedAssets ();
          if (selectedAssets.length == 0)
          {
@@ -1020,6 +1023,9 @@ package editor.asset {
       
       public function RepositionScaleRotateFlipHandlers (radiusScale:Number, rotationRadians:Number):void
       {
+         if (mScaleRotateFlipHandlersContainer == null)
+            return;
+         
          var radius:Number = mScaleRotateFlipRingRadius * radiusScale;
          var handlersBaseCircle:Sprite = mScaleRotateFlipHandlersContainer.getChildAt (0) as Sprite;
          GraphicsUtil.ClearAndDrawCircle (handlersBaseCircle, 0, 0, radius, 0xC0FFC0, 8, false);
@@ -1035,11 +1041,11 @@ package editor.asset {
       
       public function MoveScaleRotateFlipHandlers (dx:Number, dy:Number):void
       {
-         if (mScaleRotateFlipHandlersContainer != null)
-         {
-            mScaleRotateFlipHandlersContainer.x += dx;
-            mScaleRotateFlipHandlersContainer.y += dy;
-         }
+         if (mScaleRotateFlipHandlersContainer == null)
+            return;
+         
+         mScaleRotateFlipHandlersContainer.x += dx;
+         mScaleRotateFlipHandlersContainer.y += dy;
       }
       
       protected function OnStartMoveScaleRotateFlipHandlers(event:MouseEvent):void

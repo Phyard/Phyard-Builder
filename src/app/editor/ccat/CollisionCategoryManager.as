@@ -132,7 +132,7 @@ package editor.ccat {
          return GetAssetByAppearanceId (index) as CollisionCategory;
       }
       
-      public function CreateCollisionCategory (ccName:String = null, selectIt:Boolean = false):CollisionCategory
+      public function CreateCollisionCategory (key:String, ccName:String = null, selectIt:Boolean = false):CollisionCategory
       {
          if (numChildren + 1 >= Define.MaxCCatsCount) // 1 for the hidden ccat
             return null;
@@ -140,7 +140,7 @@ package editor.ccat {
          if (ccName == null)
             ccName = Define.DefaultCCatName;
          
-         var category:CollisionCategory = new CollisionCategory (this);
+         var category:CollisionCategory = new CollisionCategory (this, ValidateAssetKey (key));
          addChild (category);
          
          category.SetCategoryName ( GetRecommendName (ccName), false );

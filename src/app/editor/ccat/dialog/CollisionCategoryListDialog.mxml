@@ -24,8 +24,7 @@
          <mx:Spacer width="20"/>
          <mx:Button id="Button_DeleteCollisionCategory" toolTip="Delete Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
          <mx:Spacer width="36"/>
-         <mx:HBox backgroundColor="0xFFFFFF" verticalAlign="middle"
-                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+         <mx:HBox verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
                   horizontalGap="0" verticalGap="0" borderThickness="0">
             <mx:Spacer width="3"/>

@@ -176,12 +176,12 @@ package editor.codelib {
          return mFunctionAssets [index] as AssetFunction;
       }
       
-      public function CreateFunction (funcName:String = null, designDependent:Boolean = false, selectIt:Boolean = false):AssetFunction
+      public function CreateFunction (key:String, funcName:String = null, designDependent:Boolean = false, selectIt:Boolean = false):AssetFunction
       {
          if (funcName == null)
             funcName = Define.FunctionDefaultName;
          
-         var aFunction:AssetFunction = new AssetFunction (this);
+         var aFunction:AssetFunction = new AssetFunction (this, ValidateAssetKey (key));
          addChild (aFunction);
          
          mFunctionAssets.push (aFunction);

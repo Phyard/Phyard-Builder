@@ -57,9 +57,9 @@ package editor.image {
    
       protected var mAssetImageModuleManager:AssetImageModuleManager;
       
-      public function AssetImageModule (assetImageModuleManager:AssetImageModuleManager)
+      public function AssetImageModule (assetImageModuleManager:AssetImageModuleManager, key:String = null)
       {
-         super (assetImageModuleManager);
+         super (assetImageModuleManager, key);
          
          mAssetImageModuleManager = assetImageModuleManager;
          

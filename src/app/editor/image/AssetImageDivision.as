@@ -100,6 +100,43 @@ package editor.image {
 //   
 //=============================================================
       
+      override public function GetKey ():String
+      {
+         if (mImagePureModulePeer == null) // for creation stage
+            return "dummy";
+         
+         return mImagePureModulePeer.GetKey ();
+      }
+      
+      override public function SetKey (key:String):void
+      {
+         if (mImagePureModulePeer != null) // for creation stage
+            mImagePureModulePeer.SetKey (key);
+      }
+      
+      override public function GetTimeModified ():Number
+      {
+         if (mImagePureModulePeer == null) // for creation stage
+            return 0;
+         
+         return mImagePureModulePeer.GetTimeModified ();
+      }
+      
+      override public function SetTimeModified (time:Number):void
+      {
+         if (mImagePureModulePeer != null) // for creation stage
+            mImagePureModulePeer.SetTimeModified (time);
+      }
+      
+      override public function UpdateTimeModified ():void
+      {
+         mImagePureModulePeer.UpdateTimeModified ();
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       public function GetLeft ():int
       {
          return Math.round (mLeft);

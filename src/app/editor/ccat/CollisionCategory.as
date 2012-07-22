@@ -63,9 +63,9 @@ package editor.ccat {
       private var mHalfTextWidth:Number;
       private var mHalfTextHeight:Number;
       
-      public function CollisionCategory (collisionCategoryManager:CollisionCategoryManager)
+      public function CollisionCategory (collisionCategoryManager:CollisionCategoryManager, key:String)
       {
-         super (collisionCategoryManager);
+         super (collisionCategoryManager, key);
          
          mCollisionCategoryManager = collisionCategoryManager;
          

@@ -49,9 +49,9 @@ package editor.image {
       protected var mModuleInstanceManager:AssetImageModuleInstanceManager; // for internal module parts editing
       protected var mModuleInstanceManagerForListing:AssetImageModuleInstanceManagerForListing; // for internal module parts listing
       
-      public function AssetImageCompositeModule (assetImageCompositeModuleManager:AssetImageCompositeModuleManager, sequenced:Boolean)
+      public function AssetImageCompositeModule (assetImageCompositeModuleManager:AssetImageCompositeModuleManager, sequenced:Boolean, key:String)
       {
-         super (assetImageCompositeModuleManager);
+         super (assetImageCompositeModuleManager, key);
          
          mAssetImageCompositeModuleManager = assetImageCompositeModuleManager;
          SetSequenced (sequenced);

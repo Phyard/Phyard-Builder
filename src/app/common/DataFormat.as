@@ -122,7 +122,7 @@ package common {
       // create a world define from a editor world.
       // the created word define can be used to create either a player world or a editor world
       
-      public static function EditorWorld2WorldDefine (editorWorld:World):WorldDefine
+      public static function EditorWorld2WorldDefine (editorWorld:World, theOnlySceneId:int = -1):WorldDefine
       {
          if (editorWorld == null)
             return null;
@@ -148,7 +148,10 @@ package common {
          
          for (var sceneId:int = 0; sceneId < numScenes; ++ sceneId)
          {
-            worldDefine.mSceneDefines.push (Scene2Define (editorWorld, editorWorld.GetSceneByIndex (sceneId)));
+            if (theOnlySceneId < 0 || theOnlySceneId == sceneId)
+            {
+               worldDefine.mSceneDefines.push (Scene2Define (editorWorld, editorWorld.GetSceneByIndex (sceneId)));
+            }
          }
          
          //>>from v1.58
@@ -166,6 +169,11 @@ package common {
                
                var imageDefine:Object = new Object ();
                
+               //>>from v2.01
+               imageDefine.mKey = imageAsset.GetKey ();
+               imageDefine.mTimeModified = imageAsset.GetTimeModified ();
+               //<<
+               
                imageDefine.mName = imageAsset.GetName ();
                imageDefine.mFileData = imageAsset.CloneBitmapFileData ();
                
@@ -178,6 +186,12 @@ package common {
                var imageDivison:AssetImageDivision = (pureModuleManager.GetAssetByAppearanceId (divisionId) as AssetImagePureModule).GetImageDivisionPeer ();
                
                var divisionDefine:Object = new Object ();
+               
+               //>>from v2.01
+               divisionDefine.mKey = imageDivison.GetKey ();
+               divisionDefine.mTimeModified = imageDivison.GetTimeModified ();
+               //<<
+               
                divisionDefine.mImageIndex = imageDivison.GetAssetImageId ();
                divisionDefine.mLeft = imageDivison.GetLeft ();
                divisionDefine.mTop = imageDivison.GetTop ();
@@ -194,6 +208,11 @@ package common {
                
                var assembledModuleDefine:Object = new Object ();
                
+               //>>from v2.01
+               assembledModuleDefine.mKey = assembledModule.GetKey ();
+               assembledModuleDefine.mTimeModified = assembledModule.GetTimeModified ();
+               //<<
+               
                assembledModuleDefine.mModulePartDefines = ModuleInstances2Define (editorWorld, assembledModule.GetModuleInstanceManager (), false);
                
                worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
@@ -205,6 +224,11 @@ package common {
                var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId) as AssetImageCompositeModule;
                
                var sequencedModuleDefine:Object = new Object ();
+               
+               //>>from v2.01
+               sequencedModuleDefine.mKey = sequencedModule.GetKey ();
+               sequencedModuleDefine.mTimeModified = sequencedModule.GetTimeModified ();
+               //<<
                
                //sequencedModuleDefine.mIsLooped = sequencedModule.IsLooped ();
                sequencedModuleDefine.mModuleSequenceDefines = ModuleInstances2Define (editorWorld, sequencedModule.GetModuleInstanceManager (), true);
@@ -226,7 +250,7 @@ package common {
                
                var soundDefine:Object = new Object ();
                
-               //>>from v2.00
+               //>>from v2.01
                soundDefine.mKey = soundAsset.GetKey ();
                soundDefine.mTimeModified = soundAsset.GetTimeModified ();
                //<<
@@ -906,6 +930,10 @@ package common {
                
                var ccDefine:Object = new Object ();
                
+               //>>from v2.01
+               ccDefine.mKey = collisionCategory.GetKey ();
+               //<<
+               
                ccDefine.mName = collisionCategory.GetCategoryName ();
                ccDefine.mCollideInternally = collisionCategory.IsCollideInternally ();
                ccDefine.mPosX = collisionCategory.GetPositionX ();
@@ -960,6 +988,11 @@ package common {
                
                functionAsset.GetCodeSnippet ().ValidateCallings ();
                var functionDefine:FunctionDefine = TriggerFormatHelper.Function2FunctionDefine (scene, functionAsset.GetCodeSnippet ());
+               
+               //>>from v2.01
+               functionDefine.mKey = functionAsset.GetKey ();
+               //<<
+               
                functionDefine.mName = functionAsset.GetName ();
                functionDefine.mPosX = functionAsset.GetPositionX ();
                functionDefine.mPosY = functionAsset.GetPositionY ();
@@ -1385,7 +1418,10 @@ package common {
             {
                var imageDefine:Object = worldDefine.mImageDefines [imageId]
                
-               var imageAsset:AssetImage = assetImageManager.CreateImage ();
+               // mKey & mTimeModified are from v2.01
+               var imageAsset:AssetImage = assetImageManager.CreateImage (imageDefine.mKey);
+               imageAsset.SetTimeModified (imageDefine.mTimeModified);
+               
                imageAsset.OnLoadLocalImageFinished (imageDefine.mFileData, imageDefine.mName);
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
@@ -1397,21 +1433,33 @@ package common {
                var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
                
                divisionDefine.mImageIndex += oldNumImageModules;
+               
+               // mKey & mTimeModified are from v2.01
                var imageDivision:AssetImageDivision = (assetImageManager.GetAssetByAppearanceId (divisionDefine.mImageIndex) as AssetImage)
                                              .GetAssetImageDivisionManager ().CreateImageDivision (
+                                                divisionDefine.mKey, 
                                                 divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom,
                                                 false, pureModuleManager
                                              );
-               
+               imageDivision.SetTimeModified (divisionDefine.mTimeModified);
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
             }
+            
+            var assembledModuleDefine:Object;
+            var assembledModule:AssetImageCompositeModule;
+            var sequencedModuleDefine:Object;
+            var sequencedModule:AssetImageCompositeModule;
             
             correctedModuleId += oldNumAssembledModules;
             var numNewAssembledModules:int = deltaNumAssembledModules;
             while (-- numNewAssembledModules >= 0)
             {
-               assembledModuleManager.CreateImageCompositeModule ();
+               assembledModuleDefine = worldDefine.mAssembledModuleDefines [assembledModuleId];
+               
+               // mKey & mTimeModified are from v2.01
+               assembledModule = assembledModuleManager.CreateImageCompositeModule (assembledModuleDefine.mKey);
+               assembledModule.SetTimeModified (assembledModuleDefine.mTimeModified);
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
             }
@@ -1420,16 +1468,20 @@ package common {
             var numNewSequencedModules:int = deltaNumSequencedModules;
             while (-- numNewSequencedModules >= 0)
             {
-               sequencedModuleManager.CreateImageCompositeModule ();
+               sequencedModuleDefine = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+               
+               // mKey & mTimeModified are from v2.01
+               sequencedModule = sequencedModuleManager.CreateImageCompositeModule (sequencedModuleDefine.mKey);
+               sequencedModule.SetTimeModified (sequencedModuleDefine.mTimeModified);
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
             }
             
             for (var assembledModuleId:int = 0; assembledModuleId < deltaNumAssembledModules; ++ assembledModuleId)
             {
-               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+               assembledModuleDefine = worldDefine.mAssembledModuleDefines [assembledModuleId];
                
-               var assembledModule:AssetImageCompositeModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId + oldNumAssembledModules) as AssetImageCompositeModule;
+               assembledModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId + oldNumAssembledModules) as AssetImageCompositeModule;
 
                ModuleInstanceDefinesToModuleInstances (assembledModuleDefine.mModulePartDefines, imageModuleRefIndex_CorrectionTable, editorWorld, assembledModule.GetModuleInstanceManager (), false);
                
@@ -1438,9 +1490,9 @@ package common {
    
             for (var sequencedModuleId:int = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
             {
-               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+               sequencedModuleDefine = worldDefine.mSequencedModuleDefines [sequencedModuleId];
                
-               var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId + oldNumSequencedModules) as AssetImageCompositeModule;
+               sequencedModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId + oldNumSequencedModules) as AssetImageCompositeModule;
                
                //sequencedModule.SetLooped (sequencedModuleDefine.mIsLooped);
                ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
@@ -1461,6 +1513,7 @@ package common {
             {
                var soundDefine:Object = worldDefine.mSoundDefines [soundId];
                
+               // mKey & mTimeModified are from v2.01
                var soundAsset:AssetSound = assetSoundManager.CreateSound (soundDefine.mKey);
                soundAsset.SetTimeModified (soundDefine.mTimeModified);
                
@@ -1600,7 +1653,8 @@ package common {
             {
                var ccDefine:Object = sceneDefine.mCollisionCategoryDefines [ccId];
                
-               collisionCategory = scene.GetCollisionCategoryManager ().CreateCollisionCategory (ccDefine.mName);
+               // mKey is from v2.01
+               collisionCategory = scene.GetCollisionCategoryManager ().CreateCollisionCategory (ccDefine.mKey, ccDefine.mName);
                collisionCategory.SetCollideInternally (ccDefine.mCollideInternally);
                
                collisionCategory.SetPosition (ccDefine.mPosX, ccDefine.mPosY);
@@ -2223,8 +2277,10 @@ package common {
          
          for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
          {
-            functionAsset = scene.GetCodeLibManager ().CreateFunction ();
             functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
+            
+            // mKey is from v2.01
+            functionAsset = scene.GetCodeLibManager ().CreateFunction (functionDefine.mKey);
             
             //>>v1.56
             functionAsset.SetDesignDependent (functionDefine.mDesignDependent);
@@ -2236,8 +2292,9 @@ package common {
          
          for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
          {
-            functionAsset = scene.GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
             functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
+            
+            functionAsset = scene.GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
             
             functionAsset.SetFunctionName (functionDefine.mName);
             functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
@@ -2579,6 +2636,12 @@ package common {
             {
                var imageDefine:Object = new Object ();
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  imageDefine.mKey = element.@key;
+                  imageDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
+               
                imageDefine.mName = element.@name;
                
                var imageFileDataBase64:String = element.text () [0];
@@ -2599,6 +2662,12 @@ package common {
             {
                var divisionDefine:Object = new Object ();
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  divisionDefine.mKey = element.@key;
+                  divisionDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
+               
                divisionDefine.mImageIndex = parseInt (element.@image_index);
                divisionDefine.mLeft = parseInt (element.@left);
                divisionDefine.mTop = parseInt (element.@top);
@@ -2612,6 +2681,12 @@ package common {
             {
                var assembledModuleDefine:Object = new Object ();
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  assembledModuleDefine.mKey = element.@key;
+                  assembledModuleDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
+               
                assembledModuleDefine.mModulePartDefines = XmlElements2ModuleInstanceDefines (worldDefine.mVersion, element.ModulePart, false);
                
                worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
@@ -2620,6 +2695,12 @@ package common {
             for each (element in worldXml.SequencedModules.SequencedModule)
             {
                var sequencedModuleDefine:Object = new Object ();
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  sequencedModuleDefine.mKey = element.@key;
+                  sequencedModuleDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
                
                //sequencedModuleDefine.mIsLooped = parseInt(element.@looped) != 0;
                sequencedModuleDefine.mModuleSequenceDefines = XmlElements2ModuleInstanceDefines (worldDefine.mVersion, element.ModuleSequence, true);
@@ -2636,11 +2717,12 @@ package common {
             {
                var soundDefine:Object = new Object ();
                
-               //if (worldDefine.mVersion >= 0x020?)
-               //{
-               //   soundDefine.mKey = element.@key;
-               //   soundDefine.mTimeModified = ParseTimeString (element.@time_modified);
-               //}
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  soundDefine.mKey = element.@key;
+                  soundDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
+               
                soundDefine.mName = element.@name;
                soundDefine.mAttributeBits = parseInt (element.@attribute_bits);
                soundDefine.mNumSamples = parseInt (element.@sample_count);
@@ -2824,6 +2906,11 @@ package common {
                
                TriggerFormatHelper.Xml2FunctionDefine (element, functionDefine, true, false, sceneDefine.mFunctionDefines);
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  functionDefine.mKey = element.@key;
+               }
+               
                functionDefine.mName = element.@name;
                functionDefine.mPosX = parseFloat (element.@x);
                functionDefine.mPosY = parseFloat (element.@y);
@@ -2871,6 +2958,11 @@ package common {
             for each (element in sceneXML.CollisionCategories.CollisionCategory)
             {
                var ccDefine:Object = new Object ();
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  ccDefine.mKey = element.@key;
+               }
                
                ccDefine.mName = element.@name;
                ccDefine.mCollideInternally = parseInt (element.@collide_internally) != 0;
@@ -3631,6 +3723,12 @@ package common {
             {
                var imageDefine:Object = worldDefine.mImageDefines [imageId];
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (imageDefine.mKey == null ? "" : imageDefine.mKey);
+                  WriteTimeValue (byteArray, imageDefine.mTimeModified);
+               }
+               
                byteArray.writeUTF (imageDefine.mName == null ? "" : imageDefine.mName);
                
                if (imageDefine.mFileData == null || imageDefine.mFileData.length == 0)
@@ -3648,6 +3746,12 @@ package common {
             for (var divisionId:int = 0; divisionId < worldDefine.mPureImageModuleDefines.length; ++ divisionId)
             {
                var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (divisionDefine.mKey == null ? "" : divisionDefine.mKey);
+                  WriteTimeValue (byteArray, divisionDefine.mTimeModified);
+               }
 
                byteArray.writeShort (divisionDefine.mImageIndex);
                byteArray.writeShort (divisionDefine.mLeft);
@@ -3660,6 +3764,12 @@ package common {
             for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
             {
                var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (assembledModuleDefine.mKey == null ? "" : assembledModuleDefine.mKey);
+                  WriteTimeValue (byteArray, assembledModuleDefine.mTimeModified);
+               }
 
                WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, assembledModuleDefine.mModulePartDefines, false);
             }
@@ -3668,6 +3778,12 @@ package common {
             for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
             {
                var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (sequencedModuleDefine.mKey == null ? "" : sequencedModuleDefine.mKey);
+                  WriteTimeValue (byteArray, sequencedModuleDefine.mTimeModified);
+               }
 
                //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
                WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
@@ -3683,11 +3799,11 @@ package common {
             {
                var soundDefine:Object = worldDefine.mSoundDefines [soundId];
                
-               //if (worldDefine.mVersion >= 0x020?)
-               //{
-               //   byteArray.writeUTF (soundDefine.mKey == null ? "" : soundDefine.mKey);
-               //   WriteTimeValue (byteArray, soundDefine.mTimeModified);
-               //}
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (soundDefine.mKey == null ? "" : soundDefine.mKey);
+                  WriteTimeValue (byteArray, soundDefine.mTimeModified);
+               }
                
                byteArray.writeUTF (soundDefine.mName == null ? "" : soundDefine.mName);
                byteArray.writeInt (soundDefine.mAttributeBits);
@@ -3812,6 +3928,11 @@ package common {
             {
                var ccDefine:Object = sceneDefine.mCollisionCategoryDefines [ccId];
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (ccDefine.mKey == null ? "" : ccDefine.mKey);
+               }
+               
                byteArray.writeUTF (ccDefine.mName);
                byteArray.writeByte (ccDefine.mCollideInternally ? 1 : 0);
                byteArray.writeFloat (ccDefine.mPosX);
@@ -3849,6 +3970,11 @@ package common {
             for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
             {
                functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (functionDefine.mKey == null ? "" : functionDefine.mKey);
+               }
                
                byteArray.writeUTF (functionDefine.mName);
                byteArray.writeFloat (functionDefine.mPosX);

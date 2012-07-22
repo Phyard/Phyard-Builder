@@ -1017,19 +1017,20 @@
       {
          try
          {
-            var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld);
+            var currentScene:editor.entity.Scene = mSceneEditDialog.GetCurrentSceneInEditing ();
+            var sceneIndex:int = currentScene.GetSceneIndex ();
+            
+            var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld, sceneIndex);
             var newWorld:World = new World ();
             newWorld = DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
                // !!! here may be some bugs: somewhere will call EditorContext.GetCurrentWorld, which is not the newWorld
             
-            var currentScene:editor.entity.Scene = mSceneEditDialog.GetCurrentSceneInEditing ();
-            var sceneIndex:int = currentScene.GetSceneIndex ();
-            
             // remove other scenes
-            while (newWorld.GetNumScenes () > sceneIndex + 1)
-               newWorld.DeleteSceneByIndex (newWorld.GetNumScenes () - 1, false);
-            while (newWorld.GetNumScenes () > 1)
-               newWorld.DeleteSceneByIndex (0, false);
+            // (EditorWorld2WorldDefine add a theOnlySceneId param, so no need to remove other scenes)
+            //while (newWorld.GetNumScenes () > sceneIndex + 1)
+            //   newWorld.DeleteSceneByIndex (newWorld.GetNumScenes () - 1, false);
+            //while (newWorld.GetNumScenes () > 1)
+            //   newWorld.DeleteSceneByIndex (0, false);
             
             var newScene:editor.entity.Scene = newWorld.GetSceneByIndex (0);
             

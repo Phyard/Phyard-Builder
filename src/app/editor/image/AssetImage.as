@@ -49,9 +49,9 @@ package editor.image {
       
       private var mBitmapData:BitmapData = null;
       
-      public function AssetImage (assetImageManager:AssetImageManager)
+      public function AssetImage (assetImageManager:AssetImageManager, key:String)
       {
-         super (assetImageManager);
+         super (assetImageManager, key);
          
          mAssetImageManager = assetImageManager;
          

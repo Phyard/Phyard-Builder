@@ -204,15 +204,29 @@ package editor.asset {
          return mAccAssetId;
       }
       
+      protected function ValidateAssetKey (key:String):String
+      {  
+         if (key != null && key.length == 0)
+            key = null;
+         while (key == null || mLookupTableByKey [key] != null)
+         {
+            key = EditorObject.BuildKey (GetAccAssetId ());
+         }
+         
+         return key;
+      }
+      
       final public function OnAssetCreated (asset:Asset):void
       {
          if (asset.GetKey () != null)
          {
+            //>> generally, this will not happed
             var oldAsset:Asset = mLookupTableByKey [asset.GetKey ()];
             if (oldAsset != null)
             {
                DestroyAsset (oldAsset);
             }
+            //<<
             
             mLookupTableByKey [asset.GetKey ()] = asset;
          }

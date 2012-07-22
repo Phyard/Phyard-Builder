@@ -212,7 +212,7 @@ package editor.ccat.dialog {
          {
             case mButtonCreateCollisionCategory:
                SetCurrentIntent (new IntentPutAsset (
-                                 mCollisionCategoryManager.CreateCollisionCategory (null, true), 
+                                 mCollisionCategoryManager.CreateCollisionCategory (null, null, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
          // ...

@@ -98,7 +98,7 @@ package editor.image {
       }
       
       // pureModuleManager is for loading
-      public function CreateImageDivision (left:Number, top:Number, right:Number, bottom:Number, selectIt:Boolean = false, pureModuleManager:AssetImagePureModuleManager = null):AssetImageDivision
+      public function CreateImageDivision (pureModuleKey:String, left:Number, top:Number, right:Number, bottom:Number, selectIt:Boolean = false, pureModuleManager:AssetImagePureModuleManager = null):AssetImageDivision
       {
          if (left < 0)
             left = 0;
@@ -139,9 +139,9 @@ package editor.image {
             SetSelectedAsset (imageDivision);
          
          if (pureModuleManager != null) // in loading stage, EditorContext.GetEditorApp ().GetWorld () is null
-            pureModuleManager.CreateImagePureModule (imageDivision, selectIt);
+            pureModuleManager.CreateImagePureModule (pureModuleKey, imageDivision, selectIt);
          else
-            EditorContext.GetEditorApp ().GetWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (imageDivision, selectIt);
+            EditorContext.GetEditorApp ().GetWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (pureModuleKey, imageDivision, selectIt);
          
          return imageDivision;
       }

@@ -142,6 +142,11 @@ package editor.entity {
          // todo
       }
       
+      override public function ToCodeString ():String
+      {
+         return "Scene#" + GetSceneIndex ();
+      }
+      
 //=================================================================================
 //   scene id
 //=================================================================================

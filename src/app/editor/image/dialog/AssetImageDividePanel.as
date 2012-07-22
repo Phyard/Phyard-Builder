@@ -146,7 +146,7 @@ package editor.image.dialog {
 
       public function CreateImageDivision (left:Number, top:Number, right:Number, bottom:Number):void
       {
-         mAssetImageDivisionManager.CreateImageDivision (left, top, right, bottom, true);
+         mAssetImageDivisionManager.CreateImageDivision (null, left, top, right, bottom, true);
          
          OnAssetSelectionsChanged ();
          mButtonCreateImageDivision.selected = false;

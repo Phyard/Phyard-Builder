@@ -62,9 +62,9 @@ package editor.image {
          }
       }
 
-      public function CreateImagePureModule (imageDivision:AssetImageDivision, insertBeforeSelectedThenSelectNew:Boolean):AssetImagePureModule
+      public function CreateImagePureModule (key:String, imageDivision:AssetImageDivision, insertBeforeSelectedThenSelectNew:Boolean):AssetImagePureModule
       {
-         var module:AssetImagePureModule = new AssetImagePureModule (this, imageDivision);
+         var module:AssetImagePureModule = new AssetImagePureModule (this, imageDivision, ValidateAssetKey (key));
          module.UpdateAppearance ();
          module.UpdateSelectionProxy ();
          addChild (module);

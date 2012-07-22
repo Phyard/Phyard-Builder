@@ -2,6 +2,8 @@ package common.trigger.define
 {
    public class FunctionDefine
    {
+      public var mKey:String  = null; // from v2.01
+      
       public var mName:String; // for custom function only
       public var mPosX:int; // for custom function only
       public var mPosY:int; // for custom function only

@@ -153,12 +153,12 @@ package editor.codelib.dialog {
          {
             case mButtonCreatePureFunction:
                SetCurrentIntent (new IntentPutAsset (
-                                 mCodeLibManager.CreateFunction (null, false, true), 
+                                 mCodeLibManager.CreateFunction (null, null, false, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
             case mButtonCreateDirtyFunction:
                SetCurrentIntent (new IntentPutAsset (
-                                 mCodeLibManager.CreateFunction (null, true, true), 
+                                 mCodeLibManager.CreateFunction (null, null, true, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
             //case mButtonCreatePackage:

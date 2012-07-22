@@ -67,9 +67,9 @@ package editor.codelib {
       private var mHalfTextWidth:Number;
       private var mHalfTextHeight:Number;
       
-      public function AssetFunction (codeLibManager:CodeLibManager)
+      public function AssetFunction (codeLibManager:CodeLibManager, key:String)
       {
-         super (codeLibManager);
+         super (codeLibManager, key);
          
          mCodeLibManager = codeLibManager;
          

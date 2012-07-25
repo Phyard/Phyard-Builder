@@ -330,7 +330,7 @@ package editor.world {
          return mSceneListDataProvider;
       }
       
-      private function UpdateSceneListDataProvider ():void
+      public function UpdateSceneListDataProvider ():void
       {
          mSceneListDataProvider.splice (0, mSceneListDataProvider.length);
          
@@ -342,6 +342,10 @@ package editor.world {
             mSceneListDataProvider.push ({mName: i + "> " + scene.GetName (), mIndex: i, mDataTip: scene.GetName (), mData: scene});
          }
       }
+      
+//=================================================================================
+//   
+//=================================================================================
       
       // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - now ccats and functions are edit in dialogs
       public function ConvertRegisterVariablesToGlobalVariables ():void

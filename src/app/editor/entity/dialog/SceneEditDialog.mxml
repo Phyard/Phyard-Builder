@@ -385,6 +385,8 @@
       
       import com.tapirgames.util.DisplayObjectUtil;
       
+      import editor.undo.HistoryManager;
+      
       import editor.display.dialog.NameSettingDialog;
       
       import editor.entity.dialog.SceneEditPanel;
@@ -624,8 +626,13 @@
          
          Label_SelectedEntitiesInfos.text = selectionsInfo.mSelectedEntitiesInfos;
          
-         Button_Undo.enabled = EditorContext.GetEditorApp ().GetWorldSnapshotManager ().GetPrevWorldState () != null;
-         Button_Redo.enabled = EditorContext.GetEditorApp ().GetWorldSnapshotManager ().GetNextWorldState () != null;
+         //Button_Undo.enabled = EditorContext.GetEditorApp ().GetWorldSnapshotManager ().GetPrevHistoryState () != null;
+         //Button_Redo.enabled = EditorContext.GetEditorApp ().GetWorldSnapshotManager ().GetNextHistoryState () != null;
+         
+         var scene:editor.entity.Scene = GetCurrentSceneInEditing ();
+         var sceneSnapshotManager:HistoryManager = scene == null ? null : EditorContext.GetEditorApp ().GetSceneSnapshotManager (scene, false);
+         Button_Undo.enabled = sceneSnapshotManager != null && sceneSnapshotManager.GetPrevHistoryState () != null;
+         Button_Redo.enabled = sceneSnapshotManager != null && sceneSnapshotManager.GetNextHistoryState () != null;
       }
 
    //========================================================================================
@@ -751,12 +758,14 @@
       
       private function OnClickUndoSceneButton ():void
       {
-         EditorContext.GetEditorApp ().Undo ();
+         //EditorContext.GetEditorApp ().Undo ();
+         EditorContext.GetEditorApp ().UndoScene (GetSceneEditPanel ());
       }
       
       private function OnClickRedoSceneButton ():void
       {
-         EditorContext.GetEditorApp ().Redo ();
+         //EditorContext.GetEditorApp ().Redo ();
+         EditorContext.GetEditorApp ().RedoScene (GetSceneEditPanel ());
       }
       
       // 

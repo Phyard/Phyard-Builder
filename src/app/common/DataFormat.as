@@ -3,6 +3,7 @@ package common {
    
    import flash.utils.ByteArray;
    import flash.geom.Point;
+   import flash.system.Capabilities;
    
    import editor.world.World;
    
@@ -122,7 +123,7 @@ package common {
       // create a world define from a editor world.
       // the created word define can be used to create either a player world or a editor world
       
-      public static function EditorWorld2WorldDefine (editorWorld:World, theOnlySceneId:int = -1):WorldDefine
+      public static function EditorWorld2WorldDefine (editorWorld:World, currentScene:Scene = null, saveGlobalAssetsWithUUIDs:Boolean = false):WorldDefine
       {
          if (editorWorld == null)
             return null;
@@ -148,11 +149,16 @@ package common {
          
          for (var sceneId:int = 0; sceneId < numScenes; ++ sceneId)
          {
-            if (theOnlySceneId < 0 || theOnlySceneId == sceneId)
+            var scene:Scene = editorWorld.GetSceneByIndex (sceneId);
+            
+            if (currentScene == null || currentScene == scene)
             {
-               worldDefine.mSceneDefines.push (Scene2Define (editorWorld, editorWorld.GetSceneByIndex (sceneId)));
+               worldDefine.mSceneDefines.push (Scene2Define (editorWorld, scene));
             }
          }
+         
+         // ...
+         worldDefine.mAssetDefinesAreUUIDs = saveGlobalAssetsWithUUIDs; // from v2.01
          
          //>>from v1.58
          // image modules
@@ -167,17 +173,24 @@ package common {
             {
                var imageAsset:AssetImage = assetImageManager.GetAssetByAppearanceId (imageId) as AssetImage;
                
-               var imageDefine:Object = new Object ();
-               
-               //>>from v2.01
-               imageDefine.mKey = imageAsset.GetKey ();
-               imageDefine.mTimeModified = imageAsset.GetTimeModified ();
-               //<<
-               
-               imageDefine.mName = imageAsset.GetName ();
-               imageDefine.mFileData = imageAsset.CloneBitmapFileData ();
-               
-               worldDefine.mImageDefines.push (imageDefine);
+               if (saveGlobalAssetsWithUUIDs)
+               {
+                  worldDefine.mImageDefines.push (imageAsset.GetKey ());
+               }
+               else
+               {
+                  var imageDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  imageDefine.mKey = imageAsset.GetKey ();
+                  imageDefine.mTimeModified = imageAsset.GetTimeModified ();
+                  //<<
+                  
+                  imageDefine.mName = imageAsset.GetName ();
+                  imageDefine.mFileData = imageAsset.CloneBitmapFileData ();
+                  
+                  worldDefine.mImageDefines.push (imageDefine);
+               }
             }
             
             var numDivisions:int = pureModuleManager.GetNumAssets ();
@@ -185,20 +198,27 @@ package common {
             {
                var imageDivison:AssetImageDivision = (pureModuleManager.GetAssetByAppearanceId (divisionId) as AssetImagePureModule).GetImageDivisionPeer ();
                
-               var divisionDefine:Object = new Object ();
-               
-               //>>from v2.01
-               divisionDefine.mKey = imageDivison.GetKey ();
-               divisionDefine.mTimeModified = imageDivison.GetTimeModified ();
-               //<<
-               
-               divisionDefine.mImageIndex = imageDivison.GetAssetImageId ();
-               divisionDefine.mLeft = imageDivison.GetLeft ();
-               divisionDefine.mTop = imageDivison.GetTop ();
-               divisionDefine.mRight = imageDivison.GetRight ();
-               divisionDefine.mBottom = imageDivison.GetBottom ();
-               
-               worldDefine.mPureImageModuleDefines.push (divisionDefine);
+               if (saveGlobalAssetsWithUUIDs)
+               {
+                  worldDefine.mPureImageModuleDefines.push (imageDivison.GetKey ());
+               }
+               else
+               {
+                  var divisionDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  divisionDefine.mKey = imageDivison.GetKey ();
+                  divisionDefine.mTimeModified = imageDivison.GetTimeModified ();
+                  //<<
+                  
+                  divisionDefine.mImageIndex = imageDivison.GetAssetImageId ();
+                  divisionDefine.mLeft = imageDivison.GetLeft ();
+                  divisionDefine.mTop = imageDivison.GetTop ();
+                  divisionDefine.mRight = imageDivison.GetRight ();
+                  divisionDefine.mBottom = imageDivison.GetBottom ();
+                  
+                  worldDefine.mPureImageModuleDefines.push (divisionDefine);
+               }
             }
             
             var numAssembledModules:int = assembledModuleManager.GetNumAssets ();
@@ -206,16 +226,23 @@ package common {
             {
                var assembledModule:AssetImageCompositeModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId) as AssetImageCompositeModule;
                
-               var assembledModuleDefine:Object = new Object ();
-               
-               //>>from v2.01
-               assembledModuleDefine.mKey = assembledModule.GetKey ();
-               assembledModuleDefine.mTimeModified = assembledModule.GetTimeModified ();
-               //<<
-               
-               assembledModuleDefine.mModulePartDefines = ModuleInstances2Define (editorWorld, assembledModule.GetModuleInstanceManager (), false);
-               
-               worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
+               if (saveGlobalAssetsWithUUIDs)
+               {
+                  worldDefine.mAssembledModuleDefines.push (assembledModule.GetKey ());
+               }
+               else
+               {
+                  var assembledModuleDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  assembledModuleDefine.mKey = assembledModule.GetKey ();
+                  assembledModuleDefine.mTimeModified = assembledModule.GetTimeModified ();
+                  //<<
+                  
+                  assembledModuleDefine.mModulePartDefines = ModuleInstances2Define (editorWorld, assembledModule.GetModuleInstanceManager (), false);
+                  
+                  worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
+               }
             }
    
             var numSequencedModules:int = sequencedModuleManager.GetNumAssets ();
@@ -223,17 +250,24 @@ package common {
             {
                var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId) as AssetImageCompositeModule;
                
-               var sequencedModuleDefine:Object = new Object ();
-               
-               //>>from v2.01
-               sequencedModuleDefine.mKey = sequencedModule.GetKey ();
-               sequencedModuleDefine.mTimeModified = sequencedModule.GetTimeModified ();
-               //<<
-               
-               //sequencedModuleDefine.mIsLooped = sequencedModule.IsLooped ();
-               sequencedModuleDefine.mModuleSequenceDefines = ModuleInstances2Define (editorWorld, sequencedModule.GetModuleInstanceManager (), true);
-               
-               worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
+               if (saveGlobalAssetsWithUUIDs)
+               {
+                  worldDefine.mSequencedModuleDefines.push (sequencedModule.GetKey ());
+               }
+               else
+               {
+                  var sequencedModuleDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  sequencedModuleDefine.mKey = sequencedModule.GetKey ();
+                  sequencedModuleDefine.mTimeModified = sequencedModule.GetTimeModified ();
+                  //<<
+                  
+                  //sequencedModuleDefine.mIsLooped = sequencedModule.IsLooped ();
+                  sequencedModuleDefine.mModuleSequenceDefines = ModuleInstances2Define (editorWorld, sequencedModule.GetModuleInstanceManager (), true);
+                  
+                  worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
+               }
             }
          //}
          //<<
@@ -248,18 +282,25 @@ package common {
             {
                var soundAsset:AssetSound = assetSoundManager.GetAssetByAppearanceId (soundId) as AssetSound;
                
-               var soundDefine:Object = new Object ();
-               
-               //>>from v2.01
-               soundDefine.mKey = soundAsset.GetKey ();
-               soundDefine.mTimeModified = soundAsset.GetTimeModified ();
-               //<<
-               soundDefine.mName = soundAsset.GetName ();
-               soundDefine.mAttributeBits = soundAsset.GetSoundAttributeBits ();
-               soundDefine.mNumSamples = soundAsset.GetSoundNumSamples ();
-               soundDefine.mFileData = soundAsset.CloneSoundFileData ();
-               
-               worldDefine.mSoundDefines.push (soundDefine);
+               if (saveGlobalAssetsWithUUIDs)
+               {
+                  worldDefine.mSoundDefines.push (soundAsset.GetKey ());
+               }
+               else
+               {
+                  var soundDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  soundDefine.mKey = soundAsset.GetKey ();
+                  soundDefine.mTimeModified = soundAsset.GetTimeModified ();
+                  //<<
+                  soundDefine.mName = soundAsset.GetName ();
+                  soundDefine.mAttributeBits = soundAsset.GetSoundAttributeBits ();
+                  soundDefine.mNumSamples = soundAsset.GetSoundNumSamples ();
+                  soundDefine.mFileData = soundAsset.CloneSoundFileData ();
+                  
+                  worldDefine.mSoundDefines.push (soundDefine);
+               }
             }
          //}
          //<<
@@ -1364,11 +1405,8 @@ package common {
          }
       }
       
-      public static function WorldDefine2EditorWorld (isNewWorldToLoadAll:Boolean, editorWorld:editor.world.World, worldDefine:WorldDefine, /*isNewWorldToLoadAll:Boolean*/scene:Scene = null, adjustPrecisionsInWorldDefine:Boolean = true, mergeVariablesWithSameNames:Boolean = false):editor.world.World
+      public static function WorldDefine2EditorWorld (isNewWorldToLoadAll:Boolean, editorWorld:editor.world.World, worldDefine:WorldDefine, /*isNewWorldToLoadAll:Boolean*/scene:Scene = null, adjustPrecisionsInWorldDefine:Boolean = true, mergeVariablesWithSameNames:Boolean = false):Array
       {
-         if (worldDefine == null)
-            return editorWorld;
-         
          // from v1,03
          DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
          if (adjustPrecisionsInWorldDefine)
@@ -1529,6 +1567,8 @@ package common {
 
          // scenes
          
+         var newCreatedScenes:Array = null;
+         
          if (scene != null)
          {
             SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [0], false, scene, mergeVariablesWithSameNames, 
@@ -1537,31 +1577,47 @@ package common {
          else
          {
             var baseSceneIndex:int = editorWorld.GetNumScenes ();
-            var sceneId:int;
             
-            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            newCreatedScenes = new Array ();
+            
+            for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
             {
                var sceneDefine:SceneDefine = worldDefine.mSceneDefines [sceneId];
-               editorWorld.CreateNewScene (sceneDefine.mKey, sceneDefine.mName); // for versions ealier than v2.00, sceneDefine.mKey is undefined
+               var newSceneId:int = editorWorld.CreateNewScene (sceneDefine.mKey, sceneDefine.mName); // for versions ealier than v2.00, sceneDefine.mKey is undefined
+               var newScene:Scene = editorWorld.GetSceneByIndex (newSceneId);
+               
+               try
+               {
+                  SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [sceneId], true, newScene, /*mergeVariablesWithSameNames*/false, 
+                                  imageModuleRefIndex_CorrectionTable, beginningSoundIndex, baseSceneIndex);
+                  
+                  newCreatedScenes.push (newScene);
+               }
+               catch (error:Error)
+               {
+                  if (Capabilities.isDebugger)
+                     throw error;
+                  
+                  editorWorld.DeleteSceneByIndex (newSceneId, false);
+                  
+                  newCreatedScenes.push (null);
+                  
+                  EditorContext.mPauseCreateShapeProxy = false; // !!!
+               }
             }
             
-            if (isNewWorldToLoadAll)
+            if (isNewWorldToLoadAll && editorWorld.GetNumScenes () > 1)
             {
-               editorWorld.DeleteSceneByIndex (0);
-               
-               baseSceneIndex = 0;
+               editorWorld.DeleteSceneByIndex (0, false);
             }
-
-            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
-            {
-               SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [sceneId], true, editorWorld.GetSceneByIndex (baseSceneIndex + sceneId), /*mergeVariablesWithSameNames*/false, 
-                                  imageModuleRefIndex_CorrectionTable, beginningSoundIndex, baseSceneIndex);
-            }
+            
+            editorWorld.UpdateSceneListDataProvider ();
          }
          
          // ...
          
-         return editorWorld;
+         //return editorWorld;
+         return newCreatedScenes;
       }
       
       public static function SceneDefine2Scene (editorWorld:World, sceneDefine:SceneDefine, isNewSceneToLoadAll:Boolean, scene:Scene, mergeVariablesWithSameNames:Boolean, imageModuleRefIndex_CorrectionTable:Array, beginningSoundIndex:int, beginningSceneIndex:int):void

@@ -75,6 +75,17 @@ package editor.entity.dialog {
          return new Point (mContentMaskWidth, mContentMaskHeight);
       }
       
+//========================================================================================
+// !!! 
+//========================================================================================
+      
+      import player.WorldPlugin;
+      
+      private function Dummy ():void
+      {
+         new WorldPlugin (); // to make mxmlc include WorldPlugin, so the all player.* package, ...
+      }
+
 //============================================================================
 //   
 //============================================================================

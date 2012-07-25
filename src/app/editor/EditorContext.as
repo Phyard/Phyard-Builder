@@ -326,7 +326,10 @@ package editor {
                   if (shiftDown)
                      GetEditorApp ().OnStartOfflineSaving ();
                   else
-                     GetEditorApp ().CreateWorldSnapshot ("Snapshot created manually");
+                  {
+                     //GetEditorApp ().CreateWorldSnapshot ("Undo point created manually");
+                     GetEditorApp ().CreateSnapshotForCurrentScene ("Undo point created manually");
+                  }
                }
                break;
          }
@@ -566,7 +569,8 @@ package editor {
             
             message = message + ") are modified";
             
-            GetEditorApp ().CreateWorldSnapshot (message);
+            //GetEditorApp ().CreateWorldSnapshot (message);
+            GetEditorApp ().CreateSnapshotForCurrentScene (message);
          }
          */
       }

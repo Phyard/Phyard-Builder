@@ -919,24 +919,47 @@
       
       public function OfflineImport (params:Object):void
       {
-         var xmlString:String = params.mXmlString;    
-         
-         var xml:XML = new XML (xmlString);
+         var worldDefine:WorldDefine = null;
          
          try
          {
-            var oldEntitiesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ();
-            var oldCategoriesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
+            var xmlString:String = params.mXmlString;    
             
-            var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
-            var sceneDefine:SceneDefine = worldDefine.mSceneDefines [0] as SceneDefine;
+            var xml:XML = new XML (xmlString);
             
-            if (oldEntitiesCount + sceneDefine.mEntityDefines.length > Define.MaxEntitiesCount)
-               return;
+            worldDefine = DataFormat.Xml2WorldDefine (xml);
+         }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
             
-            if (oldCategoriesCount + sceneDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
-               return;
-            
+            worldDefine = null;
+         }
+         
+         if (worldDefine == null)
+         {  
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed (data error)", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            return;
+         }
+         
+         var oldEntitiesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ();
+         //var oldCategoriesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
+         //
+         //var sceneDefine:SceneDefine = worldDefine.mSceneDefines [0] as SceneDefine;
+         //
+         //if (oldEntitiesCount + sceneDefine.mEntityDefines.length > Define.MaxEntitiesCount)
+         //{
+         //   return;
+         //}
+         //
+         //if (oldCategoriesCount + sceneDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
+         //{
+         //   return;
+         //}
+           
+         try
+         {
             var mergeVariablesWithSameNames:Boolean = params.mMergeVariablesWithSameNames;
             var centerNewEntitiesInScreen:Boolean = params.mCenterNewEntitiesInScreen;
             
@@ -948,50 +971,50 @@
                mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().SetChanged (false);
             }
             
-            if (oldEntitiesCount == mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ())
-               return;
-            
-            mSceneEditDialog.GetCurrentSceneInEditing ().CancelAllAssetSelections ();
-            
-            var i:int;
-            var j:int;
-            var entity:Entity;
-            var entities:Array;
-            var centerX:Number = 0;
-            var centerY:Number = 0;
-            var numSelecteds:int = 0;
-            
-            var newEntitiesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ();
-            
-            var entitiesToSelect:Array = new Array ();
-            for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
+            if (oldEntitiesCount != mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ())
             {
-               entities = (mSceneEditDialog.GetCurrentSceneInEditing ().GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
+               mSceneEditDialog.GetCurrentSceneInEditing ().CancelAllAssetSelections ();
                
-               for (j = 0; j < entities.length; ++ j)
+               var i:int;
+               var j:int;
+               var entity:Entity;
+               var entities:Array;
+               var centerX:Number = 0;
+               var centerY:Number = 0;
+               var numSelecteds:int = 0;
+               
+               var newEntitiesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ();
+               
+               var entitiesToSelect:Array = new Array ();
+               for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
                {
-                  entity = entities [j] as Entity;
+                  entities = (mSceneEditDialog.GetCurrentSceneInEditing ().GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
                   
-                  if (entitiesToSelect.indexOf (entity) < 0)
+                  for (j = 0; j < entities.length; ++ j)
                   {
-                     entitiesToSelect.push(entity);
+                     entity = entities [j] as Entity;
                      
-                     centerX += entity.GetPositionX ();
-                     centerY += entity.GetPositionY ();
-                     ++ numSelecteds;
+                     if (entitiesToSelect.indexOf (entity) < 0)
+                     {
+                        entitiesToSelect.push(entity);
+                        
+                        centerX += entity.GetPositionX ();
+                        centerY += entity.GetPositionY ();
+                        ++ numSelecteds;
+                     }
                   }
                }
-            }
-            
-            mSceneEditDialog.GetCurrentSceneInEditing ().SetSelectedAssets (entitiesToSelect);
-
-            if (centerNewEntitiesInScreen && numSelecteds > 0)
-            {
-               centerX /= numSelecteds;
-               centerY /= numSelecteds;
                
-               var point:Point = mSceneEditDialog.GetSceneEditPanel ().GetPanelCenterWorldPoint ();
-               mSceneEditDialog.GetSceneEditPanel ().MoveSelectedAssets (false, point.x - centerX, point.y - centerY, true);
+               mSceneEditDialog.GetCurrentSceneInEditing ().SetSelectedAssets (entitiesToSelect);
+   
+               if (centerNewEntitiesInScreen && numSelecteds > 0)
+               {
+                  centerX /= numSelecteds;
+                  centerY /= numSelecteds;
+                  
+                  var point:Point = mSceneEditDialog.GetSceneEditPanel ().GetPanelCenterWorldPoint ();
+                  mSceneEditDialog.GetSceneEditPanel ().MoveSelectedAssets (false, point.x - centerX, point.y - centerY, true);
+               }
             }
             
             mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import scenes succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));

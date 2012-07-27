@@ -47,7 +47,7 @@ package common {
       */
       //<<
       
-      public var mAssetDefinesAreUUIDs:Boolean = false; // for undo point, set it as true
+      public var mGlobalAssetsDefinedAsUUIDs:Boolean = false; // for undo point, set it as true
       
       public var mImageDefines:Array = new Array (); // for undo point, this is a UUID array
       public var mPureImageModuleDefines:Array = new Array (); // for undo point, this is a UUID array

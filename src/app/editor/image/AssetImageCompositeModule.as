@@ -116,6 +116,9 @@ package editor.image {
       
       override public function Destroy ():void
       {
+         mModuleInstanceManager.Destroy ();
+         mModuleInstanceManagerForListing.Destroy ();
+         
          super.Destroy ();
          
          if (mAssetImageCompositeModuleEditDialog != null)

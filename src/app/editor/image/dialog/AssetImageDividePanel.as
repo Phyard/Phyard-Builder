@@ -196,6 +196,7 @@ package editor.image.dialog {
             var division:AssetImageDivision = mAssetImageDivisionManager.GetSelectedAssets ()[0] as AssetImageDivision;
             
             division.SetRegion (mNumericStepperLeft.value, mNumericStepperTop.value, mNumericStepperRight.value, mNumericStepperBottom.value);
+            division.UpdateTimeModified ();
             division.UpdateAppearance ();
             division.UpdateSelectionProxy ();
             

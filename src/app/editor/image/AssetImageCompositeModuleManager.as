@@ -51,6 +51,7 @@ package editor.image {
       public function CreateImageCompositeModule (key:String, insertBeforeSelectedThenSelectNew:Boolean = false):AssetImageCompositeModule
       {
          var module:AssetImageCompositeModule = new AssetImageCompositeModule (this, IsSequencedModuleManager (), ValidateAssetKey (key));
+         module.UpdateTimeModified ();
          module.UpdateAppearance ();
          module.UpdateSelectionProxy ();
          addChild (module);

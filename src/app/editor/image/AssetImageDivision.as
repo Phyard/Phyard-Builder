@@ -52,9 +52,9 @@ package editor.image {
       
       protected var mImagePureModulePeer:AssetImagePureModule;
       
-      public function AssetImageDivision (assetImageDivisionManager:AssetImageDivisionManager)
+      public function AssetImageDivision (assetImageDivisionManager:AssetImageDivisionManager, key:String = null)
       {
-         super (assetImageDivisionManager);
+         super (assetImageDivisionManager, key);
          
          mAssetImageDivisionManager = assetImageDivisionManager;
          
@@ -103,7 +103,7 @@ package editor.image {
       override public function GetKey ():String
       {
          if (mImagePureModulePeer == null) // for creation stage
-            return "dummy";
+            return null;
          
          return mImagePureModulePeer.GetKey ();
       }
@@ -130,7 +130,8 @@ package editor.image {
       
       override public function UpdateTimeModified ():void
       {
-         mImagePureModulePeer.UpdateTimeModified ();
+         if (mImagePureModulePeer != null)
+            mImagePureModulePeer.UpdateTimeModified ();
       }
       
 //=============================================================
@@ -167,6 +168,7 @@ package editor.image {
          var dy:Number = posY;
          
          SetRegion (mLeft + dx, mTop + dy, mRight + dx, mBottom + dy);
+         UpdateTimeModified ();
          
          UpdateAppearance ();
       }

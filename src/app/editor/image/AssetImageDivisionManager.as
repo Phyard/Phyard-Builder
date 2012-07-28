@@ -129,7 +129,7 @@ package editor.image {
                return null;
          }
          
-         var imageDivision:AssetImageDivision = new AssetImageDivision (this);
+         var imageDivision:AssetImageDivision = new AssetImageDivision (this, pureModuleKey);
          imageDivision.SetRegion (left, top, right, bottom);
          imageDivision.UpdateAppearance ();
          imageDivision.UpdateSelectionProxy ();
@@ -142,6 +142,8 @@ package editor.image {
             pureModuleManager.CreateImagePureModule (pureModuleKey, imageDivision, selectIt);
          else
             EditorContext.GetEditorApp ().GetWorld ().GetAssetImagePureModuleManager ().CreateImagePureModule (pureModuleKey, imageDivision, selectIt);
+         
+         imageDivision.UpdateTimeModified ();
          
          return imageDivision;
       }

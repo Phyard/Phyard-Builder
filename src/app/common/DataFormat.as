@@ -123,7 +123,7 @@ package common {
       // create a world define from a editor world.
       // the created word define can be used to create either a player world or a editor world
       
-      public static function EditorWorld2WorldDefine (editorWorld:World, currentScene:Scene = null, saveGlobalAssetsWithUUIDs:Boolean = false):WorldDefine
+      public static function EditorWorld2WorldDefine (editorWorld:World, currentScene:Scene = null, forSceneUndoPoint:Boolean = false):WorldDefine
       {
          if (editorWorld == null)
             return null;
@@ -158,7 +158,7 @@ package common {
          }
          
          // ...
-         worldDefine.mGlobalAssetsDefinedAsUUIDs = saveGlobalAssetsWithUUIDs; // from v2.01
+         worldDefine.mSimpleGlobalAssetDefines = forSceneUndoPoint; // from v2.01
          
          //>>from v1.58
          // image modules
@@ -173,9 +173,9 @@ package common {
             {
                var imageAsset:AssetImage = assetImageManager.GetAssetByAppearanceId (imageId) as AssetImage;
                
-               if (saveGlobalAssetsWithUUIDs)
+               if (forSceneUndoPoint)
                {
-                  worldDefine.mImageDefines.push (imageAsset.GetKey ());
+                  worldDefine.mImageDefines.push ({mKey: imageAsset.GetKey ()});
                }
                else
                {
@@ -198,9 +198,9 @@ package common {
             {
                var imageDivison:AssetImageDivision = (pureModuleManager.GetAssetByAppearanceId (divisionId) as AssetImagePureModule).GetImageDivisionPeer ();
                
-               if (saveGlobalAssetsWithUUIDs)
+               if (forSceneUndoPoint)
                {
-                  worldDefine.mPureImageModuleDefines.push (imageDivison.GetKey ());
+                  worldDefine.mPureImageModuleDefines.push ({mKey: imageDivison.GetKey ()});
                }
                else
                {
@@ -226,9 +226,9 @@ package common {
             {
                var assembledModule:AssetImageCompositeModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId) as AssetImageCompositeModule;
                
-               if (saveGlobalAssetsWithUUIDs)
+               if (forSceneUndoPoint)
                {
-                  worldDefine.mAssembledModuleDefines.push (assembledModule.GetKey ());
+                  worldDefine.mAssembledModuleDefines.push ({mKey: assembledModule.GetKey ()});
                }
                else
                {
@@ -250,9 +250,9 @@ package common {
             {
                var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId) as AssetImageCompositeModule;
                
-               if (saveGlobalAssetsWithUUIDs)
+               if (forSceneUndoPoint)
                {
-                  worldDefine.mSequencedModuleDefines.push (sequencedModule.GetKey ());
+                  worldDefine.mSequencedModuleDefines.push ({mKey: sequencedModule.GetKey ()});
                }
                else
                {
@@ -282,9 +282,9 @@ package common {
             {
                var soundAsset:AssetSound = assetSoundManager.GetAssetByAppearanceId (soundId) as AssetSound;
                
-               if (saveGlobalAssetsWithUUIDs)
+               if (forSceneUndoPoint)
                {
-                  worldDefine.mSoundDefines.push (soundAsset.GetKey ());
+                  worldDefine.mSoundDefines.push ({mKey: soundAsset.GetKey ()});
                }
                else
                {
@@ -1409,8 +1409,8 @@ package common {
                                                       /*isNewWorldToLoadAll:Boolean*/scene:Scene = null, 
                                                       adjustPrecisionsInWorldDefine:Boolean = true, 
                                                       mergeVariablesWithSameNames:Boolean = false,
-                                                      policyOnConflictingGlobalAssets:int = 0, // -1: keep current. 0: determined by modified time. 1: override
-                                                      policyOnConflictingSceneAssets:int = 0   // -1: keep current. 0: determined by modified time. 1: override
+                                                      policyOnConflictingGlobalAssets:int = 0, // 0: determined by modified time. 1: keep current. 2: override. 3: create new
+                                                      policyOnConflictingSceneAssets:int = 0   // 0: determined by modified time. 1: keep current. 2: override. 3: create new
                                                       ):Array
       {
          // from v1,03
@@ -1436,210 +1436,362 @@ package common {
          
          // ...
          
-         var assetImageManager:AssetImageManager = editorWorld.GetAssetImageManager ();
-         var pureModuleManager:AssetImagePureModuleManager = editorWorld.GetAssetImagePureModuleManager ();
-         var assembledModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageAssembledModuleManager ();
-         var sequencedModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageSequencedModuleManager ();
-         var assetSoundManager:AssetSoundManager = editorWorld.GetAssetSoundManager ();
+         var toUseNewData:Boolean;
          
-         var imageId:int;
-         var divisionId:int;
-         var assembledModuleId:int;
-         var sequencedModuleId:int;
-         var soundId:int;
-         
-         var imageDefine:Object;
-         var divisionDefine:Object;
-         var assembledModuleDefine:Object;
-         var sequencedModuleDefine:Object;
-         var soundDefine:Object;
-         
-         var imageAsset:AssetImage;
-         var pureModule:AssetImagePureModule;
-            var imageDivision:AssetImageDivision;
-         var assembledModule:AssetImageCompositeModule;
-         var sequencedModule:AssetImageCompositeModule;
-         var soundAsset:AssetSound;
-         
-         var deltaNumImageModules:int = worldDefine.mImageDefines.length;
-         var deltaNumImageDivisions:int = worldDefine.mPureImageModuleDefines.length;
-         var deltaNumAssembledModules:int = worldDefine.mAssembledModuleDefines.length;
-         var deltaNumSequencedModules:int = worldDefine.mSequencedModuleDefines.length;
-         
-         var key:String;
-         
-         var imageModuleRefIndex_CorrectionTable:Array = new Array (deltaNumImageModules + deltaNumImageDivisions + deltaNumAssembledModules + deltaNumSequencedModules);;
-         var moduleId:int = 0;
-         
-         var soundRefIndex_CorrectionTable:Array = new Array (worldDefine.mSoundDefines.length);
-      
-         if (worldDefine.mGlobalAssetsDefinedAsUUIDs) // undo scene
-         {
-            // asset (scene != null);
+         //>> from v1.58
+         // iamge modules
+         //{
+            var assetImageManager:AssetImageManager = editorWorld.GetAssetImageManager ();
+            var pureModuleManager:AssetImagePureModuleManager = editorWorld.GetAssetImagePureModuleManager ();
+            var assembledModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageAssembledModuleManager ();
+            var sequencedModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageSequencedModuleManager ();
             
+            //var oldNumImageModules:int = assetImageManager.GetNumAssets ();
+            //var oldNumImageDivisions:int = pureModuleManager.GetNumAssets ();
+            //var oldNumAssembledModules:int = assembledModuleManager.GetNumAssets ();
+            //var oldNumSequencedModules:int = sequencedModuleManager.GetNumAssets ();
+            
+            var imageId:int;
+            var divisionId:int;
+            var assembledModuleId:int;
+            var sequencedModuleId:int;
+            
+            var imageDefine:Object;
+            var divisionDefine:Object;
+            var assembledModuleDefine:Object;
+            var sequencedModuleDefine:Object;
+            
+            var imageAsset:AssetImage;
+            var pureModule:AssetImagePureModule;
+               var imageDivision:AssetImageDivision;
+            var assembledModule:AssetImageCompositeModule;
+            var sequencedModule:AssetImageCompositeModule;
+            
+            var deltaNumImageModules:int = worldDefine.mImageDefines.length;
+            var deltaNumImageDivisions:int = worldDefine.mPureImageModuleDefines.length;
+            var deltaNumAssembledModules:int = worldDefine.mAssembledModuleDefines.length;
+            var deltaNumSequencedModules:int = worldDefine.mSequencedModuleDefines.length;
+            
+            var imageModuleRefIndex_CorrectionTable:Array = new Array (deltaNumImageModules + deltaNumImageDivisions + deltaNumAssembledModules + deltaNumSequencedModules);;
+            var moduleId:int = 0;
+            
+            // 
             for (imageId = 0; imageId < deltaNumImageModules; ++ imageId)
             {
-               key = worldDefine.mImageDefines [imageId] as String;
+               imageDefine = worldDefine.mImageDefines [imageId];
                
-               imageAsset = assetImageManager.GetAssetByKey (key) as AssetImage;
+               // mKey & mTimeModified are from v2.01
+
+               imageAsset = assetImageManager.GetAssetByKey (imageDefine.mKey) as AssetImage;
+               
+               if (worldDefine.mSimpleGlobalAssetDefines)
+               {
+                  toUseNewData = false;
+               }
+               else if (imageAsset == null)
+               {
+                  toUseNewData = true;
+                  
+                  imageAsset = assetImageManager.CreateImage (imageDefine.mKey);
+               }
+               else if (policyOnConflictingGlobalAssets == 3) // always create new
+               {
+                  toUseNewData = true;
+                  
+                  imageAsset = assetImageManager.CreateImage (null);
+               }
+               else if (policyOnConflictingGlobalAssets == 2) // override
+               {
+                  toUseNewData = true;
+               }
+               else if (policyOnConflictingGlobalAssets == 1) // skip
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingGlobalAssets == 0) // auto
+               {
+                  toUseNewData = imageDefine.mTimeModified > imageAsset.GetTimeModified ();
+               }
+               
+               if (toUseNewData)
+               {
+                  imageAsset.OnLoadLocalImageFinished (imageDefine.mFileData, imageDefine.mName);
+                  
+                  imageAsset.SetTimeModified (imageDefine.mTimeModified);
+               }
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (imageAsset);
             }
             
+            //
             for (divisionId = 0; divisionId < deltaNumImageDivisions; ++ divisionId)
-            {
-               key = worldDefine.mPureImageModuleDefines [divisionId] as String;
+            { 
+               divisionDefine = worldDefine.mPureImageModuleDefines [divisionId];
                
-               pureModule = pureModuleManager.GetAssetByKey (key) as AssetImagePureModule;
+               // mKey & mTimeModified are from v2.01
+               
+               if (divisionDefine.mImageIndex < 0) // generally should not
+               {
+                  pureModule = null;
+               }
+               else
+               {
+                  divisionDefine.mImageIndex = imageModuleRefIndex_CorrectionTable [divisionDefine.mImageIndex];
+                  
+                  pureModule = pureModuleManager.GetAssetByKey (divisionDefine.mKey) as AssetImagePureModule;
+                  
+                  if (worldDefine.mSimpleGlobalAssetDefines)
+                  {
+                     toUseNewData = false;
+                  }
+                  else if (pureModule == null || policyOnConflictingGlobalAssets == 3) // always create new
+                  {
+                     //toUseNewData = true;
+                     toUseNewData = false;
+                     
+                     if (divisionDefine.mImageIndex < 0)
+                     {
+                        pureModule = null;
+                     }
+                     else
+                     {
+                        imageDivision = (assetImageManager.GetAssetByAppearanceId (divisionDefine.mImageIndex) as AssetImage)
+                                                   .GetAssetImageDivisionManager ().CreateImageDivision (
+                                                      policyOnConflictingGlobalAssets == 3 ? null : divisionDefine.mKey, 
+                                                      divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom,
+                                                      false, pureModuleManager
+                                                   );
+                        imageDivision.SetTimeModified (divisionDefine.mTimeModified);
+                        pureModule = imageDivision.GetImagePureModulePeer ();
+                     }
+                  }
+                  //>> !!! generally impossible
+                  else if (editorWorld.GetImageModuleByIndex (divisionDefine.mImageIndex) != pureModule.GetImageDivisionPeer ().GetAssetImage ())
+                  {
+                     toUseNewData = false;
+                  }
+                  //<<<
+                  else if (policyOnConflictingGlobalAssets == 2) // override
+                  {
+                     toUseNewData = true;
+                  }
+                  else if (policyOnConflictingGlobalAssets == 1) // skip
+                  {
+                     toUseNewData = false;
+                  }
+                  else // if (policyOnConflictingGlobalAssets == 0) // auto
+                  {
+                     toUseNewData = divisionDefine.mTimeModified > pureModule.GetTimeModified ();
+                  }
+                  
+                  if (toUseNewData)
+                  {
+                     imageDivision = pureModule.GetImageDivisionPeer ();
+                     imageDivision.SetRegion (divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom);
+                     
+                     imageDivision.SetTimeModified (divisionDefine.mTimeModified);
+                  }
+               }
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (pureModule);
             }
             
             for (assembledModuleId = 0; assembledModuleId < deltaNumAssembledModules; ++ assembledModuleId)
             {
-               key = worldDefine.mAssembledModuleDefines [assembledModuleId] as String;
+               assembledModuleDefine = worldDefine.mAssembledModuleDefines [assembledModuleId];
                
-               assembledModule = assembledModuleManager.GetAssetByKey (key) as AssetImageCompositeModule;
+               // mKey & mTimeModified are from v2.01
+
+               assembledModule = assembledModuleManager.GetAssetByKey (assembledModuleDefine.mKey) as AssetImageCompositeModule;
+               
+               if (worldDefine.mSimpleGlobalAssetDefines)
+               {
+                  toUseNewData = false;
+               }
+               else if (assembledModule == null)
+               {
+                  toUseNewData = true;
+                  
+                  assembledModule = assembledModuleManager.CreateImageCompositeModule (assembledModuleDefine.mKey);
+               }
+               else if (policyOnConflictingGlobalAssets == 3) // always create new
+               {
+                  toUseNewData = true;
+                  
+                  assembledModule = assembledModuleManager.CreateImageCompositeModule (null);
+               }
+               else if (policyOnConflictingGlobalAssets == 2) // 
+               {
+                  toUseNewData = true;
+                  
+                  assembledModule.GetModuleInstanceManager ().DestroyAllAssets ();
+               }
+               else if (policyOnConflictingGlobalAssets == 1)
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingGlobalAssets == 0)
+               {
+                  toUseNewData = assembledModuleDefine.mTimeModified > assembledModule.GetTimeModified ();
+                  
+                  if (toUseNewData)
+                  {
+                     assembledModule.GetModuleInstanceManager ().DestroyAllAssets ();
+                  }
+               }
+               
+               assembledModuleDefine.mToLoadNewData = toUseNewData;
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (assembledModule);
             }
             
             for (sequencedModuleId = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
             {
-               key = worldDefine.mSequencedModuleDefines [sequencedModuleId] as String;
+               sequencedModuleDefine = worldDefine.mSequencedModuleDefines [sequencedModuleId];
                
-               sequencedModule = sequencedModuleManager..GetAssetByKey (key) as AssetImageCompositeModule;
+               // mKey & mTimeModified are from v2.01
+
+               sequencedModule = sequencedModuleManager.GetAssetByKey (sequencedModuleDefine.mKey) as AssetImageCompositeModule;
+               
+               if (worldDefine.mSimpleGlobalAssetDefines)
+               {
+                  toUseNewData = false;
+               }
+               else if (assembledModule == null)
+               {
+                  toUseNewData = true;
+                  
+                  sequencedModule = sequencedModuleManager.CreateImageCompositeModule (sequencedModuleDefine.mKey);
+               }
+               else if (policyOnConflictingGlobalAssets == 3) // always create new
+               {
+                  toUseNewData = true;
+                  
+                  sequencedModule = sequencedModuleManager.CreateImageCompositeModule (null);
+               }
+               else if (policyOnConflictingGlobalAssets == 2) // override
+               {
+                  toUseNewData = true;
+                  
+                  assembledModule.GetModuleInstanceManager ().DestroyAllAssets ();
+               }
+               else if (policyOnConflictingGlobalAssets == 1) // skip
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingGlobalAssets == 0) // auto
+               {
+                  toUseNewData = sequencedModuleDefine.mTimeModified > assembledModule.GetTimeModified ();
+                  
+                  if (toUseNewData)
+                  {
+                     assembledModule.GetModuleInstanceManager ().DestroyAllAssets ();
+                  }
+               }
+               
+               sequencedModuleDefine.mToLoadNewData = toUseNewData;
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (sequencedModule);
             }
             
-            for (soundId = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
+            for (assembledModuleId = 0; assembledModuleId < deltaNumAssembledModules; ++ assembledModuleId)
             {
-               key = worldDefine.mSoundDefines [soundId] as String;
+               assembledModuleDefine = worldDefine.mAssembledModuleDefines [assembledModuleId];
                
-               soundAsset = assetSoundManager.GetAssetByKey (key) as AssetSound;
-               
-               soundRefIndex_CorrectionTable [soundId] = editorWorld.GetSoundIndex (soundAsset);
-            }
-         }
-         else
-         {
-            //>> from v1.58
-            // iamge modules
-            //{
-               var oldNumImageModules:int = assetImageManager.GetNumAssets ();
-               var oldNumImageDivisions:int = pureModuleManager.GetNumAssets ();
-               var oldNumAssembledModules:int = assembledModuleManager.GetNumAssets ();
-               var oldNumSequencedModules:int = sequencedModuleManager.GetNumAssets ();
-               
-               //
-               var correctedModuleId:int = oldNumImageModules;
-               for (imageId = 0; imageId < deltaNumImageModules; ++ imageId)
+               if (assembledModuleDefine.mToLoadNewData)
                {
-                  imageDefine = worldDefine.mImageDefines [imageId]
-                  
-                  // mKey & mTimeModified are from v2.01
-                  imageAsset = assetImageManager.CreateImage (imageDefine.mKey);
-                  imageAsset.SetTimeModified (imageDefine.mTimeModified);
-                  
-                  imageAsset.OnLoadLocalImageFinished (imageDefine.mFileData, imageDefine.mName);
-                  
-                  imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
-               }
-               
-               correctedModuleId += oldNumImageDivisions;
-               for (divisionId = 0; divisionId < deltaNumImageDivisions; ++ divisionId)
-               { 
-                  divisionDefine = worldDefine.mPureImageModuleDefines [divisionId];
-                  
-                  divisionDefine.mImageIndex += oldNumImageModules;
-                  
-                  // mKey & mTimeModified are from v2.01
-                  imageDivision = (assetImageManager.GetAssetByAppearanceId (divisionDefine.mImageIndex) as AssetImage)
-                                                .GetAssetImageDivisionManager ().CreateImageDivision (
-                                                   divisionDefine.mKey, 
-                                                   divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom,
-                                                   false, pureModuleManager
-                                                );
-                  imageDivision.SetTimeModified (divisionDefine.mTimeModified);
-                  
-                  imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
-               }
-               
-               correctedModuleId += oldNumAssembledModules;
-               for (assembledModuleId = 0; assembledModuleId < deltaNumAssembledModules; ++ assembledModuleId)
-               {
-                  assembledModuleDefine = worldDefine.mAssembledModuleDefines [assembledModuleId];
-                  
-                  // mKey & mTimeModified are from v2.01
-                  assembledModule = assembledModuleManager.CreateImageCompositeModule (assembledModuleDefine.mKey);
-                  assembledModule.SetTimeModified (assembledModuleDefine.mTimeModified);
-                  
-                  imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
-               }
-      
-               correctedModuleId += oldNumSequencedModules;
-               for (sequencedModuleId = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
-               {
-                  sequencedModuleDefine = worldDefine.mSequencedModuleDefines [sequencedModuleId];
-                  
-                  // mKey & mTimeModified are from v2.01
-                  sequencedModule = sequencedModuleManager.CreateImageCompositeModule (sequencedModuleDefine.mKey);
-                  sequencedModule.SetTimeModified (sequencedModuleDefine.mTimeModified);
-                  
-                  imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
-               }
-               
-               for (assembledModuleId = 0; assembledModuleId < deltaNumAssembledModules; ++ assembledModuleId)
-               {
-                  assembledModuleDefine = worldDefine.mAssembledModuleDefines [assembledModuleId];
-                  
-                  assembledModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId + oldNumAssembledModules) as AssetImageCompositeModule;
+                  assembledModule = assembledModuleManager.GetAssetByKey (assembledModuleDefine.mKey) as AssetImageCompositeModule;
    
                   ModuleInstanceDefinesToModuleInstances (assembledModuleDefine.mModulePartDefines, imageModuleRefIndex_CorrectionTable, editorWorld, assembledModule.GetModuleInstanceManager (), false);
                   
+                  assembledModule.SetTimeModified (assembledModuleDefine.mTimeModified);
+                  
                   assembledModule.UpdateAppearance ();
                }
-      
-               for (sequencedModuleId = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
+            }
+   
+            for (sequencedModuleId = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
+            {
+               sequencedModuleDefine = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+               
+               if (sequencedModuleDefine.mToLoadNewData)
                {
-                  sequencedModuleDefine = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+                  sequencedModule = sequencedModuleManager.GetAssetByKey (sequencedModuleDefine.mKey) as AssetImageCompositeModule;
+   
+                  ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModulePartDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
                   
-                  sequencedModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId + oldNumSequencedModules) as AssetImageCompositeModule;
-                  
-                  //sequencedModule.SetLooped (sequencedModuleDefine.mIsLooped);
-                  ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
+                  sequencedModule.SetTimeModified (sequencedModuleDefine.mTimeModified);
                   
                   sequencedModule.UpdateAppearance ();
                }
-            //}
-            //<<
-            
-            //>>from v1.59
-            // sounds
-            //{
-               var beginningSoundIndex:int = assetSoundManager.GetNumAssets ();
+            }
+         //}
+         //<<
+         
+         //>>from v1.59
+         // sounds
+         //{
+            var assetSoundManager:AssetSoundManager = editorWorld.GetAssetSoundManager ();
+            var soundId:int;
+            var soundDefine:Object;
+            var soundAsset:AssetSound;
+
+            //var beginningSoundIndex:int = assetSoundManager.GetNumAssets ();
+   
+            var soundRefIndex_CorrectionTable:Array = new Array (worldDefine.mSoundDefines.length);
       
-               for (soundId = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
+            for (soundId = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
+            {
+               soundDefine = worldDefine.mSoundDefines [soundId];
+               
+               // mKey & mTimeModified are from v2.01
+
+               soundAsset = assetSoundManager.GetAssetByKey (soundDefine.mKey) as AssetSound;
+               
+               if (worldDefine.mSimpleGlobalAssetDefines)
                {
-                  soundDefine = worldDefine.mSoundDefines [soundId];
+                  toUseNewData = false;
+               }
+               else if (soundAsset == null)
+               {
+                  toUseNewData = true;
                   
-                  // mKey & mTimeModified are from v2.01
                   soundAsset = assetSoundManager.CreateSound (soundDefine.mKey);
-                  soundAsset.SetTimeModified (soundDefine.mTimeModified);
+               }
+               else if (policyOnConflictingGlobalAssets == 3) // always create new
+               {
+                  toUseNewData = true;
                   
+                  soundAsset = assetSoundManager.CreateSound (null);
+               }
+               else if (policyOnConflictingGlobalAssets == 2) // override
+               {
+                  toUseNewData = true;
+               }
+               else if (policyOnConflictingGlobalAssets == 1) // skip
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingGlobalAssets == 0) .. auto
+               {
+                  toUseNewData = soundDefine.mTimeModified > soundAsset.GetTimeModified ();
+               }
+               
+               if (toUseNewData)
+               {
                   soundAsset.SetName (soundDefine.mName);
                   soundAsset.SetSoundAttributeBits (soundDefine.mAttributeBits);
                   soundAsset.SetSoundNumSamples (soundDefine.mNumSamples);
                   soundAsset.SetSoundFileData (soundDefine.mFileData);
-                  
+                  soundAsset.SetTimeModified (soundDefine.mTimeModified);
+   
                   soundAsset.UpdateAppearance ();
-                  
-                  soundRefIndex_CorrectionTable [soundId] = beginningSoundIndex + soundId;
                }
-            //}
-            //<<
-         } // worldDefine.mGlobalAssetsDefinedAsUUIDs
+               
+               soundRefIndex_CorrectionTable [soundId] = editorWorld.GetSoundIndex (soundAsset);
+            }
+         //}
+         //<<
 
          // scenes
          

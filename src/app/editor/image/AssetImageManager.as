@@ -48,6 +48,7 @@ package editor.image {
       public function CreateImage (key:String, insertBeforeSelectedThenSelectNew:Boolean = false):AssetImage
       {
          var image:AssetImage = new AssetImage (this, ValidateAssetKey (key));
+         image.UpdateTimeModified ();
          image.UpdateAppearance ();
          image.UpdateSelectionProxy ();
          addChild (image);

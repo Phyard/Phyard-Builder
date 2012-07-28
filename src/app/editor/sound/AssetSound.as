@@ -253,7 +253,7 @@ package editor.sound {
                soundInfo.SetSamplingRate (samplingRate);
                soundInfo.SetSampleSize (16);
                
-               trace (">>>>> numDataFrames = " + numDataFrames + ", soundInfo = " + soundInfo);
+               //trace (">>>>> numDataFrames = " + numDataFrames + ", soundInfo = " + soundInfo);
             }
             
             return true;

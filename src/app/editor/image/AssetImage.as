@@ -89,9 +89,11 @@ package editor.image {
       
       override public function Destroy ():void
       {
+         //mAssetImageDivisionManager.DestroyAllAssets ();
+         mAssetImageDivisionManager.Destroy ();
+         
          super.Destroy ();
          
-         mAssetImageDivisionManager.DestroyAllAssets ();
          if (mAssetImageDivideDialog != null)
          {
             mAssetImageDivideDialog.Hide ();
@@ -142,6 +144,8 @@ package editor.image {
       
       private function OnLoadImageComplete (event:Event):void
       {
+         UpdateTimeModified ();
+         
          //var newBitmap:Bitmap = event.target.content as Bitmap;
          //var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
          var newBitmap:Bitmap = (event as ResourceLoadEvent).resource as Bitmap;
@@ -168,7 +172,7 @@ package editor.image {
       }
       
       protected function NotifyPixelsChanged ():void
-      {  
+      {
          UpdateAppearance ();
          
          mAssetImageDivisionManager.OnAssetImagePixelsChanged ();

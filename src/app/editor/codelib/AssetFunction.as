@@ -140,6 +140,39 @@ package editor.codelib {
          }
       }
       
+      public function Reset ():void
+      {  
+         mCodeSnippet.ClearFunctionCallings ();
+         //mCodeSnippet.GetOwnerFunctionDefinition ()
+         mFunctionDefinition.GetInputVariableSpace ().DestroyAllVariableInstances ();
+         mFunctionDefinition.GetOutputVariableSpace ().DestroyAllVariableInstances ();
+         mFunctionDefinition.GetLocalVariableSpace ().DestroyAllVariableInstances ();
+      }
+      
+      
+      private var mLastModifyTimesOfInputVariableSpace:int = 0;
+      private var mLastModifyTimesOfOutputVariableSpace:int = 0;
+      private var mLastModifyTimesOfLocalVariableSpace:int = 0;
+      override public function Update (escapedTime:Number):void
+      {
+         if (  mFunctionDefinition.GetInputVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfInputVariableSpace
+            || mFunctionDefinition.GetOutputVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfOutputVariableSpace
+            || mFunctionDefinition.GetLocalVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfLocalVariableSpace
+            )
+         {
+            UpdateTimeModified ();
+         }
+      }
+      
+      override public function SetTimeModified (time:Number):void
+      {
+         super.SetTimeModified (time);
+         
+         mLastModifyTimesOfInputVariableSpace = mFunctionDefinition.GetInputVariableSpace ().GetNumModifiedTimes ();
+         mLastModifyTimesOfOutputVariableSpace = mFunctionDefinition.GetOutputVariableSpace ().GetNumModifiedTimes ();
+         mLastModifyTimesOfLocalVariableSpace = mFunctionDefinition.GetLocalVariableSpace ().GetNumModifiedTimes ();
+      }
+      
 //=======================================================================================
 // code snippet
 //=======================================================================================

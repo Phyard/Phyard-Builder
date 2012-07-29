@@ -42,6 +42,7 @@ package common {
    
    //import editor.entity.EntityCollisionCategory;
    import editor.ccat.CollisionCategory;
+   import editor.ccat.CollisionCategoryManager;
    
    import editor.image.AssetImage;
    import editor.image.AssetImageManager;
@@ -98,6 +99,7 @@ package common {
    
    //import editor.trigger.entity.EntityFunction;
    import editor.codelib.AssetFunction;
+   import editor.codelib.CodeLibManager;
    
    import editor.trigger.VariableSpace;
    import editor.trigger.VariableInstance;
@@ -973,6 +975,7 @@ package common {
                
                //>>from v2.01
                ccDefine.mKey = collisionCategory.GetKey ();
+               ccDefine.mTimeModified = collisionCategory.GetTimeModified ();
                //<<
                
                ccDefine.mName = collisionCategory.GetCategoryName ();
@@ -1032,6 +1035,7 @@ package common {
                
                //>>from v2.01
                functionDefine.mKey = functionAsset.GetKey ();
+               functionDefine.mTimeModified = functionAsset.GetTimeModified ();
                //<<
                
                functionDefine.mName = functionAsset.GetName ();
@@ -1365,7 +1369,7 @@ package common {
          }
       }
       
-      public static function SetShapePhysicsProperties (shape:EntityShape, entityDefine:Object, beginningCollisionCategoryIndex:int):void
+      public static function SetShapePhysicsProperties (shape:EntityShape, entityDefine:Object, ccatRefIndex_CorrectionTable:Array):void
       {
          //>>from v1.04
          shape.SetPhysicsEnabled (entityDefine.mIsPhysicsEnabled);
@@ -1376,7 +1380,7 @@ package common {
          {
             //>>from v1.02
             if (entityDefine.mCollisionCategoryIndex >= 0)
-               shape.SetCollisionCategoryIndex ( int(entityDefine.mCollisionCategoryIndex) + beginningCollisionCategoryIndex);
+               shape.SetCollisionCategoryIndex (ccatRefIndex_CorrectionTable [int(entityDefine.mCollisionCategoryIndex)]);
             else
                shape.SetCollisionCategoryIndex (entityDefine.mCollisionCategoryIndex);
             //<<
@@ -1413,10 +1417,13 @@ package common {
                                                       policyOnConflictingSceneAssets:int = 0   // 0: determined by modified time. 1: keep current. 2: override. 3: create new
                                                       ):Array
       {
-         // from v1,03
-         DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
-         if (adjustPrecisionsInWorldDefine)
-            DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
+         if (! worldDefine.mSimpleGlobalAssetDefines) // from v2.01, many fields may be missed.
+         {
+            // from v1,03
+            DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
+            if (adjustPrecisionsInWorldDefine)
+               DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
+         }
          
          // ...
          
@@ -1657,7 +1664,7 @@ package common {
                {
                   toUseNewData = false;
                }
-               else if (assembledModule == null)
+               else if (sequencedModule == null)
                {
                   toUseNewData = true;
                   
@@ -1673,7 +1680,7 @@ package common {
                {
                   toUseNewData = true;
                   
-                  assembledModule.GetModuleInstanceManager ().DestroyAllAssets ();
+                  sequencedModule.GetModuleInstanceManager ().DestroyAllAssets ();
                }
                else if (policyOnConflictingGlobalAssets == 1) // skip
                {
@@ -1681,11 +1688,11 @@ package common {
                }
                else // if (policyOnConflictingGlobalAssets == 0) // auto
                {
-                  toUseNewData = sequencedModuleDefine.mTimeModified > assembledModule.GetTimeModified ();
+                  toUseNewData = sequencedModuleDefine.mTimeModified > sequencedModule.GetTimeModified ();
                   
                   if (toUseNewData)
                   {
-                     assembledModule.GetModuleInstanceManager ().DestroyAllAssets ();
+                     sequencedModule.GetModuleInstanceManager ().DestroyAllAssets ();
                   }
                }
                
@@ -1718,7 +1725,7 @@ package common {
                {
                   sequencedModule = sequencedModuleManager.GetAssetByKey (sequencedModuleDefine.mKey) as AssetImageCompositeModule;
    
-                  ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModulePartDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
+                  ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
                   
                   sequencedModule.SetTimeModified (sequencedModuleDefine.mTimeModified);
                   
@@ -1732,21 +1739,18 @@ package common {
          // sounds
          //{
             var assetSoundManager:AssetSoundManager = editorWorld.GetAssetSoundManager ();
-            var soundId:int;
-            var soundDefine:Object;
-            var soundAsset:AssetSound;
 
             //var beginningSoundIndex:int = assetSoundManager.GetNumAssets ();
    
             var soundRefIndex_CorrectionTable:Array = new Array (worldDefine.mSoundDefines.length);
       
-            for (soundId = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
+            for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
             {
-               soundDefine = worldDefine.mSoundDefines [soundId];
+               var soundDefine:Object = worldDefine.mSoundDefines [soundId];
                
                // mKey & mTimeModified are from v2.01
 
-               soundAsset = assetSoundManager.GetAssetByKey (soundDefine.mKey) as AssetSound;
+               var soundAsset:AssetSound = assetSoundManager.GetAssetByKey (soundDefine.mKey) as AssetSound;
                
                if (worldDefine.mSimpleGlobalAssetDefines)
                {
@@ -1797,12 +1801,13 @@ package common {
          
          var newCreatedScenes:Array = null;
          
-         if (scene != null)
+         if (scene != null) // uodo scene or import into scene
          {
-            SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [0], false, scene, mergeVariablesWithSameNames, 
+            // worldDefine.mSimpleGlobalAssetDefines == true means uodo scene
+            SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [0], worldDefine.mSimpleGlobalAssetDefines, scene, mergeVariablesWithSameNames, policyOnConflictingSceneAssets, 
                                imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, editorWorld.GetNumScenes ()); // here editorWorld.GetNumScenes () will make the scene references as null
          }
-         else
+         else // load world or import scenes
          {
             var baseSceneIndex:int = editorWorld.GetNumScenes ();
             
@@ -1816,7 +1821,7 @@ package common {
                
                try
                {
-                  SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [sceneId], true, newScene, /*mergeVariablesWithSameNames*/false, 
+                  SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [sceneId], true, newScene, /*mergeVariablesWithSameNames*/false, policyOnConflictingSceneAssets, 
                                   imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, baseSceneIndex);
                   
                   newCreatedScenes.push (newScene);
@@ -1848,7 +1853,10 @@ package common {
          return newCreatedScenes;
       }
       
-      public static function SceneDefine2Scene (editorWorld:World, sceneDefine:SceneDefine, isNewSceneToLoadAll:Boolean, scene:Scene, mergeVariablesWithSameNames:Boolean, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, beginningSceneIndex:int):void
+      public static function SceneDefine2Scene (editorWorld:World, sceneDefine:SceneDefine, isNewSceneToLoadAll:Boolean, scene:Scene, 
+                                                mergeVariablesWithSameNames:Boolean, 
+                                                policyOnConflictingSceneAssets:int, // 0: determined by modified time. 1: keep current. 2: override. 3: create new
+                                                imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, beginningSceneIndex:int):void
       {
          //
          
@@ -1925,31 +1933,75 @@ package common {
             }
          }
          
+         // ...
+         
+         var toUseNewData:Boolean;
+         
          // collision category
          
-         var beginningCollisionCategoryIndex:int = scene.GetCollisionCategoryManager ().GetNumCollisionCategories ();
-         
          //>> from v1.02
-         {
+         //{
+            var ccatManager:CollisionCategoryManager = scene.GetCollisionCategoryManager ();
+            
+            //var beginningCollisionCategoryIndex:int = scene.GetCollisionCategoryManager ().GetNumCollisionCategories ();
+            
             var collisionCategory:CollisionCategory;
+            
+            var ccatRefIndex_CorrectionTable:Array = new Array (sceneDefine.mCollisionCategoryDefines.length);
             
             for (var ccId:int = 0; ccId < sceneDefine.mCollisionCategoryDefines.length; ++ ccId)
             {
                var ccDefine:Object = sceneDefine.mCollisionCategoryDefines [ccId];
                
-               // mKey is from v2.01
-               collisionCategory = scene.GetCollisionCategoryManager ().CreateCollisionCategory (ccDefine.mKey, ccDefine.mName);
-               collisionCategory.SetCollideInternally (ccDefine.mCollideInternally);
+               // mKey and mTimeModified are from v2.01
                
-               collisionCategory.SetPosition (ccDefine.mPosX, ccDefine.mPosY);
+               collisionCategory = ccatManager.GetAssetByKey (ccDefine.mKey) as CollisionCategory;
                
-               collisionCategory.UpdateAppearance ();
-               collisionCategory.UpdateSelectionProxy ();
+               if (collisionCategory == null)
+               {
+                  toUseNewData = true;
+                  
+                  collisionCategory = ccatManager.CreateCollisionCategory (ccDefine.mKey, ccDefine.mName);
+               }
+               else if (policyOnConflictingSceneAssets == 3) // always create new 
+               {
+                  toUseNewData = true;
+                  
+                  collisionCategory = ccatManager.CreateCollisionCategory (null, ccDefine.mName);
+               }
+               else if (policyOnConflictingSceneAssets == 2) // override 
+               {
+                  toUseNewData = true;
+               }
+               else if (policyOnConflictingSceneAssets == 1) // skip 
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingSceneAssets == 0) // auto
+               {
+                  toUseNewData = ccDefine.mTimeModified > collisionCategory.GetTimeModified ();
+               }
+               
+               if (toUseNewData)
+               {
+                  collisionCategory.SetCollideInternally (ccDefine.mCollideInternally);
+                  collisionCategory.SetPosition (ccDefine.mPosX, ccDefine.mPosY);
+                  
+                  collisionCategory.SetTimeModified (ccDefine.mTimeModified);
+                  
+                  collisionCategory.UpdateAppearance ();
+                  collisionCategory.UpdateSelectionProxy ();
+               }
+               
+               ccatRefIndex_CorrectionTable [ccId] = ccatManager.GetCollisionCategoryIndex (collisionCategory);
             }
             
             //if (isNewWorldToLoadAll)
             if (isNewSceneToLoadAll)
             {
+               if (sceneDefine.mDefaultCollisionCategoryIndex >= 0)
+                  sceneDefine.mDefaultCollisionCategoryIndex = ccatRefIndex_CorrectionTable [sceneDefine.mDefaultCollisionCategoryIndex];
+               
                collisionCategory = scene.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (sceneDefine.mDefaultCollisionCategoryIndex);
                if (collisionCategory != null)
                   collisionCategory.SetAsDefaultCategory (true);
@@ -1959,11 +2011,14 @@ package common {
             {
                var pairDefine:Object = sceneDefine.mCollisionCategoryFriendLinkDefines [pairId];
                
-               //scene.CreateEntityCollisionCategoryFriendLink (pairDefine.mCollisionCategory1Index, pairDefine.mCollisionCategory2Index);
-               scene.CreateCollisionCategoryFriendLink (beginningCollisionCategoryIndex + pairDefine.mCollisionCategory1Index, 
-                                                                    beginningCollisionCategoryIndex + pairDefine.mCollisionCategory2Index);
+               ////scene.CreateEntityCollisionCategoryFriendLink (pairDefine.mCollisionCategory1Index, pairDefine.mCollisionCategory2Index);
+               //scene.CreateCollisionCategoryFriendLink (beginningCollisionCategoryIndex + pairDefine.mCollisionCategory1Index,
+               //                                           beginningCollisionCategoryIndex + pairDefine.mCollisionCategory2Index);
+               // maybe not perfect
+               scene.CreateCollisionCategoryFriendLink (ccatRefIndex_CorrectionTable [pairDefine.mCollisionCategory1Index],
+                                                        ccatRefIndex_CorrectionTable [pairDefine.mCollisionCategory2Index]);
             }
-         }
+         //}
          //<<
          
          //>> todo: move function creations here from the below
@@ -2198,7 +2253,7 @@ package common {
                      vectorShape.SetAiType (entityDefine.mAiType);
                      
                      //
-                     SetShapePhysicsProperties (vectorShape, entityDefine, beginningCollisionCategoryIndex);
+                     SetShapePhysicsProperties (vectorShape, entityDefine, ccatRefIndex_CorrectionTable);
                   }
                }
                else // not physics vectorShape
@@ -2314,7 +2369,7 @@ package common {
                   
                   imageModuleShape.SetAssetImageModuleByIndex (entityDefine.mModuleIndex);
                   
-                  SetShapePhysicsProperties (imageModuleShape, entityDefine, beginningCollisionCategoryIndex);
+                  SetShapePhysicsProperties (imageModuleShape, entityDefine, ccatRefIndex_CorrectionTable);
                   
                   entity = shape = imageModuleShape;
                }
@@ -2333,7 +2388,7 @@ package common {
                   imageModuleShapeButton.SetAssetImageModuleForMouseOverByIndex (entityDefine.mModuleIndexOver);
                   imageModuleShapeButton.SetAssetImageModuleForMouseDownByIndex (entityDefine.mModuleIndexDown);
                   
-                  SetShapePhysicsProperties (imageModuleShapeButton, entityDefine, beginningCollisionCategoryIndex);
+                  SetShapePhysicsProperties (imageModuleShapeButton, entityDefine, ccatRefIndex_CorrectionTable);
                   
                   entity = shape = imageModuleShapeButton;
                }
@@ -2501,6 +2556,7 @@ package common {
          
          for (appearId = 0; appearId < numEntities; ++ appearId)
          {
+//trace ("appearId = " + appearId + ", createId = " + createId + ", entityDefine = " + sceneDefine.mEntityDefines [createId]);
             createId = sceneDefine.mEntityAppearanceOrder [appearId];
             entityDefine = sceneDefine.mEntityDefines [createId];
             scene.addChild (entityDefine.mEntity);
@@ -2553,7 +2609,12 @@ package common {
          //>>> load custom functions
          // from v1.53
          scene.GetCodeLibManager().SetDelayUpdateFunctionMenu (true);
-         var beginningCustomFunctionIndex:int = scene.GetCodeLibManager().GetNumFunctions ();
+         
+         var codelibManager:CodeLibManager = scene.GetCodeLibManager ();
+         
+         //var beginningCustomFunctionIndex:int = scene.GetCodeLibManager().GetNumFunctions ();
+         
+         var functionRefIndex_CorrectionTable:Array = new Array (sceneDefine.mFunctionDefines.length);
          
          var functionId:int;
          var functionAsset:AssetFunction;
@@ -2563,31 +2624,76 @@ package common {
          {
             functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
             
-            // mKey is from v2.01
-            functionAsset = scene.GetCodeLibManager ().CreateFunction (functionDefine.mKey);
+            // mKey and mTimeModified are from v2.01
             
-            //>>v1.56
-            functionAsset.SetDesignDependent (functionDefine.mDesignDependent);
-            //<<
+            functionAsset = codelibManager.GetAssetByKey (functionDefine.mKey) as AssetFunction;
             
-            TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
-            functionAsset.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
+            if (functionAsset == null)
+            {
+               toUseNewData = true;
+               
+               functionAsset = codelibManager.CreateFunction (functionDefine.mKey);
+            }
+            else if (policyOnConflictingSceneAssets == 3) // always create new 
+            {
+               toUseNewData = true;
+               
+               functionAsset = codelibManager.CreateFunction (null);
+            }
+            else if (policyOnConflictingSceneAssets == 2) // override
+            {
+               toUseNewData = true;
+               
+               functionAsset.Reset ();
+            }
+            else if (policyOnConflictingSceneAssets == 1) // skip
+            {
+               toUseNewData = false;
+            }
+            else // if (policyOnConflictingSceneAssets == 0) // auto
+            {
+               toUseNewData = functionDefine.mTimeModified > functionAsset.GetTimeModified ();
+               
+               if (toUseNewData)
+               {
+                  functionAsset.Reset ();
+               }
+            }
+            
+            functionDefine.mToLoadNewData = toUseNewData;
+            if (functionDefine.mToLoadNewData)
+            {
+               //>>added from v1.56, become meaningless from v2.00 
+               functionAsset.SetDesignDependent (functionDefine.mDesignDependent);
+               //<<
+            
+               TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
+               functionAsset.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
+            }
+            
+            functionRefIndex_CorrectionTable [functionId] = functionAsset.GetFunctionIndex (); // codelibManager.GetFunctionIndex (functionAsset);
          }
          
          for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
          {
             functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
             
-            functionAsset = scene.GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
-            
-            functionAsset.SetFunctionName (functionDefine.mName);
-            functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
-            
-            functionAsset.UpdateAppearance ();
-            functionAsset.UpdateSelectionProxy ();
-            
-            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
-            TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
+            if (functionDefine.mToLoadNewData)
+            {
+               //functionAsset = scene.GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
+               functionAsset = codelibManager.GetAssetByKey (functionDefine.mKey) as AssetFunction;
+               
+               functionAsset.SetFunctionName (functionDefine.mName);
+               functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
+               
+               functionAsset.UpdateAppearance ();
+               functionAsset.UpdateSelectionProxy ();
+               
+               TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+               TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
+               
+               functionAsset.SetTimeModified (functionDefine.mTimeModified);
+            }
          }
          scene.GetCodeLibManager().SetDelayUpdateFunctionMenu (false);
          scene.GetCodeLibManager().UpdateFunctionMenu ();
@@ -2662,7 +2768,7 @@ package common {
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, condition.GetCodeSnippet (), condition.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
@@ -2764,7 +2870,7 @@ package common {
                   }
                   //<<
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                   
                   //>>from v1.56
@@ -2774,13 +2880,13 @@ package common {
             
                      if (entityDefine.mPreFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
                         TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                      
                      if (entityDefine.mPostFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
                         TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                   }
@@ -2790,21 +2896,21 @@ package common {
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, action.GetCodeSnippet (), action.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
                   var entityFilter:EntityInputEntityScriptFilter = entityDefine.mEntity as EntityInputEntityScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, entityFilter.GetCodeSnippet (), entityFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
                   var entityPairFilter:EntityInputEntityPairScriptFilter = entityDefine.mEntity as EntityInputEntityPairScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, entityPairFilter.GetCodeSnippet (), entityPairFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
             }
@@ -3193,6 +3299,7 @@ package common {
                if (worldDefine.mVersion >= 0x0201)
                {
                   functionDefine.mKey = element.@key;
+                  functionDefine.mTimeModified = ParseTimeString (element.@time_modified);
                }
                
                functionDefine.mName = element.@name;
@@ -3246,6 +3353,7 @@ package common {
                if (worldDefine.mVersion >= 0x0201)
                {
                   ccDefine.mKey = element.@key;
+                  ccDefine.mTimeModified = ParseTimeString (element.@time_modified);
                }
                
                ccDefine.mName = element.@name;
@@ -4215,6 +4323,7 @@ package common {
                if (worldDefine.mVersion >= 0x0201)
                {
                   byteArray.writeUTF (ccDefine.mKey == null ? "" : ccDefine.mKey);
+                  WriteTimeValue (byteArray, ccDefine.mTimeModified);
                }
                
                byteArray.writeUTF (ccDefine.mName);
@@ -4258,6 +4367,7 @@ package common {
                if (worldDefine.mVersion >= 0x0201)
                {
                   byteArray.writeUTF (functionDefine.mKey == null ? "" : functionDefine.mKey);
+                  WriteTimeValue (byteArray, functionDefine.mTimeModified);
                }
                
                byteArray.writeUTF (functionDefine.mName);

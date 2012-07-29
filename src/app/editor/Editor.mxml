@@ -1029,6 +1029,7 @@
             //Alert.show("Sorry, import error!", "Error");
             
             //RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ());
+            RollBackScene (mSceneEditDialog.GetSceneEditPanel ());
             
             mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
@@ -1641,7 +1642,8 @@
             if (Capabilities.isDebugger)
                throw error;
             
-            RestoreScene (sceneEditPanel, sceneSnapshotManager.GetCurrentHistoryState (), sceneSnapshotManager); // not very good
+            if (sceneSnapshotManager != null)
+               RestoreScene (sceneEditPanel, sceneSnapshotManager.GetCurrentHistoryState (), null); // not very good
             
             //Alert.show("Sorry, online loading error!", "Error");
             
@@ -1649,6 +1651,20 @@
          }
 
          return false;
+      }
+      
+      public function RollBackScene (sceneEditPanel:SceneEditPanel):void
+      {
+         var sceneSnapshotManager:HistoryManager = GetSceneSnapshotManager (sceneEditPanel.GetScene (), false);
+         
+         if (sceneSnapshotManager == null)
+            return;
+         
+         var historyState:HistoryState = sceneSnapshotManager.GetCurrentHistoryState ();
+         if (historyState != null)
+         {
+            RestoreScene (sceneEditPanel, historyState, null)
+         }
       }
       
       public function UndoScene (sceneEditPanel:SceneEditPanel):void

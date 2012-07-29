@@ -103,6 +103,8 @@ package editor.ccat {
          {
             //mCategoryName = newName;
             SetName (newName);
+            
+            UpdateTimeModified ();
          }
       }
       
@@ -114,6 +116,8 @@ package editor.ccat {
       public function SetCollideInternally (collide:Boolean):void
       {
          mCollideInternally = collide;
+         
+         UpdateTimeModified ();
          
          mCollisionCategoryManager.SetChanged (true);
       }

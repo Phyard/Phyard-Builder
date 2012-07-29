@@ -213,6 +213,7 @@ package editor.codelib.dialog {
             if (asset is AssetFunction)
             {
                (asset as AssetFunction).SetFunctionName (mTextInputName.text);
+               (asset as AssetFunction).UpdateTimeModified ();
             }
             
             asset.UpdateAppearance ();
@@ -262,6 +263,8 @@ package editor.codelib.dialog {
             var code_snippet:CodeSnippet = aFunction.GetCodeSnippet ();
             code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
             code_snippet.PhysicsValues2DisplayValues (mCodeLibManager.GetScene ().GetCoordinateSystem ());
+            
+            aFunction.UpdateTimeModified ();
          }
       }
       

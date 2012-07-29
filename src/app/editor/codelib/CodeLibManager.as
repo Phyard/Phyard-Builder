@@ -68,6 +68,10 @@ package editor.codelib {
          
          // register variables
          // put in World now
+         
+         // memo: which packages and classes introduced later,
+         //       put them in seperated PacakgeManager and ClassManager.
+         //       3 manager layers: function layer, pacakge layer, class layer
       }
       
       public function GetScene ():Scene

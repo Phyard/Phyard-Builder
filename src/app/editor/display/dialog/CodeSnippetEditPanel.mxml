@@ -2001,7 +2001,7 @@
 
          private function OnEditLocalVariables ():void
          {
-            mLastModifyTimesOfEntityVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ().GetNumModifiedTimes ();
+            mLastModifyTimesOfLocalVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ().GetNumModifiedTimes ();
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ());
             EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace (), OnLocalVariablesEditingDialogClosed);
          }
@@ -2024,7 +2024,7 @@
 
          private function OnEditInputVariables ():void
          {
-            mLastModifyTimesOfEntityVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ().GetNumModifiedTimes ();
+            mLastModifyTimesOfInputVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ().GetNumModifiedTimes ();
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowInputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ());
             EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace (), OnInputVariablesEditingDialogClosed);
          }
@@ -2054,7 +2054,7 @@
 
          private function OnEditOutputVariables ():void
          {
-            mLastModifyTimesOfEntityVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ().GetNumModifiedTimes ();
+            mLastModifyTimesOfOutputVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ().GetNumModifiedTimes ();
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowOutputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ());
             EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace (), OnOutputVariablesEditingDialogClosed);
          }

@@ -89,7 +89,7 @@ package editor.core {
       
       public function UpdateTimeModified ():void
       {
-         mTimeModified = new Date ().getTime () - kTime20090101;
+         SetTimeModified (new Date ().getTime () - kTime20090101);
       }
   
 //=============================================================

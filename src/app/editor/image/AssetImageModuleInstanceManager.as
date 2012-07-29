@@ -155,7 +155,7 @@ package editor.image {
       
       override public function NotifyModifiedForReferers (info:Object = null):void
       {
-         UpdateTimeModified (); // maybe not a good idea to put it here
+         mAssetImageCompositeModule.UpdateTimeModified (); // maybe not a good idea to put it here
          
          mAssetImageCompositeModule.UpdateAppearance ();
          mAssetImageCompositeModule.NotifyModifiedForReferers ();

@@ -166,6 +166,19 @@ package editor.trigger {
          }
       }
       
+      public function DestroyAllVariableInstances ():void
+      {
+         for (var i:int = 0; i < mVariableInstances.length; ++ i)
+         {
+            (mVariableInstances [i] as VariableInstance).SetIndex (-1);
+         }
+         mVariableInstances.splice (0, mVariableInstances.length);
+         
+         RearrangeVariableInstanceIndexes ();
+         
+         NotifyModified ();
+      }
+      
       public function DestroyVariableInstanceByIndex (variableId:int):void
       {
          if (variableId < 0 || variableId >= mVariableInstances.length)

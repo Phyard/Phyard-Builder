@@ -917,6 +917,7 @@ package common {
                if (worldDefine.mVersion >= 0x0201)
                {
                   element.@key = functionDefine.mKey;
+                  element.@time_modified = TimeValue2HexString (functionDefine.mTimeModified);
                }
                
                element.@name = functionDefine.mName;
@@ -982,6 +983,7 @@ package common {
                if (worldDefine.mVersion >= 0x0201)
                {
                   element.@key = ccDefine.mKey;
+                  element.@time_modified = TimeValue2HexString (ccDefine.mTimeModified);
                }
                
                element.@name = ccDefine.mName;
@@ -2048,6 +2050,7 @@ package common {
                if (worldDefine.mVersion >= 0x0201)
                {
                   ccDefine.mKey = byteArray.readUTF ();
+                  ccDefine.mTimeModified = ReadTimeValue (byteArray);
                }
 
                ccDefine.mName = byteArray.readUTF ();
@@ -2101,6 +2104,7 @@ package common {
                if (worldDefine.mVersion >= 0x0201)
                {
                   functionDefine.mKey = byteArray.readUTF ();
+                  functionDefine.mTimeModified = ReadTimeValue (byteArray);
                }
                
                functionDefine.mName = byteArray.readUTF ();

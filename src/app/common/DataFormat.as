@@ -1491,15 +1491,15 @@ package common {
 
                imageAsset = assetImageManager.GetAssetByKey (imageDefine.mKey) as AssetImage;
                
-               if (worldDefine.mSimpleGlobalAssetDefines)
-               {
-                  toUseNewData = false;
-               }
-               else if (imageAsset == null)
+               if (imageAsset == null) // before v2.01
                {
                   toUseNewData = true;
                   
                   imageAsset = assetImageManager.CreateImage (imageDefine.mKey);
+               }
+               else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
+               {
+                  toUseNewData = false;
                }
                else if (policyOnConflictingGlobalAssets == 3) // always create new
                {
@@ -1527,6 +1527,9 @@ package common {
                   imageAsset.SetTimeModified (imageDefine.mTimeModified);
                }
                
+               if (imageAsset != null)
+                  imageDefine.mKey = imageAsset.GetKey ();
+               
                imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (imageAsset);
             }
             
@@ -1547,31 +1550,27 @@ package common {
                   
                   pureModule = pureModuleManager.GetAssetByKey (divisionDefine.mKey) as AssetImagePureModule;
                   
-                  if (worldDefine.mSimpleGlobalAssetDefines)
-                  {
-                     toUseNewData = false;
-                  }
-                  else if (pureModule == null || policyOnConflictingGlobalAssets == 3) // always create new
+                  if (pureModule == null || policyOnConflictingGlobalAssets == 3) // before v2.01
                   {
                      //toUseNewData = true;
                      toUseNewData = false;
                      
-                     if (divisionDefine.mImageIndex < 0)
-                     {
-                        pureModule = null;
-                     }
-                     else
-                     {
-                        imageDivision = (assetImageManager.GetAssetByAppearanceId (divisionDefine.mImageIndex) as AssetImage)
-                                                   .GetAssetImageDivisionManager ().CreateImageDivision (
-                                                      policyOnConflictingGlobalAssets == 3 ? null : divisionDefine.mKey, 
-                                                      divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom,
-                                                      false, pureModuleManager
-                                                   );
-                        imageDivision.SetTimeModified (divisionDefine.mTimeModified);
-                        pureModule = imageDivision.GetImagePureModulePeer ();
-                     }
+                     imageDivision = (assetImageManager.GetAssetByAppearanceId (divisionDefine.mImageIndex) as AssetImage)
+                                                .GetAssetImageDivisionManager ().CreateImageDivision (
+                                                   pureModule != null ? null : divisionDefine.mKey, 
+                                                   divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom,
+                                                   false, pureModuleManager
+                                                );
+                     imageDivision.SetTimeModified (divisionDefine.mTimeModified);
+                     pureModule = imageDivision.GetImagePureModulePeer ();
                   }
+                  else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
+                  {
+                     toUseNewData = false;
+                  }
+                  //else if (policyOnConflictingGlobalAssets == 3) // always create new (move to above)
+                  //{
+                  //}
                   //>> !!! generally impossible
                   else if (editorWorld.GetImageModuleByIndex (divisionDefine.mImageIndex) != pureModule.GetImageDivisionPeer ().GetAssetImage ())
                   {
@@ -1600,6 +1599,9 @@ package common {
                   }
                }
                
+               if (pureModule!= null)
+                  divisionDefine.mKey = pureModule.GetKey ();
+               
                imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (pureModule);
             }
             
@@ -1611,15 +1613,15 @@ package common {
 
                assembledModule = assembledModuleManager.GetAssetByKey (assembledModuleDefine.mKey) as AssetImageCompositeModule;
                
-               if (worldDefine.mSimpleGlobalAssetDefines)
-               {
-                  toUseNewData = false;
-               }
-               else if (assembledModule == null)
+               if (assembledModule == null) // from v2.01
                {
                   toUseNewData = true;
                   
                   assembledModule = assembledModuleManager.CreateImageCompositeModule (assembledModuleDefine.mKey);
+               }
+               else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
+               {
+                  toUseNewData = false;
                }
                else if (policyOnConflictingGlobalAssets == 3) // always create new
                {
@@ -1649,6 +1651,9 @@ package common {
                
                assembledModuleDefine.mToLoadNewData = toUseNewData;
                
+               if (assembledModule != null)
+                  assembledModuleDefine.mKey = assembledModule.GetKey ();
+               
                imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (assembledModule);
             }
             
@@ -1660,15 +1665,15 @@ package common {
 
                sequencedModule = sequencedModuleManager.GetAssetByKey (sequencedModuleDefine.mKey) as AssetImageCompositeModule;
                
-               if (worldDefine.mSimpleGlobalAssetDefines)
-               {
-                  toUseNewData = false;
-               }
-               else if (sequencedModule == null)
+               if (sequencedModule == null) // before v2.01
                {
                   toUseNewData = true;
                   
                   sequencedModule = sequencedModuleManager.CreateImageCompositeModule (sequencedModuleDefine.mKey);
+               }
+               else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
+               {
+                  toUseNewData = false;
                }
                else if (policyOnConflictingGlobalAssets == 3) // always create new
                {
@@ -1697,6 +1702,9 @@ package common {
                }
                
                sequencedModuleDefine.mToLoadNewData = toUseNewData;
+               
+               if (sequencedModule != null)
+                  sequencedModuleDefine.mKey = sequencedModule.GetKey ();
                
                imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (sequencedModule);
             }
@@ -1752,15 +1760,15 @@ package common {
 
                var soundAsset:AssetSound = assetSoundManager.GetAssetByKey (soundDefine.mKey) as AssetSound;
                
-               if (worldDefine.mSimpleGlobalAssetDefines)
-               {
-                  toUseNewData = false;
-               }
-               else if (soundAsset == null)
+               if (soundAsset == null) // before v2.01
                {
                   toUseNewData = true;
                   
                   soundAsset = assetSoundManager.CreateSound (soundDefine.mKey);
+               }
+               else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
+               {
+                  toUseNewData = false;
                }
                else if (policyOnConflictingGlobalAssets == 3) // always create new
                {
@@ -1792,6 +1800,9 @@ package common {
                   soundAsset.UpdateAppearance ();
                }
                
+               if (soundAsset != null)
+                  soundDefine.mKey = soundAsset.GetKey ();
+               
                soundRefIndex_CorrectionTable [soundId] = editorWorld.GetSoundIndex (soundAsset);
             }
          //}
@@ -1799,30 +1810,54 @@ package common {
 
          // scenes
          
+         var sceneRefIndex_CorrectionTable:Array = new Array (worldDefine.mSceneDefines.length);
+         
          var newCreatedScenes:Array = null;
+         
+         var sceneId:int;
          
          if (scene != null) // uodo scene or import into scene
          {
+            sceneRefIndex_CorrectionTable [0] = editorWorld.GetNumScenes ();
+            for (sceneId = 1; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {
+               sceneRefIndex_CorrectionTable [sceneId] = -1;
+            }
+            
             // worldDefine.mSimpleGlobalAssetDefines == true means uodo scene
             SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [0], worldDefine.mSimpleGlobalAssetDefines, scene, mergeVariablesWithSameNames, policyOnConflictingSceneAssets, 
-                               imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, editorWorld.GetNumScenes ()); // here editorWorld.GetNumScenes () will make the scene references as null
+                               imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable); // here editorWorld.GetNumScenes () will make the scene references as null
          }
          else // load world or import scenes
          {
-            var baseSceneIndex:int = editorWorld.GetNumScenes ();
+            //var beginningSceneIndex:int = editorWorld.GetNumScenes ();
             
             newCreatedScenes = new Array ();
             
-            for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            var sceneDefine:SceneDefine;
+            var newSceneId:int;
+            var newScene:Scene;
+            
+            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
             {
-               var sceneDefine:SceneDefine = worldDefine.mSceneDefines [sceneId];
-               var newSceneId:int = editorWorld.CreateNewScene (sceneDefine.mKey, sceneDefine.mName); // for versions ealier than v2.00, sceneDefine.mKey is undefined
-               var newScene:Scene = editorWorld.GetSceneByIndex (newSceneId);
+               sceneDefine = worldDefine.mSceneDefines [sceneId];
+               newSceneId = editorWorld.CreateNewScene (sceneDefine.mKey, sceneDefine.mName); // for versions ealier than v2.00, sceneDefine.mKey is undefined
+               newScene = editorWorld.GetSceneByIndex (newSceneId);
+               
+               sceneRefIndex_CorrectionTable [sceneId] = newSceneId;
+            }
+            
+            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {
+               sceneDefine = worldDefine.mSceneDefines [sceneId];
+               
+               newSceneId = sceneRefIndex_CorrectionTable [sceneId];
+               newScene   = editorWorld.GetSceneByIndex (newSceneId);
                
                try
                {
                   SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [sceneId], true, newScene, /*mergeVariablesWithSameNames*/false, policyOnConflictingSceneAssets, 
-                                  imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, baseSceneIndex);
+                                  imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   
                   newCreatedScenes.push (newScene);
                }
@@ -1831,11 +1866,21 @@ package common {
                   if (Capabilities.isDebugger)
                      throw error;
                   
-                  editorWorld.DeleteSceneByIndex (newSceneId, false);
+                  // editorWorld.DeleteSceneByIndex (newSceneId, false); // move to bwlow to avoid scene index mis-align
                   
                   newCreatedScenes.push (null);
                   
                   EditorContext.mPauseCreateShapeProxy = false; // !!!
+               }
+            }
+            
+            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {
+               newSceneId = sceneRefIndex_CorrectionTable [sceneId];
+               if (newCreatedScenes [sceneId] == null)
+               {
+                  sceneRefIndex_CorrectionTable [sceneId] = -1;
+                  editorWorld.DeleteSceneByIndex (newSceneId, false);
                }
             }
             
@@ -1856,7 +1901,7 @@ package common {
       public static function SceneDefine2Scene (editorWorld:World, sceneDefine:SceneDefine, isNewSceneToLoadAll:Boolean, scene:Scene, 
                                                 mergeVariablesWithSameNames:Boolean, 
                                                 policyOnConflictingSceneAssets:int, // 0: determined by modified time. 1: keep current. 2: override. 3: create new
-                                                imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, beginningSceneIndex:int):void
+                                                imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
          //
          
@@ -1957,7 +2002,7 @@ package common {
                
                collisionCategory = ccatManager.GetAssetByKey (ccDefine.mKey) as CollisionCategory;
                
-               if (collisionCategory == null)
+               if (collisionCategory == null) // before v2.01
                {
                   toUseNewData = true;
                   
@@ -1992,6 +2037,9 @@ package common {
                   collisionCategory.UpdateAppearance ();
                   collisionCategory.UpdateSelectionProxy ();
                }
+               
+               if (collisionCategory != null)
+                  ccDefine.mKey = collisionCategory.GetKey ();
                
                ccatRefIndex_CorrectionTable [ccId] = ccatManager.GetCollisionCategoryIndex (collisionCategory);
             }
@@ -2580,6 +2628,7 @@ package common {
          
          //>>> load custom variables
          // from v1.52
+         // memo: when variables support uuid later, how to handle the problem of 2 variables with different types but with the same uuid
          var beginningSessionVariableIndex:int = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetNumVariableInstances ();
          var beginningGlobalVariableIndex:int = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetNumVariableInstances ();
          var beginningEntityVariableIndex:int = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetNumVariableInstances ();
@@ -2628,7 +2677,7 @@ package common {
             
             functionAsset = codelibManager.GetAssetByKey (functionDefine.mKey) as AssetFunction;
             
-            if (functionAsset == null)
+            if (functionAsset == null) // before v2.01
             {
                toUseNewData = true;
                
@@ -2671,6 +2720,9 @@ package common {
                functionAsset.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
             }
             
+            if (functionAsset != null)
+               functionDefine.mKey = functionAsset.GetKey ();
+            
             functionRefIndex_CorrectionTable [functionId] = functionAsset.GetFunctionIndex (); // codelibManager.GetFunctionIndex (functionAsset);
          }
          
@@ -2689,7 +2741,7 @@ package common {
                functionAsset.UpdateAppearance ();
                functionAsset.UpdateSelectionProxy ();
                
-               TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+               TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
                
                functionAsset.SetTimeModified (functionDefine.mTimeModified);
@@ -2768,7 +2820,7 @@ package common {
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, condition.GetCodeSnippet (), condition.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
@@ -2870,7 +2922,7 @@ package common {
                   }
                   //<<
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                   
                   //>>from v1.56
@@ -2880,13 +2932,13 @@ package common {
             
                      if (entityDefine.mPreFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                         TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                      
                      if (entityDefine.mPostFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                         TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                   }
@@ -2896,21 +2948,21 @@ package common {
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, action.GetCodeSnippet (), action.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
                   var entityFilter:EntityInputEntityScriptFilter = entityDefine.mEntity as EntityInputEntityScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, entityFilter.GetCodeSnippet (), entityFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
                   var entityPairFilter:EntityInputEntityPairScriptFilter = entityDefine.mEntity as EntityInputEntityPairScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, beginningSceneIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, entityPairFilter.GetCodeSnippet (), entityPairFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
             }

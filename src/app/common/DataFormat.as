@@ -1491,15 +1491,15 @@ package common {
 
                imageAsset = assetImageManager.GetAssetByKey (imageDefine.mKey) as AssetImage;
                
-               if (imageAsset == null) // before v2.01
+               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               {
+                  toUseNewData = false;
+               }
+               else if (imageAsset == null) // before v2.01
                {
                   toUseNewData = true;
                   
                   imageAsset = assetImageManager.CreateImage (imageDefine.mKey);
-               }
-               else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
-               {
-                  toUseNewData = false;
                }
                else if (policyOnConflictingGlobalAssets == 3) // always create new
                {
@@ -1550,7 +1550,11 @@ package common {
                   
                   pureModule = pureModuleManager.GetAssetByKey (divisionDefine.mKey) as AssetImagePureModule;
                   
-                  if (pureModule == null || policyOnConflictingGlobalAssets == 3) // before v2.01
+                  if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+                  {
+                     toUseNewData = false;
+                  }
+                  else if (pureModule == null || policyOnConflictingGlobalAssets == 3) // before v2.01
                   {
                      //toUseNewData = true;
                      toUseNewData = false;
@@ -1563,10 +1567,6 @@ package common {
                                                 );
                      imageDivision.SetTimeModified (divisionDefine.mTimeModified);
                      pureModule = imageDivision.GetImagePureModulePeer ();
-                  }
-                  else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
-                  {
-                     toUseNewData = false;
                   }
                   //else if (policyOnConflictingGlobalAssets == 3) // always create new (move to above)
                   //{
@@ -1613,15 +1613,15 @@ package common {
 
                assembledModule = assembledModuleManager.GetAssetByKey (assembledModuleDefine.mKey) as AssetImageCompositeModule;
                
-               if (assembledModule == null) // from v2.01
+               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               {
+                  toUseNewData = false;
+               }
+               else if (assembledModule == null) // from v2.01
                {
                   toUseNewData = true;
                   
                   assembledModule = assembledModuleManager.CreateImageCompositeModule (assembledModuleDefine.mKey);
-               }
-               else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
-               {
-                  toUseNewData = false;
                }
                else if (policyOnConflictingGlobalAssets == 3) // always create new
                {
@@ -1665,15 +1665,15 @@ package common {
 
                sequencedModule = sequencedModuleManager.GetAssetByKey (sequencedModuleDefine.mKey) as AssetImageCompositeModule;
                
-               if (sequencedModule == null) // before v2.01
+               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               {
+                  toUseNewData = false;
+               }
+               else if (sequencedModule == null) // before v2.01
                {
                   toUseNewData = true;
                   
                   sequencedModule = sequencedModuleManager.CreateImageCompositeModule (sequencedModuleDefine.mKey);
-               }
-               else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
-               {
-                  toUseNewData = false;
                }
                else if (policyOnConflictingGlobalAssets == 3) // always create new
                {
@@ -1760,15 +1760,15 @@ package common {
 
                var soundAsset:AssetSound = assetSoundManager.GetAssetByKey (soundDefine.mKey) as AssetSound;
                
-               if (soundAsset == null) // before v2.01
+               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               {
+                  toUseNewData = false;
+               }
+               else if (soundAsset == null) // before v2.01
                {
                   toUseNewData = true;
                   
                   soundAsset = assetSoundManager.CreateSound (soundDefine.mKey);
-               }
-               else if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01
-               {
-                  toUseNewData = false;
                }
                else if (policyOnConflictingGlobalAssets == 3) // always create new
                {
@@ -1815,6 +1815,7 @@ package common {
          var newCreatedScenes:Array = null;
          
          var sceneId:int;
+         var sceneDefine:SceneDefine;
          
          if (scene != null) // uodo scene or import into scene
          {
@@ -1824,8 +1825,10 @@ package common {
                sceneRefIndex_CorrectionTable [sceneId] = -1;
             }
             
+            sceneDefine = worldDefine.mSceneDefines [0];
+            
             // worldDefine.mSimpleGlobalAssetDefines == true means uodo scene
-            SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [0], worldDefine.mSimpleGlobalAssetDefines, scene, mergeVariablesWithSameNames, policyOnConflictingSceneAssets, 
+            SceneDefine2Scene (editorWorld, sceneDefine, worldDefine.mSimpleGlobalAssetDefines, scene, mergeVariablesWithSameNames, policyOnConflictingSceneAssets, 
                                imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable); // here editorWorld.GetNumScenes () will make the scene references as null
          }
          else // load world or import scenes
@@ -1834,7 +1837,6 @@ package common {
             
             newCreatedScenes = new Array ();
             
-            var sceneDefine:SceneDefine;
             var newSceneId:int;
             var newScene:Scene;
             
@@ -1843,6 +1845,8 @@ package common {
                sceneDefine = worldDefine.mSceneDefines [sceneId];
                newSceneId = editorWorld.CreateNewScene (sceneDefine.mKey, sceneDefine.mName); // for versions ealier than v2.00, sceneDefine.mKey is undefined
                newScene = editorWorld.GetSceneByIndex (newSceneId);
+               
+               sceneDefine.mKey = newScene.GetKey ();
                
                sceneRefIndex_CorrectionTable [sceneId] = newSceneId;
             }

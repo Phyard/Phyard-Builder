@@ -4117,6 +4117,7 @@ package common {
          
          //
          var byteArray:ByteArray = new ByteArray ();
+         //byteArray.length = 1000000;
          
          // COlor INfection
          byteArray.writeByte ("C".charCodeAt (0));
@@ -4270,6 +4271,7 @@ package common {
          }
          
          // ...
+         //byteArray.length = byteArray.position;
          return byteArray;
       }
       

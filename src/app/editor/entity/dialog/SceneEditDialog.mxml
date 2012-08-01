@@ -818,7 +818,7 @@
          }
          else if (itemData == "delete_current_scene")
          {
-            EditorContext.ShowAlert ("Delete Current Scene", "Do you want to delete current scene?", true, OnDeleteCurrentScene);
+            EditorContext.ShowAlert ("Delete Current Scene", "This action is not restorable.\nDo you really want to delete current scene?", true, OnDeleteCurrentScene);
          }
          else if (itemData == "change_scene_name")
          {

@@ -440,7 +440,7 @@ package viewer {
          {
             mGestureAnalyzer = CreateGestureAnalyzer ();
             ClearGesturePaintLayer ();
-            mGesturePaintLayer.visible = true;
+            mGesturePaintLayer.visible = mDrawdMouseGesture;
             
             RegisterGesturePoint (event);
          }

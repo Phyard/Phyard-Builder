@@ -72,6 +72,8 @@ package player
                   
                   RegisterGestureEvent : world.RegisterGestureEvent, // from v1.60
                   
+                  OnViewerEvent : world.OnViewerEvent, // from v2.00. (to fix the missing mouse events caused by overlapping gesture shapes)
+                  
                   "" : null
                };
             case "SetUiParams":

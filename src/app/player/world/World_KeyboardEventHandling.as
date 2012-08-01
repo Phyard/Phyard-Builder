@@ -203,28 +203,32 @@
       
       while (keyCode >= 0)
       {
-         info = mKeyHoldInfo [keyCode];
-         
-         if (fireKeyReleasedEvents)
+         if (keyCode != KeyCodes.LeftMouseButton)
          {
-            _KeyboardUpEvent.keyCode  = keyCode;
-            _KeyboardUpEvent.charCode = info [KeyHoldInfo_CharCode];
-            _KeyboardUpEvent.ctrlKey  = IsKeyHold (Keyboard.CONTROL);
-            _KeyboardUpEvent.shiftKey = IsKeyHold (Keyboard.SHIFT);
-            //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
-            RegisterKeyboardEvent (keyCode, _KeyboardUpEvent, mKeyUpEventHandlerLists);
+            info = mKeyHoldInfo [keyCode];
+            
+            if (fireKeyReleasedEvents)
+            {
+               _KeyboardUpEvent.keyCode  = keyCode;
+               _KeyboardUpEvent.charCode = info [KeyHoldInfo_CharCode];
+               _KeyboardUpEvent.ctrlKey  = IsKeyHold (Keyboard.CONTROL);
+               _KeyboardUpEvent.shiftKey = IsKeyHold (Keyboard.SHIFT);
+               //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
+               RegisterKeyboardEvent (keyCode, _KeyboardUpEvent, mKeyUpEventHandlerLists);
+            }
+            
+            var nextKeyCode:int = info [KeyHoldInfo_Next];
+            
+            info [KeyHoldInfo_IsHold] = false;
+            info [KeyHoldInfo_Ticks ] = 0;
+            info [KeyHoldInfo_Next  ] = -1;
+            info [KeyHoldInfo_Prev  ] = -1;
          }
          
-         keyCode = info [KeyHoldInfo_Next];
-         
-         info [KeyHoldInfo_IsHold] = false;
-         info [KeyHoldInfo_Ticks ] = 0;
-         info [KeyHoldInfo_Next  ] = -1;
-         info [KeyHoldInfo_Prev  ] = -1;
+         keyCode = nextKeyCode;
       }
    }
    
-
    //public function SetKeyboardEventHandlingEnabled (enabled:Boolean):void
    //{
    //   

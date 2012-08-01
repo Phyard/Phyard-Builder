@@ -192,6 +192,8 @@ private function OnAddedToStage (event:Event):void
    //addEventListener (MouseEvent.ROLL_OUT, OnOtherMouseEvents);
    //addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
    
+   // !!! don't forget to register corresponding event on Viewer.mGesgureSprite
+   
    // ...
    stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
    stage.addEventListener (KeyboardEvent.KEY_UP, OnKeyUp);
@@ -227,6 +229,8 @@ private function OnRemovedFromStage (event:Event):void
    //removeEventListener (MouseEvent.ROLL_OVER, OnRollOver);
    //removeEventListener (MouseEvent.ROLL_OUT, OnRollOut);
    
+   // !!! don't forget to unregister corresponding event on Viewer.mGesgureSprite
+   
    stage.removeEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
    stage.removeEventListener (KeyboardEvent.KEY_UP, OnKeyUp);
    
@@ -242,6 +246,30 @@ private function OnRemovedFromStage (event:Event):void
 //   So every mouse event will not be triggered twice.
 //=============================================================
 
+public function OnViewerEvent (event:Event):void
+{
+   if (event is MouseEvent)
+   {
+      var mouseEvent:MouseEvent = event as MouseEvent;
+      
+      switch (mouseEvent.type)
+      {
+         case MouseEvent.CLICK:
+            OnMouseClick (mouseEvent);
+            break;
+         case MouseEvent.MOUSE_DOWN:
+            OnMouseDown (mouseEvent);
+            break;
+         case MouseEvent.MOUSE_MOVE:
+            OnMouseMove (mouseEvent);
+            break;
+         case MouseEvent.MOUSE_UP:
+            OnMouseUp (mouseEvent);
+            break;
+      }
+   }
+}
+
 public function OnMouseClick (event:MouseEvent):void
 {
    UpdateMousePositionAndHoldInfo (event);
@@ -250,6 +278,11 @@ public function OnMouseClick (event:MouseEvent):void
    {
       // ...
       RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseClick]);
+   }
+   
+   if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+   {
+      event.stopPropagation ();
    }
 }
 
@@ -306,6 +339,11 @@ public function OnMouseDown (event:MouseEvent):void
          }
       }
    }
+   
+   if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+   {
+      event.stopPropagation ();
+   }
 }
 
 public function OnMouseUp (event:MouseEvent):void
@@ -316,49 +354,54 @@ public function OnMouseUp (event:MouseEvent):void
    
    UpdateMousePositionAndHoldInfo (event);
    
-   if (! IsKeyHold (KeyCodes.LeftMouseButton))
-      return;
-   
-   // moved to bottom
-   //KeyReleased (KeyCodes.LeftMouseButton);
-   
-   if (IsInteractiveEnabledNow ())
+   if (IsKeyHold (KeyCodes.LeftMouseButton))
    {
-      // as a key
-      _KeyboardUpEvent.keyCode = KeyCodes.LeftMouseButton;
-      _KeyboardUpEvent.charCode = 0;
-      _KeyboardUpEvent.ctrlKey = event.ctrlKey;
-      _KeyboardUpEvent.shiftKey = event.shiftKey;
-      _KeyboardUpEvent.altKey = event.altKey;
-      //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
-      RegisterKeyboardEvent (KeyCodes.LeftMouseButton, _KeyboardUpEvent, mKeyUpEventHandlerLists);
+      // moved to bottom
+      //KeyReleased (KeyCodes.LeftMouseButton);
       
-      // ...
-      RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseUp]);
-      
-      // ...
-      //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
-      var worldDisplayPoint:Point = StageToContentLayer (new Point (event.stageX, event.stageY));
-      var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
-      var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
-      
-      if (mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null)
+      if (IsInteractiveEnabledNow ())
       {
-         var shape:EntityShape;
-         var num:int = shapeArray.length;
-         for (var i:int = 0; i < num; ++ i)
+         // as a key
+         _KeyboardUpEvent.keyCode = KeyCodes.LeftMouseButton;
+         _KeyboardUpEvent.charCode = 0;
+         _KeyboardUpEvent.ctrlKey = event.ctrlKey;
+         _KeyboardUpEvent.shiftKey = event.shiftKey;
+         _KeyboardUpEvent.altKey = event.altKey;
+         //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
+         RegisterKeyboardEvent (KeyCodes.LeftMouseButton, _KeyboardUpEvent, mKeyUpEventHandlerLists);
+         
+         // ...
+         RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseUp]);
+         
+         // ...
+         //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+         var worldDisplayPoint:Point = StageToContentLayer (new Point (event.stageX, event.stageY));
+         var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
+         var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
+         
+         if (mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null)
          {
-            shape = shapeArray [i] as EntityShape;
-            
-            shape.OnPhysicsShapeMousUp (event);
+            var shape:EntityShape;
+            var num:int = shapeArray.length;
+            for (var i:int = 0; i < num; ++ i)
+            {
+               shape = shapeArray [i] as EntityShape;
+               
+               shape.OnPhysicsShapeMousUp (event);
+            }
          }
+         
+         //RemoveBombsAndRemovableShapes (shapeArray);
+         RegisterCachedSystemEvent ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
       }
       
-      //RemoveBombsAndRemovableShapes (shapeArray);
-      RegisterCachedSystemEvent ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
+      KeyReleased (KeyCodes.LeftMouseButton, 0);
    }
    
-   KeyReleased (KeyCodes.LeftMouseButton, 0);
+   if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+   {
+      event.stopPropagation ();
+   }
 }
 
 public function OnMouseMove (event:MouseEvent):void
@@ -374,6 +417,11 @@ public function OnMouseMove (event:MouseEvent):void
       //
       RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseMove]);
    }
+   
+   if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+   {
+      event.stopPropagation ();
+   }
 }
 
 public function OnOtherMouseEvents (event:MouseEvent):void
@@ -386,6 +434,11 @@ public function OnOtherMouseEvents (event:MouseEvent):void
    
    if (IsInteractiveEnabledNow ())
    {
+   }
+   
+   if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+   {
+      event.stopPropagation ();
    }
 }
 

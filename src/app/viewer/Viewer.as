@@ -165,6 +165,13 @@ package viewer {
          addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
          addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
          
+         //mGesturePaintLayer.mouseEnabled = false;
+         mGesturePaintLayer.mouseChildren = false;
+         mGesturePaintLayer.addEventListener (MouseEvent.CLICK, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.addEventListener (MouseEvent.MOUSE_DOWN, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.addEventListener (MouseEvent.MOUSE_MOVE, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.addEventListener (MouseEvent.MOUSE_UP, OnMouseEvent_GesturePaintLayer);
+         
          stage.addEventListener (Event.ACTIVATE, OnActivated);
          stage.addEventListener (Event.DEACTIVATE, OnDeactivated);
          
@@ -176,6 +183,11 @@ package viewer {
       {
          stage.removeEventListener (Event.ACTIVATE, OnActivated);
          stage.removeEventListener (Event.DEACTIVATE, OnDeactivated);
+         
+         mGesturePaintLayer.removeEventListener (MouseEvent.CLICK, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseEvent_GesturePaintLayer);
          
          removeEventListener (Event.ENTER_FRAME, Update);
          removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
@@ -384,6 +396,23 @@ package viewer {
 //======================================================================
 // gesture lib
 //======================================================================
+
+      // !!! this function is introduced from v2.00 to fix the missed event triggerings caused by gesture shape overlapping.
+      private function OnMouseEvent_GesturePaintLayer (event:MouseEvent):void
+      {
+         //if (mPlayerWorld != null)
+         //{
+         //   var clonedEvent:MouseEvent = event.clone () as MouseEvent;
+         //   clonedEvent.delta = 0x7FFFFFFF; // indicate mPlayerWorld this event is sent from here
+         //   mPlayerWorld.dispatchEvent(clonedEvent);
+         //}
+         
+         if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerEvent != null)
+         {
+            var clonedEvent:MouseEvent = event.clone () as MouseEvent;
+            mWorldDesignProperties.OnViewerEvent (clonedEvent);
+         }
+      }
 
       // for game template
       public static function CreateGestureAnalyzer ():GestureAnalyzer
@@ -944,6 +973,7 @@ package viewer {
          if (mWorldDesignProperties.mPreferredFPS == undefined)              mWorldDesignProperties.mPreferredFPS = 30;
          if (mWorldDesignProperties.mPauseOnFocusLost == undefined)          mWorldDesignProperties.mPauseOnFocusLost = false;
          if (mWorldDesignProperties.RegisterGestureEvent == undefined)       mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
+         if (mWorldDesignProperties.OnViewerEvent == undefined)              mWorldDesignProperties.OnViewerEvent = DummyCallback;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);

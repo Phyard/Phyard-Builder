@@ -1090,12 +1090,14 @@ package viewer {
                BuildContextMenu ();
             }
             
+            mSkin.SetStarted (false);
+            
+            mSkin.SetLevelFinishedDialogVisible (false);
+            mSkin.SetHelpDialogVisible (false);
+
             mSkin.SetSoundEnabled (mIsSoundEnabled); // will call OnSoundControlChanged ()
             mSkin.SetPlayingSpeedX (mWorldDesignProperties.mInitialSpeedX);
             mSkin.SetZoomScale (mWorldDesignProperties.mInitialZoomScale, false);
-
-            mSkin.SetLevelFinishedDialogVisible (false);
-            mSkin.SetHelpDialogVisible (false);
 
             // from v1.5
             mWorldPlugin.Call ("SetUiParams", {
@@ -1178,6 +1180,8 @@ package viewer {
                throw error;
             }
          }
+         
+         mStartRightNow = true; // for following restarts
       }
 
 //======================================================================
@@ -1260,7 +1264,7 @@ package viewer {
                }
             }
 
-            mSkin.NotifyStarted ();
+            mSkin.SetStarted (true);
          }
 
          var levelSucceeded:Boolean = mWorldDesignProperties.IsLevelSuccessed ();
@@ -1520,9 +1524,9 @@ package viewer {
          if (theContextMenu.customItems == null) // possible null in air app
             return;
 
-         var restartCodeMenuItem:ContextMenuItem = new ContextMenuItem("Restart", false);
+         var restartCodeMenuItem:ContextMenuItem = new ContextMenuItem("Restart Game", false);
          theContextMenu.customItems.push (restartCodeMenuItem);
-         restartCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnRestart);
+         restartCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnRestartGame);
 
          var addSeperaorBeforeVersion:Boolean = true;
          var addSeperaorForSelf:Boolean = true;
@@ -1770,10 +1774,12 @@ package viewer {
       // restart current scene/level
       private function OnRestartGame (data:Object = null):void
       {
-         ReloadPlayerWorld (true, mCurrentSceneID);
-
-         if (_onPlayStatusChanged != null)
-            _onPlayStatusChanged ();
+         mCurrentSceneID = 0;
+         
+         if (mSkin != null)
+            mSkin.Restart ();
+         else
+            OnRestart ();
       }
 
       private function OnLoadScene (sceneId:int):void

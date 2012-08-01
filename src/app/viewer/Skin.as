@@ -124,32 +124,35 @@ package viewer {
       {
          // to override
       }
-
+      
       final public function IsStarted ():Boolean
       {
          return mIsStarted;
       }
       
-      final public function NotifyStarted ():void
+      final public function SetStarted (started:Boolean):void
       {
-         if (mIsStarted)
+         if (! mIsStarted)
+         {
+            mHasLevelFinishedDialogEverOpened = false;
+         }
+         
+         if (mIsStarted == started)
             return;
          
-         mIsStarted = true;
+         mIsStarted = started;
          
          OnStartedChanged ();
       }
       
       final public function Restart ():void
       {
-         mHasLevelFinishedDialogEverOpened = false;
-         
-         mIsStarted = false;
+         //mIsStarted = false;
          
          if (_OnRestart != null)
             _OnRestart ();
          
-         OnStartedChanged ();
+         //OnStartedChanged ();
       }
       
       protected function OnStartedChanged ():void

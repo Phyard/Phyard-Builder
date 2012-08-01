@@ -110,13 +110,13 @@ package viewer {
             }
             else
             {
-               if (mLevelFinishedDialog.alpha > 0.0) 
-                  mLevelFinishedDialog.alpha -= fadingSpeed;
-               if (mLevelFinishedDialog.alpha <= 0.0)
-               {
+               //if (mLevelFinishedDialog.alpha > 0.0) 
+               //   mLevelFinishedDialog.alpha -= fadingSpeed;
+               //if (mLevelFinishedDialog.alpha <= 0.0)
+               //{
                   mLevelFinishedDialog.alpha = 0.0;
                   mLevelFinishedDialog.visible = false;
-               }
+               //}
             }
          }
          

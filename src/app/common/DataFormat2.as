@@ -312,6 +312,8 @@ package common {
          {
             createId = sceneDefine.mEntityAppearanceOrder [appearId];
             entityDefine = entityDefineArray [createId];
+            
+            entityDefine.mLoadingTimeInfos = new Object ();
 
             // >> starts from version 1.01
             // >> deprecated from v1.56
@@ -323,7 +325,7 @@ package common {
             entityDefine.mCreationOrderId = createId;
             //<<
 
-            entityDefine.mBodyId = -1;
+            //entityDefine.mBodyId = -1; // seems useless now. ?
 
             entity = CreateEntityInstance (playerWorld, entityDefine);
 
@@ -333,7 +335,8 @@ package common {
             }
             else
             {
-               entityDefine.mEntity = entity;
+               //entityDefine.mEntity = entity;
+               entityDefine.mLoadingTimeInfos.mEntity = entity;
             }
          }
 
@@ -342,7 +345,8 @@ package common {
          for (createId = 0; createId < numEntities; ++ createId)
          {
             entityDefine = entityDefineArray [createId];
-            entity = entityDefine.mEntity;
+            //entity = entityDefine.mEntity;
+            entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
 
             if (entity != null)
             {
@@ -371,17 +375,26 @@ package common {
             for (createId = 0; createId < numEntities; ++ createId)
             {
                entityDefine = entityDefineArray [createId];
-               entity = entityDefine.mEntity;
+               //entity = entityDefine.mEntity;
+               entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
 
                if (Define.IsPhysicsJointEntity (entityDefine.mEntityType))
                {
                   if (entityDefine.mConnectedShape1Index >= 0)
-                     entityDefine.mConnectedShape1Index = ((entityDefineArray [entityDefine.mConnectedShape1Index] as Object).mEntity as Entity).GetCreationId ();
+                  {
+                     //entityDefine.mConnectedShape1Index = ((entityDefineArray [entityDefine.mConnectedShape1Index] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
+                     entityDefine.mConnectedShape1Index = ((entityDefineArray [entityDefine.mConnectedShape1Index] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
+                  }
                   if (entityDefine.mConnectedShape2Index >= 0)
-                     entityDefine.mConnectedShape2Index = ((entityDefineArray [entityDefine.mConnectedShape2Index] as Object).mEntity as Entity).GetCreationId ();
+                  {
+                     //entityDefine.mConnectedShape2Index = ((entityDefineArray [entityDefine.mConnectedShape2Index] as Object).mEntity as Entity).GetCreationId ();
+                     entityDefine.mConnectedShape2Index = ((entityDefineArray [entityDefine.mConnectedShape2Index] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
+                  }
 
-                  entityDefine.mAnchor1EntityIndex = ((entityDefineArray [entityDefine.mAnchor1EntityIndex] as Object).mEntity as Entity).GetCreationId ();
-                  entityDefine.mAnchor2EntityIndex = ((entityDefineArray [entityDefine.mAnchor2EntityIndex] as Object).mEntity as Entity).GetCreationId ();
+                  //entityDefine.mAnchor1EntityIndex = ((entityDefineArray [entityDefine.mAnchor1EntityIndex] as Object).mEntity as Entity).GetCreationId ();
+                  entityDefine.mAnchor1EntityIndex = ((entityDefineArray [entityDefine.mAnchor1EntityIndex] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
+                  //entityDefine.mAnchor2EntityIndex = ((entityDefineArray [entityDefine.mAnchor2EntityIndex] as Object).mEntity as Entity).GetCreationId ();
+                  entityDefine.mAnchor2EntityIndex = ((entityDefineArray [entityDefine.mAnchor2EntityIndex] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
                }
             }
          }
@@ -390,7 +403,8 @@ package common {
          for (createId = 0; createId < numEntities; ++ createId)
          {
             entityDefine = entityDefineArray [createId];
-            entity = entityDefine.mEntity;
+            //entity = entityDefine.mEntity;
+            entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
 
             if (entity != null)
             {
@@ -421,7 +435,8 @@ package common {
             for (createId = 0; createId < numEntities; ++ createId)
             {
                entityDefine = entityDefineArray [createId];
-               entity = entityDefine.mEntity as Entity;
+               //entity = entityDefine.mEntity as Entity;
+               entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
                var cloneFromEntity:Entity = entityDefine.mCloneFromEntity as Entity;
 
                if (entity != null && cloneFromEntity != null)
@@ -449,7 +464,8 @@ package common {
             for (createId = 0; createId < numEntities; ++ createId)
             {
                entityDefine = entityDefineArray [createId];
-               entity = entityDefine.mEntity;
+               //entity = entityDefine.mEntity;
+               entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
 
                if (entity != null)
                {
@@ -473,7 +489,8 @@ package common {
             //for (createId = 0; createId < numEntities; ++ createId)
             //{
             //   entityDefine = entityDefineArray [createId];
-            //   entity = entityDefine.mEntity; // if this name changed, remember also change it in CloneShape ()
+            //   //entity = entityDefine.mEntity; // if this name changed, remember also change it in CloneShape ()
+            //   entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
             //
             //   if (entity != null)
             //   {
@@ -499,11 +516,13 @@ package common {
             {
                createId = brotherGroup [bortherId];
                entityDefine = entityDefineArray [createId];
-               entity = entityDefine.mEntity;
+               //entity = entityDefine.mEntity;
+               entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
 
                if (entity is EntityShape)
                {
-                  entityDefine.mBody = body;
+                  //entityDefine.mBody = body;
+                  entityDefine.mLoadingTimeInfos.mBody = body;
                }
             }
          }
@@ -511,23 +530,40 @@ package common {
          for (createId = 0; createId < numEntities; ++ createId)
          {
             entityDefine = entityDefineArray [createId];
-            entity = entityDefine.mEntity;
+            //entity = entityDefine.mEntity;
+            entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
 
             if (entity is EntityShape)
             {
                shape = entity as EntityShape;
 
-               body = entityDefine.mBody;
+               //body = entityDefine.mBody;
+               body = entityDefine.mLoadingTimeInfos.mBody;
 
                if (body == null) // for solo shapes
                {
                   body = new EntityBody (playerWorld);
-                  entityDefine.mBody = body;
+                  //entityDefine.mBody = body;
+                  entityDefine.mLoadingTimeInfos.mBody = body;
                }
 
                playerWorld.RegisterEntity (body);
 
                shape.SetBody (body);
+            }
+         }
+         
+   //*********************************************************************************************************************************
+   // clear loading time infos
+   //*********************************************************************************************************************************
+         
+         // for shape clone API, doesn't apply the clear action
+         if (isLoaingFromStretch)
+         {
+            for (createId = 0; createId < numEntities; ++ createId)
+            {
+               entityDefine = entityDefineArray [createId];
+               entityDefine.mLoadingTimeInfos = undefined;
             }
          }
 
@@ -538,6 +574,9 @@ package common {
          if (isLoaingFromStretch)
          {
             Global.CheckWorldBuildingStatus ();
+         }
+         else
+         {
          }
          
          // removed from here, for many functions such as Global.SetPlaying are not registerd yet.

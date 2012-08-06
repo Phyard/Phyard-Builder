@@ -398,6 +398,7 @@ package viewer {
 //======================================================================
 
       // !!! this function is introduced from v2.00 to fix the missed event triggerings caused by gesture shape overlapping.
+      // ref: http://stackoverflow.com/questions/4924558/listen-to-click-event-on-overlapped-sprites
       private function OnMouseEvent_GesturePaintLayer (event:MouseEvent):void
       {
          //if (mPlayerWorld != null)
@@ -1042,6 +1043,8 @@ package viewer {
 //======================================================================
       
       private var mCurrentSceneID:int = 0;
+      
+      private var mWorldDefine:Object = null;
 
       private function ReloadPlayerWorld (restartLevel:Boolean = false, sceneId:int = 0):void
       {
@@ -1087,7 +1090,15 @@ package viewer {
             }
 
             mWorldBinaryData.position = 0;
-            var worldDefine:Object = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
+            var worldDefine:Object;
+            if (mWorldDefine == null)
+            {
+               worldDefine = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
+               mWorldDefine = worldDefine;
+            }
+            else
+               worldDefine = mWorldDefine;
+            
             if (worldDefine != null)
             {
                if (worldDefine.hasOwnProperty ("mForRestartLevel"))

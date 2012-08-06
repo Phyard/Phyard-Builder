@@ -350,7 +350,8 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
       joint = jointsToTeleport [i] as EntityJoint;
       entityDefine = mapEntity2Define [joint];
 
-      entity = entityDefine.mEntity; // the cloned one
+      //entity = entityDefine.mEntity; // the cloned one
+      entity = entityDefine.mLoadingTimeInfos.mEntity; // the cloned one
 
       (entity as EntityJoint).CopyRuntimeInfosFrom (joint)
    }
@@ -361,7 +362,8 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    if (entityDefine == null)
       return null;
 
-   return entityDefine.mEntity as EntityShape;
+   //return entityDefine.mEntity as EntityShape;
+   return entityDefine.mLoadingTimeInfos.mEntity as EntityShape;
 }
 
 private static function CreateAndPushEntityDefine (entity:Entity, entityDefineArray:Array, mapEntity2Define:Dictionary):Object

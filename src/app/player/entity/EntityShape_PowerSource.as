@@ -70,7 +70,8 @@ package player.entity {
                mPowerMagnitude = entityDefine.mPowerMagnitude;
                
                var eventHandlerDefine:Object = new Object ();
-               entityDefine.mEventHandlerDefine = eventHandlerDefine;
+               //entityDefine.mEventHandlerDefine = eventHandlerDefine;
+               entityDefine.mLoadingTimeInfos.mEventHandlerDefine = eventHandlerDefine;
                
                var functionDefine:FunctionDefine = new FunctionDefine ();
                eventHandlerDefine.mFunctionDefine = functionDefine;
@@ -162,14 +163,16 @@ package player.entity {
                }
                
                mEventHandler.SetEnabled (IsEnabled ());
-               mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               //mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               mEventHandler.Create (createStageId, entityDefine.mLoadingTimeInfos.mEventHandlerDefine);
             }
          }
          else if (createStageId == 1) 
          {
             if (mEventHandler != null)
             {
-               mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               //mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               mEventHandler.Create (createStageId, entityDefine.mLoadingTimeInfos.mEventHandlerDefine);
                this.RegisterEventHandler (mEventHandler.GetEventId (), mEventHandler);
             }
          }
@@ -177,7 +180,8 @@ package player.entity {
          {
             if (mEventHandler != null)
             {
-               mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               //mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               mEventHandler.Create (createStageId, entityDefine.mLoadingTimeInfos.mEventHandlerDefine);
             }
          }
       }

@@ -2577,7 +2577,7 @@ package editor.world {
                      null,
                      false
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_TeleportOffsets, shape_common_package, "Teleport Shape by Offsets", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_TeleportOffsets, shape_common_package, "Teleport Shape By Offsets", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionNumber ("Offset X"),

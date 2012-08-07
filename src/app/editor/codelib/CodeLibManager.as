@@ -114,6 +114,15 @@ package editor.codelib {
          }
       }
       
+      override public function DestroyAllAssets ():void
+      {
+         mSessionVariableSpace.DestroyAllVariableInstances ();
+         mGlobalVariableSpace.DestroyAllVariableInstances ();
+         mEntityVariableSpace.DestroyAllVariableInstances ();
+         
+         super.DestroyAllAssets ();
+      }
+      
 //==============================
 // 
 //==============================

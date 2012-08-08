@@ -397,24 +397,6 @@ package viewer {
 // gesture lib
 //======================================================================
 
-      // !!! this function is introduced from v2.00 to fix the missed event triggerings caused by gesture shape overlapping.
-      // ref: http://stackoverflow.com/questions/4924558/listen-to-click-event-on-overlapped-sprites
-      private function OnMouseEvent_GesturePaintLayer (event:MouseEvent):void
-      {
-         //if (mPlayerWorld != null)
-         //{
-         //   var clonedEvent:MouseEvent = event.clone () as MouseEvent;
-         //   clonedEvent.delta = 0x7FFFFFFF; // indicate mPlayerWorld this event is sent from here
-         //   mPlayerWorld.dispatchEvent(clonedEvent);
-         //}
-         
-         if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerEvent != null)
-         {
-            var clonedEvent:MouseEvent = event.clone () as MouseEvent;
-            mWorldDesignProperties.OnViewerEvent (clonedEvent);
-         }
-      }
-
       // for game template
       public static function CreateGestureAnalyzer ():GestureAnalyzer
       {
@@ -538,6 +520,29 @@ package viewer {
                point = globalToLocal (new Point (gesturePoint.mPrevPoint.mX * stage.scaleX, gesturePoint.mPrevPoint.mY * stage.scaleY));
                mGesturePaintLayer.graphics.lineTo (point.x, point.y);
             }
+         }
+      }
+
+//======================================================================
+// mouse event
+//======================================================================
+
+      // !!! this function is introduced from v2.00 to fix the missed event triggerings caused by gesture shape overlapping.
+      // ref: http://stackoverflow.com/questions/4924558/listen-to-click-event-on-overlapped-sprites
+      
+      private function OnMouseEvent_GesturePaintLayer (event:MouseEvent):void
+      {
+         //if (mPlayerWorld != null)
+         //{
+         //   var clonedEvent:MouseEvent = event.clone () as MouseEvent;
+         //   clonedEvent.delta = 0x7FFFFFFF; // indicate mPlayerWorld this event is sent from here
+         //   mPlayerWorld.dispatchEvent(clonedEvent);
+         //}
+         
+         if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerEvent != null)
+         {
+            var clonedEvent:MouseEvent = event.clone () as MouseEvent;
+            mWorldDesignProperties.OnViewerEvent (clonedEvent);
          }
       }
 
@@ -1209,6 +1214,8 @@ package viewer {
             {
                mSkin.OnDeactivate ();
             }
+            
+            mStartRightNow = true; // for following restarts
          }
          catch (error:Error)
          {
@@ -1221,8 +1228,6 @@ package viewer {
                throw error;
             }
          }
-         
-         mStartRightNow = true; // for following restarts
       }
 
 //======================================================================

@@ -122,7 +122,6 @@ package editor.entity {
          super.Destroy ();
       }
 
-      //override 
       override public function DestroyAllAssets ():void
       {
          mCodeLibManager.DestroyAllAssets ();

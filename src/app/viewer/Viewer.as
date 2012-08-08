@@ -1099,7 +1099,13 @@ package viewer {
             if (mWorldDefine == null)
             {
                worldDefine = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
-               mWorldDefine = worldDefine;
+               
+               if (mWorldPluginProperties.mWorldVersion >= 0x0200)
+               {
+                  // !!! this optimazation is added from v2.01. v2.00 design is also played with v2.01 world plugin.
+                  // world plugins with version earlier than v2.00, this optimazation is not available
+                  mWorldDefine = worldDefine;
+               }
             }
             else
                worldDefine = mWorldDefine;

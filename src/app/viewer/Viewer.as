@@ -1094,33 +1094,34 @@ package viewer {
                mPlayerWorld = null;
             }
 
-            mWorldBinaryData.position = 0;
             var worldDefine:Object;
             if (mWorldDefine == null)
             {
+               mWorldBinaryData.position = 0;
                worldDefine = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
                
                if (mWorldPluginProperties.mWorldVersion >= 0x0200)
                {
                   // !!! this optimazation is added from v2.01. v2.00 design is also played with v2.01 world plugin.
-                  // world plugins with version earlier than v2.00, this optimazation is not available
+                  // for world plugins with version earlier than v2.00, this optimazation is not available
                   mWorldDefine = worldDefine;
                }
             }
             else
-               worldDefine = mWorldDefine;
-            
-            if (worldDefine != null)
             {
-               if (worldDefine.hasOwnProperty ("mForRestartLevel"))
-               {
-                  worldDefine.mForRestartLevel = restartLevel;
-               }
-               
-               if (worldDefine.hasOwnProperty ("mCurrentSceneId"))
-               {
-                  worldDefine.mCurrentSceneId = sceneId;
-               }
+               worldDefine = mWorldDefine;
+            }
+            
+            if (worldDefine == null)
+               throw new Error ("Fails to create worldDefine");
+
+            if (worldDefine.hasOwnProperty ("mForRestartLevel"))
+            {
+               worldDefine.mForRestartLevel = restartLevel;
+            }
+            if (worldDefine.hasOwnProperty ("mCurrentSceneId"))
+            {
+               worldDefine.mCurrentSceneId = sceneId;
             }
             
             mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);

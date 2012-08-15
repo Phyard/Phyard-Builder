@@ -5,6 +5,8 @@ package common {
    {
    // ...
       
+      public var mDontFillMissedFieldsAndAdjustNumberValues:Boolean = false; // from v2.00
+      
       public var mCurrentSceneId:int = 0; // for editing, added from v2.00
       
       public var mForRestartLevel:Boolean = false; // for playing

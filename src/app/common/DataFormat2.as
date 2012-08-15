@@ -240,9 +240,14 @@ package common {
 
          if (isLoaingFromStretch)
          {
-            FillMissedFieldsInWorldDefine (worldDefine);
-            if (worldDefine.mVersion >= 0x0103)
-               DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine, true);
+            if (! worldDefine.mDontFillMissedFieldsAndAdjustNumberValues) // like entityDefine.mLoadingTimeInfos, from v2.00
+            {
+               FillMissedFieldsInWorldDefine (worldDefine);
+               if (worldDefine.mVersion >= 0x0103)
+                  AdjustNumberValuesInWorldDefine (worldDefine, true);
+               
+               worldDefine.mDontFillMissedFieldsAndAdjustNumberValues = true;
+            }
          }
 
    //*********************************************************************************************************************************
@@ -313,7 +318,7 @@ package common {
             createId = sceneDefine.mEntityAppearanceOrder [appearId];
             entityDefine = entityDefineArray [createId];
             
-            entityDefine.mLoadingTimeInfos = new Object ();
+            entityDefine.mLoadingTimeInfos = new Object (); // from v2.00
 
             // >> starts from version 1.01
             // >> deprecated from v1.56

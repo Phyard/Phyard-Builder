@@ -5,14 +5,16 @@ package common {
    {
    // ...
       
-      public var mDontFillMissedFieldsAndAdjustNumberValues:Boolean = false; // from v2.00
-      
       public var mCurrentSceneId:int = 0; // for editing, added from v2.00
       
-      public var mForRestartLevel:Boolean = false; // for playing
+      public var mForRestartLevel:Boolean = false; // for playing, add from v1.5?. For fast loading
       
       public var mPlayerWorldHints:Object; // not used now. When and why it is added? 
       
+      public var mDontFillMissedFieldsAndAdjustNumberValues:Boolean = false; // from v2.00. For fast loading
+      
+      public var mDontReloadGlobalAssets:Boolean = false; // from v2.00. For fast loading
+            
    // ...
       
       public var mVersion:int;

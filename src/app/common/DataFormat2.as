@@ -278,8 +278,9 @@ package common {
          if (isLoaingFromStretch)
          {
             //
-            Global.InitGlobalData (worldDefine.mForRestartLevel);
-
+            Global.InitGlobalData (worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
+            
+            //
             playerWorld = new World (sceneDefine) ; //worldDefine);
             playerWorld.SetBasicInfos (worldDefine);
             Global.SetCurrentWorld (playerWorld);

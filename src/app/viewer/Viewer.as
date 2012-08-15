@@ -671,7 +671,7 @@ package viewer {
                mStartRightNow = mParamsFromContainer.mStartRightNow == undefined ? true : mParamsFromContainer.mStartRightNow;
                mWorldPluginDomain = mParamsFromContainer.mWorldDomain;
 
-               ReloadPlayerWorld (false, mParamsFromEditor != null ? mParamsFromEditor.mCurrentSceneId : 0);
+               ReloadPlayerWorld (mParamsFromEditor != null ? mParamsFromEditor.mCurrentSceneId : 0);
             }
             else if (mParamsFromUniViewer != null)
             {
@@ -1051,7 +1051,7 @@ package viewer {
       
       private var mWorldDefine:Object = null;
 
-      private function ReloadPlayerWorld (restartLevel:Boolean = false, sceneId:int = 0):void
+      private function ReloadPlayerWorld (sceneId:int = 0, forRestartLevel:Boolean = false, dontReloadGlobalAssets:Boolean = false):void
       {
       trace ("ReloadPlayerWorld");
          
@@ -1117,11 +1117,15 @@ package viewer {
 
             if (worldDefine.hasOwnProperty ("mForRestartLevel"))
             {
-               worldDefine.mForRestartLevel = restartLevel;
+               worldDefine.mForRestartLevel = forRestartLevel;
             }
             if (worldDefine.hasOwnProperty ("mCurrentSceneId"))
             {
                worldDefine.mCurrentSceneId = sceneId;
+            }
+            if (worldDefine.hasOwnProperty ("mDontReloadGlobalAssets"))
+            {
+               worldDefine.mDontReloadGlobalAssets = dontReloadGlobalAssets;
             }
             
             mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);
@@ -1837,7 +1841,7 @@ package viewer {
 
       private function OnLoadScene (sceneId:int):void
       {
-         ReloadPlayerWorld (false, sceneId);
+         ReloadPlayerWorld (sceneId, false, true);
 
          if (_onPlayStatusChanged != null)
             _onPlayStatusChanged ();
@@ -1846,7 +1850,7 @@ package viewer {
       // restart current scene/level
       private function OnRestart (data:Object = null):void
       {
-         ReloadPlayerWorld (true, mCurrentSceneID);
+         ReloadPlayerWorld (mCurrentSceneID, true, true);
 
          if (_onPlayStatusChanged != null)
             _onPlayStatusChanged ();

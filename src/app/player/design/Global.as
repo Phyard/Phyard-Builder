@@ -117,7 +117,7 @@ package player.design
 // static values
 //==============================================================================
       
-      public static function InitGlobalData (isRestartLevel:Boolean):void
+      public static function InitGlobalData (isRestartLevel:Boolean, dontReloadGlobalAssets:Boolean):void
       {
          //
          sTheGlobal = new Global ();
@@ -141,7 +141,8 @@ package player.design
          mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null);
          
          //
-         if (! isRestartLevel)
+         //if (! isRestartLevel) // before v2.00
+         if (! dontReloadGlobalAssets) // from v2.00
          {
             mImageBitmaps         = null;
             mImageBitmapDivisions = null;

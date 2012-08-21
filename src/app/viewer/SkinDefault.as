@@ -103,20 +103,20 @@ package viewer {
             {
                mLevelFinishedDialog.visible = true;
                
-               if (mLevelFinishedDialog.alpha < 1.0)
+               if (mLevelFinishedDialog.alpha < 0.9)
                   mLevelFinishedDialog.alpha += fadingSpeed;
-               if (mLevelFinishedDialog.alpha >= 1.0)
-                  mLevelFinishedDialog.alpha = 1.0;
+               if (mLevelFinishedDialog.alpha >= 0.9)
+                  mLevelFinishedDialog.alpha = 0.9;
             }
             else
             {
-               //if (mLevelFinishedDialog.alpha > 0.0) 
-               //   mLevelFinishedDialog.alpha -= fadingSpeed;
-               //if (mLevelFinishedDialog.alpha <= 0.0)
-               //{
-                  mLevelFinishedDialog.alpha = 0.0;
-                  mLevelFinishedDialog.visible = false;
-               //}
+               // //if (mLevelFinishedDialog.alpha > 0.0) 
+               // //   mLevelFinishedDialog.alpha -= fadingSpeed;
+               // //if (mLevelFinishedDialog.alpha <= 0.0)
+               // //{
+               //   mLevelFinishedDialog.alpha = 0.0;
+               //   mLevelFinishedDialog.visible = false;
+               // //}
             }
          }
          
@@ -133,13 +133,13 @@ package viewer {
             }
             else
             {
-               if (mHelpDialog.alpha > 0.0)
-                  mHelpDialog.alpha -= fadingSpeed;
-               if (mHelpDialog.alpha <= 0.0)
-               {
-                  mHelpDialog.alpha = 0.0;
-                  mHelpDialog.visible = false;
-               }
+               // //if (mHelpDialog.alpha > 0.0)
+               // //   mHelpDialog.alpha -= fadingSpeed;
+               // //if (mHelpDialog.alpha <= 0.0)
+               // //{
+               //   mHelpDialog.alpha = 0.0;
+               //   mHelpDialog.visible = false;
+               // //}
             }
          }
          
@@ -320,10 +320,14 @@ package viewer {
                mHelpDialog.alpha = 0.0;
             }
          }
-         //else
-         //{
-         //   mHelpDialog.visible = IsHelpDialogVisible ();
-         //}
+         else if (! IsHelpDialogVisible ())
+         {
+            if (mHelpDialog != null)
+            {
+               mHelpDialog.visible = false;
+               mHelpDialog.alpha = 0.0;
+            }
+         }
       }
       
       override protected function OnLevelFinishedDialogVisibleChanged ():void
@@ -344,10 +348,14 @@ package viewer {
                mLevelFinishedDialog.alpha = 0.0;
             }
          }
-         //else
-         //{
-         //   mLevelFinishedDialog.visible = IsLevelFinishedDialogVisible () && (! mHasLevelFinishedDialogEverOpened);
-         //}
+         else if (! IsLevelFinishedDialogVisible ())
+         {
+            if (mLevelFinishedDialog != null)
+            {
+               mLevelFinishedDialog.visible = IsLevelFinishedDialogVisible () && (! mHasLevelFinishedDialogEverOpened);
+               mLevelFinishedDialog.alpha = 0.0;
+            }
+         }
       }
       
       //private var mFirstTimeDeactived:Boolean = true;
@@ -1701,6 +1709,8 @@ package viewer {
       
       private static function GetPreferredButtonSize (isOverlay:Boolean, isTocuhScreen:Boolean):Number
       {
+         // should be xonsitent with Game.as
+         
          if (isTocuhScreen)
             return Capabilities.screenDPI * 0.32; // 0.32 inches
          else if (isOverlay)

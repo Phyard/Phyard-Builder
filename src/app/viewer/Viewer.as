@@ -115,6 +115,7 @@ package viewer {
       private var mForegroundLayer:Sprite = new Sprite ();
          private var mErrorMessageLayer:Sprite = new Sprite ();
          private var mGesturePaintLayer:Sprite = new Sprite ();
+      private var mFadingLayer:Sprite = new Sprite ();
 
 //======================================================================
 //
@@ -135,9 +136,11 @@ package viewer {
          addChild (mForegroundLayer);
             mForegroundLayer.addChild (mErrorMessageLayer);
             mForegroundLayer.addChild (mGesturePaintLayer);
+         addChild (mFadingLayer);
          
          mErrorMessageLayer.visible = false;
          mGesturePaintLayer.visible = false;
+         mFadingLayer.visible = false;
 
          mParamsFromUniViewer = params.mParamsFromUniViewer;
          if (mParamsFromUniViewer != null)
@@ -176,7 +179,7 @@ package viewer {
          stage.addEventListener (Event.DEACTIVATE, OnDeactivated);
          
          var containerSize:Point = mParamsFromContainer.GetViewportSize ();
-         ReapintBackground (containerSize.x, containerSize.y);
+         RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
       }
 
       private function OnRemovedFromFrame (e:Event):void
@@ -497,7 +500,10 @@ package viewer {
       }
       
       private function RegisterGesturePoint (event:MouseEvent):void
-      {  
+      {
+         if (mFadingStatus != 0)
+            return;
+         
          if (mGestureAnalyzer == null)
             return;
          
@@ -580,9 +586,12 @@ package viewer {
                var buildStatus:int = mWorldDesignProperties.GetBuildingStatus (); 
                if (buildStatus > 0)
                {
-                  SetErrorMessage (null);
-                  
                   InitPlayerWorld ();
+                  
+                  SetErrorMessage (null); // will call this.visible = true
+                  
+                  if (! (mParamsFromUniViewer != null && mFirstTimePlaying))
+                     SetFadingStatus (-1);
                   
                   ChangeState (StateId_Playing);
                }
@@ -1149,8 +1158,9 @@ package viewer {
             
             mSkin.SetStarted (false);
             
-            mSkin.SetLevelFinishedDialogVisible (false);
-            mSkin.SetHelpDialogVisible (false);
+            //mSkin.SetLevelFinishedDialogVisible (false);
+            //mSkin.SetHelpDialogVisible (false);
+            mSkin.CloseAllVisibleDialogs ();
 
             mSkin.SetSoundEnabled (mIsSoundEnabled); // will call OnSoundControlChanged ()
             mSkin.SetPlayingSpeedX (mWorldDesignProperties.mInitialSpeedX);
@@ -1244,7 +1254,23 @@ package viewer {
 //======================================================================
 //
 //======================================================================
-
+      
+      private var mFadingStatus:int = 0;
+      
+      private function SetFadingStatus (status:int):void
+      {
+         if (mFadingStatus != status)
+         {
+            mFadingStatus = status;
+            
+            mFadingLayer.visible = mFadingStatus != 0;
+            if (mFadingLayer.visible)
+            {
+               mFadingLayer.alpha = mFadingStatus > 0 ? 0.0 : 1.0;
+            }
+         }
+      } 
+      
       private var mStepTimeSpan:TimeSpan = new TimeSpan ();
 
       public function Step (singleStepMode:Boolean = false):void
@@ -1254,7 +1280,32 @@ package viewer {
          
          if (mPlayerWorld == null)
             return;
-
+         
+         if (mFadingStatus != 0)
+         {
+            if (mFadingStatus > 0)
+            {
+               mFadingLayer.alpha += 0.02;
+               if (mFadingLayer.alpha >= 1.0)
+                  SetFadingStatus (0);
+            }
+            else
+            {
+               if (mFadingLayer.alpha > 0.97)
+                  mFadingLayer.alpha -= 0.005;
+               else if (mFadingLayer.alpha > 0.88)
+                  mFadingLayer.alpha -= 0.01;
+               else if (mFadingLayer.alpha > 0.60)
+                  mFadingLayer.alpha -= 0.02;
+               else if (mFadingLayer.alpha > 0.10)
+                  mFadingLayer.alpha -= 0.05;
+               else
+                  SetFadingStatus (0);
+            }
+            
+            return;
+         }
+         
          UpdateGesturePaintLayer ();
 
          // update scale
@@ -1386,7 +1437,7 @@ package viewer {
          var containerWidth :Number = containerSize.x;
          var containerHeight:Number = containerSize.y;
          
-         ReapintBackground (containerWidth, containerHeight);
+         RepaintFullScreenLayersWithBackgroundColor (containerWidth, containerHeight);
          
          try
          {
@@ -1516,9 +1567,10 @@ package viewer {
          }
       }
       
-      private function ReapintBackground (newWidth:Number, newHeight:Number):void
+      private function RepaintFullScreenLayersWithBackgroundColor (newWidth:Number, newHeight:Number):void
       {
          GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, mParamsFromContainer.mBackgroundColor);
+         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, mParamsFromContainer.mBackgroundColor);
       }
 
 //======================================================================
@@ -1943,7 +1995,9 @@ package viewer {
                }
                else
                {
-                  // mWorld.OnBackKeyPressed
+                  // check if the level has implemented an OnBackKeyPressed event handler, 
+                  // if not, mParamsFromContainer.OnExitLevel (),
+                  // else, trigger mWorld.OnKeyPressed (BackKey)
                }
             }
             else if (mParamsFromContainer.OnExitLevel != null)

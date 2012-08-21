@@ -107,6 +107,7 @@ package player.entity {
             if (mBuildInterior || displayBorderThickness < Number.MIN_VALUE)
             {
                displayRadius += 0.5 / GetScale (); // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+                                                   // ! it seems this is not good for (border thickness == 0)
             }
             else
             {

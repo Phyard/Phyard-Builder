@@ -3,6 +3,7 @@
      The TitleWindowApp application displays this component.
      You cannot run it independently. -->
 
+<!--
 <container:ResizableTitleWindow xmlns:container="editor.display.container.*"
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:entity="editor.entity.dialog.*"
@@ -18,36 +19,66 @@
             horizontalScrollPolicy="off" verticalScrollPolicy="off"
             horizontalGap="0" verticalGap="0" borderThickness="0"
             >
-      <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
-         <mx:Spacer width="2"/>
-         <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-settings.png')" />
-         <mx:Spacer width="10"/>
-         <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
-         <mx:Button id="Button_EditFunctions" toolTip="Edit Functions" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
-         <mx:Spacer width="10"/>
-         <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
-         <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
-         <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
-         <mx:Spacer width="5"/>
-         <mx:Spacer width="100%"/>
-         <mx:Spacer width="5"/>
-         <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" click="OnClickCloneEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-clone.png')" disabledIcon="@Embed('../../../res/command/command-clone-disabled.png')" />
-         <mx:Button id="Button_Delete" toolTip="(D) Delete Selected(s)" click="OnClickDeleteEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
-         <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top" click="OnClickMoveEntityToTopButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-top.png')" disabledIcon="@Embed('../../../res/command/command-to-top-disabled.png')" />
-         <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom" click="OnClickMoveEntityToBottomButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-bottom.png')" disabledIcon="@Embed('../../../res/command/command-to-bottom-disabled.png')" />
-         <mx:Spacer width="10"/>
-         <mx:Button id="Button_Glue" toolTip="Attach Entities As Brothers" click="OnClickMakeEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-make.png')" disabledIcon="@Embed('../../../res/command/command-brothers-make-disabled.png')" />
-         <mx:Button id="Button_BreakApart" toolTip="Break Up Attached Entities (Brothers)" click="OnClickBreakApartEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-break.png')" disabledIcon="@Embed('../../../res/command/command-brothers-break-disabled.png')" />
-         <mx:Spacer width="10"/>
-         <mx:Button id="Button_EntitySettings" toolTip="Set Properties of The Selected" click="OnClickEntitySettingsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/command/command-setting.png')" disabledIcon="@Embed('../../../res/command/command-setting-disabled.png')" />
-         <mx:Spacer width="5"/>
-         <mx:Spacer width="100%"/>
-         <mx:Spacer width="5"/>
-         <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
-         <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
-         <mx:Spacer width="10"/>
+-->
+<mx:VBox xmlns:container="editor.display.container.*"
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:entity="editor.entity.dialog.*"
+    xmlns:ccat="editor.ccat.dialog.*"
+    xmlns:codelib="editor.codelib.dialog.*"
+    backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="100%"
+    horizontalScrollPolicy="off" verticalScrollPolicy="off"
+    horizontalGap="0" verticalGap="0" borderThickness="0"
+    >
+
+      <mx:HBox backgroundColor="0xA0A0A0" width="100%" verticalAlign="middle" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
+         <mx:Spacer width="10" />
+         <mx:Button id="Button_WorldFile" toolTip="Load / Save ..." click="EditorContext.GetEditorApp ().OnClicWorldFileButton (Button_WorldFile);" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-world-file.png')" />
+         <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="EditorContext.GetEditorApp ().OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-info.png')" />
+         <mx:Spacer width="10" />
+         <mx:Button id="Button_ShowModuleEditDialog" toolTip="Edit Image Modules" click="EditorContext.GetEditorApp ().ShowAssetImageModuleListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-modules.png')" />
+         <mx:Button id="Button_ShowSoundEditDialog" toolTip="Edit Sounds" click="EditorContext.GetEditorApp ().ShowAssetSoundListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-sounds.png')" />
+         <mx:Spacer width="10" />
+         <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+            <mx:Spacer width="2"/>
+            <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-settings.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
+            <mx:Button id="Button_EditFunctions" toolTip="Edit Functions" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" click="OnClickCloneEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-clone.png')" disabledIcon="@Embed('../../../res/command/command-clone-disabled.png')" />
+            <mx:Button id="Button_Delete" toolTip="(D) Delete Selected(s)" click="OnClickDeleteEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
+            <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top" click="OnClickMoveEntityToTopButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-top.png')" disabledIcon="@Embed('../../../res/command/command-to-top-disabled.png')" />
+            <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom" click="OnClickMoveEntityToBottomButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-bottom.png')" disabledIcon="@Embed('../../../res/command/command-to-bottom-disabled.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_Glue" toolTip="Attach Entities As Brothers" click="OnClickMakeEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-make.png')" disabledIcon="@Embed('../../../res/command/command-brothers-make-disabled.png')" />
+            <mx:Button id="Button_BreakApart" toolTip="Break Up Attached Entities (Brothers)" click="OnClickBreakApartEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-break.png')" disabledIcon="@Embed('../../../res/command/command-brothers-break-disabled.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_EntitySettings" toolTip="Set Properties of The Selected" click="OnClickEntitySettingsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/command/command-setting.png')" disabledIcon="@Embed('../../../res/command/command-setting-disabled.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
+            <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
+            <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
+            <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
+            <!--
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-scenes.png')" selectedDownIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')" />
+            -->
+            <mx:Spacer width="2"/>
+         </mx:HBox>
+         <mx:Spacer width="10" />
          <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-scenes.png')" selectedDownIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')" />
-         <mx:Spacer width="2"/>
+         <mx:Spacer width="10" />
+         <mx:Button id="Button_Help" toolTip="Help" click="EditorContext.GetEditorApp ().OnClickOpenLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/editor/editor-about.png')" />
+         <mx:Spacer width="10" />
       </mx:HBox>
       <mx:HBox id="EntityDesignView" direction="horizontal" backgroundColor="0xE0E0E0"
              borderStyle="solid" height="100%" width="100%" 
@@ -316,8 +347,10 @@
             </mx:VBox>
          </mx:HBox>
       </mx:HBox>
+<!--      
    </mx:VBox>
-   
+-->
+
    <!-- Menu Item Attributes
    Attribute   Type     Description
    =======================================================================
@@ -1145,5 +1178,9 @@
       }
 
    ]]></mx:Script>
+
+</mx:VBox>
+<!--
 </container:ResizableTitleWindow>
+-->
 

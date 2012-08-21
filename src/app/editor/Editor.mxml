@@ -20,10 +20,10 @@
          >
    
    <mx:Style source="editor.css"/>
-
+   <!--
    <mx:ApplicationControlBar backgroundColor="0xA0A0A0" left="0" top="0" dock="false" paddingTop="8" paddingBottom="8" verticalAlign="bottom">
       <mx:VBox verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
-         <mx:Button id="Button_WorldFile" toolTip="Load / Save ..." click="OnClicWorldFileButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-world-file.png')" />
+         <mx:Button id="Button_WorldFile" toolTip="Load / Save ..." click="OnClicWorldFileButton (Button_WorldFile);" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-world-file.png')" />
          <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-info.png')" />
          <mx:Spacer height="10" />
          <mx:Button id="Button_ShowModuleEditDialog" toolTip="Edit Image Modules" click="ShowAssetImageModuleListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-edit-modules.png')" />
@@ -32,6 +32,9 @@
          <mx:Button id="Button_Help" toolTip="Help" click="OnClickOpenLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" />
       </mx:VBox>
    </mx:ApplicationControlBar>
+   -->
+   
+   <entity:SceneEditDialog id="mSceneEditDialog" width="100%" height="100%" />
 
    <mx:XML id="WorldFileMenuData">
       <root>
@@ -175,8 +178,8 @@
          
          // ...
          
-         PopUpManager.addPopUp (mSceneEditDialog, this, false);
-         PopUpManager.centerPopUp (mSceneEditDialog);
+         //PopUpManager.addPopUp (mSceneEditDialog, this, false);
+         //PopUpManager.centerPopUp (mSceneEditDialog);
          
          NewWorld ();
          
@@ -309,7 +312,7 @@
          }
       }
    
-      private function ShowAssetImageModuleListDialog ():void
+      public function ShowAssetImageModuleListDialog ():void
       {
          if (EditorContext.GetSingleton () != null)
          {
@@ -317,7 +320,7 @@
          }
       }
    
-      private function ShowAssetSoundListDialog ():void
+      public function ShowAssetSoundListDialog ():void
       {
          if (EditorContext.GetSingleton () != null)
          {
@@ -331,7 +334,7 @@
       
       private var mWorldFileMenu:Menu = null;
       
-      public function OnClicWorldFileButton ():void
+      public function OnClicWorldFileButton (button:Button):void
       {
          if (mWorldFileMenu == null)
          {
@@ -344,12 +347,13 @@
                }
             }
             
-            mWorldFileMenu = Menu.createMenu(Button_WorldFile, xml, false);
+            mWorldFileMenu = Menu.createMenu(button, xml, false);
             mWorldFileMenu.labelField="@label";
             mWorldFileMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectWorldFileMenu);
          }
          
-         var point:Point = Button_WorldFile.localToGlobal (new Point (Button_WorldFile.width, 0.5 * Button_WorldFile.height));
+         //var point:Point = button.localToGlobal (new Point (button.width, 0.5 * button.height));
+         var point:Point = button.localToGlobal (new Point (0, button.height));
          
          mWorldFileMenu.show (point.x, point.y);
       }
@@ -458,7 +462,7 @@
          OfflineExportCurrentScene ();
       }
       
-      private function OnClickConfigWorldButton ():void
+      public function OnClickConfigWorldButton ():void
       {
          //EditorContext.ShowModalDialog (DesignInfoSettingDialog, SetWorldSettings, GetWorldSettings ());
          EditorContext.ShowModalDialog (WorldInfoSettingDialog, SetWorldSettings, GetWorldSettings ());
@@ -468,7 +472,7 @@
          // when WorldInfoSettingDialog is named DesignInfoSettingDialog.
       }
       
-      private function OnClickOpenLinksButton ():void
+      public function OnClickOpenLinksButton ():void
       {
          UrlUtil.PopupPage ("http://wiki.colorinfection.com");
       }
@@ -1728,7 +1732,8 @@
    // scene edit dialog
    //========================================================================================
       
-      private var mSceneEditDialog:SceneEditDialog = new SceneEditDialog ();
+      //private var mSceneEditDialog:SceneEditDialog = new SceneEditDialog ();
+            // when open the comment, remember also open the 2 lines in OnAddedToStage
       
       public function GetSceneEditDialog ():SceneEditDialog
       {

@@ -423,7 +423,7 @@ package editor.world {
       {
          if (imageModule == null)
             return -1;
-         
+
          var moduleType:int = imageModule.GetImageModuleType ();
          if (moduleType < 0 )
             return -1;

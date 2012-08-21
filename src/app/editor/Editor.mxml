@@ -642,11 +642,11 @@
             }
             
             if (numSucceeds == 0)
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scenes failed to load", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
             else if (numFaileds == 0)
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes are loaded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) are loaded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
             else  
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes succeeded and " + numFaileds + " scenes failed to load", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) succeeded and " + numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
          catch (error:Error)
          {
@@ -896,11 +896,11 @@
             }
             
             if (numSucceeds == 0)
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scenes failed to load", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
             else if (numFaileds == 0)
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes are loaded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) are loaded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
             else  
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes succeeded and " + numFaileds + " scenes failed to load", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) succeeded and " + numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
          catch (error:Error)
          {

@@ -2419,7 +2419,7 @@ package common {
                   if (entityDefine.mModuleIndex >= 0)
                      entityDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndex];
                   
-                  imageModuleShape.SetAssetImageModuleByIndex (entityDefine.mModuleIndex);
+                  imageModuleShape.SetAssetImageModuleByIndex (entityDefine.mModuleIndex, editorWorld);
                   
                   SetShapePhysicsProperties (imageModuleShape, entityDefine, ccatRefIndex_CorrectionTable);
                   
@@ -2436,9 +2436,9 @@ package common {
                   if (entityDefine.mModuleIndexDown >= 0)
                      entityDefine.mModuleIndexDown = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndexDown];
                   
-                  imageModuleShapeButton.SetAssetImageModuleForMouseUpByIndex (entityDefine.mModuleIndexUp);
-                  imageModuleShapeButton.SetAssetImageModuleForMouseOverByIndex (entityDefine.mModuleIndexOver);
-                  imageModuleShapeButton.SetAssetImageModuleForMouseDownByIndex (entityDefine.mModuleIndexDown);
+                  imageModuleShapeButton.SetAssetImageModuleForMouseUpByIndex (entityDefine.mModuleIndexUp, editorWorld);
+                  imageModuleShapeButton.SetAssetImageModuleForMouseOverByIndex (entityDefine.mModuleIndexOver, editorWorld);
+                  imageModuleShapeButton.SetAssetImageModuleForMouseDownByIndex (entityDefine.mModuleIndexDown, editorWorld);
                   
                   SetShapePhysicsProperties (imageModuleShapeButton, entityDefine, ccatRefIndex_CorrectionTable);
                   

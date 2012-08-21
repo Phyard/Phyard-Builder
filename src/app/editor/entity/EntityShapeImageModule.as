@@ -13,7 +13,9 @@ package editor.entity {
    import flash.events.ContextMenuEvent;
 
    import com.tapirgames.util.GraphicsUtil;
-
+   
+   import editor.world.World;
+   
    import editor.selection.SelectionProxy;
    
    import editor.core.EditorObject;
@@ -90,9 +92,10 @@ package editor.entity {
       }
       
       // for loading
-      public function SetAssetImageModuleByIndex (index:int):void
+      public function SetAssetImageModuleByIndex (index:int, world:World):void
       {
-         SetAssetImageModule (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));
+         //SetAssetImageModule (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));// bug!
+         SetAssetImageModule (world.GetImageModuleByIndex (index));
       }
       
 //=============================================================

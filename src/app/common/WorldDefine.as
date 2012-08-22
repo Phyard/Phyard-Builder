@@ -5,9 +5,8 @@ package common {
    {
    // ...
       
-      public var mCurrentSceneId:int = 0; // for editing, added from v2.00
+      public var mCurrentSceneId:int = 0; // for editing undo scene, added from v2.00
                                           // also for viewer
-                                          // saved in xml format for exporting, not saved in binary format. 
       
       public var mForRestartLevel:Boolean = false; // for playing, add from v1.5?. For fast loading
       

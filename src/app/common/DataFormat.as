@@ -143,6 +143,12 @@ package common {
             worldDefine.mShareSourceCode = editorWorld.IsShareSourceCode ();
             worldDefine.mPermitPublishing = editorWorld.IsPermitPublishing ();
             //<<
+            
+            if (forSceneUndoPoint) // from v2.02
+            {
+               // assert (currentScene != null)
+               worldDefine.mCurrentSceneId = currentScene.GetSceneIndex ();
+            }
          }
          
          // scenes
@@ -153,7 +159,11 @@ package common {
          {
             var scene:Scene = editorWorld.GetSceneByIndex (sceneId);
             
-            if (currentScene == null || currentScene == scene)
+            if (forSceneUndoPoint)
+            {
+               worldDefine.mSceneDefines.push (Scene2Define (editorWorld, scene, currentScene != scene));
+            }
+            else if (currentScene == null || currentScene == scene)
             {
                worldDefine.mSceneDefines.push (Scene2Define (editorWorld, scene));
             }
@@ -313,12 +323,14 @@ package common {
          return worldDefine;
       }
       
-      public static function Scene2Define (editorWorld:World, scene:Scene):SceneDefine
+      public static function Scene2Define (editorWorld:World, scene:Scene, onlyStoreKey:Boolean = false):SceneDefine
       {
          var sceneDefine:SceneDefine = new SceneDefine ();
          
          //>>from v2.0
          sceneDefine.mKey  = scene.GetKey ();
+         if (onlyStoreKey)
+            return sceneDefine;
          sceneDefine.mName = scene.GetName ();
          //<< 
          
@@ -1826,14 +1838,23 @@ package common {
          
          if (scene != null) // uodo scene or import into scene
          {
-            sceneRefIndex_CorrectionTable [0] = editorWorld.GetNumScenes ();
-            for (sceneId = 1; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            //sceneRefIndex_CorrectionTable [0] = editorWorld.GetNumScenes ();
+            sceneRefIndex_CorrectionTable [worldDefine.mCurrentSceneId] = scene.GetSceneIndex ();
+
+            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
             {
-               sceneRefIndex_CorrectionTable [sceneId] = -1;
+               if (sceneId != worldDefine.mCurrentSceneId)
+               {
+                  sceneDefine = worldDefine.mSceneDefines [sceneId];
+                  
+                  var tempScene:Scene = editorWorld.GetSceneByKey (sceneDefine.mKey);
+                  sceneRefIndex_CorrectionTable [sceneId] = (tempScene == null ? - 1 : tempScene.GetSceneIndex ());
+               }
             }
             
-            sceneDefine = worldDefine.mSceneDefines [0];
-            
+            //sceneDefine = worldDefine.mSceneDefines [0];
+            sceneDefine = worldDefine.mSceneDefines [worldDefine.mCurrentSceneId];
+
             // worldDefine.mSimpleGlobalAssetDefines == true means uodo scene
             SceneDefine2Scene (editorWorld, sceneDefine, worldDefine.mSimpleGlobalAssetDefines, scene, mergeVariablesWithSameNames, policyOnConflictingSceneAssets, 
                                imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable); // here editorWorld.GetNumScenes () will make the scene references as null

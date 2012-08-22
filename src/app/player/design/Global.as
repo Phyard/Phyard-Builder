@@ -146,11 +146,16 @@ package player.design
          {
             mImageBitmaps         = null;
             mImageBitmapDivisions = null;
-            mAssembledModules     = null;
-            mSequencedModules     = null;
+            //mAssembledModules     = null;
+            //mSequencedModules     = null;
+               // for scenes may have different coordinate system.
+               // the cached physics values for modules will also be different.
+               // TODO: remove cached physics values or update cached physics values in loading stage later.
             
             mSounds = null; 
          }
+         mAssembledModules     = null;
+         mSequencedModules     = null;
          
          //
          Sound.StopAllSounds ();
@@ -361,12 +366,12 @@ package player.design
             }
          }
          
-         var needLoadAssembledModules:Boolean = false;
-         var needLoadSequencedModules:Boolean = false;
+         //var needLoadAssembledModules:Boolean = false;
+         //var needLoadSequencedModules:Boolean = false;
 
          if (mAssembledModules == null)
          {
-            needLoadAssembledModules = true;
+            //needLoadAssembledModules = true;
             
             mAssembledModules     = new Array (assembledModuleDefines.length);
    
@@ -380,7 +385,7 @@ package player.design
          
          if (mSequencedModules == null)
          {
-            needLoadSequencedModules = true;
+            //needLoadSequencedModules = true;
             
             mSequencedModules     = new Array (sequencedModuleDefines.length);
    
@@ -392,8 +397,8 @@ package player.design
             }
          }
          
-         if (needLoadAssembledModules)
-         {
+         //if (needLoadAssembledModules)
+         //{
             for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
             {
                var assembledModuleDefine:Object = assembledModuleDefines [assembledModuleId];
@@ -402,10 +407,10 @@ package player.design
                
                (mAssembledModules [assembledModuleId] as AssembledModule).SetModuleParts (moduleParts);
             }
-         }
+         //}
 
-         if (needLoadSequencedModules)
-         {
+         //if (needLoadSequencedModules)
+         //{
             for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
             {
                var sequencedModuleDefine:Object = sequencedModuleDefines [sequencedModuleId];
@@ -416,7 +421,7 @@ package player.design
                
                (mSequencedModules [sequencedModuleId] as SequencedModule).SetModuleSequences (moduleSequences);
             }
-         }
+         //}
       }
       
       protected static function CreateModulePartsOrSequences (moduleInstanceDefines:Array, forSequencedModule:Boolean):Array

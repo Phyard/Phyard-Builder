@@ -187,6 +187,22 @@ package editor.image.dialog {
          
          return true;
       }
+      
+//====================================================================================
+//   
+//====================================================================================
+      
+      protected var mIsPlaying:Boolean = false;
+      
+      public function Play ():void
+      {
+         mIsPlaying = true;
+      }
+      
+      public function Pause ():void
+      {
+         mIsPlaying = false;
+      }
 
 //====================================================================================
 //   
@@ -418,16 +434,20 @@ package editor.image.dialog {
 //   
 //====================================================================================
       
-      protected var mIsPlaying:Boolean = false;
+      public var mCheckBoxSamePhysicsProxyForAllFrames:CheckBox;
       
-      public function Play ():void
+      public function OnModuleSettingsChanged (event:MouseEvent):void
       {
-         mIsPlaying = true;
-      }
-      
-      public function Pause ():void
-      {
-         mIsPlaying = false;
+         var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
+
+         switch (event.target)
+         {
+            case mCheckBoxSamePhysicsProxyForAllFrames:
+               if (compositeModule.IsSequenced ())
+                  compositeModule.SetConstantPhysicsGeom (mCheckBoxSamePhysicsProxyForAllFrames.selected);
+               
+               break;
+         }
       }
       
 //====================================================================================
@@ -477,7 +497,7 @@ package editor.image.dialog {
       
       
       private function UpdatePropertySettingComponents ():void
-      {         
+      {
          var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
 
          if (! compositeModule.IsSequenced ())
@@ -576,6 +596,8 @@ package editor.image.dialog {
             return;
          
          var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
+         
+         mCheckBoxSamePhysicsProxyForAllFrames.selected = compositeModule.IsConstantPhysicsGeom ();
          
          var numSelecteds:int = mAssetImageModuleInstanceManager.GetNumSelectedAssets ();
          

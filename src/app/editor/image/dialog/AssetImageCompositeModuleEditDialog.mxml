@@ -117,6 +117,8 @@
                <mx:Button id="ButtonCreateShapeTextInstance" toolTip="Create Text" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/text.png')" downIcon="@Embed('../../../res/create/text-sel.png')" overIcon="@Embed('../../../res/create/text.png')" selectedUpIcon="@Embed('../../../res/create/text-sel.png')" selectedOverIcon="@Embed('../../../res/create/text-sel.png')" selectedDownIcon="@Embed('../../../res/create/text.png')"   />
                -->
                <mx:Spacer width="100%"/>
+               <mx:CheckBox selected="false" id="CheckBoxSamePhysicsProxyForAllFrames" label="Same Physics Geometry For All Frames"/>
+               <!--
                <mx:HBox visible="false" paddingTop="5" paddingLeft="0" paddingRight="0" paddingBottom="5" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                   <mx:Button height="100%" id="ButtonEditMode" label="Edit Mode" toggle="true" click=";" />
                   <mx:Spacer width="5"/>
@@ -124,6 +126,7 @@
                   <mx:Spacer width="5"/>
                   <mx:Button height="100%" id="ButtonViewAppearance" label="View Appearance" toggle="true" click=";" />
                </mx:HBox>
+               -->
             </mx:HBox>
             <mx:ViewStack id="ViewStack_ModuleInstancesPanel" creationPolicy="all" borderStyle="none" width="100%" height="100%">
                <mx:HDividedBox id="theDividedBox_H" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
@@ -282,6 +285,8 @@
                ButtonDeleteModuleInstances = ButtonDeleteModuleInstances_H;
                ButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance_H;
                ButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance_H;
+               
+               CheckBoxSamePhysicsProxyForAllFrames.visible = false;
             }
 
             //...
@@ -299,6 +304,10 @@
             ButtonCreateShapePolylineInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
             //ButtonCreateShapeTextInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
             
+            panelAssetImageCompositeModuleEditing.mCheckBoxSamePhysicsProxyForAllFrames = CheckBoxSamePhysicsProxyForAllFrames;
+            
+            CheckBoxSamePhysicsProxyForAllFrames.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnModuleSettingsChanged);
+
             panelAssetImageCompositeModuleEditing.mButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance;
             panelAssetImageCompositeModuleEditing.mButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance;
             panelAssetImageCompositeModuleEditing.mButtonDeleteModuleInstances = ButtonDeleteModuleInstances;

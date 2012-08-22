@@ -722,6 +722,13 @@ package common {
                }
                
                //element.@looped = sequencedModuleDefine.mIsLooped ? 1 : 0;
+               
+               
+               if (worldDefine.mVersion >= 0x0202)
+               {
+                  element.@setting_flags = sequencedModuleDefine.mSettingFlags;
+               }
+               
                ModuleInstanceDefines2XmlElements (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, element, "ModuleSequence", true);
                
                xml.SequencedModules.appendChild (element);
@@ -1941,7 +1948,11 @@ package common {
                   sequencedModuleDefine.mTimeModified = ReadTimeValue (byteArray);
                }
 
-               //sequencedModuleDefine.mIsLooped = byteArray.readByte () != 0;
+               if (worldDefine.mVersion >= 0x0202)
+               {
+                  sequencedModuleDefine.mSettingFlags = byteArray.readShort ();
+               }
+               
                sequencedModuleDefine.mModuleSequenceDefines = ReadModuleInstanceDefinesFromBinFile (worldDefine.mVersion, byteArray, true);
                
                worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
@@ -3244,8 +3255,7 @@ package common {
             for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
             {
                var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
-
-               //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
+               
                AdjustNumberValuesInModuleInstanceDefines (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, true);
             }
          //}
@@ -3749,7 +3759,11 @@ package common {
             {
                var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
 
-               //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
+               if (worldDefine.mVersion < 0x0202)
+               {
+                  sequencedModuleDefine.mSettingFlags = 0;
+               }
+               
                FillMissedFieldsInModuleInstanceDefines (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, true);
             }
          }

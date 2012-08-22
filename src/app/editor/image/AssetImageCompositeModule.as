@@ -215,7 +215,6 @@ package editor.image {
 //=============================================================
 
       protected var mIsSequenced:Boolean = false;
-      protected var mIsLooped:Boolean = true; // only valid for sequenced modules
       
       // false for assembled
       public function IsSequenced ():Boolean
@@ -228,19 +227,46 @@ package editor.image {
          mIsSequenced = sequenced;
       }
       
-      public function IsLooped ():Boolean
-      {
-         return mIsLooped;
-      }
-      
-      public function SetLooped (looped:Boolean):void
-      {
-         mIsLooped = looped;
-      }
-      
       public function GetNumFrames ():Number
       {
          return IsSequenced () ? mModuleInstanceManager.GetNumAssets () : 1;
+      }
+      
+      protected var mSettingFlags:int = 0; 
+         // only low 16 bits are used.
+         // now, only for sequenced modules
+      
+      public function GetSettingFlags ():int
+      {
+         return mSettingFlags & 0xFFFF;
+      }
+      
+      public function SetSettingFlags (flags:int):void
+      {
+         mSettingFlags = flags & 0xFFFF;
+      }
+      
+      //public function IsLooped ():Boolean
+      //{
+      //   return mIsLooped; SequencedModule_StopAtLastFrame
+      //}
+      //
+      //public function SetLooped (looped:Boolean):void
+      //{
+      //   mIsLooped = looped;
+      //}
+      
+      public function IsConstantPhysicsGeom ():Boolean
+      {
+         return (mSettingFlags & Define.SequencedModule_ConstantPhysicsGeomForAllFrames) == Define.SequencedModule_ConstantPhysicsGeomForAllFrames;
+      }
+      
+      public function SetConstantPhysicsGeom (constant:Boolean):void
+      {
+         if (constant)
+            mSettingFlags |= Define.SequencedModule_ConstantPhysicsGeomForAllFrames;
+         else
+            mSettingFlags &= (~Define.SequencedModule_ConstantPhysicsGeomForAllFrames);
       }
       
 //=============================================================

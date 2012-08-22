@@ -4899,6 +4899,8 @@ package player.trigger {
    // entity / joint
    //*******************************************************************
 
+      // now, not support changing modules for ModuleButton.
+      // OnFrameReachEnd event handler is also not supported for ModuleButton
       public static function ChangeShapeModule (valueSource:Parameter, valueTarget:Parameter):void
       {
          var moduleShape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;

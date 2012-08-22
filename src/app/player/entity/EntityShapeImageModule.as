@@ -93,6 +93,10 @@ package player.entity {
          RebuildShapePhysicsInternal ();
       }
       
+//=============================================================
+//   
+//=============================================================
+      
       // return: if the module changed.
       private function OnModuleReachesSequeunceEnd (module:Module):Boolean
       {
@@ -108,6 +112,17 @@ package player.entity {
          }
          
          return moduleInstance != mModuleInstance;
+      }
+      
+      private function OnModuleFrameChanged (updatePhysicsProxy:Boolean):void
+      {
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance ();
+         
+         if (updatePhysicsProxy)
+         {
+            OnShapeGeomModified (this);
+         }
       }
       
 //=============================================================
@@ -126,13 +141,7 @@ package player.entity {
       
       override protected function UpdateInternal (dt:Number):void
       {
-         if (mModuleInstance.Step (OnModuleReachesSequeunceEnd))
-         {
-            mNeedRebuildAppearanceObjects = true;
-            DelayUpdateAppearance ();
-            
-            OnShapeGeomModified (this);
-         }
+         mModuleInstance.Step (OnModuleReachesSequeunceEnd, OnModuleFrameChanged);
       }
       
 //=============================================================

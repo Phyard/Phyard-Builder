@@ -126,6 +126,11 @@ package common {
       public static const ModuleId_None:int = -1;
       public static const SoundId_None:int = -1;
       
+      
+            
+      public static const SequencedModule_ConstantPhysicsGeomForAllFrames:int = 1 << 0;
+      //public SequencedModule_StopAtTheLastFrameLint = 1 << 1; // (<=> not loop)
+      
 //===========================================================================
 // entity common
 //===========================================================================

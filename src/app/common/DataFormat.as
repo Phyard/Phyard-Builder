@@ -265,7 +265,10 @@ package common {
                   sequencedModuleDefine.mTimeModified = sequencedModule.GetTimeModified ();
                   //<<
                   
-                  //sequencedModuleDefine.mIsLooped = sequencedModule.IsLooped ();
+                  //>>from v2.02
+                  sequencedModuleDefine.mSettingFlags = sequencedModule.GetSettingFlags ();
+                  //<<
+                  
                   sequencedModuleDefine.mModuleSequenceDefines = ModuleInstances2Define (editorWorld, sequencedModule.GetModuleInstanceManager (), true);
                   
                   worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
@@ -1732,6 +1735,10 @@ package common {
                if (sequencedModuleDefine.mToLoadNewData)
                {
                   sequencedModule = sequencedModuleManager.GetAssetByKey (sequencedModuleDefine.mKey) as AssetImageCompositeModule;
+                  
+                  //>>from v2.02
+                  sequencedModule.SetSettingFlags (sequencedModuleDefine.mSettingFlags);
+                  //<<
    
                   ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
                   
@@ -3148,7 +3155,11 @@ package common {
                   sequencedModuleDefine.mTimeModified = ParseTimeString (element.@time_modified);
                }
                
-               //sequencedModuleDefine.mIsLooped = parseInt(element.@looped) != 0;
+               if (worldDefine.mVersion >= 0x0202)
+               {
+                  sequencedModuleDefine.mSettingFlags = parseInt (element.@setting_flags);
+               }
+               
                sequencedModuleDefine.mModuleSequenceDefines = XmlElements2ModuleInstanceDefines (worldDefine.mVersion, element.ModuleSequence, true);
                
                worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
@@ -4234,7 +4245,11 @@ package common {
                   WriteTimeValue (byteArray, sequencedModuleDefine.mTimeModified);
                }
 
-               //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
+               if (worldDefine.mVersion >= 0x0202)
+               {
+                  byteArray.writeShort (sequencedModuleDefine.mSettingFlags);
+               }
+
                WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
             }
          }

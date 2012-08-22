@@ -397,7 +397,7 @@ package player.design
             for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
             {
                var assembledModuleDefine:Object = assembledModuleDefines [assembledModuleId];
-   
+               
                var moduleParts:Array = CreateModulePartsOrSequences (assembledModuleDefine.mModulePartDefines, false);
                
                (mAssembledModules [assembledModuleId] as AssembledModule).SetModuleParts (moduleParts);
@@ -409,11 +409,12 @@ package player.design
             for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
             {
                var sequencedModuleDefine:Object = sequencedModuleDefines [sequencedModuleId];
-   
+               
                var moduleSequences:Array = CreateModulePartsOrSequences (sequencedModuleDefine.mModuleSequenceDefines, true);
                
+               (mSequencedModules [sequencedModuleId] as SequencedModule).SetConstantPhysicsGeom ((sequencedModuleDefine.mSettingFlags & Define.SequencedModule_ConstantPhysicsGeomForAllFrames) == Define.SequencedModule_ConstantPhysicsGeomForAllFrames);
+               
                (mSequencedModules [sequencedModuleId] as SequencedModule).SetModuleSequences (moduleSequences);
-               //sequencedModuleDefine.mIsLooped
             }
          }
       }

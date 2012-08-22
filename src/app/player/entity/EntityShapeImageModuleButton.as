@@ -150,6 +150,21 @@ package player.entity {
 //   
 //=============================================================
       
+      private function OnModuleFrameChanged (updatePhysicsProxy:Boolean):void
+      {
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance ();
+         
+         if (updatePhysicsProxy)
+         {
+            OnShapeGeomModified (this);
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       public function OnModuleAppearanceChanged ():void
       {
          mNeedRebuildAppearanceObjects = true;
@@ -172,13 +187,7 @@ package player.entity {
       
       override protected function UpdateInternal (dt:Number):void
       {
-         if (mModuleInstanceUp.Step ())
-         {
-            mNeedRebuildAppearanceObjects = true;
-            DelayUpdateAppearance ();
-            
-            OnShapeGeomModified (this);
-         }
+         mModuleInstanceUp.Step (null, OnModuleFrameChanged);
          
          // for over and down, waste time in most cases
 

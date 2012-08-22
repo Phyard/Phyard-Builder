@@ -11,6 +11,8 @@ package player.module {
       protected var mModuleSequences:Array;
          // must NOT be null
       
+      protected var mIsConstantPhysicsGeom:Boolean = false;
+      
       public function SequencedModule ()
       {
       }
@@ -31,6 +33,16 @@ package player.module {
             return 0;
          
          return (mModuleSequences [frameIndex] as ModuleSequence).GetDuration ();
+      }
+      
+      override public function IsConstantPhysicsGeom ():Boolean
+      {
+         return mIsConstantPhysicsGeom;
+      }
+      
+      public function SetConstantPhysicsGeom (constant:Boolean):void
+      {
+         mIsConstantPhysicsGeom = constant;
       }
       
       override public function BuildAppearance (frameIndex:int, moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void

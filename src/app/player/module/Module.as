@@ -35,6 +35,11 @@ package player.module {
          return 0; // 0 means for ever, sequenced module will override it
       }
       
+      public function IsConstantPhysicsGeom ():Boolean
+      {
+         return true;
+      }
+      
       // frameIndex should be always 0 for non-sequenced modules
       public function BuildAppearance (frameIndex:int, moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void
       {

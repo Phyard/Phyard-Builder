@@ -800,7 +800,7 @@
             
             //RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ());
             
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Error in online saving", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
       }
       

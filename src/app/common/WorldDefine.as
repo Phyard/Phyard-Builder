@@ -27,7 +27,7 @@ package common {
       public var mShareSourceCode:Boolean = false;
       public var mPermitPublishing:Boolean = false;
       
-      public var mSceneDefines:Array = new Array ();
+      public var mSceneDefines:Array = new Array (); // for undo point or scene-exporting, except one scene, only key is stored for other scenes
       
       //>> moved into SceneDefine since v2.00
       /* 
@@ -55,10 +55,10 @@ package common {
       
       public var mSimpleGlobalAssetDefines:Boolean = false; // for scene undo point, set it as true
       
-      public var mImageDefines:Array = new Array (); // for undo point, this is a UUID array
-      public var mPureImageModuleDefines:Array = new Array (); // for undo point, this is a UUID array
-      public var mAssembledModuleDefines:Array = new Array (); // for undo point, this is a UUID array
-      public var mSequencedModuleDefines:Array = new Array (); // for undo point, this is a UUID array
+      public var mImageDefines:Array = new Array (); // for undo point, only key is stored
+      public var mPureImageModuleDefines:Array = new Array (); // for undo point, only key is stored
+      public var mAssembledModuleDefines:Array = new Array (); // for undo point, only key is stored
+      public var mSequencedModuleDefines:Array = new Array (); // for undo point, only key is stored
       
       public var mSoundDefines:Array = new Array ();// for undo point, this is a UUID array
    }

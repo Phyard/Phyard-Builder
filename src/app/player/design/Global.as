@@ -146,11 +146,11 @@ package player.design
          {
             mImageBitmaps         = null;
             mImageBitmapDivisions = null;
+            mAssembledModules     = null;
+            mSequencedModules     = null;
             
             mSounds = null; 
          }
-         mAssembledModules     = null;
-         mSequencedModules     = null;
          
          //
          Sound.StopAllSounds ();
@@ -360,42 +360,61 @@ package player.design
                image.SetFileData (imageDefine.mFileData, OnLoadImageDone, OnLoadImageError);
             }
          }
+         
+         var needLoadAssembledModules:Boolean = false;
+         var needLoadSequencedModules:Boolean = false;
 
-         mAssembledModules     = new Array (assembledModuleDefines.length);
-
-         var assembledModuleId:int;
-         for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
+         if (mAssembledModules == null)
          {
-            mAssembledModules [assembledModuleId] = new AssembledModule ();
-            (mAssembledModules [assembledModuleId] as AssembledModule).SetId (imageDefines.length + pureImageModuleDefines.length + assembledModuleId);
-         }
-
-         mSequencedModules     = new Array (sequencedModuleDefines.length);
-
-         var sequencedModuleId:int;
-         for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
-         {
-            mSequencedModules [sequencedModuleId] = new SequencedModule ();
-            (mSequencedModules [sequencedModuleId] as SequencedModule) .SetId (imageDefines.length + pureImageModuleDefines.length + assembledModuleDefines.length + sequencedModuleId);
-         }
-
-         for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
-         {
-            var assembledModuleDefine:Object = assembledModuleDefines [assembledModuleId];
-
-            var moduleParts:Array = CreateModulePartsOrSequences (assembledModuleDefine.mModulePartDefines, false);
+            needLoadAssembledModules = true;
             
-            (mAssembledModules [assembledModuleId] as AssembledModule).SetModuleParts (moduleParts);
+            mAssembledModules     = new Array (assembledModuleDefines.length);
+   
+            var assembledModuleId:int;
+            for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
+            {
+               mAssembledModules [assembledModuleId] = new AssembledModule ();
+               (mAssembledModules [assembledModuleId] as AssembledModule).SetId (imageDefines.length + pureImageModuleDefines.length + assembledModuleId);
+            }
+         }
+         
+         if (mSequencedModules == null)
+         {
+            needLoadSequencedModules = true;
+            
+            mSequencedModules     = new Array (sequencedModuleDefines.length);
+   
+            var sequencedModuleId:int;
+            for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
+            {
+               mSequencedModules [sequencedModuleId] = new SequencedModule ();
+               (mSequencedModules [sequencedModuleId] as SequencedModule) .SetId (imageDefines.length + pureImageModuleDefines.length + assembledModuleDefines.length + sequencedModuleId);
+            }
+         }
+         
+         if (needLoadAssembledModules)
+         {
+            for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
+            {
+               var assembledModuleDefine:Object = assembledModuleDefines [assembledModuleId];
+   
+               var moduleParts:Array = CreateModulePartsOrSequences (assembledModuleDefine.mModulePartDefines, false);
+               
+               (mAssembledModules [assembledModuleId] as AssembledModule).SetModuleParts (moduleParts);
+            }
          }
 
-         for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
+         if (needLoadSequencedModules)
          {
-            var sequencedModuleDefine:Object = sequencedModuleDefines [sequencedModuleId];
-
-            var moduleSequences:Array = CreateModulePartsOrSequences (sequencedModuleDefine.mModuleSequenceDefines, true);
-            
-            (mSequencedModules [sequencedModuleId] as SequencedModule).SetModuleSequences (moduleSequences);
-            //sequencedModuleDefine.mIsLooped
+            for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
+            {
+               var sequencedModuleDefine:Object = sequencedModuleDefines [sequencedModuleId];
+   
+               var moduleSequences:Array = CreateModulePartsOrSequences (sequencedModuleDefine.mModuleSequenceDefines, true);
+               
+               (mSequencedModules [sequencedModuleId] as SequencedModule).SetModuleSequences (moduleSequences);
+               //sequencedModuleDefine.mIsLooped
+            }
          }
       }
       

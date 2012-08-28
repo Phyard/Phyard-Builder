@@ -41,13 +41,24 @@ package editor.image {
 // 
 //========================================================== 
       
+      // for loading
+      public function DestroyAllModuleInstances (passively:Boolean = false):void
+      {
+         DestroyAllAssets ();
+         
+         if (! passively)
+         {
+            mAssetImageCompositeModule.GetModuleInstanceManager ().DestroyAllModuleInstances (true);
+         }
+      }
+      
       override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
       {
          if (super.DeleteSelectedAssets ())
          {
             if (! passively)
             {
-               mAssetImageCompositeModule.GetModuleInstanceManager().DeleteSelectedAssets (true);
+               mAssetImageCompositeModule.GetModuleInstanceManager ().DeleteSelectedAssets (true);
             }
             
             UpdateLayout (true);

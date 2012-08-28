@@ -277,6 +277,8 @@ package editor.asset {
          DestroyAllAssets ();
          
          mSelectionEngine.Destroy ();
+         
+         NotifyDestroyedForReferers ();
       }
       
       public function DestroyAllAssets ():void

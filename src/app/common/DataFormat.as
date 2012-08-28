@@ -1648,7 +1648,7 @@ package common {
                {
                   toUseNewData = true;
                   
-                  assembledModule.GetModuleInstanceManager ().DestroyAllAssets ();
+                  assembledModule.GetModuleInstanceManager ().DestroyAllModuleInstances ();
                }
                else if (policyOnConflictingGlobalAssets == 1)
                {
@@ -1660,7 +1660,7 @@ package common {
                   
                   if (toUseNewData)
                   {
-                     assembledModule.GetModuleInstanceManager ().DestroyAllAssets ();
+                     assembledModule.GetModuleInstanceManager ().DestroyAllModuleInstances ();
                   }
                }
                
@@ -1700,7 +1700,7 @@ package common {
                {
                   toUseNewData = true;
                   
-                  sequencedModule.GetModuleInstanceManager ().DestroyAllAssets ();
+                  sequencedModule.GetModuleInstanceManager ().DestroyAllModuleInstances ();
                }
                else if (policyOnConflictingGlobalAssets == 1) // skip
                {
@@ -1712,7 +1712,7 @@ package common {
                   
                   if (toUseNewData)
                   {
-                     sequencedModule.GetModuleInstanceManager ().DestroyAllAssets ();
+                     sequencedModule.GetModuleInstanceManager ().DestroyAllModuleInstances ();
                   }
                }
                
@@ -1737,6 +1737,9 @@ package common {
                   assembledModule.SetTimeModified (assembledModuleDefine.mTimeModified);
                   
                   assembledModule.UpdateAppearance ();
+                  
+                  if (! isNewWorldToLoadAll)
+                     assembledModule.NotifyModifiedForReferers (); // sometime, duplicated, not essential,
                }
             }
    
@@ -1757,6 +1760,9 @@ package common {
                   sequencedModule.SetTimeModified (sequencedModuleDefine.mTimeModified);
                   
                   sequencedModule.UpdateAppearance ();
+                  
+                  if (! isNewWorldToLoadAll)
+                     sequencedModule.NotifyModifiedForReferers (); // sometime, duplicated, not essential,
                }
             }
          //}

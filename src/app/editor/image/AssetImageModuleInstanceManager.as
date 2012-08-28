@@ -59,6 +59,17 @@ package editor.image {
 //   
 //=============================================================
       
+      // for loading
+      public function DestroyAllModuleInstances (passively:Boolean = false):void
+      {
+         DestroyAllAssets ();
+         
+         if (! passively)
+         {
+            mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().DestroyAllModuleInstances (true);
+         }
+      }
+      
       override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
       {
          if (super.DeleteSelectedAssets ())

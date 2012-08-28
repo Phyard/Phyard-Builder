@@ -90,7 +90,8 @@ package player.entity {
          
          mLoopToEndEventHandler = loopToEndEventHandler;
          
-         RebuildShapePhysicsInternal ();
+         //RebuildShapePhysicsInternal (); // ! bug, the old one is not destroyed.
+         RebuildShapePhysics ();
       }
       
 //=============================================================

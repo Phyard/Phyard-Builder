@@ -151,7 +151,7 @@ package editor.asset {
       
       public function GetMouseWheelFunction (ctrlDown:Boolean, shiftDown:Boolean):int
       {
-         if (ctrlDown)
+         if (ctrlDown || shiftDown)
             return kMouseWheelFunction_Zoom;
          
          return kMouseWheelFunction_None;

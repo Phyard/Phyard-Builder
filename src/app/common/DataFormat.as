@@ -1739,7 +1739,7 @@ package common {
                   assembledModule.UpdateAppearance ();
                   
                   if (! isNewWorldToLoadAll)
-                     assembledModule.NotifyModifiedForReferers (); // sometime, duplicated, not essential,
+                     assembledModule.NotifyModifiedForReferers (); // sometime, duplicated computations
                }
             }
    
@@ -1762,7 +1762,7 @@ package common {
                   sequencedModule.UpdateAppearance ();
                   
                   if (! isNewWorldToLoadAll)
-                     sequencedModule.NotifyModifiedForReferers (); // sometime, duplicated, not essential,
+                     sequencedModule.NotifyModifiedForReferers (); // sometime, duplicated computations
                }
             }
          //}

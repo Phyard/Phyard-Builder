@@ -63,5 +63,13 @@ package editor.image.dialog {
          }
       }
       
+      override public function GetMouseWheelFunction (ctrlDown:Boolean, shiftDown:Boolean):int
+      {
+         if (ctrlDown || shiftDown)
+            return kMouseWheelFunction_Zoom;
+         
+         return kMouseWheelFunction_Scroll;
+      }
+      
    }
 }

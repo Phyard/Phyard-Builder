@@ -63,10 +63,13 @@ package editor.sound.dialog {
       
       override public function GetMouseWheelFunction (ctrlDown:Boolean, shiftDown:Boolean):int
       {
-         if (! (ctrlDown || shiftDown))
-            return kMouseWheelFunction_Scroll;
+         //if (! (ctrlDown || shiftDown))
+         //   return kMouseWheelFunction_Scroll;
+         //
+         //return kMouseWheelFunction_None;
+         //
          
-         return kMouseWheelFunction_None;
+         return kMouseWheelFunction_Scroll;
       }
       
 //============================================================================

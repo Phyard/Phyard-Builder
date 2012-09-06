@@ -88,11 +88,11 @@ package editor.asset {
          mAssetManagerLayout = layout;
       }
       
-      public function UpdateLayout (forcely:Boolean = false):void
+      public function UpdateLayout (forcely:Boolean = false, alsoUpdateAssetAppearance:Boolean = false):void
       {
          if (mAssetManagerLayout != null)
          {
-            mAssetManagerLayout.DoLayout (forcely);
+            mAssetManagerLayout.DoLayout (forcely, alsoUpdateAssetAppearance);
          }
       }
 

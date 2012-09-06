@@ -71,7 +71,7 @@ package editor.asset {
       protected var mContentWidth:Number;
       protected var mContentHeight:Number;
       
-      override public function DoLayout (forcely:Boolean = false):void
+      override public function DoLayout (forcely:Boolean = false, alsoUpdateAssetAppearance:Boolean = false):void
       {
          if (mAssetManager.parent == null)
             return;
@@ -97,6 +97,9 @@ package editor.asset {
             for (var i:int = 0; i < numAssets; ++ i)
             {
                var asset:Asset = mAssetManager.GetAssetByAppearanceId (i);
+               if (alsoUpdateAssetAppearance)
+                  asset.UpdateAppearance ();
+               
                var boundRect:Rectangle = asset.getBounds (asset);
                if (boundRect.height > maxRowHeight)
                   maxRowHeight = boundRect.height;

@@ -46,7 +46,7 @@ package editor.asset {
          return 10;
       }
       
-      public function DoLayout (forcely:Boolean = false):void
+      public function DoLayout (forcely:Boolean = false, alsoUpdateAssetAppearance:Boolean = false):void
       {
          
       }

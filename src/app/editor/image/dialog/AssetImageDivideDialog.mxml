@@ -7,7 +7,7 @@
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:image="editor.image.dialog.*"
     title="Divide Image Pure Modules"
-    width="500" height="530"
+    width="563" height="530"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
     creationComplete="InitDialog ();"

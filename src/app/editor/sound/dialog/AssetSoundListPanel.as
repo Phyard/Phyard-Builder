@@ -53,10 +53,10 @@ package editor.sound.dialog {
          {
             mAssetSoundManager = assetSoundManager;
             
-            if (mAssetSoundManager != null)
+            if (mAssetSoundManager != null && mAssetSoundManager.GetLayout () == null)
             {
                mAssetSoundManager.SetLayout (new AssetManagerListLayout (mAssetSoundManager, 76));
-               mAssetSoundManager.UpdateLayout (true);
+               mAssetSoundManager.UpdateLayout (true, true);
             }
          }
       }

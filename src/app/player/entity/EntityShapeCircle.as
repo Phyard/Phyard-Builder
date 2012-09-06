@@ -2,6 +2,8 @@ package player.entity {
    
    import flash.display.Shape;
    
+   import flash.geom.Matrix;
+   
    import com.tapirgames.util.GraphicsUtil;
    
    import player.world.World;
@@ -95,6 +97,11 @@ package player.entity {
       
       override public function UpdateAppearance ():void
       {
+// test
+//cacheAsBitmap = true;
+//cacheAsBitmapMatrix = new Matrix();
+// or use mBitmapData.draw (this)
+         
          mAppearanceObjectsContainer.visible = mVisible;
          mAppearanceObjectsContainer.alpha = mAlpha; 
          

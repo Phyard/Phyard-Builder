@@ -55,10 +55,10 @@ package editor.image.dialog {
          {
             mAssetImageModuleManager = assetImageModuleManager;
             
-            if (mAssetImageModuleManager != null)
+            if (mAssetImageModuleManager != null && mAssetImageModuleManager.GetLayout () == null)
             {
                mAssetImageModuleManager.SetLayout (new AssetManagerArrayLayout (mAssetImageModuleManager, mAssetImageModuleManager.GetModuleIconSize () + 16));
-               mAssetImageModuleManager.UpdateLayout (true);
+               mAssetImageModuleManager.UpdateLayout (true, true);
             }
          }
       }

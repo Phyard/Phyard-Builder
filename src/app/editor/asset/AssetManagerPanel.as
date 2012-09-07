@@ -341,6 +341,8 @@ package editor.asset {
          
          UpdateInternal (mStepTimeSpan.GetLastSpan ());
          
+         UpdateAllAssetIDs ();
+         
          UpdateAssetLinkLines ();
          
          UpdateEffects ();
@@ -462,6 +464,11 @@ package editor.asset {
       public function IsCookieSelectMode ():Boolean
       {
          return mInCookieSelectMode;
+      }
+      
+      public function ToggleShowAllAssetIDs (show:Boolean):void
+      {
+         SetShowAllAssetIDs (! mShowAllAssetIDs);
       }
       
       public function SetShowAllAssetIDs (show:Boolean):void
@@ -742,6 +749,10 @@ package editor.asset {
                   return true;
                case Keyboard.DOWN:
                   MoveSelectedAssets (ctrlHold, 0, 1, true, false);
+                  
+                  return true;
+               case 73: // key i
+                  ToggleShowAllAssetIDs (true);
                   
                   return true;
             }
@@ -1319,6 +1330,7 @@ package editor.asset {
          if (mAssetManager.DeleteSelectedAssets ())
          {
             UpdateInterface ();
+            RepaintAllAssetIDs ();
             RepaintAllAssetLinks ();
             
             OnAssetSelectionsChanged ();
@@ -1412,29 +1424,51 @@ package editor.asset {
             return;
          }
          
-         mAssetLinksLayer.visible = mShowAllAssetIDs;
+         mAssetIDsLayer.visible = mShowAllAssetIDs;
          
-         while (mAssetLinksLayer.numChildren > 0)
-            mAssetLinksLayer.removeChildAt (0);
+         while (mAssetIDsLayer.numChildren > 0)
+            mAssetIDsLayer.removeChildAt (0);
          
          if (mShowAllAssetIDs)
          {
-            mAssetManager.DrawAssetIds (mAssetIDsLayer);
-            
-            if (mAssetIDsLayer.scaleX != mAssetManager.scaleX)
-               mAssetIDsLayer.scaleX = mAssetManager.scaleX;
-            if (mAssetIDsLayer.scaleY != mAssetManager.scaleY)
-               mAssetIDsLayer.scaleY = mAssetManager.scaleY;
-            if ((int (20.0 * mAssetIDsLayer.x)) != (int (20.0 * mAssetManager.x)))
-               mAssetIDsLayer.x = mAssetManager.x;
-            if ((int (20.0 * mAssetIDsLayer.y)) != (int (20.0 * mAssetManager.y)))
-               mAssetIDsLayer.y = mAssetManager.y;
+            mAssetManager.UpdateAssetIdTexts (mAssetIDsLayer);
          }
       }
       
       protected function UpdateAllAssetIDs ():void
       {
-         // todo: corrent id positions
+         if (mAssetManager == null)
+         {
+            mAssetIDsLayer.visible = false;
+            return;
+         }
+         
+         mAssetIDsLayer.visible = mShowAllAssetIDs;
+         
+         if (mShowAllAssetIDs)
+         {
+            var needUpdateIdTexts:Boolean = false;
+            
+            if (mAssetIDsLayer.scaleX != mAssetManager.scaleX)
+            {
+               mAssetIDsLayer.scaleX = mAssetManager.scaleX;
+               needUpdateIdTexts = true;
+            }
+            if (mAssetIDsLayer.scaleY != mAssetManager.scaleY)
+            {
+               mAssetIDsLayer.scaleY = mAssetManager.scaleY;
+               needUpdateIdTexts = true;
+            }
+            if ((int (20.0 * mAssetIDsLayer.x)) != (int (20.0 * mAssetManager.x)))
+               mAssetIDsLayer.x = mAssetManager.x;
+            if ((int (20.0 * mAssetIDsLayer.y)) != (int (20.0 * mAssetManager.y)))
+               mAssetIDsLayer.y = mAssetManager.y;
+            
+            if (needUpdateIdTexts)
+            {
+               mAssetManager.UpdateAssetIdTexts (mAssetIDsLayer);
+            }
+         }
       }
       
       public function CreateOrBreakAssetLink (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):void

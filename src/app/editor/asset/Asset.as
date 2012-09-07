@@ -164,6 +164,8 @@ package editor.asset {
          
          SetControlPointsVisible (false);
          
+         DestroyAssetIdText ();
+         
          mAssetManager.OnAssetDestroyed (this);
          
          UnreferAllReferings ();
@@ -315,6 +317,8 @@ package editor.asset {
          
          x = posX;
          y = posY;
+         
+         UpdateIdTextPositionAndScale ();
       }
       
       public function GetScale ():Number
@@ -786,20 +790,46 @@ package editor.asset {
 //   draw entity id
 //====================================================================
       
-      public function DrawAssetId (canvasSprite:Sprite):void
+      private var mIdText:TextFieldEx = null;
+      private var mOldId:int = -1;
+      
+      public function UpdateAssetIdText (canvasSprite:Sprite):void
       {
          if (canvasSprite == null)
             return;
          
-         var creationOrderId:int = GetCreationOrderId ();
-         var idText:TextFieldEx = TextFieldEx.CreateTextField (creationOrderId.toString (), true, 0xFFFFFF, 0x0, false, 0, false, true, 0x0);
+         var oldId:int = mOldId;
+         mOldId = GetCreationOrderId ();
          
-         canvasSprite.addChild (idText);
+         if (mIdText == null)
+            mIdText = TextFieldEx.CreateTextField (mOldId.toString (), true, 0xFFFFFF, 0x0, false, 0, false, true, 0x0);
+         else if (mOldId != oldId)
+            mIdText.text = mOldId.toString ();
          
-         idText.scaleX = 1.0 / mAssetManager.scaleX;
-         idText.scaleY = 1.0 / mAssetManager.scaleY;
-         idText.x = GetLinkPointX () - 0.5 * idText.width;
-         idText.y = GetLinkPointY () - 0.5 * idText.height;
+         if (mIdText.parent != canvasSprite)
+            canvasSprite.addChild (mIdText);
+         
+         UpdateIdTextPositionAndScale ();
+      }
+      
+      protected function UpdateIdTextPositionAndScale ():void
+      { 
+         if (mIdText != null)
+         {
+            mIdText.scaleX = 1.0 / mAssetManager.scaleX;
+            mIdText.scaleY = 1.0 / mAssetManager.scaleY;
+            mIdText.x = GetLinkPointX () - 0.5 * mIdText.width;
+            mIdText.y = GetLinkPointY () - 0.5 * mIdText.height;
+         }
+      }
+      
+      protected function DestroyAssetIdText ():void
+      {
+         if (mIdText != null && mIdText.parent != null)
+            mIdText.parent.removeChild (mIdText);
+         
+         mIdText = null;
+         mOldId = -1;
       }
       
 //====================================================================

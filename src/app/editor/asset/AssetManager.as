@@ -1510,7 +1510,7 @@ package editor.asset {
          // to override
       }
       
-      public function DrawAssetIds (canvasSprite:Sprite):void
+      public function UpdateAssetIdTexts (canvasSprite:Sprite):void
       {
          var asset:Asset;
          var i:int;
@@ -1520,7 +1520,7 @@ package editor.asset {
             asset = GetAssetByCreationId (i) as Asset;
             if (asset != null)
             {
-               asset.DrawAssetId (canvasSprite);
+               asset.UpdateAssetIdText (canvasSprite);
             }
          }
       }

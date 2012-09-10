@@ -1,6 +1,8 @@
 package player.entity {
    
    import flash.geom.Point;
+   import flash.geom.Matrix;
+   
    import flash.display.Sprite;
    
    import flash.events.MouseEvent;
@@ -62,6 +64,14 @@ package player.entity {
          mAppearanceObject = mAppearanceObjectsContainer;
          
          mWorld.RegisterShapeAiType (mOriginalAiType, mAiType);
+
+// test
+//if (mAppearanceObject.hasOwnProperty ("cacheAsBitmapMatrix"))
+//{
+//   mAppearanceObject.cacheAsBitmap = true;
+//   (mAppearanceObject as Object).cacheAsBitmapMatrix = new Matrix();
+//}
+// or use mBitmapData.draw (this)
       }
       
       public function IsVisualShape ():Boolean

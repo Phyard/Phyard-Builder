@@ -96,12 +96,7 @@ package player.entity {
       protected var mBallTypeDotPercent:Number = 0.67;
       
       override public function UpdateAppearance ():void
-      {
-// test
-//cacheAsBitmap = true;
-//cacheAsBitmapMatrix = new Matrix();
-// or use mBitmapData.draw (this)
-         
+      {  
          mAppearanceObjectsContainer.visible = mVisible;
          mAppearanceObjectsContainer.alpha = mAlpha; 
          

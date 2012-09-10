@@ -1,7 +1,9 @@
 package player.entity {
    
    import flash.display.Shape;
+   
    import flash.geom.Point;
+   import flash.geom.Matrix;
    
    import com.tapirgames.util.GraphicsUtil;
    
@@ -36,6 +38,14 @@ package player.entity {
          
          mWorld.AddChildToEntityLayer (mAnchorShape);
          mAppearanceObject = mAnchorShape;
+
+// test
+//if (mAppearanceObject.hasOwnProperty ("cacheAsBitmapMatrix"))
+//{
+//   mAppearanceObject.cacheAsBitmap = true;
+//   (mAppearanceObject as Object).cacheAsBitmapMatrix = new Matrix();
+//}
+// or use mBitmapData.draw (this)
       }
       
 //=============================================================

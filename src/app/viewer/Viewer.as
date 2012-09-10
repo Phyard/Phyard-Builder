@@ -163,7 +163,7 @@ package viewer {
          ParseParams ();
          
          addEventListener (Event.ENTER_FRAME, Update);
-         addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
+         addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromStage);
          addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
          addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
          addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
@@ -182,7 +182,7 @@ package viewer {
          RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
       }
 
-      private function OnRemovedFromFrame (e:Event):void
+      private function OnRemovedFromStage (e:Event):void
       {
          stage.removeEventListener (Event.ACTIVATE, OnActivated);
          stage.removeEventListener (Event.DEACTIVATE, OnDeactivated);
@@ -192,12 +192,15 @@ package viewer {
          mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseEvent_GesturePaintLayer);
          mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseEvent_GesturePaintLayer);
          
-         removeEventListener (Event.ENTER_FRAME, Update);
-         removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
-         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
          removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
          removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
          removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+         removeEventListener (Event.ENTER_FRAME, Update);
+         removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromStage);
+         
+         //removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage); 
+               // this one don't need to be removed. Otherwise, 
+               // the game package optimization for 1-level will crash.
       }
 
 //======================================================================
@@ -582,7 +585,6 @@ package viewer {
                break;
             case StateId_Building:
                // "Build ..." text on screen
-
                var buildStatus:int = mWorldDesignProperties.GetBuildingStatus (); 
                if (buildStatus > 0)
                {
@@ -667,7 +669,7 @@ package viewer {
 
       private var mWorldPluginUrl:String;
       private var mLoadDataUrl:String;
-
+      
       public function ParseParams ():void
       {
          try
@@ -679,7 +681,7 @@ package viewer {
                mWorldBinaryData = mParamsFromContainer.mWorldBinaryData;
                mStartRightNow = mParamsFromContainer.mStartRightNow == undefined ? true : mParamsFromContainer.mStartRightNow;
                mWorldPluginDomain = mParamsFromContainer.mWorldDomain;
-
+               
                ReloadPlayerWorld (mParamsFromEditor != null ? mParamsFromEditor.mCurrentSceneId : 0);
             }
             else if (mParamsFromUniViewer != null)
@@ -1151,11 +1153,11 @@ package viewer {
 
             if (mFirstTimePlaying)
             {
-               BuildSkin ();
-
                BuildContextMenu ();
             }
             
+            RebuildSkin ();
+
             mSkin.SetStarted (false);
             
             //mSkin.SetLevelFinishedDialogVisible (false);
@@ -1224,19 +1226,19 @@ package viewer {
             {
                mWorldDesignProperties.Update (0, 1);
             }
-
-            if (mFirstTimePlaying)
-            {
-               if (mStartRightNow) mSkin.SetPlaying (true);
-            }
             
             // ...
+
+            mSkin.SetPlaying (mStartRightNow);
+            
+            mStartRightNow = true; // for following restarts
+            
+            // ...
+            
             if (mParamsFromUniViewer != null && mFirstTimePlaying)
             {
                mSkin.OnDeactivate ();
             }
-            
-            mStartRightNow = true; // for following restarts
          }
          catch (error:Error)
          {
@@ -1391,8 +1393,15 @@ package viewer {
 
       private var mSkin:Skin = null;
 
-      private function BuildSkin ():void
+      private function RebuildSkin ():void
       {
+         // remove old
+         
+         if (mSkin != null)
+            mSkinLayer.removeChild (mSkin);
+         
+         // build new
+         
          var useOverlaySkinForcely:Boolean = (mParamsFromContainer.skin != null && mParamsFromContainer.skin.toLowerCase () == "overlay");
          
          // fot testing
@@ -1881,14 +1890,20 @@ package viewer {
 //======================================================================
 
       // restart current scene/level
-      private function OnRestartGame (data:Object = null):void
+      //private function OnRestartGame (data:Object = null):void
+      //{
+      //   mCurrentSceneID = 0;
+      //   
+      //   if (mSkin != null)
+      //      mSkin.Restart ();
+      //   else
+      //      OnRestart ();
+      //}
+      
+      // also used for context menu
+      public function OnRestartGame (data:Object = null):void
       {
-         mCurrentSceneID = 0;
-         
-         if (mSkin != null)
-            mSkin.Restart ();
-         else
-            OnRestart ();
+         OnLoadScene (0);
       }
 
       private function OnLoadScene (sceneId:int):void
@@ -1977,7 +1992,7 @@ package viewer {
 //===========================================================================
 // interfaces for game template
 //===========================================================================
-
+      
       // return: need game tempalte to continue handling or not
       // also used as a callback for World plugin: (API: System.Back (), not added yet)
       public function OnBackKeyDown ():Boolean

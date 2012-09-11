@@ -5,6 +5,8 @@ package common {
    
    public class KeyCodes
    {
+      public static const Escape:int = Keyboard.ESCAPE; // 27;
+      
       public static const Key_A:int = 65;
       public static const Key_B:int = 66;
       public static const Key_C:int = 67;

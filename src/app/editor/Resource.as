@@ -218,6 +218,10 @@ package editor {
       
       [Embed("../res/keyboard/keyboard.png")]
       public static const Keyboard:Class;
+
+      [Embed("../res/keyboard/key-escape-sel.png")]
+      public static const KeyEscape:Class;
+      
       [Embed("../res/keyboard/key-a-sel.png")]
       public static const KeyA:Class;
       [Embed("../res/keyboard/key-b-sel.png")]

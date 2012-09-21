@@ -90,7 +90,7 @@ package player.trigger.entity
                   if (length > mEntitiesIndexes2.length)
                      length = mEntitiesIndexes2.length; // some ones in array 2 will be ignored
                   
-                  // create hash for fast judgement
+                  // create hash for fast lookup
                   
                   var id:int;
                   var id1:int;
@@ -208,8 +208,14 @@ package player.trigger.entity
                
                var numEntitiesInEditor:int = mWorld.GetNumEntitiesInEditor ();      
          
-               if (entityIndex1 >= numEntitiesInEditor || entityIndex2 >= numEntitiesInEditor)
-                  return PairContainingResult_False;
+               //if (entityIndex1 >= numEntitiesInEditor || entityIndex2 >= numEntitiesInEditor)
+               //   return PairContainingResult_False;
+               //
+               // !!! from v2.02, MergeScene is introduced. Merged entities will be viewed as runtime-created entities.
+               //     limit: "entity creation id > 0xFFFF" will not be supported.
+               //
+               //if (entityIndex1 >= 0xFFFF || entityIndex2 >= 0xFFFF)
+               //   return PairContainingResult_False;
                
                // ...
                var id:int = ((entityIndex1 & 0xFFFF) << 16) | (entityIndex2 & 0xFFFF);

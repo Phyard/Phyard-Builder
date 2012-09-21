@@ -367,8 +367,6 @@ package com.tapirgames.gesture {
                   return NewAnalyzeResult (kGestureName_Line, startSegmentAbsoluteAngle, "numSegments == 2 (>)", mNumPositiveDeltaAngleSegments > 0);
                else
                   return NewAnalyzeResult (kGestureName_Line, endSegmentAbsoluteAngle, "numSegments == 2 (<)", mNumPositiveDeltaAngleSegments > 0);
-               
-               return;
             }
             
             var absIncludeAngle:Number = Math.abs (mEndSegment.mDeltaAngle);

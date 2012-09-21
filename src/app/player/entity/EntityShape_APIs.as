@@ -168,6 +168,23 @@ public static function GetRelatedEntities (seedShape:EntityShape, bTeleportBroth
 // clone and transform
 //================================================================
 
+private static function CreateAndPushEntityDefine (entity:Entity, entityDefineArray:Array, mapEntity2Define:Dictionary):Object
+{
+   var entityDefine:Object = entity.ToEntityDefine (new Object ());
+   if (entityDefine != null)
+   {
+      entityDefine.mCloneFromEntity = entity;
+
+      entityDefine.mAppearanceOrderId = entity.GetAppearanceId ();
+      entityDefine.mCreationOrderId = entity.GetCreationId ();
+      entityDefineArray.push (entityDefine);
+
+      mapEntity2Define [entity] = entityDefine;
+   }
+
+   return entityDefine;
+}
+
 public static function CloneShape (seedShape:EntityShape, targetX:Number, targetY:Number, bCloneBrothers:Boolean, bCloneConnectedMovables:Boolean, bCloneConnectedStatics:Boolean):EntityShape
 {
    if (seedShape == null)
@@ -322,7 +339,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    worldEntityList.UnmarkLastTail ();
    worldEntityBodyList.UnmarkLastTail ();
 
-   // bug! OnCreated and InitEntities may call cline APIs, which then call EntityList.MarkLastTail (),
+   // bug! OnCreated and InitEntities may call clone APIs, which then call EntityList.MarkLastTail (),
    //which will make nest MarkLastTail, ..., then bugs.
 
    //world.RegisterEventHandlersForRuntimeCreatedEntities (true);
@@ -364,23 +381,6 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
 
    //return entityDefine.mEntity as EntityShape;
    return entityDefine.mLoadingTimeInfos.mEntity as EntityShape;
-}
-
-private static function CreateAndPushEntityDefine (entity:Entity, entityDefineArray:Array, mapEntity2Define:Dictionary):Object
-{
-   var entityDefine:Object = entity.ToEntityDefine (new Object ());
-   if (entityDefine != null)
-   {
-      entityDefine.mCloneFromEntity = entity;
-
-      entityDefine.mAppearanceOrderId = entity.GetAppearanceId ();
-      entityDefine.mCreationOrderId = entity.GetCreationId ();
-      entityDefineArray.push (entityDefine);
-
-      mapEntity2Define [entity] = entityDefine;
-   }
-
-   return entityDefine;
 }
 
 //================================================================

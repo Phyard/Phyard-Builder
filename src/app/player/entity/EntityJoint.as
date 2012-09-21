@@ -47,9 +47,9 @@ package player.entity {
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -71,7 +71,10 @@ package player.entity {
             // for joints with 1 anchor in editor (hinge)
             if (entityDefine.mAnchorEntityIndex != undefined)
             {
-               mAnchor1 = mWorld.GetEntityByCreateOrderId (entityDefine.mAnchorEntityIndex, true) as SubEntityJointAnchor; // may be a runtime-created entity
+               var anchorIndex:int = entityDefine.mAnchorEntityIndex;
+               if (anchorIndex >= 0)
+                  anchorIndex = extraInfos.mEntityIdCorrectionTable [anchorIndex];
+               mAnchor1 = mWorld.GetEntityByCreateOrderId (anchorIndex, true) as SubEntityJointAnchor; // may be a runtime-created entity
                
                mAnchor2 = new SubEntityJointAnchor (mWorld); // this one doesn't exit in editor
                mAnchor2.SetPositionX (mAnchor1.GetPositionX ());
@@ -89,12 +92,18 @@ package player.entity {
             // for joint with 2 anchors in editor (slider, distance, spring, )
             if (entityDefine.mAnchor1EntityIndex != undefined)
             {
-               mAnchor1 = mWorld.GetEntityByCreateOrderId (entityDefine.mAnchor1EntityIndex, true) as SubEntityJointAnchor; // may be a runtime-created entity
+               var anchor1Index:int = entityDefine.mAnchor1EntityIndex;
+               if (anchor1Index >= 0)
+                  anchor1Index = extraInfos.mEntityIdCorrectionTable [anchor1Index];
+               mAnchor1 = mWorld.GetEntityByCreateOrderId (anchor1Index, true) as SubEntityJointAnchor; // may be a runtime-created entity
             }
 
             if (entityDefine.mAnchor2EntityIndex != undefined)
             {
-               mAnchor2 = mWorld.GetEntityByCreateOrderId (entityDefine.mAnchor2EntityIndex, true) as SubEntityJointAnchor; // may be a runtime-created entity
+               var anchor2Index:int = entityDefine.mAnchor2EntityIndex;
+               if (anchor2Index >= 0)
+                  anchor2Index = extraInfos.mEntityIdCorrectionTable [anchor2Index];
+               mAnchor2 = mWorld.GetEntityByCreateOrderId (anchor2Index, true) as SubEntityJointAnchor; // may be a runtime-created entity
             }
 
             // both anchors should not be null now
@@ -110,14 +119,28 @@ package player.entity {
             // they will be corrected in ConfirmConnectedShapes.
             
             if (entityDefine.mConnectedShape1Index != undefined)
-               mAnchor1.mAnchorIndex = entityDefine.mConnectedShape1Index;
+            {
+               var shape1Index:int = entityDefine.mConnectedShape1Index;
+               if (shape1Index >= 0)
+                  shape1Index = extraInfos.mEntityIdCorrectionTable [shape1Index];
+               mAnchor1.mAnchorIndex = shape1Index;
+            }
             else
-               mAnchor1.mAnchorIndex = Define.EntityId_None; // auto 
+            {
+               mAnchor1.mAnchorIndex = Define.EntityId_None; // auto
+            } 
                
             if (entityDefine.mConnectedShape2Index != undefined)
-               mAnchor2.mAnchorIndex = entityDefine.mConnectedShape2Index;
+            {
+               var shape2Index:int = entityDefine.mConnectedShape2Index;
+               if (shape2Index >= 0)
+                  shape2Index = extraInfos.mEntityIdCorrectionTable [shape2Index];
+               mAnchor2.mAnchorIndex = shape2Index;
+            }
             else
+            {
                mAnchor2.mAnchorIndex = Define.EntityId_None; // auto
+            }
          }
       }
       

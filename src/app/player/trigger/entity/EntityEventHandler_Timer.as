@@ -34,9 +34,9 @@ package player.trigger.entity
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -51,22 +51,24 @@ package player.trigger.entity
             {
                if (entityDefine.mPreFunctionDefine != undefined)
                {
+                  // ! clone is important
                   var preCodeSnippetDefine:CodeSnippetDefine = ((entityDefine.mPreFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                   preCodeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
    
                   mPreEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mPreFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
                   mPreEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
-                  mPreEventHandlerDefinition.SetCodeSnippetDefine (preCodeSnippetDefine);
+                  mPreEventHandlerDefinition.SetCodeSnippetDefine (preCodeSnippetDefine, extraInfos);
                }
                
                if (entityDefine.mPostFunctionDefine != undefined)
                {
+                  // ! clone is important
                   var postCodeSnippetDefine:CodeSnippetDefine = ((entityDefine.mPostFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                   postCodeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
    
                   mPostEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mPostFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
                   mPostEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
-                  mPostEventHandlerDefinition.SetCodeSnippetDefine (postCodeSnippetDefine);
+                  mPostEventHandlerDefinition.SetCodeSnippetDefine (postCodeSnippetDefine, extraInfos);
                }
             }
             //<<

@@ -64,9 +64,9 @@ package player.entity {
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {

@@ -58,7 +58,7 @@ package player.entity {
          mWorld.RegisterEntity (this);
       }
 
-      public function Create (createStageId:int, entityDefine:Object):void
+      public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
          if (createStageId == 0)
          {
@@ -351,7 +351,12 @@ package player.entity {
 
       public function InitCustomPropertyValues ():void
       {
-         mCustomProeprtySpace = Global.CloneEntityPropertyInitialValues ();
+         mCustomProeprtySpace = Global.GetCustomEntityVariableSpace ().CloneSpace ();
+      }
+      
+      public function OnNumCustomEntityVariablesChanged ():void
+      {
+         mCustomProeprtySpace = Global.GetCustomEntityVariableSpace ().AppendMissedVariablesFor (mCustomProeprtySpace);
       }
 
       public function GetCustomProperty (spaceId:int, propertyId:int):Object
@@ -475,7 +480,7 @@ package player.entity {
 
       final public function Initialize ():void
       {
-         if (mAlreadyDestroyed || mAlreadyInitialized) // if is possible an entity initialized before this entity has made this entity destroyed.
+         if (mAlreadyDestroyed || mAlreadyInitialized) // it is possible an entity initialized before this entity has made this entity destroyed.
             return;
 
          mAlreadyInitialized = true;

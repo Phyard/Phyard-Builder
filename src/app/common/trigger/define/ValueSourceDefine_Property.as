@@ -5,7 +5,7 @@ package common.trigger.define
    public class ValueSourceDefine_Property extends ValueSourceDefine
    {
       public var mEntityValueSourceDefine:ValueSourceDefine;
-      public var mSpacePackageId:int;
+      public var mSpacePackageId:int; // is always 0 now.
       public var mPropertyId:int;
       
       public function ValueSourceDefine_Property (entityValueSourceDefine:ValueSourceDefine, spaceId:int, propertyId:int)

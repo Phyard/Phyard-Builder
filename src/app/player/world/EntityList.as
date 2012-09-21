@@ -477,5 +477,30 @@ package player.world {
 
          DelayUnregisterEntities ();
       }
+      
+      internal function OnNumCustomEntityVariablesChanged ():void
+      {
+         mIsRemovingLocked = true;
+
+         var entity:Entity = mHead;
+         if (entity != null)
+         {
+            var tail:Entity = mTail;
+
+            while (true)
+            {
+               entity.OnNumCustomEntityVariablesChanged ();
+
+               if (entity == tail)
+                  break;
+
+               entity = entity.mNextEntity;
+            }
+         }
+
+         mIsRemovingLocked = false;
+
+         DelayUnregisterEntities ();
+      }
    }
 }

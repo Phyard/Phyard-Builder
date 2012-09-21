@@ -172,7 +172,7 @@ package common {
          return costomFunction;
       }
       
-      public static function CreateCodeSnippet (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, codeSnippetDefine:CodeSnippetDefine):CodeSnippet
+      public static function CreateCodeSnippet (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, codeSnippetDefine:CodeSnippetDefine, extraInfos:Object):CodeSnippet
       {
          var lineNumber:int;
          var callingInfo:FunctionCallingLineInfo;
@@ -209,7 +209,7 @@ package common {
             
             if (callingInfo.mIsValid)
             {
-               callingInfo.mFunctionCallingForPlaying = FunctionCallingDefine2FunctionCalling (lineNumber, customFunctionDefinition, playerWorld, callingInfo.mFunctionCallingDefine);
+               callingInfo.mFunctionCallingForPlaying = FunctionCallingDefine2FunctionCalling (lineNumber, customFunctionDefinition, playerWorld, callingInfo.mFunctionCallingDefine, extraInfos);
                validCallingInfos [numValidCallings ++] = callingInfo;
                
                if (lastCallingInfo != null)
@@ -395,7 +395,7 @@ package common {
          return goodCallingInfo;
       }
       
-      public static function FunctionCallingDefine2FunctionCalling (lineNumber:int, customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, funcCallingDefine:FunctionCallingDefine):FunctionCalling
+      public static function FunctionCallingDefine2FunctionCalling (lineNumber:int, customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, funcCallingDefine:FunctionCallingDefine, extraInfos:Object):FunctionCalling
       {
          var function_id:int = funcCallingDefine.mFunctionId;
          var func_definition:FunctionDefinition;
@@ -428,9 +428,9 @@ package common {
             dafault_value_source_define = func_definition.GetDefaultInputValueSourceDefine (i);
             
             if (i >= funcCallingDefine.mNumInputs) // fill the missed parameters
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
             else                                   // use the value set by designer
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
                
             value_source.mNextParameter = value_source_list;
             value_source_list = value_source;
@@ -443,7 +443,7 @@ package common {
             if (i >= funcCallingDefine.mNumOutputs) // fill the missed parameters
                value_target = new Parameter ();
             else
-               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], func_definition.GetOutputParamValueType (i));
+               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], func_definition.GetOutputParamValueType (i), extraInfos);
             
             value_target.mNextParameter = value_target_list;
             value_target_list = value_target;
@@ -484,7 +484,7 @@ package common {
          return calling;
       }
       
-      public static function ValueSourceDefine2InputValueSource (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int, defaultDirectValue:Object):Parameter
+      public static function ValueSourceDefine2InputValueSource (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int, defaultDirectValue:Object, extraInfos:Object):Parameter
       {
          var value_source:Parameter = null;
          
@@ -496,7 +496,7 @@ package common {
             
             //assert (valueType == direct_source_define.mValueType);
             
-            value_source = new Parameter_Direct (ValidateDirectValueObject_Define2Object (playerWorld, valueType, direct_source_define.mValueObject));
+            value_source = new Parameter_Direct (ValidateDirectValueObject_Define2Object (playerWorld, valueType, direct_source_define.mValueObject, extraInfos));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -510,12 +510,16 @@ package common {
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Session:
+                  if (variable_index >= 0)
+                     variable_index += extraInfos.mBeinningSessionVariableIndex;
                   variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableAt (variable_index);
                   if (variable_instance != null)
                      value_source = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
+                  if (variable_index >= 0)
+                     variable_index += extraInfos.mBeinningGlobalVariableIndex;
                   variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
                   if (variable_instance != null)
                      value_source = new Parameter_Variable (variable_instance);
@@ -544,19 +548,23 @@ package common {
          {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
-            value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, null)
-                                                      , property_source_define.mSpacePackageId, property_source_define.mPropertyId);
+            // here, assume property_source_define.mSpacePackageId is always 0.
+            var customPropertyId:int = property_source_define.mPropertyId as int;
+            if (customPropertyId >= 0)
+               customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
+            value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, null, extraInfos)
+                                                      , property_source_define.mSpacePackageId, customPropertyId);
          }
          
          if (value_source == null)
          {
-            value_source = new Parameter_Direct (ValidateDirectValueObject_Define2Object (playerWorld, valueType, defaultDirectValue));
+            value_source = new Parameter_Direct (ValidateDirectValueObject_Define2Object (playerWorld, valueType, defaultDirectValue, extraInfos));
          }
          
          return value_source;
       }
       
-      public static function ValueTargetDefine2ReturnValueTarget (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueTargetDefine:ValueTargetDefine, valueType:int):Parameter
+      public static function ValueTargetDefine2ReturnValueTarget (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueTargetDefine:ValueTargetDefine, valueType:int, extraInfos:Object):Parameter
       {
          var value_target:Parameter = null;
          
@@ -578,12 +586,16 @@ package common {
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Session:
+                  if (variable_index >= 0)
+                     variable_index += extraInfos.mBeinningSessionVariableIndex;
                   variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableAt (variable_index);
                   if (variable_instance != null)
                      value_target = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
+                  if (variable_index >= 0)
+                     variable_index += extraInfos.mBeinningGlobalVariableIndex;
                   variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
                   if (variable_instance != null)
                      value_target = new Parameter_Variable (variable_instance);
@@ -612,8 +624,12 @@ package common {
          {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             
-            value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, null)
-                                                      , property_target_define.mSpacePackageId, property_target_define.mPropertyId);
+            // here, assume property_source_define.mSpacePackageId is always 0.
+            var customPropertyId:int = property_target_define.mPropertyId as int;
+            if (customPropertyId >= 0)
+               customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
+            value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, null, extraInfos)
+                                                      , property_target_define.mSpacePackageId, customPropertyId);
          }
          
          if (value_target == null)
@@ -626,7 +642,7 @@ package common {
          return value_target;
       }
       
-      private static function ValidateDirectValueObject_Define2Object (playerWorld:World, valueType:int, valueObject:Object):Object
+      private static function ValidateDirectValueObject_Define2Object (playerWorld:World, valueType:int, valueObject:Object, extraInfos:Object = null):Object
       {
          switch (valueType)
          {
@@ -648,11 +664,19 @@ package common {
                }
                else
                {
-                  return playerWorld.GetEntityByCreateOrderId (entityIndex, false); // must be an entity placed in editor
+                  if (extraInfos != null)
+                     entityIndex = extraInfos.mEntityIdCorrectionTable [entityIndex];
+                  //return playerWorld.GetEntityByCreateOrderId (entityIndex, false); // must be an entity placed in editor (before v2.02)
+                  return playerWorld.GetEntityByCreateOrderId (entityIndex, true); // may be an entity runtime created (from v2.02, merging scene is added)
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return playerWorld.GetCollisionCategoryById (valueObject as int);
+            {
+               var ccatIndex:int = valueObject as int;
+               if (ccatIndex >= 0 && extraInfos != null)
+                  ccatIndex += extraInfos.mBeinningCCatIndex;
+               return playerWorld.GetCollisionCategoryById (ccatIndex);
+            }
             case ValueTypeDefine.ValueType_Module:
             {
                var moduleIndex:int = valueObject as int;
@@ -688,19 +712,30 @@ package common {
       }
       
       //public static function VariableSpaceDefine2VariableSpace (playerWorld:World, variableSpaceDefine:VariableSpaceDefine):VariableSpace // v1.52 only
-      public static function VariableDefines2VariableSpace (playerWorld:World, variableDefines:Array):VariableSpace // supportInitalValues parameter:is not essential
+      // if variableSpace is not null, append new one into it and return it.
+      public static function VariableDefines2VariableSpace (playerWorld:World, variableDefines:Array, variableSpace:VariableSpace):VariableSpace // supportInitalValues parameter:is not essential
       {
          //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
-         var numVariables:int = variableDefines.length;
-         var variableSpace:VariableSpace = new VariableSpace (numVariables);
+         var numNewVariables:int = variableDefines.length;
+         var numOldVariables:int;
+         if (variableSpace == null)
+         {
+            numOldVariables = 0;
+            variableSpace = new VariableSpace (numNewVariables);
+         }
+         else
+         {
+            numOldVariables = variableSpace.GetNumVariables ();
+            variableSpace.SetNumVariables (numOldVariables + numNewVariables);
+         }
          
-         for (var variableId:int = 0; variableId < numVariables; ++ variableId)
+         for (var variableId:int = 0; variableId < numNewVariables; ++ variableId)
          {
             //var variableInstanceDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
             var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
             var direct_source_define:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
             
-            var variableInstance:VariableInstance = variableSpace.GetVariableAt (variableId);
+            var variableInstance:VariableInstance = variableSpace.GetVariableAt (variableId + numOldVariables);
             variableInstance.SetName (variableInstanceDefine.mName);
             variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
          }
@@ -709,8 +744,14 @@ package common {
       }
       
       // this function is for validating entity and ccat session variables when restarting a level
-      public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableSpace:VariableSpace/*, variableDefines:Array*/):void
+      // if variableDefines is not null, the lenght of variableSpace will be adjusted to variableDefines.length
+      public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableSpace:VariableSpace, variableDefines:Array):void
       {
+         if (variableDefines != null)
+            variableSpace.SetNumVariables (variableDefines.length);
+         
+         // ...
+         
          var convertedArrays:Dictionary = new Dictionary ();
          
          var numVariables:int = variableSpace.GetNumVariables ();

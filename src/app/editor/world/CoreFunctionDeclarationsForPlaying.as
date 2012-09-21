@@ -1377,6 +1377,12 @@ package editor.world {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_MergeLevel, world_general_package, "Merge Level Into The Current One", null, null,
+                     [
+                        new VariableDefinitionScene ("Level"),
+                     ],
+                     null
+                  );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_RestartLevel, world_general_package, "Restart Level", null, null,
                      null,

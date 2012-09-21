@@ -592,7 +592,7 @@ package viewer {
                   
                   SetErrorMessage (null); // will call this.visible = true
                   
-                  if (! (mParamsFromUniViewer != null && mFirstTimePlaying))
+                  if (! ((mParamsFromEditor != null) || (mParamsFromUniViewer != null && mFirstTimePlaying)))
                      SetFadingStatus (-1);
                   
                   ChangeState (StateId_Playing);
@@ -1997,6 +1997,28 @@ package viewer {
       // also used as a callback for World plugin: (API: System.Back (), not added yet)
       public function OnBackKeyDown ():Boolean
       {
+         /*
+         if (skin != null)
+         {
+            if (skin is visible)
+            {
+               if (is playing)
+                  pause;
+               else if (mParamsFromContainer.OnExitLevel != null)
+                  ...
+            }
+            else if (world.OnExternalEscapeDown ())
+            {
+               // do nothing
+            }
+            else if (mParamsFromContainer.OnExitLevel != null)
+            {
+               ...
+            }
+         }
+         */
+         /////////////////////
+         
          if (mSkin != null)
          {
             if (mSkin.AreSomeDialogsVisible ())
@@ -2021,12 +2043,14 @@ package viewer {
                // close sounds
             }
             else
+            {
                return false;
+            }
             
             return true;
          }
          
-         return false;
+         return mErrorMessageLayer.visible;
       }
       
       // sound

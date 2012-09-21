@@ -43,6 +43,7 @@ package editor.world {
          ];
       
       public static const mKeyCodeList:Array = [
+            {label:"Escape", data:KeyCodes.Escape},
             {label:"0", data:KeyCodes.Key_0},
             {label:"1", data:KeyCodes.Key_1},
             {label:"2", data:KeyCodes.Key_2},

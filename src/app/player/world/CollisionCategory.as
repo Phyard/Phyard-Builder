@@ -25,8 +25,19 @@ package player.world
       
       internal function SetTableLength (length:int):void
       {
-         mEnemyTable = new Array (length);
-         for (var i:int = 0; i < length; ++ i)
+         var startIndex:int;
+         if (mEnemyTable != null) // for merging
+         {
+            startIndex = mEnemyTable.length;
+            mEnemyTable.length = length; // for c/java, more need to do
+         }
+         else
+         {
+            startIndex = 0;
+            mEnemyTable = new Array (length);
+         }
+
+         for (var i:int = startIndex; i < length; ++ i)
          {
             mEnemyTable [i] = true; // default
          }

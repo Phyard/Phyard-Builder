@@ -20,9 +20,9 @@ package player.trigger.entity
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -44,8 +44,13 @@ package player.trigger.entity
                   
                   for (var i:int = length - 1; i >= 0; -- i)
                   {
-                     // must be an entity palced in editor
-                     newOne = new ConditionAndTargetValue (mWorld.GetEntityByCreateOrderId (int(conditionEntityIndexes [i]), false) as EntityCondition, int (targetValues [i]));
+                     // must be an entity palced in editor (before v2.02)
+                     //newOne = new ConditionAndTargetValue (mWorld.GetEntityByCreateOrderId (int(conditionEntityIndexes [i]), false) as EntityCondition, int (targetValues [i]));
+                     
+                     // from v2.02, merging scene is added
+                     var conditionEntityIndex:int = conditionEntityIndexes [i] as int;
+                     newOne = new ConditionAndTargetValue (mWorld.GetEntityByCreateOrderId (conditionEntityIndex, true) as EntityCondition, targetValues [i] as int);
+                                                                              // NOT only support entities placed in editor
                      
                      newOne.mNextConditionAndTargetValue = mInputConditionListHead;
                      mInputConditionListHead = newOne;

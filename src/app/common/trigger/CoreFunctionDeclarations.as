@@ -1292,6 +1292,12 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_MergeLevel,
+                     [
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ],
+                     null
+                  );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_RestartLevel,
                      null,

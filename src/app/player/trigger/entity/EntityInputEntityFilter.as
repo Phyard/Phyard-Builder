@@ -32,14 +32,15 @@ package player.trigger.entity
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
             if (entityDefine.mFunctionDefine != undefined)
             {
+               // ! clone is important
                var codeSnippetDefine:CodeSnippetDefine = ((entityDefine.mFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
@@ -48,7 +49,7 @@ package player.trigger.entity
                else
                   mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetEntityFilterFunctionDeclaration ());
                
-               mFilterDefinition.SetCodeSnippetDefine (codeSnippetDefine);
+               mFilterDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
             }
          }
       }
@@ -128,6 +129,12 @@ package player.trigger.entity
       // as input of an event handler
       override public function RegisterEventHandlerForRuntimeCreatedEntity (entity:Entity, eventId:int, eventHandler:EntityEventHandler):void
       {
+         if (mIsPairSelector)
+            return;
+         
+         if (entity == null || entity.IsDestroyedAlready ())
+            return;
+         
          if (DoFilterEntity (entity))
          {
             entity.RegisterEventHandler (eventId, eventHandler);

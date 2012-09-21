@@ -232,6 +232,7 @@ package player.trigger {
       // game / design
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
@@ -2072,6 +2073,15 @@ package player.trigger {
             return;
 
          Global.UI_OnLoadScene (levelIndex);
+      }
+      
+      public static function MergeLevelIntoTheCurrentOne (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = int (valueSource.EvaluateValueObject ());
+         if (levelIndex < 0)
+            return;
+         
+         Global.MergeScene (levelIndex);
       }
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void

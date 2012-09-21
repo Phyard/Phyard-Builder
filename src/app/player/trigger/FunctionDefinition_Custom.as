@@ -70,9 +70,9 @@ package player.trigger
       }
       //<<
       
-      public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
+      public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine, extraInfos:Object):void
       {
-         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, Global.GetCurrentWorld (), codeSnippetDefine);
+         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, Global.GetCurrentWorld (), codeSnippetDefine, extraInfos);
          mPrimaryFunctionInstance.SetAsCurrent ();
       }
       

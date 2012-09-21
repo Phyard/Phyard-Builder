@@ -3,6 +3,7 @@ package player.design
    import flash.geom.Point;   
    
    import player.world.World;
+   import player.world.EntityList
    
    import player.trigger.TriggerEngine;
    import player.trigger.VariableSpace;
@@ -26,16 +27,23 @@ package player.design
    
    import common.shape.*;
    
+   import common.DataFormat2;
+
    import common.CoordinateSystem;
    
    import common.Transform2D;
    import common.Define;
+   
+   // todo: merge this class with World
    
    public class Global
    {
       public static var sTheGlobal:Global = null;
       
       public static var mCurrentWorld:World = null;
+      
+      public static var mWorldDefine:Object = null;
+                  // currently for MergeScene purpose
       
       // these variables are static, which mmeans there can only be one player instance running at the same time.
       
@@ -77,10 +85,10 @@ package player.design
       public static var UI_SetZoomScale:Function;
       public static var UI_IsSoundEnabled:Function;
       public static var UI_SetSoundEnabled:Function;
-      public static var Viewer_IsAccelerometerSupported;
-      public static var Viewer_GetAcceleration;
-      public static var _GetDebugString;
-      public static var Viewer_SetMouseGestureSupported;
+      public static var Viewer_IsAccelerometerSupported:Function;
+      public static var Viewer_GetAcceleration:Function;
+      public static var _GetDebugString:Function;
+      public static var Viewer_SetMouseGestureSupported:Function;
       
 //==============================================================================
 // temp for playing in editor.
@@ -90,9 +98,8 @@ package player.design
    {
       sTheGlobal = null;
       
-      mSessionVariableSpace = null;
-      mGlobalVariableSpace = null;
-      mEntityVariableSpace = null;
+      mCurrentWorld = null;
+      mWorldDefine = null;
       
       mRegisterVariableSpace_Boolean = null;
       mRegisterVariableSpace_String = null;
@@ -101,6 +108,12 @@ package player.design
       mRegisterVariableSpace_CollisionCategory = null;
       mRegisterVariableSpace_Array = null;
       
+      mSessionVariableSpace = null;
+      mGlobalVariableSpace = null;
+      mEntityVariableSpace = null;
+      
+      mRandomNumberGenerators = null;
+      
       mImageBitmaps = null;
       mImageBitmapDivisions = null;
       mAssembledModules = null;
@@ -108,11 +121,53 @@ package player.design
       
       mSounds = null;
       
-      mRandomNumberGenerators = null;
-      
       Sound.StopAllSounds ();
+      
+   // callbacks from viewer
+      
+      UI_OnLoadScene = null;
+      UI_RestartPlay = null;
+      UI_IsPlaying = null;
+      UI_SetPlaying = null;
+      UI_GetSpeedX = null;
+      UI_SetSpeedX = null;
+      UI_GetZoomScale = null;
+      UI_SetZoomScale = null;
+      UI_IsSoundEnabled = null;
+      UI_SetSoundEnabled = null;
+      Viewer_IsAccelerometerSupported;
+      Viewer_GetAcceleration = null;
+      _GetDebugString = null;
+      Viewer_SetMouseGestureSupported = null;
    }
+   
+   public static function MergeScene (levelIndex):void
+   {
+      var world:World = Global.GetCurrentWorld ();
+      var worldEntityList:EntityList = world.GetEntityList ();
+      var worldEntityBodyList:EntityList = world.GetEntityBodyList ();
+   
+      worldEntityList.MarkLastTail ();
+      worldEntityBodyList.MarkLastTail ();
+      
+      Global.mWorldDefine.mCurrentSceneId = levelIndex;
+      DataFormat2.WorldDefine2PlayerWorld (Global.mWorldDefine, world, true);
+      
+      world.BuildEntityPhysics (true);
+      var mergedEntities:Array = worldEntityList.GetEntitiesFromLastMarkedTail ();
+   
+      worldEntityList.UnmarkLastTail ();
+      worldEntityBodyList.UnmarkLastTail ();
 
+      world.RegisterEventHandlersForRuntimeCreatedEntities (true, mergedEntities);
+      EntityList.OnCreated_RuntimeCreatedEntities (mergedEntities);
+      if (world.ShouldInitRuntimeCteatedEntitiesManually ())
+      {
+         world.RegisterEventHandlersForRuntimeCreatedEntities (false, mergedEntities);
+         EntityList.InitEntities_RuntimeCreatedEntities (mergedEntities);
+      }
+   }
+   
 //==============================================================================
 // static values
 //==============================================================================
@@ -164,6 +219,7 @@ package player.design
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
          
          //
+         UI_OnLoadScene = null;
          UI_RestartPlay = null;
          UI_IsPlaying = null;
          UI_SetPlaying = null;
@@ -173,6 +229,10 @@ package player.design
          UI_SetZoomScale = null;
          UI_IsSoundEnabled = null;
          UI_SetSoundEnabled = null;
+         Viewer_IsAccelerometerSupported;
+         Viewer_GetAcceleration = null;
+         _GetDebugString = null;
+         Viewer_SetMouseGestureSupported = null;
          
          //
          Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
@@ -220,7 +280,7 @@ package player.design
       }
       
       //public static function InitCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
-      public static function InitCustomVariables (globalVarialbeDefines:Array, entityVarialbeDefines:Array, sessionVariableDefines:Array):void // sessionVariableDefines added from v1.57
+      public static function InitCustomVariables (globalVarialbeDefines:Array, entityVarialbeDefines:Array, sessionVariableDefines:Array, isMerging:Boolean = false):void // sessionVariableDefines added from v1.57
       {
          //>> v1.52 only
          //var numSpaces:int;
@@ -242,20 +302,28 @@ package player.design
          //}
          //<<
          
-         if (mSessionVariableSpace == null) // for restart, this is false
+         if (mSessionVariableSpace == null) // load from stretch
          {
-            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines);
+            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, null);
          }
-         else
+         else // restart level or merge level
          {
-            // reevaluate placed-in-editor entities and ccats
-            // nullify non-placed-in-editor entities and ccats
-            // potiential decision: discard session variables since a later version, use Game_Data_Save API alikes instead. 
-
-            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mSessionVariableSpace/*, sessionVariableDefines*/);
+            if (isMerging)
+            {
+               mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, mSessionVariableSpace);
+            }
+            else
+            {
+               // reevaluate placed-in-editor entities and ccats
+               // nullify non-placed-in-editor entities and ccats
+               // potiential decision: discard session variables since a later version, use Game_Data_Save API alikes instead. 
+   
+               TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mSessionVariableSpace, sessionVariableDefines);
+            }
          }
-         mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines);
-         mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines);
+         
+         mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines, isMerging ? mGlobalVariableSpace : null);
+         mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines, isMerging ? mEntityVariableSpace : null);
       }
       
       public static function GetSessionVariableSpace ():VariableSpace
@@ -275,6 +343,11 @@ package player.design
          return mGlobalVariableSpace;
       }
       
+      public static function GetCustomEntityVariableSpace ():VariableSpace
+      {
+         return mEntityVariableSpace;
+      }
+      
       //>> v1.52 only
       //// propertyValues should not be null
       //public static function InitEntityPropertyValues (proeprtySpaces:Array):void
@@ -289,10 +362,10 @@ package player.design
       //}
       //<<
       
-      public static function CloneEntityPropertyInitialValues ():VariableSpace
-      {
-         return mEntityVariableSpace.CloneSpace ();
-      }
+      //public static function CloneEntityPropertyInitialValues ():VariableSpace
+      //{
+      //   return mEntityVariableSpace.CloneSpace ();
+      //}
       
       public static function GetDefaultEntityPropertyValue (propertyId:int):Object
       {
@@ -300,20 +373,33 @@ package player.design
          return vi == null ? null : vi.GetValueObject ();
       }
       
-      public static function CreateCustomFunctionDefinitions (functionDefines:Array):void
+      public static function CreateCustomFunctionDefinitions (functionDefines:Array, isMerging:Boolean):void
       {
-         var numFunctions:int = functionDefines.length;
-         mCustomFunctionDefinitions = new Array (numFunctions);
-         
-         for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+         var numOldFunctions:int = mCustomFunctionDefinitions == null ? 0 : mCustomFunctionDefinitions.length;
+         var numNewFunctions:int = functionDefines.length;
+         if (isMerging)
          {
-            mCustomFunctionDefinitions [functionId] = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (functionDefines [functionId] as FunctionDefine, null);
+            mCustomFunctionDefinitions.length = numOldFunctions + numNewFunctions;
          }
+         else
+         {
+            mCustomFunctionDefinitions = new Array (numNewFunctions);
+         }
+         
+         for (var functionId:int = 0; functionId < numNewFunctions; ++ functionId)
+         {
+            mCustomFunctionDefinitions [numOldFunctions + functionId] = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (functionDefines [functionId] as FunctionDefine, null);
+         }
+      }
+      
+      public static function GetNumCustomFunctions ():int
+      {
+         return mCustomFunctionDefinitions == null ? 0 : mCustomFunctionDefinitions.length;
       }
       
       public static function GetCustomFunctionDefinition (functionId:int):FunctionDefinition_Custom
       {
-         if (functionId < 0 || functionId >= mCustomFunctionDefinitions.length)
+         if (functionId < 0 || mCustomFunctionDefinitions == null || functionId >= mCustomFunctionDefinitions.length)
             return null;
          
          return mCustomFunctionDefinitions [functionId] as FunctionDefinition_Custom;

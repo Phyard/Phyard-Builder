@@ -50,9 +50,9 @@ package player.trigger.entity
 //   create
 //=============================================================
 
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
 
          if (createStageId == 0)
          {
@@ -63,18 +63,27 @@ package player.trigger.entity
 
             if (entityDefine.mFunctionDefine != undefined)
             {
+               // ! clone is important
                var codeSnippetDefine:CodeSnippetDefine = ((entityDefine.mFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
 
                mEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (mEventId));
-               mEventHandlerDefinition.SetCodeSnippetDefine (codeSnippetDefine);
+               mEventHandlerDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
             }
 
             // external condition
             if (entityDefine.mInputConditionEntityCreationId != undefined && entityDefine.mInputConditionTargetValue != undefined)
             {
                // must be an entity placed in editor
-               var conditionEntity:EntityCondition = mWorld.GetEntityByCreateOrderId (entityDefine.mInputConditionEntityCreationId, false) as EntityCondition;
+               //var conditionEntity:EntityCondition = mWorld.GetEntityByCreateOrderId (entityDefine.mInputConditionEntityCreationId, false) as EntityCondition;
+               
+               // from v2.02, merging scene is added
+               var conditionEntityId:int = entityDefine.mInputConditionEntityCreationId as int;
+               if (conditionEntityId >= 0)
+                  conditionEntityId = extraInfos.mEntityIdCorrectionTable [conditionEntityId];
+               var conditionEntity:EntityCondition = mWorld.GetEntityByCreateOrderId (conditionEntityId, true) as EntityCondition;
+                                                               // may be runtime created entities
+               
                if (conditionEntity != null)
                {
                   mExternalCondition =  new ConditionAndTargetValue (conditionEntity, entityDefine.mInputConditionTargetValue);
@@ -84,7 +93,14 @@ package player.trigger.entity
             if (entityDefine.mExternalActionEntityCreationId != undefined)
             {
                // must be an entity placed in editor
-                mExternalAction = mWorld.GetEntityByCreateOrderId (entityDefine.mExternalActionEntityCreationId, false) as EntityAction;
+               //mExternalAction = mWorld.GetEntityByCreateOrderId (entityDefine.mExternalActionEntityCreationId, false) as EntityAction;
+               
+               // from v2.02, merging scene is added
+               var actionEntityId:int = entityDefine.mExternalActionEntityCreationId as int;
+               if (actionEntityId >= 0)
+                  actionEntityId = extraInfos.mEntityIdCorrectionTable [actionEntityId];
+               mExternalAction = mWorld.GetEntityByCreateOrderId (actionEntityId, true) as EntityAction;
+                                                               // may be runtime created entities
             }
          }
          else if (createStageId == 1) // somthing to do after all EntitySelectors are created with stageId=0
@@ -92,13 +108,19 @@ package player.trigger.entity
             // entity (pair) assigners
             if (entityDefine.mInputAssignerCreationIds != undefined)
             {
-               var assignerEntityIndexes:Array = entityDefine.mInputAssignerCreationIds;
+               var assignerEntityIndexes:Array = entityDefine.mInputAssignerCreationIds; //.concat ();
                var newElement:ListElement_EntitySelector;
 
                for (var i:int = assignerEntityIndexes.length - 1; i >= 0; -- i)
                {
                   // must be an entity placed in editor
-                  newElement = new ListElement_EntitySelector (mWorld.GetEntityByCreateOrderId (int(assignerEntityIndexes [i]), false) as EntitySelector);
+                  //newElement = new ListElement_EntitySelector (mWorld.GetEntityByCreateOrderId (int(assignerEntityIndexes [i]), false) as EntitySelector);
+                  
+                  var assignerEntityIndex:int = assignerEntityIndexes [i] as int;
+                  if (assignerEntityIndex >= 0)
+                     assignerEntityIndex = extraInfos.mEntityIdCorrectionTable [assignerEntityIndex];
+                  newElement = new ListElement_EntitySelector (mWorld.GetEntityByCreateOrderId (assignerEntityIndex, true) as EntitySelector);
+                                                               // may be runtime created entities
                   newElement.mNextListElement = mFirstEntitySelector;
                   mFirstEntitySelector = newElement;
                }

@@ -85,6 +85,29 @@ package common {
          
          return textureDefine;
       }
+      
+      public static function CorrectEntityRefIndexes (entityIndexes:Array, correctionTable:Array):void
+      {
+         if (entityIndexes != null && correctionTable != null)
+         {
+            var numCorrections:int = correctionTable.length;
+            
+            var num:int = entityIndexes.length;
+            var id:int;
+            for (var i:int = 0; i < num; ++ i)
+            {
+               id = entityIndexes [i];
+               
+               if (id >= 0)
+               {
+                  if (id < numCorrections)
+                     entityIndexes [i] = correctionTable [id];
+                  else
+                     entityIndexes [i] = -1;
+               }
+            }
+         }
+      }
 
 //===========================================================================
 // define -> world
@@ -228,9 +251,16 @@ package common {
 
          return entity;
       }
+      
+      // for Viewer, the prototype is WorldDefine2PlayerWorld (defObject:Object) for all versions of World
       // see Viewer.as to get why here use Object instead of WorldDefine
-      // playerWorld != null for importing, otherwise for laoding
-      public static function WorldDefine2PlayerWorld (defObject:Object, playerWorld:World = null):World
+      // 
+      // playerWorld != null for cloning shape or merging scene, otherwise for loading from stretch
+      // - isMergingScene is true for merging scene, otherwise for cloning shape
+      // 
+      // todo: support multiple scenes
+      // 
+      public static function WorldDefine2PlayerWorld (defObject:Object, playerWorld:World = null, isMergingScene:Boolean = false):World
       {
          var worldDefine:WorldDefine = defObject as WorldDefine;
 
@@ -240,6 +270,10 @@ package common {
 
          if (isLoaingFromStretch)
          {
+            isMergingScene = false; // forcely
+            
+            // todo: maybe it is better to use sceneDefine.mDontFillMissedFieldsAndAdjustNumberValues instead
+            
             if (! worldDefine.mDontFillMissedFieldsAndAdjustNumberValues) // like entityDefine.mLoadingTimeInfos, from v2.00
             {
                FillMissedFieldsInWorldDefine (worldDefine);
@@ -275,15 +309,25 @@ package common {
    //
    //*********************************************************************************************************************************
 
+         var extraInfos:Object = new Object (); // this is introduced along with the MergeScene API
+
          if (isLoaingFromStretch)
          {
             //
             Global.InitGlobalData (worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
+            Global.mWorldDefine = worldDefine;
             
             //
             playerWorld = new World (sceneDefine) ; //worldDefine);
+            extraInfos.mBeinningCCatIndex = 0;
+            playerWorld.CreateCollisionCategories (sceneDefine.mCollisionCategoryDefines, sceneDefine.mCollisionCategoryFriendLinkDefines); //worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
             playerWorld.SetBasicInfos (worldDefine);
             Global.SetCurrentWorld (playerWorld);
+         }
+         else if (isMergingScene)
+         {
+            extraInfos.mBeinningCCatIndex = playerWorld.GetNumCollisionCategories () - 1; // "-1" is to ignore the hidden one
+            playerWorld.CreateCollisionCategories (sceneDefine.mCollisionCategoryDefines, sceneDefine.mCollisionCategoryFriendLinkDefines); //worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
          }
 
    //*********************************************************************************************************************************
@@ -347,6 +391,9 @@ package common {
          }
 
       // register entities by order of creation id
+      
+         var creationIdCorrectionTable:Array = new Array (numEntities); // ! important
+         extraInfos.mEntityIdCorrectionTable = creationIdCorrectionTable;
 
          for (createId = 0; createId < numEntities; ++ createId)
          {
@@ -354,86 +401,125 @@ package common {
             //entity = entityDefine.mEntity;
             entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
 
-            if (entity != null)
+            if (entity != null) // shouldn't
             {
                if (isLoaingFromStretch)
                {
                   entity.Register (entityDefine.mCreationOrderId, entityDefine.mAppearanceOrderId);
                }
-               else
+               else // clone shape or merge scene
                {
                   entity.Register (-1, -1);
-                  entityDefine.mCreationOrderId = entity.GetCreationId ();
+                  
+                  // comment off for it seems it is useless
+                  //if (! isMergingScene) // clone shape
+                  //{
+                  //   entityDefine.mCreationOrderId = entity.GetCreationId ();
+                  //}
                }
+               
+               creationIdCorrectionTable [createId] = entity.GetCreationId ();
+            }
+            else // impossible
+            {
+               creationIdCorrectionTable [createId] = -1;
             }
          }
 
       // init custom variables / correct entity refernce ids
 
-         if (isLoaingFromStretch)
+         // these are the default values for isLoaingFromStretch and cloning shape, not for isMergingScene
+         extraInfos.mBeinningSessionVariableIndex = 0;
+         extraInfos.mBeinningGlobalVariableIndex = 0;
+         extraInfos.mBeinningCustomEntityVariableIndex = 0;
+               
+         if (isLoaingFromStretch || isMergingScene) // isMergingScene must be false
          {
+            if (isMergingScene)
+            {
+               extraInfos.mBeinningSessionVariableIndex = Global.GetSessionVariableSpace ().GetNumVariables ();
+               extraInfos.mBeinningGlobalVariableIndex = Global.GetGlobalVariableSpace ().GetNumVariables ();
+               extraInfos.mBeinningCustomEntityVariableIndex = Global.GetCustomEntityVariableSpace ().GetNumVariables ();
+            }
+            
             //Global.InitCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
             //Global.InitCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines); // before v2.00
-            Global.InitCustomVariables (sceneDefine.mGlobalVariableDefines, sceneDefine.mEntityPropertyDefines, sceneDefine.mSessionVariableDefines);
+            Global.InitCustomVariables (sceneDefine.mGlobalVariableDefines, sceneDefine.mEntityPropertyDefines, sceneDefine.mSessionVariableDefines, isMergingScene);
+                                                                                                                // here isMergingScene must be false
+            
+            // append the missed new custom variables for old entities
+            // (merged with foloowing "init entity custom properties" block)
+            //if (isMergingScene && Global.GetCustomEntityVariableSpace ().GetNumVariables () > extraInfos.mBeinningCustomEntityVariableIndex)
+            //{
+            //   playerWorld.OnCustomEntityVariablesAppended ();
+            //} 
          }
-         else
-         {
-            for (createId = 0; createId < numEntities; ++ createId)
-            {
-               entityDefine = entityDefineArray [createId];
-               //entity = entityDefine.mEntity;
-               entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
-
-               if (Define.IsPhysicsJointEntity (entityDefine.mEntityType))
-               {
-                  if (entityDefine.mConnectedShape1Index >= 0)
-                  {
-                     //entityDefine.mConnectedShape1Index = ((entityDefineArray [entityDefine.mConnectedShape1Index] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
-                     entityDefine.mConnectedShape1Index = ((entityDefineArray [entityDefine.mConnectedShape1Index] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
-                  }
-                  if (entityDefine.mConnectedShape2Index >= 0)
-                  {
-                     //entityDefine.mConnectedShape2Index = ((entityDefineArray [entityDefine.mConnectedShape2Index] as Object).mEntity as Entity).GetCreationId ();
-                     entityDefine.mConnectedShape2Index = ((entityDefineArray [entityDefine.mConnectedShape2Index] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
-                  }
-
-                  //entityDefine.mAnchor1EntityIndex = ((entityDefineArray [entityDefine.mAnchor1EntityIndex] as Object).mEntity as Entity).GetCreationId ();
-                  entityDefine.mAnchor1EntityIndex = ((entityDefineArray [entityDefine.mAnchor1EntityIndex] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
-                  //entityDefine.mAnchor2EntityIndex = ((entityDefineArray [entityDefine.mAnchor2EntityIndex] as Object).mEntity as Entity).GetCreationId ();
-                  entityDefine.mAnchor2EntityIndex = ((entityDefineArray [entityDefine.mAnchor2EntityIndex] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
-               }
-            }
-         }
+         // following is moved to joint.Create (createStageId:int, entityDefine:Object, extraInfos:Object)
+         //else // clone shape
+         //{
+         //   for (createId = 0; createId < numEntities; ++ createId)
+         //   {
+         //      entityDefine = entityDefineArray [createId];
+         //      //entity = entityDefine.mEntity;
+         //      entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
+         //
+         //      if (Define.IsPhysicsJointEntity (entityDefine.mEntityType))
+         //      {
+         //         if (entityDefine.mConnectedShape1Index >= 0)
+         //         {
+         //            //entityDefine.mConnectedShape1Index = ((entityDefineArray [entityDefine.mConnectedShape1Index] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
+         //            entityDefine.mConnectedShape1Index = ((entityDefineArray [entityDefine.mConnectedShape1Index] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
+         //         }
+         //         if (entityDefine.mConnectedShape2Index >= 0)
+         //         {
+         //            //entityDefine.mConnectedShape2Index = ((entityDefineArray [entityDefine.mConnectedShape2Index] as Object).mEntity as Entity).GetCreationId ();
+         //            entityDefine.mConnectedShape2Index = ((entityDefineArray [entityDefine.mConnectedShape2Index] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
+         //         }
+         //
+         //         // here, entityDefine.mAnchorEntityIndex is ignored, the reason is for shape-cloning, all joint defines must have mAnchor1EntityIndex and mAnchor2EntityIndex, and the values must be >= 0
+         //         
+         //         //entityDefine.mAnchor1EntityIndex = ((entityDefineArray [entityDefine.mAnchor1EntityIndex] as Object).mEntity as Entity).GetCreationId ();
+         //         entityDefine.mAnchor1EntityIndex = ((entityDefineArray [entityDefine.mAnchor1EntityIndex] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
+         //         //entityDefine.mAnchor2EntityIndex = ((entityDefineArray [entityDefine.mAnchor2EntityIndex] as Object).mEntity as Entity).GetCreationId ();
+         //         entityDefine.mAnchor2EntityIndex = ((entityDefineArray [entityDefine.mAnchor2EntityIndex] as Object).mLoadingTimeInfos.mEntity as Entity).GetCreationId ();
+         //      }
+         //   }
+         //}
 
       // init entity custom properties
-         for (createId = 0; createId < numEntities; ++ createId)
-         {
-            entityDefine = entityDefineArray [createId];
-            //entity = entityDefine.mEntity;
-            entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
-
-            if (entity != null)
-            {
-               entity.InitCustomPropertyValues ();
-            }
-         }
+         //for (createId = 0; createId < numEntities; ++ createId)
+         //{
+         //   entityDefine = entityDefineArray [createId];
+         //   //entity = entityDefine.mEntity;
+         //   entity = entityDefine.mLoadingTimeInfos.mEntity as Entity;
+         //
+         //   if (entity != null)
+         //   {
+         //      entity.InitCustomPropertyValues ();
+         //   }
+         //   
+         //   // ! for other runtime craeted entities, InitCustomPropertyValues should be called manually.
+         //}
+         playerWorld.OnNumCustomEntityVariablesChanged (); // for both new and old entities
 
       // custom functions
 
-         if (isLoaingFromStretch)
+         if (isLoaingFromStretch || isMergingScene)
          {
-            Global.CreateCustomFunctionDefinitions (sceneDefine.mFunctionDefines);
+            var oldNumCustomFunctions:int = Global.GetNumCustomFunctions ();
+            
+            Global.CreateCustomFunctionDefinitions (sceneDefine.mFunctionDefines, isMergingScene);
 
             var numFunctions:int = sceneDefine.mFunctionDefines.length;
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
             {
                var functionDefine:FunctionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
-               var codeSnippetDefine:CodeSnippetDefine = (functionDefine.mCodeSnippetDefine as CodeSnippetDefine).Clone ();
+               var codeSnippetDefine:CodeSnippetDefine = (functionDefine.mCodeSnippetDefine as CodeSnippetDefine).Clone (); // ! clone is important
                codeSnippetDefine.DisplayValues2PhysicsValues (playerWorld.GetCoordinateSystem ());
 
-               var customFunction:FunctionDefinition_Custom = Global.GetCustomFunctionDefinition (functionId);
-               customFunction.SetDesignDependent (functionDefine.mDesignDependent);
-               customFunction.SetCodeSnippetDefine (codeSnippetDefine);
+               var customFunction:FunctionDefinition_Custom = Global.GetCustomFunctionDefinition (functionId + oldNumCustomFunctions);
+               customFunction.SetDesignDependent (functionDefine.mDesignDependent); // useless
+               customFunction.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
             }
          }
          else // Adjust Cloned Entities Z Order
@@ -475,7 +561,7 @@ package common {
 
                if (entity != null)
                {
-                  entity.Create (createStageId, entityDefine);
+                  entity.Create (createStageId, entityDefine, extraInfos);
                }
             }
          }
@@ -564,7 +650,7 @@ package common {
    //*********************************************************************************************************************************
          
          // for shape clone API, doesn't apply the clear action
-         if (isLoaingFromStretch)
+         if (isLoaingFromStretch || isMergingScene)
          {
             for (createId = 0; createId < numEntities; ++ createId)
             {

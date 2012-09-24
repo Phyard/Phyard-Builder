@@ -1610,17 +1610,49 @@ package common.trigger {
 
      // game / world / sound
 
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_StopAllSounds,
-                     null,
-                     null
-                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_PlaySound,
                      [
                         [ValueTypeDefine.ValueType_Sound,       -1],
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       1],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,      1  ],
+                        [ValueTypeDefine.ValueType_Boolean,       false], // from v2.02
+                        /*[ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0],*/ // to add
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_StopSounds_InLevel,
+                     null,
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_StopSound_CrossLevels,
+                     [
+                        [ValueTypeDefine.ValueType_Sound,       -1],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_IsSoundEnabled,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       true ],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetSoundEnabled,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
+                     null
+                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetGlobalSoundVolume,
+         //            null,
+         //            [
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.5],
+         //            ]
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGlobalSoundVolume,
+         //            [
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.5],
+         //            ],
+         //            null
+         //         );
 
      // game / world / appearance
 

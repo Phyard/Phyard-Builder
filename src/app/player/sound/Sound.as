@@ -6,10 +6,6 @@ package player.sound
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
    
-   import flash.media.SoundMixer;
-   import flash.media.SoundChannel;
-   import flash.media.SoundTransform;
-   
    import com.tapirgames.util.ResourceLoader;
    import com.tapirgames.util.ResourceLoadEvent;
    
@@ -19,48 +15,13 @@ package player.sound
 
    public class Sound extends SoundFile
    {
-      private static var mSoundOn:Boolean = true;
-      private static var mSoundVolume:Number = 0.5;
-      
-      public static function SetSoundEnabled (enalbed:Boolean):void
-      {
-         mSoundOn = enalbed;
-         
-         UpdateSoundVolume ();
-      }
-      
-      public static function SetSoundVolume (volume:Number):void
-      {
-         if (volume < 0.0)
-            volume = 0.0;
-         if (volume > 1.0)
-            volume = 1.0;
-         
-         mSoundVolume = volume;
-         
-         UpdateSoundVolume ();
-      }
-      
-      public static function UpdateSoundVolume ():void
-      {
-         var transform:SoundTransform = new SoundTransform();
-         transform.volume = mSoundOn ? mSoundVolume : 0.0;
-         SoundMixer.soundTransform = transform;
-      }
-      
-      public static function StopAllSounds ():void
-      {
-         SoundMixer.stopAll ();
-      }
-   
-//=====================================
-   
-      private var mSound:flash.media.Sound;
-      //private var mSoundChannel:SoundChannel = null;
+      private var mSound:Object; //flash.media.Sound;
+
       protected var mStatus:int = 0;
          // 0  : pending
          // 1  : ok
          // -1 : error
+
       protected var mId:int = -1; // for debug mainly
       
       public function Sound ()
@@ -82,20 +43,27 @@ package player.sound
          return mStatus;
       }
       
-      public function Play (times:int = 1):void
+      // mxmlc is a shit, using "flash.media.Sound" will get error, sometimes! Without rules!
+      public function GetSoundObject ():Object // flash.media.Sound
       {
-         if (Global.IsSoundEnabled ())
-         {
-            if (mSound != null)
-            {
-               //mSoundChannel = mSound.play ();
-               //mSoundChannel.addEventListener (Event.SOUND_COMPLETE, OnSoundPlayComplete);
-               
-               var loops:int = times <= 0 ? 0x7FFFFFFF : times;
-               mSound.play (0, loops);
-            }
-         }
+         return mSound;
       }
+      
+      // now put in Viewer/LibSound
+      //public function Play (times:int = 1):void
+      //{
+      //   if (Global.IsSoundEnabled ())
+      //   {
+      //      if (mSound != null)
+      //      {
+      //         //mSoundChannel = mSound.play ();
+      //         //mSoundChannel.addEventListener (Event.SOUND_COMPLETE, OnSoundPlayComplete);
+      //         
+      //         var loops:int = times <= 0 ? 0x7FFFFFFF : times;
+      //         mSound.play (0, loops);
+      //      }
+      //   }
+      //}
       
       private var mCallbackOnLoadDone :Function = null;
       private var mCallbackOnLoadError:Function = null;
@@ -123,7 +91,7 @@ package player.sound
       
       private function OnLoadSoundComplete (event:Event):void
       {
-         mSound = (event as ResourceLoadEvent).resource as flash.media.Sound;
+         mSound = (event as ResourceLoadEvent).resource; // as flash.media.Sound;
          
          mStatus = 1;
          

@@ -75,7 +75,6 @@ package player.design
       
    // callbacks from viewer
       
-      public static var UI_OnLoadScene:Function;
       public static var UI_RestartPlay:Function;
       public static var UI_IsPlaying:Function;
       public static var UI_SetPlaying:Function;
@@ -89,12 +88,17 @@ package player.design
       public static var Viewer_GetAcceleration:Function;
       public static var _GetDebugString:Function;
       public static var Viewer_SetMouseGestureSupported:Function;
+      public static var Viewer_OnLoadScene:Function;
+      public static var Viewer_mLibSound:Object;
       
 //==============================================================================
 // temp for playing in editor.
 //==============================================================================
 
-   public static function ClearAll ():void
+   // todo: in non-editing situations, for one-level game package, maybe only turning off sounds is ok enough.
+   // the params:Object parameter is reserved for this intention. 
+   
+   public static function OnViewerDestroyed (params:Object = null):void
    {
       sTheGlobal = null;
       
@@ -121,11 +125,8 @@ package player.design
       
       mSounds = null;
       
-      Sound.StopAllSounds ();
-      
    // callbacks from viewer
       
-      UI_OnLoadScene = null;
       UI_RestartPlay = null;
       UI_IsPlaying = null;
       UI_SetPlaying = null;
@@ -139,6 +140,8 @@ package player.design
       Viewer_GetAcceleration = null;
       _GetDebugString = null;
       Viewer_SetMouseGestureSupported = null;
+      Viewer_OnLoadScene = null;
+      Viewer_mLibSound = null;
    }
    
    public static function MergeScene (levelIndex):void
@@ -197,7 +200,7 @@ package player.design
          
          //
          //if (! isRestartLevel) // before v2.00
-         if (! dontReloadGlobalAssets) // from v2.00
+         if (!dontReloadGlobalAssets) // from v2.00
          {
             mImageBitmaps         = null;
             mImageBitmapDivisions = null;
@@ -207,19 +210,15 @@ package player.design
                // the cached physics values for modules will also be different.
                // TODO: remove cached physics values or update cached physics values in loading stage later.
             
-            mSounds = null; 
+            mSounds = null;
          }
          mAssembledModules     = null;
          mSequencedModules     = null;
          
          //
-         Sound.StopAllSounds ();
-         
-         //
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
          
          //
-         UI_OnLoadScene = null;
          UI_RestartPlay = null;
          UI_IsPlaying = null;
          UI_SetPlaying = null;
@@ -233,6 +232,8 @@ package player.design
          Viewer_GetAcceleration = null;
          _GetDebugString = null;
          Viewer_SetMouseGestureSupported = null;
+         Viewer_OnLoadScene = null;
+         Viewer_mLibSound = null;
          
          //
          Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
@@ -645,8 +646,6 @@ package player.design
       
       public static function CreateSounds (soundDefines:Array):void
       {
-         Sound.UpdateSoundVolume ();
-         
          if (mSounds == null)
          {
             var soundId:int;
@@ -847,32 +846,6 @@ package player.design
       public static function GetRandomNumberGenerator (rngSlot:int):RandomNumberGenerator
       {
          return mRandomNumberGenerators [rngSlot];
-      }
-      
-//==============================================================================
-// sound
-//==============================================================================
-      
-      private static var mIsSoundsEnabled:Boolean = true;
-      
-      public static function IsSoundEnabled ():Boolean
-      {
-         return mIsSoundsEnabled;
-      }
-      
-      public static function SetSoundEnabled (enabled:Boolean):void
-      {
-         if (mIsSoundsEnabled != enabled)
-         {
-            mIsSoundsEnabled = enabled;
-            
-            //if (! mIsSoundsEnabled)
-            //{
-            //   Sound.StopAllSounds ();
-            //}
-
-            Sound.SetSoundVolume (mIsSoundsEnabled ? 1.0 : 0.0);
-         }
       }
       
 //==============================================================================

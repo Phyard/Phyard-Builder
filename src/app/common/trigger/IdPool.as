@@ -319,6 +319,11 @@ package common.trigger {
 
       public static const CoreApiId_800:int = 800; // world
       public static const CoreApiId_801:int = 801; // world
+      public static const CoreApiId_802:int = 802; // world
+      public static const CoreApiId_803:int = 803; // world
+      public static const CoreApiId_804:int = 804; // world
+      public static const CoreApiId_805:int = 805; // world
+      public static const CoreApiId_806:int = 806; // world
 
       public static const CoreApiId_850:int = 850; // CCat
       public static const CoreApiId_851:int = 851; // CCat

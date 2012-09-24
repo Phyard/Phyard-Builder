@@ -39,6 +39,11 @@ package viewer {
    
    import flash.system.Capabilities;
    import flash.utils.getTimer;
+   
+   import flash.media.Sound;
+   import flash.media.SoundChannel;
+   import flash.media.SoundMixer;
+   import flash.media.SoundTransform;
 
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
@@ -58,7 +63,10 @@ package viewer {
 
    public class Viewer extends Sprite
    {
-
+      include "LibCapabilities.as";
+      include "LibGesture.as";
+      include "LibSound.as";
+      
 //======================================================================
 //
 //======================================================================
@@ -201,6 +209,20 @@ package viewer {
          //removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage); 
                // this one don't need to be removed. Otherwise, 
                // the game package optimization for 1-level will crash.
+         
+         // ...
+         
+         CloseAllSounds ();
+               // up to here, for one-level game package, mWorldDesignProperties.OnViewerDestroyed is not called.
+      }
+      
+      // from v2.02, called manually
+      public function Destroy ():void
+      {  
+         if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerDestroyed != null)
+         {
+            mWorldDesignProperties.OnViewerDestroyed ();
+         }
       }
 
 //======================================================================
@@ -984,9 +1006,11 @@ package viewer {
          if (mWorldDesignProperties.SetCacheSystemEvent == null)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
          if (mWorldDesignProperties.GetBuildingStatus == null)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_BuildingStatus;
          if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
-         if (mWorldDesignProperties.mHasSounds == undefined)                 mWorldDesignProperties.mHasSounds = false;
          if (mWorldDesignProperties.mInitialSpeedX == undefined)             mWorldDesignProperties.mInitialSpeedX = 2;
          if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
+         if (mWorldDesignProperties.mHasSounds == undefined)                 mWorldDesignProperties.mHasSounds = false;
+         if (mWorldDesignProperties.mInitialSoundEnabled == undefined)       mWorldDesignProperties.mInitialSoundEnabled = true;
+         if (mWorldDesignProperties.SetSoundEnabled == undefined)            mWorldDesignProperties.SetSoundEnabled = DummyCallback;
          if (mWorldDesignProperties.mPreferredFPS == undefined)              mWorldDesignProperties.mPreferredFPS = 30;
          if (mWorldDesignProperties.mPauseOnFocusLost == undefined)          mWorldDesignProperties.mPauseOnFocusLost = false;
          if (mWorldDesignProperties.RegisterGestureEvent == undefined)       mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
@@ -1066,8 +1090,21 @@ package viewer {
       {
       trace ("ReloadPlayerWorld");
          
-         // reset gesture shapes
-         SetMouseGestureSupported (false, false);
+         try
+         {
+            // reset gesture shapes
+            SetMouseGestureSupported (false, false);
+            
+            StopAllInLevelSounds ();
+            if (! dontReloadGlobalAssets)
+            {
+               StopCrossLevelsSound (null);
+            }
+         }
+         catch (error:Error)
+         {
+            // do nothing
+         }
          
          //var isFirstTime:Boolean = (mPlayerWorld == null);
          mFirstTimePlaying = (mPlayerWorld == null);
@@ -1164,14 +1201,15 @@ package viewer {
             //mSkin.SetHelpDialogVisible (false);
             mSkin.CloseAllVisibleDialogs ();
 
-            mSkin.SetSoundEnabled (mIsSoundEnabled); // will call OnSoundControlChanged ()
+            mSkin.SetSoundEnabled (IsSoundEnabled ()); // will call OnSoundControlChanged ()
             mSkin.SetPlayingSpeedX (mWorldDesignProperties.mInitialSpeedX);
             mSkin.SetZoomScale (mWorldDesignProperties.mInitialZoomScale, false);
 
             // from v1.5
             mWorldPlugin.Call ("SetUiParams", {
                mWorld : mPlayerWorld,
-               OnLoadScene : OnLoadScene, 
+               
+               //UI 
                OnClickRestart : mSkin.Restart,
                IsPlaying : mSkin.IsPlaying,
                SetPlaying : mSkin.SetPlaying,
@@ -1181,10 +1219,21 @@ package viewer {
                SetZoomScale : mSkin.SetZoomScale,
                IsSoundEnabled : mSkin.IsSoundEnabled,
                SetSoundEnabled : mSkin.SetSoundEnabled,
+               //todo: SoundVolume
+               
+               //Viewer
+               OnLoadScene : OnLoadScene,
                IsAccelerometerSupported: IsAccelerometerSupported,
                GetAcceleration: GetAcceleration,
                GetDebugString: GetDebugString,
-               SetMouseGestureSupported: SetMouseGestureSupported
+               SetMouseGestureSupported: SetMouseGestureSupported,
+               mLibSound: {
+                          PlaySound: PlaySound,
+                          StopAllInLevelSounds: StopAllInLevelSounds,
+                          StopCrossLevelsSound: StopCrossLevelsSound
+                          
+                          // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
+               }
             });
 
             // ...
@@ -1984,9 +2033,11 @@ package viewer {
          if (mSkin == null)
             return;
 
-         mIsSoundEnabled = mSkin.IsSoundEnabled ();
+         SetSoundEnabled (mSkin.IsSoundEnabled ());
+         //SetSoundVolume (mSkin.GetSoundVolume ()); // to add
          
-         mWorldDesignProperties.SetSoundEnabled (mSkin.IsSoundEnabled ());
+         // from v2.02, sound status info is stored in Viewer instead of world plugin
+         //mWorldDesignProperties.SetSoundEnabled (mSkin.IsSoundEnabled ());
       }
 
 //===========================================================================
@@ -2051,20 +2102,6 @@ package viewer {
          }
          
          return mErrorMessageLayer.visible;
-      }
-      
-      // sound
-      
-      private static var mIsSoundEnabled:Boolean = true; // to record and init sound setting
-
-      public static function SetSoundEnabled (soundOn:Boolean):void
-      {
-         mIsSoundEnabled = soundOn;
-      }
-      
-      public static function IsSoundEnabled ():Boolean
-      {
-         return mIsSoundEnabled;
       }
       
       //

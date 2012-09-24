@@ -13,6 +13,7 @@ package player.trigger {
    import player.trigger.entity.*;
 
    import player.module.Module;
+
    import player.sound.Sound;
 
    import player.physics.PhysicsEngine;
@@ -291,8 +292,13 @@ package player.trigger {
 
       // game / world / create
 
-         RegisterCoreFunction (CoreFunctionIds.ID_World_StopAllSounds,                        StopAllSounds);
          RegisterCoreFunction (CoreFunctionIds.ID_World_PlaySound,                            PlaySound);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_StopSounds_InLevel,                   StopAllSounds_InLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_StopSound_CrossLevels,                StopSound_CrossLevels);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_IsSoundEnabled,                       IsSoundEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetSoundEnabled,                      SetSoundEnabled);
+         //RegisterCoreFunction (CoreFunctionIds.ID_World_GetGlobalSoundVolume,                 GetGlobalSoundVolume);
+         //RegisterCoreFunction (CoreFunctionIds.ID_World_SetGlobalSoundVolume,                 SetGlobalSoundVolume);
 
       // game / collision category
 
@@ -2072,7 +2078,7 @@ package player.trigger {
          if (levelIndex < 0)
             return;
 
-         Global.UI_OnLoadScene (levelIndex);
+         Global.Viewer_OnLoadScene (levelIndex);
       }
       
       public static function MergeLevelIntoTheCurrentOne (valueSource:Parameter, valueTarget:Parameter):void
@@ -2468,26 +2474,68 @@ package player.trigger {
    // game / world / create
    //*******************************************************************
 
-      public static function StopAllSounds (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         Sound.StopAllSounds ();
-      }
-
       public static function PlaySound (valueSource:Parameter, valueTarget:Parameter):void
       {
          var soundIndex:int = valueSource.EvaluateValueObject () as int;
          if (isNaN (soundIndex))
             soundIndex = -1;
 
-         valueSource = valueSource.mNextParameter;
-         var times:int = int (valueSource.EvaluateValueObject ());
-
          var sound:Sound = Global.GetSoundByIndex (soundIndex);
-         if (sound != null)
+         if (sound != null && sound.GetSoundObject () != null)
          {
-            sound.Play (times);
+            valueSource = valueSource.mNextParameter;
+            var times:int = int (valueSource.EvaluateValueObject ());
+   
+            valueSource = valueSource.mNextParameter;
+            var crossingLevels:Boolean = Boolean (valueSource.EvaluateValueObject ());
+            
+            Global.Viewer_mLibSound.PlaySound (sound.GetSoundObject (), times, crossingLevels);
          }
       }
+
+      public static function StopAllSounds_InLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.Viewer_mLibSound.StopAllInLevelSounds ();
+      }
+      
+      public static function StopSound_CrossLevels (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var soundIndex:int = valueSource.EvaluateValueObject () as int;
+         if (isNaN (soundIndex))
+            soundIndex = -1;
+         
+         var sound:Sound = null;
+         if (soundIndex >= 0)
+         {
+            sound = Global.GetSoundByIndex (soundIndex);
+            if (sound == null || sound.GetSoundObject () == null)
+               return;
+         }
+         
+         // null means all (when soundIndex < 0)
+            
+         Global.Viewer_mLibSound.StopCrossLevelsSound (sound == null ? null : sound.GetSoundObject ());
+      }
+      
+      public static function IsSoundEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.UI_IsSoundEnabled ());
+      }
+      
+      public static function SetSoundEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var soundOn:Boolean = Boolean (valueSource.EvaluateValueObject ());
+         
+         Global.UI_SetSoundEnabled (soundOn);
+      }
+      
+      //public static function GetGlobalSoundVolume (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //}
+      //
+      //public static function SetGlobalSoundVolume (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //}
 
    //*******************************************************************
    // game collision category

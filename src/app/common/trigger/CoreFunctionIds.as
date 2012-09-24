@@ -271,13 +271,18 @@ package common.trigger {
       public static const ID_World_ConditionCallScript:int                      = IdPool.CoreApiId_751;
       public static const ID_World_CallBoolFunction:int                         = IdPool.CoreApiId_752;
       public static const ID_World_ConditionCallBoolFunction:int                = IdPool.CoreApiId_753;
-      public static const ID_World_CallScriptMultiTimes:int                   = IdPool.CoreApiId_754;
-      public static const ID_World_CallBoolFunctionMultiTimes:int             = IdPool.CoreApiId_755;
+      public static const ID_World_CallScriptMultiTimes:int                     = IdPool.CoreApiId_754;
+      public static const ID_World_CallBoolFunctionMultiTimes:int               = IdPool.CoreApiId_755;
 
       public static const ID_World_CreateExplosion:int                = IdPool.CoreApiId_770;
 
-      public static const ID_World_StopAllSounds:int            = IdPool.CoreApiId_800;
-      public static const ID_World_PlaySound:int                = IdPool.CoreApiId_801;
+      public static const ID_World_PlaySound:int                    = IdPool.CoreApiId_801;
+      public static const ID_World_StopSounds_InLevel:int           = IdPool.CoreApiId_800;
+      public static const ID_World_StopSound_CrossLevels:int        = IdPool.CoreApiId_802;
+      public static const ID_World_IsSoundEnabled:int               = IdPool.CoreApiId_803;
+      public static const ID_World_SetSoundEnabled:int              = IdPool.CoreApiId_804;
+      //public static const ID_World_GetGlobalSoundVolume:int         = IdPool.CoreApiId_805;
+      //public static const ID_World_SetGlobalSoundVolume:int         = IdPool.CoreApiId_806;
 
       // VirtualClickOnEntityCenter (entity)
 

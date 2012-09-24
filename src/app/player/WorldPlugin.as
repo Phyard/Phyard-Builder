@@ -17,9 +17,9 @@ package player
             case "GetStaticProperties":
                return {
                   mWorldVersion : Version.VersionNumber, // version of the world plugin, not the world file format
-                  //WorldFormat_HexString2ByteArray : DataFormat2.HexString2ByteArray, // from v1.00 to v1.55 (excluding 1.55)
+                  //WorldFormat_HexString2ByteArray : DataFormat2.HexString2ByteArray, // from v1.00 to v1.55 (excluding 1.55). Now is put in DataFormat3.
                   WorldFormat_ByteArray2WorldDefine : DataFormat2.ByteArray2WorldDefine, // from v1.00
-                  WorldFormat_WorldDefine2Xml : DataFormat2.WorldDefine2Xml,  // from v1.02
+                  WorldFormat_WorldDefine2Xml : DataFormat2.WorldDefine2Xml,  // from v1.02, for "copy source code"
                   WorldFormat_WorldDefine2PlayerWorld : DataFormat2.WorldDefine2PlayerWorld, // from v1.00
                   
                   "" : null
@@ -64,22 +64,22 @@ package player
                   mInitialSpeedX : world.GetInitialSpeedX (), // from v1.59
                   mInitialZoomScale : world.GetZoomScale (), // from v1.59
                   mHasSounds : Global.HasSounds (), // from v1.59
-                  mInitialSoundEnabled : Global.IsSoundEnabled (), // from v1.59
-                  SetSoundEnabled : Global.SetSoundEnabled, // from v1.59
+                  //mInitialSoundEnabled : Global.IsSoundEnabled (), // from v1.59 to v2.02 (seems never used in Viewer)
+                  //SetSoundEnabled : Global.SetSoundEnabled, // from v1.59 to v2.02 (become useless in Viewer from v2.02)
                   
                   mPreferredFPS : world.GetPreferredFPS (), // from v1.60
-                  mPauseOnFocusLost : world.IsPauseOnFocusLost (), // from v1.60 
+                  mPauseOnFocusLost : world.IsPauseOnFocusLost (), // from v1.60
                   
                   RegisterGestureEvent : world.RegisterGestureEvent, // from v1.60
                   
                   OnViewerEvent : world.OnViewerEvent, // from v2.00. (to fix the missing mouse events caused by overlapping gesture shapes)
                   
+                  OnViewerDestroyed : Global.OnViewerDestroyed, // from v2.02
+                  
                   "" : null
                };
             case "SetUiParams":
                world = params.mWorld as World;
-               
-               Global.UI_OnLoadScene = params.OnLoadScene as Function; // from v2.00
                
                Global.UI_RestartPlay = params.OnClickRestart as Function;
                Global.UI_IsPlaying = params.IsPlaying as Function;
@@ -88,14 +88,19 @@ package player
                Global.UI_SetSpeedX = params.SetPlayingSpeedX as Function;
                Global.UI_GetZoomScale = params.GetZoomScale as Function;
                Global.UI_SetZoomScale = params.SetZoomScale as Function; // from v1.53, SetScale has a 2nd param: changeScaleSmoothly, default value is true
-               Global.UI_IsSoundEnabled = params.IsSoundEnabled as Function; // from v1.59
-               Global.UI_SetSoundEnabled = params.SetSoundEnabled as Function; // from v1.59
+               Global.UI_IsSoundEnabled = params.IsSoundEnabled as Function; // from v1.59 (really used from v2.02)
+               Global.UI_SetSoundEnabled = params.SetSoundEnabled as Function; // from v1.59 (really used from v2.02)
+               //todo: add UI_Get/SetVolume
                
                Global.Viewer_IsAccelerometerSupported = params.IsAccelerometerSupported; // from v1.60
                Global.Viewer_GetAcceleration = params.GetAcceleration as Function; // from v1.60
                Global._GetDebugString = params.GetDebugString as Function; // from v1.60
                
                Global.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
+               
+               Global.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
+               
+               Global.Viewer_mLibSound = params.mLibSound; // from v2.02
                
                break;
             default:

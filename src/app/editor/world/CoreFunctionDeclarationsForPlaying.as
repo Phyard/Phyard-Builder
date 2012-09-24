@@ -1695,18 +1695,49 @@ package editor.world {
 
      // game / world / sound
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_StopAllSounds, world_sound_package, "Stop All Sounds", null, null,
-                     null,
-                     null
-                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_PlaySound, world_sound_package, "Play Sound", null, null,
                      [
                               new VariableDefinitionSound ("Sound"),
                               new VariableDefinitionNumber ("Play Times", null, {mMinValue:0}),
+                              new VariableDefinitionBoolean ("Crossing Levels?"),
+                              /*new VariableDefinitionNumber ("Volume [0, 1])", null, {mMinValue: 0.0, mMaxValue:1.0}),*/ // to add
                      ],
                      null
                   );
-
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_StopSounds_InLevel, world_sound_package, "Stop All In-Level Sounds", null, null,
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_StopSound_CrossLevels, world_sound_package, "Stop Crosssing-Levels Sound", null, null,
+                     [
+                              new VariableDefinitionSound ("Sound (null for all)"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_IsSoundEnabled, world_sound_package, "Is Sound Enabled?", null, null,
+                     null,
+                     [
+                              new VariableDefinitionBoolean ("Enabled?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetSoundEnabled, world_sound_package, "Set Sound Enabled", null, null,
+                     [
+                              new VariableDefinitionBoolean ("Enable?"),
+                     ],
+                     null
+                  );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetGlobalSoundVolume, world_sound_package, "Get Global Sound Volume", null, null,
+         //            null,
+         //            [
+         //                     new VariableDefinitionNumber ("Global Sound Volume [0, 1])", null, {mMinValue: 0.0, mMaxValue:1.0}),
+         //            ]
+         //         );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetGlobalSoundVolume, world_sound_package, "Set Sounds Enabled", null, null,
+         //            [
+         //                     new VariableDefinitionNumber ("Global Sound Volume [0, 1])", null, {mMinValue: 0.0, mMaxValue:1.0}),
+         //            ],
+         //            null
+         //         );
 
      // game / collision category
 

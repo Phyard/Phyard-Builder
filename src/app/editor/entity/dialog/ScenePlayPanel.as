@@ -63,11 +63,10 @@ package editor.entity.dialog {
       {
          if (mDesignViewer != null)
          {
+            mDesignViewer.Destroy ();
             removeChild (mDesignViewer);
             mDesignViewer = null;
          }
-         
-         Global.ClearAll ();
       }
       
       private function GetViewportSize ():Point

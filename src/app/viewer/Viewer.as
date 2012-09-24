@@ -2,6 +2,7 @@
 package viewer {
 
    import flash.utils.ByteArray;
+   //import flash.utils.Dictionary;
 
    import flash.geom.Point;
    import flash.geom.Rectangle;

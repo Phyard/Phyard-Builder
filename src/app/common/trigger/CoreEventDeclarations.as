@@ -292,16 +292,24 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_String,       null],
                     ]);
 
+     // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnSystemBack,
+                    null,
+                    [
+                        [ValueTypeDefine.ValueType_Boolean,      false],
+                    ]);
+
 //===========================================================
 // util functions
 //===========================================================
 
-      private static function RegisterEventDeclatation (eventId:int, inputParamDefines:Array):void
+      private static function RegisterEventDeclatation (eventId:int, inputParamDefines:Array, outputParamDefines:Array = null):void
       {
          if (eventId < 0 || eventId >= IdPool.NumEventTypes)
             return;
 
-         var func_decl:FunctionDeclaration = new FunctionDeclaration (eventId, inputParamDefines);
+         var func_decl:FunctionDeclaration = new FunctionDeclaration (eventId, inputParamDefines, outputParamDefines);
 
          sEventHandlerDeclarations [eventId] = func_decl;
       }

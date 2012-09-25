@@ -16,6 +16,8 @@ package editor.sound {
    import flash.net.FileReference;
    import flash.net.FileFilter;
    
+   import flash.media.SoundMixer;
+   
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
@@ -101,6 +103,8 @@ package editor.sound {
          {
             (GetAssetByAppearanceId (i) as AssetSound).Stop ();
          }
+         
+         SoundMixer.stopAll ();
       }
      
 //=====================================================================

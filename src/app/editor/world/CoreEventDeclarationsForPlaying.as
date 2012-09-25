@@ -283,12 +283,20 @@ package editor.world {
 
       // ...
 
-         RegisterEventDeclaration (CoreEventIds.ID_OnMouseGesture, "OnMouseGestureDone", "When a ,ouse gesture is performed",
+         RegisterEventDeclaration (CoreEventIds.ID_OnMouseGesture, "OnMouseGestureDone", "When a mouse gesture is performed",
                     [
                         new VariableDefinitionNumber ("Gesture Type ID"),
                         new VariableDefinitionNumber ("Gesture Angle"),
                         new VariableDefinitionBoolean ("CW/CCW (true/false)"),
                         new VariableDefinitionString ("Gesture Name"),
+                    ]);
+
+      // ...
+
+         RegisterEventDeclaration (CoreEventIds.ID_OnSystemBack, "OnSystemBack", "When system BACK key is pressed",
+                    null,
+                    [
+                        new VariableDefinitionBoolean ("Already Handled?"),
                     ]);
 
       // event settings
@@ -305,12 +313,12 @@ package editor.world {
 // util functions
 //===========================================================
 
-      private static function RegisterEventDeclaration (event_id:int, event_name:String, event_description:String, param_definitions:Array):void
+      private static function RegisterEventDeclaration (event_id:int, event_name:String, event_description:String, param_definitions:Array, return_definitions:Array = null):void
       {
          if (event_id < 0)
             return;
 
-         sEventDeclarations [event_id] = new FunctionDeclaration_EventHandler (event_id, event_name, event_description, event_name, event_name, param_definitions);
+         sEventDeclarations [event_id] = new FunctionDeclaration_EventHandler (event_id, event_name, event_description, event_name, event_name, param_definitions, return_definitions);
       }
 
       public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler

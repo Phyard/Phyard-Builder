@@ -105,6 +105,7 @@ package viewer {
          private var mShowSoundAdjustor:Boolean;
          private var mShowHelpButton:Boolean;
          private var mShowSoundController:Boolean;
+         private var mShowLevelFinishedDialog:Boolean;
          private var mAdaptiveViewportSize:Boolean;
          private var mPreferredViewportWidth:int;
          private var mPreferredViewportHeight:int;
@@ -1025,6 +1026,7 @@ package viewer {
          mShowSoundController = (mWorldDesignProperties.mHasSounds) && 
                               (mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSoundController) != 0));
          mShowHelpButton = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
+         mShowLevelFinishedDialog = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseCustomLevelFinishedDialog) == 0);
          mAdaptiveViewportSize = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_AdaptiveViewportSize) != 0);
          mPreferredViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
          mPreferredViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
@@ -1428,9 +1430,12 @@ package viewer {
          }
 
          var levelSucceeded:Boolean = mWorldDesignProperties.IsLevelSuccessed ();
-         mSkin.SetLevelFinishedDialogVisible (levelSucceeded);
+
+         mSkin.SetLevelFinishedDialogVisible (mShowLevelFinishedDialog && levelSucceeded);
+         
          mSkin.Update (mStepTimeSpan.GetLastSpan ());
          
+         // for multiple-levels game package
          if (levelSucceeded && mParamsFromContainer.OnLevelFinished)
          {
             mParamsFromContainer.OnLevelFinished ();

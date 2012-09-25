@@ -152,6 +152,11 @@ package editor {
       [Embed("../res/create/event_on_mouse_gesture.png")]
       public static const IconOnMouseGesture:Class;
       
+      // system back
+      
+      [Embed("../res/create/event_on_system_back.png")]
+      public static const IconOnSystemBack:Class;
+      
    // event id -> icon
       
       private static var sEventId2IconClass:Dictionary = null;
@@ -207,6 +212,8 @@ package editor {
             sEventId2IconClass [CoreEventIds.ID_OnWorldTimer     ] = IconOnWorldTimerEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnMouseGesture   ] = IconOnMouseGesture;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnSystemBack   ] = IconOnSystemBack;
          }
          
          var iconClass:Class = sEventId2IconClass [eventId];

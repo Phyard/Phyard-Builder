@@ -124,7 +124,6 @@
          private function StopAllSounds ():void
          {
             EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ().StopAllSounds ();
-            SoundMixer.stopAll ();
          }
          
          private function AdjustVolume ():void

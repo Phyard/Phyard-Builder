@@ -18,7 +18,7 @@
             //   StopAllSounds (true);
             //}
 
-            SetSoundVolume (mIsSoundEnabled ? 1.0 : 0.0);
+            SetSoundVolume (mIsSoundEnabled ? mSoundVolume : 0.0);
          }
       }
       

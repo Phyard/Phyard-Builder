@@ -13,6 +13,26 @@
                <mx:CheckBox id="CheckBox_ShowPlayBar" label="Use Default Skin" click="OnShowPlayBarClick ()"/>
             </mx:HBox>
             <mx:VBox id="Box_PlayBarOptions" width="100%">
+               <mx:RadioButtonGroup id="RadioButtonGroup_SkinType" itemClick="OnSkinTypeRatioClick ()"/>
+               <mx:HBox width="100%">
+                  <mx:HBox width="50%" horizontalAlign="left">
+                     <mx:Spacer width="16"/>
+                     <mx:RadioButton groupName="RadioButtonGroup_SkinType" id="SkinType_TopBar" label="Use Top Bar Skin"/>
+                  </mx:HBox>
+                  <mx:HBox id="Box_TopBarBackground" horizontalAlign="left">
+                     <mx:Spacer width="16"/>
+                     <mx:Label text="Background Color:" />
+                     <mx:ColorPicker id="ColorPicker_PlayBarColor" showTextField="true" selectedColor="0x606060"/>
+                  </mx:HBox>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:HBox width="50%" horizontalAlign="left">
+                     <mx:Spacer width="16"/>
+                     <mx:RadioButton groupName="RadioButtonGroup_SkinType" id="SkinType_Overlay" label="Use Overlay Skin"/>
+                  </mx:HBox>
+                  <mx:HBox horizontalAlign="left">
+                  </mx:HBox>
+               </mx:HBox>
                <mx:HBox width="100%">
                   <mx:HBox width="50%" horizontalAlign="left">
                      <mx:Spacer width="16"/>
@@ -33,24 +53,10 @@
                      <mx:CheckBox id="CheckBox_ShowHelpButton" label="Show Help Button"/>
                   </mx:HBox>
                </mx:HBox>
-               <mx:RadioButtonGroup id="RadioButtonGroup_SkinType" itemClick="OnSkinTypeRatioClick ()"/>
                <mx:HBox width="100%">
-                  <mx:HBox width="50%" horizontalAlign="left">
-                     <mx:Spacer width="16"/>
-                     <mx:RadioButton groupName="RadioButtonGroup_SkinType" id="SkinType_Overlay" label="Use Overlay Skin"/>
-                  </mx:HBox>
                   <mx:HBox horizontalAlign="left">
-                  </mx:HBox>
-               </mx:HBox>
-               <mx:HBox width="100%">
-                  <mx:HBox width="50%" horizontalAlign="left">
                      <mx:Spacer width="16"/>
-                     <mx:RadioButton groupName="RadioButtonGroup_SkinType" id="SkinType_TopBar" label="Use Top Bar Skin"/>
-                  </mx:HBox>
-                  <mx:HBox id="Box_TopBarBackground" horizontalAlign="left">
-                     <mx:Spacer width="16"/>
-                     <mx:Label text="Background Color:" />
-                     <mx:ColorPicker id="ColorPicker_PlayBarColor" showTextField="true" selectedColor="0x606060"/>
+                     <mx:CheckBox id="CheckBox_ShowLevelFinishedDialog" label="Show Level Finished Dialog"/>
                   </mx:HBox>
                </mx:HBox>
             </mx:VBox>
@@ -148,6 +154,7 @@
             CheckBox_ShowSpeedAdjustor.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0;
             CheckBox_ShowScaleAdjustor.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowScaleAdjustor) != 0;
             CheckBox_ShowHelpButton.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowHelpButton) != 0;
+            CheckBox_ShowLevelFinishedDialog.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseCustomLevelFinishedDialog) == 0; // yes, "==" here
             CheckBox_ShowSoundController.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowSoundController) != 0;
             SkinType_Overlay.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseOverlaySkin) != 0;
             SkinType_TopBar.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseOverlaySkin) == 0;
@@ -218,7 +225,8 @@
                                     | (CheckBox_ShowSpeedAdjustor.selected ? Define.PlayerUiFlag_ShowSpeedAdjustor : 0)
                                     | (CheckBox_ShowScaleAdjustor.selected ? Define.PlayerUiFlag_ShowScaleAdjustor : 0)
                                     | (CheckBox_ShowSoundController.selected ? Define.PlayerUiFlag_ShowSoundController : 0)
-                                    | (CheckBox_ShowHelpButton.selected ? Define.PlayerUiFlag_ShowHelpButton : 0)
+                                    | (CheckBox_ShowHelpButton.selected ? Define.PlayerUiFlag_UseCustomLevelFinishedDialog : 0)
+                                    | (CheckBox_ShowLevelFinishedDialog.selected ? 0 : Define.PlayerUiFlag_UseCustomLevelFinishedDialog) // different with other flags, this is an inverse-flag
                                     | (CheckBox_AnyViewportSize.selected ? Define.PlayerUiFlag_AdaptiveViewportSize : 0)
                                     | (SkinType_Overlay.selected ? Define.PlayerUiFlag_UseOverlaySkin : 0)
                                     ;

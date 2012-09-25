@@ -48,6 +48,8 @@ package common.trigger {
 
       public static const EventId_150:int = 150;
 
+      public static const EventId_189:int = 189;
+      
       public static const EventId_190:int = 190;
 
       public static const EventId_200:int = 200;

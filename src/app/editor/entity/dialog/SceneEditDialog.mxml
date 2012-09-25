@@ -1030,6 +1030,8 @@
       
       private function OnClickPlayCurrentSceneButton ():void
       {
+         EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ().StopAllSounds ();
+         
          ViewStack_Scenes.selectedChild = Box_ScenePlay;
          
          Box_BasicToolbar.enabled = Box_CreateCommands.enabled = Box_Scenes.enabled = false;

@@ -151,17 +151,19 @@ package player.trigger
       // special for event handlers, a little faster than DoCall. Maybe it is not worthy to create this function.
       // NOTICE: DON'T call this function in iteration functions
       // as event handler, no returns
-      public function ExcuteEventHandler (inputParamList:Parameter):void
+      public function ExcuteEventHandler (inputParamList:Parameter, outputParamList:Parameter = null):void
       {
          mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
          
          mCodeSnippet.Excute ();
          
-         // no returns
-         //mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+         if (outputParamList != null)
+         {
+            mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+         }
       }
       
-      // EvaluateCondition and ExcuteAction are disabled now for it is wrong to call them in CallScript API, which may can these functions in iteration functions
+      // EvaluateCondition and ExcuteAction are disabled now for it is wrong to call them in CallScript API, which may call these functions in iteration functions
       // 
       //// as condition component, no inputs
       //public function EvaluateCondition (outputParamList:Parameter):void

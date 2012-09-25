@@ -274,6 +274,10 @@ package editor.entity.dialog {
                if (ctrlHold && shiftHold)
                   ConvertOldRegisterVariablesToGlobalVariables ();
                break;
+            case 66: // B
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSystemBack), OnPutCreating, OnCreatingCancelled));
+               break;
             case 71: // G
             case 77: // M
                if (ctrlHold && shiftHold)

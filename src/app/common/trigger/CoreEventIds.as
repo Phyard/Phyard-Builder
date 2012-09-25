@@ -92,6 +92,10 @@ package common.trigger {
    // mouse gesture
 
       public static const ID_OnMouseGesture:int = IdPool.EventId_190;
+      
+   // system back
+      
+      public static const ID_OnSystemBack:int = IdPool.EventId_189;
 
    // ================================
    }

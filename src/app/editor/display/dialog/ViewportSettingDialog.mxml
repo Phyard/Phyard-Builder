@@ -53,13 +53,10 @@
                      <mx:CheckBox id="CheckBox_ShowHelpButton" label="Show Help Button"/>
                   </mx:HBox>
                </mx:HBox>
-               <mx:HBox width="100%">
-                  <mx:HBox horizontalAlign="left">
-                     <mx:Spacer width="16"/>
-                     <mx:CheckBox id="CheckBox_ShowLevelFinishedDialog" label="Show Level Finished Dialog"/>
-                  </mx:HBox>
-               </mx:HBox>
             </mx:VBox>
+            <mx:HBox width="100%" verticalAlign="middle">
+               <mx:CheckBox id="CheckBox_ShowLevelFinishedDialog" label="Use Default Level Finished Dialog"/>
+            </mx:HBox>
 
             <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
 

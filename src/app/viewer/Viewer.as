@@ -2050,9 +2050,15 @@ package viewer {
 // interfaces for game template
 //===========================================================================
       
-      // return: need game tempalte to continue handling or not
-      // also used as a callback for World plugin: (API: System.Back (), not added yet)
-      public function OnBackKeyDown ():Boolean
+      
+      private var mBackKeyEverPressed:Boolean = false;
+      
+      public function OnBackKeyDown ():void
+      {
+         mBackKeyEverPressed = true;
+      }
+      
+      private function TryToHandleBackKeyDownEvent ():void
       {
          /*
          if (skin != null)
@@ -2073,9 +2079,12 @@ package viewer {
                ...
             }
          }
+         
+         return ! mErrorMessageLayer.visible;
          */
          /////////////////////
          
+         /*
          if (mSkin != null)
          {
             if (mSkin.AreSomeDialogsVisible ())
@@ -2107,7 +2116,8 @@ package viewer {
             return true;
          }
          
-         return mErrorMessageLayer.visible;
+         return ! mErrorMessageLayer.visible;
+         */
       }
       
       //

@@ -116,6 +116,8 @@ package player.design
       mGlobalVariableSpace = null;
       mEntityVariableSpace = null;
       
+      mCustomFunctionDefinitions = null;
+      
       mRandomNumberGenerators = null;
       
       mImageBitmaps = null;
@@ -186,6 +188,8 @@ package player.design
          }
          mGlobalVariableSpace = null;
          mEntityVariableSpace = null;
+         
+         mCustomFunctionDefinitions = null;
          
          //
          TriggerEngine.InitializeConstData ();

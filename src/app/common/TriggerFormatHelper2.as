@@ -190,8 +190,16 @@ package common {
             callingInfos [lineNumber] = callingInfo;
             
             callingInfo.mLineNumber = lineNumber;
-            callingInfo.mFunctionId = callingDefine.mFunctionId;
-            callingInfo.mIsCoreDeclaration = callingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core;
+            if (callingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
+            {
+               callingInfo.mIsCoreDeclaration = true;
+               callingInfo.mFunctionId = callingDefine.mFunctionId;
+            }
+            else
+            {
+               callingInfo.mIsCoreDeclaration = false;
+               callingInfo.mFunctionId = callingDefine.mFunctionId + extraInfos.mBeginningCustomFunctionIndex;
+            }
             callingInfo.mFunctionCallingDefine = callingDefine;
          }
          
@@ -223,6 +231,7 @@ package common {
          }
          
          // build calling list
+         
          var calling_list_head:FunctionCalling = null;
          
          if (numValidCallings > 0)
@@ -369,7 +378,9 @@ package common {
          var goodCallingInfo:FunctionCallingLineInfo = inputCallingInfo;
          var nextCallingInfo:FunctionCallingLineInfo = inputCallingInfo;
          
-         while (nextCallingInfo != null && (nextCallingInfo.mFunctionId == CoreFunctionIds.ID_Else || nextCallingInfo.mFunctionId == CoreFunctionIds.ID_EndIf)) // a bad calling
+         //while (nextCallingInfo != null && (nextCallingInfo.mFunctionId == CoreFunctionIds.ID_Else || nextCallingInfo.mFunctionId == CoreFunctionIds.ID_EndIf)) // a bad calling
+         // above is a bug: if number of custom functions exceeds 32, the logic may be ill. 
+         while (nextCallingInfo != null && nextCallingInfo.mIsCoreDeclaration && (nextCallingInfo.mFunctionId == CoreFunctionIds.ID_Else || nextCallingInfo.mFunctionId == CoreFunctionIds.ID_EndIf)) // a bad calling
          {
             goodCallingInfo = nextCallingInfo.mOwnerBlock.mEndCallingLine;  // "end if" of the bad calling block
             if (goodCallingInfo == nextCallingInfo)
@@ -406,12 +417,14 @@ package common {
          }
          else if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Custom)
          {
-            func_definition = Global.GetCustomFunctionDefinition (function_id);
+            func_definition = Global.GetCustomFunctionDefinition (function_id + extraInfos.mBeginningCustomFunctionIndex);
          }
          else if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_PreDefined)
          {
             // impossible
          }
+         
+         // assert (func_definition != null)
          
          var real_num_input_params:int = func_definition.GetNumInputParameters ();
          var dafault_value_source_define:ValueSourceDefine_Direct;

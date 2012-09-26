@@ -504,11 +504,18 @@ package common {
          playerWorld.OnNumCustomEntityVariablesChanged (); // for both new and old entities
 
       // custom functions
+         
+         extraInfos.mBeginningCustomFunctionIndex = 0;
 
          if (isLoaingFromStretch || isMergingScene)
          {
             var oldNumCustomFunctions:int = Global.GetNumCustomFunctions ();
             
+            if (isMergingScene)
+            {
+               extraInfos.mBeginningCustomFunctionIndex = oldNumCustomFunctions;
+            }
+
             Global.CreateCustomFunctionDefinitions (sceneDefine.mFunctionDefines, isMergingScene);
 
             var numFunctions:int = sceneDefine.mFunctionDefines.length;

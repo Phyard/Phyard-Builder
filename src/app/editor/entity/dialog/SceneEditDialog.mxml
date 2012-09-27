@@ -296,7 +296,7 @@
                               paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
                               horizontalGap="0" verticalGap="0" borderThickness="1">
-                     <mx:Label id="Label_RunningSteps" text="step: 100" minWidth="86"/>
+                     <mx:Label id="Label_RunningSteps" text="step: 0" minWidth="86"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Spacer width="2" />
                      <mx:Button id="Button_Stop" toolTip="Stop" click="OnClickStopCurrentSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-stop.png')" disabledIcon="@Embed('../../../res/play/play-stop-disabled.png')" />
@@ -322,9 +322,11 @@
                      <mx:Label id="Label_PlaySpeed" textAlign="center" text="Speed X2"/>
                      <mx:Button id="Button_PlayFaster" click="PlayFaster ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-faster.png')" disabledIcon="@Embed('../../../res/edit/play-faster-disabled.png')"/>
                      <mx:Spacer width="100%"/>
+                     <mx:Spacer width="20"/>
+                     <mx:Button id="Button_SimulateSystemBack" click="SimulateSystemBack ();" toolTip="Simulate System-Back Event" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/simulate-system-back.png')"/>
+                     <mx:Spacer width="20"/>
+                     <mx:Button id="Button_MaskViewerField" click="ToggleMaskPlayerField ();" toolTip="Toggle Masking Player Field" width="27" height="27" focusEnabled="false" fontSize="8" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/edit/mask-play-field.png')" downIcon="@Embed('../../../res/edit/mask-play-field-sel.png')" overIcon="@Embed('../../../res/edit/mask-play-field.png')" selectedUpIcon="@Embed('../../../res/edit/mask-play-field-sel.png')" selectedOverIcon="@Embed('../../../res/edit/mask-play-field-sel.png')" selectedDownIcon="@Embed('../../../res/edit/mask-play-field.png')"/>
                      <mx:Spacer width="2" />
-                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                     <mx:Label id="Label_MaskViewerField" text="Mask Player Field" click="ToggleMaskPlayerField ();" toolTip="Toggle Mask Player Field" focusEnabled="false" color="0x808080"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Label id="Label_MouseDisplayPositionForPlaying" text="" minWidth="100"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
@@ -1036,13 +1038,14 @@
          
          Box_BasicToolbar.enabled = Box_CreateCommands.enabled = Box_Scenes.enabled = false;
          ViewStack_StatusBar.selectedChild = Box_StatusBarForPlaying;
+         Button_SimulateSystemBack.visible = false;
 
          //var scenePlayPanel:ScenePlayPanel = new ScenePlayPanel ();
          //scenePlayPanel.percentWidth = 100;
          //scenePlayPanel.percentHeight = 100;
          //Box_ScenePlay.addChild (scenePlayPanel);
 
-         mCurrentScenePlayPanel.SetWorldViewerParams (EditorContext.GetEditorApp ().GetWorldBinaryData (), GetCurrentSceneInEditing ().GetSceneIndex (), mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 0xFFFFFF);            
+         mCurrentScenePlayPanel.SetWorldViewerParams (EditorContext.GetEditorApp ().GetWorldBinaryData (), GetCurrentSceneInEditing ().GetSceneIndex (), mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 0xFFFFFF, OnClickStopCurrentSceneButton);            
             
          mCurrentScenePlayPanel.SetDialogCallbacks ({
                                        UpdateInterface: UpdateInterfaceForPlaying, 
@@ -1114,6 +1117,7 @@
          Button_PlayFaster.enabled = viewerStatusInfo.mSpeedX < 100;
          ViewStack_PlayResumePause.selectedChild = viewerStatusInfo.mIsPlaying ? Box_PlayPause : Box_PlayResume;
          Button_AdvanceOneFrame.enabled = ! viewerStatusInfo.mIsPlaying;
+         Button_SimulateSystemBack.visible = ! viewerStatusInfo.mShowPlayBar;
       }
 
    //========================================================================================
@@ -1174,8 +1178,14 @@
          {
             mCurrentScenePlayPanel.SetMaskViewport (! mCurrentScenePlayPanel.IsMaskViewport ());
             mCurrentSceneEditPanel.SetMaskFieldInPlaying (mCurrentScenePlayPanel.IsMaskViewport ());
-            
-            Label_MaskViewerField.setStyle ("color", mCurrentScenePlayPanel.IsMaskViewport () ? "0x000000" : "0x808080");
+         }
+      }
+      
+      private function SimulateSystemBack ():void
+      {
+         if (mCurrentScenePlayPanel != null)
+         {
+            mCurrentScenePlayPanel.SimulateSystemBack ();
          }
       }
 

@@ -605,7 +605,8 @@ package viewer {
                // Load progress on screen
                break;
             case StateId_LoadingError:
-               // "Copy Error Message" and "Report Error" in Context Menu
+               ExitLevelIfBackKeyEverPressed ();
+               // todo: "Copy Error Message" and "Report Error" in Context Menu
                break;
             case StateId_Building:
                // "Build ..." text on screen
@@ -628,16 +629,19 @@ package viewer {
                
                break;
             case StateId_BuildingError:
-               // "Copy Error Message" and "Report Error" in Context Menu
+               ExitLevelIfBackKeyEverPressed ();
+               // todo: "Copy Error Message" and "Report Error" in Context Menu
                break;
             case StateId_Playing:
-               Step (false);
+               UpdateFrame (false);
                break;
             case StateId_PlayingError:
-               // "Copy Error Message" and "Report Error" in Context Menu
+               ExitLevelIfBackKeyEverPressed ();
+               // todo: "Copy Error Message" and "Report Error" in Context Menu
                break;
             case StateId_Unknown:
             default:
+               ExitLevelIfBackKeyEverPressed ();
                break;
          }
       }
@@ -1006,7 +1010,7 @@ package viewer {
          if (mWorldDesignProperties.SetPaused == null)                       mWorldDesignProperties.SetPaused = DummyCallback;
          if (mWorldDesignProperties.SetInteractiveEnabledWhenPaused == null) mWorldDesignProperties.SetInteractiveEnabledWhenPaused = DummyCallback;
          if (mWorldDesignProperties.SetCacheSystemEvent == null)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
-         if (mWorldDesignProperties.GetBuildingStatus == null)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_BuildingStatus;
+         if (mWorldDesignProperties.GetBuildingStatus == null)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_GetBuildingStatus;
          if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
          if (mWorldDesignProperties.mInitialSpeedX == undefined)             mWorldDesignProperties.mInitialSpeedX = 2;
          if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
@@ -1017,6 +1021,8 @@ package viewer {
          if (mWorldDesignProperties.mPauseOnFocusLost == undefined)          mWorldDesignProperties.mPauseOnFocusLost = false;
          if (mWorldDesignProperties.RegisterGestureEvent == undefined)       mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
          if (mWorldDesignProperties.OnViewerEvent == undefined)              mWorldDesignProperties.OnViewerEvent = DummyCallback;
+         if (mWorldDesignProperties.OnViewerDestroyed == undefined)          mWorldDesignProperties.OnViewerDestroyed = DummyCallback;
+         if (mWorldDesignProperties.OnSystemBackEvent == undefined)          mWorldDesignProperties.OnSystemBackEvent = DummyOnSystemBackEvent;      
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -1076,9 +1082,15 @@ package viewer {
       // =0 - loading
       // >0 - succeeded
       // <0 - failed
-      private function DummyCallback_BuildingStatus ():int
+      private function DummyCallback_GetBuildingStatus ():int
       {
          return 1;
+      }
+      
+      // from v2.02
+      private function DummyOnSystemBackEvent ():int
+      {
+         return 0;
       }
 
 //======================================================================
@@ -1327,13 +1339,19 @@ package viewer {
       
       private var mStepTimeSpan:TimeSpan = new TimeSpan ();
 
-      public function Step (singleStepMode:Boolean = false):void
+      public function UpdateFrame (singleStepMode:Boolean = false):void
       {
          if (mErrorMessageLayer.visible)
+         {
+            ExitLevelIfBackKeyEverPressed ();
             return;
+         }
          
          if (mPlayerWorld == null)
+         {
+            ExitLevelIfBackKeyEverPressed ();
             return;
+         }
          
          if (mFadingStatus != 0)
          {
@@ -1362,7 +1380,45 @@ package viewer {
          
          UpdateGesturePaintLayer ();
 
+         // ...
+         
+         // assert (mSkin != null);
+         
+         if (mBackKeyEverPressed)
+         {
+            if (mSkin.AreSomeDialogsVisible ())
+            {
+               mSkin.CloseAllVisibleDialogs ();
+            }
+            else if (mSkin.IsShowPlayBar ())
+            {
+               if (mSkin.IsPlaying ())
+                  mSkin.SetPlaying (false);
+               else
+                  ExitLevelIfBackKeyEverPressed ();
+            }
+            else
+            {
+               if (! mSkin.IsPlaying ())
+                  mSkin.SetPlaying (true);
+               
+               if (mWorldDesignProperties.OnSystemBackEvent () == 0)
+               {
+                  ExitLevelIfBackKeyEverPressed ();
+               }
+               //else
+               //{
+               //   // already custom handled
+               //}
+            }
+            
+            // ...
+            
+            mBackKeyEverPressed = false;
+         }
+                  
          // update scale
+         
          if (mWorldDesignProperties.GetZoomScale () != mPlayerWorldZoomScale)
          {
             var newScale:Number;
@@ -2005,6 +2061,14 @@ package viewer {
 
          return mSkin.GetPlayingSpeedX ();
       }
+      
+      public function IsShowPlayBar ():Boolean
+      {
+         if (mSkin == null)
+            return false;
+
+         return mSkin.IsShowPlayBar ();
+      }
 
       private function OnSpeedChanged (data:Object = null):void
       {
@@ -2058,9 +2122,21 @@ package viewer {
          mBackKeyEverPressed = true;
       }
       
-      private function TryToHandleBackKeyDownEvent ():void
+      private function ExitLevelIfBackKeyEverPressed ():void
       {
-         /*
+         if (mBackKeyEverPressed)
+         {
+            if (mParamsFromContainer.OnExitLevel != null)
+            {
+               mParamsFromContainer.OnExitLevel ();
+            }
+            
+            mBackKeyEverPressed = false;
+         }
+      }
+         
+      //{
+         /* mWorldDesignProperties.HasSystemBackEventHandlers mWorldDesignProperties.OnSystemBackEvent
          if (skin != null)
          {
             if (skin is visible)
@@ -2118,7 +2194,7 @@ package viewer {
          
          return ! mErrorMessageLayer.visible;
          */
-      }
+      //}
       
       //
 
@@ -2185,7 +2261,7 @@ package viewer {
 
       public function UpdateSingleFrame ():void
       {
-         Step (true);
+         UpdateFrame (true);
       }
       
       public function GetFPS ():Number

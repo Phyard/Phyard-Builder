@@ -75,6 +75,7 @@ package player
                   OnViewerEvent : world.OnViewerEvent, // from v2.00. (to fix the missing mouse events caused by overlapping gesture shapes)
                   
                   OnViewerDestroyed : Global.OnViewerDestroyed, // from v2.02
+                  OnSystemBackEvent: world.OnSystemBackEvent, // from v2.02
                   
                   "" : null
                };

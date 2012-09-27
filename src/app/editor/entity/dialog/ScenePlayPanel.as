@@ -39,7 +39,7 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      public function SetWorldViewerParams (worldBinaryData:ByteArray, currentSceneId:int, maskFieldInPlaying:Boolean, surroudingBackgroundColor:uint):void
+      public function SetWorldViewerParams (worldBinaryData:ByteArray, currentSceneId:int, maskFieldInPlaying:Boolean, surroudingBackgroundColor:uint, callbackStopPlaying:Function):void
       {
          CloseViewer ();
          
@@ -49,8 +49,9 @@ package editor.entity.dialog {
                                          mCurrentSceneId: currentSceneId, 
                                          GetViewportSize: GetViewportSize, 
                                          mStartRightNow: true, 
-                                         mMaskViewport: maskFieldInPlaying,
-                                         mBackgroundColor: surroudingBackgroundColor
+                                         mMaskViewerField: maskFieldInPlaying,
+                                         mBackgroundColor: surroudingBackgroundColor, 
+                                         OnExitLevel: callbackStopPlaying
                                          }
                              });
          
@@ -228,10 +229,11 @@ package editor.entity.dialog {
          
          var playerWorld:World = mDesignViewer.GetPlayerWorld () as World;
          
-         viewerStatusInfo.mSpeedX = mDesignViewer.GetPlayingSpeedX ();;
+         viewerStatusInfo.mSpeedX = mDesignViewer.GetPlayingSpeedX ();
          viewerStatusInfo.mIsPlaying = mDesignViewer.IsPlaying ();
          viewerStatusInfo.mCurrentSimulationStep = playerWorld == null ? 0 : playerWorld.GetSimulatedSteps ();
          viewerStatusInfo.mFPS = mDesignViewer.GetFPS ();
+         viewerStatusInfo.mShowPlayBar = mDesignViewer.IsShowPlayBar ();
          
          mDialogCallbacks.UpdateInterface (viewerStatusInfo);
       }
@@ -278,6 +280,14 @@ package editor.entity.dialog {
          if (mDesignViewer != null)
          {
             mDesignViewer.SetMaskViewerField (mMaskViewport);
+         }
+      }
+      
+      public function SimulateSystemBack ():void
+      {
+         if (mDesignViewer != null && mDesignViewer.OnBackKeyDown != null)
+         {
+            mDesignViewer.OnBackKeyDown ();
          }
       }
       

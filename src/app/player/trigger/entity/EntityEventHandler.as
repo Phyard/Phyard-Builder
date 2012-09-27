@@ -220,7 +220,7 @@ package player.trigger.entity
       }
 
       // the return value is only useful for some event handlers
-      public function HandleEvent (valueSourceList:Parameter):Boolean
+      public function HandleEvent (valueSourceList:Parameter, valueTargetList:Parameter = null):Boolean
       {
          if (mIsEnabled == false || mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
             return false;
@@ -229,7 +229,7 @@ package player.trigger.entity
          if (mEnabledChangedStep < mWorld.GetSimulatedSteps () || mEnabledChangedStepStage < mWorld.GetStepStage ())
          {
             //mEventHandlerDefinition.DoCall (valueSourceList, null);
-            mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);
+            mEventHandlerDefinition.ExcuteEventHandler (valueSourceList, valueTargetList);
 
             if (mExternalAction != null)
             {

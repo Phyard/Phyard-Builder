@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Event Handler Setting" width="600">
+    title="Event Handler Setting" width="700">
    <!--
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>

@@ -28,7 +28,7 @@
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
                   horizontalGap="0" verticalGap="0" borderThickness="0">
             <mx:Spacer width="3"/>
-            <mx:CheckBox id="CheckBox_CollisionCategory_HarmoniousCategory" label="Harmonious Category"/>
+            <mx:CheckBox id="CheckBox_CollisionCategory_CollideInternally" label="Collide Internally"/>
             <mx:Spacer width="6"/>
             <mx:CheckBox id="CheckBox_CollisionCategory_DefaultCategory" label="Default Category"/>
          </mx:HBox>
@@ -140,11 +140,11 @@
             
             panelCollisionCategoryList.mButtonDelete = Button_DeleteCollisionCategory;
             
-            panelCollisionCategoryList.mCheckBoxHarmoniousCategory = CheckBox_CollisionCategory_HarmoniousCategory;
+            panelCollisionCategoryList.mCheckBoxCollideInternally = CheckBox_CollisionCategory_CollideInternally;
             panelCollisionCategoryList.mCheckBoxDefaultCategory = CheckBox_CollisionCategory_DefaultCategory;
             
             Button_DeleteCollisionCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
-            CheckBox_CollisionCategory_HarmoniousCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
+            CheckBox_CollisionCategory_CollideInternally.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
             CheckBox_CollisionCategory_DefaultCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
             
             panelCollisionCategoryList.mLabelName = Label_CollisionCategoryName;

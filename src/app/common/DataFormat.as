@@ -3488,7 +3488,7 @@ package common {
             //for each (element in sceneXML.EntityProperties.VariablePackage)
             //{
             //   variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
-            //   variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Entity;
+            //   variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
             //   sceneDefine.mEntityPropertySpaceDefines.push (variableSpaceDefine);
             //}
             

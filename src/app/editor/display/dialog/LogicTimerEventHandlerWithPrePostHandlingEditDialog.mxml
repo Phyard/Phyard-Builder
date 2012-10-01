@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Event Handler Setting" width="600">
+    title="Event Handler Setting" width="700">
 
    <mx:TabNavigator width="100%" height="100%" creationPolicy="all">
       <mx:VBox label="Code Snippet" borderStyle="solid" height="100%" width="100%"
@@ -150,13 +150,19 @@
          {
             switch (variableSpaceType)
             {
+               case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                  codeSnippetEditPanel.OnCommonGlobalVariablesEditingDialogClosed ();
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  codeSnippetEditPanel.OnCommonEntityVariablesEditingDialogClosed ();
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   codeSnippetEditPanel.OnSessionVariablesEditingDialogClosed ();
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   codeSnippetEditPanel.OnGlobalVariablesEditingDialogClosed ();
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_Entity:
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
                   codeSnippetEditPanel.OnEntityVariablesEditingDialogClosed ();
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:

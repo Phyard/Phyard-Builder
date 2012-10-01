@@ -64,6 +64,18 @@ package viewer {
       protected var _OnNextLevel:Function;
       protected var _OnGoToPhyard:Function;
       
+      protected function OnExitLevel (dummyParam:Object = null):void
+      {
+         if (_OnExitLevel != null)
+            _OnExitLevel ();
+      }
+      
+      protected function OnGoToPhyard (dummyParam:Object = null):void
+      {
+         if (_OnGoToPhyard != null)
+            _OnGoToPhyard ();
+      }
+      
 //======================================================================
 // skin interfaces for viewer
 //======================================================================

@@ -35,7 +35,7 @@ package editor.codelib {
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.VariableSpaceSession;
    import editor.trigger.VariableSpaceGlobal;
-   import editor.trigger.VariableSpaceEntity;
+   import editor.trigger.VariableSpaceEntityProperties;
    
    import editor.EditorContext;
    
@@ -64,7 +64,7 @@ package editor.codelib {
          
          // custom entity property space
          
-         mEntityVariableSpace = new VariableSpaceEntity (/*this*/);
+         mEntityVariableSpace = new VariableSpaceEntityProperties (/*this*/);
          
          // register variables
          // put in World now
@@ -134,7 +134,7 @@ package editor.codelib {
       private var mGlobalVariableSpace:VariableSpaceGlobal;
       
       // custom entity properties
-      private var mEntityVariableSpace:VariableSpaceEntity;
+      private var mEntityVariableSpace:VariableSpaceEntityProperties;
       
       // register variables
       // put in World now.
@@ -149,7 +149,7 @@ package editor.codelib {
          return mGlobalVariableSpace;
       }
       
-      public function GetEntityVariableSpace ():VariableSpaceEntity
+      public function GetEntityVariableSpace ():VariableSpaceEntityProperties
       {
          return mEntityVariableSpace;
       }

@@ -507,7 +507,7 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
+               case ValueSpaceTypeDefine.ValueSpace_Register:
                   var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
@@ -574,7 +574,7 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
+               case ValueSpaceTypeDefine.ValueSpace_Register:
                   var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
@@ -764,7 +764,7 @@ package common {
       public static function RegisterVariable2GlobalVariable (scene:Scene, registerVariableInstance:VariableInstance):VariableInstance
       {
          // assert (registerVariableInstance != null);
-         // assert (registerVariableInstance.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+         // assert (registerVariableInstance.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Register);
          
          if (registerVariableInstance.GetIndex () < 0)
             return scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetNullVariableInstance ();

@@ -217,8 +217,8 @@ package common.trigger {
 
 
    // game / design
-
-      public static const ID_Design_LoadLevel:int                     = IdPool.CoreApiId_590;
+      
+      public static const ID_Design_LoadLevel:int                      = IdPool.CoreApiId_590;
       public static const ID_Design_MergeLevel:int                     = IdPool.CoreApiId_591;
 
       public static const ID_Design_RestartLevel:int                     = IdPool.CoreApiId_593;

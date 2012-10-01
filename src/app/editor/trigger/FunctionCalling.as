@@ -361,7 +361,7 @@ package editor.trigger {
          if (vi == null) // || vi.IsNull ())
             return;
          
-         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
+         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_Register)
             return;
          
          variableValueSource.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (scene, vi));
@@ -376,7 +376,7 @@ package editor.trigger {
          if (vi == null) // || vi.IsNull)
             return;
          
-         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
+         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_Register)
             return;
          
          variableValueTarget.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (scene, vi));

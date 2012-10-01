@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Batch Entity Setting" width="600">
+    title="Batch Entity Setting" width="700">
 
       <mx:HBox label="Basic" width="100%" paddingTop="10" paddingBottom="10" verticalAlign="bottom" borderStyle="solid" borderThickness="1">
          <mx:Spacer width="100%"/>

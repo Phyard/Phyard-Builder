@@ -7,7 +7,7 @@
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:codelib="editor.codelib.dialog.*"
     title="Code Library Manager"
-    width="600" height="500"
+    width="700" height="500"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
     creationComplete="InitDialog ();"
@@ -19,7 +19,7 @@
             horizontalGap="0" verticalGap="0" borderThickness="0"
             >
       <mx:HBox id="Box_Commands" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="1" verticalGap="0">
-         <mx:Spacer width="100%"/>
+         <mx:Spacer width="2"/>
          <!--mx:Button id="Button_CreatePackage" visible="false" toolTip="New Package" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-package-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-package-disabled.png')" upIcon="@Embed('../../../res/function/create-package.png')" downIcon="@Embed('../../../res/function/create-package-sel.png')" overIcon="@Embed('../../../res/function/create-package.png')" selectedUpIcon="@Embed('../../../res/function/create-package-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-package-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-package.png')"   /-->
          <!--mx:Button id="Button_CreateClass" visible="false" toolTip="New Class" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-class-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-class-disabled.png')" upIcon="@Embed('../../../res/function/create-class.png')" downIcon="@Embed('../../../res/function/create-class-sel.png')" overIcon="@Embed('../../../res/function/create-class.png')" selectedUpIcon="@Embed('../../../res/function/create-class-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-class-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-class.png')"   /-->
          <!--
@@ -34,7 +34,17 @@
          <mx:Spacer width="30"/>
          <mx:Label id="Label_FunctionAssetName" text="Name:" textAlign="right"/>
          <mx:TextInput id="Text_FunctionAssetName" text="" width="200" enter="stage.focus = panelCodeLibList;" focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);"/>
+         <mx:Spacer width="10"/>
          <mx:Spacer width="100%"/>
+         <mx:Spacer width="10"/>
+         <mx:Button id="Button_EditCustomEntityProperties" toolTip="Edit Custom Entity Properties (For Current Scene)" click="OnEditEntityVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-custom-entity-vaiables.png')"/>
+         <mx:Button id="Button_EditGlobalProperties" toolTip="Edit Global Properties (For Current Scene)" focusEnabled="false" click="OnEditGlobalVariables ();" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-global-vaiables.png')"/>
+         <mx:Spacer width="10"/>
+         <mx:Spacer width="100%"/>
+         <mx:Spacer width="10"/>
+         <mx:Button id="Button_EditCommonCustomEntityProperties" toolTip="Edit Common Custom Entity Properties (For All Scenes)" click="OnEditCommonEntityVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-common-custom-entity-vaiables.png')"/>
+         <mx:Button id="Button_EditCommonGlobalProperties" toolTip="Edit Common Global Properties (For All Scenes)" click="OnEditCommonGlobalVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-common-global-vaiables.png')"/>
+         <mx:Spacer width="2"/>
       </mx:HBox>
       <mx:VBox id="Box_CCatListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
          <codelib:CodeLibListPanel id="panelCodeLibList" width="100%" height="100%"/>
@@ -167,7 +177,26 @@
          }
             
       //==========================================================
-            
+         
+         private function OnEditGlobalVariables ():void
+         {
+            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetGlobalVariableSpace (), null);
+         }
+
+         private function OnEditEntityVariables ():void
+         {
+            EditorContext.ShowVariableSpaceEditDialog (this,  GetCodeLibListPanel ().GetCodeLibManager ().GetEntityVariableSpace (), null);
+         }
+         
+         private function OnEditCommonGlobalVariables ():void
+         {
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), null);
+         }
+
+         private function OnEditCommonEntityVariables ():void
+         {
+            EditorContext.ShowVariableSpaceEditDialog (this,  EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), null);
+         }
          
      ]]>
    </mx:Script>

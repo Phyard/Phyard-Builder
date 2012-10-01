@@ -61,7 +61,9 @@
             <mx:Spacer width="10"/>
             <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
             <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
+            <!--
             <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
+            -->
             <mx:Spacer width="10"/>
             <mx:Spacer width="100%"/>
             <mx:Spacer width="10"/>
@@ -891,10 +893,10 @@
          mCurrentSceneEditPanel.SetCookieSelectMode (Button_MouseCookieMode.selected);
       }
       
-      private function OnClickShowAllEntityLinksButton ():void
-      {
-         mCurrentSceneEditPanel.SetShowAllAssetLinks (Button_ShowAllEntityLinks.selected);
-      }
+      //private function OnClickShowAllEntityLinksButton ():void
+      //{
+      //   mCurrentSceneEditPanel.SetShowAllAssetLinks (Button_ShowAllEntityLinks.selected);
+      //}
       
       // find entity
       
@@ -1054,7 +1056,8 @@
          mCurrentScenePlayPanel.UpdateInterface (); 
       }
       
-      private function OnClickStopCurrentSceneButton ():void
+      // skin will call this with one param. (a bad design)
+      private function OnClickStopCurrentSceneButton (dummyParam:Object = null):void
       {
          mCurrentScenePlayPanel.CloseViewer ();
          

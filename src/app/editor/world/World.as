@@ -22,7 +22,8 @@ package editor.world {
    import editor.entity.Scene;
    
    import editor.trigger.VariableSpaceRegister;
-   import editor.trigger.VariableSpaceSession;
+   import editor.trigger.VariableSpaceCommonGlobal;
+   import editor.trigger.VariableSpaceCommonEntityProperties;
    
    import editor.trigger.FunctionDeclaration_PreDefined;
    import editor.trigger.FunctionDeclaration_Core;
@@ -73,9 +74,10 @@ package editor.world {
          mRegisterVariableSpace_Scene            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Scene); // useless in fact.
          mRegisterVariableSpace_Array             = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Array);
          
-         // session variable space
+         // common variable spaces
          
-         //mSessionVariableSpace = new VariableSpaceSession (/*this*/);
+         mCommonSceneGlobalVariableSpace = new VariableSpaceCommonGlobal (/*this*/);
+         mCommonCustomEntityVariableSpace = new VariableSpaceCommonEntityProperties (/*this*/);
       }
 
       public function Destroy ():void
@@ -94,6 +96,20 @@ package editor.world {
          
          // sounds 
          mAssetSoundManager.Destroy ();
+         
+         // variable spaces
+         mRegisterVariableSpace_Boolean = null;
+         mRegisterVariableSpace_String = null;
+         mRegisterVariableSpace_Number = null;
+         mRegisterVariableSpace_Entity = null;
+         mRegisterVariableSpace_CollisionCategory = null;
+         mRegisterVariableSpace_Module = null;
+         mRegisterVariableSpace_Sound = null;
+         mRegisterVariableSpace_Scene = null;
+         mRegisterVariableSpace_Array = null;
+         
+         mCommonSceneGlobalVariableSpace = null;
+         mCommonCustomEntityVariableSpace = null;
       }
 
       //override 
@@ -592,8 +608,9 @@ package editor.world {
       private var mRegisterVariableSpace_Scene           :VariableSpaceRegister; // useless in fact
       private var mRegisterVariableSpace_Array            :VariableSpaceRegister;
       
-      // session variables
-      //private var mSessionVariableSpace:VariableSpaceSession;
+      // common variables
+      private var mCommonSceneGlobalVariableSpace:VariableSpaceCommonGlobal;
+      private var mCommonCustomEntityVariableSpace:VariableSpaceCommonEntityProperties;
       
       public function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
       {
@@ -622,10 +639,15 @@ package editor.world {
          }
       }
       
-      //public function GetSessionVariableSpace ():VariableSpaceSession
-      //{
-      //   return mSessionVariableSpace;
-      //}
+      public function GetCommonSceneGlobalVariableSpace ():VariableSpaceCommonGlobal
+      {
+         return mCommonSceneGlobalVariableSpace;
+      }
+      
+      public function GetCommonCustomEntityVariableSpace ():VariableSpaceCommonEntityProperties
+      {
+         return mCommonCustomEntityVariableSpace;
+      }
    }
 }
 

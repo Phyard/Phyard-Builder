@@ -160,7 +160,7 @@ package editor.trigger {
                
                return new ValueSource_Variable (variableInstance);
             }
-            case ValueSpaceTypeDefine.ValueSpace_Entity:
+            case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
             {
                if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
                   return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (/*triggerEngine*/);
@@ -175,12 +175,42 @@ package editor.trigger {
                
                return new ValueSource_Variable (variableInstance);
             }
-            case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
+            case ValueSpaceTypeDefine.ValueSpace_Register:
             {
                if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
                   return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (/*triggerEngine*/);
 
                variableInstance = scene.GetWorld ().GetRegisterVariableSpace (mVariableInstance.GetValueType ()).GetVariableInstanceAt (mVariableInstance.GetIndex ());
+               
+               return new ValueSource_Variable (variableInstance);
+            }
+            case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+            {
+               if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
+                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (/*triggerEngine*/);
+
+               if (mVariableInstance.GetIndex () < 0)
+                  variableInstance = scene.GetWorld ().GetCommonSceneGlobalVariableSpace ().GetNullVariableInstance ();
+               else
+               {
+                  variableInstance = scene.GetWorld ().GetCommonSceneGlobalVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), true);
+                  variableInstance.SetValueObject (mVariableInstance.GetValueObject ()); // ? meaningful?
+               }
+               
+               return new ValueSource_Variable (variableInstance);
+            }
+            case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+            {
+               if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
+                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (/*triggerEngine*/);
+
+               if (mVariableInstance.GetIndex () < 0)
+                  variableInstance = scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetNullVariableInstance ();
+               else
+               {
+                  variableInstance = scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), true);
+                  variableInstance.SetValueObject (mVariableInstance.GetValueObject ()); // ? meaningful?
+               }
                
                return new ValueSource_Variable (variableInstance);
             }

@@ -827,7 +827,7 @@ package viewer {
                      buttonX = margin;
                      buttonY = mViewerHeight - margin;
                
-                     mExitButton_Overlay = CreateButton (0, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, _OnExitLevel);
+                     mExitButton_Overlay = CreateButton (0, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnExitLevel);
                      mExitButton_Overlay.x = buttonX + 0.5 * mExitButton_Overlay.width;
                      mExitButton_Overlay.y = buttonY - 0.5 * mExitButton_Overlay.height;
                      mHudLayerForPause.addChild (mExitButton_Overlay);
@@ -942,7 +942,7 @@ package viewer {
                   mPlayBar.addChild (mHelpButton);
                }
                
-               mExitButton = CreateButton (1, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, _OnExitLevel);
+               mExitButton = CreateButton (1, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnExitLevel);
                mExitButton.x = gap + 0.5 * mExitButton.width;
                mExitButton.y = 0.5 * PlayBarHeight;
                mPlayBar.addChild (mExitButton);

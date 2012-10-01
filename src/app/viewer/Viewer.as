@@ -1533,7 +1533,7 @@ package viewer {
                   OnSoundControlChanged: OnSoundControlChanged,
                   
                   mHasMainMenu: mParamsFromContainer.mHasMainMenu,
-                  OnExitLevel: mParamsFromContainer.OnExitLevel,
+                  OnExitLevel: mParamsFromGamePackage == null ? null : mParamsFromContainer.OnExitLevel,
                   OnNextLevel: mParamsFromContainer.OnNextLevel,
                   mHasNextLevel: mParamsFromContainer.mHasNextLevel,
                   OnGoToPhyard: mParamsFromContainer.OnGoToPhyard

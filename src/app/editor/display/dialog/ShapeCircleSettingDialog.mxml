@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Circle Setting" width="600" creationComplete="OnInitPanel()">
+    title="Circle Setting" width="700" creationComplete="OnInitPanel()">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Physics" borderStyle="solid" height="100%" width="100%"

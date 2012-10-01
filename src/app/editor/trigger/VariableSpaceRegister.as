@@ -33,7 +33,7 @@ package editor.trigger {
       
       override public function GetSpaceType ():int
       {
-         return ValueSpaceTypeDefine.ValueSpace_GlobalRegister;
+         return ValueSpaceTypeDefine.ValueSpace_Register;
       }
       
       override public function GetSpaceName ():String

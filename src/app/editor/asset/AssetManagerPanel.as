@@ -480,6 +480,11 @@ package editor.asset {
          }
       }
       
+      public function ToggleShowAllAssetLinks (show:Boolean):void
+      {
+         SetShowAllAssetLinks (! mShowAllAssetLinks);
+      }
+      
       public function SetShowAllAssetLinks (show:Boolean):void
       {
          if (mShowAllAssetLinks != show)
@@ -751,8 +756,12 @@ package editor.asset {
                   MoveSelectedAssets (ctrlHold, 0, 1, true, false);
                   
                   return true;
-               case 73: // key i
+               case 73: // key I
                   ToggleShowAllAssetIDs (true);
+                  
+                  return true;
+               case 76: // key L
+                  ToggleShowAllAssetLinks (true);
                   
                   return true;
             }

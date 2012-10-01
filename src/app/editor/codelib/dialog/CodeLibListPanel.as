@@ -60,6 +60,11 @@ package editor.codelib.dialog {
          super.SetAssetManager (codeLibManager);
       }
       
+      public function GetCodeLibManager ():CodeLibManager
+      {
+         return mCodeLibManager;
+      }
+      
 //============================================================================
 //   
 //============================================================================

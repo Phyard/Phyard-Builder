@@ -375,7 +375,9 @@ package editor.trigger {
    // todo: property target
    //==============================================================================
       
-      public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpaceEntity):ValueTarget_Property
+      //public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpaceEntityProperties):ValueTarget_Property
+      // from v.202, scene common entity property space is added
+      public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpace):ValueTarget_Property
       {
          BuildPropertyVaribleDefinition ();
          //return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
@@ -611,7 +613,9 @@ package editor.trigger {
          }
       }
       
-      public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpaceEntity):ValueSource_Property
+      //public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpaceEntityProperties):ValueSource_Property
+      // from v.202, scene common entity property space is added
+      public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpace):ValueSource_Property
       {
          BuildPropertyVaribleDefinition ();
          //return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));

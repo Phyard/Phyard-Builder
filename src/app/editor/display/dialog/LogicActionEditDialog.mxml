@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Action Setting" width="600">
+    title="Action Setting" width="700">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Code Snippet" borderStyle="solid" height="100%" width="100%"

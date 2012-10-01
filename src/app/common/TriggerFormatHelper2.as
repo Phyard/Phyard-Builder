@@ -538,7 +538,7 @@ package common {
                      value_source = new Parameter_Variable (variable_instance);
                   
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
+               case ValueSpaceTypeDefine.ValueSpace_Register:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
@@ -614,7 +614,7 @@ package common {
                      value_target = new Parameter_Variable (variable_instance);
                   
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
+               case ValueSpaceTypeDefine.ValueSpace_Register:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {

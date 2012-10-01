@@ -118,7 +118,7 @@ package editor.trigger {
             var vi:VariableInstance = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
             if (vi != null && vi != mNullVariableInstance)
             {
-               mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
+               mVariableIdMapTable [mVirualVariablesCount++] = vi.GetIndex ();
                return vi;
             }
          }
@@ -127,6 +127,11 @@ package editor.trigger {
          
          mVariableInstances.push (variable_instance);
          
+         //>> bug fix: this line added from v2.03
+         if (mVariableIdMapTable != null)
+            mVariableIdMapTable [mVirualVariablesCount++] = variable_instance.GetIndex ();
+         //<<
+
          NotifyModified ();
          
          return variable_instance;
@@ -148,6 +153,11 @@ package editor.trigger {
          
          mVariableInstances.push (variable_instance);
          
+         //>> bug fix: this line added from v2.03
+         if (mVariableIdMapTable != null)
+            mVariableIdMapTable [mVirualVariablesCount++] = variable_instance.GetIndex ();
+         //<<
+
          NotifyModified ();
          
          return variable_instance;

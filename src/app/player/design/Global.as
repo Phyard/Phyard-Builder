@@ -21,6 +21,7 @@ package player.design
    import com.tapirgames.util.MersenneTwisterRNG;
    
    import common.trigger.ValueTypeDefine;
+   import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.define.FunctionDefine;
    
    import common.TriggerFormatHelper2;
@@ -60,9 +61,11 @@ package player.design
       
       //public static var mGlobalVariableSpaces:Array;
       public static var mGlobalVariableSpace:VariableSpace;
+      public static var mCommonGlobalVariableSpace:VariableSpace;
       
       //public static var mEntityVariableSpaces:Array;
       public static var mEntityVariableSpace:VariableSpace;
+      public static var mCommonEntityVariableSpace:VariableSpace;
       
       public static var mCustomFunctionDefinitions:Array;
       
@@ -114,7 +117,9 @@ package player.design
       
       mSessionVariableSpace = null;
       mGlobalVariableSpace = null;
+      mCommonGlobalVariableSpace = null;
       mEntityVariableSpace = null;
+      mCommonEntityVariableSpace = null;
       
       mCustomFunctionDefinitions = null;
       
@@ -187,7 +192,9 @@ package player.design
             mSessionVariableSpace = null;
          }
          mGlobalVariableSpace = null;
+         mCommonGlobalVariableSpace = null;
          mEntityVariableSpace = null;
+         mCommonEntityVariableSpace = null;
          
          mCustomFunctionDefinitions = null;
          
@@ -285,7 +292,7 @@ package player.design
       }
       
       //public static function InitCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
-      public static function InitCustomVariables (globalVarialbeDefines:Array, entityVarialbeDefines:Array, sessionVariableDefines:Array, isMerging:Boolean = false):void // sessionVariableDefines added from v1.57
+      public static function InitCustomVariables (globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, sessionVariableDefines:Array, isMerging:Boolean = false):void // sessionVariableDefines added from v1.57
       {
          //>> v1.52 only
          //var numSpaces:int;
@@ -329,6 +336,11 @@ package player.design
          
          mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines, isMerging ? mGlobalVariableSpace : null);
          mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines, isMerging ? mEntityVariableSpace : null);
+         if (! isMerging)
+         {
+            mCommonGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonGlobalVarialbeDefines, null);
+            mCommonEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonEntityVarialbeDefines, null);
+         }
       }
       
       public static function GetSessionVariableSpace ():VariableSpace
@@ -348,9 +360,19 @@ package player.design
          return mGlobalVariableSpace;
       }
       
+      public static function GetCommonGlobalVariableSpace ():VariableSpace
+      {
+         return mCommonGlobalVariableSpace;
+      }
+      
       public static function GetCustomEntityVariableSpace ():VariableSpace
       {
          return mEntityVariableSpace;
+      }
+      
+      public static function GetCommonCustomEntityVariableSpace ():VariableSpace
+      {
+         return mCommonEntityVariableSpace;
       }
       
       //>> v1.52 only
@@ -372,9 +394,15 @@ package player.design
       //   return mEntityVariableSpace.CloneSpace ();
       //}
       
-      public static function GetDefaultEntityPropertyValue (propertyId:int):Object
+      public static function GetDefaultEntityPropertyValue (spaceId:int, propertyId:int):Object
       {
-         var vi:VariableInstance = mEntityVariableSpace.GetVariableAt (propertyId);
+         var vi:VariableInstance;
+         
+         if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+            vi = mCommonEntityVariableSpace.GetVariableAt (propertyId);
+         else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+            vi = mEntityVariableSpace.GetVariableAt (propertyId);
+         
          return vi == null ? null : vi.GetValueObject ();
       }
       

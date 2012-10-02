@@ -43,6 +43,11 @@ package editor.trigger {
          mPropertyValueTarget = propertyValueTarget;
       }
       
+      public function GetPropertyVariableSpaceType ():int
+      {
+         return mPropertyValueTarget.GetVariableSpaceType ();
+      }
+      
       public function GetPropertyVariableIndex ():int
       {
          return mPropertyValueTarget.GetVariableIndex ();

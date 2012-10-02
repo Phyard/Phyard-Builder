@@ -169,6 +169,12 @@ package common {
             }
          }
          
+         //>>from v2.03
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetCommonSceneGlobalVariableSpace (), worldDefine.mCommonGlobalVariableDefines, true);
+            
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetCommonCustomEntityVariableSpace (), worldDefine.mCommonEntityPropertyDefines, true);
+         //<<
+         
          // ...
          worldDefine.mSimpleGlobalAssetDefines = forSceneUndoPoint; // from v2.01
          
@@ -1832,6 +1838,25 @@ package common {
             }
          //}
          //<<
+         
+         //>>from v2.03
+            var beginningCommonGlobalVariableIndex:int = editorWorld.GetCommonSceneGlobalVariableSpace ().GetNumVariableInstances ();
+            var beginningCommonEntityVariableIndex:int = editorWorld.GetCommonCustomEntityVariableSpace ().GetNumVariableInstances ();
+            if (worldDefine.mCommonGlobalVariableDefines.length > 0)
+            {
+               if (mergeVariablesWithSameNames)
+                  editorWorld.GetCommonSceneGlobalVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
+               TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonGlobalVariableDefines, editorWorld.GetCommonSceneGlobalVariableSpace (), true);
+            }
+            if (worldDefine.mCommonEntityPropertyDefines.length > 0)
+            {
+               if (mergeVariablesWithSameNames)
+                  editorWorld.GetCommonCustomEntityVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables ();
+               TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonEntityPropertyDefines, editorWorld.GetCommonCustomEntityVariableSpace (), true);
+            }
+            //editorWorld.GetCommonSceneGlobalVariableSpace ().NotifyGlobalVariableSpaceModified ();
+            //editorWorld.GetCommonCustomEntityVariableSpace ().NotifyEntityVariableSpaceModified ();
+         //<<
 
          // scenes
          
@@ -1863,7 +1888,8 @@ package common {
 
             // worldDefine.mSimpleGlobalAssetDefines == true means uodo scene
             SceneDefine2Scene (editorWorld, sceneDefine, worldDefine.mSimpleGlobalAssetDefines, scene, mergeVariablesWithSameNames, policyOnConflictingSceneAssets, 
-                               imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable); // here editorWorld.GetNumScenes () will make the scene references as null
+                               imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable, // here editorWorld.GetNumScenes () will make the scene references as null
+                               beginningCommonGlobalVariableIndex, beginningCommonEntityVariableIndex);
          }
          else // load world or import scenes
          {
@@ -1895,7 +1921,8 @@ package common {
                try
                {
                   SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [sceneId], true, newScene, /*mergeVariablesWithSameNames*/false, policyOnConflictingSceneAssets, 
-                                  imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                                  imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable,
+                                  beginningCommonGlobalVariableIndex, beginningCommonEntityVariableIndex);
                   
                   newCreatedScenes.push (newScene);
                }
@@ -1932,6 +1959,19 @@ package common {
          
          // ...
          
+         // important
+         if (mergeVariablesWithSameNames)
+         {
+            if (worldDefine.mCommonGlobalVariableDefines.length > 0)
+            {
+               editorWorld.GetCommonSceneGlobalVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+            }
+            if (worldDefine.mCommonEntityPropertyDefines.length > 0)
+            {
+               editorWorld.GetCommonCustomEntityVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+            }
+         }
+         
          //return editorWorld;
          return newCreatedScenes;
       }
@@ -1939,7 +1979,8 @@ package common {
       public static function SceneDefine2Scene (editorWorld:World, sceneDefine:SceneDefine, isNewSceneToLoadAll:Boolean, scene:Scene, 
                                                 mergeVariablesWithSameNames:Boolean, 
                                                 policyOnConflictingSceneAssets:int, // 0: determined by modified time. 1: keep current. 2: override. 3: create new
-                                                imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
+                                                imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array,
+                                                beginningCommonGlobalVariableIndex:int, beginningCommonEntityVariableIndex:int):void
       {
          //
          
@@ -2779,7 +2820,7 @@ package common {
                functionAsset.UpdateAppearance ();
                functionAsset.UpdateSelectionProxy ();
                
-               TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+               TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
                
                functionAsset.SetTimeModified (functionDefine.mTimeModified);
@@ -2858,7 +2899,7 @@ package common {
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, condition.GetCodeSnippet (), condition.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
@@ -2960,7 +3001,7 @@ package common {
                   }
                   //<<
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                   
                   //>>from v1.56
@@ -2970,13 +3011,13 @@ package common {
             
                      if (entityDefine.mPreFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                         TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                      
                      if (entityDefine.mPostFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                         TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                   }
@@ -2986,21 +3027,21 @@ package common {
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, action.GetCodeSnippet (), action.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
                   var entityFilter:EntityInputEntityScriptFilter = entityDefine.mEntity as EntityInputEntityScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, entityFilter.GetCodeSnippet (), entityFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
                   var entityPairFilter:EntityInputEntityPairScriptFilter = entityDefine.mEntity as EntityInputEntityPairScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, entityPairFilter.GetCodeSnippet (), entityPairFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
             }
@@ -3106,6 +3147,14 @@ package common {
          else
          {
             worldDefine.mSceneDefines.push (XmlElement2SceneDefine (worldDefine, worldXml));
+         }
+         
+         // scene common variables
+         
+         if (worldDefine.mVersion >= 0x0203)
+         {
+            TriggerFormatHelper.VariablesXml2Define (worldXml.CommonSceneGlobalVariables [0], worldDefine.mCommonGlobalVariableDefines, true);
+            TriggerFormatHelper.VariablesXml2Define (worldXml.CommonSceneEntityProperties [0], worldDefine.mCommonEntityPropertyDefines, true);
          }
          
          // image modules
@@ -4199,6 +4248,14 @@ package common {
          else
          {
             SceneDefine2ByteArray (worldDefine, worldDefine.mSceneDefines [0], byteArray);
+         }
+                  
+         // scene common variables
+         
+         if (worldDefine.mVersion >= 0x0203)
+         {
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true);
          }
          
          // modules

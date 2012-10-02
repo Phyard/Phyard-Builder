@@ -212,9 +212,12 @@ package common {
          {
             var property_source:ValueSource_Property = valueSource as ValueSource_Property;
             
-            
+            // before v2.03
+            //value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+            //                                , 0, property_source.GetPropertyVariableIndex ());
+            // from v2.03
             value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
-                                            , 0, property_source.GetPropertyVariableIndex ());
+                                            , property_source.GetPropertyVariableSpaceType (), property_source.GetPropertyVariableIndex ());
          }
          
          if (value_source_define == null)
@@ -243,8 +246,12 @@ package common {
          {
             var property_target:ValueTarget_Property = valueTarget as ValueTarget_Property;
             
+            // before v2.03
+            //value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+            //                                , 0, property_target.GetPropertyVariableIndex ());
+            // from v2.03
             value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
-                                            , 0, property_target.GetPropertyVariableIndex ());
+                                            , property_target.GetPropertyVariableSpaceType (), property_target.GetPropertyVariableIndex ());
          }
          
          if (value_target_define == null)
@@ -255,6 +262,7 @@ package common {
          return value_target_define;
       }
       
+      // scene may be null for Scene Common variable spaces
       private static function ValidateDirectValueObject_Object2Define (scene:Scene, valueType:int, valueObject:Object):Object
       {
          switch (valueType)
@@ -278,26 +286,41 @@ package common {
                }
                else
                {
+                  if (scene == null)
+                     return Define.EntityId_None;
+                  
                   return scene.GetAssetCreationId (entity);
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return scene..GetCollisionCategoryManager ().GetCollisionCategoryIndex (valueObject as CollisionCategory);
+            {
+               var ccat:CollisionCategory = valueObject as CollisionCategory;
+               if (ccat == null || scene == null)
+                  return -1;
+               
+               return scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (ccat);
+            }
             case ValueTypeDefine.ValueType_Module:
             {
                var module:AssetImageModule = valueObject as AssetImageModule;
+               if (module == null || scene == null)
+                  return -1;
                
                return scene.GetWorld ().GetImageModuleIndex (module);
             }
             case ValueTypeDefine.ValueType_Sound:
             {
                var sound:AssetSound = valueObject as AssetSound;
+               if (sound == null || scene == null)
+                  return -1;
                
                return scene.GetWorld ().GetSoundIndex (sound);
             }
             case ValueTypeDefine.ValueType_Scene:
             {
                var sceneValue:Scene = valueObject as Scene;
+               if (sceneValue == null || scene == null)
+                  return -1;
                
                return scene.GetWorld ().GetSceneIndex (sceneValue);
             }
@@ -504,6 +527,9 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
+               case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                  variable_instance = scene.GetWorld ().GetCommonSceneGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
@@ -538,8 +564,19 @@ package common {
          {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
-            value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+            switch (property_source_define.mSpacePackageId)
+            {
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueSource_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+               case 0: // for compability
+               default:
+                  value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
                                                    , new ValueSource_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+                  break;
+            }
          }
          
          if (value_source == null)
@@ -570,6 +607,9 @@ package common {
             {
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                  variable_instance = scene.GetWorld ().GetCommonSceneGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
@@ -604,8 +644,19 @@ package common {
          {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             
-            value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+            switch (property_target_define.mSpacePackageId)
+            {
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueTarget_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+               case 0: // for compability
+               default:
+                  value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
                                                    , new ValueTarget_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+                  break;
+            }
          }
          
          if (value_target == null)
@@ -616,6 +667,7 @@ package common {
          return value_target;
       }
       
+      // scene may be null for Scene Common Variable Spaces
       private static function ValidateDirectValueObject_Define2Object (scene:Scene, valueType:int, valueObject:Object):Object
       {
          switch (valueType)
@@ -633,6 +685,9 @@ package common {
                return text;
             case ValueTypeDefine.ValueType_Entity:
             {
+               if (scene == null) // for Scene Common Variable Spaces
+                  return null;
+
                var entityIndex:int = valueObject as int;
                if (entityIndex < 0)
                {
@@ -640,7 +695,7 @@ package common {
                   {
                      return scene.GetWorld ();
                   }
-                  else if (entityIndex == Define.EntityId_None)
+                  else // if (entityIndex == Define.EntityId_None)
                   {
                      return null;
                   }
@@ -651,19 +706,33 @@ package common {
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
+            {
+               if (scene == null)
+                  return null;
+               
                return scene.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (valueObject as int);
+            }
             case ValueTypeDefine.ValueType_Module:
             {
+               if (scene == null)
+                  return null;
+               
                var moduleIndex:int = valueObject as int;
                return scene.GetWorld ().GetImageModuleByIndex (moduleIndex);
             }
             case ValueTypeDefine.ValueType_Sound:
             {
+               if (scene == null)
+                  return null;
+               
                var soundIndex:int = valueObject as int;
                return scene.GetWorld ().GetSoundByIndex (soundIndex);
             }
             case ValueTypeDefine.ValueType_Scene:
             {
+               if (scene == null)
+                  return null;
+               
                var sceneIndex:int = valueObject as int;
                return scene.GetWorld ().GetSceneByIndex (sceneIndex);
             }
@@ -902,7 +971,11 @@ package common {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
             WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double); // ValueTypeDefine.NumberTypeDetail_Double is useless
-            binFile.writeShort (property_source_define.mSpacePackageId);
+            //binFile.writeShort (property_source_define.mSpacePackageId); // before v2.03
+            //>> from v2.03
+            binFile.writeByte (0);
+            binFile.writeByte (property_source_define.mSpacePackageId);
+            //<<
             binFile.writeShort (property_source_define.mPropertyId);
          }
       }
@@ -925,7 +998,11 @@ package common {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             
             WriteValueSourceDefinIntoBinFile (binFile, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double); // ValueTypeDefine.NumberTypeDetail_Double is useless
-            binFile.writeShort (property_target_define.mSpacePackageId);
+            //binFile.writeShort (property_target_define.mSpacePackageId); // before v2.03
+            //>> from v2.03
+            binFile.writeByte (0);
+            binFile.writeByte (property_target_define.mSpacePackageId);
+            //<<
             binFile.writeShort (property_target_define.mPropertyId);
          }
       }
@@ -1285,7 +1362,7 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftReferenceIndexesInCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, globalVariableShiftIndex:int, entityVariableShiftIndex:int, functionRefIndex_CorrectionTable:Array, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, functionRefIndex_CorrectionTable:Array, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
 
          var funcCallingDefine:FunctionCallingDefine;
@@ -1323,13 +1400,13 @@ package common {
                   var numInputs:int = funcCallingDefine.mNumInputs;
                   for (j = 0; j < numInputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   }
                   
                   var numOutputs:int = funcCallingDefine.mNumOutputs;
                   for (j = 0; j < numOutputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   }
                //}
                //else
@@ -1339,7 +1416,7 @@ package common {
          }
       }
       
-      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
+      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
          var valueSourceType:int = sourceDefine.GetValueSourceType ();
          
@@ -1387,22 +1464,21 @@ package common {
          {
             var variableSourceDefine:ValueSourceDefine_Variable = sourceDefine as ValueSourceDefine_Variable;
             
-            var variableIndex:int;
-            
-            if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+            var variableIndex:int = variableSourceDefine.mVariableIndex;
+            if (variableIndex >= 0)
             {
-               variableIndex = variableSourceDefine.mVariableIndex;
-               
-               if (variableIndex >= 0)
+               if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+               {
                   variableSourceDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
-            }
-            
-            if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
-            {
-               variableIndex = variableSourceDefine.mVariableIndex;
-               
-               if (variableIndex >= 0)
+               }
+               else if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
+               {
                   variableSourceDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
+               }
+               else if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonGlobal)
+               {
+                  variableSourceDefine.mVariableIndex = variableIndex + commonGlobalVariableShiftIndex;
+               }
             }
          }
          else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Property)
@@ -1411,13 +1487,22 @@ package common {
             
             var propertyId:int = propertySourceDefine.mPropertyId;
             if (propertyId >= 0)
-               propertySourceDefine.mPropertyId = propertyId + entityVariableShiftIndex;
+            {
+               if (propertySourceDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               {
+                  propertySourceDefine.mPropertyId = propertyId + commonEntityVariableShiftIndex;
+               }
+               else // if (propertySourceDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               {
+                  propertySourceDefine.mPropertyId = propertyId + entityVariableShiftIndex;
+               }
+            }
             
-            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
          }
       }
       
-      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
+      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
          var valueTargetType:int = targetDefine.GetValueTargetType ();
          
@@ -1425,22 +1510,21 @@ package common {
          {
             var variableTargetDefine:ValueTargetDefine_Variable = targetDefine as ValueTargetDefine_Variable;
             
-            var variableIndex:int;
-            
-            if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+            var variableIndex:int = variableTargetDefine.mVariableIndex;
+            if (variableIndex >= 0)
             {
-               variableIndex = variableTargetDefine.mVariableIndex;
-               
-               if (variableIndex >= 0)
+               if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+               {
                   variableTargetDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
-            }
-            
-            if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
-            {
-               variableIndex = variableTargetDefine.mVariableIndex;
-               
-               if (variableIndex >= 0)
+               }
+               else if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
+               {
                   variableTargetDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
+               }
+               else if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonGlobal)
+               {
+                  variableTargetDefine.mVariableIndex = variableIndex + commonGlobalVariableShiftIndex;
+               }
             }
          }
          else if (valueTargetType == ValueTargetTypeDefine.ValueTarget_Property)
@@ -1449,9 +1533,18 @@ package common {
             
             var propertyId:int = propertyTargetDefine.mPropertyId;
             if (propertyId >= 0)
-               propertyTargetDefine.mPropertyId = propertyId + entityVariableShiftIndex;
+            {
+               if (propertyTargetDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               {
+                  propertyTargetDefine.mPropertyId = propertyId + commonEntityVariableShiftIndex;
+               }
+               else // if (propertyTargetDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               {
+                  propertyTargetDefine.mPropertyId = propertyId + entityVariableShiftIndex;
+               }
+            }
             
-            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
          }
       }
    }

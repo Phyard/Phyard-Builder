@@ -52,6 +52,9 @@ package common {
       */
       //<<
       
+      public var mCommonGlobalVariableDefines:Array = new Array (); // from v2.03
+      public var mCommonEntityPropertyDefines:Array = new Array (); // from v2.03
+      
       public var mSimpleGlobalAssetDefines:Boolean = false; // for scene undo point, set it as true
       
       public var mImageDefines:Array = new Array (); // for undo point, only key is stored

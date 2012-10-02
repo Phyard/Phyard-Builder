@@ -538,6 +538,12 @@ package common {
                      value_source = new Parameter_Variable (variable_instance);
                   
                   break;
+               case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_source = new Parameter_Variable (variable_instance);
+                  
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
@@ -563,8 +569,19 @@ package common {
             
             // here, assume property_source_define.mSpacePackageId is always 0.
             var customPropertyId:int = property_source_define.mPropertyId as int;
+            
             if (customPropertyId >= 0)
-               customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
+            {
+               if (property_source_define.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               {
+                  // do nothing
+               }
+               else // if (property_source_define.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               {
+                  customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
+               }
+            }
+            
             value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, null, extraInfos)
                                                       , property_source_define.mSpacePackageId, customPropertyId);
          }
@@ -614,6 +631,12 @@ package common {
                      value_target = new Parameter_Variable (variable_instance);
                   
                   break;
+               case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_target = new Parameter_Variable (variable_instance);
+                  
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
@@ -640,7 +663,16 @@ package common {
             // here, assume property_source_define.mSpacePackageId is always 0.
             var customPropertyId:int = property_target_define.mPropertyId as int;
             if (customPropertyId >= 0)
-               customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
+            {
+               if (property_target_define.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               {
+                  // do nothing
+               }
+               else // if (property_target_define.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               {
+                  customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
+               }
+            }
             value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, null, extraInfos)
                                                       , property_target_define.mSpacePackageId, customPropertyId);
          }
@@ -911,7 +943,7 @@ package common {
          return funcCallingDefine;
       }
       
-      public static function  LoadValueSourceDefineFromBinFile (binFile:ByteArray, valueType:int, numberDetail:int):ValueSourceDefine
+      public static function LoadValueSourceDefineFromBinFile (binFile:ByteArray, valueType:int, numberDetail:int):ValueSourceDefine
       {
          var valueSourceDefine:ValueSourceDefine = null;
          
@@ -932,7 +964,8 @@ package common {
          {
             valueSourceDefine = new ValueSourceDefine_Property (
                   LoadValueSourceDefineFromBinFile (binFile, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double),
-                  binFile.readShort (),
+                  //binFile.readShort (), // before v2.03
+                  (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
                   binFile.readShort ()
                );
          }
@@ -962,7 +995,8 @@ package common {
          {
             valueTargetDefine = new ValueTargetDefine_Property (
                   LoadValueSourceDefineFromBinFile (binFile, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double),
-                  binFile.readShort (),
+                  //binFile.readShort (), // before v2.03
+                  (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
                   binFile.readShort ()
                );
          }

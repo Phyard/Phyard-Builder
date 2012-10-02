@@ -445,8 +445,9 @@ package common {
             
             //Global.InitCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
             //Global.InitCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines); // before v2.00
-            Global.InitCustomVariables (sceneDefine.mGlobalVariableDefines, sceneDefine.mEntityPropertyDefines, sceneDefine.mSessionVariableDefines, isMergingScene);
-                                                                                                                // here isMergingScene must be false
+            Global.InitCustomVariables (sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
+                                        sceneDefine.mEntityPropertyDefines, worldDefine.mCommonEntityPropertyDefines, 
+                                        sceneDefine.mSessionVariableDefines, isMergingScene);
             
             // append the missed new custom variables for old entities
             // (merged with foloowing "init entity custom properties" block)
@@ -728,6 +729,17 @@ package common {
          else
          {
             SceneDefine2XmlElement (worldDefine, worldDefine.mSceneDefines [0], xml);
+         }
+                  
+         // scene common variables
+         
+         if (worldDefine.mVersion >= 0x0203)
+         {
+            xml.CommonSceneGlobalVariables = <CommonSceneGlobalVariables />;
+            xml.CommonSceneEntityProperties = <CommonSceneEntityProperties />;
+            
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonGlobalVariableDefines, xml.CommonSceneGlobalVariables [0], true);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonEntityPropertyDefines, xml.CommonSceneEntityProperties [0], true);
          }
          
          // image modules
@@ -1961,6 +1973,14 @@ package common {
          else
          {
             worldDefine.mSceneDefines.push (ByteArray2SceneDefine (byteArray, worldDefine));
+         }
+                  
+         // scene common variables
+         
+         if (worldDefine.mVersion >= 0x0203)
+         {
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true);
          }
          
          // modules
@@ -3335,6 +3355,13 @@ package common {
                }
             //}
          }
+                           
+         // scene common variables
+         // from v2.03
+         //{
+            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonGlobalVariableDefines);
+            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonEntityPropertyDefines);
+         //}
          
          //modules
          // from v1.58

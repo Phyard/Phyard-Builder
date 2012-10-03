@@ -2,37 +2,38 @@ package editor.trigger {
    
    import common.trigger.ValueSpaceTypeDefine;
    
-   public class VariableSpaceCommonEntityProperties extends VariableSpace
+   public class VariableSpaceWorld extends VariableSpace
    {
       
    //========================================================================================================
    //
    //========================================================================================================
       
-      public function VariableSpaceCommonEntityProperties (/*triggerEngine:TriggerEngine*/)
+      public function VariableSpaceWorld  (/*triggerEngine:TriggerEngine*/)
       {
          //super(triggerEngine);
       }
       
       override public function GetSpaceType ():int
       {
-         return ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties;
+         return ValueSpaceTypeDefine.ValueSpace_World;
       }
       
       override public function GetSpaceName ():String
       {
-         return "Common Entity Properties Variable Space";
+         return "World Variable Space";
       }
       
       override public function GetShortName ():String
       {
-         return "Common Property";
+         return "World";
       }
       
       override public function GetCodeName ():String
       {
-         return "common_property";
+         return "world";
       }
       
    }
 }
+

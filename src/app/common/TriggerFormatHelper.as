@@ -524,6 +524,9 @@ package common {
             
             switch (variable_source_define.mSpaceType)
             {
+               case ValueSpaceTypeDefine.ValueSpace_World:
+                  variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
@@ -605,6 +608,9 @@ package common {
             
             switch (variable_target_define.mSpaceType)
             {
+               case ValueSpaceTypeDefine.ValueSpace_World:
+                  variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
@@ -640,7 +646,7 @@ package common {
                value_target = new ValueTarget_Variable (variable_instance);
             }
          }
-         else  if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
          {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             

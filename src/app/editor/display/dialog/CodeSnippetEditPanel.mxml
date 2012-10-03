@@ -122,13 +122,6 @@
          import editor.trigger.ValueTarget_Null;
          import editor.trigger.ValueTarget_Variable;
          import editor.trigger.ValueTarget_Property;
-         import editor.trigger.VariableSpace;
-         import editor.trigger.VariableSpaceInput;
-         import editor.trigger.VariableSpaceOutput;
-         import editor.trigger.VariableSpaceSession;
-         import editor.trigger.VariableSpaceGlobal;
-         import editor.trigger.VariableSpaceLocal;
-         import editor.trigger.VariableSpaceRegister;
 
          //private var mInputValues:Object;
 

@@ -86,7 +86,7 @@ package editor.trigger {
             newEntityValueSource = mEntityValueSource.CloneSource (scene, /*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex);
             
             newPropertyValueTarget = mPropertyValueTarget.CloneTarget (scene, /*triggerEngine, */targetFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueTarget_Variable;
-            
+         
             return new ValueTarget_Property (newEntityValueSource, newPropertyValueTarget);
          }
       }

@@ -151,6 +151,10 @@ package player.design
       Viewer_mLibSound = null;
    }
    
+//==============================================================================
+// 
+//==============================================================================
+   
    public static function MergeScene (levelIndex):void
    {
       var world:World = Global.GetCurrentWorld ();

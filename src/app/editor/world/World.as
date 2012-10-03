@@ -24,6 +24,7 @@ package editor.world {
    import editor.trigger.VariableSpaceRegister;
    import editor.trigger.VariableSpaceCommonGlobal;
    import editor.trigger.VariableSpaceCommonEntityProperties;
+   import editor.trigger.VariableSpaceWorld;
    
    import editor.trigger.FunctionDeclaration_PreDefined;
    import editor.trigger.FunctionDeclaration_Core;
@@ -74,10 +75,14 @@ package editor.world {
          mRegisterVariableSpace_Scene            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Scene); // useless in fact.
          mRegisterVariableSpace_Array             = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Array);
          
-         // common variable spaces
+         // scene common variable spaces
          
          mCommonSceneGlobalVariableSpace = new VariableSpaceCommonGlobal (/*this*/);
          mCommonCustomEntityVariableSpace = new VariableSpaceCommonEntityProperties (/*this*/);
+         
+         // world session variable space
+         
+         mWorldVariableSpace = new VariableSpaceWorld (/*this*/);
       }
 
       public function Destroy ():void
@@ -110,6 +115,7 @@ package editor.world {
          
          mCommonSceneGlobalVariableSpace = null;
          mCommonCustomEntityVariableSpace = null;
+         mWorldVariableSpace = null;
       }
 
       //override 
@@ -611,6 +617,7 @@ package editor.world {
       // common variables
       private var mCommonSceneGlobalVariableSpace:VariableSpaceCommonGlobal;
       private var mCommonCustomEntityVariableSpace:VariableSpaceCommonEntityProperties;
+      private var mWorldVariableSpace:VariableSpaceWorld;
       
       public function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
       {
@@ -647,6 +654,11 @@ package editor.world {
       public function GetCommonCustomEntityVariableSpace ():VariableSpaceCommonEntityProperties
       {
          return mCommonCustomEntityVariableSpace;
+      }
+      
+      public function GetWorldVariableSpace ():VariableSpaceWorld
+      {
+         return mWorldVariableSpace;
       }
    }
 }

@@ -193,7 +193,7 @@ package editor.trigger {
                
                return new ValueTarget_Variable (variableInstance);
             }
-            case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+            case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
             {
                if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
                   return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();

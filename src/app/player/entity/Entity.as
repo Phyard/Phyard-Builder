@@ -360,7 +360,12 @@ package player.entity {
       public function OnNumCustomEntityVariablesChanged ():void
       {
          mCustomProeprtySpace = Global.GetCustomEntityVariableSpace ().AppendMissedVariablesFor (mCustomProeprtySpace);
+         
          // mCommonCustomProeprtySpace'e length will not change
+         if (mCommonCustomProeprtySpace == null)
+         {
+            mCommonCustomProeprtySpace = Global.GetCommonCustomEntityVariableSpace ().CloneSpace ();
+         }
       }
 
       public function GetCustomProperty (spaceId:int, propertyId:int):Object

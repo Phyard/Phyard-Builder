@@ -522,6 +522,20 @@ package common {
             
             switch (value_space_type)
             {
+               case ValueSpaceTypeDefine.ValueSpace_World:
+                  // will not merge with new ones
+                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_source = new Parameter_Variable (variable_instance);
+                  
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                  // will not merge with new ones
+                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_source = new Parameter_Variable (variable_instance);
+                  
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningSessionVariableIndex;
@@ -539,6 +553,7 @@ package common {
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                  // will not merge with new ones
                   variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
                   if (variable_instance != null)
                      value_source = new Parameter_Variable (variable_instance);
@@ -615,6 +630,20 @@ package common {
             
             switch (value_space_type)
             {
+               case ValueSpaceTypeDefine.ValueSpace_World:
+                  // will not merge with new ones
+                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_target = new Parameter_Variable (variable_instance);
+                  
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                  // will not merge with new ones
+                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_target = new Parameter_Variable (variable_instance);
+                  
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningSessionVariableIndex;
@@ -790,7 +819,7 @@ package common {
       
       // this function is for validating entity and ccat session variables when restarting a level
       // if variableDefines is not null, the lenght of variableSpace will be adjusted to variableDefines.length
-      public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableSpace:VariableSpace, variableDefines:Array):void
+      public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableSpace:VariableSpace, variableDefines:Array, tryToReSceneDependentVariables:Boolean):void
       {
          if (variableDefines != null)
             variableSpace.SetNumVariables (variableDefines.length);
@@ -805,16 +834,16 @@ package common {
          {  
             var variableInstance:VariableInstance = variableSpace.GetVariableAt (variableId);
             
-            variableInstance.SetValueObject (ValidateVariableValueObject (playerWorld, variableInstance.GetValueObject (), convertedArrays));
+            variableInstance.SetValueObject (ValidateVariableValueObject (playerWorld, variableInstance.GetValueObject (), convertedArrays, tryToReSceneDependentVariables));
          }
       }
       
-      private static function ValidateVariableValueObject (playerWorld:World, valueObject:Object, convertedArrays:Dictionary):Object
+      private static function ValidateVariableValueObject (playerWorld:World, valueObject:Object, convertedArrays:Dictionary, tryToReSceneDependentVariables:Boolean):Object
       {
          if (valueObject is Entity)
          {
             var entity:Entity = valueObject as Entity;
-            if (entity != null)
+            if (entity != null && tryToReSceneDependentVariables)
             {
                return ValidateDirectValueObject_Define2Object (playerWorld, ValueTypeDefine.ValueType_Entity, entity.GetCreationId ());
             }
@@ -822,7 +851,7 @@ package common {
          else if (valueObject is CollisionCategory)
          {
             var ccat:CollisionCategory = valueObject as CollisionCategory;
-            if (ccat != null)
+            if (ccat != null && tryToReSceneDependentVariables)
             {
                return ValidateDirectValueObject_Define2Object (playerWorld, ValueTypeDefine.ValueType_CollisionCategory, ccat.GetIndexInEditor ());
             }
@@ -841,7 +870,7 @@ package common {
                {
                   var element:Object = anArray [i];
                   
-                  anArray [i] =  ValidateVariableValueObject (playerWorld, element, convertedArrays);
+                  anArray [i] =  ValidateVariableValueObject (playerWorld, element, convertedArrays, tryToReSceneDependentVariables);
                }
             }
             

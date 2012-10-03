@@ -130,8 +130,8 @@
          <menuitem label="New Boolean Variable" data="Boolean"/>
          <menuitem label="New Number Variable" data="Number"/>
          <menuitem label="New String Variable" data="String"/>
-         <menuitem label="New Collision Category Variable" data="CCat"/>
-         <menuitem label="New Entity Variable" data="Entity"/>
+         <menuitem label="New Collision Category Variable" data="CCat" scene_data_dependent="true"/>
+         <menuitem label="New Entity Variable" data="Entity" scene_data_dependent="true"/>
          <menuitem label="New Module Variable" data="Module"/>
          <menuitem label="New Sound Variable" data="Sound"/>
          <!--menuitem label="New Scene Variable" data="Scene"/-->
@@ -162,7 +162,8 @@
             import editor.trigger.VariableDefinitionModule;
             import editor.trigger.VariableDefinitionSound;
             import editor.trigger.VariableDefinitionArray;
-
+            
+            import common.trigger.ValueSpaceTypeDefine;
             import common.trigger.ValueTypeDefine;
 
             [Bindable]
@@ -252,7 +253,22 @@
             {
                if (mCreateNewVariableMenu == null)
                {
-                  mCreateNewVariableMenu = Menu.createMenu(Button_AddCommmand, CreateNewMenuData, false);
+                  var isSceneDataDependent:Boolean = mVariableSpace != null
+                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_Session
+                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_World
+                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GameSave
+                                        ;
+                  
+                  var xml:XML = <root />;
+                  for each (var menuItem:Object in CreateNewMenuData.menuitem)
+                  {
+                     if (isSceneDataDependent || menuItem.@["scene_data_dependent"] != "true")
+                     {
+                        xml.appendChild (menuItem);
+                     }
+                  }
+                  
+                  mCreateNewVariableMenu = Menu.createMenu(Button_AddCommmand, xml, false);
                   mCreateNewVariableMenu.labelField="@label";
                   mCreateNewVariableMenu.addEventListener(MenuEvent.ITEM_CLICK, OnNewVariable);
                }

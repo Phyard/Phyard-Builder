@@ -55,6 +55,8 @@ package editor.ccat.dialog {
          }
          
          super.SetAssetManager (collisionCategoryManager);
+         
+         UpdateInterface ();
       }
       
 //============================================================================

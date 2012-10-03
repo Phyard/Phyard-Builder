@@ -52,6 +52,9 @@ package common {
       */
       //<<
       
+      public var mWorldVariableDefines:Array = new Array (); // from v2.03
+      public var mGameSaveVariableDefines:Array = new Array (); // from v2.03
+      
       public var mCommonGlobalVariableDefines:Array = new Array (); // from v2.03
       public var mCommonEntityPropertyDefines:Array = new Array (); // from v2.03
       

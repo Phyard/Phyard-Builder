@@ -58,6 +58,8 @@ package editor.codelib.dialog {
          }
          
          super.SetAssetManager (codeLibManager);
+         
+         UpdateInterface ();
       }
       
       public function GetCodeLibManager ():CodeLibManager

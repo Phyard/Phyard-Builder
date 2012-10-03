@@ -214,6 +214,36 @@ package editor.trigger {
                
                return new ValueSource_Variable (variableInstance);
             }
+            case ValueSpaceTypeDefine.ValueSpace_World:
+            {
+               if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
+                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (/*triggerEngine*/);
+
+               if (mVariableInstance.GetIndex () < 0)
+                  variableInstance = scene.GetWorld ().GetWorldVariableSpace ().GetNullVariableInstance ();
+               else
+               {
+                  variableInstance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), true);
+                  variableInstance.SetValueObject (mVariableInstance.GetValueObject ()); // ? meaningful?
+               }
+               
+               return new ValueSource_Variable (variableInstance);
+            }
+            case ValueSpaceTypeDefine.ValueSpace_GameSave:
+            {
+               if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
+                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (/*triggerEngine*/);
+
+               if (mVariableInstance.GetIndex () < 0)
+                  variableInstance = scene.GetWorld ().GetGameSaveVariableSpace ().GetNullVariableInstance ();
+               else
+               {
+                  variableInstance = scene.GetWorld ().GetGameSaveVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), true);
+                  variableInstance.SetValueObject (mVariableInstance.GetValueObject ()); // ? meaningful?
+               }
+               
+               return new ValueSource_Variable (variableInstance);
+            }
             default: // never run here
             {
                return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (/*triggerEngine*/);

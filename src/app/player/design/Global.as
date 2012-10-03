@@ -57,6 +57,9 @@ package player.design
       
       public static var mRandomNumberGenerators:Array;
       
+      public static var mWorldVariableSpace:VariableSpace;
+      public static var mGameSaveVariableSpace:VariableSpace;
+      
       public static var mSessionVariableSpace:VariableSpace;
       
       //public static var mGlobalVariableSpaces:Array;
@@ -191,6 +194,12 @@ package player.design
          //
          sTheGlobal = new Global ();
          
+         if (!dontReloadGlobalAssets)
+         {
+            mWorldVariableSpace = null;
+            mGameSaveVariableSpace = null;
+         }
+         
          if (! isRestartLevel)
          {
             mSessionVariableSpace = null;
@@ -295,8 +304,29 @@ package player.design
          }
       }
       
-      //public static function InitCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
-      public static function InitCustomVariables (globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, sessionVariableDefines:Array, isMerging:Boolean = false):void // sessionVariableDefines added from v1.57
+      public static function InitWorldCustomVariables (worldVarialbeSpaceDefines:Array, gameSaveVarialbeSpaceDefines:Array):void
+      {
+         if (mWorldVariableSpace == null)
+         {
+            mWorldVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, worldVarialbeSpaceDefines, null);
+         }
+         else
+         {
+            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mWorldVariableSpace, worldVarialbeSpaceDefines, false);            
+         }
+         
+         if (mGameSaveVariableSpace == null)
+         {
+            mGameSaveVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, gameSaveVarialbeSpaceDefines, null);
+         }
+         else
+         {
+            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mGameSaveVariableSpace, gameSaveVarialbeSpaceDefines, false);
+         }
+      }
+      
+      //public static function InitSceneCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
+      public static function InitSceneCustomVariables (globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, sessionVariableDefines:Array, isMerging:Boolean = false):void // sessionVariableDefines added from v1.57
       {
          //>> v1.52 only
          //var numSpaces:int;
@@ -334,7 +364,7 @@ package player.design
                // nullify non-placed-in-editor entities and ccats
                // potiential decision: discard session variables since a later version, use Game_Data_Save API alikes instead. 
    
-               TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mSessionVariableSpace, sessionVariableDefines);
+               TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mSessionVariableSpace, sessionVariableDefines, true);
             }
          }
          
@@ -345,6 +375,16 @@ package player.design
             mCommonGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonGlobalVarialbeDefines, null);
             mCommonEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonEntityVarialbeDefines, null);
          }
+      }
+      
+      public static function GetWorldVariableSpace ():VariableSpace
+      {
+         return mWorldVariableSpace;
+      }
+      
+      public static function GetGameSaveVariableSpace ():VariableSpace
+      {
+         return mGameSaveVariableSpace;
       }
       
       public static function GetSessionVariableSpace ():VariableSpace

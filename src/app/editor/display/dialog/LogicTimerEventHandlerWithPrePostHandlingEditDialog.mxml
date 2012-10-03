@@ -150,6 +150,12 @@
          {
             switch (variableSpaceType)
             {
+               case ValueSpaceTypeDefine.ValueSpace_World:
+                  codeSnippetEditPanel.OnWorldVariablesEditingDialogClosed ();
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                  codeSnippetEditPanel.OnGameSaveVariablesEditingDialogClosed ();
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
                   codeSnippetEditPanel.OnCommonGlobalVariablesEditingDialogClosed ();
                   break;

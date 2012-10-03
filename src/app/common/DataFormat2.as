@@ -429,6 +429,11 @@ package common {
 
       // init custom variables / correct entity refernce ids
 
+         if (isLoaingFromStretch) // the following half is drawing feet for snakes // && (! worldDefine.mDontReloadGlobalAssets))
+         {
+            Global.InitWorldCustomVariables (worldDefine.mWorldVariableDefines, worldDefine.mGameSaveVariableDefines);
+         }
+         
          // these are the default values for isLoaingFromStretch and cloning shape, not for isMergingScene
          extraInfos.mBeinningSessionVariableIndex = 0;
          extraInfos.mBeinningGlobalVariableIndex = 0;
@@ -443,9 +448,9 @@ package common {
                extraInfos.mBeinningCustomEntityVariableIndex = Global.GetCustomEntityVariableSpace ().GetNumVariables ();
             }
             
-            //Global.InitCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
-            //Global.InitCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines); // before v2.00
-            Global.InitCustomVariables (sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
+            //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
+            //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines); // before v2.00
+            Global.InitSceneCustomVariables (sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
                                         sceneDefine.mEntityPropertyDefines, worldDefine.mCommonEntityPropertyDefines, 
                                         sceneDefine.mSessionVariableDefines, isMergingScene);
             
@@ -735,9 +740,13 @@ package common {
          
          if (worldDefine.mVersion >= 0x0203)
          {
+            xml.WorldVariables = <WorldVariables />;
+            xml.DataSaveVariables = <DataSaveVariables />;
             xml.CommonSceneGlobalVariables = <CommonSceneGlobalVariables />;
             xml.CommonSceneEntityProperties = <CommonSceneEntityProperties />;
             
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mWorldVariableDefines, xml.WorldVariables [0], true);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mGameSaveVariableDefines, xml.DataSaveVariables [0], true);
             TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonGlobalVariableDefines, xml.CommonSceneGlobalVariables [0], true);
             TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonEntityPropertyDefines, xml.CommonSceneEntityProperties [0], true);
          }
@@ -1979,6 +1988,8 @@ package common {
          
          if (worldDefine.mVersion >= 0x0203)
          {
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mWorldVariableDefines, true);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mGameSaveVariableDefines, true);
             TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true);
             TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true);
          }
@@ -3359,6 +3370,8 @@ package common {
          // scene common variables
          // from v2.03
          //{
+            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mWorldVariableDefines);
+            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mGameSaveVariableDefines);
             TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonGlobalVariableDefines);
             TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonEntityPropertyDefines);
          //}

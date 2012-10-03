@@ -25,6 +25,7 @@ package editor.world {
    import editor.trigger.VariableSpaceCommonGlobal;
    import editor.trigger.VariableSpaceCommonEntityProperties;
    import editor.trigger.VariableSpaceWorld;
+   import editor.trigger.VariableSpaceGameSave;
    
    import editor.trigger.FunctionDeclaration_PreDefined;
    import editor.trigger.FunctionDeclaration_Core;
@@ -83,6 +84,7 @@ package editor.world {
          // world session variable space
          
          mWorldVariableSpace = new VariableSpaceWorld (/*this*/);
+         mGameSaveVariableSpace = new VariableSpaceGameSave  (/*this*/);
       }
 
       public function Destroy ():void
@@ -116,6 +118,7 @@ package editor.world {
          mCommonSceneGlobalVariableSpace = null;
          mCommonCustomEntityVariableSpace = null;
          mWorldVariableSpace = null;
+         mGameSaveVariableSpace = null;
       }
 
       //override 
@@ -618,6 +621,7 @@ package editor.world {
       private var mCommonSceneGlobalVariableSpace:VariableSpaceCommonGlobal;
       private var mCommonCustomEntityVariableSpace:VariableSpaceCommonEntityProperties;
       private var mWorldVariableSpace:VariableSpaceWorld;
+      private var mGameSaveVariableSpace:VariableSpaceGameSave;
       
       public function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
       {
@@ -659,6 +663,11 @@ package editor.world {
       public function GetWorldVariableSpace ():VariableSpaceWorld
       {
          return mWorldVariableSpace;
+      }
+      
+      public function GetGameSaveVariableSpace ():VariableSpaceGameSave
+      {
+         return mGameSaveVariableSpace;
       }
    }
 }

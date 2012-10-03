@@ -527,6 +527,9 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
+               case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                  variable_instance = scene.GetWorld ().GetGameSaveVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
@@ -610,6 +613,9 @@ package common {
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                  variable_instance = scene.GetWorld ().GetGameSaveVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
@@ -1368,7 +1374,7 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftReferenceIndexesInCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, functionRefIndex_CorrectionTable:Array, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, functionRefIndex_CorrectionTable:Array, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
 
          var funcCallingDefine:FunctionCallingDefine;
@@ -1406,13 +1412,13 @@ package common {
                   var numInputs:int = funcCallingDefine.mNumInputs;
                   for (j = 0; j < numInputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   }
                   
                   var numOutputs:int = funcCallingDefine.mNumOutputs;
                   for (j = 0; j < numOutputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   }
                //}
                //else
@@ -1422,7 +1428,7 @@ package common {
          }
       }
       
-      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
+      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
          var valueSourceType:int = sourceDefine.GetValueSourceType ();
          
@@ -1473,17 +1479,23 @@ package common {
             var variableIndex:int = variableSourceDefine.mVariableIndex;
             if (variableIndex >= 0)
             {
-               if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+               switch (variableSourceDefine.mSpaceType)
                {
-                  variableSourceDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
-               }
-               else if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
-               {
-                  variableSourceDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
-               }
-               else if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonGlobal)
-               {
-                  variableSourceDefine.mVariableIndex = variableIndex + commonGlobalVariableShiftIndex;
+                  case ValueSpaceTypeDefine.ValueSpace_World:
+                     variableSourceDefine.mVariableIndex = variableIndex + worldVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                     variableSourceDefine.mVariableIndex = variableIndex + saveDataVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_Session:
+                     variableSourceDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_Global:
+                     variableSourceDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                     variableSourceDefine.mVariableIndex = variableIndex + commonGlobalVariableShiftIndex;
+                     break;
                }
             }
          }
@@ -1504,11 +1516,11 @@ package common {
                }
             }
             
-            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
          }
       }
       
-      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
+      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
          var valueTargetType:int = targetDefine.GetValueTargetType ();
          
@@ -1519,17 +1531,23 @@ package common {
             var variableIndex:int = variableTargetDefine.mVariableIndex;
             if (variableIndex >= 0)
             {
-               if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+               switch (variableTargetDefine.mSpaceType)
                {
-                  variableTargetDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
-               }
-               else if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
-               {
-                  variableTargetDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
-               }
-               else if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonGlobal)
-               {
-                  variableTargetDefine.mVariableIndex = variableIndex + commonGlobalVariableShiftIndex;
+                  case ValueSpaceTypeDefine.ValueSpace_World:
+                     variableTargetDefine.mVariableIndex = variableIndex + worldVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                     variableTargetDefine.mVariableIndex = variableIndex + saveDataVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_Session:
+                     variableTargetDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_Global:
+                     variableTargetDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                     variableTargetDefine.mVariableIndex = variableIndex + commonGlobalVariableShiftIndex;
+                     break;
                }
             }
          }
@@ -1550,7 +1568,7 @@ package common {
                }
             }
             
-            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatRefIndex_CorrectionTable, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
          }
       }
    }

@@ -208,6 +208,7 @@ package editor.asset {
       {  
          if (key != null && key.length == 0)
             key = null;
+         
          while (key == null || mLookupTableByKey [key] != null)
          {
             key = EditorObject.BuildKey (GetAccAssetId ());
@@ -220,7 +221,7 @@ package editor.asset {
       {
          if (asset.GetKey () != null)
          {
-            //>> generally, this will not happed
+            //>> generally, this will not happen
             var oldAsset:Asset = mLookupTableByKey [asset.GetKey ()];
             if (oldAsset != null)
             {

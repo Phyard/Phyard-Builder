@@ -96,6 +96,7 @@ package player.design
       public static var Viewer_SetMouseGestureSupported:Function;
       public static var Viewer_OnLoadScene:Function;
       public static var Viewer_mLibSound:Object;
+      public static var Viewer_OnExit:Function;
       
 //==============================================================================
 // temp for playing in editor.
@@ -152,6 +153,7 @@ package player.design
       Viewer_SetMouseGestureSupported = null;
       Viewer_OnLoadScene = null;
       Viewer_mLibSound = null;
+      Viewer_OnExit = null;
    }
    
 //==============================================================================
@@ -258,6 +260,7 @@ package player.design
          Viewer_SetMouseGestureSupported = null;
          Viewer_OnLoadScene = null;
          Viewer_mLibSound = null;
+         Viewer_OnExit = null;
          
          //
          Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better

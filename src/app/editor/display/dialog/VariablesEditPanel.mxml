@@ -517,7 +517,7 @@
                      variableDefinitionBoolean = new VariableDefinitionBoolean (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionBoolean);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   variableInstance.SetValueObject (RadioButton_True.selected);
@@ -543,7 +543,7 @@
                      variableDefinitionNumber = new VariableDefinitionNumber (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionNumber);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   var numberText:String = Text_DefaultNumberValue.text;
@@ -579,13 +579,14 @@
                      variableDefinitionString = new VariableDefinitionString (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionString);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   variableInstance.SetValueObject (Text_DefaultStringValue.text);
                }
             }
 
+         /*
             public function OnCCatVariableSettingChanged ():void
             {
                if (mVariableSpace == null)
@@ -605,7 +606,7 @@
                      variableDefinitionCCat = new VariableDefinitionCollisionCategory (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionCCat);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   // variableInstance.SetValueObject (Text_DefaultStringValue.text);
@@ -631,7 +632,7 @@
                      variableDefinitionEntity = new VariableDefinitionEntity (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionEntity);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   // variableInstance.SetValueObject (Text_DefaultStringValue.text);
@@ -657,12 +658,13 @@
                      variableDefinitionArray = new VariableDefinitionArray (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionArray);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   // variableInstance.SetValueObject (Text_DefaultStringValue.text);
                }
             }
+         */
 
        ]]>
    </mx:Script>

@@ -103,6 +103,8 @@ package player
                
                Global.Viewer_mLibSound = params.mLibSound; // from v2.02
                
+               Global.Viewer_OnExit = params.OnExit; // from v2.03
+               
                break;
             default:
             {

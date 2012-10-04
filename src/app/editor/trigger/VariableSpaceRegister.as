@@ -23,7 +23,7 @@ package editor.trigger {
          var init_value:Object = VariableDefinition.GetDefaultInitialValueByType (mValueType);
          
          for (var i:int = 0; i < Define.NumRegistersPerVariableType; ++ i)
-            CreateVariableInstance(mValueType, "", init_value)
+            CreateVariableInstanceByTypeNameValue (mValueType, "", init_value);
       }
       
       override public function SupportEditingInitialValues ():Boolean
@@ -53,17 +53,20 @@ package editor.trigger {
       
       override public function CreateVariableInstanceFromDefinition (variableDefinition:VariableDefinition):VariableInstance
       {
-         if (variableDefinition.GetValueType () != mValueType)
-            throw new Error ("reg space valye type != variable value type");
-         
-         var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, variableDefinition);
-         
-         mVariableInstances.push (variable_instance);
-         
-         return variable_instance;
+         // it seems this function is never called.
+         throw new Error ();
+      
+         //if (variableDefinition.GetValueType () != mValueType)
+         //   throw new Error ("reg space valye type != variable value type");
+         //
+         //var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, variableDefinition);
+         //
+         //mVariableInstances.push (variable_instance);
+         //
+         //return variable_instance;
       }
       
-      override public function CreateVariableInstance(valueType:int, variableName:String, intialValue:Object):VariableInstance
+      override public function CreateVariableInstanceByTypeNameValue (valueType:int, variableName:String, intialValue:Object):VariableInstance
       {
          if (valueType != mValueType)
             throw new Error ("reg space valye type != variable value type");

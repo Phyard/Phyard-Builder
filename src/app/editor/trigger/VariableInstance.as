@@ -22,6 +22,22 @@ package editor.trigger {
       }
    
    //========================================================================================================
+   // uuid
+   //========================================================================================================
+   
+      private var mKey:String = "";
+      
+      public function GetKey ():String
+      {
+         return mKey;
+      }
+      
+      public function SetKey (key:String):void
+      {
+         mKey = key;
+      }
+      
+   //========================================================================================================
    //
    //========================================================================================================
       
@@ -186,6 +202,22 @@ package editor.trigger {
       {
          return mValueObject;
       }
+      
+      // it seems VariableDefinition has no the "GetDefaultValue" function.
+      // even if mVariableDefinition != null, the mValueObject is still in use.
+      // 
+      // todo: if seems "mVariableDefinition == null" is only for register and null variables.
+      // to check why and try to make register and null variables also use mVariableDefinition.
+      // if it is possible to achieve this, then one VariableInstance must have a private mVariableDefinition,
+      // then, the VariableInstance class will be not essential?
+      
+      //public function GetValueObject ():Object
+      //{
+      //   if (mVariableDefinition == null)
+      //      return mValueObject;
+      //   
+      //   return mVariableDefinition.GetDefaultValue (); 
+      //}
       
 //=========================================================================================
 // as a target

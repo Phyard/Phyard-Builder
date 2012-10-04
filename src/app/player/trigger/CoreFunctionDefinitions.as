@@ -234,6 +234,7 @@ package player.trigger {
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
+         RegisterCoreFunction (CoreFunctionIds.ID_ExitLevel,           ExitLevel);
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
@@ -2088,6 +2089,11 @@ package player.trigger {
             return;
          
          Global.MergeScene (levelIndex);
+      }
+
+      public static function ExitLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.Viewer_OnExit ();
       }
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void

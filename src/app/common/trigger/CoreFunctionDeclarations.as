@@ -1298,6 +1298,10 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ExitLevel,
+                     null,
+                     null
+                  );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_RestartLevel,
                      null,

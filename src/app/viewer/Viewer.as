@@ -1242,13 +1242,14 @@ package viewer {
                GetAcceleration: GetAcceleration,
                GetDebugString: GetDebugString,
                SetMouseGestureSupported: SetMouseGestureSupported,
-               mLibSound: {
+               mLibSound : {
                           PlaySound: PlaySound,
                           StopAllInLevelSounds: StopAllInLevelSounds,
                           StopCrossLevelsSound: StopCrossLevelsSound
                           
                           // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
-               }
+               },
+               OnExit : ExitLevel
             });
 
             // ...
@@ -1395,7 +1396,7 @@ package viewer {
                if (mSkin.IsPlaying ())
                   mSkin.SetPlaying (false);
                else
-                  ExitLevelIfBackKeyEverPressed ();
+                  ExitLevel ();
             }
             else
             {
@@ -1404,7 +1405,7 @@ package viewer {
                
                if (mWorldDesignProperties.OnSystemBackEvent () == 0)
                {
-                  ExitLevelIfBackKeyEverPressed ();
+                  ExitLevel ();
                }
                //else
                //{
@@ -2122,16 +2123,21 @@ package viewer {
          mBackKeyEverPressed = true;
       }
       
+      private function ExitLevel ():void
+      {
+         if (mParamsFromContainer.OnExitLevel != null)
+         {
+            mParamsFromContainer.OnExitLevel ();
+         }
+      }
+      
       private function ExitLevelIfBackKeyEverPressed ():void
       {
          if (mBackKeyEverPressed)
          {
-            if (mParamsFromContainer.OnExitLevel != null)
-            {
-               mParamsFromContainer.OnExitLevel ();
-            }
-            
             mBackKeyEverPressed = false;
+
+            ExitLevel ();
          }
       }
          

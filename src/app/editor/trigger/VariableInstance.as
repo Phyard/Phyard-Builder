@@ -20,22 +20,6 @@ package editor.trigger {
       {
          return mVariableSpace.GetCodeName () + "[" + mIndex + "]";
       }
-   
-   //========================================================================================================
-   // uuid
-   //========================================================================================================
-   
-      private var mKey:String = "";
-      
-      public function GetKey ():String
-      {
-         return mKey;
-      }
-      
-      public function SetKey (key:String):void
-      {
-         mKey = key;
-      }
       
    //========================================================================================================
    //
@@ -127,15 +111,15 @@ package editor.trigger {
          return mVariableSpace.GetSpaceType ();
       }
       
+      public function IsNull ():Boolean
+      {
+         return mIndex < 0;
+      }
+      
       // only for mVariableSpace to arrange the id
       public function SetIndex (id:int):void
       {
          mIndex = id;
-      }
-      
-      public function IsNull ():Boolean
-      {
-         return mIndex < 0;
       }
       
       public function GetIndex ():int
@@ -218,6 +202,20 @@ package editor.trigger {
       //   
       //   return mVariableDefinition.GetDefaultValue (); 
       //}
+   
+   // uuid
+   
+      private var mKey:String = "";
+      
+      public function GetKey ():String
+      {
+         return mKey;
+      }
+      
+      public function SetKey (key:String):void
+      {
+         mKey = key;
+      }
       
 //=========================================================================================
 // as a target

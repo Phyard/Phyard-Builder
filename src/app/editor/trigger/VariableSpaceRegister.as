@@ -51,7 +51,7 @@ package editor.trigger {
          return "reg" + VariableDefinition.GetValueTypeName (mValueType);
       }
       
-      override public function CreateVariableInstanceFromDefinition (variableDefinition:VariableDefinition):VariableInstance
+      override public function CreateVariableInstanceFromDefinition (/*key:String, */variableDefinition:VariableDefinition, avoidNameConflicting:Boolean = false):VariableInstance
       {
          // it seems this function is never called.
          throw new Error ();

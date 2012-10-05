@@ -19,6 +19,12 @@ package editor.trigger {
          return ValueSpaceTypeDefine.ValueSpace_GameSave;
       }
       
+      // this space is added from v2.03 and support UUID since born.
+      override public function IsVariableKeySupported ():Boolean
+      {
+         return true;
+      }
+      
       override public function GetSpaceName ():String
       {
          return "Game Save Variable Space";

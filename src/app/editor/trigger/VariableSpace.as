@@ -43,6 +43,11 @@ package editor.trigger {
          return -1;
       }
       
+      public function IsVariableKeySupported ():Boolean
+      {
+         return false;
+      }
+      
       public function GetSpaceName ():String
       {
          return "Variable Space";
@@ -65,12 +70,12 @@ package editor.trigger {
       
       public function GetVariableInstanceAt (variableId:int):VariableInstance
       {
-         if (mVariableIdMapTable != null) // in importing
-         {
-            var newId:Object = mVariableIdMapTable [variableId];
-            if (newId != null)
-               variableId = int (newId);
-         }
+         //if (mVariableIdMapTable != null) // in importing
+         //{
+         //   var newId:Object = mVariableIdMapTable [variableId];
+         //   if (newId != null)
+         //      variableId = int (newId);
+         //}
          
          if (variableId < 0 || variableId >= mVariableInstances.length)
             return mNullVariableInstance;
@@ -257,41 +262,54 @@ package editor.trigger {
       }
       
       
-      private var mVariableIdMapTable:Dictionary = null; 
-      private var mVirualVariablesCount:int;
-      public function BeginMergeVariablesWithSameNamesInCreatingVariables ():void
-      {
-         mVariableIdMapTable = new Dictionary ();
-         mVirualVariablesCount = GetNumVariableInstances ();
-      }
+      //private var mVariableIdMapTable:Dictionary = null; 
+      //private var mVirualVariablesCount:int;
+      //public function BeginMergeVariablesWithSameNamesInCreatingVariables ():void
+      //{
+      //   mVariableIdMapTable = new Dictionary ();
+      //   mVirualVariablesCount = GetNumVariableInstances ();
+      //}
+      //
+      //public function EndMergeVariablesWithSameNamesInCreatingVariables ():void
+      //{
+      //   mVariableIdMapTable = null;
+      //}
       
-      public function EndMergeVariablesWithSameNamesInCreatingVariables ():void
+      public function CreateVariableInstanceFromDefinition (/*key:String, */variableDefinition:VariableDefinition, avoidNameConflicting:Boolean = false):VariableInstance
       {
-         mVariableIdMapTable = null;
-      }
-      
-      public function CreateVariableInstanceFromDefinition (/*key:String, */variableDefinition:VariableDefinition):VariableInstance
-      {
-         if (mVariableIdMapTable != null) // in importing
+         //if (mVariableIdMapTable != null) // in importing
+         //{
+         //   var vi:VariableInstance = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
+         //   if (vi != null && vi != mNullVariableInstance)
+         //   {
+         //      mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
+         //      return vi;
+         //   }
+         //}
+         
+         if (avoidNameConflicting)
          {
             var vi:VariableInstance = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
             if (vi != null && vi != mNullVariableInstance)
             {
-               mVariableIdMapTable [mVirualVariablesCount++] = vi.GetIndex ();
                return vi;
             }
          }
+         
+         //if (IsVariableKeySupported ())
+         //{
+         //}
          
          var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, variableDefinition);
          
          mVariableInstances.push (variable_instance);
          
-         ++ mAccVariableInstanceId;
+         ++ mAccVariableInstanceId; // never decrease
          
-         //>> bug fix: this line added from v2.03
-         if (mVariableIdMapTable != null)
-            mVariableIdMapTable [mVirualVariablesCount++] = variable_instance.GetIndex ();
-         //<<
+         ////>> bug fix: this line added from v2.03
+         //if (mVariableIdMapTable != null)
+         //   mVariableIdMapTable [mVirualVariablesCount++] = variable_instance.GetIndex ();
+         ////<<
 
          NotifyModified ();
          

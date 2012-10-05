@@ -20,6 +20,8 @@ package common {
       
       public var mVersion:int;
       
+      public var mKey:String = null; // from v2.03
+      
       public var mAuthorName:String = "";
       public var mAuthorHomepage:String = "";
       

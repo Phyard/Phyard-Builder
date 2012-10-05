@@ -98,6 +98,7 @@ package player.world {
    // ...
 
       private var mVersion:int = 0x0;
+      private var mKey:String = "";
       private var mAuthorName:String = "";
       private var mAuthorHomepage:String = "";
       private var mShareSourceCode:Boolean = false;
@@ -287,6 +288,7 @@ package player.world {
       public function SetBasicInfos (worldDefine:Object):void
       {
          mVersion          = worldDefine.mVersion;
+         mKey              = worldDefine.mKey;
          mAuthorName       = worldDefine.mAuthorName;
          mAuthorHomepage   = worldDefine.mAuthorHomepage;
          mShareSourceCode  = worldDefine.mShareSourceCode;

@@ -893,14 +893,14 @@ package common {
          {
             if (hasParams)
             {
-               LoadVariableDefinesFromBinFile (binFile, functionDefine.mInputVariableDefines, true);
+               LoadVariableDefinesFromBinFile (binFile, functionDefine.mInputVariableDefines, true, false);
                
-               LoadVariableDefinesFromBinFile (binFile, functionDefine.mOutputVariableDefines, false);
+               LoadVariableDefinesFromBinFile (binFile, functionDefine.mOutputVariableDefines, false, false);
             }
             
             if (loadLocalVariables)
             {
-               LoadVariableDefinesFromBinFile (binFile, functionDefine.mLocalVariableDefines, false);
+               LoadVariableDefinesFromBinFile (binFile, functionDefine.mLocalVariableDefines, false, false);
             }
          }
          
@@ -1091,7 +1091,7 @@ package common {
       }
       
       //public static function  LoadVariableSpaceDefineFromBinFile (binFile:ByteArray):VariableSpaceDefine // v1.52 only
-      public static function  LoadVariableDefinesFromBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean):void
+      public static function  LoadVariableDefinesFromBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
       {
          //>> only v1.52
          //var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
@@ -1108,6 +1108,8 @@ package common {
          {
             var viDefine:VariableInstanceDefine = new VariableInstanceDefine ();
             
+            if (variablesHaveKey)
+               viDefine.mKey = binFile.readUTF ();
             viDefine.mName = binFile.readUTF ();
             valueType = binFile.readShort ();
             viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
@@ -1133,16 +1135,16 @@ package common {
             if (hasParams)
             {
                functionElement.InputParameters = <InputParameters/>;
-               VariablesDefine2Xml (functionDefine.mInputVariableDefines, functionElement.InputParameters [0], true);
+               VariablesDefine2Xml (functionDefine.mInputVariableDefines, functionElement.InputParameters [0], true, false);
                
                functionElement.OutputParameters = <OutputParameters/>;
-               VariablesDefine2Xml (functionDefine.mOutputVariableDefines, functionElement.OutputParameters [0], false);
+               VariablesDefine2Xml (functionDefine.mOutputVariableDefines, functionElement.OutputParameters [0], false, false);
             }
             
             if (convertLocalVariables)
             {
                functionElement.LocalVariables = <LocalVariables/>;
-               VariablesDefine2Xml (functionDefine.mLocalVariableDefines, functionElement.LocalVariables [0], false);
+               VariablesDefine2Xml (functionDefine.mLocalVariableDefines, functionElement.LocalVariables [0], false, false);
             }
          }
          
@@ -1349,7 +1351,7 @@ package common {
       }
       
       //public static function VariableSpaceDefine2Xml (variableSpaceDefine:VariableSpaceDefine):XML // v1.52 only
-      public static function VariablesDefine2Xml (variableDefines:Array, elementVariablePackage:XML, supportInitalValues:Boolean):void
+      public static function VariablesDefine2Xml (variableDefines:Array, elementVariablePackage:XML, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
       {
          //>> v1.52 only
          //var elementVariablePackage:XML = <VariablePackage />;
@@ -1370,6 +1372,8 @@ package common {
             viDefine = variableDefines [variableIndex] as VariableInstanceDefine;
             
             element = <Variable />;
+            if (variablesHaveKey)
+               element.@key = viDefine.mKey;
             element.@name = viDefine.mName;
             element.@value_type = viDefine.mDirectValueSourceDefine.mValueType;
             

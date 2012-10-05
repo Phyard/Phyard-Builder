@@ -120,17 +120,17 @@ package common {
          if (functionDefinition.GetFunctionDeclaration () is FunctionDeclaration_Custom)
          {
             functionDefine.mInputVariableDefines = new Array ();
-            VariableSpace2VariableDefines (scene, functionDefinition.GetInputVariableSpace (), functionDefine.mInputVariableDefines, true);
+            VariableSpace2VariableDefines (scene, functionDefinition.GetInputVariableSpace (), functionDefine.mInputVariableDefines, true, false);
             
             functionDefine.mOutputVariableDefines = new Array ();
-            VariableSpace2VariableDefines (scene, functionDefinition.GetOutputVariableSpace (), functionDefine.mOutputVariableDefines, false);
+            VariableSpace2VariableDefines (scene, functionDefinition.GetOutputVariableSpace (), functionDefine.mOutputVariableDefines, false, false);
          }
          
          if (createLocalVariableDefines)
          {
             //>>from v1.56
             functionDefine.mLocalVariableDefines = new Array ();
-            VariableSpace2VariableDefines (scene, functionDefinition.GetLocalVariableSpace (), functionDefine.mLocalVariableDefines, false);
+            VariableSpace2VariableDefines (scene, functionDefinition.GetLocalVariableSpace (), functionDefine.mLocalVariableDefines, false, false);
             //<<
          }
          //<<
@@ -340,7 +340,7 @@ package common {
          }
       }
       
-      public static function VariableSpace2VariableDefines (scene:Scene, variableSpace:VariableSpace, outputVariableDefines:Array, supportInitalValues:Boolean):void
+      public static function VariableSpace2VariableDefines (scene:Scene, variableSpace:VariableSpace, outputVariableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean = false):void
       {
          var numVariables:int = variableSpace.GetNumVariableInstances ();
          
@@ -353,11 +353,16 @@ package common {
          //spaceDefine.mVariableDefines = new Array (numVariables);
          //<<
          
+         if (variablesHaveKey != variableSpace.IsVariableKeySupported ())
+            throw new Error ();
+         
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
             var variableInstance:VariableInstance = variableSpace.GetVariableInstanceAt (variableId);
             
             var variableInstanceDefine:VariableInstanceDefine = new VariableInstanceDefine ();
+            if (variablesHaveKey)
+               variableInstanceDefine.mKey = variableInstance.GetKey ();
             variableInstanceDefine.mName = variableInstance.GetName ();
             variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), ValidateDirectValueObject_Object2Define (scene, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : ValueTypeDefine.GetDefaultDirectDefineValue (variableInstance.GetValueType ())));
             
@@ -766,7 +771,7 @@ package common {
       
       //public static function VariableSpaceDefine2VariableSpace (scene:Scene, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void // v1.52 only
       // since v1.53, return a variableIndex_CorrectionTable
-      public static function VariableDefines2VariableSpace (scene:Scene, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean, avoidNameConflicting:Boolean):Array
+      public static function VariableDefines2VariableSpace (scene:Scene, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false):Array
       {
          //>> v1.52 only
          //var numVariables:int = spaceDefine.mVariableDefines.length;
@@ -775,6 +780,9 @@ package common {
          //spaceDefine.mSpaceType = variableSpace.GetSpaceType ();
          //spaceDefine.mParentPackageId = -1;
          //<<
+         
+         if (variablesHaveKey != variableSpace.IsVariableKeySupported ())
+            throw new Error ();
          
          var numVariables:int = variableDefines.length;
          
@@ -785,7 +793,7 @@ package common {
             //var variableInstanceDefine:VariableInstanceDefine = spaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
             var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
 
-            var vi:VariableInstance = VariableDefine2VariableInstance (scene, variableInstanceDefine, variableSpace, supportInitalValues, avoidNameConflicting);
+            var vi:VariableInstance = VariableDefine2VariableInstance (scene, variableInstanceDefine, variableSpace, supportInitalValues, avoidNameConflicting, variablesHaveKey);
             
             variableIndex_CorrectionTable [variableId] = (vi == null ? - 1 : vi.GetIndex ());
          }
@@ -793,7 +801,7 @@ package common {
          return variableIndex_CorrectionTable;
       }
       
-      public static function VariableDefine2VariableInstance (scene:Scene, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean, avoidNameConflicting:Boolean):VariableInstance
+      public static function VariableDefine2VariableInstance (scene:Scene, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false):VariableInstance
       {
          var directValueSourceDefine:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
          
@@ -838,8 +846,7 @@ package common {
          
          if (variableDefinition != null)
          {
-            // now only GameSave variables really have a key, variableInstanceDefine.mkey, 
-            var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variableDefinition, avoidNameConflicting);
+            var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variablesHaveKey ? variableInstanceDefine.mKey : null, variableDefinition, avoidNameConflicting);
             vi.SetValueObject (valueObject);
              
             return vi;
@@ -897,14 +904,14 @@ package common {
          {
             if (hasParams)
             {
-               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mInputVariableDefines, true);
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mInputVariableDefines, true, false);
                
-               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mOutputVariableDefines, false);
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mOutputVariableDefines, false, false);
             }
             
             if (writeLocalVariables)
             {
-               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mLocalVariableDefines, false);
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mLocalVariableDefines, false, false);
             }
          }
          
@@ -1093,7 +1100,7 @@ package common {
       }
       
       //public static function WriteVariableSpaceDefineIntoBinFile (binFile:ByteArray, variableSpaceDefine:VariableSpaceDefine):void // v1.52 only
-      public static function WriteVariableDefinesIntoBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean):void
+      public static function WriteVariableDefinesIntoBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
       {
          //>> v1.52 only
          //binFile.writeUTF (variableSpaceDefine.mName);
@@ -1109,6 +1116,8 @@ package common {
             //var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i]; // v1.52 only
             var viDefine:VariableInstanceDefine = variableDefines [i];
             
+            if (variablesHaveKey)
+               binFile.writeUTF (viDefine.mKey == null ? "" : viDefine.mKey);
             binFile.writeUTF (viDefine.mName);
             binFile.writeShort (viDefine.mDirectValueSourceDefine.mValueType);
             
@@ -1148,14 +1157,14 @@ package common {
          {
             if (parseParams)
             {
-               VariablesXml2Define (functionElement.InputParameters [0], functionDefine.mInputVariableDefines, true);
+               VariablesXml2Define (functionElement.InputParameters [0], functionDefine.mInputVariableDefines, true, false);
                
-               VariablesXml2Define (functionElement.OutputParameters [0], functionDefine.mOutputVariableDefines, false);
+               VariablesXml2Define (functionElement.OutputParameters [0], functionDefine.mOutputVariableDefines, false, false);
             }
             
             if (convertLocalVariables)
             {
-               VariablesXml2Define (functionElement.LocalVariables [0], functionDefine.mLocalVariableDefines, false);
+               VariablesXml2Define (functionElement.LocalVariables [0], functionDefine.mLocalVariableDefines, false, false);
             }
          }
          
@@ -1345,7 +1354,7 @@ package common {
       }
       
       //public static function VariableSpaceXml2Define (elementVariablePackage:XML):VariableSpaceDefine // v1.52 only
-      public static function VariablesXml2Define (elementVariablePackage:XML, outputVariableDefines:Array, supportInitalValues:Boolean):void
+      public static function VariablesXml2Define (elementVariablePackage:XML, outputVariableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
       {
          //>> v1.52 only
          //var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
@@ -1362,6 +1371,8 @@ package common {
             
             var valueType:int = parseInt (element.@value_type);
             
+            if (variablesHaveKey)
+               viDefine.mKey = element.@key;
             viDefine.mName = element.@name;
             viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (valueType, supportInitalValues ? ValidateDirectValueObject_Xml2Define (valueType, element.@initial_value) : ValueTypeDefine.GetDefaultDirectDefineValue (valueType));
             

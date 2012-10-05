@@ -43,8 +43,10 @@ package editor.world {
 
    public class World
    {
-      public function World ()
+      public function World (key:String)
       {
+         SetKey (key);
+         
          // ...
          
          InitFunctionDeclarations ();
@@ -140,11 +142,25 @@ package editor.world {
          
          mAssetSoundManager.DestroyAllAssets ();
       }
+      
+      public function SetKey (key:String):void
+      {
+         if (key == null || key.length == 0)
+            key = EditorObject.BuildWorldKey ();
+         
+         mKey = key;
+      }
+      
+      public function GetKey ():String
+      {
+         return mKey;
+      }
 
 //=================================================================================
 //   settings
 //=================================================================================
 
+      private var mKey:String = null;
       private var mAuthorName:String = "";
       private var mAuthorHomepage:String = "";
       private var mShareSourceCode:Boolean = false;

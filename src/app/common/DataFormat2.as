@@ -711,6 +711,10 @@ package common {
          {
             xml.@app_id  = "COIN";
             xml.@version = uint(worldDefine.mVersion).toString (16);
+            if (worldDefine.mVersion >= 0x0203)
+            {
+               xml.@key = worldDefine.mKey;
+            }
             xml.@author_name = worldDefine.mAuthorName;
             xml.@author_homepage = worldDefine.mAuthorHomepage;
 
@@ -745,10 +749,10 @@ package common {
             xml.CommonSceneGlobalVariables = <CommonSceneGlobalVariables />;
             xml.CommonSceneEntityProperties = <CommonSceneEntityProperties />;
             
-            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mWorldVariableDefines, xml.WorldVariables [0], true);
-            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mGameSaveVariableDefines, xml.DataSaveVariables [0], true);
-            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonGlobalVariableDefines, xml.CommonSceneGlobalVariables [0], true);
-            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonEntityPropertyDefines, xml.CommonSceneEntityProperties [0], true);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mGameSaveVariableDefines, xml.DataSaveVariables [0], true, true);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mWorldVariableDefines, xml.WorldVariables [0], true, false);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonGlobalVariableDefines, xml.CommonSceneGlobalVariables [0], true, false);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonEntityPropertyDefines, xml.CommonSceneEntityProperties [0], true, false);
          }
          
          // image modules
@@ -1199,22 +1203,22 @@ package common {
                //xml.GlobalVariables.VariablePackage.@name = "";
                //xml.GlobalVariables.VariablePackage.@package_id = 0;
                //xml.GlobalVariables.VariablePackage.@parent_package_id = -1;
-               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables.VariablePackage[0], true);
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables.VariablePackage[0], true, false);
 
                xml.EntityProperties.VariablePackage = <VariablePackage />;
                //xml.EntityProperties.VariablePackage.@name = "";
                //xml.EntityProperties.VariablePackage.@package_id = 0;
                //xml.EntityProperties.VariablePackage.@parent_package_id = -1;
-               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties.VariablePackage [0], true);
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties.VariablePackage [0], true, false);
             }
             else
             {
                if (worldDefine.mVersion >= 0x0157)
                {
-                  TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mSessionVariableDefines, xml.SessionVariables [0], true);
+                  TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mSessionVariableDefines, xml.SessionVariables [0], true, false);
                }
-               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables [0], true);
-               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties [0], true);
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables [0], true, false);
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties [0], true, false);
             }
          }
          
@@ -1950,6 +1954,10 @@ package common {
          // basic settings
          {
             worldDefine.mVersion = byteArray.readShort ();
+            if (worldDefine.mVersion >= 0x0203)
+            {
+               worldDefine.mKey = byteArray.readUTF ();
+            }
             worldDefine.mAuthorName = byteArray.readUTF ();
             worldDefine.mAuthorHomepage = byteArray.readUTF ();
 
@@ -1988,10 +1996,10 @@ package common {
          
          if (worldDefine.mVersion >= 0x0203)
          {
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mWorldVariableDefines, true);
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mGameSaveVariableDefines, true);
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true);
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mGameSaveVariableDefines, true, true);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mWorldVariableDefines, true, false);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true, false);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true, false);
          }
          
          // modules
@@ -2767,7 +2775,7 @@ package common {
          {
             if (worldDefine.mVersion >= 0x0157)
             {
-               TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mSessionVariableDefines, true);
+               TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mSessionVariableDefines, true, false);
             }
             
             //var numSpaces:int;
@@ -2780,7 +2788,7 @@ package common {
                byteArray.readUTF (); // space name
                byteArray.readShort (); // parent id
             }
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mGlobalVariableDefines, true);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mGlobalVariableDefines, true, false);
 
             if (worldDefine.mVersion == 0x0152)
             {
@@ -2788,7 +2796,7 @@ package common {
                byteArray.readUTF (); // space name
                byteArray.readShort (); // parent id
             }
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mEntityPropertyDefines, true);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mEntityPropertyDefines, true, false);
          }
          
          // ...
@@ -3370,8 +3378,8 @@ package common {
          // scene common variables
          // from v2.03
          //{
-            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mWorldVariableDefines);
             TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mGameSaveVariableDefines);
+            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mWorldVariableDefines);
             TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonGlobalVariableDefines);
             TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonEntityPropertyDefines);
          //}

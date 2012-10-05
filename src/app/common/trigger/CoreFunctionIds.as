@@ -220,7 +220,9 @@ package common.trigger {
       
       public static const ID_Design_LoadLevel:int                      = IdPool.CoreApiId_590;
       public static const ID_Design_MergeLevel:int                     = IdPool.CoreApiId_591;
-      public static const ID_ExitLevel:int                       = IdPool.CoreApiId_78; //
+      public static const ID_ExitLevel:int                             = IdPool.CoreApiId_592; //
+      public static const ID_Design_WriteSaveData:int                    = IdPool.CoreApiId_588;
+      public static const ID_Design_LoadSaveData:int                     = IdPool.CoreApiId_589;
 
       public static const ID_Design_RestartLevel:int                     = IdPool.CoreApiId_593;
       public static const ID_Design_IsLevelPaused:int                    = IdPool.CoreApiId_594;

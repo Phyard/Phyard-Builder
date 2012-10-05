@@ -38,7 +38,7 @@ package editor.trigger {
             {
                var num_inputs:int = mFunctionDeclaration.GetNumInputs ();
                for (var i:int = 0; i < num_inputs; ++ i)
-                  mInputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetInputParamDefinitionAt (i));
+                  mInputVariableSpace.CreateVariableInstanceFromDefinition (null, mFunctionDeclaration.GetInputParamDefinitionAt (i));
             }
             
             mOutputVariableSpace = new VariableSpaceOutput (/*mTriggerEngine*/);
@@ -47,7 +47,7 @@ package editor.trigger {
             {
                var num_returns:int = mFunctionDeclaration.GetNumOutputs ();
                for (var j:int = 0; j < num_returns; ++ j)
-                  mOutputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetOutputParamDefinitionAt (j));
+                  mOutputVariableSpace.CreateVariableInstanceFromDefinition (null, mFunctionDeclaration.GetOutputParamDefinitionAt (j));
             }
             
             mLocalVariableSpace = new VariableSpaceLocal (/*mTriggerEngine*/);
@@ -348,7 +348,7 @@ package editor.trigger {
          {
             vi = mLocalVariableSpace.GetVariableInstanceAt (j);
             
-            newFuncDefinition.GetLocalVariableSpace ().CreateVariableInstanceFromDefinition (vi.GetVariableDefinition ().Clone ());
+            newFuncDefinition.GetLocalVariableSpace ().CreateVariableInstanceFromDefinition (null, vi.GetVariableDefinition ().Clone ());
             newVi = newFuncDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (j);
             newVi.SetValueObject (vi.GetValueObject ());
          }

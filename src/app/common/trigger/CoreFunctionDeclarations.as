@@ -1302,6 +1302,14 @@ package common.trigger {
                      null,
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_WriteSaveData,
+                     null,
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_LoadSaveData,
+                     null,
+                     null
+                  );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_RestartLevel,
                      null,

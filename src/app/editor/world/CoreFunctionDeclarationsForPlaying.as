@@ -1387,7 +1387,15 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitLevel, world_general_package, "ExitLevel", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitLevel, world_general_package, "Exit Level", null, null,
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_WriteSaveData, world_general_package, "Write Save Data", null, null,
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadSaveData, world_general_package, "Load Save Data", null, null,
                      null,
                      null
                   );

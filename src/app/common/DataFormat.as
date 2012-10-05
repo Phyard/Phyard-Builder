@@ -136,6 +136,10 @@ package common {
          {
             worldDefine.mVersion = Version.VersionNumber;
             
+            //>> from v2.03
+            worldDefine.mKey = editorWorld.GetKey ();
+            //<<
+            
             worldDefine.mAuthorName = editorWorld.GetAuthorName ();
             worldDefine.mAuthorHomepage = editorWorld.GetAuthorHomepage ();
             
@@ -170,13 +174,13 @@ package common {
          }
          
          //>>from v2.03
-            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetWorldVariableSpace (), worldDefine.mWorldVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetGameSaveVariableSpace (), worldDefine.mGameSaveVariableDefines, true, true);
             
-            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetGameSaveVariableSpace (), worldDefine.mGameSaveVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetWorldVariableSpace (), worldDefine.mWorldVariableDefines, true, false);
             
-            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetCommonSceneGlobalVariableSpace (), worldDefine.mCommonGlobalVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetCommonSceneGlobalVariableSpace (), worldDefine.mCommonGlobalVariableDefines, true, false);
             
-            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetCommonCustomEntityVariableSpace (), worldDefine.mCommonEntityPropertyDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetCommonCustomEntityVariableSpace (), worldDefine.mCommonEntityPropertyDefines, true, false);
          //<<
          
          // ...
@@ -1032,12 +1036,12 @@ package common {
          // global variables and custom entity properties
          //{
             //>> from v1.57
-            TriggerFormatHelper.VariableSpace2VariableDefines (scene, scene.GetCodeLibManager ().GetSessionVariableSpace (), sceneDefine.mSessionVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (scene, scene.GetCodeLibManager ().GetSessionVariableSpace (), sceneDefine.mSessionVariableDefines, true, false);
             //<<
             
-            TriggerFormatHelper.VariableSpace2VariableDefines (scene, scene.GetCodeLibManager ().GetGlobalVariableSpace (), sceneDefine.mGlobalVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (scene, scene.GetCodeLibManager ().GetGlobalVariableSpace (), sceneDefine.mGlobalVariableDefines, true, false);
             
-            TriggerFormatHelper.VariableSpace2VariableDefines (scene, scene.GetCodeLibManager ().GetEntityVariableSpace (), sceneDefine.mEntityPropertyDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (scene, scene.GetCodeLibManager ().GetEntityVariableSpace (), sceneDefine.mEntityPropertyDefines, true, false);
          //}
          //<< 
          
@@ -1458,6 +1462,10 @@ package common {
             
             // basic
             {
+               //>> from v2.03
+               //editorWorld.SetKey (worldDefine.mKey); // already set before calling this function
+               //<<
+               
                editorWorld.SetAuthorName (worldDefine.mAuthorName);
                editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
                
@@ -1845,21 +1853,21 @@ package common {
          
          //>>from v2.03
          /*
-            var beginningWorldVariableIndex:int = editorWorld.GetWorldVariableSpace ().GetNumVariableInstances ();
             var beginningGameSaveVariableIndex:int = editorWorld.GetGameSaveVariableSpace ().GetNumVariableInstances ();
+            var beginningWorldVariableIndex:int = editorWorld.GetWorldVariableSpace ().GetNumVariableInstances ();
             var beginningCommonGlobalVariableIndex:int = editorWorld.GetCommonSceneGlobalVariableSpace ().GetNumVariableInstances ();
             var beginningCommonEntityVariableIndex:int = editorWorld.GetCommonCustomEntityVariableSpace ().GetNumVariableInstances ();
-            if (worldDefine.mWorldVariableDefines.length > 0)
-            {
-               //if (mergeVariablesWithSameNames)
-                  editorWorld.GetWorldVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
-               TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mWorldVariableDefines, editorWorld.GetWorldVariableSpace (), true);
-            }
             if (worldDefine.mGameSaveVariableDefines.length > 0)
             {
                //if (mergeVariablesWithSameNames)
                   editorWorld.GetGameSaveVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
                TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mGameSaveVariableDefines, editorWorld.GetGameSaveVariableSpace (), true);
+            }
+            if (worldDefine.mWorldVariableDefines.length > 0)
+            {
+               //if (mergeVariablesWithSameNames)
+                  editorWorld.GetWorldVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
+               TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mWorldVariableDefines, editorWorld.GetWorldVariableSpace (), true);
             }
             if (worldDefine.mCommonGlobalVariableDefines.length > 0)
             {
@@ -1879,10 +1887,10 @@ package common {
             //editorWorld.GetCommonCustomEntityVariableSpace ().NotifyEntityVariableSpaceModified ();
          */
 
-            var worldVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mWorldVariableDefines, editorWorld.GetWorldVariableSpace (), true, true);
-            var gameSaveVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mGameSaveVariableDefines, editorWorld.GetGameSaveVariableSpace (), true, true);
-            var commonGlobalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonGlobalVariableDefines, editorWorld.GetCommonSceneGlobalVariableSpace (), true, true);
-            var commonEntityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonEntityPropertyDefines, editorWorld.GetCommonCustomEntityVariableSpace (), true, true);
+            var gameSaveVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mGameSaveVariableDefines, editorWorld.GetGameSaveVariableSpace (), true, true, true);
+            var worldVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mWorldVariableDefines, editorWorld.GetWorldVariableSpace (), true, true, false);
+            var commonGlobalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonGlobalVariableDefines, editorWorld.GetCommonSceneGlobalVariableSpace (), true, true, false);
+            var commonEntityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonEntityPropertyDefines, editorWorld.GetCommonCustomEntityVariableSpace (), true, true, false);
          //<<
 
          // scenes
@@ -1998,13 +2006,13 @@ package common {
          /*
          //if (mergeVariablesWithSameNames)
          //{
-            if (worldDefine.mWorldVariableDefines.length > 0)
-            {
-               editorWorld.GetWorldVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
-            }
             if (worldDefine.mGameSaveVariableDefines.length > 0)
             {
                editorWorld.GetGameSaveVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+            }
+            if (worldDefine.mWorldVariableDefines.length > 0)
+            {
+               editorWorld.GetWorldVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
             }
             
             if (worldDefine.mCommonGlobalVariableDefines.length > 0)
@@ -2779,7 +2787,7 @@ package common {
          {
             if (mergeVariablesWithSameNames)
                scene.GetCodeLibManager ().GetGlobalVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
-            TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), true);
+            TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), truee);
          }
          if (sceneDefine.mEntityPropertyDefines.length > 0)
          {
@@ -2792,9 +2800,9 @@ package common {
          //scene.GetCodeLibManager ().NotifyEntityVariableSpaceModified ();
          */
 
-         var sessionVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mSessionVariableDefines, scene.GetCodeLibManager ().GetSessionVariableSpace (), true, mergeVariablesWithSameNames);
-         var globalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), true, mergeVariablesWithSameNames);
-         var entityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mEntityPropertyDefines, scene.GetCodeLibManager ().GetEntityVariableSpace (), true, mergeVariablesWithSameNames);
+         var sessionVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mSessionVariableDefines, scene.GetCodeLibManager ().GetSessionVariableSpace (), true, mergeVariablesWithSameNames, false);
+         var globalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), true, mergeVariablesWithSameNames, false);
+         var entityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mEntityPropertyDefines, scene.GetCodeLibManager ().GetEntityVariableSpace (), true, mergeVariablesWithSameNames, false);
          //<<<
          
          //>>> load custom functions
@@ -3203,6 +3211,10 @@ package common {
          // basic
          {
             worldDefine.mVersion = parseInt (worldXml.@version, 16);
+            if (worldDefine.mVersion >= 0x0203)
+            {
+               worldDefine.mKey = worldXml.@key;
+            }
             worldDefine.mAuthorName = worldXml.@author_name;
             worldDefine.mAuthorHomepage = worldXml.@author_homepage;
             
@@ -3237,10 +3249,10 @@ package common {
          
          if (worldDefine.mVersion >= 0x0203)
          {
-            TriggerFormatHelper.VariablesXml2Define (worldXml.WorldVariables [0], worldDefine.mWorldVariableDefines, true);
-            TriggerFormatHelper.VariablesXml2Define (worldXml.DataSaveVariables [0], worldDefine.mGameSaveVariableDefines, true);
-            TriggerFormatHelper.VariablesXml2Define (worldXml.CommonSceneGlobalVariables [0], worldDefine.mCommonGlobalVariableDefines, true);
-            TriggerFormatHelper.VariablesXml2Define (worldXml.CommonSceneEntityProperties [0], worldDefine.mCommonEntityPropertyDefines, true);
+            TriggerFormatHelper.VariablesXml2Define (worldXml.DataSaveVariables [0], worldDefine.mGameSaveVariableDefines, true, true);
+            TriggerFormatHelper.VariablesXml2Define (worldXml.WorldVariables [0], worldDefine.mWorldVariableDefines, true, false);
+            TriggerFormatHelper.VariablesXml2Define (worldXml.CommonSceneGlobalVariables [0], worldDefine.mCommonGlobalVariableDefines, true, false);
+            TriggerFormatHelper.VariablesXml2Define (worldXml.CommonSceneEntityProperties [0], worldDefine.mCommonEntityPropertyDefines, true, false);
          }
          
          // image modules
@@ -3629,18 +3641,18 @@ package common {
             
             if (worldDefine.mVersion == 0x0152)
             {
-               TriggerFormatHelper.VariablesXml2Define (sceneXML.GlobalVariables.VariablePackage [0], sceneDefine.mGlobalVariableDefines, true);
-               TriggerFormatHelper.VariablesXml2Define (sceneXML.EntityProperties.VariablePackage [0], sceneDefine.mEntityPropertyDefines, true);
+               TriggerFormatHelper.VariablesXml2Define (sceneXML.GlobalVariables.VariablePackage [0], sceneDefine.mGlobalVariableDefines, true, false);
+               TriggerFormatHelper.VariablesXml2Define (sceneXML.EntityProperties.VariablePackage [0], sceneDefine.mEntityPropertyDefines, true, false);
             }
             else
             {
                if (worldDefine.mVersion >= 0x0157)
                {
-                  TriggerFormatHelper.VariablesXml2Define (sceneXML.SessionVariables [0], sceneDefine.mSessionVariableDefines, true);
+                  TriggerFormatHelper.VariablesXml2Define (sceneXML.SessionVariables [0], sceneDefine.mSessionVariableDefines, true, false);
                }
                
-               TriggerFormatHelper.VariablesXml2Define (sceneXML.GlobalVariables [0], sceneDefine.mGlobalVariableDefines, true);
-               TriggerFormatHelper.VariablesXml2Define (sceneXML.EntityProperties [0], sceneDefine.mEntityPropertyDefines, true);
+               TriggerFormatHelper.VariablesXml2Define (sceneXML.GlobalVariables [0], sceneDefine.mGlobalVariableDefines, true, false);
+               TriggerFormatHelper.VariablesXml2Define (sceneXML.EntityProperties [0], sceneDefine.mEntityPropertyDefines, true, false);
             }
          }
          
@@ -4302,6 +4314,10 @@ package common {
          {
             // version, author
             byteArray.writeShort (worldDefine.mVersion);
+            if (worldDefine.mVersion >= 0x0203)
+            {
+               byteArray.writeUTF (worldDefine.mKey == null ? "" : worldDefine.mKey);
+            }
             byteArray.writeUTF (worldDefine.mAuthorName);
             byteArray.writeUTF (worldDefine.mAuthorHomepage);
             
@@ -4340,10 +4356,10 @@ package common {
          
          if (worldDefine.mVersion >= 0x0203)
          {
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mWorldVariableDefines, true);
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mGameSaveVariableDefines, true);
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true);
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mGameSaveVariableDefines, true, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mWorldVariableDefines, true, false);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true, false);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true, false);
          }
          
          // modules
@@ -5089,7 +5105,7 @@ package common {
          {
             if (worldDefine.mVersion >= 0x0157)
             {
-               TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mSessionVariableDefines, true);
+               TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mSessionVariableDefines, true, false);
             }
             
             if (worldDefine.mVersion == 0x0152)
@@ -5098,7 +5114,7 @@ package common {
                byteArray.writeUTF ("");//variableSpaceDefine.mName);
                byteArray.writeShort (-1);//variableSpaceDefine.mParentPackageId);
             }
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mGlobalVariableDefines, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mGlobalVariableDefines, true, false);
             
             if (worldDefine.mVersion == 0x0152)
             {
@@ -5106,7 +5122,7 @@ package common {
                byteArray.writeUTF ("");//variableSpaceDefine.mName);
                byteArray.writeShort (-1);//variableSpaceDefine.mParentPackageId);
             }
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mEntityPropertyDefines, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mEntityPropertyDefines, true, false);
          }
       }
       

@@ -132,9 +132,9 @@
          <menuitem label="New String Variable" data="String"/>
          <menuitem label="New Collision Category Variable" data="CCat" scene_data_dependent="true"/>
          <menuitem label="New Entity Variable" data="Entity" scene_data_dependent="true"/>
-         <menuitem label="New Module Variable" data="Module"/>
-         <menuitem label="New Sound Variable" data="Sound"/>
-         <!--menuitem label="New Scene Variable" data="Scene"/-->
+         <menuitem label="New Module Variable" data="Module" scene_data_dependent="true"/>
+         <menuitem label="New Sound Variable" data="Sound" scene_data_dependent="true"/>
+         <!--menuitem label="New Scene Variable" data="Scene" scene_data_dependent="true"/-->
          <menuitem label="New Array Variable" data="Array"/>
       </root>
    </mx:XML>
@@ -326,7 +326,7 @@
                {
                   var insert_index:int = List_Variables.selectedIndex + 1;
 
-                  var variableInstance:VariableInstance = mVariableSpace.CreateVariableInstanceFromDefinition (variableDefinition);
+                  var variableInstance:VariableInstance = mVariableSpace.CreateVariableInstanceFromDefinition (null, variableDefinition);
                   mVariableSpace.ChangeVariableInstanceIndex (mVariableSpace.GetNumVariableInstances () - 1, insert_index);
                   var name:String = variableInstance.ToVariableDefinitionString ();
                   List_Variables.dataProvider.addItemAt ({mName:name, mDataTip:name, mData:variableInstance}, insert_index);

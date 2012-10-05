@@ -104,7 +104,10 @@ package editor.trigger {
          }
          mVariableInstances.splice (0, mVariableInstances.length);
          
-         mLookupTableByKey = new Dictionary ();
+         if (IsVariableKeySupported ())
+         {
+            mLookupTableByKey = new Dictionary ();
+         }
          
          RearrangeVariableInstanceIndexes (); // useless ?
          
@@ -120,7 +123,10 @@ package editor.trigger {
          vi.SetIndex (-1);
          mVariableInstances.splice (variableId, 1);
          
-         delete mLookupTableByKey [vi.GetKey ()];
+         if (IsVariableKeySupported ())
+         {
+            delete mLookupTableByKey [vi.GetKey ()];
+         }
          
          RearrangeVariableInstanceIndexes ();
          
@@ -240,6 +246,7 @@ package editor.trigger {
 // 
 //============================================================================
       
+      // this function is slow if the number of variables is large.
       public function GetVariableInstanceByTypeAndName (valueType:int, variableName:String, createIfNotExist:Boolean = false):VariableInstance
       {
          for (var variableId:int = mVariableInstances.length - 1; variableId >= 0; -- variableId)
@@ -252,7 +259,7 @@ package editor.trigger {
          if (createIfNotExist)
          {
             var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);
-            var newVi:VariableInstance = CreateVariableInstanceFromDefinition (variableDefinition);
+            var newVi:VariableInstance = CreateVariableInstanceFromDefinition (null, variableDefinition);
             newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
             
             return newVi;
@@ -261,6 +268,31 @@ package editor.trigger {
          return mNullVariableInstance;
       }
       
+      public function GetVariableInstanceByTypeAndKey (valueType:int, variableKey:String, variableName:String, createIfNotExist:Boolean = false):VariableInstance
+      {
+         if (IsVariableKeySupported ())
+         {
+            if (variableKey != null && variableKey.length > 0)
+            {
+               var variable_instance:VariableInstance = mLookupTableByKey [variableKey];
+               if (variable_instance != null && variable_instance.GetValueType () == valueType)
+                  return variable_instance;
+            }
+            
+            if (createIfNotExist)
+            {
+               var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);
+               var newVi:VariableInstance = CreateVariableInstanceFromDefinition (variableKey, variableDefinition);
+               newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
+               
+               return newVi;
+            }
+            
+            return mNullVariableInstance;
+         }
+         
+         throw new Error ();
+      }
       
       //private var mVariableIdMapTable:Dictionary = null; 
       //private var mVirualVariablesCount:int;
@@ -275,11 +307,13 @@ package editor.trigger {
       //   mVariableIdMapTable = null;
       //}
       
-      public function CreateVariableInstanceFromDefinition (/*key:String, */variableDefinition:VariableDefinition, avoidNameConflicting:Boolean = false):VariableInstance
+      public function CreateVariableInstanceFromDefinition (key:String, variableDefinition:VariableDefinition, avoidConflicting:Boolean = false):VariableInstance
       {
+         var vi:VariableInstance;
+         
          //if (mVariableIdMapTable != null) // in importing
          //{
-         //   var vi:VariableInstance = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
+         //   vi = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
          //   if (vi != null && vi != mNullVariableInstance)
          //   {
          //      mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
@@ -287,33 +321,45 @@ package editor.trigger {
          //   }
          //}
          
-         if (avoidNameConflicting)
+         if (avoidConflicting)
          {
-            var vi:VariableInstance = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
-            if (vi != null && vi != mNullVariableInstance)
+            if (IsVariableKeySupported () && key != null && key.length > 0)
             {
-               return vi;
+               vi = GetVariableInstanceByTypeAndKey (variableDefinition.GetValueType (), key, variableDefinition.GetName ());
+               if (vi != null && vi != mNullVariableInstance)
+               {
+                  return vi;
+               }
+            }
+            else
+            {
+               vi = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
+               if (vi != null && vi != mNullVariableInstance)
+               {
+                  return vi;
+               }
             }
          }
          
-         //if (IsVariableKeySupported ())
-         //{
-         //}
+         vi = new VariableInstance (this, mVariableInstances.length, variableDefinition);
          
-         var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, variableDefinition);
+         mVariableInstances.push (vi);
          
-         mVariableInstances.push (variable_instance);
+         if (IsVariableKeySupported ())
+         {
+            vi.SetKey (ValidateVariableInstanceKey (key));
+         }
          
          ++ mAccVariableInstanceId; // never decrease
          
          ////>> bug fix: this line added from v2.03
          //if (mVariableIdMapTable != null)
-         //   mVariableIdMapTable [mVirualVariablesCount++] = variable_instance.GetIndex ();
+         //   mVariableIdMapTable [mVirualVariablesCount++] = vi.GetIndex ();
          ////<<
 
          NotifyModified ();
          
-         return variable_instance;
+         return vi;
       }
       
       public function CreateVariableInstanceByTypeNameValue (/*key:String, */valueType:int, variableName:String, intialValue:Object):VariableInstance

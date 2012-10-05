@@ -234,7 +234,9 @@ package player.trigger {
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
-         RegisterCoreFunction (CoreFunctionIds.ID_ExitLevel,           ExitLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_ExitLevel,                     ExitLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_WriteSaveData,          WriteSaveData);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadSaveData,           LoadSaveData);
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
@@ -2094,6 +2096,16 @@ package player.trigger {
       public static function ExitLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
          Global.Viewer_OnExit ();
+      }
+      
+      public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         
+      }
+      
+      public static function LoadSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         
       }
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void

@@ -267,7 +267,7 @@
    
       public function NewWorld ():void
       {
-         SetWorld (new World ());
+         SetWorld (new World (null));
          
          //CreateWorldSnapshot ("New world created");
          CreateSnapshotForCurrentScene ("New world created");
@@ -624,7 +624,7 @@
          
          try
          {     
-            var newWorld:World = new World ();
+            var newWorld:World = new World (worldDefine.mKey);
             SetWorld (newWorld);
             var newLoadedScenes:Array = DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
             
@@ -881,7 +881,7 @@
          
          try
          {
-            var newWorld:World = new World ();
+            var newWorld:World = new World (worldDefine.mKey);
             SetWorld (newWorld);
             var newLoadedScenes:Array = DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
             
@@ -1186,7 +1186,7 @@
             //var sceneIndex:int = currentScene.GetSceneIndex ();
             
             var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld, currentScene);
-            var newWorld:World = new World ();
+            var newWorld:World = new World (null); //worldDefine.mKey);
             //newWorld = 
             DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
                // !!! here may be some bugs: somewhere will call EditorContext.GetCurrentWorld, which is not the newWorld

@@ -67,6 +67,11 @@ package editor.core {
          bytes [fromIndex ++] = (value >>  8) & 0xFF;
          bytes [fromIndex ++] = (value >>  0) & 0xFF;
       }
+      
+      public static function BuildWorldKey ():String
+      {
+         return BuildKey (Math.floor (Math.random () * kShift24bits));
+      }
   
 //=============================================================
 //   time modified 

@@ -223,6 +223,7 @@ package common.trigger {
       public static const ID_ExitLevel:int                             = IdPool.CoreApiId_592; //
       public static const ID_Design_WriteSaveData:int                    = IdPool.CoreApiId_588;
       public static const ID_Design_LoadSaveData:int                     = IdPool.CoreApiId_589;
+      // todo: SaveData_ByteArray version
 
       public static const ID_Design_RestartLevel:int                     = IdPool.CoreApiId_593;
       public static const ID_Design_IsLevelPaused:int                    = IdPool.CoreApiId_594;

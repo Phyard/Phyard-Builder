@@ -95,7 +95,9 @@ package player
                
                Global.Viewer_IsAccelerometerSupported = params.IsAccelerometerSupported; // from v1.60
                Global.Viewer_GetAcceleration = params.GetAcceleration as Function; // from v1.60
-               Global._GetDebugString = params.GetDebugString as Function; // from v1.60
+               
+               //Global._GetDebugString = params.GetDebugString as Function; // from v1.60
+               Global._GetDebugString = Global.GetDebugString;
                
                Global.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
                
@@ -104,6 +106,8 @@ package player
                Global.Viewer_mLibSound = params.mLibSound; // from v2.02
                
                Global.Viewer_OnExit = params.OnExit; // from v2.03
+               
+               Global.Viewer_mLibIO = params.mLibIO; // from v2.03
                
                break;
             default:

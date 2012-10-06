@@ -2730,13 +2730,10 @@ package common {
                entity.SetAlpha (entityDefine.mAlpha);
                entity.SetEnabled (entityDefine.mIsEnabled);
                //<<
-               
-               entityIndex_CorrectionTable [createId] = entity.GetCreationOrderId ();
             }
             else
             {
-               entityIndex_CorrectionTable [createId] = -1;
-               
+               throw Error ("entity is null?!");
                //trace ("!!! entity is null, id = " + createId);
             }
          }
@@ -2767,6 +2764,15 @@ package common {
             scene.AddAssetToCreationArray (entity);
          }
          //<<<
+         
+         // must put after all entities are added by AddAssetToCreationArray
+         for (createId = 0; createId < numEntities; ++ createId)
+         {
+            entityDefine = sceneDefine.mEntityDefines [createId];
+            entity = entityDefine.mEntity;
+            
+            entityIndex_CorrectionTable [createId] = entity.GetCreationOrderId ();
+         }
          
          EditorContext.mPauseCreateShapeProxy = false;
          

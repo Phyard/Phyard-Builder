@@ -2100,12 +2100,12 @@ package player.trigger {
       
       public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void
       {
-         
+         Global.Viewer_mLibIO.WriteGameSaveData (Global.GetDefaultSavedDataFilename (), Global.GetSavedData ());
       }
       
       public static function LoadSaveData (valueSource:Parameter, valueTarget:Parameter):void
       {
-         
+         Global.SetSavedData (Global.Viewer_mLibIO.LoadGameSaveData (Global.GetDefaultSavedDataFilename ()));
       }
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void

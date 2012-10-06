@@ -23,12 +23,16 @@ package viewer {
    import flash.system.System;
    import flash.system.ApplicationDomain;
    import flash.system.Capabilities;
+   import flash.utils.getTimer;
+   
 
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
    import flash.events.ContextMenuEvent;
 
+   import flash.net.SharedObject;
+   import flash.net.SharedObjectFlushStatus;
    import flash.net.URLRequest;
    import flash.net.URLLoader;
    import flash.net.URLRequestMethod;
@@ -38,14 +42,11 @@ package viewer {
    import flash.display.LoaderInfo;
    import flash.system.LoaderContext;
    
-   import flash.system.Capabilities;
-   import flash.utils.getTimer;
-   
    import flash.media.Sound;
    import flash.media.SoundChannel;
    import flash.media.SoundMixer;
    import flash.media.SoundTransform;
-
+   
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.UrlUtil;
@@ -67,6 +68,7 @@ package viewer {
       include "LibCapabilities.as";
       include "LibGesture.as";
       include "LibSound.as";
+      include "LibIO.as";
       
 //======================================================================
 //
@@ -1249,7 +1251,11 @@ package viewer {
                           
                           // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
                },
-               OnExit : ExitLevel
+               OnExit : ExitLevel,
+               mLibIO : {
+                         LoadGameSaveData : LoadGameSaveData,
+                         WriteGameSaveData : WriteGameSaveData
+               }
             });
 
             // ...

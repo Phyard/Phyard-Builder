@@ -810,7 +810,9 @@ package common {
             var direct_source_define:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
             
             var variableInstance:VariableInstance = variableSpace.GetVariableAt (variableId + numOldVariables);
+            variableInstance.SetKey (variableInstanceDefine.mKey);
             variableInstance.SetName (variableInstanceDefine.mName);
+            variableInstance.SetValueType (direct_source_define.mValueType);
             variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
          }
          

@@ -1,6 +1,9 @@
 package player.design
 {
-   import flash.geom.Point;   
+   import flash.geom.Point;
+   import flash.utils.ByteArray;
+   import flash.utils.Dictionary;
+   import flash.system.Capabilities;
    
    import player.world.World;
    import player.world.EntityList
@@ -97,6 +100,7 @@ package player.design
       public static var Viewer_OnLoadScene:Function;
       public static var Viewer_mLibSound:Object;
       public static var Viewer_OnExit:Function;
+      public static var Viewer_mLibIO:Object;
       
 //==============================================================================
 // temp for playing in editor.
@@ -154,6 +158,7 @@ package player.design
       Viewer_OnLoadScene = null;
       Viewer_mLibSound = null;
       Viewer_OnExit = null;
+      Viewer_mLibIO = null;
    }
    
 //==============================================================================
@@ -185,6 +190,222 @@ package player.design
          world.RegisterEventHandlersForRuntimeCreatedEntities (false, mergedEntities);
          EntityList.InitEntities_RuntimeCreatedEntities (mergedEntities);
       }
+   }
+   
+   public static function GetDefaultSavedDataFilename ():String
+   {
+      return "-" + Global.GetCurrentWorld ().GetWorldKey ();
+   }
+      
+   public static function GetSavedData ():ByteArray
+   {
+      try
+      {
+         var binData:ByteArray = new ByteArray ();
+         binData.writeShort (0); // data format version
+         
+         var alreadySavedArrayLookupTable:Dictionary = new Dictionary ();
+         
+         var numVariables:int = mGameSaveVariableSpace.GetNumVariables ();
+         binData.writeInt (numVariables);
+         for (var variableId:int = 0; variableId < numVariables; ++ variableId)
+         {
+            var variableInstance:VariableInstance = mGameSaveVariableSpace.GetVariableAt (variableId);
+            
+if (mDebugString == null) mDebugString = "";
+mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " + variableInstance.GetKey ();            
+            binData.writeUTF (variableInstance.GetKey ());
+            
+            WriteTypeAndValue (binData, variableInstance.GetValueType (), variableInstance.GetValueObject (), alreadySavedArrayLookupTable);
+         }
+         
+         return binData;
+      }
+      catch (error:Error)
+      {
+         trace ("GetSavedData error: " + error.getStackTrace ());
+         
+         if (Capabilities.isDebugger)
+            throw error;
+      }
+      
+      return null;
+   }
+   
+   private static function WriteTypeAndValue (binData:ByteArray, type:int, value:Object, alreadySavedArrayLookupTable:Dictionary):void
+   {
+      switch (type)
+      {
+         case ValueTypeDefine.ValueType_Boolean:
+            binData.writeShort (ValueTypeDefine.ValueType_Boolean);
+            binData.writeByte (Boolean (value) ? 1 : 0);
+            break;
+         case ValueTypeDefine.ValueType_Number:
+            binData.writeShort (ValueTypeDefine.ValueType_Number);
+            binData.writeDouble (Number (value));
+            break;
+         case ValueTypeDefine.ValueType_String:
+            binData.writeShort (ValueTypeDefine.ValueType_String);
+            var text:String = value as String;
+            binData.writeInt (text == null ? -1 : text.length);
+            if (text != null)
+            {
+               binData.writeUTFBytes (text);
+            }
+            break;
+         case ValueTypeDefine.ValueType_Array:
+            var valuesArray:Array = value as Array;
+            if (alreadySavedArrayLookupTable [valuesArray] == true)
+            {
+               binData.writeShort (ValueTypeDefine.ValueType_Void);
+            }
+            else
+            {
+               alreadySavedArrayLookupTable [valuesArray] = true;
+
+               binData.writeShort (ValueTypeDefine.ValueType_Array);
+               binData.writeInt (valuesArray == null ? -1 : valuesArray.length);
+               if (valuesArray != null)
+               {
+                  //for each (var arrValue:Object in valuesArray) // fant! bug: undefined value is not iterated.
+                  for (var i:int = 0; i < valuesArray.length; ++ i)
+                  {
+                     var arrValue:Object = valuesArray [i];
+                     
+                     if (arrValue is Boolean)
+                     {
+                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Boolean, arrValue, alreadySavedArrayLookupTable);
+                     }
+                     else if (arrValue is Number)
+                     {
+                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Number, arrValue, alreadySavedArrayLookupTable);
+                     }
+                     else if (arrValue is String)
+                     {
+                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_String, arrValue, alreadySavedArrayLookupTable);
+                     }
+                     else if (arrValue is Array)
+                     {
+                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Array, arrValue, alreadySavedArrayLookupTable);
+                     }
+                     else
+                     {
+                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Void, null, alreadySavedArrayLookupTable);
+                     }
+                  }
+               }
+            }
+            break;
+         default:
+         {
+            binData.writeShort (ValueTypeDefine.ValueType_Void);
+            break;
+         }
+      }      
+   }
+   
+   public static function SetSavedData (savedData:ByteArray):void
+   {
+      if (savedData == null)
+         return;
+      
+      var savedVariables:Array = null;
+      var numSavedVariables:int;
+      var savedVariableId:int;
+      
+      try
+      {
+         savedData.position = 0;
+         var dataFormatVersion:int = savedData.readShort ();
+         
+         numSavedVariables = savedData.readInt ();
+         savedVariables = new Array (numSavedVariables);
+         for (savedVariableId = 0; savedVariableId < numSavedVariables; ++ savedVariableId)
+         {
+            var key:String = savedData.readUTF ();
+            
+            var value:Object = ReadNextVariableValue (savedData);
+
+            savedVariables [savedVariableId] = {mKey: key, mValue: value};
+         }
+      }
+      catch (error:Error)
+      {
+         trace ("GetSavedData error: " + error.getStackTrace ());
+         
+         if (Capabilities.isDebugger)
+            throw error;
+         
+         savedVariables = null;
+      }
+      
+      if (savedVariables != null)
+      {
+         var variableInstance:VariableInstance;
+         
+         var variableLookupTable:Dictionary = new Dictionary ();
+         var numVariables:int = mGameSaveVariableSpace.GetNumVariables ();
+         for (var variableId:int = 0; variableId < numVariables; ++ variableId)
+         {
+            variableInstance = mGameSaveVariableSpace.GetVariableAt (variableId);
+            variableLookupTable [variableInstance.GetKey ()] = variableInstance;
+         }
+         
+         for (savedVariableId = 0; savedVariableId < numSavedVariables; ++ savedVariableId)
+         {
+            var savedVariable:Object = savedVariables [savedVariableId];
+            
+            variableInstance = variableLookupTable [savedVariable.mKey];
+            if (variableInstance != null)
+            {
+               variableInstance.SetValueObject (savedVariable.mValue);
+            }
+         }
+      }
+   }
+   
+   private static function ReadNextVariableValue (savedData:ByteArray):Object
+   {
+      var type:int = savedData.readShort ();
+
+      switch (type)
+      {
+         case ValueTypeDefine.ValueType_Boolean:
+            return savedData.readByte () != 0;
+         case ValueTypeDefine.ValueType_Number:
+            return savedData.readDouble ();
+         case ValueTypeDefine.ValueType_String:
+            var strLen:int = savedData.readInt ();
+            if (strLen < 0)
+               return null;
+            else
+            {
+               return savedData.readUTFBytes (strLen);
+            }
+         case ValueTypeDefine.ValueType_Array:
+            var arrLen:int = savedData.readInt ();
+            if (arrLen < 0)
+               return null;
+            else
+            {
+               var valuesArray:Array = new Array (arrLen);
+               for (var i:int = 0; i < arrLen; ++ i)
+               {
+                  valuesArray [i] = ReadNextVariableValue (savedData);
+               }
+            }
+            return valuesArray ;
+         default:
+         {
+            return null;
+         }
+      } 
+   }
+   
+   private static var mDebugString:String = null;
+   public static function GetDebugString ():String
+   {
+      return mDebugString;
    }
    
 //==============================================================================
@@ -261,6 +482,7 @@ package player.design
          Viewer_OnLoadScene = null;
          Viewer_mLibSound = null;
          Viewer_OnExit = null;
+         Viewer_mLibIO = null;
          
          //
          Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better

@@ -93,8 +93,9 @@ package player.design
       public static var UI_SetZoomScale:Function;
       public static var UI_IsSoundEnabled:Function;
       public static var UI_SetSoundEnabled:Function;
-      public static var Viewer_IsAccelerometerSupported:Function;
-      public static var Viewer_GetAcceleration:Function;
+      public static var Viewer_mLibCapabilities:Object;
+               //IsAccelerometerSupported:Function; // v1.60
+               //GetAcceleration:Function; // v1.60
       public static var _GetDebugString:Function;
       public static var Viewer_SetMouseGestureSupported:Function;
       public static var Viewer_OnLoadScene:Function;
@@ -152,8 +153,7 @@ package player.design
       UI_SetZoomScale = null;
       UI_IsSoundEnabled = null;
       UI_SetSoundEnabled = null;
-      Viewer_IsAccelerometerSupported;
-      Viewer_GetAcceleration = null;
+      Viewer_mLibCapabilities = null;
       _GetDebugString = null;
       Viewer_SetMouseGestureSupported = null;
       Viewer_OnLoadScene = null;
@@ -482,8 +482,7 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
          UI_SetZoomScale = null;
          UI_IsSoundEnabled = null;
          UI_SetSoundEnabled = null;
-         Viewer_IsAccelerometerSupported;
-         Viewer_GetAcceleration = null;
+         Viewer_mLibCapabilities = null;
          _GetDebugString = null;
          Viewer_SetMouseGestureSupported = null;
          Viewer_OnLoadScene = null;

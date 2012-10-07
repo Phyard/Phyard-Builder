@@ -63,7 +63,6 @@ package common.trigger {
       public static const ID_ExitApp:int                             = IdPool.CoreApiId_592; //
 
       public static const ID_OpenURL:int                = IdPool.CoreApiId_78; // from v2.03
-      public static const ID_IsNativeApp:int            = IdPool.CoreApiId_109; // from v2.03
       public static const ID_GetScreenResolution:int    = IdPool.CoreApiId_110; // from v2.03
       public static const ID_GetScreenDPI:int           = IdPool.CoreApiId_111; // from v2.03
 

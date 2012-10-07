@@ -432,10 +432,12 @@ package viewer {
       
       private static function GetScreenResolution ():Point
       {
+         return new Point (0, 0);
       }
       
       private static function GetScreenDPI ():Number
       {
+         return 0;
       }
 
 //======================================================================
@@ -1253,8 +1255,10 @@ package viewer {
                
                //Viewer
                OnLoadScene : OnLoadScene,
-               IsAccelerometerSupported: IsAccelerometerSupported,
-               GetAcceleration: GetAcceleration,
+               mLibCapabilities : {
+                           IsAccelerometerSupported: IsAccelerometerSupported,
+                           GetAcceleration: GetAcceleration
+               },
                GetDebugString: GetDebugString,
                SetMouseGestureSupported: SetMouseGestureSupported,
                mLibSound : {

@@ -82,6 +82,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_SetMouseVisible,                  SetMouseVisible);
          RegisterCoreFunction (CoreFunctionIds.ID_IsAccelerometerSupported,                  IsAccelerometerSupported);
          RegisterCoreFunction (CoreFunctionIds.ID_GetAcceleration,                     GetAccelerationVector);
+         RegisterCoreFunction (CoreFunctionIds.ID_IsNativeApp,                     IsNativeApp);
+         RegisterCoreFunction (CoreFunctionIds.ID_ExitApp,                     ExitApp);
 
       // string
 
@@ -234,7 +236,9 @@ package player.trigger {
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
-         RegisterCoreFunction (CoreFunctionIds.ID_ExitLevel,                     ExitLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetNextLevel,           GetNextLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetPrevLevel,           GetPrevLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_IsNullLevel,            IsNullLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_WriteSaveData,          WriteSaveData);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadSaveData,           LoadSaveData);
 
@@ -272,6 +276,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment,         GetFirstOutcomingIntersectionWithLineSegment);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,         GetIntersectedShapesWithLineSegment);
 
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetViewportSize,                           GetViewportSize);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraRotationByDegrees,                GetCameraRotation_Degrees);
@@ -651,14 +656,14 @@ package player.trigger {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsMouseButtonDown ());
       }
 
-      public static function SetMouseVisible(valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetMouseVisible (valueSource:Parameter, valueTarget:Parameter):void
       {
          var visible:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
          Global.GetCurrentWorld ().SetMouseVisible (visible);
       }
 
-      public static function IsAccelerometerSupported(valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsAccelerometerSupported (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.Viewer_IsAccelerometerSupported != null && Global.Viewer_IsAccelerometerSupported ());
       }
@@ -674,6 +679,16 @@ package player.trigger {
 
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (vector3d [2] as Number);
+      }
+
+      public static function IsNativeApp (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.Viewer_IsNativeApp ());
+      }
+
+      public static function ExitApp (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.Viewer_OnExit ();
       }
 
    //*******************************************************************
@@ -2092,10 +2107,23 @@ package player.trigger {
          
          Global.MergeScene (levelIndex);
       }
-
-      public static function ExitLevel (valueSource:Parameter, valueTarget:Parameter):void
+      
+      public static function GetNextLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_OnExit ();
+         var levelIndex:int = Global.GetCurrentWorld ().GetCurrentSceneId () + 1;
+         valueTarget.AssignValueObject (levelIndex < Global.GetNumScenes () ? levelIndex : -1);
+      }
+      
+      public static function GetPrevLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = Global.GetCurrentWorld ().GetCurrentSceneId () - 1;
+         valueTarget.AssignValueObject (levelIndex > 0 ? levelIndex : -1);
+      }
+      
+      public static function IsNullLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = valueSource.EvaluateValueObject () as int;
+         valueTarget.AssignValueObject (isNaN (levelIndex) || levelIndex < 0 || levelIndex >= Global.GetNumScenes ());
       }
       
       public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void
@@ -2266,6 +2294,14 @@ package player.trigger {
 
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentGravityAccelerationY ());
+      }
+      
+      public static function GetViewportSize (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetRealViewportWidth ());
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetRealViewportHeight ());
       }
 
       public static function SetCurrentCamera (valueSource:Parameter, valueTarget:Parameter):void

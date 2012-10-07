@@ -105,6 +105,8 @@ package player.world {
       private var mPermitPublishing:Boolean = false;
       
    // ...
+      
+      private var mCurrentSceneId:int;
    
       private var mSceneKey:String;
       private var mSceneName:String;
@@ -342,6 +344,16 @@ package player.world {
       public function GetSceneName ():String
       {
          return mSceneName;
+      }
+      
+      public function GetCurrentSceneId ():int
+      {
+         return mCurrentSceneId;
+      }
+      
+      public function SetCurrentSceneId (sceneId:int):void
+      {
+         mCurrentSceneId = sceneId;
       }
 
 //==============================================================================

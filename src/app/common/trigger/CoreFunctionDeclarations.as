@@ -222,6 +222,16 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_IsNativeApp,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ExitApp,
+                     null,
+                     null
+                  );
 
       // string
 
@@ -1298,9 +1308,25 @@ package common.trigger {
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_ExitLevel,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetNextLevel,
                      null,
-                     null
+                     [
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetPrevLevel,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsNullLevel,
+                     [
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_WriteSaveData,
                      null,
@@ -1495,6 +1521,13 @@ package common.trigger {
          //            ]
          //         );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetViewportSize,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],

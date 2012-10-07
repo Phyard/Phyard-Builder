@@ -105,7 +105,8 @@ package player
                
                Global.Viewer_mLibSound = params.mLibSound; // from v2.02
                
-               Global.Viewer_OnExit = params.OnExit; // from v2.03
+               Global.Viewer_IsNativeApp = params.IsNativeApp; // from v2.03
+               Global.Viewer_OnExitApp = params.OnExitApp; // from v2.03
                
                Global.Viewer_mLibIO = params.mLibIO; // from v2.03
                

@@ -99,7 +99,8 @@ package player.design
       public static var Viewer_SetMouseGestureSupported:Function;
       public static var Viewer_OnLoadScene:Function;
       public static var Viewer_mLibSound:Object;
-      public static var Viewer_OnExit:Function;
+      public static var Viewer_IsNativeApp:Function;
+      public static var Viewer_OnExitApp:Function;
       public static var Viewer_mLibIO:Object;
       
 //==============================================================================
@@ -157,7 +158,8 @@ package player.design
       Viewer_SetMouseGestureSupported = null;
       Viewer_OnLoadScene = null;
       Viewer_mLibSound = null;
-      Viewer_OnExit = null;
+      Viewer_IsNativeApp = null;
+      Viewer_OnExitApp = null;
       Viewer_mLibIO = null;
    }
    
@@ -412,6 +414,11 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
 // static values
 //==============================================================================
       
+      public static function GetNumScenes ():int
+      {
+         return mWorldDefine == null ? 0 : mWorldDefine.mSceneDefines.length;
+      }
+      
       public static function InitGlobalData (isRestartLevel:Boolean, dontReloadGlobalAssets:Boolean):void
       {
          //
@@ -481,7 +488,8 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
          Viewer_SetMouseGestureSupported = null;
          Viewer_OnLoadScene = null;
          Viewer_mLibSound = null;
-         Viewer_OnExit = null;
+         Viewer_IsNativeApp = null;
+         Viewer_OnExitApp = null;
          Viewer_mLibIO = null;
          
          //

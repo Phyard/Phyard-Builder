@@ -122,7 +122,7 @@ package common.trigger {
       public static const CoreApiId_75:int = 75; //
       public static const CoreApiId_76:int = 76; //
       public static const CoreApiId_77:int = 77; //
-
+      public static const CoreApiId_78:int = 78; //
       public static const CoreApiId_79:int = 79; //
       public static const CoreApiId_80:int = 80; //
       public static const CoreApiId_81:int = 81; //
@@ -153,6 +153,9 @@ package common.trigger {
       public static const CoreApiId_106:int = 106; //
       public static const CoreApiId_107:int = 107; //
       public static const CoreApiId_108:int = 108; //
+      public static const CoreApiId_109:int = 109 //
+      public static const CoreApiId_110:int = 110; //
+      public static const CoreApiId_111:int = 111; //
 
       public static const CoreApiId_120:int = 120; //
       public static const CoreApiId_121:int = 121; //
@@ -264,12 +267,14 @@ package common.trigger {
       public static const CoreApiId_530:int = 530; //
       public static const CoreApiId_531:int = 531; //
 
+      public static const CoreApiId_585:int = 585; // design
+      public static const CoreApiId_586:int = 586; // design
+      public static const CoreApiId_587:int = 587; // design
       public static const CoreApiId_588:int = 588; // design
       public static const CoreApiId_589:int = 589; // design
       public static const CoreApiId_590:int = 590; // design
       public static const CoreApiId_591:int = 591; // design
       public static const CoreApiId_592:int = 592 // design
-
       public static const CoreApiId_593:int = 593; // design
       public static const CoreApiId_594:int = 594; // design
       public static const CoreApiId_595:int = 595; // design
@@ -277,7 +282,6 @@ package common.trigger {
       public static const CoreApiId_597:int = 597; // design
       public static const CoreApiId_598:int = 598; // design
       public static const CoreApiId_599:int = 599; // design
-
       public static const CoreApiId_600:int = 600; // design
       public static const CoreApiId_601:int = 601; // design
       public static const CoreApiId_602:int = 602; // design
@@ -299,6 +303,7 @@ package common.trigger {
 
       public static const CoreApiId_715:int = 715; // world
 
+      public static const CoreApiId_716:int = 716; // world
       public static const CoreApiId_717:int = 717; // world
       public static const CoreApiId_718:int = 718; // world
       public static const CoreApiId_719:int = 719; // world

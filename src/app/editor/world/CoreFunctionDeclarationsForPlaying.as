@@ -309,6 +309,16 @@ package editor.world {
                         new VariableDefinitionNumber ("Acceleration Z"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsNativeApp, system_package, "Is Native App", null, null,
+                     null,
+                     [
+                        new VariableDefinitionBoolean ("Native App?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitApp, system_package, "Exit App", null, null,
+                     null,
+                     null
+                  );
 
       // string
 
@@ -1375,21 +1385,37 @@ package editor.world {
                      null,
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadLevel, world_general_package, "Load Level", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadLevel, world_general_package, "Load Scene", null, null,
                      [
                         new VariableDefinitionScene ("Level"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_MergeLevel, world_general_package, "Merge Level Into The Current One", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_MergeLevel, world_general_package, "Merge Scene Into The Current One", null, null,
                      [
                         new VariableDefinitionScene ("Level"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitLevel, world_general_package, "Exit Level", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetNextLevel, world_general_package, "Get Next Scene", null, null,
                      null,
-                     null
+                     [
+                        new VariableDefinitionScene ("Next Level"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetPrevLevel, world_general_package, "Get Prev Scene", null, null,
+                     null,
+                     [
+                        new VariableDefinitionScene ("Prev Level"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsNullLevel, world_general_package, "Is Null Scene?", null, null,
+                     [
+                        new VariableDefinitionScene ("Prev Level"),
+                     ],
+                     [
+                        new VariableDefinitionBoolean ("Null Level?"),
+                     ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_WriteSaveData, world_general_package, "Write Save Data", null, null,
                      null,
@@ -1580,6 +1606,13 @@ package editor.world {
          //            ]
          //         );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetViewportSize, world_camera_package, "Get Viewport Size", "@(#0, #1) = Get Size of Viewport", "GetViewportSize",
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Width"),
+                             new VariableDefinitionNumber ("Height"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera, world_camera_package, "Set Current Camera", null, null,
                      [
                              new VariableDefinitionEntity ("The New Camera Entity", null, {mValidClasses: Filters.sCameraEntityClasses}),

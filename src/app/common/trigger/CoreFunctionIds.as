@@ -58,6 +58,14 @@ package common.trigger {
       public static const ID_IsAccelerometerSupported:int                        = IdPool.CoreApiId_76; // from v1.60
       public static const ID_GetAcceleration:int                                 = IdPool.CoreApiId_77; // from v1.60
       public static const ID_Design_SetMouseGestureEnabled:int            = IdPool.CoreApiId_615; // from v1.60
+      
+      public static const ID_IsNativeApp:int            = IdPool.CoreApiId_109; // from v2.03
+      public static const ID_ExitApp:int                             = IdPool.CoreApiId_592; //
+
+      public static const ID_OpenURL:int                = IdPool.CoreApiId_78; // from v2.03
+      public static const ID_IsNativeApp:int            = IdPool.CoreApiId_109; // from v2.03
+      public static const ID_GetScreenResolution:int    = IdPool.CoreApiId_110; // from v2.03
+      public static const ID_GetScreenDPI:int           = IdPool.CoreApiId_111; // from v2.03
 
    // string
 
@@ -220,7 +228,9 @@ package common.trigger {
       
       public static const ID_Design_LoadLevel:int                      = IdPool.CoreApiId_590;
       public static const ID_Design_MergeLevel:int                     = IdPool.CoreApiId_591;
-      public static const ID_ExitLevel:int                             = IdPool.CoreApiId_592; //
+      public static const ID_Design_GetNextLevel:int       = IdPool.CoreApiId_585;
+      public static const ID_Design_GetPrevLevel:int       = IdPool.CoreApiId_586;
+      public static const ID_Design_IsNullLevel :int       = IdPool.CoreApiId_587;
       public static const ID_Design_WriteSaveData:int                    = IdPool.CoreApiId_588;
       public static const ID_Design_LoadSaveData:int                     = IdPool.CoreApiId_589;
       // todo: SaveData_ByteArray version
@@ -259,7 +269,8 @@ package common.trigger {
       public static const ID_World_GetIntersectedShapesWithLineSegment:int        = IdPool.CoreApiId_732;
       public static const ID_World_GetIntersectionSegmentsWithLineSegment:int        = IdPool.CoreApiId_733;
 
-      public static const ID_World_SetCurrentCamera:int                               = IdPool.CoreApiId_717;
+      public static const ID_World_GetViewportSize:int                               = IdPool.CoreApiId_716; // from v2.03
+      public static const ID_World_SetCurrentCamera:int                              = IdPool.CoreApiId_717;
       public static const ID_World_GetCameraCenter:int                               = IdPool.CoreApiId_719;
       public static const ID_World_GetCameraRotationByDegrees:int                    = IdPool.CoreApiId_718;
       public static const ID_World_FollowCameraWithShape:int                         = IdPool.CoreApiId_720;

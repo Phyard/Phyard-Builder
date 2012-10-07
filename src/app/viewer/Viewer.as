@@ -424,6 +424,19 @@ package viewer {
                   
          return "null";
       }
+      
+      private function IsNativeApp ():Boolean
+      {
+         return mParamsFromContainer.mIsNativeApp != null && (mParamsFromContainer.mIsNativeApp as Boolean);
+      }
+      
+      private static function GetScreenResolution ():Point
+      {
+      }
+      
+      private static function GetScreenDPI ():Number
+      {
+      }
 
 //======================================================================
 // gesture lib
@@ -1251,7 +1264,8 @@ package viewer {
                           
                           // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
                },
-               OnExit : ExitLevel,
+               IsNativeApp: IsNativeApp,
+               OnExitApp : ExitLevel,
                mLibIO : {
                          LoadGameSaveData : LoadGameSaveData,
                          WriteGameSaveData : WriteGameSaveData

@@ -52,6 +52,16 @@ public function GetPreferredViewportHeight ():int
    return mPreferredViewportHeight;
 }
 
+public function GetRealViewportWidth ():Number
+{
+   return mRealViewportWidth;
+}
+
+public function GetRealViewportHeight ():Number
+{
+   return mRealViewportHeight;
+}
+
 public function SetRealViewportSize (realWidth:Number, realHeight:Number):void
 {
    mRealViewportWidth  = realWidth;

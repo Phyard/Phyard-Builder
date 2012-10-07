@@ -319,6 +319,7 @@ package common {
             
             //
             playerWorld = new World (sceneDefine) ; //worldDefine);
+            playerWorld.SetCurrentSceneId (worldDefine.mCurrentSceneId);
             extraInfos.mBeinningCCatIndex = 0;
             playerWorld.CreateCollisionCategories (sceneDefine.mCollisionCategoryDefines, sceneDefine.mCollisionCategoryFriendLinkDefines); //worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
             playerWorld.SetBasicInfos (worldDefine);

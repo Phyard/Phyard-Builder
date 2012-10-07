@@ -432,12 +432,12 @@ package viewer {
       
       private static function GetScreenResolution ():Point
       {
-         return new Point (0, 0);
+         return new Point (Capabilities.screenResolutionX, Capabilities.screenResolutionY);
       }
       
       private static function GetScreenDPI ():Number
       {
-         return 0;
+         return Capabilities.screenDPI;
       }
 
 //======================================================================
@@ -1257,7 +1257,9 @@ package viewer {
                OnLoadScene : OnLoadScene,
                mLibCapabilities : {
                            IsAccelerometerSupported: IsAccelerometerSupported,
-                           GetAcceleration: GetAcceleration
+                           GetAcceleration: GetAcceleration,
+                           GetScreenResolution : GetScreenResolution,
+                           GetScreenDPI : GetScreenDPI
                },
                GetDebugString: GetDebugString,
                SetMouseGestureSupported: SetMouseGestureSupported,
@@ -1268,8 +1270,11 @@ package viewer {
                           
                           // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
                },
-               IsNativeApp: IsNativeApp,
-               OnExitApp : ExitLevel,
+               mLibApp : {
+                        IsNativeApp: IsNativeApp,
+                        OnExitApp : ExitLevel,
+                        OpenURL : UrlUtil.PopupPage
+               },
                mLibIO : {
                          LoadGameSaveData : LoadGameSaveData,
                          WriteGameSaveData : WriteGameSaveData

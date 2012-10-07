@@ -84,6 +84,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_GetAcceleration,                     GetAccelerationVector);
          RegisterCoreFunction (CoreFunctionIds.ID_IsNativeApp,                     IsNativeApp);
          RegisterCoreFunction (CoreFunctionIds.ID_ExitApp,                     ExitApp);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetScreenResolution,         GetScreenResolution);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetScreenDPI,                GetScreenDPI);
+         RegisterCoreFunction (CoreFunctionIds.ID_OpenURL,                     OpenURL);
 
       // string
 
@@ -683,12 +686,37 @@ package player.trigger {
 
       public static function IsNativeApp (valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.Viewer_IsNativeApp ());
+         valueTarget.AssignValueObject (Global.Viewer_mLibAppp.IsNativeApp ());
       }
 
       public static function ExitApp (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_OnExitApp ();
+         Global.Viewer_mLibAppp.OnExitApp ();
+      }
+
+      public static function GetScreenResolution (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var size:Point = Global.Viewer_mLibCapabilities.GetScreenResolution ();
+
+         valueTarget.AssignValueObject (size.x);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (size.y);
+      }
+
+      public static function GetScreenDPI (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.Viewer_mLibCapabilities.GetScreenDPI ());
+      }
+      
+      public static function OpenURL (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var url:String = valueSource.EvaluateValueObject () as String;
+         
+         if (url != null && url.length > 0)
+         {
+            Global.Viewer_mLibAppp.OpenURL (url);
+         }
       }
 
    //*******************************************************************

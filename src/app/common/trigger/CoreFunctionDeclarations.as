@@ -232,6 +232,26 @@ package common.trigger {
                      null,
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetScreenResolution,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetScreenDPI,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0],
+                     ]
+                  );
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_OpenURL,
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
+                     null
+                  );
 
       // string
 

@@ -319,6 +319,25 @@ package editor.world {
                      null,
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetScreenResolution, system_package, "Get Screen Resolution", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Width (pixels)"),
+                             new VariableDefinitionNumber ("Height (pixels)"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetScreenDPI, system_package, "Get Screen DPI", null, null,
+                     null,
+                     [
+                        new VariableDefinitionNumber ("DPI (pixels per inch)"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_OpenURL, system_package, "Open URL", null, null,
+                     [
+                             new VariableDefinitionString ("URL"),
+                     ],
+                     null
+                  );
 
       // string
 

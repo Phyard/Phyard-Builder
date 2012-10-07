@@ -96,13 +96,22 @@ package player.design
       public static var Viewer_mLibCapabilities:Object;
                //IsAccelerometerSupported:Function; // v1.60
                //GetAcceleration:Function; // v1.60
+               //GetScreenResolution:Function; // from v2.03
+               //GetScreenDPI:Function; // from v2.03
+               //OpenURL:Function; // from v2.03
       public static var _GetDebugString:Function;
       public static var Viewer_SetMouseGestureSupported:Function;
       public static var Viewer_OnLoadScene:Function;
       public static var Viewer_mLibSound:Object;
-      public static var Viewer_IsNativeApp:Function;
-      public static var Viewer_OnExitApp:Function;
+               //PlaySound:Function; // v2.02. (before v2.02, sound lib is included in world instead of viewer)
+               //StopAllInLevelSounds:Function; // v2.02
+               //StopCrossLevelsSound:Function; // v2.02
+      public static var Viewer_mLibAppp:Object; // v2.03
+               //IsNativeApp:Function; // v2.03
+               //OnExitApp:Function; // v2.03
       public static var Viewer_mLibIO:Object;
+               //WriteGameSaveData:Function; // v2.03
+               //LoadGameSaveData:Function; // v2.03
       
 //==============================================================================
 // temp for playing in editor.
@@ -158,8 +167,7 @@ package player.design
       Viewer_SetMouseGestureSupported = null;
       Viewer_OnLoadScene = null;
       Viewer_mLibSound = null;
-      Viewer_IsNativeApp = null;
-      Viewer_OnExitApp = null;
+      Viewer_mLibAppp = null;
       Viewer_mLibIO = null;
    }
    
@@ -487,8 +495,7 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
          Viewer_SetMouseGestureSupported = null;
          Viewer_OnLoadScene = null;
          Viewer_mLibSound = null;
-         Viewer_IsNativeApp = null;
-         Viewer_OnExitApp = null;
+         Viewer_mLibAppp = null;
          Viewer_mLibIO = null;
          
          //

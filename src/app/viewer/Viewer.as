@@ -1096,8 +1096,10 @@ package viewer {
                SetZoomScale : mSkin.SetZoomScale,
                IsSoundEnabled : mSkin.IsSoundEnabled,
                SetSoundEnabled : mSkin.SetSoundEnabled,
-               IsAccelerometerSupported: IsAccelerometerSupported,
-               GetAcceleration: GetAcceleration,
+               mLibCapabilities : {
+                           IsAccelerometerSupported: IsAccelerometerSupported,
+                           GetAcceleration: GetAcceleration
+               },
                GetDebugString: GetDebugString,
                SetMouseGestureSupported: SetMouseGestureSupported
             });

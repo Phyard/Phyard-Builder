@@ -643,12 +643,12 @@ package player.trigger {
 
       public static function IsAccelerometerSupported(valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.Viewer_IsAccelerometerSupported != null && Global.Viewer_IsAccelerometerSupported ());
+         valueTarget.AssignValueObject (Global.Viewer_mLibCapabilities.IsAccelerometerSupported ());
       }
 
       public static function GetAccelerationVector (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var vector3d:Array = Global.Viewer_GetAcceleration ();
+         var vector3d:Array = Global.Viewer_mLibCapabilities.GetAcceleration ();
 
          valueTarget.AssignValueObject (vector3d [0] as Number);
 

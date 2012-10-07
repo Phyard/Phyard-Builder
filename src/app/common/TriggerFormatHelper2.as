@@ -367,7 +367,9 @@ package common {
          var goodCallingInfo:FunctionCallingLineInfo = inputCallingInfo;
          var nextCallingInfo:FunctionCallingLineInfo = inputCallingInfo;
          
-         while (nextCallingInfo != null && (nextCallingInfo.mFunctionId == CoreFunctionIds.ID_Else || nextCallingInfo.mFunctionId == CoreFunctionIds.ID_EndIf)) // a bad calling
+         //while (nextCallingInfo != null && (nextCallingInfo.mFunctionId == CoreFunctionIds.ID_Else || nextCallingInfo.mFunctionId == CoreFunctionIds.ID_EndIf)) // a bad calling
+         // above is a bug: if number of custom functions exceeds 32, the logic may be ill. 
+         while (nextCallingInfo != null && nextCallingInfo.mIsCoreDeclaration && (nextCallingInfo.mFunctionId == CoreFunctionIds.ID_Else || nextCallingInfo.mFunctionId == CoreFunctionIds.ID_EndIf)) // a bad calling
          {
             goodCallingInfo = nextCallingInfo.mOwnerBlock.mEndCallingLine;  // "end if" of the bad calling block
             if (goodCallingInfo == nextCallingInfo)

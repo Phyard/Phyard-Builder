@@ -76,8 +76,9 @@ package player.design
       public static var UI_SetZoomScale:Function;
       public static var UI_IsSoundEnabled:Function;
       public static var UI_SetSoundEnabled:Function;
-      public static var Viewer_IsAccelerometerSupported;
-      public static var Viewer_GetAcceleration;
+      public static var Viewer_mLibCapabilities:Object;
+               //IsAccelerometerSupported:Function; // v1.60
+               //GetAcceleration:Function; // v1.60
       public static var _GetDebugString;
       public static var Viewer_SetMouseGestureSupported;
       
@@ -135,6 +136,9 @@ package player.design
          UI_SetZoomScale = null;
          UI_IsSoundEnabled = null;
          UI_SetSoundEnabled = null;
+         Viewer_mLibCapabilities = null;
+         _GetDebugString = null;
+         Viewer_SetMouseGestureSupported = null;
          
          //
          Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better

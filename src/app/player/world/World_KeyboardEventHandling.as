@@ -166,7 +166,7 @@
    {
       if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return false;
-      
+
       return mKeyHoldInfo [keyCode][KeyHoldInfo_IsHold];
    }
 

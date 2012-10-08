@@ -814,7 +814,19 @@ package player.world {
          UpdateCamera ();
 
       //-----------------------------
-      // system dispatchs mouse, keyboard and other events
+      // delay handle LoadScene
+      //-----------------------------
+         
+         if (! Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         {
+            //Global.Viewer_OnLoadScene (mDelayToLoadSceneIndex);
+            //return;
+            
+            mDelayToLoadSceneIndex = -1; // now, forbid calling LoadScene API in Initialize
+         }
+
+      //-----------------------------
+      // system will dispatch mouse, keyboard and other events out of this function
       //-----------------------------
       }
 
@@ -952,14 +964,33 @@ package player.world {
             UpdateCamera ();
 
          //-----------------------------
-         // system dispatchs mouse, keyboard and other events
+         // delay handle LoadScene
          //-----------------------------
+            
+            if (! Global.IsInvalidScene (mDelayToLoadSceneIndex))
+            {
+               Global.Viewer_OnLoadScene (mDelayToLoadSceneIndex);
+               return;
+            }
          }
+
+         //-----------------------------
+         // system will dispatch mouse, keyboard and other events out of this function
+         //-----------------------------
       }
       
       public function UpdateShapeContactStatusInfos ():void
       {
          UpdatePhysics (0.0);
+      }
+      
+      private var mDelayToLoadSceneIndex:int = -1;
+      public function SetDelayToLoadSceneIndex (sceneIndex:int):void
+      {
+         if (Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         {
+            mDelayToLoadSceneIndex = sceneIndex;
+         }
       }
 
 //=============================================================

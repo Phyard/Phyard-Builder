@@ -2129,7 +2129,8 @@ package player.trigger {
          if (levelIndex < 0)
             return;
 
-         Global.Viewer_OnLoadScene (levelIndex);
+         //Global.Viewer_OnLoadScene (levelIndex); // if call this at this time, there will be many check point needed to be aded.
+         Global.GetCurrentWorld ().SetDelayToLoadSceneIndex (levelIndex);
       }
       
       public static function MergeLevelIntoTheCurrentOne (valueSource:Parameter, valueTarget:Parameter):void

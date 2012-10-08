@@ -1310,15 +1310,28 @@ package viewer {
       //trace ("InitPlayerWorld");
          try
          {
-            mWorldDesignProperties.Initialize ();
+            var worldPluginProperties:Object = mWorldDesignProperties;
 
+            mWorldDesignProperties.Initialize (); // may Load New Scene so that mWorldDesignProperties is changed.
+            
+            // current, call LoadScene API is forbidded in world.Initialize
+            //if (worldPluginProperties != mWorldDesignProperties)
+            //   return;
+            
             // special handling, before v1.02 (not include v1.02), to make world center in viewer
             // (edit) ??? seems before v1.06 (including v1.06)
             // maybe it is better to put this in mWorldDesignProperties.Initialize ()
             //if (mWorldPluginProperties.mWorldVersion < 0x0102)
+            
             if (mWorldPluginProperties.mWorldVersion <= 0x0106)
             {
-               mWorldDesignProperties.Update (0, 1);
+               mWorldDesignProperties.Update (0, 1); 
+               
+               // not essential, for LoadScene API is added since v2.00
+               
+               // may Load New Scene so that mWorldDesignProperties is changed.
+               //if (worldPluginProperties != mWorldDesignProperties)
+               //   return;
             }
             
             // ...
@@ -1425,7 +1438,10 @@ package viewer {
                if (mSkin.IsPlaying ())
                   mSkin.SetPlaying (false);
                else
+               {
                   ExitLevel ();
+                  return;
+               }
             }
             else
             {
@@ -1435,6 +1451,7 @@ package viewer {
                if (mWorldDesignProperties.OnSystemBackEvent () == 0)
                {
                   ExitLevel ();
+                  return;
                }
                //else
                //{
@@ -1495,7 +1512,10 @@ package viewer {
          {
             try
             {
-               mWorldDesignProperties.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+               var worldPluginProperties:Object = mWorldDesignProperties;
+               mWorldDesignProperties.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ()); // may Load New Scene so that mWorldDesignProperties is changed.
+               if (worldPluginProperties != mWorldDesignProperties)
+                  return;
             }
             catch (error:Error)
             {
@@ -1527,7 +1547,7 @@ package viewer {
             mParamsFromContainer.OnLevelFinished ();
          }
       }
-
+      
 //======================================================================
 // skin and background
 //======================================================================

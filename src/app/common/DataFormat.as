@@ -2733,7 +2733,7 @@ package common {
             }
             else
             {
-               throw Error ("entity is null?!");
+               // throw Error ("entity is null?!"); // bug !, for joint anchors are created with joints
                //trace ("!!! entity is null, id = " + createId);
             }
          }

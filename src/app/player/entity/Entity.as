@@ -666,6 +666,7 @@ package player.entity {
             layerContainer = relativeTo.mAppearanceObject.parent as DisplayObjectContainer;
             if (layerContainer != null)
             {
+               layerContainer.removeChild (mAppearanceObject);
                layerContainer.addChildAt (mAppearanceObject, layerContainer.getChildIndex (relativeTo.mAppearanceObject) + (frontOfRelativeTo ? 1 : 0));
             }
          }

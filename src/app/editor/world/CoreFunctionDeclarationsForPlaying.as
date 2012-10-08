@@ -56,9 +56,9 @@ package editor.world {
             var array_element_package:FunctionMenuGroup   = new FunctionMenuGroup ("Element", array_package);
          var system_package:FunctionMenuGroup = new FunctionMenuGroup ("System", sGlobalMenuGroup);
 
-         var world_general_package:FunctionMenuGroup  = new FunctionMenuGroup ("General", sWorldMenuGroup);
+         var world_scene_package:FunctionMenuGroup  = new FunctionMenuGroup ("Scene", sWorldMenuGroup);
+         var world_level_package:FunctionMenuGroup  = new FunctionMenuGroup ("Level", sWorldMenuGroup);
          var ccat_package:FunctionMenuGroup    = new FunctionMenuGroup ("CCat", sWorldMenuGroup);
-         var level_package:FunctionMenuGroup  = new FunctionMenuGroup ("Level Status", sWorldMenuGroup);
          var world_physics_package:FunctionMenuGroup    = new FunctionMenuGroup ("Physics", sWorldMenuGroup);
          //var world_appearance_package:FunctionMenuGroup    = new FunctionMenuGroup ("Appearance", sWorldMenuGroup);
          var world_camera_package:FunctionMenuGroup    = new FunctionMenuGroup ("Camera", sWorldMenuGroup);
@@ -1400,82 +1400,106 @@ package editor.world {
 
       // game / design
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_RestartLevel, world_general_package, "Restart Level", null, null,
-                     null,
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadLevel, world_general_package, "Load Scene", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadLevel, world_scene_package, "Load Scene", null, null,
                      [
-                        new VariableDefinitionScene ("Level"),
+                        new VariableDefinitionScene ("Scene To Load"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_MergeLevel, world_general_package, "Merge Scene Into The Current One", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_MergeLevel, world_scene_package, "Merge Scene Into The Current One", null, null,
                      [
-                        new VariableDefinitionScene ("Level"),
+                        new VariableDefinitionScene ("Scene To Merge"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetNextLevel, world_general_package, "Get Next Scene", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetNextLevel, world_scene_package, "Get Next Scene", null, null,
                      null,
                      [
-                        new VariableDefinitionScene ("Next Level"),
+                        new VariableDefinitionScene ("Next Scene"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetPrevLevel, world_general_package, "Get Prev Scene", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetPrevLevel, world_scene_package, "Get Previous Scene", null, null,
                      null,
                      [
-                        new VariableDefinitionScene ("Prev Level"),
+                        new VariableDefinitionScene ("Prev Scene"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsNullLevel, world_general_package, "Is Null Scene?", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetCurrentLevel, world_scene_package, "Get Curent Scene", null, null,
+                     null,
                      [
-                        new VariableDefinitionScene ("Prev Level"),
+                        new VariableDefinitionScene ("Current Scene"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsNullLevel, world_scene_package, "Is Null Scene?", null, null,
+                     [
+                        new VariableDefinitionScene ("The Scene"),
                      ],
                      [
                         new VariableDefinitionBoolean ("Null Level?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_WriteSaveData, world_general_package, "Write Save Data", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SceneEquals, world_scene_package, "Scene == Scene?", "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+                     [
+                        new VariableDefinitionScene ("Scene 1"),
+                        new VariableDefinitionScene ("Scene 2"),
+                     ],
+                     [
+                        new VariableDefinitionBoolean ("Result"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_Scene2String, world_scene_package, "Scene -> String", "@$0 -&gt; #0", "SceneToString",
+                     [
+                        new VariableDefinitionScene ("The Scene"),
+                     ],
+                     [
+                        new VariableDefinitionString ("Result"),
+                     ]
+                  );
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_WriteSaveData, world_level_package, "Write Save Data", null, null,
                      null,
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadSaveData, world_general_package, "Load Save Data", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadSaveData, world_level_package, "Load Save Data", null, null,
                      null,
                      null
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused, world_general_package, "Is Level Paused?", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_RestartLevel, world_level_package, "Restart Level", null, null,
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused, world_level_package, "Is Level Paused?", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Paused (false for playing)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelPaused, world_general_package, "Set Level Paused", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelPaused, world_level_package, "Set Level Paused", null, null,
                      [
                         new VariableDefinitionBoolean ("Paused (false for playing)"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetPlaySpeedX, world_general_package, "Get Play SpeedX", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetPlaySpeedX, world_level_package, "Get Play SpeedX", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("Speed X"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetPlaySpeedX, world_general_package, "Set Play SpeedX", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetPlaySpeedX, world_level_package, "Set Play SpeedX", null, null,
                      [
                         new VariableDefinitionNumber ("Speed X ([0-9])", null, {mMinValue: 0, mMaxValue: 9}),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetWorldScale, world_general_package, "Get World Scale", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetWorldScale, world_level_package, "Get World Scale", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("World Scale"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetWorldScale, world_general_package, "Set World Scale", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetWorldScale, world_level_package, "Set World Scale", null, null,
                      [
                         new VariableDefinitionNumber ("World Scale ([0.0625-16.0])", null, {mMinValue: 0.0625, mMaxValue: 16.0}),
                         new VariableDefinitionBoolean ("Changed Smoothly?"),
@@ -1483,51 +1507,51 @@ package editor.world {
                      null
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds, world_general_package, "Get Level Running Milliseconds", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds, world_level_package, "Get Level Running Milliseconds", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("Running Milliseconds"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelSteps, world_general_package, "Get Level Simulation Steps", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelSteps, world_level_package, "Get Level Simulation Steps", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("Simulation Steps"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetMousePosition, world_general_package, "Get Mouse Position", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetMousePosition, world_level_package, "Get Mouse Position", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("Mouse X"),
                         new VariableDefinitionNumber ("Mouse Y"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetNumEntitiesPlacedInEditor, world_general_package, "Get Number Of Entities Placed In Editor", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetNumEntitiesPlacedInEditor, world_level_package, "Get Number Of Entities Placed In Editor", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("Number Of Entities"),
                      ]
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus, level_package, "Set Level Status", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus, world_level_package, "Set Level Status", null, null,
                      [
                         new VariableDefinitionNumber ("Status", null, {mValueLists: Lists.mLevelStatusList}),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed, level_package, "Is Level Succeeded?", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed, world_level_package, "Is Level Succeeded?", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Finshied?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed, level_package, "Is Level Failed", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed, world_level_package, "Is Level Failed", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Failed?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished, level_package, "Is Level Unfinished", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished, world_level_package, "Is Level Unfinished", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Unfinished?"),

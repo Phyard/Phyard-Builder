@@ -1340,6 +1340,12 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Scene,         null],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetCurrentLevel,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsNullLevel,
                      [
                         [ValueTypeDefine.ValueType_Scene,         null],
@@ -1348,6 +1354,24 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SceneEquals,
+                     [
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_Scene2String,
+                     [
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_String,       null],
+                     ]
+                  );
+                  
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_WriteSaveData,
                      null,
                      null

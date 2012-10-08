@@ -427,7 +427,7 @@ package viewer {
       
       private function IsNativeApp ():Boolean
       {
-         return mParamsFromContainer.mIsNativeApp != null && (mParamsFromContainer.mIsNativeApp as Boolean);
+         return mParamsFromContainer.mIsNativeApp != undefined && (mParamsFromContainer.mIsNativeApp as Boolean);
       }
       
       private static function GetScreenResolution ():Point

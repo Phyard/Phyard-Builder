@@ -35,6 +35,8 @@ package player.design
 
    import common.CoordinateSystem;
    
+   import common.SceneDefine;
+   
    import common.Transform2D;
    import common.Define;
    
@@ -425,6 +427,22 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
       public static function GetNumScenes ():int
       {
          return mWorldDefine == null ? 0 : mWorldDefine.mSceneDefines.length;
+      }
+      
+      public static function IsInvalidScene (levelIndex:int):Boolean
+      {
+         return isNaN (levelIndex) || levelIndex < 0 || levelIndex >= Global.GetNumScenes ();
+      }
+      
+      public static function GetSceneDefine (sceneIndex:int):SceneDefine
+      {
+         if (mWorldDefine == null)
+            return null;
+         
+         if (IsInvalidScene (sceneIndex))
+            return null;
+         
+         return mWorldDefine.mSceneDefines [sceneIndex] as SceneDefine;
       }
       
       public static function InitGlobalData (isRestartLevel:Boolean, dontReloadGlobalAssets:Boolean):void

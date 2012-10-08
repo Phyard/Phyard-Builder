@@ -29,12 +29,13 @@ package player.trigger {
    import common.trigger.FunctionDeclaration;
    import common.trigger.CoreFunctionDeclarations;
 
-   import common.Define;
-   import common.ValueAdjuster;
-
    import common.trigger.ValueDefine;
    import common.trigger.IdPool;
    import common.trigger.CoreEventIds;
+
+   import common.SceneDefine;
+   import common.Define;
+   import common.ValueAdjuster;
 
    import common.TriggerFormatHelper2;
 
@@ -241,7 +242,11 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetNextLevel,           GetNextLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetPrevLevel,           GetPrevLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetCurrentLevel,           GetCurrentLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsNullLevel,            IsNullLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SceneEquals,            EqualsWith_Scenes);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_Scene2String,           Scene2String);
+         
          RegisterCoreFunction (CoreFunctionIds.ID_Design_WriteSaveData,          WriteSaveData);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadSaveData,           LoadSaveData);
 
@@ -2148,10 +2153,39 @@ package player.trigger {
          valueTarget.AssignValueObject (levelIndex > 0 ? levelIndex : -1);
       }
       
+      public static function GetCurrentLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentSceneId ());
+      }
+      
       public static function IsNullLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = valueSource.EvaluateValueObject () as int;
-         valueTarget.AssignValueObject (isNaN (levelIndex) || levelIndex < 0 || levelIndex >= Global.GetNumScenes ());
+         valueTarget.AssignValueObject (Global.IsInvalidScene (levelIndex));
+      }
+      
+      public static function EqualsWith_Scenes (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex1:int = valueSource.EvaluateValueObject () as int;
+
+         valueSource = valueSource.mNextParameter;
+         var levelIndex2:int = valueSource.EvaluateValueObject () as int;
+         
+         if (Global.IsInvalidScene (levelIndex1) && Global.IsInvalidScene (levelIndex2))
+            valueTarget.AssignValueObject (true);
+         else
+            valueTarget.AssignValueObject (levelIndex1 == levelIndex2);
+      }
+      
+      public static function Scene2String (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = valueSource.EvaluateValueObject () as int;
+         
+         var sceneDefine:SceneDefine = Global.GetSceneDefine (levelIndex);
+         if (sceneDefine == null)
+            valueTarget.AssignValueObject ("null");
+         else
+            valueTarget.AssignValueObject ("scene#" + levelIndex + "[" + sceneDefine.mName + "]");
       }
       
       public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void

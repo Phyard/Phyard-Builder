@@ -2201,9 +2201,9 @@ package editor.entity.dialog {
                   shape.SetBorderThickness (params.mBorderThickness);
                if (params.mToModifyBorderTransparency)
                   shape.SetBorderTransparency (params.mBorderTransparency);
+               
+               shape.UpdateAppearance ();
             }
-            
-            shape.UpdateAppearance ();
          }
          
          if (selectedEntities.length > 0)

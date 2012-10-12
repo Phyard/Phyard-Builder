@@ -20,9 +20,17 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      public function VariableDefinitionScene (name:String, description:String = null)
+      protected var mDefaultValue:Scene = null;
+      
+      public function VariableDefinitionScene (name:String, description:String = null, options:Object = null)
       {
          super (ValueTypeDefine.ValueType_Scene, name, description, null);
+         
+         if (options != null)
+         {
+            if (options.mDefaultValue != undefined)
+               mDefaultValue = options.mDefaultValue as Scene;
+         }
       }
       
 //==============================================================================
@@ -32,6 +40,8 @@ package editor.trigger {
       override public function Clone ():VariableDefinition
       {
          var sceneVariableDefinition:VariableDefinitionScene = new VariableDefinitionScene (mName, mDescription);
+         
+         sceneVariableDefinition.mDefaultValue = mDefaultValue;
          
          return sceneVariableDefinition;
       }
@@ -51,7 +61,7 @@ package editor.trigger {
       
       override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         return new ValueSource_Direct (null);
+         return new ValueSource_Direct (mDefaultValue);
       }
       
       override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent

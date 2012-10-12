@@ -1421,10 +1421,12 @@ package common {
                funcDclaration = scene.GetCodeLibManager ().GetFunctionByIndex (functionId).GetFunctionDeclaration ();
             }
             
-            if (isCustomCodeSnippet)
-            {
-            }
-            else // only apply for main scene code snippets
+            //>>>>>, commented off from v2.03. Why do this, for pure functions?
+            //if (isCustomCodeSnippet)
+            //{
+            //}
+            //else // only apply for main scene code snippets
+            //<<<<<
             {
                //if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
                //{

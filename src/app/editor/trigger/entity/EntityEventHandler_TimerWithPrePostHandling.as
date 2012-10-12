@@ -78,10 +78,10 @@ package editor.trigger.entity {
          var timerHandler:EntityEventHandler_TimerWithPrePostHandling = entity as EntityEventHandler_TimerWithPrePostHandling;
          
          timerHandler.mPreEventHandlerDefinition.SetLocalVariableSpace (timerHandler.mEventHandlerDefinition.GetLocalVariableSpace ());
-         timerHandler.mPreCodeSnippet.CopyCallingsFrom (mEntityContainer, mPreCodeSnippet);
+         timerHandler.mPreCodeSnippet.CopyCallingsFrom (mEntityContainer, true, mPreCodeSnippet);
          
          timerHandler.mPostEventHandlerDefinition.SetLocalVariableSpace (timerHandler.mEventHandlerDefinition.GetLocalVariableSpace ());
-         timerHandler.mPostCodeSnippet.CopyCallingsFrom (mEntityContainer, mPostCodeSnippet);
+         timerHandler.mPostCodeSnippet.CopyCallingsFrom (mEntityContainer, true, mPostCodeSnippet);
       }
       
    }

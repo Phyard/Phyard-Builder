@@ -126,6 +126,7 @@ package player.design
    {
       sTheGlobal = null;
       
+      mSceneLookupTableByKey = null;
       mCurrentWorld = null;
       mWorldDefine = null;
       
@@ -421,8 +422,24 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
    }
    
 //==============================================================================
-// static values
+// scenes
 //==============================================================================
+      
+      public static var mSceneLookupTableByKey:Dictionary = null;
+      
+      public static function GetSceneByKey (key:String):int
+      {
+         if (mSceneLookupTableByKey == null)
+         {
+            for (var i:int = 0; i < mWorldDefine.mSceneDefines.length; ++ i)
+            {
+               mSceneLookupTableByKey [(mWorldDefine.mSceneDefines [i] as SceneDefine).mKey] = i;
+            }
+         }
+         
+         var levelIndex:Object = mSceneLookupTableByKey [key];
+         return levelIndex == undefined ? -1 : int (levelIndex);
+      }
       
       public static function GetNumScenes ():int
       {
@@ -445,6 +462,10 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
          return mWorldDefine.mSceneDefines [sceneIndex] as SceneDefine;
       }
       
+//==============================================================================
+// static values
+//==============================================================================
+      
       public static function InitGlobalData (isRestartLevel:Boolean, dontReloadGlobalAssets:Boolean):void
       {
          //
@@ -452,6 +473,8 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
          
          if (!dontReloadGlobalAssets)
          {
+            mSceneLookupTableByKey = null;
+            
             mWorldVariableSpace = null;
             mGameSaveVariableSpace = null;
          }

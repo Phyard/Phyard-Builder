@@ -1328,16 +1328,29 @@ package common.trigger {
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetNextLevel,
-                     null,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelByIdOffset,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ],
                      [
                         [ValueTypeDefine.ValueType_Scene,         null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetPrevLevel,
-                     null,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelByKey,
+                     [
+                        [ValueTypeDefine.ValueType_String,       null],
+                     ],
                      [
                         [ValueTypeDefine.ValueType_Scene,         null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelKey,
+                     [
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_String,         null],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetCurrentLevel,

@@ -1412,16 +1412,29 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetNextLevel, world_scene_package, "Get Next Scene", null, null,
-                     null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelByIdOffset, world_scene_package, "Get Scene By Index Offset", null, null,
                      [
-                        new VariableDefinitionScene ("Next Scene"),
+                        new VariableDefinitionNumber ("Index Offset"),
+                        new VariableDefinitionScene ("Relative-To Scene (null means current)"),
+                     ],
+                     [
+                        new VariableDefinitionScene ("Result Scene"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetPrevLevel, world_scene_package, "Get Previous Scene", null, null,
-                     null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelByKey, world_scene_package, "Get Scene By Key", null, null,
                      [
-                        new VariableDefinitionScene ("Prev Scene"),
+                        new VariableDefinitionString ("Scene Key"),
+                     ],
+                     [
+                        new VariableDefinitionScene ("Result Scene"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelKey, world_scene_package, "Get Scene Key", null, null,
+                     [
+                        new VariableDefinitionScene ("The Scene"),
+                     ],
+                     [
+                        new VariableDefinitionString ("Scene Key"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetCurrentLevel, world_scene_package, "Get Curent Scene", null, null,

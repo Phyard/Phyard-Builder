@@ -817,13 +817,22 @@ package player.world {
       // delay handle LoadScene
       //-----------------------------
          
-         if (! Global.IsInvalidScene (mDelayToLoadSceneIndex))
-         {
-            //Global.Viewer_OnLoadScene (mDelayToLoadSceneIndex);
-            //return;
-            
-            mDelayToLoadSceneIndex = -1; // now, forbid calling LoadScene API in Initialize
-         }
+         //if (mDelayRestartRequested)
+         //{
+         //   Global.UI_RestartPlay ();
+         //   return;
+         //}
+         //
+         //if (! Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         //{
+         //   Global.Viewer_OnLoadScene (mDelayToLoadSceneIndex);
+         //   return;
+         //}
+         
+         // now, forbid calling LoadScene and RestartLevel API in Initialize
+         
+         mDelayToLoadSceneIndex = -1;
+         mDelayRestartRequested = false;
 
       //-----------------------------
       // system will dispatch mouse, keyboard and other events out of this function
@@ -967,6 +976,12 @@ package player.world {
          // delay handle LoadScene
          //-----------------------------
             
+            if (mDelayRestartRequested)
+            {
+               Global.UI_RestartPlay ();
+               return;
+            }
+            
             if (! Global.IsInvalidScene (mDelayToLoadSceneIndex))
             {
                Global.Viewer_OnLoadScene (mDelayToLoadSceneIndex);
@@ -987,9 +1002,18 @@ package player.world {
       private var mDelayToLoadSceneIndex:int = -1;
       public function SetDelayToLoadSceneIndex (sceneIndex:int):void
       {
-         if (Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
          {
             mDelayToLoadSceneIndex = sceneIndex;
+         }
+      }
+      
+      private var mDelayRestartRequested:Boolean = false;
+      public function SetDelayRestartRequested ():void
+      {
+         if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         {
+            mDelayRestartRequested = true;
          }
       }
 

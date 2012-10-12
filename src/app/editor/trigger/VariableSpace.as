@@ -348,6 +348,7 @@ package editor.trigger {
          if (IsVariableKeySupported ())
          {
             vi.SetKey (ValidateVariableInstanceKey (key));
+            mLookupTableByKey [vi.GetKey ()] = vi;
          }
          
          ++ mAccVariableInstanceId; // never decrease

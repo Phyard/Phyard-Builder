@@ -188,17 +188,17 @@ package editor.entity.dialog {
       
       public function OnKeyDown (event:KeyboardEvent):void
       {
-         switch (event.keyCode)
-         {
-            case 70: // F
-            case Keyboard.SPACE:
-               if (event.ctrlKey || event.shiftKey)
-                  AdvanceOneFrame (); 
-               
-               break;
-            default:
-               break;
-         }
+         //switch (event.keyCode)
+         //{
+         //   case 70: // F
+         //   case Keyboard.SPACE:
+         //      if (event.ctrlKey || event.shiftKey)
+         //         AdvanceOneFrame (); 
+         //      
+         //      break;
+         //   default:
+         //      break;
+         //}
          
          //event.stopPropagation (); // will cause Keyboard events not triggered in playing
       }

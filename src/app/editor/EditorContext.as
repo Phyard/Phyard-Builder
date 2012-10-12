@@ -313,22 +313,26 @@ package editor {
             //   if (ctrlDown)
             //      GetEditorApp ().OnStartOfflineExporting ();
             //   break;
+            
             case 83: // S
-               if (ctrlDown)
+               if (GetSingleton ().mVariablesEditDialog == null || GetSingleton ().mVariablesEditDialog.parent == null) // this fixing is not graceful
                {
-                  if (shiftDown)
-                     GetEditorApp ().OnStartOnlineSaving ();
-                  //else
-                  // local save
-               }
-               else
-               {
-                  if (shiftDown)
-                     GetEditorApp ().OnStartOfflineSaving ();
+                  if (ctrlDown)
+                  {
+                     //if (shiftDown)
+                     //   GetEditorApp ().OnStartOnlineSaving ();
+                     //else
+                     // local save
+                  }
                   else
                   {
-                     //GetEditorApp ().CreateWorldSnapshot ("Undo point created manually");
-                     GetEditorApp ().CreateSnapshotForCurrentScene ("Undo point created manually");
+                     //if (shiftDown)
+                     //   GetEditorApp ().OnStartOfflineSaving ();
+                     //else
+                     {
+                        //GetEditorApp ().CreateWorldSnapshot ("Undo point created manually");
+                        GetEditorApp ().CreateSnapshotForCurrentScene ("Undo point created manually");
+                     }
                   }
                }
                break;
@@ -477,6 +481,7 @@ package editor {
    // todo: use defines instead so that the (static) copied snippet can be used across worlds.
    //=====================================================================
       
+      private var mCopiedCodeSnippetSceneKey:String = null;
       private var mCopiedCodeSnippet:CodeSnippet = null;
       
       public function ClearCopiedCodeSnippet ():void
@@ -494,6 +499,7 @@ package editor {
          if (copiedCallings == null || copiedCallings.length == 0)
          {
              ClearCopiedCodeSnippet ();
+             mCopiedCodeSnippetSceneKey = null;
          }
          else
          {
@@ -502,7 +508,8 @@ package editor {
             //codeSnippet.PhysicsValues2DisplayValues (scene.GetCoordinateSystem ()); 
                // superfluous? and should it be DisplayValues2PhysicsValues? (removed from v2.00)
             
-            mCopiedCodeSnippet = codeSnippet.Clone (scene, ownerFunctionDefinition.Clone ()); // cloning a definition is essential
+            mCopiedCodeSnippetSceneKey = scene.GetKey ();
+            mCopiedCodeSnippet = codeSnippet.Clone (scene, true, ownerFunctionDefinition.Clone ()); // cloning a definition is essential
          }
       }
       
@@ -516,7 +523,7 @@ package editor {
          {
             mCopiedCodeSnippet.ValidateCallings ();
             
-            var codeSnippet:CodeSnippet = mCopiedCodeSnippet.Clone (scene, ownerFunctionDefinition);
+            var codeSnippet:CodeSnippet = mCopiedCodeSnippet.Clone (scene, scene.GetKey () == mCopiedCodeSnippetSceneKey, ownerFunctionDefinition);
             //codeSnippet.DisplayValues2PhysicsValues (scene.GetCoordinateSystem ());
                // superfluous? and should it be PhysicsValues2DisplayValues? (removed from v2.00)
             

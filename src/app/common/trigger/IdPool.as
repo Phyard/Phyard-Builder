@@ -267,6 +267,7 @@ package common.trigger {
       public static const CoreApiId_530:int = 530; //
       public static const CoreApiId_531:int = 531; //
 
+      public static const CoreApiId_581:int = 581; // design
       public static const CoreApiId_582:int = 582; // design
       public static const CoreApiId_583:int = 583; // design
       public static const CoreApiId_584:int = 584; // design

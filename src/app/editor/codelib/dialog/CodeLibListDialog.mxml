@@ -92,6 +92,7 @@
                PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
             
+            //EditorContext.GetSingleton ().SetHasSettingDialogOpened (true); // bug: will prevent functions's setting dialog pop up
             EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCodeLibManager ());
             
             if (OnCCatPicked != null)
@@ -104,6 +105,7 @@
          
          public static function HideCodeLibListDialog ():void
          {
+            //EditorContext.GetSingleton ().SetHasSettingDialogOpened (false);
             if (EditorContext.GetSingleton ().mCodeLibListDialog.mInPickingMode)
             {
                EndPickingMode ();

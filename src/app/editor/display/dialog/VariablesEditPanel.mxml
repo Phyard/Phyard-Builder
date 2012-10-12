@@ -210,6 +210,8 @@
 
             public function NotifyVariableSpaceModified ():void
             {
+               mCreateNewVariableMenu = null;
+               
                List_Variables.dataProvider.removeAll ();
 
                if (visible)
@@ -258,7 +260,7 @@
                                         && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_World
                                         && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GameSave
                                         ;
-                  
+
                   var xml:XML = <root />;
                   for each (var menuItem:Object in CreateNewMenuData.menuitem)
                   {

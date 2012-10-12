@@ -228,8 +228,9 @@ package common.trigger {
       
       public static const ID_Design_LoadLevel:int                      = IdPool.CoreApiId_590;
       public static const ID_Design_MergeLevel:int                     = IdPool.CoreApiId_591;
-      public static const ID_Design_GetNextLevel:int       = IdPool.CoreApiId_585;
-      public static const ID_Design_GetPrevLevel:int       = IdPool.CoreApiId_586;
+      public static const ID_Design_GetLevelByIdOffset:int       = IdPool.CoreApiId_585;
+      public static const ID_Design_GetLevelByKey:int          = IdPool.CoreApiId_586;
+      public static const ID_Design_GetLevelKey:int          = IdPool.CoreApiId_581;
       public static const ID_Design_GetCurrentLevel :int       = IdPool.CoreApiId_583;
       public static const ID_Design_IsNullLevel :int       = IdPool.CoreApiId_587;
       public static const ID_Design_SceneEquals :int       = IdPool.CoreApiId_584;

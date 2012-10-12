@@ -111,7 +111,7 @@ package editor.trigger {
 //
 //====================================================================
       
-      public function CopyCallingsFrom (scene:Scene, codeSnippet:CodeSnippet, insertAt:int = 0, callingIds:Array = null):void
+      public function CopyCallingsFrom (scene:Scene, sameAsSourceScene:Boolean, codeSnippet:CodeSnippet, insertAt:int = 0, callingIds:Array = null):void
       {
          if (codeSnippet == null)
             return;
@@ -138,7 +138,7 @@ package editor.trigger {
             callingId = callingIds [i];
             if (callingId >= 0 && callingId < count)
             {
-               clonedCallings [clonedCount ++] = codeSnippet.GetFunctionCallingAt (callingId).Clone (scene, mOwnerFunctionDefinition);
+               clonedCallings [clonedCount ++] = codeSnippet.GetFunctionCallingAt (callingId).Clone (scene, sameAsSourceScene, mOwnerFunctionDefinition);
             }
          }
          
@@ -155,7 +155,7 @@ package editor.trigger {
 //
 //====================================================================
       
-      public function Clone (scene:Scene, ownerFunctionDefinition:FunctionDefinition, callingIds:Array = null):CodeSnippet
+      public function Clone (scene:Scene, sameAsSourceScene:Boolean, ownerFunctionDefinition:FunctionDefinition, callingIds:Array = null):CodeSnippet
       {
          ValidateCallings ();
          
@@ -166,7 +166,7 @@ package editor.trigger {
          
          codeSnippet.SetName (mName);
          
-         codeSnippet.CopyCallingsFrom (scene, this, 0, callingIds);
+         codeSnippet.CopyCallingsFrom (scene, sameAsSourceScene, this, 0, callingIds);
          if (ownerFunctionDefinition.IsCustom ())
          {
             ownerFunctionDefinition.SybchronizeDeclarationWithDefinition ();

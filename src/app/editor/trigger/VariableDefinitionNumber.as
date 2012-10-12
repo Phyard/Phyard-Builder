@@ -58,10 +58,10 @@ package editor.trigger {
          mDefaultValue = Number (valueObject);
       }
       
-      public function GetDefaultValue ():Number
-      {
-         return mDefaultValue;
-      }
+      //public function GetDefaultValue ():Number
+      //{
+      //   return mDefaultValue;
+      //}
       
       protected function ValidateValue (value:Number):Number
       {

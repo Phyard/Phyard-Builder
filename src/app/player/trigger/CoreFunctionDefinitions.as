@@ -240,8 +240,9 @@ package player.trigger {
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
-         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetNextLevel,           GetNextLevel);
-         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetPrevLevel,           GetPrevLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelByIdOffset,           GetLevelByIdOffset);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelByKey,           GetLevelByKey);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelKey,           GetLevelKey);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetCurrentLevel,           GetCurrentLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsNullLevel,            IsNullLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SceneEquals,            EqualsWith_Scenes);
@@ -2126,7 +2127,7 @@ package player.trigger {
       public static function LoadLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
-         if (levelIndex < 0)
+         if (Global.IsInvalidScene (levelIndex))
             return;
 
          //Global.Viewer_OnLoadScene (levelIndex); // if call this at this time, there will be many check point needed to be aded.
@@ -2136,22 +2137,42 @@ package player.trigger {
       public static function MergeLevelIntoTheCurrentOne (valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
-         if (levelIndex < 0)
+         if (Global.IsInvalidScene (levelIndex))
             return;
          
          Global.MergeScene (levelIndex);
       }
       
-      public static function GetNextLevel (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelByIdOffset (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var levelIndex:int = Global.GetCurrentWorld ().GetCurrentSceneId () + 1;
-         valueTarget.AssignValueObject (levelIndex < Global.GetNumScenes () ? levelIndex : -1);
+         var indexOffset:int = int (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var relativeTolevelIndex:int = valueSource.EvaluateValueObject () as int;
+         
+         if (Global.IsInvalidScene (relativeTolevelIndex))
+            relativeTolevelIndex =  Global.GetCurrentWorld ().GetCurrentSceneId ();
+         
+         var levelIndex:int = relativeTolevelIndex + indexOffset;
+         valueTarget.AssignValueObject (Global.IsInvalidScene (levelIndex) ? -1 : levelIndex);
       }
       
-      public static function GetPrevLevel (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelByKey (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var levelIndex:int = Global.GetCurrentWorld ().GetCurrentSceneId () - 1;
-         valueTarget.AssignValueObject (levelIndex > 0 ? levelIndex : -1);
+         var key:String = valueSource.EvaluateValueObject () as String;
+         
+         valueTarget.AssignValueObject (Global.GetSceneByKey (key));
+      }
+      
+      public static function GetLevelKey (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         var sceneDefine:SceneDefine = Global.GetSceneDefine (levelIndex);
+         if (sceneDefine == null)
+            valueTarget.AssignValueObject (null);
+         else
+            valueTarget.AssignValueObject (sceneDefine.mKey);
       }
       
       public static function GetCurrentLevel (valueSource:Parameter, valueTarget:Parameter):void
@@ -2201,7 +2222,8 @@ package player.trigger {
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.UI_RestartPlay ();
+         //Global.UI_RestartPlay (); // cause bug
+         Global.GetCurrentWorld ().SetDelayRestartRequested ();
       }
 
       public static function IsLevelPaused (valueSource:Parameter, valueTarget:Parameter):void

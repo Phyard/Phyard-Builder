@@ -1163,7 +1163,7 @@ package editor.entity.dialog {
                values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
                values.mEventId = event_handler.GetEventId ();
-               values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (mScene, null);
+               values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                if (entity is EntityEventHandler_Timer)
@@ -1177,8 +1177,8 @@ package editor.entity.dialog {
                   {
                      var timer_event_handler_withPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = entity as EntityEventHandler_TimerWithPrePostHandling;
                      
-                     values.mPreCodeSnippet  = timer_event_handler_withPrePostHandling.GetPreCodeSnippet  ().Clone (mScene, null);
-                     values.mPostCodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ().Clone (mScene, null);
+                     values.mPreCodeSnippet  = timer_event_handler_withPrePostHandling.GetPreCodeSnippet  ().Clone (mScene, true, null);
+                     values.mPostCodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ().Clone (mScene, true, null);
                      
                      EditorContext.ShowModalDialog (LogicTimerEventHandlerWithPrePostHandlingEditDialog, ConfirmSettingEntityProperties, values);
                   }
@@ -1232,7 +1232,7 @@ package editor.entity.dialog {
                
                values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = condition.GetCodeSnippetName ();
-               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (mScene, null);
+               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                EditorContext.ShowModalDialog (LogicConditionEditDialog, ConfirmSettingEntityProperties, values);
@@ -1244,7 +1244,7 @@ package editor.entity.dialog {
                
                values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = action.GetCodeSnippetName ();
-               values.mCodeSnippet  = action.GetCodeSnippet ().Clone (mScene, null);
+               values.mCodeSnippet  = action.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                EditorContext.ShowModalDialog (LogicActionEditDialog, ConfirmSettingEntityProperties, values);
@@ -1255,7 +1255,7 @@ package editor.entity.dialog {
                
                values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = entityFilter.GetCodeSnippetName ();
-               values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (mScene, null);
+               values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                EditorContext.ShowModalDialog (LogicEntityFilterEditDialog, ConfirmSettingEntityProperties, values);
@@ -1266,7 +1266,7 @@ package editor.entity.dialog {
                
                values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = pairFilter.GetCodeSnippetName ();
-               values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (mScene, null);
+               values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                EditorContext.ShowModalDialog (LogicEntityPairFilterEditDialog, ConfirmSettingEntityProperties, values);

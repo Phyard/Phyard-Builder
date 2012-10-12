@@ -123,7 +123,7 @@ package editor.trigger.entity {
             
             mEventHandlerDefinition = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
             
-            mCodeSnippet = mCodeSnippet.Clone (mEntityContainer, mEventHandlerDefinition);
+            mCodeSnippet = mCodeSnippet.Clone (mEntityContainer, true, mEventHandlerDefinition);
             
             mIconBitmap = Resource.EventId2IconBitmap (mEventId);
          }

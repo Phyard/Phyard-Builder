@@ -71,6 +71,7 @@
                PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
             }
             
+            //EditorContext.GetSingleton ().SetHasSettingDialogOpened (true); // bug
             EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCollisionCategoryManager ());
             
             if (OnCCatPicked != null)
@@ -83,6 +84,7 @@
          
          public static function HideCollisionCategoryListDialog ():void
          {
+            //EditorContext.GetSingleton ().SetHasSettingDialogOpened (false);
             if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingMode)
             {
                EndPickingMode ();

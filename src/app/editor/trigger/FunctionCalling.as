@@ -3,13 +3,14 @@ package editor.trigger {
    import flash.utils.Dictionary;
    import editor.entity.Scene;
    
+   import editor.world.World;
+   
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.ValueTypeDefine;
-   
+   import common.trigger.CoreFunctionIds;
    import common.ValueAdjuster;
    import common.CoordinateSystem;
-   
    import common.TriggerFormatHelper;
    
    public class FunctionCalling
@@ -167,9 +168,17 @@ package editor.trigger {
          return null; // to override
       }
       
-      public function Clone (scene:Scene, targetFunctionDefinition:FunctionDefinition):FunctionCalling
+      public function Clone (scene:Scene, sameAsSourceScene:Boolean, targetFunctionDefinition:FunctionDefinition):FunctionCalling
       {
-         var calling:FunctionCalling = new FunctionCalling (/*mTriggerEngine, */mFunctionDeclaration, false);
+         if ((sameAsSourceScene == false) && (this is FunctionCalling_Custom))
+         {
+            // currently, crossing scene code snippet copying is not good implemented.
+            // todo.
+            return new FunctionCalling_Core (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
+         }
+         
+         //var calling:FunctionCalling = new FunctionCalling (/*mTriggerEngine, */mFunctionDeclaration, false);
+         var calling:FunctionCalling = CloneShell ();
          
          var i:int;
          var vi:VariableInstance;

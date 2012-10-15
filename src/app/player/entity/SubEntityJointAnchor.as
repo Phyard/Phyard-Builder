@@ -251,7 +251,7 @@ package player.entity {
                   0,
                   0,
                   displayRadius,
-                  0x0, // border color
+                  mWorld.mJointColor, //0x0, // border color
                   1, // border thickness
                   filled, // draw background
                   0xFFFFFF // filled color
@@ -266,7 +266,7 @@ package player.entity {
                   y1,
                   x2,
                   y2,
-                  0x0, 
+                  mWorld.mJointColor, //0x0, 
                   1
                );
       }

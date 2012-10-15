@@ -111,9 +111,11 @@ package player.design
       public static var Viewer_mLibAppp:Object; // v2.03
                //IsNativeApp:Function; // v2.03
                //OnExitApp:Function; // v2.03
-      public static var Viewer_mLibIO:Object;
+      public static var Viewer_mLibIO:Object; // v2.03
                //WriteGameSaveData:Function; // v2.03
                //LoadGameSaveData:Function; // v2.03
+      public static var Viewer_mLibServices:Object; // v2.03
+               //WriteGameSaveData:Function; // v2.03
       
 //==============================================================================
 // temp for playing in editor.
@@ -172,6 +174,7 @@ package player.design
       Viewer_mLibSound = null;
       Viewer_mLibAppp = null;
       Viewer_mLibIO = null;
+      Viewer_mLibServices = null;
    }
    
 //==============================================================================
@@ -538,6 +541,7 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
          Viewer_mLibSound = null;
          Viewer_mLibAppp = null;
          Viewer_mLibIO = null;
+         Viewer_mLibServices = null;
          
          //
          Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x10000000 is better

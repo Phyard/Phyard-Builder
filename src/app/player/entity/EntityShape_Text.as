@@ -243,8 +243,12 @@ package player.entity {
             RebuildTextBitmap ();
          }
          
+         var oldHalfWidth:Number = GetHalfWidth ();
+         var oldHalfHeight:Number = GetHalfHeight ();
+         
          AdjustBackgroundSize ();
          
+         mNeedRebuildAppearanceObjects = mNeedRebuildAppearanceObjects || oldHalfWidth != GetHalfWidth () || oldHalfHeight != GetHalfHeight ();
          super.UpdateAppearance ();
       }
       

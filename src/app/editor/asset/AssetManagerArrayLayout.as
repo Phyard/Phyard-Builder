@@ -107,7 +107,7 @@ package editor.asset {
                asset.SetPosition (GetAssetSpriteGap () + col * cellSize - boundRect.left, mContentHeight - boundRect.top);
                asset.UpdateSelectionProxy ();
                
-               if (++ col == mNumColumns || i == numAssets)
+               if (++ col == mNumColumns || (i == numAssets - 1))
                {
                   mContentHeight += maxRowHeight + GetAssetSpriteGap ();
                   col = 0;

@@ -120,6 +120,9 @@ package player
                            //WriteGameSaveData:Function; // v2.03
                            //LoadGameSaveData:Function; // v2.03
                
+               Global.Viewer_mLibServices = params.mLibService; // from v2.03
+                           //SubmitKeyValue:Function; // v2.03
+               
                break;
             default:
             {

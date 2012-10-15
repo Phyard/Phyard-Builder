@@ -69,6 +69,7 @@ package viewer {
       include "LibGesture.as";
       include "LibSound.as";
       include "LibIO.as";
+      include "LibServices.as";
       
 //======================================================================
 //
@@ -1278,6 +1279,9 @@ package viewer {
                mLibIO : {
                          LoadGameSaveData : LoadGameSaveData,
                          WriteGameSaveData : WriteGameSaveData
+               },
+               mServicesLib : {
+                        SubmitHighScore: SubmitHighScore
                }
             });
 

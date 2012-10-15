@@ -55,6 +55,7 @@ package editor.world {
          var array_package:FunctionMenuGroup   = new FunctionMenuGroup ("Array", sGlobalMenuGroup);
             var array_element_package:FunctionMenuGroup   = new FunctionMenuGroup ("Element", array_package);
          var system_package:FunctionMenuGroup = new FunctionMenuGroup ("System", sGlobalMenuGroup);
+         var services_package:FunctionMenuGroup = new FunctionMenuGroup ("Services", sGlobalMenuGroup);
 
          var world_scene_package:FunctionMenuGroup  = new FunctionMenuGroup ("Scene", sWorldMenuGroup);
          var world_level_package:FunctionMenuGroup  = new FunctionMenuGroup ("Level", sWorldMenuGroup);
@@ -335,6 +336,15 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_OpenURL, system_package, "Open URL", null, null,
                      [
                              new VariableDefinitionString ("URL"),
+                     ],
+                     null
+                  );
+
+      // services
+
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SubmitHighScore, services_package, "Submit High Score", null, null,
+                     [
+                             new VariableDefinitionNumber ("Value"),
                      ],
                      null
                   );
@@ -1421,6 +1431,14 @@ package editor.world {
                         new VariableDefinitionScene ("Result Scene"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelId, world_scene_package, "Get Scene Index", null, null,
+                     [
+                        new VariableDefinitionScene ("The Scene"),
+                     ],
+                     [
+                        new VariableDefinitionNumber ("Scene Index"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelByKey, world_scene_package, "Get Scene By Key", null, null,
                      [
                         new VariableDefinitionString ("Scene Key"),
@@ -1569,6 +1587,14 @@ package editor.world {
                      [
                         new VariableDefinitionBoolean ("Unfinished?"),
                      ]
+                  );
+
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelProperty, world_level_package, "Set Level Property", null, null,
+                     [
+                        new VariableDefinitionNumber ("Property", null, {mValueLists: Lists.mLevelPropertyList}),
+                        new VariableDefinitionNumber ("Property Value"),
+                     ],
+                     null
                   );
 
       // game / world
@@ -2778,6 +2804,14 @@ package editor.world {
                      null
                   );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsFlipped, shape_common_package, "Is Entity Flipped",  "@#0 = Is Entity ($0) Flipped?", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Flippped?"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_FlipSelf, shape_common_package, "Local Flip Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2802,6 +2836,14 @@ package editor.world {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetScale, shape_common_package, "Get Entity Scale",  null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Current Scale"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint, shape_common_package, "Scale Shape With Fixed Point", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2814,22 +2856,6 @@ package editor.world {
                              new VariableDefinitionBoolean ("Conserve Momentum?"),
                      ],
                      null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsFlipped, shape_common_package, "Is Entity Flipped",  "@#0 = Is Entity ($0) Flipped?", null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     [
-                             new VariableDefinitionBoolean ("Flippped?"),
-                     ]
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetScale, shape_common_package, "Get Entity Scale",  null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Current Scale"),
-                     ]
                   );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers, entity_shape_brothers_package, "Get Shape Brothers", null, null,

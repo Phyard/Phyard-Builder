@@ -4,6 +4,7 @@ package player.world {
    import player.entity.EntityBody;
    import player.entity.EntityShape;
    import player.entity.EntityJoint;
+   import player.entity.SubEntityJointAnchor;
    
    import player.entity.EntityShapeImageModule;
    import player.entity.EntityShapeImageModuleButton;
@@ -300,6 +301,27 @@ package player.world {
                   (entity as EntityShapeImageModule).OnModuleAppearanceChanged ();
                else if (entity is EntityShapeImageModuleButton)
                   (entity as EntityShapeImageModuleButton).OnModuleAppearanceChanged ();
+
+               if (entity == tail)
+                  break;
+
+               entity = entity.mNextEntity;
+            }
+         }
+      }
+      
+      internal function UpdateJointAppearances ():void
+      {
+         var entity:Entity = mHead;
+         if (entity != null)
+         {
+            var tail:Entity = mTail;
+
+            while (true)
+            {
+               // to optimize
+               if ((entity is EntityJoint) || (entity is SubEntityJointAnchor))
+                  entity.DelayUpdateAppearance ();
 
                if (entity == tail)
                   break;

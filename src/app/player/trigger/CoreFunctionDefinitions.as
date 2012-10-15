@@ -89,6 +89,10 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_GetScreenDPI,                GetScreenDPI);
          RegisterCoreFunction (CoreFunctionIds.ID_OpenURL,                     OpenURL);
 
+      // services
+
+         RegisterCoreFunction (CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
+
       // string
 
          RegisterCoreFunction (CoreFunctionIds.ID_String_Assign,                      AssignString);
@@ -241,6 +245,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelByIdOffset,           GetLevelByIdOffset);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelId,           GetLevelId);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelByKey,           GetLevelByKey);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelKey,           GetLevelKey);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetCurrentLevel,           GetCurrentLevel);
@@ -270,6 +275,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelFailed,                    IsLevelFailed);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelUnfinished,                IsLevelUnfinished);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetMouseGestureEnabled,                SetMouseGestureEnabled);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelProperty,                SetLevelProperty);
 
       // game / world
 
@@ -722,6 +729,20 @@ package player.trigger {
          if (url != null && url.length > 0)
          {
             Global.Viewer_mLibAppp.OpenURL (url);
+         }
+      }
+
+   //*******************************************************************
+   // services
+   //*******************************************************************
+   
+      public static function SubmitHighScore (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value:Number = Number (valueSource.EvaluateValueObject ());
+
+         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SubmitHighScore)
+         {
+            Global.Viewer_mLibServices.SubmitHighScore (value);
          }
       }
 
@@ -2157,6 +2178,16 @@ package player.trigger {
          valueTarget.AssignValueObject (Global.IsInvalidScene (levelIndex) ? -1 : levelIndex);
       }
       
+      public static function GetLevelId (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         if (Global.IsInvalidScene (levelIndex))
+            levelIndex = -1;
+         
+         valueTarget.AssignValueObject (levelIndex);
+      }
+      
       public static function GetLevelByKey (valueSource:Parameter, valueTarget:Parameter):void
       {
          var key:String = valueSource.EvaluateValueObject () as String;
@@ -2192,7 +2223,7 @@ package player.trigger {
 
          valueSource = valueSource.mNextParameter;
          var levelIndex2:int = valueSource.EvaluateValueObject () as int;
-         
+
          if (Global.IsInvalidScene (levelIndex1) && Global.IsInvalidScene (levelIndex2))
             valueTarget.AssignValueObject (true);
          else
@@ -2337,6 +2368,16 @@ package player.trigger {
          var drawGesture:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          Global.Viewer_SetMouseGestureSupported (enableGesture, drawGesture);
+      }
+      
+      public static function SetLevelProperty (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var property:int = valueSource.EvaluateValueObject () as int;
+
+         valueSource = valueSource.mNextParameter;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
+         
+         Global.GetCurrentWorld ().SetLevelProperty (property, value);
       }
 
    //*******************************************************************

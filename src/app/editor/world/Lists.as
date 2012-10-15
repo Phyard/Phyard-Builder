@@ -20,6 +20,10 @@ package editor.world {
             {label:"Unfinished", data:ValueDefine.TaskStatus_Unfinished},
          ];
       
+      public static const mLevelPropertyList:Array = [
+            {label:"Joint Appearance Color", data:Define.LevelProperty_JointColor},
+         ];
+      
       public static const mEntityTaskStatusList:Array = [
             {label:"Failed", data:ValueDefine.LevelStatus_Failed},
             {label:"Succeeded", data:ValueDefine.LevelStatus_Successed},

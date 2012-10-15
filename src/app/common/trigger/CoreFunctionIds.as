@@ -67,6 +67,11 @@ package common.trigger {
 
       public static const ID_OpenURL:int                = IdPool.CoreApiId_78; // from v2.03
 
+   // services
+
+      public static const ID_SubmitHighScore:int                = IdPool.CoreApiId_579; // from v2.03
+      //public static const ID_SubmitKeyValue_Number
+
    // string
 
       public static const ID_String_Assign:int                    = IdPool.CoreApiId_120; //
@@ -229,6 +234,7 @@ package common.trigger {
       public static const ID_Design_LoadLevel:int                      = IdPool.CoreApiId_590;
       public static const ID_Design_MergeLevel:int                     = IdPool.CoreApiId_591;
       public static const ID_Design_GetLevelByIdOffset:int       = IdPool.CoreApiId_585;
+      public static const ID_Design_GetLevelId:int           = IdPool.CoreApiId_580;
       public static const ID_Design_GetLevelByKey:int          = IdPool.CoreApiId_586;
       public static const ID_Design_GetLevelKey:int          = IdPool.CoreApiId_581;
       public static const ID_Design_GetCurrentLevel :int       = IdPool.CoreApiId_583;
@@ -257,6 +263,8 @@ package common.trigger {
       public static const ID_Design_IsLevelSuccessed:int                         = IdPool.CoreApiId_610;
       public static const ID_Design_IsLevelFailed:int                            = IdPool.CoreApiId_612;
       public static const ID_Design_IsLevelUnfinished:int                        = IdPool.CoreApiId_614;
+      
+      public static const ID_Design_SetLevelProperty:int                        = IdPool.CoreApiId_616;
 
    // game / world
 

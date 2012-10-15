@@ -288,9 +288,9 @@ package player.entity {
          var yd:Number = 0;
          for (var i:int = 0; i < numSegments; ++ i)
          {
-            GraphicsUtil.DrawLine (mSpringShape, xa, ya, xb, yb, 0x0, springWireWidth);
-            GraphicsUtil.DrawLine (mSpringShape, xb, yb, xc, yc, 0x0, springWireWidth);
-            GraphicsUtil.DrawLine (mSpringShape, xc, yc, xd, yd, 0x0, springWireWidth);
+            GraphicsUtil.DrawLine (mSpringShape, xa, ya, xb, yb, mWorld.mJointColor/*0x0*/, springWireWidth);
+            GraphicsUtil.DrawLine (mSpringShape, xb, yb, xc, yc, mWorld.mJointColor/*0x0*/, springWireWidth);
+            GraphicsUtil.DrawLine (mSpringShape, xc, yc, xd, yd, mWorld.mJointColor/*0x0*/, springWireWidth);
             
             xa += segmentLen;
             xb += segmentLen;

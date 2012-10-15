@@ -267,6 +267,8 @@ package common.trigger {
       public static const CoreApiId_530:int = 530; //
       public static const CoreApiId_531:int = 531; //
 
+      public static const CoreApiId_579:int = 579; // design
+      public static const CoreApiId_580:int = 580; // design
       public static const CoreApiId_581:int = 581; // design
       public static const CoreApiId_582:int = 582; // design
       public static const CoreApiId_583:int = 583; // design
@@ -297,6 +299,7 @@ package common.trigger {
       public static const CoreApiId_612:int = 612; // design
       public static const CoreApiId_614:int = 614; // design
       public static const CoreApiId_615:int = 615; // gesture
+      public static const CoreApiId_616:int = 616; // 
 
       public static const CoreApiId_700:int = 700; // world
 

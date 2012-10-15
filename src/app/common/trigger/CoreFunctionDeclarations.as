@@ -253,6 +253,15 @@ package common.trigger {
                      null
                   );
 
+      // services
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_SubmitHighScore,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
+                     null
+                  );
+
       // string
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_Assign,
@@ -1337,6 +1346,14 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Scene,         null],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelId,
+                     [
+                        [ValueTypeDefine.ValueType_Scene,         null],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelByKey,
                      [
                         [ValueTypeDefine.ValueType_String,       null],
@@ -1485,6 +1502,14 @@ package common.trigger {
                      [
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
+                  );
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelProperty,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,      0.0],
+                     ],
+                     null
                   );
 
       // game / world

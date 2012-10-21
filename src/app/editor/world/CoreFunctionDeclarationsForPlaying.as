@@ -1589,13 +1589,27 @@ package editor.world {
                      ]
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelProperty, world_level_package, "Set Level Property", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelBooleanProperty, world_level_package, "Set Level Boolean Property", null, null,
                      [
-                        new VariableDefinitionNumber ("Property", null, {mValueLists: Lists.mLevelPropertyList}),
+                        new VariableDefinitionNumber ("Property", null, {mValueLists: Lists.mLevelBooleanPropertyList}),
+                        new VariableDefinitionBoolean ("Property Value"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelNumberProperty, world_level_package, "Set Level Number Property", null, null,
+                     [
+                        new VariableDefinitionNumber ("Property", null, {mValueLists: Lists.mLevelNumberPropertyList}),
                         new VariableDefinitionNumber ("Property Value"),
                      ],
                      null
                   );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelStringProperty, world_level_package, "Set Level String Property", null, null,
+         //            [
+         //               new VariableDefinitionNumber ("Property", null, {mValueLists: Lists.mLevelStringPropertyList}),
+         //               new VariableDefinitionString ("Property Value"),
+         //            ],
+         //            null
+         //         );
 
       // game / world
 

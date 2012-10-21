@@ -99,7 +99,7 @@ package editor.trigger.entity {
          {
             mainEntity = entity.GetMainAsset () as Entity;
             if (LinkEntity (mainEntity))
-               break
+               break;
          }
       }
       

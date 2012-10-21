@@ -310,7 +310,7 @@ package player.world {
          }
       }
       
-      internal function UpdateJointAppearances ():void
+      internal function UpdateEntityAppearances (filterFunc:Function = null):void
       {
          var entity:Entity = mHead;
          if (entity != null)
@@ -319,8 +319,7 @@ package player.world {
 
             while (true)
             {
-               // to optimize
-               if ((entity is EntityJoint) || (entity is SubEntityJointAnchor))
+               if (filterFunc == null || filterFunc (entity))
                   entity.DelayUpdateAppearance ();
 
                if (entity == tail)

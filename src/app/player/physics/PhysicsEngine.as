@@ -134,6 +134,7 @@ package player.physics {
             mGravityChanged = false;
          }
          
+//trace ("mPhysicsSimulationEnabled = " + mPhysicsSimulationEnabled + ", mVelocityIterations = " + mVelocityIterations + ", mPositionIterations = " + mPositionIterations);         
          if (mPhysicsSimulationEnabled)
          {
             _b2World.Step (escapedTime, mVelocityIterations, mPositionIterations);

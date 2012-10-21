@@ -118,7 +118,7 @@ package player.entity {
          mModuleIndexUp = moduleIndex;
          mModuleInstanceUp = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexUp));
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
 
@@ -129,7 +129,7 @@ package player.entity {
          if (mModuleIndexOver >= 0)
             mModuleInstanceOver = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexOver));
          
-         //mNeedRebuildAppearanceObjects = true;
+         //// mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          //DelayUpdateAppearance (); 
          mSimpleButton.overState = mModuleSpriteOver = mModuleIndexOver < 0 ? mModuleSpriteUp : new ModuleSprite ();
       }
@@ -141,7 +141,7 @@ package player.entity {
          if (mModuleIndexDown >= 0)
             mModuleInstanceDown = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexDown));
          
-         //mNeedRebuildAppearanceObjects = true;
+         //// mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          //DelayUpdateAppearance (); 
          mSimpleButton.downState = mModuleSpriteDown = mModuleIndexDown < 0 ? mModuleSpriteUp : new ModuleSprite ();
       }
@@ -152,7 +152,7 @@ package player.entity {
       
       private function OnModuleFrameChanged (updatePhysicsProxy:Boolean):void
       {
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
          
          if (updatePhysicsProxy)
@@ -167,7 +167,7 @@ package player.entity {
       
       public function OnModuleAppearanceChanged ():void
       {
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
          
          if (mModuleIndexOver >= 0)

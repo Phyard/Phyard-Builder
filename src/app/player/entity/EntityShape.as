@@ -26,6 +26,7 @@ package player.entity {
    import common.CoordinateSystem;
    import common.Transform2D;
    import common.Define;
+   import common.Version;
    import common.WorldDefine;
    import common.SceneDefine;
    import common.trigger.CoreEventIds;
@@ -356,7 +357,7 @@ package player.entity {
             mAiType = aiType;
          }
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -462,7 +463,7 @@ package player.entity {
          
          mDrawBackground = draw;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -481,14 +482,16 @@ package player.entity {
          
          mFilledColor = color;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
       public function GetFilledColor ():uint
       {
+         //if (mAiType >= 0)
+         //   return Define.GetShapeFilledColor (mAiType);
          if (mAiType >= 0)
-            return Define.GetShapeFilledColor (mAiType);
+            return mWorld.GetShapeFilledColor (mAiType);
          
          return mFilledColor;
       }
@@ -497,7 +500,7 @@ package player.entity {
       {
          mDrawBorder = drawBorder;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -510,7 +513,7 @@ package player.entity {
       {
          mBorderColor = color;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -526,7 +529,7 @@ package player.entity {
       {
          mBorderThickness = thinkness;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -543,7 +546,7 @@ package player.entity {
          
          mTransparency = transparency;
          
-         mNeedUpdateAppearanceProperties = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -559,7 +562,7 @@ package player.entity {
       {
          mBorderTransparency = transparency;
          
-         mNeedUpdateAppearanceProperties = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now;
          DelayUpdateAppearance (); 
       }
       
@@ -805,6 +808,15 @@ package player.entity {
       protected function GetMouseOutListener ():Function
       {
          return mMouseOutEventHandlerList == null ? null : OnMouseOut;
+      }
+      
+//=============================================================
+//   paint
+//=============================================================
+      
+      override protected function DelayUpdateAppearanceInternal ():void
+      {
+         mNeedRebuildAppearanceObjects = true;
       }
       
 //=============================================================

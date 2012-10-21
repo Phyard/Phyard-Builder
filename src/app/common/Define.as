@@ -124,7 +124,15 @@ package common {
 // level
 //===========================================================================
       
+      public static const LevelProperty_Invalid:int = -1;
       public static const LevelProperty_JointColor:int = 0;
+      public static const LevelProperty_CiStaticColor:int = 100;
+      public static const LevelProperty_CiMovableColor:int = 101;
+      public static const LevelProperty_CiBreakableColor:int = 102;
+      public static const LevelProperty_CiInfectedColor:int = 103;
+      public static const LevelProperty_CiUninfectedColor:int = 104;
+      public static const LevelProperty_CiDontInfectColor:int = 105;
+      public static const LevelProperty_ColorBlindMode:int = 1000;
       
 //===========================================================================
 // sound / module

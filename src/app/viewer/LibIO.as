@@ -5,7 +5,7 @@
          {
             var so:SharedObject = SharedObject.getLocal (filename);
             
-            trace ("so.data.mSavedData = " + so.data.mSavedData);
+            //trace ("so.data.mSavedData = " + so.data.mSavedData);
             
             return so == null ? null : so.data.mSavedData as ByteArray;
          }
@@ -26,7 +26,7 @@
          
             var flushResult:String = so.flush (100 * 1000); // 100k
             
-            trace ("so.data.mSavedData = " + so.data.mSavedData + ", flushResult = " + flushResult);
+            //trace ("so.data.mSavedData = " + so.data.mSavedData + ", flushResult = " + flushResult);
             
             if ( flushResult == SharedObjectFlushStatus.PENDING )
             {

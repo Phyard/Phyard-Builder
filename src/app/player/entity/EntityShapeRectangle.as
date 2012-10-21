@@ -72,7 +72,7 @@ package player.entity {
          
          mHalfWidth = halfWidth;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -88,7 +88,7 @@ package player.entity {
          
          mHalfHeight = halfHeight;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       

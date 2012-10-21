@@ -20,8 +20,19 @@ package editor.world {
             {label:"Unfinished", data:ValueDefine.TaskStatus_Unfinished},
          ];
       
-      public static const mLevelPropertyList:Array = [
+      public static const mLevelBooleanPropertyList:Array = [
+            {label:"Invalid", data:Define.LevelProperty_Invalid},
+            {label:"Color Blend Mode Enabled?", data:Define.LevelProperty_ColorBlindMode},
+         ];
+      public static const mLevelNumberPropertyList:Array = [
+            {label:"Invalid", data:Define.LevelProperty_Invalid},
             {label:"Joint Appearance Color", data:Define.LevelProperty_JointColor},
+            {label:"CI Static Color", data:Define.LevelProperty_CiStaticColor},
+            {label:"CI Movable Color", data:Define.LevelProperty_CiMovableColor},
+            {label:"CI Breakable Color", data:Define.LevelProperty_CiBreakableColor},
+            {label:"CI Infected Color", data:Define.LevelProperty_CiInfectedColor},
+            {label:"CI Uninfected Color", data:Define.LevelProperty_CiUninfectedColor},
+            {label:"CI Dont-Infect Color", data:Define.LevelProperty_CiDontInfectColor},
          ];
       
       public static const mEntityTaskStatusList:Array = [

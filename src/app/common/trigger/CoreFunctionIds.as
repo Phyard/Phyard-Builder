@@ -264,7 +264,9 @@ package common.trigger {
       public static const ID_Design_IsLevelFailed:int                            = IdPool.CoreApiId_612;
       public static const ID_Design_IsLevelUnfinished:int                        = IdPool.CoreApiId_614;
       
-      public static const ID_Design_SetLevelProperty:int                        = IdPool.CoreApiId_616;
+      public static const ID_Design_SetLevelBooleanProperty:int                        = IdPool.CoreApiId_617;
+      public static const ID_Design_SetLevelNumberProperty:int                        = IdPool.CoreApiId_616;
+      //public static const ID_Design_SetLevelStringProperty:int                        = IdPool.CoreApiId_618;
 
    // game / world
 

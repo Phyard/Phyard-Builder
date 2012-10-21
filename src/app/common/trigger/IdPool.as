@@ -300,6 +300,8 @@ package common.trigger {
       public static const CoreApiId_614:int = 614; // design
       public static const CoreApiId_615:int = 615; // gesture
       public static const CoreApiId_616:int = 616; // 
+      public static const CoreApiId_617:int = 617; // 
+      public static const CoreApiId_618:int = 618; // 
 
       public static const CoreApiId_700:int = 700; // world
 

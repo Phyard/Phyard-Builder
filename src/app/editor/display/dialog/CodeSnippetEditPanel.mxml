@@ -2260,27 +2260,6 @@
          //   EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = null;
          //   EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = null;
          //}
-      
-      // common global variables for all scenes
-      
-         private function OnEditCommonGlobalVariables (event:Event = null):void
-         {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), OnCommonGlobalVariablesEditingDialogClosed);
-         }
-         
-         private var mLastModifyTimesOfCommonGlobalVariables:int = -1;
-         public function OnCommonGlobalVariablesEditingDialogClosed ():void
-         {
-            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace ().GetNumModifiedTimes ();
-            if (mLastModifyTimesOfGlobalVariableSpace < newModifyTimes)
-            {
-               OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
-               mLastModifyTimesOfCommonGlobalVariables = newModifyTimes;
-
-               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_CommonGlobal);
-            }
-         }
          
       // world scope variables
       
@@ -2293,7 +2272,7 @@
          public function OnWorldVariablesEditingDialogClosed ():void
          {
             var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace ().GetNumModifiedTimes ();
-            if (mLastModifyTimesOfGameSaveVariables < newModifyTimes)
+            if (mLastModifyTimesOfWorldVariables < newModifyTimes)
             {
                OnCurrentCommandChanged ();
                OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
@@ -2324,6 +2303,27 @@
             }
          }
       
+      // common global variables for all scenes
+      
+         private function OnEditCommonGlobalVariables (event:Event = null):void
+         {
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), OnCommonGlobalVariablesEditingDialogClosed);
+         }
+         
+         private var mLastModifyTimesOfCommonGlobalVariables:int = -1;
+         public function OnCommonGlobalVariablesEditingDialogClosed ():void
+         {
+            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace ().GetNumModifiedTimes ();
+            if (mLastModifyTimesOfCommonGlobalVariables < newModifyTimes)
+            {
+               OnCurrentCommandChanged ();
+               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               mLastModifyTimesOfCommonGlobalVariables = newModifyTimes;
+
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_CommonGlobal);
+            }
+         }
+      
       // common entity properties for all scenes
       
          private function OnEditCommonEntityVariables (event:Event = null):void
@@ -2335,7 +2335,7 @@
          public function OnCommonEntityVariablesEditingDialogClosed ():void
          {
             var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace ().GetNumModifiedTimes ();
-            if (mLastModifyTimesOfGlobalVariableSpace < newModifyTimes)
+            if (mLastModifyTimesOfCommonEntityVariables < newModifyTimes)
             {
                OnCurrentCommandChanged ();
                OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);

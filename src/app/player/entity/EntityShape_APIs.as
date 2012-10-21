@@ -199,6 +199,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    var world:World = seedShape.GetWorld ();
 
    var worldDefine:WorldDefine = new WorldDefine ();
+   worldDefine.mVersion = Version.VersionNumber;
    var sceneDefine:SceneDefine = new SceneDefine ();
    worldDefine.mSceneDefines.push (sceneDefine);
    var entityDefineArray:Array = sceneDefine.mEntityDefines;

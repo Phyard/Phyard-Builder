@@ -116,7 +116,7 @@ package player.entity {
          {
             mWordWrap = auto;
             
-            mNeedRebuildAppearanceObjects = true;
+            // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
             DelayUpdateAppearance ();
          }
       }
@@ -130,8 +130,8 @@ package player.entity {
       {
          mTextColor = color;
          
-         mNeedRebuildAppearanceObjects = true;
          mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -144,8 +144,8 @@ package player.entity {
       {
          mFontSize = size;
          
-         mNeedRebuildAppearanceObjects = true;
          mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -158,8 +158,8 @@ package player.entity {
       {
          mIsBold = bold;
          
-         mNeedRebuildAppearanceObjects = true;
          mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -172,8 +172,8 @@ package player.entity {
       {
          mIsItalic = italic;
          
-         mNeedRebuildAppearanceObjects = true;
          mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -186,8 +186,8 @@ package player.entity {
       {
          mAdaptiveBackgroundSize = adapt;
          
-         mNeedRebuildAppearanceObjects = true;
          mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -200,8 +200,8 @@ package player.entity {
       {
          mIsUnderlined = underlined;
          
-         mNeedRebuildAppearanceObjects = true;
          mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -214,8 +214,8 @@ package player.entity {
       {
          mTextAlign = align;
          
-         mNeedRebuildAppearanceObjects = true;
          mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       

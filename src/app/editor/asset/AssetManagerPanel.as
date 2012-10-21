@@ -106,7 +106,7 @@ package editor.asset {
          {
             addChildAt (mAssetManager, getChildIndex (mAssetIDsLayer));
             
-            mAssetManager.SetAssetLinksChangedCallback (RepaintAllAssetLinks);
+            mAssetManager.SetAssetLinksChangedCallback (NotifyAsstLinksChanged);
             
             RepaintAllAssetLinks ();
          }
@@ -1486,6 +1486,15 @@ package editor.asset {
       }
       
       private var mAssetLinksNeedRepaint:Boolean = false;
+      
+      protected function NotifyAsstLinksChanged ():void
+      {
+         // this fucntion is mainly for "break all links" and "link all selected entities"
+         
+         RepaintAllAssetLinks ();
+         
+         CreateUndoPoint ("Entity Selector Modified");
+      }
       
       protected function RepaintAllAssetLinks ():void
       {

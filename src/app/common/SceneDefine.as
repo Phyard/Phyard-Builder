@@ -3,6 +3,9 @@ package common {
    
    public class SceneDefine
    {
+      public var mDontFillMissedFields:Boolean = false; // from v2.00. For fast loading
+      public var mDontAdjustNumberValues:Boolean = false; // from v2.00. For fast loading
+      
       public var mKey:String;
       public var mName:String;
       

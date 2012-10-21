@@ -35,6 +35,8 @@ package player.world {
    import player.entity.EntityVoid;
    import player.entity.EntityBody;
    import player.entity.EntityShape;
+   import player.entity.EntityJoint;
+   import player.entity.SubEntityJointAnchor;
    import player.entity.EntityShape_Particle;
    import player.entity.EntityShape_CircleBomb;
    import player.entity.EntityShape_RectangleBomb;
@@ -688,6 +690,10 @@ package player.world {
 //=============================================================
 //   init
 //=============================================================
+      
+      private var mInitialized:Boolean = false;
+      
+      private var mFirstRepaintCommitted:Boolean = false;
 
       private var mShouldInitRuntimeCteatedEntitiesManually:Boolean = false;
 
@@ -695,8 +701,6 @@ package player.world {
       {
          return mShouldInitRuntimeCteatedEntitiesManually;
       }
-      
-      private var mInitialized:Boolean = false;
 
       public function Initialize ():void
       {
@@ -786,6 +790,7 @@ package player.world {
       // Repaint
       //------------------------------------
 
+         mFirstRepaintCommitted = true;
          Repaint ();
 
       //------------------------------------

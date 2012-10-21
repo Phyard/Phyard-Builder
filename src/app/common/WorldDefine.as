@@ -12,7 +12,8 @@ package common {
       
       public var mPlayerWorldHints:Object; // not used now. When and why it is added? 
       
-      public var mDontFillMissedFieldsAndAdjustNumberValues:Boolean = false; // from v2.00. For fast loading
+      public var mDontFillMissedFields:Boolean = false; // from v2.00. For fast loading
+      public var mDontAdjustNumberValues:Boolean = false; // from v2.00. For fast loading
       
       public var mDontReloadGlobalAssets:Boolean = false; // from v2.00. For fast loading
             

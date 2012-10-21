@@ -631,7 +631,14 @@ package player.entity {
          {
             mIsAlreadyInDelayUpdateAppearanceList = true;
             mWorld.DelayUpdateEntityAppearance (this);
+            
+            DelayUpdateAppearanceInternal ();
          }
+      }
+      
+      protected function DelayUpdateAppearanceInternal ():void
+      {
+         // to overrride
       }
 
       // to override

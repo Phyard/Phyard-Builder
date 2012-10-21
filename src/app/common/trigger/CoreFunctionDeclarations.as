@@ -1504,13 +1504,27 @@ package common.trigger {
                      ]
                   );
 
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelProperty,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelBooleanProperty,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelNumberProperty,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,      0.0],
                      ],
                      null
                   );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelStringProperty,
+         //            [
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
+         //               [ValueTypeDefine.ValueType_String,       ""],
+         //            ],
+         //            null
+         //         );
 
       // game / world
 

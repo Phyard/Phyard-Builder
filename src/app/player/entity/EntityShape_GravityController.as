@@ -213,8 +213,8 @@ package player.entity {
          mTextG.y = - 0.5 * mTextG.height - 1;
    
          mNeedUpdateAppearanceProperties = true;
-         mNeedRebuildAppearanceObjects = true;
          mNeedRepaintDirection = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -243,7 +243,7 @@ package player.entity {
          if (mInteractive != lastInteractive)
          {
             mNeedUpdateAppearanceProperties = true;
-            mNeedRebuildAppearanceObjects = true;
+            // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
             DelayUpdateAppearance ();
          }
       }

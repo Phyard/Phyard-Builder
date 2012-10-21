@@ -271,16 +271,14 @@ package common {
          if (isLoaingFromStretch)
          {
             isMergingScene = false; // forcely
-            
-            // todo: maybe it is better to use sceneDefine.mDontFillMissedFieldsAndAdjustNumberValues instead
-            
-            if (! worldDefine.mDontFillMissedFieldsAndAdjustNumberValues) // like entityDefine.mLoadingTimeInfos, from v2.00
+         }
+         
+         if (playerWorld == null || isMergingScene)
+         {
+            FillMissedFieldsInWorldDefine (worldDefine, worldDefine.mCurrentSceneId);
+            if (worldDefine.mVersion >= 0x0103)
             {
-               FillMissedFieldsInWorldDefine (worldDefine);
-               if (worldDefine.mVersion >= 0x0103)
-                  AdjustNumberValuesInWorldDefine (worldDefine, true);
-               
-               worldDefine.mDontFillMissedFieldsAndAdjustNumberValues = true;
+               AdjustNumberValuesInWorldDefine (worldDefine, true, worldDefine.mCurrentSceneId);
             }
          }
 
@@ -292,6 +290,7 @@ package common {
             worldDefine.mCurrentSceneId = 0;
          
          var sceneDefine:SceneDefine = worldDefine.mSceneDefines [worldDefine.mCurrentSceneId];
+         
          // sceneDefine.mName
          
    //*********************************************************************************************************************************
@@ -301,7 +300,7 @@ package common {
          // worldDefine.mVersion >= 0x0107
          if (sceneDefine.mEntityAppearanceOrder.length != sceneDefine.mEntityDefines.length)
          {
-            throw new Error ("numCreationOrderIds != numEntities !");
+            throw new Error ("numCreationOrderIds != numEntities");// ! " + sceneDefine.mEntityAppearanceOrder.length + " / " + sceneDefine.mEntityDefines.length);
             return null;
          }
 
@@ -3035,15 +3034,53 @@ package common {
       // adjust some float numbers
 
       // must call FillMissedFieldsInWorldDefine before call this
-      public static function AdjustNumberValuesInWorldDefine (worldDefine:WorldDefine, isForPlayer:Boolean = false):void
+      public static function AdjustNumberValuesInWorldDefine (worldDefine:WorldDefine, isForPlayer:Boolean = false, specifiedSceneIndex:int = -1):void
       {
+         if (! worldDefine.mDontAdjustNumberValues)
+         {
+            worldDefine.mDontAdjustNumberValues = true;
+            
+            // scene common variables
+            // from v2.03
+            //{
+               TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mGameSaveVariableDefines);
+               TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mWorldVariableDefines);
+               TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonGlobalVariableDefines);
+               TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonEntityPropertyDefines);
+            //}
+            
+            //modules
+            // from v1.58
+            //{
+               for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
+               {
+                  var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+   
+                  AdjustNumberValuesInModuleInstanceDefines (worldDefine.mVersion, assembledModuleDefine.mModulePartDefines, false);
+               }
+               
+               for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
+               {
+                  var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+                  
+                  AdjustNumberValuesInModuleInstanceDefines (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, true);
+               }
+            //}
+            //
+         }
+                  
          // scenes
          
          for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
          {
             var sceneDefine:SceneDefine = worldDefine.mSceneDefines [sceneId];
+
+            if (sceneDefine.mDontAdjustNumberValues || (sceneId >= 0 && sceneId != specifiedSceneIndex))
+               continue; 
             
-            // world settings
+            sceneDefine.mDontAdjustNumberValues = true;
+            
+            // scene settings
 
             sceneDefine.mSettings.mZoomScale = ValueAdjuster.Number2Precision (sceneDefine.mSettings.mZoomScale, 6);
    
@@ -3375,34 +3412,6 @@ package common {
                }
             //}
          }
-                           
-         // scene common variables
-         // from v2.03
-         //{
-            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mGameSaveVariableDefines);
-            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mWorldVariableDefines);
-            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonGlobalVariableDefines);
-            TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mCommonEntityPropertyDefines);
-         //}
-         
-         //modules
-         // from v1.58
-         //{
-            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
-            {
-               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
-
-               AdjustNumberValuesInModuleInstanceDefines (worldDefine.mVersion, assembledModuleDefine.mModulePartDefines, false);
-            }
-            
-            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
-            {
-               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
-               
-               AdjustNumberValuesInModuleInstanceDefines (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, true);
-            }
-         //}
-         //
       }
       
       public static function AdjustNumberValuesOfShapePhysicsProperties (entityDefine:Object, worldDefine:WorldDefine):void
@@ -3520,20 +3529,51 @@ package common {
 
       // fill some missed fields in earliser versions
 
-      public static function FillMissedFieldsInWorldDefine (worldDefine:WorldDefine):void
+      public static function FillMissedFieldsInWorldDefine (worldDefine:WorldDefine, specifiedSceneIndex:int = -1):void
       {
-         // setting
-
-         if (worldDefine.mVersion < 0x0102)
+         if (! worldDefine.mDontFillMissedFields)
          {
-            worldDefine.mShareSourceCode = false;
-            worldDefine.mPermitPublishing = false;
+            worldDefine.mDontFillMissedFields = true;
+             
+            if (worldDefine.mVersion < 0x0102)
+            {
+               worldDefine.mShareSourceCode = false;
+               worldDefine.mPermitPublishing = false;
+            }
+            
+            // modules
+            if (worldDefine.mVersion >= 0x0158)
+            {
+               for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
+               {
+                  var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+   
+                  FillMissedFieldsInModuleInstanceDefines (worldDefine.mVersion, assembledModuleDefine.mModulePartDefines, false);
+               }
+               
+               for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
+               {
+                  var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+   
+                  if (worldDefine.mVersion < 0x0202)
+                  {
+                     sequencedModuleDefine.mSettingFlags = 0;
+                  }
+                  
+                  FillMissedFieldsInModuleInstanceDefines (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, true);
+               }
+            }
          }
 
          for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
          {
             var sceneDefine:SceneDefine = worldDefine.mSceneDefines [sceneId];
-         
+            
+            if (sceneDefine.mDontFillMissedFields || (sceneId >= 0 && sceneId != specifiedSceneIndex))
+               continue; 
+            
+            sceneDefine.mDontFillMissedFields = true;
+            
             // ...
             
             if (worldDefine.mVersion < 0x0200)
@@ -3885,29 +3925,6 @@ package common {
                      functionDefine.mDesignDependent = true;
                   }
                }
-            }
-         }
-         
-         // modules
-         if (worldDefine.mVersion >= 0x0158)
-         {
-            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
-            {
-               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
-
-               FillMissedFieldsInModuleInstanceDefines (worldDefine.mVersion, assembledModuleDefine.mModulePartDefines, false);
-            }
-            
-            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
-            {
-               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
-
-               if (worldDefine.mVersion < 0x0202)
-               {
-                  sequencedModuleDefine.mSettingFlags = 0;
-               }
-               
-               FillMissedFieldsInModuleInstanceDefines (worldDefine.mVersion, sequencedModuleDefine.mModuleSequenceDefines, true);
             }
          }
       }

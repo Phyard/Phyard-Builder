@@ -74,7 +74,7 @@ package player.entity {
          mBodyTextureModuleIndex = bodyTextureModuleIndex;
          mBodyTextureModule = Global.GetImageModuleByGlobalIndex (mBodyTextureModuleIndex) as ImageBitmap;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
    }

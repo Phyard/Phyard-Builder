@@ -54,7 +54,7 @@
              </mx:GridItem>
           </mx:GridRow>
           
-          <!--mx:GridRow>
+          <mx:GridRow id="Box_SimulationQuanlity" height="0">
              <mx:GridItem>
                 <mx:Label text="Simulation Quality:" textAlign="right" doubleClickEnabled="true" doubleClick="Box_DetailQualitySettings.visible = ! Box_DetailQualitySettings.visible;"/>
              </mx:GridItem>
@@ -68,11 +68,12 @@
                    <mx:TextInput id="Text_PositionIterations" width="25" />
                 </mx:HBox>
              </mx:GridItem>
-          </mx:GridRow-->
+          </mx:GridRow>
           
-          <mx:GridRow>
+          <mx:GridRow id="Box_TOI">
              <mx:GridItem>
-                <mx:Label text="Check Time Of Impact (TOI):" textAlign="right"/>
+                <mx:Label text="Check Time Of Impact (TOI):" textAlign="right" doubleClickEnabled="true" 
+                           doubleClick="if (Box_SimulationQuanlity.parent == null) {Box_SimulationQuanlity.height = Box_TOI.height; Grid_Settings.addChildAt (Box_SimulationQuanlity, Grid_Settings.getChildIndex (Box_TOI));}"/>
              </mx:GridItem>
              <mx:GridItem>
                 <mx:RadioButtonGroup id="RadioButtonGroup_TOI"/>
@@ -152,6 +153,8 @@
 
          private function OnInitPanel ():void
          {
+            Grid_Settings.removeChild (Box_SimulationQuanlity);
+            
             Text_PreferredFPS.text = "" + mParams.mPreferredFPS;
 
             RadioButton_PhysicsSimulationEnabledYes.selected = mParams.mPhysicsSimulationEnabled;
@@ -165,11 +168,11 @@
             RadioButton_ToiYes.selected = mParams.mCheckTimeOfImpact;
             RadioButton_ToiNo.selected = (! mParams.mCheckTimeOfImpact);
             
-            //RadioButton_SimulationQualityLow.selected = mParams.mVelocityIterations == Define.WorldStepVelocityIterations_Low && mParams.mPositionIterations == Define.WorldStepPositionIterations_Low;
-            //RadioButton_SimulationQualityMedium.selected = mParams.mVelocityIterations == Define.WorldStepVelocityIterations_Medium && mParams.mPositionIterations == Define.WorldStepPositionIterations_Medium;
-            //RadioButton_SimulationQualityHigh.selected = mParams.mVelocityIterations == Define.WorldStepVelocityIterations_High && mParams.mPositionIterations == Define.WorldStepPositionIterations_High;
-            //Text_VelocityIterations.text = "" + mParams.mVelocityIterations;
-            //Text_PositionIterations.text = "" + mParams.mPositionIterations;
+            RadioButton_SimulationQualityLow.selected = mParams.mVelocityIterations == Define.WorldStepVelocityIterations_Low && mParams.mPositionIterations == Define.WorldStepPositionIterations_Low;
+            RadioButton_SimulationQualityMedium.selected = mParams.mVelocityIterations == Define.WorldStepVelocityIterations_Medium && mParams.mPositionIterations == Define.WorldStepPositionIterations_Medium;
+            RadioButton_SimulationQualityHigh.selected = mParams.mVelocityIterations == Define.WorldStepVelocityIterations_High && mParams.mPositionIterations == Define.WorldStepPositionIterations_High;
+            Text_VelocityIterations.text = "" + mParams.mVelocityIterations;
+            Text_PositionIterations.text = "" + mParams.mPositionIterations;
             
             RadioButton_SpeedX0.selected = mParams.mInitialSpeedX == 0;
             RadioButton_SpeedX1.selected = mParams.mInitialSpeedX == 1;
@@ -199,21 +202,21 @@
          
          public function OnQualityChanged ():void
          {
-            //if (RadioButton_SimulationQualityLow.selected)
-            //{
-            //   Text_VelocityIterations.text = "" + Define.WorldStepVelocityIterations_Low;
-            //   Text_PositionIterations.text = "" + Define.WorldStepPositionIterations_Low;
-            //}
-            //else if (RadioButton_SimulationQualityMedium.selected)
-            //{
-            //   Text_VelocityIterations.text = "" + Define.WorldStepVelocityIterations_Medium;
-            //   Text_PositionIterations.text = "" + Define.WorldStepPositionIterations_Medium;
-            //}
-            //else if (RadioButton_SimulationQualityHigh.selected)
-            //{
-            //   Text_VelocityIterations.text = "" + Define.WorldStepVelocityIterations_High;
-            //   Text_PositionIterations.text = "" + Define.WorldStepPositionIterations_High;
-            //}
+            if (RadioButton_SimulationQualityLow.selected)
+            {
+               Text_VelocityIterations.text = "" + Define.WorldStepVelocityIterations_Low;
+               Text_PositionIterations.text = "" + Define.WorldStepPositionIterations_Low;
+            }
+            else if (RadioButton_SimulationQualityMedium.selected)
+            {
+               Text_VelocityIterations.text = "" + Define.WorldStepVelocityIterations_Medium;
+               Text_PositionIterations.text = "" + Define.WorldStepPositionIterations_Medium;
+            }
+            else if (RadioButton_SimulationQualityHigh.selected)
+            {
+               Text_VelocityIterations.text = "" + Define.WorldStepVelocityIterations_High;
+               Text_PositionIterations.text = "" + Define.WorldStepPositionIterations_High;
+            }
          }
 
          public function SetConfirmFunc (onConfirm:Function):void
@@ -240,13 +243,13 @@
 
             mParams.mAutoSleepingEnabled = RadioButton_DoSleepYes.selected;
             
-            //var velocityIterations:int = parseInt (Text_VelocityIterations.text);
-            //if (! isNaN (velocityIterations))
-            //   mParams.mVelocityIterations = velocityIterations;
-            //
-            //var positionIterations:int = parseInt (Text_PositionIterations.text);
-            //if (! isNaN (positionIterations))
-            //   mParams.mPositionIterations = positionIterations;
+            var velocityIterations:int = parseInt (Text_VelocityIterations.text);
+            if (! isNaN (velocityIterations))
+               mParams.mVelocityIterations = velocityIterations;
+            
+            var positionIterations:int = parseInt (Text_PositionIterations.text);
+            if (! isNaN (positionIterations))
+               mParams.mPositionIterations = positionIterations;
             
             mParams.mCheckTimeOfImpact = RadioButton_ToiYes.selected;
             

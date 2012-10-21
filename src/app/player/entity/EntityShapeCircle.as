@@ -67,7 +67,7 @@ package player.entity {
          
          mRadius = radius;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -144,15 +144,33 @@ package player.entity {
                      displayBorderThickness, // draw border
                      false // not draw background
                   );
-                  
-            if (mAppearanceType == Define.CircleAppearanceType_Ball)
+            
+            var decoColor:uint = IsDrawBackground () ? GraphicsUtil.GetInvertColor_b (GetFilledColor ()) : mBorderColor;
+            
+            var aiType:int = GetShapeAiType ();
+            if (mWorld.mInColorBlindMode && aiType != Define.ShapeAiType_Unknown)
+            {
+               if (aiType == Define.ShapeAiType_DontInfect)
+               {
+                  DrawDecoration (decoColor, displayRadius * 0.618, 4, false);
+               }
+               else if (aiType == Define.ShapeAiType_Uninfected)
+               {
+                  DrawDecoration (decoColor, displayRadius * 0.618, 3, false);
+               }
+               else if (aiType == Define.ShapeAiType_Infected)
+               {
+                  DrawDecoration (decoColor, displayRadius * 0.618, 3, true);
+               }
+            }
+            else if (mAppearanceType == Define.CircleAppearanceType_Ball)
             {
                GraphicsUtil.DrawCircle (
                         mBorderShape,
                         displayRadius * mBallTypeDotPercent,
                         0,
                         0.5, // radius
-                        IsDrawBackground () ? GraphicsUtil.GetInvertColor_b (GetFilledColor ()) : mBorderColor, 
+                        decoColor, 
                         1, 
                         false
                      );
@@ -165,7 +183,7 @@ package player.entity {
                         0,
                         0,
                         halfRadius,
-                        mBorderColor, 
+                        decoColor, 
                         1, 
                         false
                      );
@@ -175,7 +193,7 @@ package player.entity {
                         0, 
                         displayRadius, 
                         0, 
-                        mBorderColor, 
+                        decoColor, 
                         1
                      );
             }
@@ -189,6 +207,79 @@ package player.entity {
             mBackgroundShape.alpha = GetTransparency () * 0.01;
             mBorderShape.visible = IsDrawBorder ();
             mBorderShape.alpha = GetBorderTransparency () * 0.01;
+         }
+      }
+      
+      // ...
+      
+      private static var mCosSinValues:Array = new Array (32);
+      
+      // isRadial == false means polygon
+      private function DrawDecoration (decoColor:uint, radius:Number, numSegments:int, isRadial:Boolean):void
+      {
+         var i:int;
+         var index:int;
+         var valuesCosSin:Array = mCosSinValues [numSegments];
+         if (valuesCosSin == null)
+         {
+            valuesCosSin = new Array (numSegments + numSegments);
+
+            var sectorAngle:Number = Define.kPI_x_2 / numSegments;
+            var angle:Number = 0;
+            mCosSinValues [numSegments] = valuesCosSin;
+            for (index = 0, i = 0; i < numSegments; ++ i)
+            {
+               valuesCosSin [index ++] = Math.cos (angle);
+               valuesCosSin [index ++] = Math.sin (angle);
+               
+               angle += sectorAngle;
+            }
+         }
+         
+         
+         var x:Number, y:Number;
+         
+         if (isRadial)
+         {
+            for (index = 0, i = 0; i < numSegments; ++ i)
+            {
+               x = radius * valuesCosSin [index ++];
+               y = radius * valuesCosSin [index ++];
+               
+               GraphicsUtil.DrawLine (
+                        mBorderShape, 
+                        0, 
+                        0, 
+                        x, 
+                        y, 
+                        decoColor, 
+                        1
+                     );
+            }
+         }
+         else
+         {
+            var prevX:Number = radius * valuesCosSin [numSegments + numSegments - 2];
+            var prevY:Number = radius * valuesCosSin [numSegments + numSegments - 1];
+            
+            for (index = 0, i = 0; i < numSegments; ++ i)
+            {
+               x = radius * valuesCosSin [index ++];
+               y = radius * valuesCosSin [index ++];
+               
+               GraphicsUtil.DrawLine (
+                        mBorderShape, 
+                        prevX, 
+                        prevY, 
+                        x, 
+                        y, 
+                        decoColor, 
+                        1
+                     );
+               
+               prevX = x;
+               prevY = y;
+            }
          }
       }
       

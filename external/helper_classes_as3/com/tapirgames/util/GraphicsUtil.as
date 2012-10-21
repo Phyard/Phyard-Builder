@@ -64,11 +64,24 @@ package com.tapirgames.util {
       // return black or white
       public static function GetInvertColor_b (color:uint):uint
       {
+         /*
          var r:int = (color >> 16) & 0xFF;
          var g:int = (color >>  8) & 0xFF;
          var b:int = (color >>  0) & 0xFF;
          
          if (r + g + b > 100 * 3)
+            return (color & 0xFF000000) | 0x0;
+         else
+            return (color & 0xFF000000) | 0xFFFFFF;
+         */
+         
+         var r:Number = (color >> 16) & 0xFF;
+         var g:Number = (color >>  8) & 0xFF;
+         var b:Number = (color >>  0) & 0xFF;
+         
+         var lightness:Number = 0.30 * r + 0.59 * g + 0.11 * b;
+         
+         if (lightness > 128)
             return (color & 0xFF000000) | 0x0;
          else
             return (color & 0xFF000000) | 0xFFFFFF;

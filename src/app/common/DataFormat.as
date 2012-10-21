@@ -2913,10 +2913,10 @@ package common {
                functionAsset.UpdateAppearance ();
                functionAsset.UpdateSelectionProxy ();
                
-trace (">>>>>>>>>>>>>> scene: " + scene.GetName ());               
+//trace (">>>>>>>>>>>>>> scene: " + scene.GetName ());               
                TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, true, correctionTables); // beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningWorldVariableIndex, beginningGameSaveVariableIndex, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
-trace ("<<<<<<<<<<<<");
+//trace ("<<<<<<<<<<<<");
                
                functionAsset.SetTimeModified (functionDefine.mTimeModified);
             }

@@ -71,7 +71,7 @@ package player.entity {
          mModuleIndex = moduleIndex;
          mModuleInstance = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndex));
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
 
@@ -117,7 +117,7 @@ package player.entity {
       
       private function OnModuleFrameChanged (updatePhysicsProxy:Boolean):void
       {
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
          
          if (updatePhysicsProxy)
@@ -132,7 +132,7 @@ package player.entity {
       
       public function OnModuleAppearanceChanged ():void
       {
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       

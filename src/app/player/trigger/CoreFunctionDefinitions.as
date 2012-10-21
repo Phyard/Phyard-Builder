@@ -276,7 +276,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelUnfinished,                IsLevelUnfinished);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetMouseGestureEnabled,                SetMouseGestureEnabled);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelProperty,                SetLevelProperty);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelBooleanProperty,                SetLevelProperty_Boolean);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelNumberProperty,                SetLevelProperty_Number);
+         //RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelStringProperty,                SetLevelProperty_String);
 
       // game / world
 
@@ -2370,7 +2372,17 @@ package player.trigger {
          Global.Viewer_SetMouseGestureSupported (enableGesture, drawGesture);
       }
       
-      public static function SetLevelProperty (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelProperty_Boolean (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var property:int = valueSource.EvaluateValueObject () as int;
+
+         valueSource = valueSource.mNextParameter;
+         var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
+         
+         Global.GetCurrentWorld ().SetLevelProperty (property, value);
+      }
+      
+      public static function SetLevelProperty_Number (valueSource:Parameter, valueTarget:Parameter):void
       {
          var property:int = valueSource.EvaluateValueObject () as int;
 
@@ -2379,6 +2391,16 @@ package player.trigger {
          
          Global.GetCurrentWorld ().SetLevelProperty (property, value);
       }
+      
+      //public static function SetLevelProperty_String (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   var property:int = valueSource.EvaluateValueObject () as int;
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var value:String = valueSource.EvaluateValueObject () as String;
+      //   
+      //   Global.GetCurrentWorld ().SetLevelProperty (property, value);
+      //}
 
    //*******************************************************************
    // game / world

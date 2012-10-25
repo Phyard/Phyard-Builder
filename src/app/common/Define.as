@@ -120,6 +120,13 @@ package common {
       public static const BodyCloneOffsetX:uint = 20;
       public static const BodyCloneOffsetY:uint = 0;
       
+      //=======
+      
+      public static function GetDefaultWorldSavedDataFilename (worldKey:String):String
+      {
+         return "-" + worldKey;
+      }
+      
 //===========================================================================
 // level
 //===========================================================================

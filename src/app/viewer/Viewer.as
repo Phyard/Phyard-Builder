@@ -1041,6 +1041,8 @@ package viewer {
          if (mWorldDesignProperties.OnViewerEvent == undefined)              mWorldDesignProperties.OnViewerEvent = DummyCallback;
          if (mWorldDesignProperties.OnViewerDestroyed == undefined)          mWorldDesignProperties.OnViewerDestroyed = DummyCallback;
          if (mWorldDesignProperties.OnSystemBackEvent == undefined)          mWorldDesignProperties.OnSystemBackEvent = DummyOnSystemBackEvent;      
+         if (mWorldDesignProperties.HasRestartLevelRequest == undefined)     mWorldDesignProperties.HasRestartLevelRequest = DummyCallback_ReturnFalse;      
+         if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)   mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;      
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -1109,6 +1111,12 @@ package viewer {
       private function DummyOnSystemBackEvent ():int
       {
          return 0;
+      }
+      
+      // from v2.03
+      private function DummyGetSceneIndex ():int
+      {
+         return -1;
       }
 
 //======================================================================
@@ -1399,6 +1407,21 @@ package viewer {
             ExitLevelIfBackKeyEverPressed ();
             return;
          }
+         
+         //>>>>>>>>>>>>>>>>>>>> moved from player.World.Update () from v2.03
+         if (mWorldDesignProperties.HasRestartLevelRequest ())
+         {
+            mSkin.Restart ();
+            return;
+         }
+         
+         var delayToLoadSceneIndex:int = mWorldDesignProperties.GetDelayToLoadSceneIndex ();
+         if (delayToLoadSceneIndex >= 0)
+         {
+            OnLoadScene (delayToLoadSceneIndex);
+            return;
+         }
+         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          
          if (mFadingStatus != 0)
          {

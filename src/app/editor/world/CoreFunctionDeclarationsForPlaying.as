@@ -674,6 +674,16 @@ package editor.world {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SubArray, array_package, "Sub Array", null, null,
+                     [
+                              new VariableDefinitionArray ("The Input Array"),
+                              new VariableDefinitionNumber ("Start Index"),
+                              new VariableDefinitionNumber ("End Index"),
+                     ],
+                     [
+                              new VariableDefinitionArray ("The Result Sub Array"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_RemoveElements, array_package, "Remove Array Elements", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
@@ -707,7 +717,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Reverse, array_package, "Reverse Arrays", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Reverse, array_package, "Reverse Array", null, null,
                      [
                               new VariableDefinitionArray ("Array To Reverse"),
                      ],
@@ -1492,6 +1502,10 @@ package editor.world {
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadSaveData, world_level_package, "Load Save Data", null, null,
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_ClearSaveData, world_level_package, "Clear Save Data", null, null,
                      null,
                      null
                   );
@@ -2445,6 +2459,13 @@ package editor.world {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCacheAsBitmap, shape_appearance_package, "Cache As Bitmap", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}),
+                             new VariableDefinitionBoolean ("Cache As Bitmap?"),
+                     ],
+                     null
+                  );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled, shape_physics_properties_package, "Is Physics Enabled Shape", null, null,
                      [
@@ -2452,14 +2473,6 @@ package editor.world {
                      ],
                      [
                              new VariableDefinitionBoolean ("Physics Enabled?"),
-                     ]
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic, shape_physics_properties_package, "Is Static Shape", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     [
-                             new VariableDefinitionBoolean ("Static?"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory, shape_physics_properties_package, "Get Collision Category", null, null,
@@ -2489,6 +2502,27 @@ package editor.world {
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Sensor?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic, shape_physics_properties_package, "Is Static", null, null,
+                     [
+                             new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Static?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetStatic, shape_physics_properties_package, "Set Static", null, null,
+                     [
+                             new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionBoolean ("Static?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_connections_package, "Breakup All Connections", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Input Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      null
                   );
@@ -2922,12 +2956,6 @@ package editor.world {
                      null
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_connections_package, "Breakup All Connections", null, null,
-                     [
-                        new VariableDefinitionEntity ("The Input Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     null
-                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetAllSisters, entity_shape_connections_package, "Get All Connected Shapes", null, null,
                      [
                              new VariableDefinitionEntity ("The Input Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),

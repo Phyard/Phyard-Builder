@@ -118,6 +118,7 @@ package common.trigger {
       public static const ID_Array_IsNull:int                = IdPool.CoreApiId_85; // v1.54
       public static const ID_Array_GetLength:int                = IdPool.CoreApiId_86; // v1.54
       public static const ID_Array_SetLength:int                = IdPool.CoreApiId_99; // v1.54
+      public static const ID_Array_SubArray:int                = IdPool.CoreApiId_112; // v2.03
       public static const ID_Array_RemoveElements:int                = IdPool.CoreApiId_100; // v1.54
       public static const ID_Array_InsertElements:int                = IdPool.CoreApiId_102; // v1.56
       public static const ID_Array_Concat:int                  = IdPool.CoreApiId_79; // v1.57
@@ -244,6 +245,7 @@ package common.trigger {
       
       public static const ID_Design_WriteSaveData:int                    = IdPool.CoreApiId_588;
       public static const ID_Design_LoadSaveData:int                     = IdPool.CoreApiId_589;
+      public static const ID_Design_ClearSaveData:int                    = IdPool.CoreApiId_578;
       // todo: SaveData_ByteArray version
 
       public static const ID_Design_RestartLevel:int                     = IdPool.CoreApiId_593;
@@ -404,18 +406,20 @@ package common.trigger {
       public static const ID_EntityShape_SetBorderColorRGB:int         = IdPool.CoreApiId_1123; // v1.54
       public static const ID_EntityShape_GetBorderOpacity:int          = IdPool.CoreApiId_1124; // v1.54
       public static const ID_EntityShape_SetBorderOpacity:int          = IdPool.CoreApiId_1125; // v1.54
+      
+      public static const ID_EntityShape_SetCacheAsBitmap:int          = IdPool.CoreApiId_1128; // v2.03
 
 
 
       public static const ID_EntityShape_IsPhysicsEnabled:int          = IdPool.CoreApiId_1150;
       //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1151;
-      public static const ID_EntityShape_IsStatic:int                  = IdPool.CoreApiId_1155; // from v1.54
-      //public static const ID_EntityShape_SetStatic:int                 = IdPool.CoreApiId_1156;
       public static const ID_EntityShape_GetCollisionCategory:int      = IdPool.CoreApiId_1152;
       public static const ID_EntityShape_SetCollisionCategory:int      = IdPool.CoreApiId_1153;
       //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1154;
       public static const ID_EntityShape_IsSensor:int                  = IdPool.CoreApiId_1157;
       public static const ID_EntityShape_SetAsSensor:int               = IdPool.CoreApiId_1158;
+      public static const ID_EntityShape_IsStatic:int                  = IdPool.CoreApiId_1155; // from v1.54, old IsStatic
+      public static const ID_EntityShape_SetStatic:int                 = IdPool.CoreApiId_1156; // from v2.03
       public static const ID_EntityShape_IsRotationFixed:int                  = IdPool.CoreApiId_1163;
       public static const ID_EntityShape_SetRotationFixed:int               = IdPool.CoreApiId_1164;
       //public static const ID_EntityShape_IsBullet:int                  = IdPool.CoreApiId_1159;

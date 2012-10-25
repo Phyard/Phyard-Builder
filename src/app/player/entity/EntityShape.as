@@ -65,14 +65,6 @@ package player.entity {
          mAppearanceObject = mAppearanceObjectsContainer;
          
          mWorld.RegisterShapeAiType (mOriginalAiType, mAiType);
-
-// test
-//if (mAppearanceObject.hasOwnProperty ("cacheAsBitmapMatrix"))
-//{
-//   mAppearanceObject.cacheAsBitmap = true;
-//   (mAppearanceObject as Object).cacheAsBitmapMatrix = new Matrix();
-//}
-// or use mBitmapData.draw (this)
       }
       
       public function IsVisualShape ():Boolean
@@ -374,14 +366,6 @@ package player.entity {
       public function IsStatic ():Boolean
       {
          return mIsStatic; // this value may be different with mBody.IsStatic ()
-      }
-      
-      public function IsBodyStatic ():Boolean
-      {
-         if (mBody != null)
-            return mBody.IsStatic ();
-         else
-            return IsStatic ();
       }
       
       public function SetAsBullet (bullet:Boolean):void
@@ -817,6 +801,19 @@ package player.entity {
       override protected function DelayUpdateAppearanceInternal ():void
       {
          mNeedRebuildAppearanceObjects = true;
+      }
+      
+      // maybe "using mBitmapData.draw (this)" is better
+      public function SetCacheAsBitmap (asBitmap:Boolean):void
+      {
+         if (mAppearanceObject.hasOwnProperty ("cacheAsBitmapMatrix")) // for AIR only?
+         {
+            mAppearanceObject.cacheAsBitmap = asBitmap;
+            if (asBitmap)
+            {
+               (mAppearanceObject as Object).cacheAsBitmapMatrix = new Matrix();
+            }
+         }
       }
       
 //=============================================================

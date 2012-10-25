@@ -114,6 +114,7 @@ package player.design
       public static var Viewer_mLibIO:Object; // v2.03
                //WriteGameSaveData:Function; // v2.03
                //LoadGameSaveData:Function; // v2.03
+               //ClearGameSaveData:Function; // v2.03
       public static var Viewer_mLibServices:Object; // v2.03
                //WriteGameSaveData:Function; // v2.03
       
@@ -208,11 +209,6 @@ package player.design
       }
    }
    
-   public static function GetDefaultSavedDataFilename ():String
-   {
-      return "-" + Global.GetCurrentWorld ().GetWorldKey ();
-   }
-      
    public static function GetSavedData ():ByteArray
    {
       try

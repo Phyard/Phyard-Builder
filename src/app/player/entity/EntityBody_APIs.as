@@ -135,6 +135,24 @@ public function ClearVelocities ():void
    NotifyVelocityChangedManually ();
 }
 
+public function ModifyShapeStatic (shape:EntityShape, static:Boolean):void
+{
+   if (static == shape.IsStatic ())
+      return;
+   
+   shape.SetStatic (static);
+   
+   if (mPhysicsProxy == null)
+      return;
+   
+   var bodyIsStatic:Boolean = mPhysicsProxyBody.IsStatic ();
+   
+   if (static == bodyIsStatic)
+      return;
+   
+   UpdateBodyPhysicsProperties ();
+}
+
 public function ModifyShapeRotationFixed (shape:EntityShape, fixRotation:Boolean):void
 {
    if (fixRotation == shape.IsRotationFixed ())
@@ -147,10 +165,7 @@ public function ModifyShapeRotationFixed (shape:EntityShape, fixRotation:Boolean
    
    var bodyFixRoatation:Boolean = mPhysicsProxyBody.IsFixRotation ();
    
-   if (fixRotation && bodyFixRoatation)
-      return;
-   
-   if ((! fixRotation) && (! bodyFixRoatation))
+   if (fixRotation == bodyFixRoatation)
       return;
    
    UpdateBodyPhysicsProperties ();

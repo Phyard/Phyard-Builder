@@ -322,5 +322,10 @@ package editor.entity.dialog {
             mDesignViewer.UpdateSingleFrame ();
          }
       }
+      
+      public function ClearGameSaveData (soFilename:String):void
+      {
+         Viewer.ClearGameSaveData (soFilename);
+      }
    }
 }

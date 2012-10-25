@@ -38,11 +38,15 @@
          <mx:Spacer width="100%"/>
          <mx:Spacer width="10"/>
          <mx:HBox id="Box_EditVariableSpaceCommands" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0" horizontalGap="1" verticalGap="0" borderThickness="0">
-            <mx:Button id="Button_EditCustomEntityProperties" toolTip="Edit Custom Entity Properties (For Current Scene)" click="OnEditEntityVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-custom-entity-vaiables.png')"/>
-            <mx:Button id="Button_EditGlobalProperties" toolTip="Edit Global Properties (For Current Scene)" focusEnabled="false" click="OnEditGlobalVariables ();" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-global-vaiables.png')"/>
+            <mx:Button id="Button_EditCustomEntityProperties" toolTip="Edit Custom Entity Properties (For Current Scene)" click="OnEditEntityVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-custom-entity-variables.png')"/>
+            <mx:Button id="Button_EditGlobalProperties" toolTip="Edit Global Properties (For Current Scene)" focusEnabled="false" click="OnEditGlobalVariables ();" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-scene-global-variables.png')"/>
             <mx:Spacer width="10"/>
-            <mx:Button id="Button_EditCommonCustomEntityProperties" toolTip="Edit Common Custom Entity Properties (For All Scenes)" click="OnEditCommonEntityVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-common-custom-entity-vaiables.png')"/>
-            <mx:Button id="Button_EditCommonGlobalProperties" toolTip="Edit Common Global Properties (For All Scenes)" click="OnEditCommonGlobalVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-common-global-vaiables.png')"/>
+            <!--
+            <mx:Button id="Button_EditCommonCustomEntityProperties" toolTip="Edit Common Custom Entity Properties (For All Scenes)" click="OnEditCommonEntityVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-common-custom-entity-variables.png')"/>
+            <mx:Button id="Button_EditCommonGlobalProperties" toolTip="Edit Common Global Properties (For All Scenes)" click="OnEditCommonGlobalVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-common-global-variables.png')"/>
+            -->
+            <mx:Button id="Button_EditWorldGlobalVariables" toolTip="Edit World Global Variables" click="OnEditWorldVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-world-global-variables.png')"/>
+            <mx:Button id="Button_EditGameSaveVariables" toolTip="Edit Game Save Variables" click="OnEditGameSaveVariables ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0"  icon="@Embed('../../../res/action/big-game-save-variables.png')"/>
          </mx:HBox>
          <mx:Spacer width="2"/>
       </mx:HBox>
@@ -179,8 +183,10 @@
             Text_FunctionAssetName.addEventListener (FlexEvent.ENTER, panelCodeLibList.OnTextInputEnter);
             
             DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Scene Session Variables ...", OnEditSessionVariables, false);
-            DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit World Global Variables ...", OnEditWorldVariables, true);
-            DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Game Save Variables ...", OnEditGameSaveVariables, false);
+            //DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit World Global Variables ...", OnEditWorldVariables, true);
+            //DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Game Save Variables ...", OnEditGameSaveVariables, false);
+            DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Common Global Properties (For All Scenes) ...", OnEditCommonGlobalVariables, true);
+            DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Common Custom Entity Properties (For All Scenes) ...", OnEditCommonEntityVariables, false);
          }
             
       //==========================================================

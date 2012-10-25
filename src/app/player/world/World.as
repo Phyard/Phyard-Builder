@@ -835,9 +835,10 @@ package player.world {
          //}
          
          // now, forbid calling LoadScene and RestartLevel API in Initialize
+         // [update]: now calling LoadScene and RestartLevel API is not forbidded in Initialize since v2.03
          
-         mDelayToLoadSceneIndex = -1;
-         mDelayRestartRequested = false;
+         //mDelayToLoadSceneIndex = -1;
+         //mDelayRestartRequested = false;
 
       //-----------------------------
       // system will dispatch mouse, keyboard and other events out of this function
@@ -1020,6 +1021,16 @@ package player.world {
          {
             mDelayRestartRequested = true;
          }
+      }
+      
+      public function HasRestartLevelRequest ():Boolean
+      {
+         return mDelayRestartRequested;
+      }
+      
+      public function GetDelayToLoadSceneIndex ():int
+      {
+         return mDelayToLoadSceneIndex;
       }
 
 //=============================================================
@@ -1511,7 +1522,7 @@ package player.world {
 
          mLastStepGravityAccelerationX = mCurrentGravityAccelerationX;
          mLastStepGravityAccelerationY = mCurrentGravityAccelerationY;
-         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX, mCurrentGravityAccelerationY);
+         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX, mCurrentGravityAccelerationY, true);
       }   
 
    //===============================
@@ -1564,7 +1575,7 @@ package player.world {
       {
          mLastStepGravityAccelerationX = mCurrentGravityAccelerationX + mGlobalForceX;
          mLastStepGravityAccelerationY = mCurrentGravityAccelerationY + mGlobalForceY;
-         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX + mGlobalForceX, mCurrentGravityAccelerationY + mGlobalForceY);
+         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX + mGlobalForceX, mCurrentGravityAccelerationY + mGlobalForceY, false);
          ClearGlobalForces ();
 
          mPhysicsEngine.Update (dt);

@@ -985,7 +985,7 @@ package editor.asset {
             GraphicsUtil.ClearAndDrawCircle (rotateBothHandler, 0, 0, handlerRadius, 0x0, 0, true, 0x0000FF);
             GraphicsUtil.ClearAndDrawCircle (rotateSelfHandler, 0, 0, handlerRadius, 0x0, 0, true, 0x00FF00);
             GraphicsUtil.ClearAndDrawCircle (rotatePosHandler, 0, 0, handlerRadius, 0x0, 0, true, 0xFF0000);
-            GraphicsUtil.ClearAndDrawRect (scaleBothHandler, -halfHandlerSize, -3, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);
+            GraphicsUtil.ClearAndDrawRect (scaleBothHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);
             GraphicsUtil.ClearAndDrawRect (scaleSelfHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x00FF00, false);
             GraphicsUtil.ClearAndDrawRect (scalePosHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0xFF0000, false);
             GraphicsUtil.ClearAndDrawRect (flipHorizontallyHandler, -halfHandlerSize, -halfHandlerSize, handlerSize, handlerSize, 0x0, 0, true, 0x0000FF, false);

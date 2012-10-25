@@ -586,6 +586,16 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SubArray,
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       16777215],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_RemoveElements,
                      [
                         [ValueTypeDefine.ValueType_Array,       null],
@@ -853,7 +863,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Subtract,
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0],
                      ],
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
@@ -1407,6 +1417,10 @@ package common.trigger {
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_LoadSaveData,
+                     null,
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_ClearSaveData,
                      null,
                      null
                   );
@@ -2382,6 +2396,13 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCacheAsBitmap,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,
                      [
@@ -2389,14 +2410,6 @@ package common.trigger {
                      ],
                      [
                         [ValueTypeDefine.ValueType_Boolean,       false],
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic,
-                     [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
-                     ],
-                     [
-                        [ValueTypeDefine.ValueType_Boolean,       true],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory,
@@ -2423,6 +2436,21 @@ package common.trigger {
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetStatic,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                         [ValueTypeDefine.ValueType_Boolean,       true],
@@ -2911,7 +2939,6 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-
 
 
       // game / entity / shape / text

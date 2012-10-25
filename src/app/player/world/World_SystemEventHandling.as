@@ -151,7 +151,7 @@
       
       var point:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (mCachedMousePoint.x, mCachedMousePoint.y);
       
-      mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12);
+      mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12); // why do this?
       mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
    }
    

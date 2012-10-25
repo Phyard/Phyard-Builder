@@ -142,6 +142,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_IsNull,               IsNullArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetLength,               GetArrayLength);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetLength,               SetArrayLength);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SubArray,               SubArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_RemoveElements,               RemoveArrayElements);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_InsertElements,               InsertArrayElements);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Concat,                       ConcatArrays);
@@ -255,6 +256,7 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Design_WriteSaveData,          WriteSaveData);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadSaveData,           LoadSaveData);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_ClearSaveData,          ClearSaveData);
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
@@ -415,14 +417,16 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB,           SetShapeBorderColorRGB);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderOpacity,            GetBorderOpacity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderOpacity,            SetBorderOpacity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCacheAsBitmap,            SetCacheAsBitmap);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,            IsShapePhysicsEnabled);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetPhysicsEnabled,         SetShapePhysicsEnabled);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsStatic,                    IsStaticShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCollisionCategory,        GetShapeCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,        SetShapeCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSensor,                    IsSensorShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsStatic,                    IsStatic);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetStatic,                   SetStatic);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsRotationFixed,                  IsShapeRotationFixed);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetRotationFixed,                 SetShapeRotationFixed);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
@@ -1378,6 +1382,25 @@ package player.trigger {
             array.length = new_len;
          }
       }
+      
+      public static function SubArray (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var resultArray:Array = null;
+         
+         var inputArray:Array = valueSource.EvaluateValueObject () as Array;
+         if (inputArray != null)
+         {
+            valueSource = valueSource.mNextParameter;
+            var startIndex:int = int (valueSource.EvaluateValueObject ());
+
+            valueSource = valueSource.mNextParameter;
+            var endIndex:int = int (valueSource.EvaluateValueObject ());
+            
+            resultArray = inputArray.slice (startIndex, endIndex);
+         }
+         
+         valueTarget.AssignValueObject (resultArray);
+      }
 
       public static function RemoveArrayElements (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -2245,12 +2268,17 @@ package player.trigger {
       
       public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibIO.WriteGameSaveData (Global.GetDefaultSavedDataFilename (), Global.GetSavedData ());
+         Global.Viewer_mLibIO.WriteGameSaveData (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()), Global.GetSavedData ());
       }
       
       public static function LoadSaveData (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.SetSavedData (Global.Viewer_mLibIO.LoadGameSaveData (Global.GetDefaultSavedDataFilename ()));
+         Global.SetSavedData (Global.Viewer_mLibIO.LoadGameSaveData (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ())));
+      }
+      
+      public static function ClearSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.Viewer_mLibIO.ClearGameSaveData (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()));
       }
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void
@@ -3706,6 +3734,18 @@ package player.trigger {
 
          shape.SetBorderTransparency (opacity);
       }
+      
+      public static function SetCacheAsBitmap (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var asBitmap:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         shape.SetCacheAsBitmap (asBitmap);
+      }
 
       public static function IsShapePhysicsEnabled (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -3721,14 +3761,6 @@ package player.trigger {
          //   return;
          //
       //}
-
-      public static function IsStaticShape (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-
-         var static:Boolean = shape == null ? true : shape.IsBodyStatic ();
-         valueTarget.AssignValueObject (static);
-      }
 
       public static function GetShapeCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -3776,6 +3808,29 @@ package player.trigger {
          var sensor:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          shape.SetAsSensor (sensor);
+      }
+
+      public static function IsStatic (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         var static:Boolean = shape == null ? true : (shape.IsDestroyedAlready () ? shape.IsStatic () : shape.GetBody ().IsStatic ());
+         valueTarget.AssignValueObject (static);
+      }
+
+      public static function SetStatic (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var static:Boolean = valueSource.EvaluateValueObject () as Boolean;
+         
+         shape.GetBody ().ModifyShapeStatic (shape, static);
       }
 
       public static function IsShapeRotationFixed(valueSource:Parameter, valueTarget:Parameter):void
@@ -4733,7 +4788,7 @@ package player.trigger {
          {
             body.DestroyEntity ();
          }
-      }
+     }
 
      public static function BreakShapeJoints (valueSource:Parameter, valueTarget:Parameter):void
      {

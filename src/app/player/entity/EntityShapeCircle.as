@@ -148,7 +148,7 @@ package player.entity {
             var decoColor:uint = IsDrawBackground () ? GraphicsUtil.GetInvertColor_b (GetFilledColor ()) : mBorderColor;
             
             var aiType:int = GetShapeAiType ();
-            if (mWorld.mInColorBlindMode && aiType != Define.ShapeAiType_Unknown)
+            if (mWorld.mInColorBlindMode && (aiType == Define.ShapeAiType_Infected || aiType == Define.ShapeAiType_Uninfected ||aiType == Define.ShapeAiType_DontInfect))
             {
                if (aiType == Define.ShapeAiType_DontInfect)
                {
@@ -183,7 +183,7 @@ package player.entity {
                         0,
                         0,
                         halfRadius,
-                        decoColor, 
+                        mBorderColor, //decoColor, 
                         1, 
                         false
                      );
@@ -193,7 +193,7 @@ package player.entity {
                         0, 
                         displayRadius, 
                         0, 
-                        decoColor, 
+                        mBorderColor, //decoColor, 
                         1
                      );
             }

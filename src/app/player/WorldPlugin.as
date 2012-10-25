@@ -77,12 +77,15 @@ package player
                   OnViewerDestroyed : Global.OnViewerDestroyed, // from v2.02
                   OnSystemBackEvent: world.OnSystemBackEvent, // from v2.02
                   
+                  HasRestartLevelRequest : world.HasRestartLevelRequest, // from v2.03
+                  GetDelayToLoadSceneIndex : world.GetDelayToLoadSceneIndex, // from v2.03
+                  
                   "" : null
                };
             case "SetUiParams":
                world = params.mWorld as World;
                
-               Global.UI_RestartPlay = params.OnClickRestart as Function;
+               Global.UI_RestartPlay = params.OnClickRestart as Function; // useless since v2.03
                Global.UI_IsPlaying = params.IsPlaying as Function;
                Global.UI_SetPlaying = params.SetPlaying as Function;
                Global.UI_GetSpeedX = params.GetPlayingSpeedX as Function;
@@ -106,6 +109,7 @@ package player
                Global.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
                
                Global.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
+                                                                  // useless since v2.03
                
                Global.Viewer_mLibSound = params.mLibSound; // from v2.02
                            //PlaySound:Function; // v2.02. (before v2.02, sound lib is included in world instead of viewer)

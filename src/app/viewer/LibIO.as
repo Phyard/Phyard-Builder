@@ -1,4 +1,17 @@
 
+      public static function ClearGameSaveData (filename:String):void
+      {
+         try
+         {
+            var so:SharedObject = SharedObject.getLocal (filename);
+            
+            so.clear ();
+         }
+         catch ( e:Error ) 
+         {
+         }
+      }
+      
       public static function LoadGameSaveData (filename:String):ByteArray
       {
          try

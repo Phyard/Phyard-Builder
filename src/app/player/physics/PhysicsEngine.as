@@ -128,10 +128,14 @@ package player.physics {
       
       public function Update (escapedTime:Number):void
       {
-         if (mGravityChanged)
+         // todo: maybe it is better to add a level option: WakeUpAllShapes when gravity changes.
+         var curentGravity:b2Vec2 = _b2World.GetGravity ();
+         if (curentGravity.x != mLastGravityX || curentGravity.y != mLastGravityY)
          {
+            mLastGravityX = curentGravity.x;
+            mLastGravityY = curentGravity.y;
+            
             WakeUpAllBodies ();
-            mGravityChanged = false;
          }
          
 //trace ("mPhysicsSimulationEnabled = " + mPhysicsSimulationEnabled + ", mVelocityIterations = " + mVelocityIterations + ", mPositionIterations = " + mPositionIterations);         
@@ -169,21 +173,20 @@ package player.physics {
 //   
 //=================================================================
       
-      public function SetGravity (magnitude:Number, angle:Number):void
-      {
-         var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (magnitude * Math.cos (angle), magnitude * Math.sin (angle));
-         
-         _b2World.SetGravity (gravity);
-      }
+      private var mLastGravityX:Number = 0;
+      private var mLastGravityY:Number = 0;
       
-      private var mGravityChanged:Boolean = false;
-      public function SetGravityByVector (gx:Number, gy:Number):void
+      public function SetGravityByVector (gx:Number, gy:Number, initial:Boolean):void
       {
+         if (initial)
+         {
+            mLastGravityX = gx;
+            mLastGravityY = gy;
+         }
+         
          var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (gx, gy);
          
          _b2World.SetGravity (gravity);
-         
-         mGravityChanged = true;
       }
       
       public function WakeUpAllBodies ():void

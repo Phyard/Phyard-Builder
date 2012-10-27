@@ -64,6 +64,7 @@ package player.design
       
       public static var mWorldVariableSpace:VariableSpace;
       public static var mGameSaveVariableSpace:VariableSpace;
+         private static var mGameSaveVariableSpace_WithInitialValues:VariableSpace;
       
       public static var mSessionVariableSpace:VariableSpace;
       
@@ -224,8 +225,8 @@ package player.design
          {
             var variableInstance:VariableInstance = mGameSaveVariableSpace.GetVariableAt (variableId);
             
-if (mDebugString == null) mDebugString = "";
-mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " + variableInstance.GetKey ();            
+//if (mDebugString == null) mDebugString = "";
+//mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " + variableInstance.GetKey ();            
             binData.writeUTF (variableInstance.GetKey ());
             
             WriteTypeAndValue (binData, variableInstance.GetValueType (), variableInstance.GetValueObject (), alreadySavedArrayLookupTable);
@@ -476,6 +477,7 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
             
             mWorldVariableSpace = null;
             mGameSaveVariableSpace = null;
+            mGameSaveVariableSpace_WithInitialValues = null;
          }
          
          if (! isRestartLevel)
@@ -590,7 +592,7 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
          {
             mWorldVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, worldVarialbeSpaceDefines, null);
          }
-         else
+         else // switch/restart level
          {
             TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mWorldVariableSpace, worldVarialbeSpaceDefines, false);            
          }
@@ -598,8 +600,9 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
          if (mGameSaveVariableSpace == null)
          {
             mGameSaveVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, gameSaveVarialbeSpaceDefines, null);
+            mGameSaveVariableSpace_WithInitialValues = mGameSaveVariableSpace.CloneSpace ();
          }
-         else
+         else // switch/restart level
          {
             TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mGameSaveVariableSpace, gameSaveVarialbeSpaceDefines, false);
          }
@@ -665,6 +668,14 @@ mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " +
       public static function GetGameSaveVariableSpace ():VariableSpace
       {
          return mGameSaveVariableSpace;
+      }
+      
+      public static function ResetGameSaveVariableSpace ():void
+      {
+         if (mGameSaveVariableSpace_WithInitialValues != null) // shouldn't
+         {
+            mGameSaveVariableSpace = mGameSaveVariableSpace_WithInitialValues.CloneSpace ();
+         }
       }
       
       public static function GetSessionVariableSpace ():VariableSpace

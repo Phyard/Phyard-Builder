@@ -256,7 +256,8 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Design_WriteSaveData,          WriteSaveData);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadSaveData,           LoadSaveData);
-         RegisterCoreFunction (CoreFunctionIds.ID_Design_ClearSaveData,          ClearSaveData);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_ResetSaveData,          ResetSaveData);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_DeleteSaveData,          DeleteSaveData);
 
          RegisterCoreFunction (CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
@@ -2276,7 +2277,12 @@ package player.trigger {
          Global.SetSavedData (Global.Viewer_mLibIO.LoadGameSaveData (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ())));
       }
       
-      public static function ClearSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ResetSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.ResetGameSaveVariableSpace ();
+      }
+      
+      public static function DeleteSaveData (valueSource:Parameter, valueTarget:Parameter):void
       {
          Global.Viewer_mLibIO.ClearGameSaveData (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()));
       }

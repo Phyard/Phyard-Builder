@@ -245,7 +245,8 @@ package common.trigger {
       
       public static const ID_Design_WriteSaveData:int                    = IdPool.CoreApiId_588;
       public static const ID_Design_LoadSaveData:int                     = IdPool.CoreApiId_589;
-      public static const ID_Design_ClearSaveData:int                    = IdPool.CoreApiId_578;
+      public static const ID_Design_ResetSaveData:int                    = IdPool.CoreApiId_577;
+      public static const ID_Design_DeleteSaveData:int                    = IdPool.CoreApiId_578;
       // todo: SaveData_ByteArray version
 
       public static const ID_Design_RestartLevel:int                     = IdPool.CoreApiId_593;

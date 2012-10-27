@@ -1420,7 +1420,11 @@ package common.trigger {
                      null,
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_ClearSaveData,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_ResetSaveData,
+                     null,
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_DeleteSaveData,
                      null,
                      null
                   );

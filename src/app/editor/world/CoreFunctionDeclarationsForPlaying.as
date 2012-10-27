@@ -1505,7 +1505,11 @@ package editor.world {
                      null,
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_ClearSaveData, world_level_package, "Clear Save Data", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_ResetSaveData, world_level_package, "Reset Save Data", null, null,
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_DeleteSaveData, world_level_package, "Delete Save Data", null, null,
                      null,
                      null
                   );

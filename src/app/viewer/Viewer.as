@@ -1286,7 +1286,8 @@ package viewer {
                },
                mLibIO : {
                          LoadGameSaveData : LoadGameSaveData,
-                         WriteGameSaveData : WriteGameSaveData
+                         WriteGameSaveData : WriteGameSaveData,
+                         ClearGameSaveData : ClearGameSaveData
                },
                mServicesLib : {
                         SubmitHighScore: SubmitHighScore

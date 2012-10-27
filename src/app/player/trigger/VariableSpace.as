@@ -51,7 +51,10 @@ package player.trigger
          
          for (var i:int = fromIndex; i < endIndex; ++ i)
          {
-            (forVariableSpace.mVariableInstances [i] as VariableInstance).SetValueObject ((mVariableInstances [i] as VariableInstance).GetValueObject ());
+            var viSource:VariableInstance = (mVariableInstances [i] as VariableInstance);
+            var viTarget:VariableInstance = (forVariableSpace.mVariableInstances [i] as VariableInstance);
+            
+            viSource.CloneFor (viTarget);
          }
          
          return forVariableSpace;

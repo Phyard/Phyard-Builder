@@ -56,5 +56,13 @@ package player.trigger
          mValueObject = valueObject;
       }
       
+      public function CloneFor (forVI:VariableInstance):void
+      {
+         forVI.SetKey (mKey);
+         forVI.SetValueType (mValueType);
+         forVI.SetName (mName);
+         forVI.SetValueObject (mValueObject);
+      }
+      
    }
 }

@@ -112,20 +112,12 @@ package player
                                                                   // useless since v2.03
                
                Global.Viewer_mLibSound = params.mLibSound; // from v2.02
-                           //PlaySound:Function; // v2.02. (before v2.02, sound lib is included in world instead of viewer)
-                           //StopAllInLevelSounds:Function; // v2.02
-                           //StopCrossLevelsSound:Function; // v2.02
                
                Global.Viewer_mLibAppp = params.mLibApp; // v2.03
-                        //IsNativeApp:Function; // v2.03
-                        //OnExitApp:Function; // v2.03
                
                Global.Viewer_mLibIO = params.mLibIO; // from v2.03
-                           //WriteGameSaveData:Function; // v2.03
-                           //LoadGameSaveData:Function; // v2.03
                
                Global.Viewer_mLibServices = params.mLibService; // from v2.03
-                           //SubmitKeyValue:Function; // v2.03
                
                break;
             default:

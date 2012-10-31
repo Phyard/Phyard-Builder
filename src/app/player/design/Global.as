@@ -109,6 +109,7 @@ package player.design
                //PlaySound:Function; // v2.02. (before v2.02, sound lib is included in world instead of viewer)
                //StopAllInLevelSounds:Function; // v2.02
                //StopCrossLevelsSound:Function; // v2.02
+               //SetSoundVolume; // v2.03 (not really used now)
       public static var Viewer_mLibAppp:Object; // v2.03
                //IsNativeApp:Function; // v2.03
                //OnExitApp:Function; // v2.03

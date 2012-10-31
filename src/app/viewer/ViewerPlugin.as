@@ -17,6 +17,10 @@ package viewer
                return null;
             }
          }
+		 
+       // NOTE:
+       // 1. interface names should not be duplicated with WorldPlugin
+		 // 2. when add new interfaces, please sync them to LibViewerWorldForIOS
       }
    }
 }

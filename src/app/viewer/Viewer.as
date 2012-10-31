@@ -239,6 +239,8 @@ package viewer {
       public function OnActivated (event:Event):void
       {
          mIsAppDeactivated = false;
+         
+         SetSoundVolume (mSoundVolume);
       }
       
       public function OnDeactivated (event:Event):void
@@ -996,7 +998,7 @@ package viewer {
 
       private function RetrieveWorldPluginProperties ():void
       {
-         if (mWorldPluginDomain.hasDefinition ("Main")) // for uniplayer and gamepackage
+         if (mWorldPluginDomain.hasDefinition ("Main")) // for uniplayer and gamepackager
          {
             mWorldPlugin = mWorldPluginDomain.getDefinition ("Main");
          }
@@ -1275,7 +1277,8 @@ package viewer {
                mLibSound : {
                           PlaySound: PlaySound,
                           StopAllInLevelSounds: StopAllInLevelSounds,
-                          StopCrossLevelsSound: StopCrossLevelsSound
+                          StopCrossLevelsSound: StopCrossLevelsSound,
+                          SetSoundVolume : SetSoundVolume
                           
                           // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
                },
@@ -1797,11 +1800,15 @@ package viewer {
          if (mErrorMessageText != null && mErrorMessageText.parent == mErrorMessageLayer)
             mErrorMessageLayer.removeChild (mErrorMessageText);
          
-         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage) + "<br>" + mLastErrorInfo, true, 0xFFFFFF);
+         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage) + "<br>" + mLastErrorInfo
++ "<br>debugInfo=" + debugInfo, 
+                            true, 0xFFFFFF);
          mErrorMessageLayer.addChild (mErrorMessageText);
          
+debugInfo = debugInfo; mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
          CenterErrorMessageText ();
       }
+public static var debugInfo:String = "";
       
       private function CenterErrorMessageText ():void
       {

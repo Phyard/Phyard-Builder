@@ -33,7 +33,7 @@ package editor.asset {
       
       public function AssetManager ()
       {
-         mCoordinateSystem = Define.kDefaultCoordinateSystem;
+         mCoordinateSystem = CoordinateSystem.kDefaultCoordinateSystem;
          
          mSelectionEngine = new SelectionEngine ();
          

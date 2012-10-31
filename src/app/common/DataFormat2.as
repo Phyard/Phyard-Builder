@@ -3075,7 +3075,7 @@ package common {
          {
             var sceneDefine:SceneDefine = worldDefine.mSceneDefines [sceneId];
 
-            if (sceneDefine.mDontAdjustNumberValues || (sceneId >= 0 && sceneId != specifiedSceneIndex))
+            if (sceneDefine.mDontAdjustNumberValues || (specifiedSceneIndex >= 0 && sceneId != specifiedSceneIndex))
                continue; 
             
             sceneDefine.mDontAdjustNumberValues = true;
@@ -3277,7 +3277,7 @@ package common {
    
                         if (worldDefine.mVersion < 0x0108)
                         {
-                           entityDefine.mInitialGravityAcceleration = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_LinearAccelerationMagnitude (entityDefine.mInitialGravityAcceleration);
+                           entityDefine.mInitialGravityAcceleration = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.P2D_LinearAccelerationMagnitude (entityDefine.mInitialGravityAcceleration);
                         }
    
                         entityDefine.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (entityDefine.mInitialGravityAcceleration, 6);
@@ -3311,7 +3311,7 @@ package common {
    
                      if (worldDefine.mVersion < 0x0108)
                      {
-                        entityDefine.mMaxMotorTorque = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_Torque (entityDefine.mMaxMotorTorque);
+                        entityDefine.mMaxMotorTorque = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.P2D_Torque (entityDefine.mMaxMotorTorque);
    
                         // anchor visible
                         sceneDefine.mEntityDefines [entityDefine.mAnchorEntityIndex].mIsVisible = entityDefine.mIsVisible;
@@ -3328,7 +3328,7 @@ package common {
    
                      if (worldDefine.mVersion < 0x0108)
                      {
-                        entityDefine.mMaxMotorForce = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_ForceMagnitude (entityDefine.mMaxMotorForce);
+                        entityDefine.mMaxMotorForce = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.P2D_ForceMagnitude (entityDefine.mMaxMotorForce);
    
                         // anchor visilbe
                         sceneDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex].mIsVisible = entityDefine.mIsVisible;
@@ -3569,8 +3569,8 @@ package common {
          {
             var sceneDefine:SceneDefine = worldDefine.mSceneDefines [sceneId];
             
-            if (sceneDefine.mDontFillMissedFields || (sceneId >= 0 && sceneId != specifiedSceneIndex))
-               continue; 
+            if (sceneDefine.mDontFillMissedFields || (specifiedSceneIndex >= 0 && sceneId != specifiedSceneIndex))
+               continue;
             
             sceneDefine.mDontFillMissedFields = true;
             
@@ -3635,13 +3635,13 @@ package common {
                sceneDefine.mSettings.mWorldBorderRightThickness = 10;
                sceneDefine.mSettings.mWorldBorderBottomThickness = 20;
    
-               sceneDefine.mSettings.mDefaultGravityAccelerationMagnitude = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_LinearAccelerationMagnitude (9.8);
-               sceneDefine.mSettings.mDefaultGravityAccelerationAngle = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_RotationDegrees (90);
+               sceneDefine.mSettings.mDefaultGravityAccelerationMagnitude = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.P2D_LinearAccelerationMagnitude (9.8);
+               sceneDefine.mSettings.mDefaultGravityAccelerationAngle = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.P2D_RotationDegrees (90);
    
-               sceneDefine.mSettings.mRightHandCoordinates = Define.kDefaultCoordinateSystem_BeforeV0108.IsRightHand ();
-               sceneDefine.mSettings.mCoordinatesOriginX = Define.kDefaultCoordinateSystem_BeforeV0108.GetOriginX ();
-               sceneDefine.mSettings.mCoordinatesOriginY = Define.kDefaultCoordinateSystem_BeforeV0108.GetOriginY ();
-               sceneDefine.mSettings.mCoordinatesScale = Define.kDefaultCoordinateSystem_BeforeV0108.GetScale ();
+               sceneDefine.mSettings.mRightHandCoordinates = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.IsRightHand ();
+               sceneDefine.mSettings.mCoordinatesOriginX = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.GetOriginX ();
+               sceneDefine.mSettings.mCoordinatesOriginY = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.GetOriginY ();
+               sceneDefine.mSettings.mCoordinatesScale = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.GetScale ();
    
                sceneDefine.mSettings.mIsCiRulesEnabled  = true;
             }
@@ -3815,7 +3815,7 @@ package common {
    
                         if (worldDefine.mVersion < 0x0108)
                         {
-                           entityDefine.mMaximalGravityAcceleration = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_LinearAccelerationMagnitude (9.8);
+                           entityDefine.mMaximalGravityAcceleration = CoordinateSystem.kDefaultCoordinateSystem_BeforeV0108.P2D_LinearAccelerationMagnitude (9.8);
                         }
                      }
                   }

@@ -25,7 +25,7 @@ package Box2D.Collision
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
 	import Box2D.Common.b2Settings;
-	import Box2D.Common.b2GrowableStack;
+	//import Box2D.Common.b2GrowableStack;
 
 	/// A dynamic AABB tree broad-phase, inspired by Nathanael Presson's btDbvt.
 
@@ -147,12 +147,15 @@ package Box2D.Collision
 		public function Query(callback:b2QueryCallbackOwner, aabb:b2AABB):void
 		{
 			//b2GrowableStack<int32, 256> stack;
-			var stack:b2GrowableStack = new b2GrowableStack (256);
-			stack.Push(m_root);
+         //var stack:b2GrowableStack = new b2GrowableStack (256); // bug!!!, crash on iOS. Ill on PC.
+         //var stack:b2GrowableStack = new b2GrowableStack (0); // Still crash on iOS
+         var stack:Array = new Array ();
+			stack.push(m_root);
 
-			while (stack.GetCount() > 0)
+         //while (stack.GetCount() > 0)
+         while (stack.length > 0)
 			{
-				var nodeId:int = int (stack.Pop());
+				var nodeId:int = int (stack.pop());
 				if (nodeId == b2_nullNode)
 				{
 					continue;
@@ -173,8 +176,8 @@ package Box2D.Collision
 					}
 					else
 					{
-						stack.Push(node.child1);
-						stack.Push(node.child2);
+						stack.push(node.child1);
+						stack.push(node.child2);
 					}
 				}
 			}
@@ -216,12 +219,15 @@ package Box2D.Collision
 			//}
 
 			//b2GrowableStack<int32, 256> stack;
-			var stack:b2GrowableStack = new b2GrowableStack (256);
-			stack.Push(m_root);
+         //var stack:b2GrowableStack = new b2GrowableStack (256); // bug!!!, crash on iOS. Ill on PC.
+         //var stack:b2GrowableStack = new b2GrowableStack (0); // Still crash on iOS
+         var stack:Array = new Array ();
+			stack.push(m_root);
 
-			while (stack.GetCount() > 0)
+         //while (stack.GetCount() > 0)
+         while (stack.length > 0)
 			{
-				var nodeId:int = int (stack.Pop());
+				var nodeId:int = int (stack.pop());
 				if (nodeId == b2_nullNode)
 				{
 					continue;
@@ -274,8 +280,8 @@ package Box2D.Collision
 				}
 				else
 				{
-					stack.Push(node.child1);
-					stack.Push(node.child2);
+					stack.push(node.child1);
+					stack.push(node.child2);
 				}
 			}
 		}

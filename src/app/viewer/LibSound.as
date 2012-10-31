@@ -60,7 +60,7 @@
       private var mCrossingLevelsSounds:Array = new Array (50); // maybe 32 is enough
       private var mNumCrossingLevelsSounds:int = 0;
 
-      private function PlaySound (sound:Sound, times:int, crossingLevels:Boolean, volume:Number = 0.5):void
+      private function PlaySound (sound:Sound, times:int, crossingLevels:Boolean, volume:Number = 1.0):void
       {
          if (IsSoundEnabled () && sound != null)
          {

@@ -706,7 +706,7 @@ package player.world {
       {
          if (mInitialized)
             return;
-         
+
          mInitialized = true;
          
       //------------------------------------
@@ -1532,7 +1532,6 @@ package player.world {
       private function InitPhysics ():void
       {
       // clear contact info
-
          mNumContactInfos = 0;
          mShapeContactInfoHashtable = new Dictionary ();
          mFirstShapeContactInfo = null;

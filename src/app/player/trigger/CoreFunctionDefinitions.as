@@ -2650,7 +2650,9 @@ package player.trigger {
          if (boolFunction != null)
          {
             while (boolFunction.RunBoolFunction ())
-               ;
+            {
+               // do nothing
+            }
          }
       }
 

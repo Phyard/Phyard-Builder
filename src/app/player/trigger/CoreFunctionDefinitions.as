@@ -3,7 +3,7 @@ package player.trigger {
    import flash.utils.getTimer;
    import flash.geom.Point;
    import flash.ui.Mouse;
-
+   import flash.system.Capabilities;
    import flash.utils.Dictionary;
 
    import player.design.Global;
@@ -87,6 +87,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_ExitApp,                     ExitApp);
          RegisterCoreFunction (CoreFunctionIds.ID_GetScreenResolution,         GetScreenResolution);
          RegisterCoreFunction (CoreFunctionIds.ID_GetScreenDPI,                GetScreenDPI);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetOsNameString,                GetOsNameString);
          RegisterCoreFunction (CoreFunctionIds.ID_OpenURL,                     OpenURL);
 
       // services
@@ -727,6 +728,11 @@ package player.trigger {
       public static function GetScreenDPI (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.Viewer_mLibCapabilities.GetScreenDPI ());
+      }
+      
+      public static function GetOsNameString (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Capabilities.os);
       }
       
       public static function OpenURL (valueSource:Parameter, valueTarget:Parameter):void

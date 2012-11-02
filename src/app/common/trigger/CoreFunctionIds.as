@@ -64,6 +64,7 @@ package common.trigger {
 
       public static const ID_GetScreenResolution:int    = IdPool.CoreApiId_110; // from v2.03
       public static const ID_GetScreenDPI:int           = IdPool.CoreApiId_111; // from v2.03
+      public static const ID_GetOsNameString:int           = IdPool.CoreApiId_113; // from v2.03
 
       public static const ID_OpenURL:int                = IdPool.CoreApiId_78; // from v2.03
 

@@ -245,6 +245,12 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetOsNameString,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ]
+                  );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_OpenURL,
                      [

@@ -33,7 +33,6 @@ package editor.codelib {
    import flash.events.ContextMenuEvent;
    
    import com.tapirgames.util.GraphicsUtil;
-   import com.tapirgames.util.ResourceLoader;
    import com.tapirgames.util.ResourceLoadEvent;
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.TextUtil;

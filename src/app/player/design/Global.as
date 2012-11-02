@@ -1088,7 +1088,8 @@ package player.design
       
       protected static function OnLoadImageError (image:ImageBitmap):void
       {
-         GetCurrentWorld ().SetBuildingStatus (-1);
+         //GetCurrentWorld ().SetBuildingStatus (-1);
+         CheckWorldBuildingStatus ();
       }
       
       protected static function OnLoadSoundDone (sound:Sound):void
@@ -1130,6 +1131,11 @@ package player.design
             var sound:Sound = mSounds [soundId] as Sound;
             status = sound.GetStatus ();
             
+            // allow sound silient loading failed. for
+            // - 1. it will fail when sound data is invalid
+            // - 2. loadBytes is not supported on iOS 
+            //(but not allow images loading failed)
+            //
             //if (status < 0)
             //{
             //   GetCurrentWorld ().SetBuildingStatus (-1);

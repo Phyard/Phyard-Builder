@@ -58,6 +58,8 @@ package viewer {
    import com.tapirgames.gesture.GestureAnalyzer;
    import com.tapirgames.gesture.GesturePoint;
    import com.tapirgames.gesture.GestureSegment;
+   
+   import com.tapirgames.util.ResourceLoader;
 
    import common.DataFormat3;
    import common.Define;
@@ -68,7 +70,8 @@ package viewer {
       include "LibCapabilities.as";
       include "LibGesture.as";
       include "LibSound.as";
-      include "LibIO.as";
+      include "LibImage.as";
+      include "LibCookie.as";
       include "LibServices.as";
       
 //======================================================================
@@ -998,7 +1001,7 @@ package viewer {
 
       private function RetrieveWorldPluginProperties ():void
       {
-         if (mWorldPluginDomain.hasDefinition ("Main")) // for uniplayer and gamepackager
+         if (mWorldPluginDomain.hasDefinition ("Main")) // for uniplayer and game package
          {
             mWorldPlugin = mWorldPluginDomain.getDefinition ("Main");
          }
@@ -1281,25 +1284,29 @@ package viewer {
                GetDebugString: GetDebugString,
                SetMouseGestureSupported: SetMouseGestureSupported,
                mLibSound : {
-                          PlaySound: PlaySound,
-                          StopAllInLevelSounds: StopAllInLevelSounds,
-                          StopCrossLevelsSound: StopCrossLevelsSound,
-                          SetSoundVolume : SetSoundVolume
+                           LoadSoundFromBytes : LoadSoundFromBytes, 
+                           PlaySound: PlaySound,
+                           StopAllInLevelSounds: StopAllInLevelSounds,
+                           StopCrossLevelsSound: StopCrossLevelsSound,
+                           SetSoundVolume : SetSoundVolume
                           
-                          // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
+                           // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
+               },
+               mLibImage : {
+                           LoadImageFromBytes : LoadImageFromBytes
                },
                mLibApp : {
-                        IsNativeApp: IsNativeApp,
-                        OnExitApp : ExitLevel,
-                        OpenURL : UrlUtil.PopupPage
+                           IsNativeApp: IsNativeApp,
+                           OnExitApp : ExitLevel,
+                           OpenURL : UrlUtil.PopupPage
                },
                mLibCookie : {
-                         LoadCookie : LoadCookie,
-                         WriteCookie : WriteCookie,
-                         ClearCookie : ClearCookie
+                           LoadCookie : LoadCookie,
+                           WriteCookie : WriteCookie,
+                           ClearCookie : ClearCookie
                },
                mServicesLib : {
-                        SubmitHighScore: SubmitHighScore
+                           SubmitHighScore: SubmitHighScore
                }
             });
 

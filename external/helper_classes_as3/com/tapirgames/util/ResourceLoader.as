@@ -11,7 +11,7 @@ package com.tapirgames.util
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
    
-   public class ResourceLoader extends Loader
+   public class ResourceLoader
    {
    
 //===================================================================
@@ -37,7 +37,7 @@ package com.tapirgames.util
       
    // parse seed swf
       
-      private static function parseSeedSwf ():void
+      private static function ParseSeedSwf ():void
       {
          if (mOriginalData == null)
          {
@@ -92,13 +92,23 @@ package com.tapirgames.util
 // static data
 //===================================================================
 
-      public function ResourceLoader ()
+      protected var mResFileData:ByteArray;
+      
+      protected var mOnSucceededCallback:Function;
+      protected var mOnFailedCallback:Function;
+      
+      // every params should not be null
+      public function ResourceLoader (resFileData:ByteArray, onSucceeded:Function, onFailed:Function)
       {
+         mResFileData = resFileData;
+         
+         mOnSucceededCallback = onSucceeded;
+         mOnFailedCallback = onFailed;
       }
-
+      
    // create new swf file
       
-      private function createAndLoadNewSwf (newFileDataWithoutHeader:ByteArray, onCompleteListener:Function, context:LoaderContext = null):void
+      private function CreateAndLoadNewSwf (newFileDataWithoutHeader:ByteArray, onCompleteListener:Function):void
       {
          var newFileLength:int = newFileDataWithoutHeader.length + 8;
          
@@ -114,63 +124,66 @@ package com.tapirgames.util
          newSwfFile.writeBytes (newFileDataWithoutHeader);
          newSwfFile.position = 0;
             
-      // load new swf, now, no secure errors. Why adobe makes some troubles for developers?
-            
-         this.contentLoaderInfo.addEventListener (Event.COMPLETE, onCompleteListener);
-         this.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
-         this.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+      // load new swf, now, no secure errors for local swf file on non-iOS platforms. Why adobe makes some troubles for developers?
          
-         //>> for air, not very secure
-         if (context == null)
-            context = new LoaderContext();
+         var loader:Loader = new Loader ();
+         loader.contentLoaderInfo.addEventListener (Event.COMPLETE, onCompleteListener);
+         loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
+         loader.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+         
+         //>> for air app, not very secure
+         var context:LoaderContext = new LoaderContext();
          if (context.hasOwnProperty ("allowCodeImport"))
             (context as Object).allowCodeImport = true;
          else if (context.hasOwnProperty ("allowLoadBytesCodeExecution"))
             (context as Object).allowLoadBytesCodeExecution = true;
          //<<
          
-         this.loadBytes (newSwfFile);
+         loader.loadBytes (newSwfFile, context);
       }
       
       private function OnLoadingError (event:Event):void
       {
-         dispatchEvent(event);
+         mOnFailedCallback (event.toString ());
       }
       
    // load image
    
-      // this loadBytes version will return ioError on iOS
-      private function loadImageFromByteArray2 (imageFileData:ByteArray):void
+      // this loadBytes version will throw ioError on iOS, 
+      // but it works well for local swf file.
+      private function StartLoadingImage2 ():void
       {
          try
          {
-            parseSeedSwf ();
+            ParseSeedSwf ();
             
             if (mStartOffset_TagDefineBitsJPEG2 == 0)
                throw new Error ("Tag DefineBitsJPEG2 not found.");
             
-         // build new swf data
+         // replace swf tag data
             
             var newData:ByteArray = new ByteArray ();
             newData.endian = Endian.LITTLE_ENDIAN;
             newData.writeBytes (mOriginalData, 0, mStartOffset_TagDefineBitsJPEG2);
             
             newData.writeShort ((21 << 6) | 0x3f);
-            newData.writeInt (2 + imageFileData.length); // 2 for CharacterID
+            newData.writeInt (2 + mResFileData.length); // 2 for CharacterID
             newData.writeShort (mCharacterID_TagDefineBitsJPEG2);
-            if (imageFileData.length > 0)
+            if (mResFileData.length > 0)
             {
-               imageFileData.position = 0;
-               newData.writeBytes (imageFileData);
+               mResFileData.position = 0;
+               newData.writeBytes (mResFileData);
             }
             
             newData.writeBytes (mOriginalData, mEndOffset_TagDefineBitsJPEG2);
          
-            createAndLoadNewSwf (newData, OnLoadImageComplete2);
+         // load new swf
+         
+            CreateAndLoadNewSwf (newData, OnLoadImageComplete2);
          }
          catch (error:Error)
          {
-            dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, error.message));
+            mOnFailedCallback ("StartLoadingImageFromByteArray2: " + error.message);
          }
       }
       
@@ -195,35 +208,38 @@ package com.tapirgames.util
          }
          
          if (bitmap == null)
-            dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, "Invalid image!"));
+         {
+            mOnFailedCallback ("StartLoadingImageFromByteArray2: invalid image!");
+         }
          else
          {
-            var resEvent:ResourceLoadEvent = new ResourceLoadEvent (bitmap);
-            dispatchEvent(resEvent);
+            mOnSucceededCallback (bitmap);
          }
       }
       
-      protected var mResFileData:ByteArray;
-      
       // this version doesn't throw ioError on iOS
-      // this version fails silently for local swf files.
-      public function loadImageFromByteArray (imageFileData:ByteArray):void
+      // but it fails for local swf file.
+      public function StartLoadingImage ():void
       {
+         if (mResFileData == null)
+         {
+            mOnFailedCallback ("Image data is null!");
+            return;
+         }
+           
          try
          {
-            mResFileData = imageFileData;
-            if (mResFileData == null)
-               throw new Error ("data is null!");
+            var loader:Loader = new Loader ();
             
-            this.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
-            this.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
-            this.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+            loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadImageComplete);
+            loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
+            loader.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
             
-            this.loadBytes (imageFileData);
+            loader.loadBytes (mResFileData);
          }
          catch (error:Error)
          {
-            dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, error.message));
+            mOnFailedCallback ("loadImageFromByteArray error: " + error.message);
          }
       }
       
@@ -233,7 +249,7 @@ package com.tapirgames.util
          
          try
          {
-            bitmap = this.content as Bitmap; // or event.target.content as Bitmap;
+            bitmap = event.target.content as Bitmap;
                      // bitmap is possible null for SecurityError: Error #2148
             
             if (bitmap == null || bitmap.bitmapData == null || bitmap.bitmapData.width == 0 || bitmap.bitmapData.height == 0)
@@ -258,19 +274,17 @@ package com.tapirgames.util
          {
             //dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, "Invalid image!"));
             
-            this.contentLoaderInfo.removeEventListener (Event.COMPLETE, OnLoadImageComplete);
-            this.contentLoaderInfo.removeEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
-            this.contentLoaderInfo.removeEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
-   
-            loadImageFromByteArray2 (mResFileData);
+            event.target.removeEventListener (Event.COMPLETE, OnLoadImageComplete);
+            event.target.removeEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
+            event.target.removeEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+            
+            // try another method
+            StartLoadingImage2 ();
          }
          else
          {
-            var resEvent:ResourceLoadEvent = new ResourceLoadEvent (bitmap);
-            dispatchEvent(resEvent);
+            mOnSucceededCallback (bitmap);
          }
-         
-         mResFileData = null;
       }
       
    // load sound
@@ -278,9 +292,16 @@ package com.tapirgames.util
       private static const SoundFormat_MP3:String = "mp3";
       private static const SoundFormatBits_MP3:int = 2 << 4;
       
-      // this loadBytes version will return ioError on iOS
-      public function loadSoundFromByteArray (soundFileData:ByteArray, soundFormat:String, soundRate:int, soundSampleSize:int, isStereo:Boolean, numSamples:int):void
+      // this loadBytes version will throw ioError on iOS, 
+      // but it works well for local swf file.
+      public function StartLoadingSound (soundFormat:String, soundRate:int, soundSampleSize:int, isStereo:Boolean, numSamples:int):void
       {
+         if (mResFileData == null)
+         {
+            mOnFailedCallback ("Sound data is null!");
+            return;
+         }
+          
          try
          {
             var bitsSoundFormat:int;
@@ -331,37 +352,38 @@ package com.tapirgames.util
             
          // ...
             
-            parseSeedSwf ();
+            ParseSeedSwf ();
             
             if (mStartOffset_TagDefineSound == 0)
                throw new Error ("Tag DefineSound not found.");
             
-         // build new swf data
+         // replace swf tag data
             
             var newData:ByteArray = new ByteArray ();
             newData.endian = Endian.LITTLE_ENDIAN;
             newData.writeBytes (mOriginalData, 0, mStartOffset_TagDefineSound);
             
             newData.writeShort ((14 << 6) | 0x3f);
-            newData.writeInt (7 + soundFileData.length); // 7 for sound infos
+            newData.writeInt (7 + mResFileData.length); // 7 for sound infos
             newData.writeShort (mCharacterID_TagDefineSound);
             newData.writeByte (bitsSoundFormat | bitsSoundRate | bitsSoundSize | bitsSoundType);
             newData.writeUnsignedInt (numSamples);
             // the sound data includes the num samples to skip (2 bytes at the beginning)
-            if (soundFileData.length > 0)
+            if (mResFileData.length > 0)
             {
-               soundFileData.position = 0;
-               newData.writeBytes (soundFileData);
+               mResFileData.position = 0;
+               newData.writeBytes (mResFileData);
             }
             
             newData.writeBytes (mOriginalData, mEndOffset_TagDefineSound);
          
-            createAndLoadNewSwf (newData, OnLoadSoundComplete);
+         // load new swf
+         
+            CreateAndLoadNewSwf (newData, OnLoadSoundComplete);
          }
          catch (error:Error)
          {
-            trace (error.getStackTrace ());
-            dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, error.message));
+            mOnFailedCallback ("loadImageFromByteArray error: " + error.message);
          }
       }
       
@@ -381,11 +403,12 @@ package com.tapirgames.util
          }
          
          if (sound == null)
-            dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, "Invalid sound!"));
+         {
+            mOnFailedCallback ("OnLoadSoundComplete: invalid sound!");
+         }
          else
          {
-            var resEvent:ResourceLoadEvent = new ResourceLoadEvent (sound);
-            dispatchEvent(resEvent);
+            mOnSucceededCallback (sound);
          }
       }
    }

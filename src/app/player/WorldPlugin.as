@@ -114,6 +114,8 @@ package player
                
                Global.Viewer_mLibSound = params.mLibSound; // from v2.02
                
+               Global.Viewer_mLibImage = params.mLibImage; // from v2.03
+               
                Global.Viewer_mLibAppp = params.mLibApp; // v2.03
                
                Global.Viewer_mLibCookie = params.mLibCookie; // from v2.03

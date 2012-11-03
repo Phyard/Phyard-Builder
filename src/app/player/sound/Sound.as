@@ -6,9 +6,6 @@ package player.sound
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
    
-   import com.tapirgames.util.ResourceLoader;
-   import com.tapirgames.util.ResourceLoadEvent;
-   
    import player.design.Global;
    
    import common.sound.SoundFile;
@@ -81,17 +78,21 @@ package player.sound
             mCallbackOnLoadError = onLoadError;
             
             // ...
-            var loader:ResourceLoader = new ResourceLoader ();
-            loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadSoundError);
-            loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadSoundError);
-            loader.addEventListener (ResourceLoadEvent.RESOURCE_LOADED, OnLoadSoundComplete);
-            loader.loadSoundFromByteArray (fileData, GetFileFormat (), GetSamplingRate (), GetSampleSize (), IsStereo (), GetNumSamples ());
+            Global.Viewer_mLibSound.LoadSound (fileData, OnLoadSoundComplete, OnLoadSoundError, 
+                                                                                                {
+                                                                                                   mFileFormat: GetFileFormat (),
+                                                                                                   mSamplingRate: GetSamplingRate (),
+                                                                                                   mSampleSize: GetSampleSize (),
+                                                                                                   mIsStereo: IsStereo (),
+                                                                                                   mNumSamples: GetNumSamples ()
+                                                                                                }
+            );
          }
       }
       
-      private function OnLoadSoundComplete (event:Event):void
+      private function OnLoadSoundComplete (sound:Object/*flash.media.Sound*/):void
       {
-         mSound = (event as ResourceLoadEvent).resource; // as flash.media.Sound;
+         mSound = sound;
          
          mStatus = 1;
          
@@ -102,8 +103,10 @@ package player.sound
          mCallbackOnLoadError = null;
       }
       
-      private function OnLoadSoundError (event:Object):void
+      private function OnLoadSoundError (message:String):void
       {
+         //trace ("Loading sound error: " + message);
+         
          //mStatus = -1;
          mStatus = 1;
          

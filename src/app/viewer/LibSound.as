@@ -51,6 +51,12 @@
          SoundMixer.soundTransform = transform;
       }
       
+      private function LoadSoundFromBytes (soundFileData:ByteArray, onComplete:Function, onError:Function, soundProperties:Object):void
+      {
+         var loader:ResourceLoader = new ResourceLoader (soundFileData, onComplete, onError);
+         loader.StartLoadingSound (soundProperties.mFileFormat, soundProperties.mSamplingRate, soundProperties.mSampleSize, soundProperties.mIsStereo, soundProperties.mNumSamples);
+      }
+      
       // sounds in playing
       //private var mInLevelSoundLookupTable:Dictionary = new Dictionary ();
       //private var mCrossingLevelsSoundLookupTable:Dictionary = new Dictionary ();

@@ -33,7 +33,6 @@ package editor.sound {
    
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.ResourceLoader;
-   import com.tapirgames.util.ResourceLoadEvent;
    import com.tapirgames.display.TextFieldEx;
    import com.tapirgames.display.TextButton;
    
@@ -123,13 +122,10 @@ package editor.sound {
          
          if (ParseSoundFile (fileData, mSoundInfo))
          {
-            var loader:ResourceLoader = new ResourceLoader ();
-            loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadSoundError);
-            loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadSoundError);
-            loader.addEventListener (ResourceLoadEvent.RESOURCE_LOADED, OnLoadSoundComplete);
-            //loader.loadSoundFromByteArray (fileData, mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
+            //var loader:ResourceLoader = new ResourceLoader (fileData, OnLoadSoundComplete, OnLoadSoundError);
             // use fileData will make the beginning frames are lost in sound playing. Weird!
-            loader.loadSoundFromByteArray (mSoundInfo.GetFileData (), mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
+            var loader:ResourceLoader = new ResourceLoader (mSoundInfo.GetFileData (), OnLoadSoundComplete, OnLoadSoundError);
+            loader.StartLoadingSound (mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
          }
          else
          {
@@ -137,9 +133,9 @@ package editor.sound {
          }
       }
       
-      private function OnLoadSoundComplete (event:Event):void
+      private function OnLoadSoundComplete (sound:Sound):void
       {
-         SetSound ((event as ResourceLoadEvent).resource as Sound);
+         SetSound (sound);
       //trace ("OnLoadSoundComplete, mSound = " + mSound);
          
          Stop ();
@@ -150,10 +146,9 @@ package editor.sound {
       
       // !!! This function is not triggered even if there are some errors in loading.
       // It seems flash doesn't trigger some errors.
-      private function OnLoadSoundError (event:Object):void
+      private function OnLoadSoundError (message:String):void
       {
-      //trace ("OnLoadSoundError: " + event);
-         //event may be null
+         //trace ("OnLoadSoundError: " + message);
          
          mSoundInfo.SetFileData (null);
          Stop ();

@@ -104,12 +104,14 @@ package player.design
                //OpenURL:Function; // from v2.03
       public static var _GetDebugString:Function;
       public static var Viewer_SetMouseGestureSupported:Function;
-      public static var Viewer_OnLoadScene:Function;
+      public static var Viewer_OnLoadScene:Function; // v2.00-v2.03
       public static var Viewer_mLibSound:Object;
                //PlaySound:Function; // v2.02. (before v2.02, sound lib is included in world instead of viewer)
                //StopAllInLevelSounds:Function; // v2.02
                //StopCrossLevelsSound:Function; // v2.02
                //SetSoundVolume; // v2.03 (not really used now)
+      public static var Viewer_mLibImage:Object; // v2.03
+               //LoadImageFromBytes:Function; // v2.03
       public static var Viewer_mLibAppp:Object; // v2.03
                //IsNativeApp:Function; // v2.03
                //OnExitApp:Function; // v2.03
@@ -175,6 +177,7 @@ package player.design
       Viewer_SetMouseGestureSupported = null;
       Viewer_OnLoadScene = null;
       Viewer_mLibSound = null;
+      Viewer_mLibImage = null;
       Viewer_mLibAppp = null;
       Viewer_mLibCookie = null;
       Viewer_mLibServices = null;
@@ -538,6 +541,7 @@ package player.design
          Viewer_SetMouseGestureSupported = null;
          Viewer_OnLoadScene = null;
          Viewer_mLibSound = null;
+         Viewer_mLibImage = null;
          Viewer_mLibAppp = null;
          Viewer_mLibCookie = null;
          Viewer_mLibServices = null;

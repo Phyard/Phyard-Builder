@@ -1,5 +1,5 @@
 
-      public static function ClearGameSaveData (filename:String):void
+      public static function ClearCookie (filename:String):void
       {
          try
          {
@@ -12,7 +12,7 @@
          }
       }
       
-      public static function LoadGameSaveData (filename:String):ByteArray
+      public static function LoadCookie (filename:String):ByteArray
       {
          try
          {
@@ -30,7 +30,7 @@
          return null;
       }
       
-      private static function WriteGameSaveData (filename:String, savedData:ByteArray):void
+      private static function WriteCookie (filename:String, savedData:ByteArray):void
       {
          try 
          {

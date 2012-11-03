@@ -2275,12 +2275,12 @@ package player.trigger {
       
       public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibIO.WriteGameSaveData (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()), Global.GetSavedData ());
+         Global.Viewer_mLibCookie.WriteCookie (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()), Global.GetSavedData ());
       }
       
       public static function LoadSaveData (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.SetSavedData (Global.Viewer_mLibIO.LoadGameSaveData (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ())));
+         Global.SetSavedData (Global.Viewer_mLibCookie.LoadCookie (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ())));
       }
       
       public static function ResetSaveData (valueSource:Parameter, valueTarget:Parameter):void
@@ -2290,7 +2290,7 @@ package player.trigger {
       
       public static function DeleteSaveData (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibIO.ClearGameSaveData (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()));
+         Global.Viewer_mLibCookie.ClearCookie (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()));
       }
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void

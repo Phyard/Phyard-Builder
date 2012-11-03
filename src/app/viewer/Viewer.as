@@ -294,7 +294,7 @@ package viewer {
             var screenX:int = Capabilities.screenResolutionX;
             var screenY:int = Capabilities.screenResolutionY;
             var diagonal:Number = Math.sqrt((screenX*screenX)+(screenY*screenY))/dpi;
-            // if diagonal is higher than 6, we will assume it is a tablet
+            // if diagonal is higher than 6, we will assume it is a tablet or PC
             mIsPhoneDevice = diagonal < 6;
 
             if (mIsPhoneDevice)
@@ -1016,35 +1016,36 @@ package viewer {
       {
          mWorldDesignProperties = mWorldPlugin.Call ("GetWorldProperties", {mWorld: mPlayerWorld});
 
-         if (mWorldDesignProperties.mIsPermitPublishing == undefined)        mWorldDesignProperties.mIsPermitPublishing = false;
-         if (mWorldDesignProperties.mIsShareSourceCode == undefined)         mWorldDesignProperties.mIsShareSourceCode = false;
-         if (mWorldDesignProperties.GetZoomScale == null)                    mWorldDesignProperties.GetZoomScale = DummyCallback_GetScale;
-         if (mWorldDesignProperties.SetZoomScale == null)                    mWorldDesignProperties.SetZoomScale = DummyCallback;
-         if (mWorldDesignProperties.GetViewportWidth == null)                mWorldDesignProperties.GetViewportWidth = DummyCallback_ViewSize;
-         if (mWorldDesignProperties.GetViewportHeight == null)               mWorldDesignProperties.GetViewportHeight = DummyCallback_ViewSize;
-         if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
-         if (mWorldDesignProperties.GetViewerUiFlags == null)                mWorldDesignProperties.GetViewerUiFlags = DummyCallback_UiFlags;
-         if (mWorldDesignProperties.GetPlayBarColor == null)                 mWorldDesignProperties.GetPlayBarColor = DummyCallback_PlayBarColor;
-         if (mWorldDesignProperties.Initialize == null)                      mWorldDesignProperties.Initialize = DummyCallback;
-         if (mWorldDesignProperties.SetSingleStepMode == null)               mWorldDesignProperties.SetSingleStepMode = DummyCallback;
-         if (mWorldDesignProperties.SetPaused == null)                       mWorldDesignProperties.SetPaused = DummyCallback;
-         if (mWorldDesignProperties.SetInteractiveEnabledWhenPaused == null) mWorldDesignProperties.SetInteractiveEnabledWhenPaused = DummyCallback;
-         if (mWorldDesignProperties.SetCacheSystemEvent == null)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
-         if (mWorldDesignProperties.GetBuildingStatus == null)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_GetBuildingStatus;
-         if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
-         if (mWorldDesignProperties.mInitialSpeedX == undefined)             mWorldDesignProperties.mInitialSpeedX = 2;
-         if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
-         if (mWorldDesignProperties.mHasSounds == undefined)                 mWorldDesignProperties.mHasSounds = false;
-         if (mWorldDesignProperties.mInitialSoundEnabled == undefined)       mWorldDesignProperties.mInitialSoundEnabled = true;
-         if (mWorldDesignProperties.SetSoundEnabled == undefined)            mWorldDesignProperties.SetSoundEnabled = DummyCallback;
-         if (mWorldDesignProperties.mPreferredFPS == undefined)              mWorldDesignProperties.mPreferredFPS = 30;
-         if (mWorldDesignProperties.mPauseOnFocusLost == undefined)          mWorldDesignProperties.mPauseOnFocusLost = false;
-         if (mWorldDesignProperties.RegisterGestureEvent == undefined)       mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
-         if (mWorldDesignProperties.OnViewerEvent == undefined)              mWorldDesignProperties.OnViewerEvent = DummyCallback;
-         if (mWorldDesignProperties.OnViewerDestroyed == undefined)          mWorldDesignProperties.OnViewerDestroyed = DummyCallback;
-         if (mWorldDesignProperties.OnSystemBackEvent == undefined)          mWorldDesignProperties.OnSystemBackEvent = DummyOnSystemBackEvent;      
-         if (mWorldDesignProperties.HasRestartLevelRequest == undefined)     mWorldDesignProperties.HasRestartLevelRequest = DummyCallback_ReturnFalse;      
-         if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)   mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;      
+         if (mWorldDesignProperties.mIsPermitPublishing == undefined)             mWorldDesignProperties.mIsPermitPublishing = false;
+         if (mWorldDesignProperties.mIsShareSourceCode == undefined)              mWorldDesignProperties.mIsShareSourceCode = false;
+         if (mWorldDesignProperties.GetZoomScale == undefined)                    mWorldDesignProperties.GetZoomScale = DummyCallback_GetScale;
+         if (mWorldDesignProperties.SetZoomScale == undefined)                    mWorldDesignProperties.SetZoomScale = DummyCallback;
+         if (mWorldDesignProperties.GetViewportWidth == undefined)                mWorldDesignProperties.GetViewportWidth = DummyCallback_ViewSize;
+         if (mWorldDesignProperties.GetViewportHeight == undefined)               mWorldDesignProperties.GetViewportHeight = DummyCallback_ViewSize;
+         if (mWorldDesignProperties.SetRealViewportSize == undefined)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
+         if (mWorldDesignProperties.GetViewerUiFlags == undefined)                mWorldDesignProperties.GetViewerUiFlags = DummyCallback_UiFlags;
+         if (mWorldDesignProperties.GetPlayBarColor == undefined)                 mWorldDesignProperties.GetPlayBarColor = DummyCallback_PlayBarColor;
+         if (mWorldDesignProperties.GetBackgroundColor == undefined)              mWorldDesignProperties.GetBackgroundColor = DummyGetBackgroundColor;
+         if (mWorldDesignProperties.Initialize == undefined)                      mWorldDesignProperties.Initialize = DummyCallback;
+         if (mWorldDesignProperties.SetSingleStepMode == undefined)               mWorldDesignProperties.SetSingleStepMode = DummyCallback;
+         if (mWorldDesignProperties.SetPaused == undefined)                       mWorldDesignProperties.SetPaused = DummyCallback;
+         if (mWorldDesignProperties.SetInteractiveEnabledWhenPaused == undefined) mWorldDesignProperties.SetInteractiveEnabledWhenPaused = DummyCallback;
+         if (mWorldDesignProperties.SetCacheSystemEvent == undefined)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
+         if (mWorldDesignProperties.GetBuildingStatus == undefined)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_GetBuildingStatus;
+         if (mWorldDesignProperties.SetRealViewportSize == undefined)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
+         if (mWorldDesignProperties.mInitialSpeedX == undefined)                  mWorldDesignProperties.mInitialSpeedX = 2;
+         if (mWorldDesignProperties.mInitialZoomScale == undefined)               mWorldDesignProperties.mInitialZoomScale = 1.0;
+         if (mWorldDesignProperties.mHasSounds == undefined)                      mWorldDesignProperties.mHasSounds = false;
+         if (mWorldDesignProperties.mInitialSoundEnabled == undefined)            mWorldDesignProperties.mInitialSoundEnabled = true;
+         if (mWorldDesignProperties.SetSoundEnabled == undefined)                 mWorldDesignProperties.SetSoundEnabled = DummyCallback;
+         if (mWorldDesignProperties.mPreferredFPS == undefined)                   mWorldDesignProperties.mPreferredFPS = 30;
+         if (mWorldDesignProperties.mPauseOnFocusLost == undefined)               mWorldDesignProperties.mPauseOnFocusLost = false;
+         if (mWorldDesignProperties.RegisterGestureEvent == undefined)            mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
+         if (mWorldDesignProperties.OnViewerEvent == undefined)                   mWorldDesignProperties.OnViewerEvent = DummyCallback;
+         if (mWorldDesignProperties.OnViewerDestroyed == undefined)               mWorldDesignProperties.OnViewerDestroyed = DummyCallback;
+         if (mWorldDesignProperties.OnSystemBackEvent == undefined)               mWorldDesignProperties.OnSystemBackEvent = DummyOnSystemBackEvent;      
+         if (mWorldDesignProperties.HasRestartLevelRequest == undefined)          mWorldDesignProperties.HasRestartLevelRequest = DummyCallback_ReturnFalse;      
+         if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)        mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;      
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -1119,6 +1120,11 @@ package viewer {
       private function DummyGetSceneIndex ():int
       {
          return -1;
+      }
+      
+      private function DummyGetBackgroundColor ():uint
+      {
+         return mParamsFromContainer == null ? 0x000000 : mParamsFromContainer.mBackgroundColor;
       }
 
 //======================================================================
@@ -1287,10 +1293,10 @@ package viewer {
                         OnExitApp : ExitLevel,
                         OpenURL : UrlUtil.PopupPage
                },
-               mLibIO : {
-                         LoadGameSaveData : LoadGameSaveData,
-                         WriteGameSaveData : WriteGameSaveData,
-                         ClearGameSaveData : ClearGameSaveData
+               mLibCookie : {
+                         LoadCookie : LoadCookie,
+                         WriteCookie : WriteCookie,
+                         ClearCookie : ClearCookie
                },
                mServicesLib : {
                         SubmitHighScore: SubmitHighScore
@@ -1770,8 +1776,8 @@ package viewer {
       
       private function RepaintFullScreenLayersWithBackgroundColor (newWidth:Number, newHeight:Number):void
       {
-         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, mParamsFromContainer.mBackgroundColor);
-         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, mParamsFromContainer.mBackgroundColor);
+         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, mWorldDesignProperties.GetBackgroundColor ());//mParamsFromContainer.mBackgroundColor);
+         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, mWorldDesignProperties.GetBackgroundColor ());//mParamsFromContainer.mBackgroundColor);
       }
 
 //======================================================================
@@ -1801,14 +1807,14 @@ package viewer {
             mErrorMessageLayer.removeChild (mErrorMessageText);
          
          mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage) + "<br>" + mLastErrorInfo
-+ "<br>debugInfo=" + debugInfo, 
-                            true, 0xFFFFFF);
+//+ "<br>debugInfo=" + debugInfo 
+                            , true, 0xFFFFFF);
          mErrorMessageLayer.addChild (mErrorMessageText);
          
-debugInfo = debugInfo; mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
+//debugInfo = debugInfo; mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
          CenterErrorMessageText ();
       }
-public static var debugInfo:String = "";
+//public static var debugInfo:String = "";
       
       private function CenterErrorMessageText ():void
       {

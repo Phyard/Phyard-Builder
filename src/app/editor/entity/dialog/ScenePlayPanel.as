@@ -325,7 +325,7 @@ package editor.entity.dialog {
       
       public function ClearGameSaveData (soFilename:String):void
       {
-         Viewer.ClearGameSaveData (soFilename);
+         Viewer.ClearCookie (soFilename);
       }
    }
 }

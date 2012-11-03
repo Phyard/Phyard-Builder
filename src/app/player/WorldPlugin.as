@@ -43,6 +43,7 @@ package player
                   GetViewportHeight : world.GetPreferredViewportHeight, // from v1.59
                   GetViewerUiFlags : world.GetViewerUiFlags, // from v1.50
                   GetPlayBarColor : world.GetPlayBarColor, // from v1.50
+                  GetBackgroundColor : world.GetBackgroundColor, // from v2.03, (temporarily return the current scene bg color)
                   
                   Initialize : world.Initialize, // from v1.52 (beforev1.52, initialize is called in plugin)
                   Destroy : world.Destroy, // from v1.00
@@ -115,7 +116,7 @@ package player
                
                Global.Viewer_mLibAppp = params.mLibApp; // v2.03
                
-               Global.Viewer_mLibIO = params.mLibIO; // from v2.03
+               Global.Viewer_mLibCookie = params.mLibCookie; // from v2.03
                
                Global.Viewer_mLibServices = params.mLibService; // from v2.03
                

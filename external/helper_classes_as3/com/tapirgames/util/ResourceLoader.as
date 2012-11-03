@@ -140,7 +140,7 @@ package com.tapirgames.util
    // load image
    
       // this loadBytes version will return ioError on iOS
-      public function loadImageFromByteArray2 (imageFileData:ByteArray):void
+      private function loadImageFromByteArray2 (imageFileData:ByteArray):void
       {
          try
          {
@@ -180,9 +180,9 @@ package com.tapirgames.util
          
          try
          {
-            bitmap = event.target.content as Bitmap; // or this.content as Bitmap;
-            if (bitmap == null)
-               bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
+            //bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
+            var bitmapClass:Class = (event.target.content as Object).BitmapClass as Class;
+            bitmap = new bitmapClass ();
             
             if (bitmap == null || bitmap.bitmapData == null || bitmap.bitmapData.width == 0 || bitmap.bitmapData.height == 0)
             {
@@ -245,6 +245,7 @@ package com.tapirgames.util
          {
             // http://www.senocular.com/pub/adobe/Flash%20Player%20Security%20Basics.html
             // SecurityError: Error #2148
+            // In fact, Adobe does it over-securely.
             // 
             // although event.target.content is a bitmap, if the swf file is running for a local disk (file:///),
             // SecurityError will be thrown.
@@ -370,7 +371,9 @@ package com.tapirgames.util
          
          try
          {
-            sound = ((event.target.content.GetSound as Function) ()) as Sound;
+            //sound = ((event.target.content.GetSound as Function) ()) as Sound;
+            var soundClass:Class = (event.target.content as Object).SoundClass as Class;
+            sound = new soundClass ();
          }
          catch (error:Error)
          {

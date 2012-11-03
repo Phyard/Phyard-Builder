@@ -113,7 +113,7 @@ package player.design
       public static var Viewer_mLibAppp:Object; // v2.03
                //IsNativeApp:Function; // v2.03
                //OnExitApp:Function; // v2.03
-      public static var Viewer_mLibIO:Object; // v2.03
+      public static var Viewer_mLibCookie:Object; // v2.03
                //WriteGameSaveData:Function; // v2.03
                //LoadGameSaveData:Function; // v2.03
                //ClearGameSaveData:Function; // v2.03
@@ -176,7 +176,7 @@ package player.design
       Viewer_OnLoadScene = null;
       Viewer_mLibSound = null;
       Viewer_mLibAppp = null;
-      Viewer_mLibIO = null;
+      Viewer_mLibCookie = null;
       Viewer_mLibServices = null;
    }
    
@@ -539,7 +539,7 @@ package player.design
          Viewer_OnLoadScene = null;
          Viewer_mLibSound = null;
          Viewer_mLibAppp = null;
-         Viewer_mLibIO = null;
+         Viewer_mLibCookie = null;
          Viewer_mLibServices = null;
          
          //

@@ -5,6 +5,8 @@ package common {
    {
    // ...
       
+      public var mViewerParams:Object;
+      
       public var mForRestartLevel:Boolean = false;
       
       public var mPlayerWorldHints:Object; // not used now. When and why is it added? 

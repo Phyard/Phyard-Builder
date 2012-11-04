@@ -5,7 +5,9 @@ package common {
    import flash.geom.Point;
    
    import com.tapirgames.util.TextUtil;
-
+   
+   import player.WorldPlugin;
+   
    import player.design.Global;
    import player.world.World;
 
@@ -268,6 +270,9 @@ package common {
 
             playerWorld = new World (worldDefine);
             Global.SetCurrentWorld (playerWorld);
+            
+            WorldPlugin.Call ("SetViewerParams", worldDefine.mViewerParams);
+            worldDefine.mViewerParams = null;
          }
 
    //*********************************************************************************************************************************

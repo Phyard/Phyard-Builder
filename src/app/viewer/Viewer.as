@@ -1054,9 +1054,23 @@ package viewer {
 
             mWorldBinaryData.position = 0;
             var worldDefine:Object = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
-            if (worldDefine != null && worldDefine.hasOwnProperty ("mForRestartLevel"))
+            if (worldDefine != null)
             {
-               worldDefine.mForRestartLevel = restartLevel;
+               if (worldDefine.hasOwnProperty ("mForRestartLevel"))
+               {
+                  worldDefine.mForRestartLevel = restartLevel;
+               }
+               if (worldDefine.hasOwnProperty ("mViewerParams"))
+               {
+                  worldDefine.mViewerParams = {
+                     mLibCapabilities : {
+                                 IsAccelerometerSupported: IsAccelerometerSupported,
+                                 GetAcceleration: GetAcceleration
+                     },
+                     GetDebugString: GetDebugString,
+                     SetMouseGestureSupported: SetMouseGestureSupported
+                  };
+               }
             }
             mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);
 
@@ -1095,13 +1109,7 @@ package viewer {
                GetZoomScale : mSkin.GetZoomScale,
                SetZoomScale : mSkin.SetZoomScale,
                IsSoundEnabled : mSkin.IsSoundEnabled,
-               SetSoundEnabled : mSkin.SetSoundEnabled,
-               mLibCapabilities : {
-                           IsAccelerometerSupported: IsAccelerometerSupported,
-                           GetAcceleration: GetAcceleration
-               },
-               GetDebugString: GetDebugString,
-               SetMouseGestureSupported: SetMouseGestureSupported
+               SetSoundEnabled : mSkin.SetSoundEnabled
             });
 
             // ...

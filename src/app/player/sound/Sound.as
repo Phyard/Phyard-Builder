@@ -78,7 +78,7 @@ package player.sound
             mCallbackOnLoadError = onLoadError;
             
             // ...
-            Global.Viewer_mLibSound.LoadSound (fileData, OnLoadSoundComplete, OnLoadSoundError, 
+            Global.Viewer_mLibSound.LoadSoundFromBytes (fileData, OnLoadSoundComplete, OnLoadSoundError, 
                                                                                                 {
                                                                                                    mFileFormat: GetFileFormat (),
                                                                                                    mSamplingRate: GetSamplingRate (),

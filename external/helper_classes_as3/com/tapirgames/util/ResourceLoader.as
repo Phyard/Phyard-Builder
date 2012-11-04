@@ -294,7 +294,7 @@ package com.tapirgames.util
       
       // this loadBytes version will throw ioError on iOS, 
       // but it works well for local swf file.
-      public function StartLoadingSound (soundFormat:String, soundRate:int, soundSampleSize:int, isStereo:Boolean, numSamples:int):void
+      public function StartLoadingSound (isLoadBytesForbidden:Boolean, soundFormat:String, soundRate:int, soundSampleSize:int, isStereo:Boolean, numSamples:int):void
       {
          if (mResFileData == null)
          {

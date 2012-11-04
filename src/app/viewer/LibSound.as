@@ -54,7 +54,7 @@
       private function LoadSoundFromBytes (soundFileData:ByteArray, onComplete:Function, onError:Function, soundProperties:Object):void
       {
          var loader:ResourceLoader = new ResourceLoader (soundFileData, onComplete, onError);
-         loader.StartLoadingSound (soundProperties.mFileFormat, soundProperties.mSamplingRate, soundProperties.mSampleSize, soundProperties.mIsStereo, soundProperties.mNumSamples);
+         loader.StartLoadingSound (mParamsFromContainer.mIsLoadBytesForbidden, soundProperties.mFileFormat, soundProperties.mSamplingRate, soundProperties.mSampleSize, soundProperties.mIsStereo, soundProperties.mNumSamples);
       }
       
       // sounds in playing

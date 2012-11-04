@@ -252,14 +252,13 @@ package common {
          return entity;
       }
       
-      // for Viewer, the prototype is WorldDefine2PlayerWorld (defObject:Object) for all versions of World
-      // see Viewer.as to get why here use Object instead of WorldDefine
-      // 
       // playerWorld != null for cloning shape or merging scene, otherwise for loading from stretch
       // - isMergingScene is true for merging scene, otherwise for cloning shape
       // 
       // todo: support multiple scenes
       // 
+      // for Viewer, the prototype is WorldDefine2PlayerWorld (defObject:Object) for all versions of World
+      // see Viewer.as to get why here use Object instead of WorldDefine
       public static function WorldDefine2PlayerWorld (defObject:Object, playerWorld:World = null, isMergingScene:Boolean = false):World
       {
          var worldDefine:WorldDefine = defObject as WorldDefine;
@@ -273,7 +272,7 @@ package common {
             isMergingScene = false; // forcely
          }
          
-         if (playerWorld == null || isMergingScene)
+         if (isLoaingFromStretch || isMergingScene)
          {
             FillMissedFieldsInWorldDefine (worldDefine, worldDefine.mCurrentSceneId);
             if (worldDefine.mVersion >= 0x0103)

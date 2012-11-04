@@ -125,7 +125,7 @@ package editor.sound {
             //var loader:ResourceLoader = new ResourceLoader (fileData, OnLoadSoundComplete, OnLoadSoundError);
             // use fileData will make the beginning frames are lost in sound playing. Weird!
             var loader:ResourceLoader = new ResourceLoader (mSoundInfo.GetFileData (), OnLoadSoundComplete, OnLoadSoundError);
-            loader.StartLoadingSound (mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
+            loader.StartLoadingSound (false, mSoundInfo.GetFileFormat (), mSoundInfo.GetSamplingRate (), mSoundInfo.GetSampleSize (), mSoundInfo.IsStereo (), mSoundInfo.GetNumSamples ());
          }
          else
          {

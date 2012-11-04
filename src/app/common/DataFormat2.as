@@ -5,7 +5,9 @@ package common {
    import flash.geom.Point;
    
    import com.tapirgames.util.TextUtil;
-
+   
+   import player.WorldPlugin;
+   
    import player.design.Global;
    import player.world.World;
 
@@ -65,9 +67,12 @@ package common {
    import common.trigger.ValueSpaceTypeDefine;
 
    import common.trigger.CoreEventIds;
+   
+   import common.Define;
 
    public class DataFormat2
    {
+      private static var mDefine:Define = new Define ();
       
       public static function Texture2TextureDefine(textureModuleIndex:int, textureTransform:Transform2D):Object
       {
@@ -322,6 +327,10 @@ package common {
             playerWorld.CreateCollisionCategories (sceneDefine.mCollisionCategoryDefines, sceneDefine.mCollisionCategoryFriendLinkDefines); //worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
             playerWorld.SetBasicInfos (worldDefine);
             Global.SetCurrentWorld (playerWorld);
+            
+            // ...
+            WorldPlugin.Call ("SetViewerParams", worldDefine.mViewerParams);
+            worldDefine.mViewerParams = null;
          }
          else if (isMergingScene)
          {

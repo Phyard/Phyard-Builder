@@ -1227,6 +1227,45 @@ package viewer {
             {
                worldDefine.mDontReloadGlobalAssets = dontReloadGlobalAssets;
             }
+            if (worldDefine.hasOwnProperty ("mViewerParams"))
+            {
+               worldDefine.mViewerParams = {
+                  //Viewer
+                  OnLoadScene : OnLoadScene,
+                  mLibCapabilities : {
+                              IsAccelerometerSupported: IsAccelerometerSupported,
+                              GetAcceleration: GetAcceleration,
+                              GetScreenResolution : GetScreenResolution,
+                              GetScreenDPI : GetScreenDPI
+                  },
+                  GetDebugString: GetDebugString,
+                  SetMouseGestureSupported: SetMouseGestureSupported,
+                  mLibSound : {
+                              LoadSoundFromBytes : LoadSoundFromBytes, 
+                              PlaySound: PlaySound,
+                              StopAllInLevelSounds: StopAllInLevelSounds,
+                              StopCrossLevelsSound: StopCrossLevelsSound
+                             
+                              // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
+                  },
+                  mLibImage : {
+                              LoadImageFromBytes : LoadImageFromBytes
+                  },
+                  mLibApp : {
+                              IsNativeApp: IsNativeApp,
+                              OnExitApp : ExitLevel,
+                              OpenURL : UrlUtil.PopupPage
+                  },
+                  mLibCookie : {
+                              LoadCookie : LoadCookie,
+                              WriteCookie : WriteCookie,
+                              ClearCookie : ClearCookie
+                  },
+                  mServicesLib : {
+                              SubmitHighScore: SubmitHighScore
+                  }
+               };
+            }
             
             mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);
 
@@ -1271,43 +1310,8 @@ package viewer {
                SetZoomScale : mSkin.SetZoomScale,
                IsSoundEnabled : mSkin.IsSoundEnabled,
                SetSoundEnabled : mSkin.SetSoundEnabled,
-               //todo: SoundVolume
-               
-               //Viewer
-               OnLoadScene : OnLoadScene,
-               mLibCapabilities : {
-                           IsAccelerometerSupported: IsAccelerometerSupported,
-                           GetAcceleration: GetAcceleration,
-                           GetScreenResolution : GetScreenResolution,
-                           GetScreenDPI : GetScreenDPI
-               },
-               GetDebugString: GetDebugString,
-               SetMouseGestureSupported: SetMouseGestureSupported,
-               mLibSound : {
-                           LoadSoundFromBytes : LoadSoundFromBytes, 
-                           PlaySound: PlaySound,
-                           StopAllInLevelSounds: StopAllInLevelSounds,
-                           StopCrossLevelsSound: StopCrossLevelsSound,
-                           SetSoundVolume : SetSoundVolume
-                          
-                           // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
-               },
-               mLibImage : {
-                           LoadImageFromBytes : LoadImageFromBytes
-               },
-               mLibApp : {
-                           IsNativeApp: IsNativeApp,
-                           OnExitApp : ExitLevel,
-                           OpenURL : UrlUtil.PopupPage
-               },
-               mLibCookie : {
-                           LoadCookie : LoadCookie,
-                           WriteCookie : WriteCookie,
-                           ClearCookie : ClearCookie
-               },
-               mServicesLib : {
-                           SubmitHighScore: SubmitHighScore
-               }
+               GetSoundVolume : GetSoundVolume,
+               SetSoundVolume : SetSoundVolume
             });
 
             // ...
@@ -1813,12 +1817,11 @@ package viewer {
          if (mErrorMessageText != null && mErrorMessageText.parent == mErrorMessageLayer)
             mErrorMessageLayer.removeChild (mErrorMessageText);
          
-         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage) + "<br>" + mLastErrorInfo
-//+ "<br>debugInfo=" + debugInfo 
-                            , true, 0xFFFFFF);
+         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage) + "<br>" + mLastErrorInfo, true, 0xFFFFFF);
          mErrorMessageLayer.addChild (mErrorMessageText);
          
-//debugInfo = debugInfo; mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
+mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
+
          CenterErrorMessageText ();
       }
 //public static var debugInfo:String = "";

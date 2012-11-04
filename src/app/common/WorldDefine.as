@@ -4,6 +4,8 @@ package common {
    public class WorldDefine
    {
    // ...
+
+      public var mViewerParams:Object;
       
       public var mCurrentSceneId:int = 0; // for editing undo scene, added from v2.00
                                           // also for viewer

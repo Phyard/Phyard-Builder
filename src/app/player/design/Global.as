@@ -96,6 +96,8 @@ package player.design
       public static var UI_SetZoomScale:Function;
       public static var UI_IsSoundEnabled:Function;
       public static var UI_SetSoundEnabled:Function;
+      public static var UI_GetSoundVolume:Function; // v2.03 (not really used now)
+      public static var UI_SetSoundVolume:Function; // v2.03 (not really used now)
       public static var Viewer_mLibCapabilities:Object;
                //IsAccelerometerSupported:Function; // v1.60
                //GetAcceleration:Function; // v1.60
@@ -109,7 +111,6 @@ package player.design
                //PlaySound:Function; // v2.02. (before v2.02, sound lib is included in world instead of viewer)
                //StopAllInLevelSounds:Function; // v2.02
                //StopCrossLevelsSound:Function; // v2.02
-               //SetSoundVolume; // v2.03 (not really used now)
       public static var Viewer_mLibImage:Object; // v2.03
                //LoadImageFromBytes:Function; // v2.03
       public static var Viewer_mLibAppp:Object; // v2.03

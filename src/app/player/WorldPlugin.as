@@ -24,6 +24,33 @@ package player
                   
                   "" : null
                };
+            case "SetViewerParams":
+               Global.Viewer_mLibCapabilities = params.mLibCapabilities; // from v1.60
+                           //IsAccelerometerSupported:Function; // from v1.60
+                           //GetAcceleration:Function; // from v1.60
+                           //GetScreenResolution:Function; // from v2.03
+                           //GetScreenDPI:Function; // from v2.03
+                           //OpenURL:Function; // from v2.03
+               
+               //Global._GetDebugString = params.GetDebugString as Function; // from v1.60
+               Global._GetDebugString = Global.GetDebugString;
+               
+               Global.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
+               
+               Global.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
+                                                                  // useless since v2.03
+               
+               Global.Viewer_mLibSound = params.mLibSound; // from v2.02
+               
+               Global.Viewer_mLibImage = params.mLibImage; // from v2.03
+               
+               Global.Viewer_mLibAppp = params.mLibApp; // v2.03
+               
+               Global.Viewer_mLibCookie = params.mLibCookie; // from v2.03
+               
+               Global.Viewer_mLibServices = params.mLibService; // from v2.03
+               
+               break;
             case "GetWorldProperties":
                world = params.mWorld as World;
                
@@ -95,32 +122,8 @@ package player
                Global.UI_SetZoomScale = params.SetZoomScale as Function; // from v1.53, SetScale has a 2nd param: changeScaleSmoothly, default value is true
                Global.UI_IsSoundEnabled = params.IsSoundEnabled as Function; // from v1.59 (really used from v2.02)
                Global.UI_SetSoundEnabled = params.SetSoundEnabled as Function; // from v1.59 (really used from v2.02)
-               //todo: add UI_Get/SetVolume
-               
-               Global.Viewer_mLibCapabilities = params.mLibCapabilities; // from v1.60
-                           //IsAccelerometerSupported:Function; // from v1.60
-                           //GetAcceleration:Function; // from v1.60
-                           //GetScreenResolution:Function; // from v2.03
-                           //GetScreenDPI:Function; // from v2.03
-                           //OpenURL:Function; // from v2.03
-               
-               //Global._GetDebugString = params.GetDebugString as Function; // from v1.60
-               Global._GetDebugString = Global.GetDebugString;
-               
-               Global.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
-               
-               Global.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
-                                                                  // useless since v2.03
-               
-               Global.Viewer_mLibSound = params.mLibSound; // from v2.02
-               
-               Global.Viewer_mLibImage = params.mLibImage; // from v2.03
-               
-               Global.Viewer_mLibAppp = params.mLibApp; // v2.03
-               
-               Global.Viewer_mLibCookie = params.mLibCookie; // from v2.03
-               
-               Global.Viewer_mLibServices = params.mLibService; // from v2.03
+               Global.UI_GetSoundVolume = params.GetSoundVolume as Function; // from v2.03 (not really used now)
+               Global.UI_SetSoundVolume = params.SetSoundVolume as Function; // from v2.03 (not really used now)
                
                break;
             default:

@@ -1820,7 +1820,7 @@ package viewer {
          mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage) + "<br>" + mLastErrorInfo, true, 0xFFFFFF);
          mErrorMessageLayer.addChild (mErrorMessageText);
          
-mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
+//mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
 
          CenterErrorMessageText ();
       }

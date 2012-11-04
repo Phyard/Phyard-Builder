@@ -72,8 +72,6 @@ package common {
 
    public class DataFormat2
    {
-      private static var mDefine:Define = new Define ();
-      
       public static function Texture2TextureDefine(textureModuleIndex:int, textureTransform:Transform2D):Object
       {
          var textureDefine:Object = new Object ();

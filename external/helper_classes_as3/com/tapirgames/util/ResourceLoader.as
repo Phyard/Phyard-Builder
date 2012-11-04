@@ -10,6 +10,8 @@ package com.tapirgames.util
    import flash.events.ProgressEvent;
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
+   import flash.net.URLRequest;
+   import flash.system.ApplicationDomain;
    
    public class ResourceLoader
    {
@@ -349,6 +351,32 @@ package com.tapirgames.util
             
             if (numSamples < 0)
                throw new Error ("numSamples must be larger than 0: " + numSamples);
+         // ...
+            
+            if (isLoadBytesForbidden)
+            {
+               // try to use AIR file API
+               
+               //if (ApplicationDomain.currentDomain.hasDefinition("flash.filesystem.File"))
+               //if (ApplicationDomain.currentDomain.hasDefinition("flash.filesystem.FileStream"))
+               
+               var FileClass:Class = ApplicationDomain.currentDomain.getDefinition("flash.filesystem.File") as Class;
+               var FileStreamClass:Class = ApplicationDomain.currentDomain.getDefinition("flash.filesystem.FileStream") as Class;
+               var FileModeClass:Class = ApplicationDomain.currentDomain.getDefinition("flash.filesystem.FileMode") as Class;
+               
+               var file:Object = FileClass.applicationStorageDirectory.resolvePath("temp.mp3");
+               var fileStream:Object = new FileStreamClass ();
+               fileStream.open(file, FileModeClass.WRITE)
+               fileStream.writeBytes(mResFileData);
+               fileStream.close();
+               
+               var sound:Sound = new Sound ();
+               sound.addEventListener(Event.COMPLETE, OnLoadSoundComplete2);
+               sound.addEventListener (IOErrorEvent.IO_ERROR, OnLoadingError2);
+               sound.load (new URLRequest (file.url));
+               
+               return;
+            }
             
          // ...
             
@@ -409,6 +437,51 @@ package com.tapirgames.util
          else
          {
             mOnSucceededCallback (sound);
+         }
+      } 
+      
+      private function OnLoadSoundComplete2 (event:Event):void 
+      {
+         DeleteTempSound ();
+
+         var sound:Sound = null;
+         
+         try
+         {
+            sound = event.target as Sound;
+         }
+         catch (error:Error)
+         {
+            sound = null;
+         }
+         
+         if (sound == null)
+         {
+            mOnFailedCallback ("OnLoadSoundComplete2: invalid sound!");
+         }
+         else
+         {
+            mOnSucceededCallback (sound);
+         }
+      }
+      
+      private function OnLoadingError2 (event:Event):void
+      {
+         DeleteTempSound ();
+
+         mOnFailedCallback (event.toString ());
+      }
+      
+      private function DeleteTempSound ():void
+      {
+         try
+         {
+            var FileClass:Class = ApplicationDomain.currentDomain.getDefinition("flash.filesystem.File") as Class;
+            var file:Object = FileClass.applicationStorageDirectory.resolvePath("temp.mp3");
+            file.deleteFile ();
+         }
+         catch (error:Error)
+         {
          }
       }
    }

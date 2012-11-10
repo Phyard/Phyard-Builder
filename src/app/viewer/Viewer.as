@@ -681,11 +681,11 @@ package viewer {
                SetErrorMessage ("Loading error!");
                break;
             case StateId_Building:
-               if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
-               {
-                  mParamsFromUniViewer.SetLoadingText ("Building ...");
-               }
-               this.visible = false;
+               //if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
+               //{
+               //   mParamsFromUniViewer.SetLoadingText ("Building ...");
+               //}
+               //this.visible = false;
                break;
             case StateId_BuildingError:
                SetErrorMessage ("Building error!");
@@ -1127,7 +1127,7 @@ package viewer {
       
       private function DummyGetBackgroundColor ():uint
       {
-         return mParamsFromContainer == null ? 0x000000 : mParamsFromContainer.mBackgroundColor;
+         return mParamsFromContainer.mBackgroundColor;
       }
 
 //======================================================================
@@ -1322,6 +1322,10 @@ package viewer {
             stage.frameRate = mWorldDesignProperties.mPreferredFPS;
             
             ChangeState (StateId_Building);
+            
+            // avoid flashing
+            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+            RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
          }
          catch (error:Error)
          {
@@ -1787,8 +1791,9 @@ package viewer {
       
       private function RepaintFullScreenLayersWithBackgroundColor (newWidth:Number, newHeight:Number):void
       {
-         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, mWorldDesignProperties.GetBackgroundColor ());//mParamsFromContainer.mBackgroundColor);
-         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, mWorldDesignProperties.GetBackgroundColor ());//mParamsFromContainer.mBackgroundColor);
+         var bgColor:uint = mWorldDesignProperties == null ? mParamsFromContainer.mBackgroundColor : mWorldDesignProperties.GetBackgroundColor ();
+         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, bgColor);
+         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, bgColor);
       }
 
 //======================================================================

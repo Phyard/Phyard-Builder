@@ -39,7 +39,7 @@ package com.tapirgames.gesture {
       
       private var mPointDistances:Array;
       
-      private static const kLengthToAccLengthRatioToFindSegment :Number = Math.cos (20.0 * Math.PI / 180.0); // 0.94; // 0.94 is about cos (20 degrees)
+      private static const kLengthToAccLengthRatioToFindSegment :Number = Math.cos (20.0 * Math.PI / 180.0);
 
    //===================================================
 
@@ -137,10 +137,10 @@ package com.tapirgames.gesture {
 
          if (newPoint.mX < mMinX)
             mMinX = newPoint.mX;
-         if (newPoint.mY < mMinY)
-            mMinY = newPoint.mY;
          if (newPoint.mX > mMaxX)
             mMaxX = newPoint.mX;
+         if (newPoint.mY < mMinY)
+            mMinY = newPoint.mY;
          if (newPoint.mY > mMaxY)
             mMaxY = newPoint.mY;
          
@@ -156,7 +156,7 @@ package com.tapirgames.gesture {
       
       private static function GetAbsoluteAngle (dx:Number, dy:Number):Number
       {
-         return (Math.atan2 (dy, dx) * kRadiansToDegrees + 360) % 360
+         return (Math.atan2 (dy, dx) * kRadiansToDegrees + 360) % 360;
       }
       
       private static function GetDeltaRotation (dx1:Number, dy1:Number, dx2:Number, dy2:Number):Number
@@ -367,6 +367,8 @@ package com.tapirgames.gesture {
                   return NewAnalyzeResult (kGestureName_Line, startSegmentAbsoluteAngle, "numSegments == 2 (>)", mNumPositiveDeltaAngleSegments > 0);
                else
                   return NewAnalyzeResult (kGestureName_Line, endSegmentAbsoluteAngle, "numSegments == 2 (<)", mNumPositiveDeltaAngleSegments > 0);
+               
+               //return;
             }
             
             var absIncludeAngle:Number = Math.abs (mEndSegment.mDeltaAngle);
@@ -607,7 +609,7 @@ package com.tapirgames.gesture {
             //   point = point.mNextPoint;
             //}
             
-//trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle + ", acc angle: " + segment.mAccumulatedAngle);
+//trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle + ", acc angle: " + segment.mAccumulatedAngle + ", distance: " + GetPointDistance (segment.mStartPoint, segment.mEndPoint)  + ", acc length: " + (segment.mEndPoint.mAccumulatedLength - segment.mStartPoint.mAccumulatedLength));
             
             segment = segment.mNextSegment;
          }
@@ -754,8 +756,8 @@ package com.tapirgames.gesture {
       
       private static var sGestureStandard_Arrow1          :Object = NewGestureStandard (kGestureName_Arrow          , true , [150             ], [150                   ], "arrow upper CW");
       private static var sGestureStandard_Arrow1N         :Object = NewGestureStandard (kGestureName_Arrow          , false, [-150            ], [-150                  ], "arrow upper CCW");
-      //private static var sGestureStandard_Arrow2         :Object = NewGestureStandard (kGestureName_Arrow          , true , [90             ], [90                    ], "arrow CW");
-      //private static var sGestureStandard_Arrow2N        :Object = NewGestureStandard (kGestureName_Arrow          , false, [-90            ], [-90                   ], "arrow CCW");
+      //private static var sGestureStandard_Arrow2        :Object = NewGestureStandard (kGestureName_Arrow          , true , [90              ], [90                    ], "arrow CW");
+      //private static var sGestureStandard_Arrow2N       :Object = NewGestureStandard (kGestureName_Arrow          , false, [-90             ], [-90                   ], "arrow CCW");
       private static var sGestureStandard_Arrow3          :Object = NewGestureStandard (kGestureName_Arrow          , true , [35              ], [35                    ], "arrow lower CW");
       private static var sGestureStandard_Arrow3N         :Object = NewGestureStandard (kGestureName_Arrow          , false, [-35             ], [-35                   ], "arrow loer CCW");
       

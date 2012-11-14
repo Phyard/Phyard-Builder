@@ -2357,6 +2357,21 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsShowBorder,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetShowBorder,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColor,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
@@ -3145,6 +3160,39 @@ package common.trigger {
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                         [ValueTypeDefine.ValueType_Array | ValueTypeDefine.ArrayTypeUsage_Position,       null],
+                     ],
+                     null
+                  );
+
+      // game / entity / shape / thickness
+      
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderThickness,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderThickness,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCurveThickness,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCurveThickness,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
                      ],
                      null
                   );

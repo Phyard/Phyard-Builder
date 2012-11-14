@@ -39,6 +39,7 @@ package editor.entity {
 
       override public function SetBuildBorder (build:Boolean):void
       {
+trace ("build = " + build + "," + new Error ().getStackTrace ());
          mVectorShapeArea.SetBuildBorder (build);
       }
 

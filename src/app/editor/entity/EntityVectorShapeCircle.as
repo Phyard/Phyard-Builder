@@ -33,6 +33,7 @@ package editor.entity {
 
          SetRadius (0.0);
          SetFilledColor (Define.ColorMovableObject);
+         SetBuildBorder (true);
       }
 
       override public function GetTypeName ():String

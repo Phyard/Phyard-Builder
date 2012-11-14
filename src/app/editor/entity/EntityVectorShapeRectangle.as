@@ -34,6 +34,7 @@ package editor.entity {
          SetHalfWidth (0);
          SetHalfHeight (0);
          SetFilledColor (Define.ColorMovableObject);
+         SetBuildBorder (true);
       }
 
       override public function GetTypeName ():String

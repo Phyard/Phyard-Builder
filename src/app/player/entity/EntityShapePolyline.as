@@ -73,6 +73,8 @@ package player.entity {
       public function SetCurveThickness (thickness:Number):void
       {
          mCurveThickness = thickness;
+         
+         DelayUpdateAppearance (); 
       }
       
       public function GetCurveThickness ():Number
@@ -83,6 +85,8 @@ package player.entity {
       public function SetRoundEnds (roundEnds:Boolean):void
       {
          mIsRoundEnds = roundEnds;
+         
+         DelayUpdateAppearance (); 
       }
       
       public function IsRoundEnds ():Boolean
@@ -93,6 +97,8 @@ package player.entity {
       public function SetClosed (closed:Boolean):void
       {
          mIsClosed = closed;
+         
+         DelayUpdateAppearance (); 
       }
       
       public function IsClosed ():Boolean

@@ -764,7 +764,7 @@ package editor.entity {
       public function ValidateAfterJustCreated ():void
       {
          SetBorderThickness (0);
-         SetBuildBorder (false);
+         SetBuildBorder ((this is EntityVectorShapeCircle) || (this is EntityVectorShapeRectangle));
          
          if (mAiType != Define.ShapeAiType_Unknown)
          {

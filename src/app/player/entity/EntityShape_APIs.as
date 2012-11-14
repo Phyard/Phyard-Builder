@@ -731,9 +731,39 @@ public static function Scale (seedShape:EntityShape, scaleRatio:Number, fixedPoi
 // change size (different with scale)
 //================================================================
 
+public static function ChangeBorderThickness (shape:EntityShape, thickness:Number):void
+{
+   if (thickness < 0 || thickness == shape.GetBorderThickness ())
+      return;
+
+   var body:EntityBody = shape.GetBody ();
+
+   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+   var isPhysicsShape:Boolean = shape.IsPhysicsShape ();
+
+   shape.SetBorderThickness (thickness);
+
+   OnShapeGeometryChanged (body, isPhysicsBody, shape, isPhysicsShape);
+}
+
+public static function ChangeCurveThickness (shape:EntityShapePolyline, thickness:Number):void
+{
+   if (thickness < 0 || thickness == shape.GetCurveThickness ())
+      return;
+
+   var body:EntityBody = shape.GetBody ();
+
+   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+   var isPhysicsShape:Boolean = shape.IsPhysicsShape ();
+
+   shape.SetCurveThickness (thickness);
+
+   OnShapeGeometryChanged (body, isPhysicsBody, shape, isPhysicsShape);
+}
+
 public static function ChangeCircleRadius (circle:EntityShapeCircle, radius:Number):void
 {
-   if (radius <= 0)
+   if (radius <= 0 || radius == circle.GetRadius ())
       return;
 
    var body:EntityBody = circle.GetBody ();

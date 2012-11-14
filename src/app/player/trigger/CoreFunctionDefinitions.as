@@ -413,6 +413,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,           SetShapeFilledColorRGB);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledOpacity,            GetFilledOpacity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledOpacity,            SetFilledOpacity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsShowBorder,                IsShapeShowBorder);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetShowBorder,               SetShapeShowBorder);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderColor,              GetShapeBorderColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderColor,              SetShapeBorderColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderColorRGB,           GetShapeBorderColorRGB);
@@ -524,6 +526,13 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPositions,            SetVertexLocalPositions);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPositions,            GetVertexWorldPositions);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPositions,            SetVertexWorldPositions);
+
+      // game / entity / shape / thickness
+      
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderThickness,            GetShapeBorderThickness);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderThickness,            SetShapeBorderThickness);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCurveThickness,            GetCurveThickness);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCurveThickness,            SetCurveThickness);
 
       // game / entity / shape / module
 
@@ -3625,6 +3634,27 @@ package player.trigger {
 
          shape.SetTransparency (opacity);
       }
+      
+      public static function IsShapeShowBorder (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         valueTarget.AssignValueObject (shape.IsDrawBorder ());
+      }
+      
+      public static function SetShapeShowBorder (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var drawBorder:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         shape.SetDrawBorder (drawBorder);
+      }
 
       public static function GetShapeBorderColor (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -4979,6 +5009,60 @@ package player.trigger {
          var blue:int =  valueSource.EvaluateValueObject () as Number;
 
          entity_text.SetTextColor ((red << 16) | (green << 8) | (blue));
+      }
+
+   //*******************************************************************
+   // entity / shape
+   //*******************************************************************
+
+      public static function GetShapeBorderThickness (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)// || shape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetBorderThickness ());
+         }
+      }
+      
+      public static function SetShapeBorderThickness (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null || shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var thickness:Number = valueSource.EvaluateValueObject () as Number;
+
+         EntityShape.ChangeBorderThickness (shape, thickness);
+      }
+
+      public static function GetCurveThickness (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShapePolyline = valueSource.EvaluateValueObject () as EntityShapePolyline;
+         if (shape == null)// || shape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetCurveThickness ());
+         }
+      }
+
+      public static function SetCurveThickness (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShapePolyline = valueSource.EvaluateValueObject () as EntityShapePolyline;
+         if (shape == null || shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var thickness:Number = valueSource.EvaluateValueObject () as Number;
+
+         EntityShape.ChangeCurveThickness (shape, thickness);
       }
 
    //*******************************************************************

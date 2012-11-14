@@ -472,6 +472,8 @@ package common.trigger {
       public static const CoreApiId_1162:int = 1162; // entity.shape physics
       public static const CoreApiId_1163:int = 1163; // entity.shape physics
       public static const CoreApiId_1164:int = 1164; // entity.shape physics
+      public static const CoreApiId_1165:int = 1165; // entity.shape physics
+      public static const CoreApiId_1166:int = 1166; // entity.shape physics
 
       public static const CoreApiId_1220:int = 1220;
       public static const CoreApiId_1221:int = 1221;

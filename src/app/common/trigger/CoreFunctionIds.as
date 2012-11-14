@@ -398,10 +398,8 @@ package common.trigger {
       public static const ID_EntityShape_SetFilledColorRGB:int         = IdPool.CoreApiId_1113;
       public static const ID_EntityShape_GetFilledOpacity:int          = IdPool.CoreApiId_1114; // v1.54
       public static const ID_EntityShape_SetFilledOpacity:int          = IdPool.CoreApiId_1115; // v1.54
-      //public static const ID_EntityShape_IsShowBorder:int              = IdPool.CoreApiId_1116;
-      //public static const ID_EntityShape_SetShowBorder:int             = IdPool.CoreApiId_1117;
-      //public static const ID_EntityShape_GetBorderThickness:int        = IdPool.CoreApiId_1118;
-      //public static const ID_EntityShape_SetBorderThickness:int        = IdPool.CoreApiId_1119;
+      public static const ID_EntityShape_IsShowBorder:int              = IdPool.CoreApiId_1116;
+      public static const ID_EntityShape_SetShowBorder:int             = IdPool.CoreApiId_1117;
       public static const ID_EntityShape_GetBorderColor:int            = IdPool.CoreApiId_1120; // v1.54
       public static const ID_EntityShape_SetBorderColor:int            = IdPool.CoreApiId_1121; // v1.54
       public static const ID_EntityShape_GetBorderColorRGB:int         = IdPool.CoreApiId_1122; // v1.54
@@ -542,6 +540,13 @@ package common.trigger {
       public static const ID_EntityShapePoly_SetVertexLocalPositions:int                     = IdPool.CoreApiId_1567;
       public static const ID_EntityShapePoly_GetVertexWorldPositions:int                     = IdPool.CoreApiId_1568;
       public static const ID_EntityShapePoly_SetVertexWorldPositions:int                     = IdPool.CoreApiId_1569;
+      
+   // game /entity / shape / thickness
+   
+      public static const ID_EntityShape_GetBorderThickness:int        = IdPool.CoreApiId_1118;
+      public static const ID_EntityShape_SetBorderThickness:int        = IdPool.CoreApiId_1119;
+      public static const ID_EntityShape_GetCurveThickness:int        = IdPool.CoreApiId_1165;
+      public static const ID_EntityShape_SetCurveThickness:int        = IdPool.CoreApiId_1166;
 
    // game /entity / shape / module
 

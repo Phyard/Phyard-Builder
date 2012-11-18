@@ -568,7 +568,7 @@ package player.design
          
          //...
          
-         CheckWorldBuildingStatus ();
+         //CheckWorldBuildingStatus ();
       }
       
       protected static function OnLoadImageError (image:ImageBitmap):void
@@ -578,13 +578,13 @@ package player.design
       
       protected static function OnLoadSoundDone (sound:Sound):void
       {  
-         CheckWorldBuildingStatus ();
+         //CheckWorldBuildingStatus ();
       }
       
       protected static function OnLoadSoundError (sound:Sound):void
       {
          //GetCurrentWorld ().SetBuildingStatus (-1);
-         CheckWorldBuildingStatus ();
+         //CheckWorldBuildingStatus ();
       }
       
       public static function CheckWorldBuildingStatus ():void
@@ -633,7 +633,7 @@ package player.design
          }
          else
          {  
-            GetCurrentWorld ().UpdateImageModuleAppearances ();
+            //GetCurrentWorld ().UpdateImageModuleAppearances ();
             
             GetCurrentWorld ().SetBuildingStatus (1);
          }

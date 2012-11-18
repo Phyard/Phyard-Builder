@@ -531,7 +531,7 @@ package common {
          
          if (isLoaingFromStretch)
          {
-            Global.CheckWorldBuildingStatus ();
+            //Global.CheckWorldBuildingStatus (); // bug!
          }
          
          // removed from here, for many functions such as Global.SetPlaying are not registerd yet.

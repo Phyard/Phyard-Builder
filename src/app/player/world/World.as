@@ -266,6 +266,11 @@ package player.world {
       
       public function GetBuildingStatus ():int
       {
+         if (mBuildingStatus == 0)
+         {
+            Global.CheckWorldBuildingStatus ();
+         }
+         
          return mBuildingStatus;
       }
       
@@ -274,15 +279,15 @@ package player.world {
          mBuildingStatus = status; 
       }
       
-      public function UpdateImageModuleAppearances ():void
-      {
-         if (mInitialized)
-         {
-            mEntityList.UpdateImageModuleAppearances ();
-            
-            Repaint ();
-         }
-      }
+      //public function UpdateImageModuleAppearances ():void
+      //{
+      //   if (mInitialized)
+      //   {
+      //      mEntityList.UpdateImageModuleAppearances ();
+      //      
+      //      Repaint ();
+      //   }
+      //}
 
 //==============================================================================
 //

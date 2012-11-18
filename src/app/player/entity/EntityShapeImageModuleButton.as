@@ -122,28 +122,42 @@ package player.entity {
          DelayUpdateAppearance (); 
       }
 
+      // currently, do this from API is not allowed.
       public function SetModuleIndexOver (moduleIndex:int):void
       {
          // mModuleIndexUp should be set earlier than this
          mModuleIndexOver = moduleIndex;
          if (mModuleIndexOver >= 0)
             mModuleInstanceOver = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexOver));
+         else
+         {
+            mModuleInstanceOver = null;
+            mModuleIndexOver = -1;
+         }
          
-         //// mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
-         //DelayUpdateAppearance (); 
-         mSimpleButton.overState = mModuleSpriteOver = mModuleIndexOver < 0 ? mModuleSpriteUp : new ModuleSprite ();
+         if (mWorld.GetBuildingStatus () != 0)
+         {
+            RebuildAppearanceForOverState ();
+         }
       }
 
+      // currently, do this from API is not allowed.
       public function SetModuleIndexDown (moduleIndex:int):void
       {
          // mModuleIndexUp should be set earlier than this
          mModuleIndexDown = moduleIndex;
          if (mModuleIndexDown >= 0)
             mModuleInstanceDown = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexDown));
+         else
+         {
+            mModuleInstanceDown = null;
+            mModuleIndexDown = -1;
+         }
          
-         //// mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
-         //DelayUpdateAppearance (); 
-         mSimpleButton.downState = mModuleSpriteDown = mModuleIndexDown < 0 ? mModuleSpriteUp : new ModuleSprite ();
+         if (mWorld.GetBuildingStatus () != 0)
+         {
+            RebuildAppearanceForDownState ();
+         }
       }
       
 //=============================================================
@@ -165,19 +179,63 @@ package player.entity {
 //   
 //=============================================================
       
-      public function OnModuleAppearanceChanged ():void
+      //public function OnModuleAppearanceChanged ():void
+      //{
+      //   // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+      //   DelayUpdateAppearance ();
+      //   
+      //   if (mModuleIndexOver >= 0)
+      //   {
+      //      mModuleInstanceOver.RebuildAppearance (mModuleSpriteOver, null);
+      //   }
+      //   
+      //   if (mModuleIndexDown >= 0)
+      //   {
+      //      mModuleInstanceDown.RebuildAppearance (mModuleSpriteDown, null);
+      //   }
+      //}
+      
+      private function RebuildAppearanceForOverState ():void
       {
-         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
-         DelayUpdateAppearance ();
+         if (mModuleSpriteOver != null)
+         {
+            while (mModuleSpriteOver.numChildren > 0)
+               mModuleSpriteOver.removeChildAt (0);
+         }
          
          if (mModuleIndexOver >= 0)
          {
+            if (mModuleSpriteOver == null)
+               mSimpleButton.overState = mModuleSpriteOver = new ModuleSprite ();
+            
             mModuleInstanceOver.RebuildAppearance (mModuleSpriteOver, null);
+         }
+         else
+         {
+            mModuleSpriteOver = null;
+            mSimpleButton.overState = mModuleSpriteOver = mModuleSpriteUp;
+         }
+      }
+      
+      private function RebuildAppearanceForDownState ():void
+      {
+         if (mModuleSpriteDown != null)
+         {
+            while (mModuleSpriteDown.numChildren > 0)
+               mModuleSpriteDown.removeChildAt (0);
          }
          
          if (mModuleIndexDown >= 0)
          {
+            if (mModuleSpriteDown == null)
+               mSimpleButton.downState = mModuleSpriteDown = new ModuleSprite ();
+               
             mModuleInstanceDown.RebuildAppearance (mModuleSpriteDown, null);
+         }
+         else
+         {
+            mModuleSpriteDown = null;
+            mSimpleButton.downState = mModuleSpriteDown = mModuleSpriteUp;
          }
       }
       
@@ -190,15 +248,15 @@ package player.entity {
          mModuleInstanceUp.Step (null, OnModuleFrameChanged);
          
          // for over and down, waste time in most cases
-
+         
          if (mModuleIndexOver >= 0 && mModuleInstanceOver.Step ())
          {
-            mModuleInstanceOver.RebuildAppearance (mModuleSpriteOver, null);
+            RebuildAppearanceForOverState ();
          }
          
          if (mModuleIndexDown >= 0 && mModuleInstanceDown.Step ())
          {
-            mModuleInstanceDown.RebuildAppearance (mModuleSpriteDown, null);
+            RebuildAppearanceForDownState ();
          }
       }
       
@@ -231,6 +289,14 @@ package player.entity {
          if (mNeedUpdateAppearanceProperties)
          {
             mNeedUpdateAppearanceProperties = false;
+         }
+         
+         // the following is special for over and down, it is only really called at in World.Initialize.
+         
+         if (mWorld.GetSimulatedSteps () == 0)
+         {
+            RebuildAppearanceForOverState ();
+            RebuildAppearanceForDownState ();
          }
       }
       

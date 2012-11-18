@@ -1088,24 +1088,24 @@ package player.design
          
          //...
          
-         CheckWorldBuildingStatus ();
+         //CheckWorldBuildingStatus (); // now called in World.GetBuildingStatus ()
       }
       
       protected static function OnLoadImageError (image:ImageBitmap):void
       {
          //GetCurrentWorld ().SetBuildingStatus (-1);
-         CheckWorldBuildingStatus ();
+         //CheckWorldBuildingStatus (); // now called in World.GetBuildingStatus ()
       }
       
       protected static function OnLoadSoundDone (sound:Sound):void
       {  
-         CheckWorldBuildingStatus ();
+         //CheckWorldBuildingStatus (); // now called in World.GetBuildingStatus ()
       }
       
       protected static function OnLoadSoundError (sound:Sound):void
       {
          //GetCurrentWorld ().SetBuildingStatus (-1);
-         CheckWorldBuildingStatus ();
+         //CheckWorldBuildingStatus (); // now called in World.GetBuildingStatus ()
       }
       
       public static function CheckWorldBuildingStatus ():void
@@ -1159,7 +1159,7 @@ package player.design
          }
          else
          {  
-            GetCurrentWorld ().UpdateImageModuleAppearances ();
+            //GetCurrentWorld ().UpdateImageModuleAppearances (); // bug for repainting module buttons
             
             GetCurrentWorld ().SetBuildingStatus (1);
          }

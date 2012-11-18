@@ -631,8 +631,6 @@ package player.entity {
          {
             mIsAlreadyInDelayUpdateAppearanceList = true;
             mWorld.DelayUpdateEntityAppearance (this);
-            
-            DelayUpdateAppearanceInternal ();
          }
       }
       

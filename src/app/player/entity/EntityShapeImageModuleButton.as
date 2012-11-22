@@ -122,7 +122,6 @@ package player.entity {
          DelayUpdateAppearance (); 
       }
 
-      // currently, do this from API is not allowed.
       public function SetModuleIndexOver (moduleIndex:int):void
       {
          // mModuleIndexUp should be set earlier than this
@@ -141,7 +140,6 @@ package player.entity {
          }
       }
 
-      // currently, do this from API is not allowed.
       public function SetModuleIndexDown (moduleIndex:int):void
       {
          // mModuleIndexUp should be set earlier than this
@@ -195,7 +193,7 @@ package player.entity {
       //   }
       //}
       
-      private function RebuildAppearanceForOverState ():void
+      private function RebuildAppearanceForOverState (updatePhysicsProxy:Boolean = false):void
       {
          if (mModuleSpriteOver != null)
          {
@@ -217,7 +215,7 @@ package player.entity {
          }
       }
       
-      private function RebuildAppearanceForDownState ():void
+      private function RebuildAppearanceForDownState (updatePhysicsProxy:Boolean = false):void
       {
          if (mModuleSpriteDown != null)
          {
@@ -249,14 +247,14 @@ package player.entity {
          
          // for over and down, waste time in most cases
          
-         if (mModuleIndexOver >= 0 && mModuleInstanceOver.Step ())
+         if (mModuleIndexOver >= 0 && mModuleInstanceOver != null)
          {
-            RebuildAppearanceForOverState ();
+            mModuleInstanceOver.Step (null, RebuildAppearanceForOverState);
          }
          
-         if (mModuleIndexDown >= 0 && mModuleInstanceDown.Step ())
+         if (mModuleIndexDown >= 0 && mModuleInstanceDown != null)
          {
-            RebuildAppearanceForDownState ();
+            mModuleInstanceDown.Step (null, RebuildAppearanceForDownState);
          }
       }
       

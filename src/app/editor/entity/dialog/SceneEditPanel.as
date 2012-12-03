@@ -243,10 +243,18 @@ package editor.entity.dialog {
                   DeleteSelectedEntities ();
                break;
             case Keyboard.INSERT:
-               if (ctrlHold)
+               if (ctrlHold) 
                   InsertControlPoint ();
                else
                   CloneSelectedEntities ();
+               break;
+            case 88: // X
+               //if (ctrlHold)
+                  AlignControlPointsVertically ();
+               break;
+            case 89: // Y
+               //if (ctrlHold)
+                  AlignControlPointsHorizontally ();
                break;
             case 67: // C
                if (ctrlHold)
@@ -269,7 +277,7 @@ package editor.entity.dialog {
             case Keyboard.NUMPAD_SUBTRACT:
                RoundPositionForSelectedEntities ();
                break;
-            case 75: // k
+            case 75: // K
             case 190: // >
                if (ctrlHold && shiftHold)
                   ConvertOldRegisterVariablesToGlobalVariables ();

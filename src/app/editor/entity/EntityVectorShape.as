@@ -262,6 +262,34 @@ package editor.entity {
          return result != null;
       }
 
+      override public function AlignControlPointsHorizontally (primaryControlPoint:ControlPoint, secondaryControlPoint:ControlPoint):Boolean
+      {
+         var primaryWorldPos:Point = AssetToManager (new Point (primaryControlPoint.GetPositionX (), primaryControlPoint.GetPositionY ()), true);
+         var secondaryWorldPos:Point = AssetToManager (new Point (secondaryControlPoint.GetPositionX (), secondaryControlPoint.GetPositionY ()), true);
+         var secondaryNewLocalPos:Point = ManagerToAsset (new Point (secondaryWorldPos.x, primaryWorldPos.y));
+         
+         var localDisplayment:Point = ManagerToAsset (new Point (secondaryNewLocalPos.x - secondaryControlPoint.GetPositionX (), secondaryNewLocalPos.y - secondaryControlPoint.GetPositionY ()), false); 
+         
+         var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).OnMoveControlPoint (mControlPoints, secondaryControlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
+         OnControlPointsModified (result, true);
+         
+         return result != null;
+      }
+
+      override public function AlignControlPointsVertically (primaryControlPoint:ControlPoint, secondaryControlPoint:ControlPoint):Boolean
+      {
+         var primaryWorldPos:Point = AssetToManager (new Point (primaryControlPoint.GetPositionX (), primaryControlPoint.GetPositionY ()), true);
+         var secondaryWorldPos:Point = AssetToManager (new Point (secondaryControlPoint.GetPositionX (), secondaryControlPoint.GetPositionY ()), true);
+         var secondaryNewLocalPos:Point = ManagerToAsset (new Point (primaryWorldPos.x, secondaryWorldPos.y));
+         
+         var localDisplayment:Point = ManagerToAsset (new Point (secondaryNewLocalPos.x - secondaryControlPoint.GetPositionX (), secondaryNewLocalPos.y - secondaryControlPoint.GetPositionY ()), false); 
+         
+         var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).OnMoveControlPoint (mControlPoints, secondaryControlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
+         OnControlPointsModified (result, true);
+         
+         return result != null;
+      }
+
 //====================================================================
 //   clone
 //====================================================================

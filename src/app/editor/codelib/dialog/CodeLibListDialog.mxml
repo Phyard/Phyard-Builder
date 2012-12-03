@@ -206,12 +206,12 @@
             EditorContext.ShowVariableSpaceEditDialog (this,  GetCodeLibListPanel ().GetCodeLibManager ().GetEntityVariableSpace (), null);
          }
          
-         private function OnEditCommonGlobalVariables ():void
+         private function OnEditCommonGlobalVariables (event:Event = null):void
          {
             EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), null);
          }
 
-         private function OnEditCommonEntityVariables ():void
+         private function OnEditCommonEntityVariables (event:Event = null):void
          {
             EditorContext.ShowVariableSpaceEditDialog (this,  EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), null);
          }

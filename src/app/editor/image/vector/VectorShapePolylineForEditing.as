@@ -184,5 +184,6 @@ package editor.image.vector
 
          return VectorShapePolygonForEditing.OnInsertPloyControlPointBefore (controlPoints, mLocalVertexPoints, insertBeforeControlPointIndex);
       }
+      
    }
 }

@@ -1327,6 +1327,34 @@ package editor.asset {
          }
       }
       
+      protected function AlignControlPointsHorizontally ():void
+      {
+         if (mAssetManager == null)
+            return;
+         
+         if (mAssetManager.AlignControlPointsHorizontally ())
+         {
+            UpdateInterface ();
+            RepaintAllAssetLinks ();
+            
+            CreateUndoPoint ("align control points horizontally");
+         }
+      }
+      
+      protected function AlignControlPointsVertically ():void
+      {
+         if (mAssetManager == null)
+            return;
+         
+         if (mAssetManager.AlignControlPointsVertically ())
+         {
+            UpdateInterface ();
+            RepaintAllAssetLinks ();
+            
+            CreateUndoPoint ("align control points vertically");
+         }
+      }
+      
 //=================================================================================
 //   edit selected assets
 //=================================================================================

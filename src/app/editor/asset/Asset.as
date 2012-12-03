@@ -729,6 +729,16 @@ package editor.asset {
          return false;
       }
 
+      public function AlignControlPointsHorizontally (primaryControlPoint:ControlPoint, secondaryControlPoint:ControlPoint):Boolean
+      {
+         return false;
+      }
+
+      public function AlignControlPointsVertically (primaryControlPoint:ControlPoint, secondaryControlPoint:ControlPoint):Boolean
+      {
+         return false;
+      }
+
 //====================================================================
 //   internal linkables
 //====================================================================

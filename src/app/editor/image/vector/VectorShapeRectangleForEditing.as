@@ -181,5 +181,6 @@ package editor.image.vector
       {
          return null;
       }
+      
    }
 }

@@ -1217,6 +1217,51 @@ package editor.asset {
          return false;
       }
       
+      public function AlignControlPoints (horizontally:Boolean):Boolean
+      {
+         var primaryCP:ControlPoint = null;
+         var secondaryCP:ControlPoint = null;
+         
+         for (var i:int = mCurrentShownControlPoints.length - 1; i >= 0; -- i)
+         {
+            var cp:ControlPoint = mCurrentShownControlPoints [i] as ControlPoint;
+            if (cp.GetSelectedLevel () == ControlPoint.SelectedLevel_Primary)
+            {
+               primaryCP = cp;
+            }
+            else if (cp.GetSelectedLevel () == ControlPoint.SelectedLevel_Secondary)
+            {
+               secondaryCP = cp;
+            }
+         }
+         
+         if (primaryCP != null && secondaryCP != null)
+         {
+            if (horizontally)
+            {
+               if (cp.GetOwnerAsset ().AlignControlPointsHorizontally (primaryCP, secondaryCP))
+                  return true;
+            }
+            else
+            {
+               if (cp.GetOwnerAsset ().AlignControlPointsVertically (primaryCP, secondaryCP))
+                  return true;
+            }
+         }
+         
+         return false;
+      }
+      
+      public function AlignControlPointsHorizontally ():Boolean
+      {
+         return AlignControlPoints (true);
+      }
+      
+      public function AlignControlPointsVertically ():Boolean
+      {
+         return AlignControlPoints (false);
+      }
+      
 //=================================================================================
 // appearance and creation order
 //=================================================================================

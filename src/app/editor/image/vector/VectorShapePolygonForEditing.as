@@ -393,5 +393,6 @@ package editor.image.vector
          
          return r;
       }
+      
    }
 }

@@ -2,12 +2,12 @@
       private static var mIsSoundEnabled:Boolean = true; // to record and init sound setting
       private static var mSoundVolume:Number = 0.5;
       
-      public function IsSoundEnabled ():Boolean
+      public static function IsSoundEnabled ():Boolean
       {
          return mIsSoundEnabled;
       }
 
-      public function SetSoundEnabled (soundOn:Boolean):void
+      public static function SetSoundEnabled (soundOn:Boolean):void
       {
          if (mIsSoundEnabled != soundOn)
          {
@@ -22,12 +22,12 @@
          }
       }
       
-      public function GetSoundVolume (volume:Number):Number
+      public static function GetSoundVolume (volume:Number):Number
       {
          return mSoundVolume;
       }
       
-      public function SetSoundVolume (volume:Number):void
+      public static function SetSoundVolume (volume:Number):void
       {
          mSoundVolume = ValidateVolume (volume);
          
@@ -44,7 +44,7 @@
          return volume;
       }
       
-      private function UpdateSoundVolume ():void
+      private static function UpdateSoundVolume ():void
       {
          var transform:SoundTransform = new SoundTransform();
          transform.volume = mIsSoundEnabled ? mSoundVolume : 0.0;

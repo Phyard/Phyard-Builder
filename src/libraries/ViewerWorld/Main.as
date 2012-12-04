@@ -13,6 +13,8 @@ package
          {
             case "GetViewerClass":
             case "NewViewer":
+            case "GetViewerStaticProperties":
+            case "GetViewerProperties":
                return ViewerPlugin.Call (name, params);
             default:
             {

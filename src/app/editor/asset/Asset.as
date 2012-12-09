@@ -715,8 +715,9 @@ package editor.asset {
          controlPoint.SetSelectedLevel (ControlPoint.SelectedLevel_Primary);
       }
 
-      public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
+      public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):Boolean
       {
+         return false;
       }
 
       public function DeleteControlPoint (controlPoint:ControlPoint):Boolean

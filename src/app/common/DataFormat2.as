@@ -333,7 +333,7 @@ package common {
          else if (isMergingScene)
          {
             extraInfos.mBeinningCCatIndex = playerWorld.GetNumCollisionCategories () - 1; // "-1" is to ignore the hidden one
-            playerWorld.CreateCollisionCategories (sceneDefine.mCollisionCategoryDefines, sceneDefine.mCollisionCategoryFriendLinkDefines); //worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
+            playerWorld.CreateCollisionCategories (sceneDefine.mCollisionCategoryDefines, sceneDefine.mCollisionCategoryFriendLinkDefines, isMergingScene); //worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
          }
          // else // Clone Shapes
 

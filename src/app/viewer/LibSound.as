@@ -79,8 +79,11 @@
             //mSoundChannel.addEventListener (Event.SOUND_COMPLETE, OnSoundPlayComplete);
             
             var transform:SoundTransform = new SoundTransform (ValidateVolume (volume));
+               //var loops:int = times < 0 ? 0x7FFFFFFF : times;
+               //var channel:SoundChannel = sound.play (0, loops, transform);
             var loops:int = times <= 0 ? 0x7FFFFFFF : times;
             var channel:SoundChannel = sound.play (0, loops, transform);
+               // ??? loops == 0 and loops == 1 will both play once? Flash is weird!
             
             if (channel != null)
             {
@@ -88,11 +91,13 @@
                
                if (crossingLevels)
                {
+//trace ("PlaySound, crossing level: times = " + times);
                   mCrossingLevelsSounds [mNumCrossingLevelsSounds] = sound; // for c/java, need check index out of range
                   mCrossingLevelsSoundChannels [mNumCrossingLevelsSounds ++] = channel; // for c/java, need check index out of range
                }
                else
                {
+//trace ("PlaySound, in level: times = " + times);
                   mInLevelSoundChannels [mNumInLevelSounds ++] = channel; // for c/java, need check index out of range
                }
             }
@@ -102,6 +107,8 @@
       
       private function OnSoundCompletePlaying (event:Event):void
       {
+//trace ("========= OnSoundCompletePlaying");
+
          var index:int;
          
          var channel:SoundChannel = event.currentTarget as SoundChannel;
@@ -109,6 +116,7 @@
          index = mInLevelSoundChannels.indexOf (channel);
          if (index >= 0)
          {
+//trace ("in level");
             mInLevelSoundChannels [index] = mInLevelSoundChannels [-- mNumInLevelSounds];
             mInLevelSoundChannels [mNumInLevelSounds] = null;
          }
@@ -116,6 +124,7 @@
          index = mCrossingLevelsSoundChannels.indexOf (channel);
          if (index >= 0)
          {
+//trace ("crossing level");
             mCrossingLevelsSoundChannels [index] = mCrossingLevelsSoundChannels [-- mNumCrossingLevelsSounds];
             mCrossingLevelsSoundChannels [mNumCrossingLevelsSounds] = null;
             

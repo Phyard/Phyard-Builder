@@ -238,12 +238,14 @@ package editor.entity {
          //}
       }
 
-      override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
+      override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):Boolean
       {
          var localDisplayment:Point = ManagerToAsset (new Point (dx, dy), false); 
          
          var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).OnMoveControlPoint (mControlPoints, controlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
          OnControlPointsModified (result, done);
+         
+         return result != null;
       }
 
       override public function DeleteControlPoint (controlPoint:ControlPoint):Boolean
@@ -266,28 +268,16 @@ package editor.entity {
       {
          var primaryWorldPos:Point = AssetToManager (new Point (primaryControlPoint.GetPositionX (), primaryControlPoint.GetPositionY ()), true);
          var secondaryWorldPos:Point = AssetToManager (new Point (secondaryControlPoint.GetPositionX (), secondaryControlPoint.GetPositionY ()), true);
-         var secondaryNewLocalPos:Point = ManagerToAsset (new Point (secondaryWorldPos.x, primaryWorldPos.y));
          
-         var localDisplayment:Point = ManagerToAsset (new Point (secondaryNewLocalPos.x - secondaryControlPoint.GetPositionX (), secondaryNewLocalPos.y - secondaryControlPoint.GetPositionY ()), false); 
-         
-         var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).OnMoveControlPoint (mControlPoints, secondaryControlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
-         OnControlPointsModified (result, true);
-         
-         return result != null;
+         return MoveControlPoint (secondaryControlPoint, 0, primaryWorldPos.y - secondaryWorldPos.y, true);
       }
 
       override public function AlignControlPointsVertically (primaryControlPoint:ControlPoint, secondaryControlPoint:ControlPoint):Boolean
       {
          var primaryWorldPos:Point = AssetToManager (new Point (primaryControlPoint.GetPositionX (), primaryControlPoint.GetPositionY ()), true);
          var secondaryWorldPos:Point = AssetToManager (new Point (secondaryControlPoint.GetPositionX (), secondaryControlPoint.GetPositionY ()), true);
-         var secondaryNewLocalPos:Point = ManagerToAsset (new Point (primaryWorldPos.x, secondaryWorldPos.y));
          
-         var localDisplayment:Point = ManagerToAsset (new Point (secondaryNewLocalPos.x - secondaryControlPoint.GetPositionX (), secondaryNewLocalPos.y - secondaryControlPoint.GetPositionY ()), false); 
-         
-         var result:ControlPointModifyResult = (mVectorShape as VectorShapeForEditing).OnMoveControlPoint (mControlPoints, secondaryControlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
-         OnControlPointsModified (result, true);
-         
-         return result != null;
+         return MoveControlPoint (secondaryControlPoint, primaryWorldPos.x - secondaryWorldPos.x, 0, true);
       }
 
 //====================================================================

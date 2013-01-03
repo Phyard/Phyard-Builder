@@ -267,6 +267,13 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_SubmitKeyValue_Number,
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
+                     null
+                  );
 
       // string
 

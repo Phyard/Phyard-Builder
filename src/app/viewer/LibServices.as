@@ -1,10 +1,20 @@
 
-   private function SubmitHighScore  (value:Number):void
+//   private function SubmitHighScore  (value:Number):void
+//   {
+////trace ("SubmitHighScore> " + value);
+//      if (mParamsFromContainer.ExternalSubmitKeyValue != null)
+//      {
+//         mParamsFromContainer.ExternalSubmitKeyValue ("HighScore", value);
+//               // please see GamePackaer.OnlineAPI for detail.
+//      }
+//   }
+   
+   private function SubmitKeyValue  (key:String, value:Number):void
    {
-//trace ("SubmitHighScore: " + value);
+//trace ("SubmitKeyValue> " + key + " = " + value);
       if (mParamsFromContainer.ExternalSubmitKeyValue != null)
       {
-         mParamsFromContainer.ExternalSubmitKeyValue ("HighScore_NormalMode", value);
+         mParamsFromContainer.ExternalSubmitKeyValue (key, value);
                // please see GamePackaer.OnlineAPI for detail.
       }
    }

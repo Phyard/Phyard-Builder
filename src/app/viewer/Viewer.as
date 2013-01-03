@@ -1262,7 +1262,7 @@ package viewer {
                               ClearCookie : ClearCookie
                   },
                   mLibService : {
-                              SubmitHighScore: SubmitHighScore
+                              SubmitKeyValue: SubmitKeyValue
                   }
                };
             }

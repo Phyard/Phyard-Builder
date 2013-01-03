@@ -351,7 +351,14 @@ package editor.world {
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SubmitHighScore, services_package, "Submit High Score", null, null,
                      [
-                             new VariableDefinitionNumber ("Value"),
+                             new VariableDefinitionNumber ("Score"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SubmitKeyValue_Number, services_package, "Submit Property Value", null, null,
+                     [
+                             new VariableDefinitionString ("Property Name"),
+                             new VariableDefinitionNumber ("Property Value"),
                      ],
                      null
                   );

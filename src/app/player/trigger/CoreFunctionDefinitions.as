@@ -93,6 +93,7 @@ package player.trigger {
       // services
 
          RegisterCoreFunction (CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
+         RegisterCoreFunction (CoreFunctionIds.ID_SubmitKeyValue_Number,               SubmitKeyValue_Number);
 
       // string
 
@@ -762,9 +763,22 @@ package player.trigger {
       {
          var value:Number = Number (valueSource.EvaluateValueObject ());
 
-         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SubmitHighScore)
+         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SubmitKeyValue)
          {
-            Global.Viewer_mLibServices.SubmitHighScore (value);
+            Global.Viewer_mLibServices.SubmitKeyValue ("HighScore", value);
+         }
+      }
+      
+      public static function SubmitKeyValue_Number (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var key:String = valueSource.EvaluateValueObject () as String;
+
+         valueSource = valueSource.mNextParameter;
+         var value:Number = Number (valueSource.EvaluateValueObject ());
+
+         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SubmitKeyValue)
+         {
+            Global.Viewer_mLibServices.SubmitKeyValue (key, value);
          }
       }
 

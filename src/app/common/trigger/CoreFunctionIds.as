@@ -71,7 +71,7 @@ package common.trigger {
    // services
 
       public static const ID_SubmitHighScore:int                = IdPool.CoreApiId_579; // from v2.03
-      //public static const ID_SubmitKeyValue_Number
+      public static const ID_SubmitKeyValue_Number:int          = IdPool.CoreApiId_576; // from v2.03
 
    // string
 

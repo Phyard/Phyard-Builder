@@ -569,8 +569,11 @@ package Box2D.Dynamics
 				if ((m_flags & e_awakeFlag) == 0)
 				{
 					m_flags |= e_awakeFlag;
-               m_sleepTime = 0.0; // bug to fix: should be put out of the if-block
+               //m_sleepTime = 0.0; // bug to fix: should be put out of the if-block
 				}
+				//>>hacking (added in cie 1.03, may cause incompability problems)
+            m_sleepTime = 0.0;
+            //<
 			}
 			else
 			//>>hacking

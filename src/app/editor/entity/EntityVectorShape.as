@@ -781,7 +781,7 @@ package editor.entity {
       // for creating stage
       public function ValidateAfterJustCreated ():void
       {
-         SetBorderThickness (0);
+         SetBorderThickness (this is EntityVectorShapeCircle ? 1.0 : 0.0);
          SetBuildBorder ((this is EntityVectorShapeCircle) || (this is EntityVectorShapeRectangle));
          
          if (mAiType != Define.ShapeAiType_Unknown)

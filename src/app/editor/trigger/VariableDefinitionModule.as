@@ -8,6 +8,7 @@ package editor.trigger {
    import editor.display.control.ModulePickButton;
 
    import editor.image.AssetImageModule;
+   import editor.image.AssetImageBitmapModule;
 
    import common.trigger.ValueTypeDefine;
 
@@ -18,6 +19,8 @@ package editor.trigger {
    //========================================================================================================
    //
    //========================================================================================================
+      
+      internal var mIsTextureValue:Boolean = false;
 
       public function VariableDefinitionModule (name:String, description:String = null, options:Object = null)
       {
@@ -25,6 +28,8 @@ package editor.trigger {
 
          if (options != null)
          {
+            if (options.mIsTextureValue != undefined)
+               mIsTextureValue = options.mIsTextureValue;
          }
       }
 
@@ -80,7 +85,10 @@ package editor.trigger {
       {
          if (control is ModulePickButton)
          {
-            valueSourceDirect.SetValueObject ((control as ModulePickButton).GetPickedModule ());
+            if (mIsTextureValue)
+               valueSourceDirect.SetValueObject ((control as ModulePickButton).GetPickedModule () as AssetImageBitmapModule);
+            else
+               valueSourceDirect.SetValueObject ((control as ModulePickButton).GetPickedModule ());
          }
          else
          {

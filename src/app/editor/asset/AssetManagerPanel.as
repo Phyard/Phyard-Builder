@@ -109,6 +109,8 @@ package editor.asset {
             mAssetManager.SetAssetLinksChangedCallback (NotifyAsstLinksChanged);
             
             RepaintAllAssetLinks ();
+            
+            RepaintAllAssetIDs ();
          }
          
          BuildContextMenu ();
@@ -466,7 +468,7 @@ package editor.asset {
          return mInCookieSelectMode;
       }
       
-      public function ToggleShowAllAssetIDs (show:Boolean):void
+      public function ToggleShowAllAssetIDs ():void
       {
          SetShowAllAssetIDs (! mShowAllAssetIDs);
       }
@@ -480,7 +482,7 @@ package editor.asset {
          }
       }
       
-      public function ToggleShowAllAssetLinks (show:Boolean):void
+      public function ToggleShowAllAssetLinks ():void
       {
          SetShowAllAssetLinks (! mShowAllAssetLinks);
       }
@@ -757,11 +759,15 @@ package editor.asset {
                   
                   return true;
                case 73: // key I
-                  ToggleShowAllAssetIDs (true);
+                  ToggleShowAllAssetIDs ();
                   
                   return true;
                case 76: // key L
-                  ToggleShowAllAssetLinks (true);
+                  ToggleShowAllAssetLinks ();
+                  
+                  return true;
+               case 82: // key R
+                  ToggleShowScaleRotateFlipHandlers ();
                   
                   return true;
             }
@@ -901,6 +907,26 @@ package editor.asset {
 //   asset scale / rotate / flip handlers
 //=================================================================================
       
+      private var mShowScaleRotateFlipHandlers:Boolean = true;
+      
+      public function ToggleShowScaleRotateFlipHandlers ():void
+      {
+         SetShowScaleRotateFlipHandlers (! mShowScaleRotateFlipHandlers);
+      }
+      
+      public function SetShowScaleRotateFlipHandlers (show:Boolean):void
+      {
+         if (mShowScaleRotateFlipHandlers != show)
+         {
+            mShowScaleRotateFlipHandlers = show;
+            
+            if (mScaleRotateFlipHandlersContainer != null)
+            {
+               mScaleRotateFlipHandlersContainer.visible = mShowScaleRotateFlipHandlers;
+            }
+         }
+      }
+      
       protected function SupportScaleRotateFlipTransforms ():Boolean
       {
          if (mAssetManager == null)
@@ -917,13 +943,16 @@ package editor.asset {
       {
          if (! SupportScaleRotateFlipTransforms ())
          {
-            if (mScaleRotateFlipHandlersContainer != null && mScaleRotateFlipHandlersContainer.visible)
+            if (mScaleRotateFlipHandlersContainer != null)
             {
                mScaleRotateFlipHandlersContainer.visible = false;
             }
             
             return;
          }
+         
+         if (! mShowScaleRotateFlipHandlers)
+            return;
          
          if (mScaleRotateFlipHandlersContainer == null)
          {

@@ -2400,6 +2400,21 @@ package editor.world {
                      null
                   );
 
+          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBodyTexture, shape_appearance_package, "Get Body Texture", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionModule ("Texture Module", null, {mIsTextureValue: true}),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBodyTexture, shape_appearance_package, "Set Body Texture", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
+                             new VariableDefinitionModule ("Texture Module", null, {mIsTextureValue: true}),
+                     ],
+                     null
+                  );
           RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Background Color", "@Color (#0) = Get Background Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),

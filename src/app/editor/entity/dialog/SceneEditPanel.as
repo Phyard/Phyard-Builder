@@ -2201,6 +2201,8 @@ package editor.entity.dialog {
                   shape.SetTransparency (params.mTransparency);
                if (params.mToModifyBackgroundColor)
                   shape.SetFilledColor (params.mBackgroundColor);
+               if (params.mToModifyBodyTexture)
+                  shape.SetBodyTextureModule (params.mBodyTextureModule);   
                if (params.mToModifyDrawBorder)
                   shape.SetDrawBorder (params.mDrawBorder);
                if (params.mToModifyBorderColor)

@@ -413,6 +413,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetOriginalCIType,           SetShapeOriginalCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCIType,                   GetShapeCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCIType,                   SetShapeCIType);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBodyTexture,              GetBodyTexture);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBodyTexture,              SetBodyTexture);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledColor,              GetShapeFilledColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledColor,              SetShapeFilledColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,           GetShapeFilledColorRGB);
@@ -3558,6 +3560,28 @@ package player.trigger {
          var ciType:int = uint (valueSource.EvaluateValueObject ());
 
          shape.SetShapeAiType (ciType);
+      }
+      
+      public static function GetBodyTexture (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape_WithBodyTexture = valueSource.EvaluateValueObject () as EntityShape_WithBodyTexture;
+
+         valueTarget.AssignValueObject (shape == null ? -1 : shape.GetBodyTextureModuleIndex ());       
+      }
+      
+      public static function SetBodyTexture (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape_WithBodyTexture = valueSource.EvaluateValueObject () as EntityShape_WithBodyTexture;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var textureModuleIndex:int = valueSource.EvaluateValueObject () as int;
+         
+         shape.SetBodyTextureModuleIndex (Global.ValiddateModuleIndex (textureModuleIndex));
       }
 
       public static function GetShapeFilledColor (valueSource:Parameter, valueTarget:Parameter):void

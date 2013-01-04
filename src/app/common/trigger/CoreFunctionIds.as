@@ -399,6 +399,8 @@ package common.trigger {
       public static const ID_EntityShape_GetCIType:int                    = IdPool.CoreApiId_1100;
       public static const ID_EntityShape_SetCIType:int                    = IdPool.CoreApiId_1101;
 
+      public static const ID_EntityShape_GetBodyTexture:int            = IdPool.CoreApiId_1140;
+      public static const ID_EntityShape_SetBodyTexture:int            = IdPool.CoreApiId_1129;
       public static const ID_EntityShape_GetFilledColor:int            = IdPool.CoreApiId_1110;
       public static const ID_EntityShape_SetFilledColor:int            = IdPool.CoreApiId_1111;
       public static const ID_EntityShape_GetFilledColorRGB:int         = IdPool.CoreApiId_1112;

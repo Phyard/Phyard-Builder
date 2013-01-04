@@ -2336,6 +2336,21 @@ package common.trigger {
                      null
                   );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBodyTexture,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBodyTexture,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],

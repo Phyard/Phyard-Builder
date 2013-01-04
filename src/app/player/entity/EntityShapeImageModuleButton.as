@@ -17,13 +17,11 @@ package player.entity {
    import common.Define;
    import common.Transform2D;
    
-   public class EntityShapeImageModuleButton extends EntityShape
+   public class EntityShapeImageModuleButton extends EntityShapeImageModule
    {
       public function EntityShapeImageModuleButton (world:World)
       {
          super (world);
-         
-         mPhysicsShapePotentially = true;
          
          mAppearanceObjectsContainer.addChild (mSimpleButton);
          
@@ -105,6 +103,21 @@ package player.entity {
 //   
 //=============================================================
       
+      override protected function SetModuleIndexByAPI_Internal (moduleIndex:int):void
+      {
+         SetModuleIndexUp (moduleIndex);
+      }
+      
+      override public function GetModuleIndex ():int
+      {
+         return mModuleIndexUp;
+      }
+      
+      override protected function GetModuleInstance ():ModuleInstance
+      {
+         return mModuleInstanceUp;
+      }
+      
       protected var mModuleIndexUp:int = -1;
       protected var mModuleIndexOver:int = -1;
       protected var mModuleIndexDown:int = -1;
@@ -120,6 +133,11 @@ package player.entity {
          
          // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
+      }
+      
+      public function GetModuleIndexOver ():int
+      {
+         return mModuleIndexOver;
       }
 
       public function SetModuleIndexOver (moduleIndex:int):void
@@ -138,6 +156,11 @@ package player.entity {
          {
             RebuildAppearanceForOverState ();
          }
+      }
+      
+      public function GetModuleIndexDown ():int
+      {
+         return mModuleIndexDown;
       }
 
       public function SetModuleIndexDown (moduleIndex:int):void
@@ -243,7 +266,7 @@ package player.entity {
       
       override protected function UpdateInternal (dt:Number):void
       {
-         mModuleInstanceUp.Step (null, OnModuleFrameChanged);
+         mModuleInstanceUp.Step (OnModuleReachesSequeunceEnd, OnModuleFrameChanged);
          
          // for over and down, waste time in most cases
          

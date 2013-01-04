@@ -6,8 +6,8 @@ package player.world {
    import player.entity.EntityJoint;
    import player.entity.SubEntityJointAnchor;
    
-   import player.entity.EntityShapeImageModule;
-   import player.entity.EntityShapeImageModuleButton;
+   //import player.entity.EntityShapeImageModuleGeneral;
+   //import player.entity.EntityShapeImageModuleButton;
 
    public class EntityList
    {
@@ -297,8 +297,8 @@ package player.world {
       //      while (true)
       //      {
       //         // to optimize
-      //         if (entity is EntityShapeImageModule)
-      //            (entity as EntityShapeImageModule).OnModuleAppearanceChanged ();
+      //         if (entity is EntityShapeImageModuleGeneral)
+      //            (entity as EntityShapeImageModuleGeneral).OnModuleAppearanceChanged ();
       //         else if (entity is EntityShapeImageModuleButton)
       //            (entity as EntityShapeImageModuleButton).OnModuleAppearanceChanged ();
       //

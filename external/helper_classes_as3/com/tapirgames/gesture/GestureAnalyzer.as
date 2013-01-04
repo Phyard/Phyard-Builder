@@ -20,7 +20,7 @@ package com.tapirgames.gesture {
       
    //===================================================
 
-      public function GestureAnalyzer (minGestureSize:Number, minPointDistance:Number, minTimerInterval:Number = 10.0, maxTimeDuration:Number = 2000.0, maxPointCount:int = 500):void
+      public function GestureAnalyzer (minGestureSize:Number, minPointDistance:Number, minTimerInterval:Number = 10.0, maxTimeDuration:Number = 5000.0, maxPointCount:int = 500):void
       {
          mMinAllowedGestureSize = minGestureSize;
          mMinAllowedPointDistance = minPointDistance;
@@ -229,7 +229,7 @@ package com.tapirgames.gesture {
 //trace ("mEndTime = " + mEndTime + ", mStartTime = " + mStartTime);
          if (mStartPoint == mEndPoint) // 0 or 1 point
          {
-            if (mEndPoint == null || mEndTime - mStartTime < 2000)
+            if (mEndPoint == null || mEndTime - mStartTime < 1000) // 0 point or time span is too short
                return NewAnalyzeResult (null, 0, "too few points");
             else
                return NewAnalyzeResult (kGestureName_LongPress, 0, "one point");
@@ -244,7 +244,7 @@ package com.tapirgames.gesture {
 
          if (mAabbSize < mMinAllowedGestureSize)
          { 
-            if (mEndPoint == null || mEndTime - mStartTime < 2000)
+            if (mEndPoint == null || mEndTime - mStartTime < 1000)
                 return NewAnalyzeResult (null, 0, "too small");
             else
                return NewAnalyzeResult (kGestureName_LongPress, 0, "small area");
@@ -861,7 +861,7 @@ package com.tapirgames.gesture {
       }
       
       private static var mErrorsTable:Array = null;
-      private function ComputeGestureDataError (standardData:Array, realData:Array, DiffFunc:Function):Number
+      private function ComputeGestureDataError (standardData:Array, realData:Array, CostFunc:Function):Number
       {
          if (standardData == null || realData == null || standardData.length == 0 || realData.length == 0)
             return 0x7FFFFFFF;
@@ -894,7 +894,7 @@ package com.tapirgames.gesture {
             {
                error = Math.min (mErrorsTable [i - 1], mErrorsTable [i - numCols]);
                error = Math.min (mErrorsTable [i - 1 - numCols], error);
-               mErrorsTable [i] = error + DiffFunc (standardData [row], realData [col]);
+               mErrorsTable [i] = error + CostFunc (standardData [row], realData [col]);
             }
          }
          

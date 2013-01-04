@@ -31,7 +31,7 @@ package editor.entity {
       {
          super (container, mVectorShapeCircle);
 
-         SetRadius (0.0);
+         SetRadius (1.0);
          SetFilledColor (Define.ColorMovableObject);
          SetBuildBorder (true);
       }

@@ -1826,6 +1826,27 @@ package common.trigger {
          //            null
          //         );
 
+     // game / world / module
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Module_Assign,
+                     [
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                     ]
+                  );
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Module_Equals,
+                     [
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+
      // game / world / appearance
 
 
@@ -3206,11 +3227,49 @@ package common.trigger {
 
       // game / entity / shape / module
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeModule_GetModule,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeModule_ChangeModule,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                         [ValueTypeDefine.ValueType_Module,       -1],
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeModuleButton_GetOverModule,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeModuleButton_ChangeOverModule,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeModuleButton_GetDownModule,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Module,       -1],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeModuleButton_ChangeDownModule,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Module,       -1],
                      ],
                      null
                   );

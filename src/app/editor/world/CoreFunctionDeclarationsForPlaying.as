@@ -66,6 +66,7 @@ package editor.world {
          var world_script_package:FunctionMenuGroup    = new FunctionMenuGroup ("Script Calling", sWorldMenuGroup);
          var world_create_entity_package:FunctionMenuGroup    = new FunctionMenuGroup ("Create Entity", sWorldMenuGroup);
          var world_sound_package:FunctionMenuGroup    = new FunctionMenuGroup ("Sound", sWorldMenuGroup);
+         var world_module_package:FunctionMenuGroup    = new FunctionMenuGroup ("Module", sWorldMenuGroup);
 
          var entity_general_package:FunctionMenuGroup    = new FunctionMenuGroup ("General", sEntityMenuGroup);
          var entity_is_subtype_package:FunctionMenuGroup    = new FunctionMenuGroup ("Type Judgment", sEntityMenuGroup);
@@ -86,8 +87,8 @@ package editor.world {
              var entity_shape_brothers_package:FunctionMenuGroup = new FunctionMenuGroup ("Brothers", entity_shape_package);
              var entity_shape_connections_package:FunctionMenuGroup = new FunctionMenuGroup ("Connections", entity_shape_package);
              var entity_shape_contaction_package:FunctionMenuGroup = new FunctionMenuGroup ("Contacts", entity_shape_package);
-             var shape_text_package:FunctionMenuGroup  = new FunctionMenuGroup ("Text", entity_shape_package);
-             var shape_module_package:FunctionMenuGroup  = new FunctionMenuGroup ("Module", entity_shape_package);
+             var shape_text_package:FunctionMenuGroup  = new FunctionMenuGroup ("Text Shape", entity_shape_package);
+             var shape_module_package:FunctionMenuGroup  = new FunctionMenuGroup ("Module Shape", entity_shape_package);
          var entity_joint_package:FunctionMenuGroup  = new FunctionMenuGroup ("Joint", sEntityMenuGroup);
          var entity_trigger_package:FunctionMenuGroup  = new FunctionMenuGroup ("Trigger", sEntityMenuGroup);
          
@@ -1912,6 +1913,26 @@ package editor.world {
          //            null
          //         );
 
+     // game / world / module
+
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Module_Assign, world_module_package, "= (Assign Module)", "@#0 = $0", "@#0 = $0",
+                     [
+                             new VariableDefinitionModule ("Source Module"),
+                     ],
+                     [
+                             new VariableDefinitionModule ("Target"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Module_Equals, world_module_package, "Module == Module?",  "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+                     [
+                             new VariableDefinitionModule ("Module 1"),
+                             new VariableDefinitionModule ("Module 2"),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Result"),
+                     ]
+                  );
+
      // game / collision category
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CCat_Assign, ccat_package, "= (Assign CCat)", "@#0 = $0", "@#0 = $0",
@@ -1979,8 +2000,8 @@ package editor.world {
                      ],
                      null
                   );
-
-     // game /entity
+                  
+     // game / entity
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_Assign, entity_general_package, "= (Assign Entity)", "@#0 = $0", "@#0 = $0",
                      [
@@ -3267,11 +3288,49 @@ package editor.world {
 
       // game / entity / shape / module
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeModule_GetModule, shape_module_package, "Get Shape Module", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Module Shape", null, {mValidClasses: Filters.sModuleShapeEntityClasses}),
+                     ],
+                     [
+                        new VariableDefinitionModule ("The Module"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeModule_ChangeModule, shape_module_package, "Change Shape Module", null, null,
                      [
                         new VariableDefinitionEntity ("The Module Shape", null, {mValidClasses: Filters.sModuleShapeEntityClasses}),
                         new VariableDefinitionModule ("The New Module"),
                         new VariableDefinitionEntity ("Loop To End Handler", null, {mValidClasses: Filters.sOnModuleLoopToEndHandlerEntityClasses}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeModuleButton_GetOverModule, shape_module_package, "Get Button Module Of Over State", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Module Button", null, {mValidClasses: Filters.sModuleButtonShapeEntityClasses}),
+                     ],
+                     [
+                        new VariableDefinitionModule ("The Module Of Over State"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeModuleButton_ChangeOverModule, shape_module_package, "Change Button Module Of Over State", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Module Button", null, {mValidClasses: Filters.sModuleButtonShapeEntityClasses}),
+                        new VariableDefinitionModule ("The New Module Of Over State"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeModuleButton_GetDownModule, shape_module_package, "Get Button Module Of Down State", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Module Button", null, {mValidClasses: Filters.sModuleButtonShapeEntityClasses}),
+                     ],
+                     [
+                        new VariableDefinitionModule ("The Module Of Down State"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeModuleButton_ChangeDownModule, shape_module_package, "Change Button Module Of Down State", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Module Button", null, {mValidClasses: Filters.sModuleButtonShapeEntityClasses}),
+                        new VariableDefinitionModule ("The New Module Of Down State"),
                      ],
                      null
                   );

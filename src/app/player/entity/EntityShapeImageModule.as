@@ -25,68 +25,18 @@ package player.entity {
          super (world);
          
          mPhysicsShapePotentially = true;
-         
-         mAppearanceObjectsContainer.addChild (mModuleSprite);
-      }
-      
-//=============================================================
-//   create
-//=============================================================
-      
-      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
-      {
-         super.Create (createStageId, entityDefine, extraInfos);
-         
-         if (createStageId == 0)
-         {
-            if (entityDefine.mModuleIndex != undefined)
-               SetModuleIndex (entityDefine.mModuleIndex);
-         }
-      }
-      
-      override public function ToEntityDefine (entityDefine:Object):Object
-      {
-         super.ToEntityDefine (entityDefine);
-         
-         entityDefine.mModuleIndex = mModuleIndex;
-         
-         entityDefine.mEntityType = Define.EntityType_ShapeImageModule;
-         return entityDefine;
       }
       
 //=============================================================
 //   
 //=============================================================
       
-      protected var mModuleIndex:int = -1;
-      
-      // for calling in loading 
-      public function SetModuleIndex (moduleIndex:int):void
-      {
-         if (mModuleIndex == moduleIndex && mModuleInstance != null)
-         {
-            return;
-         }
-         
-         mModuleIndex = moduleIndex;
-         mModuleInstance = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndex));
-         
-         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
-         DelayUpdateAppearance (); 
-      }
-
-//=============================================================
-//   
-//=============================================================
-
-      protected var mModuleInstance:ModuleInstance; // should not be null
-            
       protected var mLoopToEndEventHandler:EntityEventHandler = null;
       
       // for calling in APIs
       public function SetModuleIndexByAPI (moduleIndex:int, loopToEndEventHandler:EntityEventHandler):void
       {
-         SetModuleIndex (moduleIndex);
+         SetModuleIndexByAPI_Internal (moduleIndex);
          
          mLoopToEndEventHandler = loopToEndEventHandler;
          
@@ -94,14 +44,29 @@ package player.entity {
          RebuildShapePhysics ();
       }
       
-//=============================================================
-//   
-//=============================================================
+      protected function SetModuleIndexByAPI_Internal (moduleIndex:int):void
+      {
+         // to override
+      }
+      
+      protected function GetModuleInstance ():ModuleInstance
+      {
+         // to override
+      
+         return null;
+      }
+      
+      public function GetModuleIndex ():int
+      {
+         // to override
+         
+         return -1;
+      }
       
       // return: if the module changed.
-      private function OnModuleReachesSequeunceEnd (module:Module):Boolean
+      protected function OnModuleReachesSequeunceEnd (module:Module):Boolean
       {
-         var moduleInstance:ModuleInstance = mModuleInstance;
+         var moduleInstance:ModuleInstance = GetModuleInstance ();
          
          if (mLoopToEndEventHandler != null)
          {
@@ -112,77 +77,7 @@ package player.entity {
             mLoopToEndEventHandler.HandleEvent (valueSource0);
          }
          
-         return moduleInstance != mModuleInstance;
-      }
-      
-      private function OnModuleFrameChanged (updatePhysicsProxy:Boolean):void
-      {
-         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
-         DelayUpdateAppearance ();
-         
-         if (updatePhysicsProxy)
-         {
-            OnShapeGeomModified (this);
-         }
-      }
-      
-//=============================================================
-//   
-//=============================================================
-      
-      //public function OnModuleAppearanceChanged ():void
-      //{
-      //   // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
-      //   DelayUpdateAppearance ();
-      //}
-      
-//=============================================================
-//   update
-//=============================================================
-      
-      override protected function UpdateInternal (dt:Number):void
-      {
-         mModuleInstance.Step (OnModuleReachesSequeunceEnd, OnModuleFrameChanged);
-      }
-      
-//=============================================================
-//   appearance
-//=============================================================
-      
-      protected var mModuleSprite:ModuleSprite = new ModuleSprite ();
-      
-      override public function UpdateAppearance ():void
-      {
-         mModuleSprite.visible = mVisible;
-         mModuleSprite.alpha = mAlpha; 
-         
-         if (mNeedRebuildAppearanceObjects)
-         {
-            mNeedRebuildAppearanceObjects = false;
-            
-            // ...
-            while (mModuleSprite.numChildren > 0)
-               mModuleSprite.removeChildAt (0);
-            
-            mModuleInstance.RebuildAppearance (mModuleSprite, null);
-         }
-         
-         if (mNeedUpdateAppearanceProperties)
-         {
-            mNeedUpdateAppearanceProperties = false;
-         }
-      }
-      
-//=============================================================
-//   physics proxy
-//=============================================================
-
-      override protected function RebuildShapePhysicsInternal ():void
-      {
-         if (mPhysicsShapeProxy != null && mModuleInstance != null)
-         {
-            mModuleInstance.RebuildPhysicsProxy (mPhysicsShapeProxy, mLocalTransform);
-         }
+         return moduleInstance != GetModuleInstance ();
       }
 
    }

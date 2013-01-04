@@ -78,6 +78,7 @@ package player.design
       
       public static var mCustomFunctionDefinitions:Array;
       
+      private static var mNumTotalModules:int = 0;
       public static var mImageBitmaps:Array; //
       public static var mImageBitmapDivisions:Array; //
       public static var mAssembledModules:Array;
@@ -785,6 +786,8 @@ package player.design
          var imageId:int;
          var image:ImageBitmap;
          
+         mNumTotalModules = 0;
+         
          if (mImageBitmaps == null)
          {
             needLoadImages = true;
@@ -794,9 +797,13 @@ package player.design
             for (imageId = 0; imageId < imageDefines.length; ++ imageId)
             {
                image = new ImageBitmap ();
-               image.SetId (imageId);
+               image.SetId (mNumTotalModules ++);
                mImageBitmaps [imageId] = image;
             }
+         }
+         else
+         {
+            mNumTotalModules += mImageBitmaps.length;
          }
 
          if (mImageBitmapDivisions == null)
@@ -809,9 +816,13 @@ package player.design
                
                var imageDivision:ImageBitmapDivision = new ImageBitmapDivision (mImageBitmaps [divisionDefine.mImageIndex] as ImageBitmap, 
                                                        divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom);
-               imageDivision.SetId (imageDefines.length + divisionId);
+               imageDivision.SetId (mNumTotalModules ++);
                mImageBitmapDivisions [divisionId] = imageDivision;
             }
+         }
+         else
+         {
+            mNumTotalModules += mImageBitmapDivisions.length;
          }
          
          if (needLoadImages)
@@ -839,8 +850,12 @@ package player.design
             for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
             {
                mAssembledModules [assembledModuleId] = new AssembledModule ();
-               (mAssembledModules [assembledModuleId] as AssembledModule).SetId (imageDefines.length + pureImageModuleDefines.length + assembledModuleId);
+               (mAssembledModules [assembledModuleId] as AssembledModule).SetId (mNumTotalModules ++);
             }
+         }
+         else
+         {
+            mNumTotalModules += mAssembledModules.length;
          }
          
          if (mSequencedModules == null)
@@ -853,8 +868,12 @@ package player.design
             for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
             {
                mSequencedModules [sequencedModuleId] = new SequencedModule ();
-               (mSequencedModules [sequencedModuleId] as SequencedModule) .SetId (imageDefines.length + pureImageModuleDefines.length + assembledModuleDefines.length + sequencedModuleId);
+               (mSequencedModules [sequencedModuleId] as SequencedModule) .SetId (mNumTotalModules ++);
             }
+         }
+         else
+         {
+            mNumTotalModules += mSequencedModules.length;
          }
          
          //if (needLoadAssembledModules)
@@ -1165,9 +1184,19 @@ package player.design
          }
       }
       
+      public static function ValiddateModuleIndex (index:int):int
+      {
+         if (isNaN (index) || index < 0 || index >= mNumTotalModules)
+            return -1;
+         
+         return index;
+      }
+      
       public static function GetImageModuleByGlobalIndex (moduleId:int):Module
       {
          // todo: create an Array for better performance
+         
+         moduleId = ValiddateModuleIndex (moduleId);
          
          if (moduleId >= 0)
          {

@@ -321,7 +321,7 @@ package player.trigger {
 
          RegisterCoreFunction (CoreFunctionIds.ID_World_CreateExplosion,                            CreateExplosion);
 
-      // game / world / create
+      // game / world / sound
 
          RegisterCoreFunction (CoreFunctionIds.ID_World_PlaySound,                            PlaySound);
          RegisterCoreFunction (CoreFunctionIds.ID_World_StopSounds_InLevel,                   StopAllSounds_InLevel);
@@ -330,6 +330,11 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetSoundEnabled,                      SetSoundEnabled);
          //RegisterCoreFunction (CoreFunctionIds.ID_World_GetGlobalSoundVolume,                 GetGlobalSoundVolume);
          //RegisterCoreFunction (CoreFunctionIds.ID_World_SetGlobalSoundVolume,                 SetGlobalSoundVolume);
+
+      // game / world / module
+
+         RegisterCoreFunction (CoreFunctionIds.ID_Module_Assign,                   AssignModule);
+         RegisterCoreFunction (CoreFunctionIds.ID_Module_Equals,                   EqualsWith_Module);
 
       // game / collision category
 
@@ -537,7 +542,12 @@ package player.trigger {
 
       // game / entity / shape / module
 
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModule_GetModule,            GetShapeModule);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModule_ChangeModule,            ChangeShapeModule);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModuleButton_GetOverModule,            GetShapeModuleButton_OverState);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModuleButton_ChangeOverModule,            ChangeShapeModuleButton_OverState);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModuleButton_GetDownModule,            GetShapeModuleButton_DownState);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModuleButton_ChangeDownModule,            ChangeShapeModuleButton_DownState);
 
       // game / entity / joint
 
@@ -2803,6 +2813,30 @@ package player.trigger {
       //public static function SetGlobalSoundVolume (valueSource:Parameter, valueTarget:Parameter):void
       //{
       //}
+      
+   //*******************************************************************
+   // game / world / module
+   //*******************************************************************
+
+      public static function AssignModule (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         //var module:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex:int = valueSource.EvaluateValueObject () as int;
+
+         valueTarget.AssignValueObject (Global.ValiddateModuleIndex (moduleIndex));
+      }
+
+      public static function EqualsWith_Module (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         //var module:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex:int = valueSource.EvaluateValueObject () as int;
+         
+         valueSource = valueSource.mNextParameter;
+         //var module2:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex2:int = valueSource.EvaluateValueObject () as int;
+
+         valueTarget.AssignValueObject (Global.ValiddateModuleIndex (moduleIndex) == Global.ValiddateModuleIndex (moduleIndex2));
+      }
 
    //*******************************************************************
    // game collision category
@@ -5326,8 +5360,20 @@ package player.trigger {
    // entity / joint
    //*******************************************************************
 
-      // now, not support changing modules for ModuleButton.
-      // OnFrameReachEnd event handler is also not supported for ModuleButton
+      public static function GetShapeModule (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var moduleShape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
+
+         if (moduleShape == null)
+         {
+            valueTarget.AssignValueObject (-1);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (moduleShape.GetModuleIndex ());
+         }
+      }
+
       public static function ChangeShapeModule (valueSource:Parameter, valueTarget:Parameter):void
       {
          var moduleShape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
@@ -5338,15 +5384,69 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          //var module:Module = valueSource.EvaluateValueObject () as Module;
          var moduleIndex:int = valueSource.EvaluateValueObject () as int;
-         if (isNaN (moduleIndex))
-            moduleIndex = -1;
 
          valueSource = valueSource.mNextParameter;
          var loopToEndHandler:EntityEventHandler = valueSource.EvaluateValueObject () as EntityEventHandler;
          if (loopToEndHandler != null && loopToEndHandler.GetEventId () != CoreEventIds.ID_OnSequencedModuleLoopToEnd) // generally, impossible
             loopToEndHandler = null;
 
-         moduleShape.SetModuleIndexByAPI (moduleIndex, loopToEndHandler);
+         moduleShape.SetModuleIndexByAPI (Global.ValiddateModuleIndex (moduleIndex), loopToEndHandler);
+      }
+
+      public static function GetShapeModuleButton_OverState (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
+
+         if (buttonModuleShape == null)
+         {
+            valueTarget.AssignValueObject (-1);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (buttonModuleShape.GetModuleIndexOver ());
+         }
+      }
+
+      public static function ChangeShapeModuleButton_OverState (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
+
+         if (buttonModuleShape == null || buttonModuleShape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         //var module:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex:int = valueSource.EvaluateValueObject () as int;
+
+         buttonModuleShape.SetModuleIndexOver (Global.ValiddateModuleIndex (moduleIndex));
+      }
+
+      public static function GetShapeModuleButton_DownState (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
+
+         if (buttonModuleShape == null)
+         {
+            valueTarget.AssignValueObject (-1);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (buttonModuleShape.GetModuleIndexDown ());
+         }
+      }
+
+      public static function ChangeShapeModuleButton_DownState (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
+
+         if (buttonModuleShape == null || buttonModuleShape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         //var module:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex:int = valueSource.EvaluateValueObject () as int;
+
+         buttonModuleShape.SetModuleIndexOver (Global.ValiddateModuleIndex (moduleIndex));
       }
 
    //*******************************************************************

@@ -353,9 +353,10 @@ package common.trigger {
       public static const CoreApiId_851:int = 851; // CCat
       public static const CoreApiId_852:int = 852; // CCat
       public static const CoreApiId_853:int = 853; // CCat
-
+      public static const CoreApiId_854:int = 854; // module
       public static const CoreApiId_855:int = 855; // CCat
       public static const CoreApiId_856:int = 856; // CCat
+      public static const CoreApiId_857:int = 857; // module
 
       public static const CoreApiId_900:int = 900; // entity
       public static const CoreApiId_901:int = 901; // entity
@@ -545,8 +546,12 @@ package common.trigger {
       public static const CoreApiId_1571:int = 1571; // entity.shape.text
       public static const CoreApiId_1572:int = 1572; // entity.shape.text
 
-      //public static const CoreApiId_1580:int = 1580; // entity.shape.text
-      public static const CoreApiId_1581:int = 1581; // entity.shape.text
+      public static const CoreApiId_1580:int = 1580; // entity.shape.module
+      public static const CoreApiId_1581:int = 1581; // entity.shape.module
+      public static const CoreApiId_1582:int = 1582; // entity.shape.module.button
+      public static const CoreApiId_1583:int = 1583; // entity.shape.module.button
+      public static const CoreApiId_1584:int = 1584; // entity.shape.module.button
+      public static const CoreApiId_1585:int = 1585; // entity.shape.module.button
 
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint

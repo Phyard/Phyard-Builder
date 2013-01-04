@@ -318,6 +318,13 @@ package common.trigger {
       //public static const ID_World_GetGlobalSoundVolume:int         = IdPool.CoreApiId_805;
       //public static const ID_World_SetGlobalSoundVolume:int         = IdPool.CoreApiId_806;
 
+   // game / collision category
+
+      public static const ID_Module_Assign:int                     = IdPool.CoreApiId_854;
+      public static const ID_Module_Equals:int                     = IdPool.CoreApiId_857;
+
+   // ?
+   
       // VirtualClickOnEntityCenter (entity)
 
    // game / collision category
@@ -526,7 +533,7 @@ package common.trigger {
       public static const ID_EntityShapeRectangle_GetSize:int                   = IdPool.CoreApiId_1556;
       public static const ID_EntityShapeRectangle_SetSize:int                   = IdPool.CoreApiId_1557;
 
-   // game /entity / shape / poly
+   // game / entity / shape / poly
 
       public static const ID_EntityShapePoly_GetVertexCount:int                          = IdPool.CoreApiId_1558;
       public static const ID_EntityShapePoly_GetVertexLocalPosition:int                  = IdPool.CoreApiId_1559;
@@ -541,16 +548,21 @@ package common.trigger {
       public static const ID_EntityShapePoly_GetVertexWorldPositions:int                     = IdPool.CoreApiId_1568;
       public static const ID_EntityShapePoly_SetVertexWorldPositions:int                     = IdPool.CoreApiId_1569;
       
-   // game /entity / shape / thickness
+   // game / entity / shape / thickness
    
       public static const ID_EntityShape_GetBorderThickness:int        = IdPool.CoreApiId_1118;
       public static const ID_EntityShape_SetBorderThickness:int        = IdPool.CoreApiId_1119;
       public static const ID_EntityShape_GetCurveThickness:int        = IdPool.CoreApiId_1165;
       public static const ID_EntityShape_SetCurveThickness:int        = IdPool.CoreApiId_1166;
 
-   // game /entity / shape / module
+   // game / entity / shape / module
 
+      public static const ID_EntityShapeModule_GetModule:int                          = IdPool.CoreApiId_1580;
       public static const ID_EntityShapeModule_ChangeModule:int                          = IdPool.CoreApiId_1581;
+      public static const ID_EntityShapeModuleButton_GetOverModule:int                = IdPool.CoreApiId_1582;
+      public static const ID_EntityShapeModuleButton_ChangeOverModule:int                = IdPool.CoreApiId_1583;
+      public static const ID_EntityShapeModuleButton_GetDownModule:int                = IdPool.CoreApiId_1584;
+      public static const ID_EntityShapeModuleButton_ChangeDownModule:int                = IdPool.CoreApiId_1585;
 
    // game / entity / joint
 

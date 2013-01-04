@@ -23,7 +23,7 @@ package common {
    import player.entity.EntityShapePolygon;
    import player.entity.EntityShapePolyline;
 
-   import player.entity.EntityShapeImageModule;
+   import player.entity.EntityShapeImageModuleGeneral;
    import player.entity.EntityShapeImageModuleButton;
 
    import player.entity.EntityJoint;
@@ -164,7 +164,7 @@ package common {
          // module shape
          
             case Define.EntityType_ShapeImageModule:
-               entity = new EntityShapeImageModule (playerWorld);
+               entity = new EntityShapeImageModuleGeneral (playerWorld);
                break;
             case Define.EntityType_ShapeImageModuleButton:
                entity = new EntityShapeImageModuleButton (playerWorld);

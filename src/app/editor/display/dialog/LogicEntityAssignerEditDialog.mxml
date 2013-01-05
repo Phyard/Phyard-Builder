@@ -12,6 +12,7 @@
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="10" />
          <mx:Spacer height="100%" />
       </mx:VBox>
    </mx:TabNavigator>
@@ -60,6 +61,8 @@
          {
             mParams.mRotationNonSense = true;
             mParams.mVisibleNonsense = true;
+            mParams.mScaleNonSense = true;
+            mParams.mFlippedNonSense = true;
             mParams.mEnabledNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }

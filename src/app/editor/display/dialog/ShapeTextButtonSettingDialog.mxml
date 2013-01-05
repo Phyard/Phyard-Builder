@@ -98,12 +98,14 @@
 
          private function OnAppearanceSettingPanelCreationComplete ():void
          {
+            mParams.mDisableTextureEditing = true;
             mParams.mCiTypeSelectable = false;
             AppearanceSettingPanel.SetValues (mParams);
          }
 
          private function OnMouseOverAppearanceSettingPanelCreationComplete ():void
          {
+            mParams.mMouseOverValues.mDisableTextureEditing = true;
             mParams.mMouseOverValues.mCiTypeSelectable = false;
             AppearanceSettingPanel_MouseOver.SetValues (mParams.mMouseOverValues);
          }

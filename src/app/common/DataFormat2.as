@@ -3810,6 +3810,11 @@ package common {
                            entityDefine.mIsUnderlined = false;
                         }
    
+                        if (worldDefine.mVersion < 0x0204)
+                        {
+                           entityDefine.mTextAlign |= TextUtil.TextAlign_Middle;
+                        }
+   
                      }
                      else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
                      {

@@ -60,6 +60,8 @@
          {
             mParams.mRotationNonSense = true;
             mParams.mVisibleNonsense = true;
+            mParams.mScaleNonSense = true;
+            mParams.mFlippedNonSense = true;
             mParams.mEnabledNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }

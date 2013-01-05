@@ -32,7 +32,7 @@ package player.entity {
          SetBorderColor (Define.ColorTextButtonBorder);
          SetBorderThickness (2);
          SetTextColor (Define.ColorTextButtonText);
-         SetTextAlign (TextUtil.TextAlign_Center);
+         SetTextAlign (TextUtil.TextAlign_Center | TextUtil.TextAlign_Middle);
          
          mAppearanceObjectsContainer.removeChild (mBackgroundShape); // added in rect
          mAppearanceObjectsContainer.removeChild (mBorderShape); // added in rect
@@ -174,29 +174,87 @@ package player.entity {
       protected var mBackgroundShape_MouseDown:Shape = new Shape ();
       protected var mBorderShape_MouseDown    :Shape = new Shape ();
       
-      
-      override protected function AdjustBackgroundSize ():void
+      override protected function AlignText (hAlign:int, vAlign:int, displayHalfWidth:Number, displayHalfHeight:Number, halfDisplayBorderThickness:Number):void
       {
-         if (IsAdaptiveBackgroundSize ())
+         super.AlignText (hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         
+         // ...
+         
+         if (hAlign == TextUtil.TextAlign_Left || hAlign == TextUtil.TextAlign_Right)
          {
-            SetHalfWidth  (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.width + 15));
-            SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.height + 3));
-            
-            mNeedRebuildAppearanceObjects = true;
+            if (hAlign == TextUtil.TextAlign_Left)
+               mTextBitmap_MouseOver.x = - displayHalfWidth + 5 + halfDisplayBorderThickness;
+            else
+               mTextBitmap_MouseOver.x = displayHalfWidth - 5 - halfDisplayBorderThickness - mTextBitmap_MouseOver.width;
          }
+         else
+         {
+            mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap.width;
+         }
+         
+         if (vAlign == TextUtil.TextAlign_Top || vAlign == TextUtil.TextAlign_Bottom)
+         {
+            if (vAlign == TextUtil.TextAlign_Top)
+               mTextBitmap_MouseOver.y = - displayHalfHeight + 5 + halfDisplayBorderThickness;
+            else
+               mTextBitmap_MouseOver.y = displayHalfHeight - 5 - halfDisplayBorderThickness - mTextBitmap_MouseOver.height;
+         }
+         else
+         {
+            mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
+         }
+         
+         // ...
+         
+         if (hAlign == TextUtil.TextAlign_Left || hAlign == TextUtil.TextAlign_Right)
+         {
+            if (hAlign == TextUtil.TextAlign_Left)
+               mTextBitmap_MouseDown.x = - displayHalfWidth + 5 + halfDisplayBorderThickness;
+            else
+               mTextBitmap_MouseDown.x = displayHalfWidth - 5 - halfDisplayBorderThickness - mTextBitmap_MouseDown.width;
+         }
+         else
+         {
+            mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap.width;
+         }
+         
+         if (vAlign == TextUtil.TextAlign_Top || vAlign == TextUtil.TextAlign_Bottom)
+         {
+            if (vAlign == TextUtil.TextAlign_Top)
+               mTextBitmap_MouseDown.y = - displayHalfHeight + 5 + halfDisplayBorderThickness;
+            else
+               mTextBitmap_MouseDown.y = displayHalfHeight - 5 - halfDisplayBorderThickness - mTextBitmap_MouseDown.height;
+         }
+         else
+         {
+            mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseDown.height;
+         }
+         mTextBitmap_MouseDown.y += 1;
       }
+      
+      // why override it?
+      //override protected function AdjustBackgroundSize ():void
+      //{
+      //   if (IsAdaptiveBackgroundSize ())
+      //   {
+      //      SetHalfWidth  (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.width + 15));
+      //      SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.height + 3));
+      //      
+      //      mNeedRebuildAppearanceObjects = true;
+      //   }
+      //}
       
       override protected function RebuildTextBitmap ():void
       {
          super.RebuildTextBitmap ();
          
          mTextBitmap_MouseOver.bitmapData = mTextBitmap.bitmapData;
-         mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap_MouseOver.width;
-         mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
+         //mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap_MouseOver.width;
+         //mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
          
          mTextBitmap_MouseDown.bitmapData = mTextBitmap.bitmapData;
-         mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseOver.width;
-         mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseOver.height + 1;
+         //mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseOver.width;
+         //mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseOver.height + 1;
       }
       
       override protected function RebuildBackgroundAndBorder (displayHalfWidth:Number, displayHalfHeight:Number, displayBorderThickness:Number):void

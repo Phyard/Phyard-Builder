@@ -15,7 +15,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   
+   import editor.image.AssetImageBitmapModule;
    
    import common.Define;
    
@@ -32,7 +32,7 @@ package editor.entity {
       
       // from v1.09
       private var mIsUnderlined:Boolean = false;
-      private var mTextAlign:int = TextUtil.TextAlign_Left;
+      private var mTextAlign:int = TextUtil.TextAlign_Left | TextUtil.TextAlign_Middle;
       
       private var mAdaptiveBackgroundSize:Boolean = false;
       
@@ -76,7 +76,12 @@ package editor.entity {
       
       override public function AreControlPointsEnabled ():Boolean
       {
-         return ! IsAdaptiveBackgroundSize ();
+         return ! IsAdaptiveBackgroundSize () || IsWordWrap ();
+      }
+      
+      override public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):Boolean
+      {
+         return super.SetBodyTextureModule (null);
       }
       
       override public function UpdateAppearance ():void
@@ -91,6 +96,41 @@ package editor.entity {
          super.UpdateAppearance ();
          
          addChild (mTextLayer);
+         
+         // ...
+         
+         var halfWidth :Number = GetHalfWidth  ();
+         var halfHeight:Number = GetHalfHeight ();
+         var halfBorderThickness:Number = 0.5 * GetBorderThickness ();
+         
+         var hAlign:int = mTextAlign & 0x0F;
+         if (hAlign == TextUtil.TextAlign_Left || hAlign == TextUtil.TextAlign_Right)
+         {  
+            if (hAlign == TextUtil.TextAlign_Left)
+               mTextSprite.x = - halfWidth + 5 + halfBorderThickness;
+            else
+               mTextSprite.x = halfWidth - 5 - halfBorderThickness - mTextSprite.width;
+         }
+         else
+         {
+            mTextSprite.x = - 0.5 * mTextSprite.width;
+         }
+         
+         var vAlign:int = mTextAlign & 0xF0;
+         if (vAlign == TextUtil.TextAlign_Top || vAlign == TextUtil.TextAlign_Bottom)
+         {
+            if (vAlign == TextUtil.TextAlign_Top)
+               mTextSprite.y = - halfHeight + 5 + halfBorderThickness;
+            else
+               mTextSprite.y = halfHeight - 5 - halfBorderThickness - mTextSprite.height;
+         }
+         else
+         {
+            mTextSprite.y = - 0.5 * mTextSprite.height;
+         }
+         
+         // ...
+         
          mTextLayer.addChild (mTextSprite);
       }
       
@@ -98,7 +138,9 @@ package editor.entity {
       {
          if (IsAdaptiveBackgroundSize ())
          {
-            SetHalfWidth  (0.5 * mTextSprite.width + 5);
+            if (! IsWordWrap ())
+               SetHalfWidth  (0.5 * mTextSprite.width + 5);
+            
             SetHalfHeight (0.5 * mTextSprite.height + 5);
          }
       }
@@ -121,16 +163,39 @@ package editor.entity {
       //   if (mIsUnderlined)
       //      infoText = "<u>" + infoText + "</u>";
       //   
-      //   return "<p align='" + Define.GetTextAlignText (mTextAlign) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
+      //   return "<p align='" + Define.GetTextAlignText (mTextAlign & 0x0F) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
+      //}
+      
+      //protected function RebuildTextSprite ():void
+      //{
+      //   var displayText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
+      //   
+      //   var textField:TextFieldEx;
+      //   
+      //   if (mWordWrap && (! mAdaptiveBackgroundSize))
+      //      textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor, true, GetHalfWidth () * 2 - 10 - GetBorderThickness ());
+      //   else
+      //      textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor);
+      //      
+      //   if (GetRotation () == 0)
+      //      mTextSprite = textField;
+      //   else
+      //   {
+      //      var textBitmap:Bitmap = DisplayObjectUtil.CreateCacheDisplayObject (textField);
+      //      mTextSprite = textBitmap;
+      //   }
+      //   
+      //   mTextSprite.x = - mTextSprite.width * 0.5;
+      //   mTextSprite.y = - mTextSprite.height * 0.5;
       //}
       
       protected function RebuildTextSprite ():void
       {
-         var displayText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
+         var displayText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
          
          var textField:TextFieldEx;
          
-         if (mWordWrap && (! mAdaptiveBackgroundSize))
+         if (mWordWrap)
             textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor, true, GetHalfWidth () * 2 - 10 - GetBorderThickness ());
          else
             textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor);

@@ -90,6 +90,8 @@
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
             mParams.mRotationNonSense = true;
+            mParams.mScaleNonSense = true;
+            mParams.mFlippedNonSense = true;
             mParams.mVisibleNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }

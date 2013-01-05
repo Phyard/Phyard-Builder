@@ -89,7 +89,7 @@ package player.entity {
       private var mIsBold:Boolean = false;
       private var mIsItalic:Boolean = false;
       private var mIsUnderlined:Boolean = false;
-      private var mTextAlign:int = TextUtil.TextAlign_Left;
+      protected var mTextAlign:int = TextUtil.TextAlign_Left | TextUtil.TextAlign_Middle;
       
       public function GetText ():String
       {
@@ -250,18 +250,85 @@ package player.entity {
          
          mNeedRebuildAppearanceObjects = mNeedRebuildAppearanceObjects || oldHalfWidth != GetHalfWidth () || oldHalfHeight != GetHalfHeight ();
          super.UpdateAppearance ();
+         
+         AlignText (mTextAlign & 0x0F, 
+                    mTextAlign & 0xF0,
+                    mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth),
+                    mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight),
+                    0.5 * mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness)
+                   );
+      }
+      
+      protected function AlignText (hAlign:int, vAlign:int, displayHalfWidth:Number, displayHalfHeight:Number, halfDisplayBorderThickness:Number):void
+      {
+         // ...
+         
+         if (hAlign == TextUtil.TextAlign_Left || hAlign == TextUtil.TextAlign_Right)
+         {
+            if (hAlign == TextUtil.TextAlign_Left)
+               mTextBitmap.x = - displayHalfWidth + 5 + halfDisplayBorderThickness;
+            else
+               mTextBitmap.x = displayHalfWidth - 5 - halfDisplayBorderThickness - mTextBitmap.width;
+         }
+         else
+         {
+            mTextBitmap.x = - 0.5 * mTextBitmap.width;
+         }
+         
+         if (vAlign == TextUtil.TextAlign_Top || vAlign == TextUtil.TextAlign_Bottom)
+         {
+            if (vAlign == TextUtil.TextAlign_Top)
+               mTextBitmap.y = - displayHalfHeight + 5 + halfDisplayBorderThickness;
+            else
+               mTextBitmap.y = displayHalfHeight - 5 - halfDisplayBorderThickness - mTextBitmap.height;
+         }
+         else
+         {
+            mTextBitmap.y = - 0.5 * mTextBitmap.height;
+         }
       }
       
       protected function AdjustBackgroundSize ():void
       {
-         if (IsAdaptiveBackgroundSize ())
+         if (mAdaptiveBackgroundSize)
          {
-            SetHalfWidth  (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.width + 5));
-            SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.height + 5));
+            var halfDisplayBorderThickness:Number = 0.5 * mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
+
+            if (! mWordWrap)
+               SetHalfWidth (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.width + 5 + halfDisplayBorderThickness));
+            
+            SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.height + 5 + halfDisplayBorderThickness));
             
             mNeedRebuildAppearanceObjects = true;
          }
       }
+      
+      //protected function RebuildTextBitmap ():void
+      //{
+      //   var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
+      //   //var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
+      //   var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
+      //   
+      //   var infoText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
+      //   
+      //   if (infoText == null)
+      //   {
+      //      mTextBitmap.bitmapData = null;
+      //   }
+      //   else
+      //   {
+      //      var textFiled:TextFieldEx;
+      //      if (mWordWrap && (! mAdaptiveBackgroundSize))
+      //         textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor, true, displayHalfWidth * 2 - 10 - displayBorderThickness);
+      //      else
+      //         textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor);
+      //      
+      //      DisplayObjectUtil.CreateCacheDisplayObjectInBitmap (textFiled, mTextBitmap);
+      //   }
+      //   
+      //   mTextBitmap.x = - 0.5 * mTextBitmap.width;
+      //   mTextBitmap.y = - 0.5 * mTextBitmap.height;
+      //}
       
       protected function RebuildTextBitmap ():void
       {
@@ -269,7 +336,7 @@ package player.entity {
          //var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
          var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
          
-         var infoText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
+         var infoText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
          
          if (infoText == null)
          {
@@ -278,16 +345,13 @@ package player.entity {
          else
          {
             var textFiled:TextFieldEx;
-            if (mWordWrap && (! mAdaptiveBackgroundSize))
+            if (mWordWrap)
                textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor, true, displayHalfWidth * 2 - 10 - displayBorderThickness);
             else
                textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor);
             
             DisplayObjectUtil.CreateCacheDisplayObjectInBitmap (textFiled, mTextBitmap);
          }
-         
-         mTextBitmap.x = - 0.5 * mTextBitmap.width;
-         mTextBitmap.y = - 0.5 * mTextBitmap.height;
       }
       
       // use TextUtil.GetHtmlWikiText now
@@ -308,7 +372,7 @@ package player.entity {
       //   if (mIsUnderlined)
       //      infoText = "<u>" + infoText + "</u>";
       //   
-      //   return "<p align='" + Define.GetTextAlignText (mTextAlign) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
+      //   return "<p align='" + Define.GetTextAlignText (mTextAlign & 0x0F) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
       //}
    }
    

@@ -31,7 +31,7 @@
       <mx:Spacer width="22%"/>
       <mx:Label id="Label_BackgroundColor" text="Filled Color:" textAlign="right"/>
       <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xFFFFFF"/>
-      <mx:Label text=", Or Use Texture: " textAlign="right"/>
+      <mx:Label id="Label_BodyTexture" text=", Or Use Texture: " textAlign="right"/>
       <ctl:ModulePickButton id="Button_PickBodyTexture" label="Null" width="128" />
    </mx:HBox>
 
@@ -155,6 +155,12 @@
                Box_CiType.enabled = false;
                CheckBox_IsCiShape.enabled = false;
                SelectList_AiType.enabled = false;
+            }
+            
+            if (inputValues.mDisableTextureEditing != null && inputValues.mDisableTextureEditing)
+            {
+               Label_BodyTexture.enabled = false;
+               Button_PickBodyTexture.enabled = false;
             }
             
             OnCiTypeSelectListClick ();

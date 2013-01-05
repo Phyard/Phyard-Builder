@@ -17,7 +17,7 @@ package common.shape
 
       // from v1.09
       protected var mIsUnderlined:Boolean = false;
-      protected var mTextAlign:int = TextUtil.TextAlign_Left;
+      protected var mTextAlign:int = TextUtil.TextAlign_Left | TextUtil.TextAlign_Middle;
 
       protected var mAdaptiveBackgroundSize:Boolean = false;
 

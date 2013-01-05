@@ -35,7 +35,7 @@ package editor.entity {
          SetFontSize (12);
          SetTextColor (Define.ColorTextButtonText);
          SetAdaptiveBackgroundSize (true);
-         SetTextAlign (TextUtil.TextAlign_Center);
+         SetTextAlign (TextUtil.TextAlign_Center | TextUtil.TextAlign_Middle);
          
          SetDrawBorder (true);
          SetDrawBackground (true);
@@ -57,14 +57,17 @@ package editor.entity {
          return "Text Button";
       }
       
-      override protected function AdjustBackgroundSize ():void
-      {
-         if (IsAdaptiveBackgroundSize ())
-         {
-            SetHalfWidth  (0.5 * mTextSprite.width + 15);
-            SetHalfHeight (0.5 * mTextSprite.height + 3);
-         }
-      }
+      // why? same as super
+      //override protected function AdjustBackgroundSize ():void
+      //{
+      //   if (IsAdaptiveBackgroundSize ())
+      //   {
+      //      if (! IsWordWrap ())
+      //         SetHalfWidth  (0.5 * mTextSprite.width + 5);
+      //      
+      //      SetHalfHeight (0.5 * mTextSprite.height + 3);
+      //   }
+      //}
       
       public function UsingHandCursor ():Boolean
       {

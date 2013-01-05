@@ -1156,6 +1156,8 @@ package editor.entity.dialog {
          values.mPosX = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_PositionX (entity.GetPositionX ()), 12);
          values.mPosY = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_PositionY (entity.GetPositionY ()), 12);
          values.mAngle = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_RotationRadians (entity.GetRotation ()) * Define.kRadians2Degrees, 6);
+         values.mScale = ValueAdjuster.Number2Precision (entity.GetScale (), 6);
+         values.mIsFlipped = entity.IsFlipped ();
          
          values.mIsVisible = entity.IsVisible ();
          values.mAlpha = entity.GetAlpha ();
@@ -1669,6 +1671,8 @@ package editor.entity.dialog {
          
          entity.SetPosition (newPosX, newPosY);
          entity.SetRotation (mScene.GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
+         entity.SetScale (params.mScale);
+         entity.SetFlipped (params.mIsFlipped);
          entity.SetVisible (params.mIsVisible);
          entity.SetAlpha (params.mAlpha);
          entity.SetEnabled (params.mIsEnabled);

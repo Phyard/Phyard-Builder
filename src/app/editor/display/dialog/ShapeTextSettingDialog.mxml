@@ -83,6 +83,7 @@
 
          private function OnAppearanceSettingPanelCreationComplete ():void
          {
+            mParams.mDisableTextureEditing = true;
             mParams.mCiTypeSelectable = false;
             AppearanceSettingPanel.SetValues (mParams);
          }

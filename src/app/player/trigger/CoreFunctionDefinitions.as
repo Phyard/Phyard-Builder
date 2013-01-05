@@ -3689,10 +3689,8 @@ package player.trigger {
       public static function GetFilledOpacity (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-         if (shape == null)
-            return;
 
-         valueTarget.AssignValueObject (shape.GetTransparency ());
+         valueTarget.AssignValueObject (shape == null ? 100 : shape.GetTransparency ());
       }
 
       public static function SetFilledOpacity (valueSource:Parameter, valueTarget:Parameter):void
@@ -3710,10 +3708,8 @@ package player.trigger {
       public static function IsShapeShowBorder (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-         if (shape == null)
-            return;
 
-         valueTarget.AssignValueObject (shape.IsDrawBorder ());
+         valueTarget.AssignValueObject (shape == null ? true : shape.IsDrawBorder ());
       }
       
       public static function SetShapeShowBorder (valueSource:Parameter, valueTarget:Parameter):void
@@ -3833,10 +3829,8 @@ package player.trigger {
       public static function GetBorderOpacity (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-         if (shape == null)
-            return;
 
-         valueTarget.AssignValueObject (shape.GetBorderTransparency ());
+         valueTarget.AssignValueObject (shape == null ? 100 : shape.GetBorderTransparency ());
       }
 
       public static function SetBorderOpacity (valueSource:Parameter, valueTarget:Parameter):void

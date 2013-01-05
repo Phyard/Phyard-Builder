@@ -4126,8 +4126,9 @@ package common {
                   
                   if (worldDefine.mVersion >= 0x0109)
                   {
-                     entityDefine.mTextAlign = parseInt (element.@align) != 0;;
-                     entityDefine.mIsUnderlined = parseInt (element.@underlined) != 0;;
+                     //entityDefine.mTextAlign = parseInt (element.@align) != 0; // ?? bug fixed in v2.03
+                     entityDefine.mTextAlign = parseInt (element.@align);
+                     entityDefine.mIsUnderlined = parseInt (element.@underlined) != 0;
                   }
                   
                   if (worldDefine.mVersion >= 0x0108)

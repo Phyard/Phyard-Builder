@@ -9,11 +9,17 @@ package com.tapirgames.util {
       public static const TextAlign_Center:int = 1;
       public static const TextAlign_Right:int = 2;
       
-      public static function GetTextAlignText (align:int):String
+      public static const TextAlign_Top:int = 0 << 4;
+      public static const TextAlign_Middle:int = 1 << 4;
+      public static const TextAlign_Bottom:int = 2 << 4;
+      
+      public static function GetTextAlignText (hAlign:int):String
       {
-         if (align == TextAlign_Right)
+         hAlign = hAlign & 0x0F;
+         
+         if (hAlign == TextAlign_Right)
             return "right";
-         else if (align == TextAlign_Center)
+         else if (hAlign == TextAlign_Center)
             return "center";
          else
             return "left";

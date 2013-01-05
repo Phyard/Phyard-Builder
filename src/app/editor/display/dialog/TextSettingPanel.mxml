@@ -9,7 +9,7 @@
       creationComplete="OnInitPanel()"
       >
       <mx:VBox height="100%" width="100%">
-         <mx:HBox width="550" verticalAlign="middle">
+         <mx:HBox width="650" verticalAlign="middle">
             <mx:CheckBox id="CheckBox_AdaptiveBackgroundSize" label="Adaptive Background Size" click="OnChangeAdaptiveBackgroundSize ()"/>
             <mx:CheckBox id="CheckBox_WordWrap" label="Word Wrap"/>
             <mx:Spacer width="5"/>
@@ -21,6 +21,9 @@
             <mx:Button id="Button_AlignLeft" change="OnTextAlignChanged (event);" toolTip="Align Left" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_left.png')" downIcon="@Embed('../../../res/dialog/text_align_left-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_left.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_left-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_left-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_left.png')" />
             <mx:Button id="Button_AlignCenter" change="OnTextAlignChanged (event);" toolTip="Align Center" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_center.png')" downIcon="@Embed('../../../res/dialog/text_align_center-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_center.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_center-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_center-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_center.png')" />
             <mx:Button id="Button_AlignRight" change="OnTextAlignChanged (event);" toolTip="Align Right" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_right.png')" downIcon="@Embed('../../../res/dialog/text_align_right-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_right.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_right-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_right-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_right.png')" />
+            <mx:Button id="Button_AlignTop" change="OnTextAlignChanged (event);" toolTip="Align Top" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_top.png')" downIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_top.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_top.png')" />
+            <mx:Button id="Button_AlignMiddle" change="OnTextAlignChanged (event);" toolTip="Align Middle" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_middle.png')" downIcon="@Embed('../../../res/dialog/text_align_middle-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_middle.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_middle-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_middle-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_middle.png')" />
+            <mx:Button id="Button_AlignBottom" change="OnTextAlignChanged (event);" toolTip="Align Bottom" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_bottom.png')" downIcon="@Embed('../../../res/dialog/text_align_bottom-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_bottom.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_bottom-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_bottom-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_bottom.png')" />
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:TextArea id="TextArea_Text" width="100%" height="200" editable="true" wordWrap="true">
@@ -68,15 +71,15 @@
 
          private function OnChangeAdaptiveBackgroundSize ():void
          {
-            if (CheckBox_AdaptiveBackgroundSize.selected)
-            {
-               CheckBox_WordWrap.selected = false;
-               CheckBox_WordWrap.enabled = false;
-            }
-            else
-            {
-               CheckBox_WordWrap.enabled = true;
-            }
+            //if (CheckBox_AdaptiveBackgroundSize.selected)
+            //{
+            //   CheckBox_WordWrap.selected = false;
+            //   CheckBox_WordWrap.enabled = false;
+            //}
+            //else
+            //{
+            //   CheckBox_WordWrap.enabled = true;
+            //}
          }
 
          private function OnTextAlignChanged (event:Event):void
@@ -93,11 +96,29 @@
                Button_AlignCenter.selected = true;
                Button_AlignRight.selected = false;
             }
-            else
+            else if (event.target == Button_AlignLeft)
             {
                Button_AlignLeft.selected = true;
                Button_AlignCenter.selected = false;
                Button_AlignRight.selected = false;
+            }
+            else if (event.target == Button_AlignBottom)
+            {
+               Button_AlignTop.selected = false;
+               Button_AlignMiddle.selected = false;
+               Button_AlignBottom.selected = true;
+            }
+            else if (event.target == Button_AlignMiddle)
+            {
+               Button_AlignTop.selected = false;
+               Button_AlignMiddle.selected = true;
+               Button_AlignBottom.selected = false;
+            }
+            else if (event.target == Button_AlignTop)
+            {
+               Button_AlignTop.selected = true;
+               Button_AlignMiddle.selected = false;
+               Button_AlignBottom.selected = false;
             }
          }
 
@@ -119,13 +140,22 @@
             CheckBox_WordWrap.selected = inputValues.mWordWrap;
             ColorPicker_TextColor.selectedColor = inputValues.mTextColor;
             CheckBox_AdaptiveBackgroundSize.selected = inputValues.mAdaptiveBackgroundSize;
-
-            if (inputValues.mTextAlign == TextUtil.TextAlign_Right)
+            
+            var hAlign:int = inputValues.mTextAlign & 0x0F;
+            if (hAlign == TextUtil.TextAlign_Right)
                Button_AlignRight.selected = true;
-            else if (inputValues.mTextAlign == TextUtil.TextAlign_Center)
+            else if (hAlign == TextUtil.TextAlign_Center)
                Button_AlignCenter.selected = true;
             else
                Button_AlignLeft.selected = true;
+            
+            var vAlign:int = inputValues.mTextAlign & 0xF0;
+            if (vAlign == TextUtil.TextAlign_Bottom)
+               Button_AlignBottom.selected = true;
+            else if (vAlign == TextUtil.TextAlign_Middle)
+               Button_AlignMiddle.selected = true;
+            else
+               Button_AlignTop.selected = true;
 
             TextArea_Text.text = inputValues.mText;
 
@@ -148,6 +178,13 @@
                returnValues.mTextAlign = TextUtil.TextAlign_Center;
             else
                returnValues.mTextAlign = TextUtil.TextAlign_Left;
+            
+            if (Button_AlignBottom.selected)
+               returnValues.mTextAlign |= TextUtil.TextAlign_Bottom;
+            else if (Button_AlignMiddle.selected)
+               returnValues.mTextAlign |= TextUtil.TextAlign_Middle;
+            else
+               returnValues.mTextAlign |= TextUtil.TextAlign_Top;
 
             returnValues.mText = TextArea_Text.text;
          }

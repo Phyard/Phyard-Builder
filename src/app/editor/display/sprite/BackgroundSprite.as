@@ -23,19 +23,20 @@ package editor.display.sprite {
       private var mSceneScaleY:Number = 1.0;
       private var mPanelWidth:Number = 0;
       private var mPanelHeight:Number = 0;
-      private var mBackgroundGridSize:Number = 50;
+      private var mBackgroundGridCellWidth:Number = 50;
+      private var mBackgroundGridCellHeight:Number = 50;
       
       public function UpdateAppearance (sceneLeft:Number, sceneTop:Number, sceneWidth:Number, sceneHeight:Number, 
                                         sceneBorderLeftThickness:Number, sceneBorderTopThickness:Number, sceneBorderRightThickness:Number, sceneBorderBottomThickness:Number, 
                                         sceneBgColor:uint, sceneBorderColor:uint, sceneDrawBorder:Boolean,
                                         sceneCameraCenterX:Number, sceneCameraCenterY:Number, sceneScaleX:Number, sceneScaleY:Number,
-                                        panelWidth:Number, panelHeight:Number, backgroundGridSize:Number):void
+                                        panelWidth:Number, panelHeight:Number, backgroundGridCellWidth:Number, backgroundGridCellHeight:Number):void
       {
          if (   mSceneLeft != sceneLeft || mSceneTop != sceneTop || mSceneWidth != sceneWidth || mSceneHeight != sceneHeight
              || mSceneBorderLeftThickness != sceneBorderLeftThickness || mSceneBorderTopThickness != sceneBorderTopThickness || mSceneBorderRightThickness != sceneBorderRightThickness || mSceneBorderBottomThickness != sceneBorderBottomThickness
              || mSceneBgColor != sceneBgColor || mSceneBorderColor != sceneBorderColor || mSceneDrawBorder != sceneDrawBorder
              || mSceneCameraCenterX != sceneCameraCenterX || mSceneCameraCenterY != sceneCameraCenterY || mSceneScaleX != sceneScaleX || mSceneScaleY != sceneScaleY
-             || mPanelWidth != panelWidth || mPanelHeight != panelHeight || mBackgroundGridSize != backgroundGridSize
+             || mPanelWidth != panelWidth || mPanelHeight != panelHeight || mBackgroundGridCellWidth != backgroundGridCellWidth || mBackgroundGridCellHeight != backgroundGridCellHeight
              )
          {
             mSceneLeft = sceneLeft;
@@ -55,7 +56,8 @@ package editor.display.sprite {
             mSceneScaleY = sceneScaleY;
             mPanelWidth = panelWidth;
             mPanelHeight = panelHeight;
-            mBackgroundGridSize = backgroundGridSize;
+            mBackgroundGridCellWidth = backgroundGridCellWidth;
+            mBackgroundGridCellHeight = backgroundGridCellHeight;
             
             Repaint ();
          }
@@ -77,8 +79,8 @@ package editor.display.sprite {
          var bgWidth :Number = bgRight - bgLeft;
          var bgHeight:Number = bgBottom - bgTop;
          
-         var gridWidth:Number  = mBackgroundGridSize * mSceneScaleX;
-         var gridHeight:Number = mBackgroundGridSize * mSceneScaleY;
+         var gridWidth:Number  = mBackgroundGridCellWidth * mSceneScaleX;
+         var gridHeight:Number = mBackgroundGridCellHeight * mSceneScaleY;
          
          var gridX:Number;
          if (bgLeft == worldViewLeft)

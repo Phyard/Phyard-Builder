@@ -36,7 +36,7 @@ package player.entity {
          
          mAppearanceObjectsContainer.removeChild (mBackgroundShape); // added in rect
          mAppearanceObjectsContainer.removeChild (mBorderShape); // added in rect
-         mAppearanceObjectsContainer.removeChild (mTextBitmap); // added in text
+         //mAppearanceObjectsContainer.removeChild (mTextBitmap); // added in text
          mAppearanceObjectsContainer.addChild (mSimpleButton);
          
          mNormalSprite.addChild (mBackgroundShape);
@@ -174,61 +174,22 @@ package player.entity {
       protected var mBackgroundShape_MouseDown:Shape = new Shape ();
       protected var mBorderShape_MouseDown    :Shape = new Shape ();
       
-      override protected function AlignText (hAlign:int, vAlign:int, displayHalfWidth:Number, displayHalfHeight:Number, halfDisplayBorderThickness:Number):void
+      override protected function PreUpdateTextAppearance ():void
       {
-         super.AlignText (hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+      }
+      
+      override protected function PostUpdateTextAppearance ():void
+      {
+         //
+         var hAlign:int = mTextAlign & 0x0F;
+         var vAlign:int = mTextAlign & 0xF0;
+         var displayHalfWidth:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
+         var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
+         var halfDisplayBorderThickness:Number = 0.5 * mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
          
-         // ...
-         
-         if (hAlign == TextUtil.TextAlign_Left || hAlign == TextUtil.TextAlign_Right)
-         {
-            if (hAlign == TextUtil.TextAlign_Left)
-               mTextBitmap_MouseOver.x = - displayHalfWidth + 5 + halfDisplayBorderThickness;
-            else
-               mTextBitmap_MouseOver.x = displayHalfWidth - 5 - halfDisplayBorderThickness - mTextBitmap_MouseOver.width;
-         }
-         else
-         {
-            mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap.width;
-         }
-         
-         if (vAlign == TextUtil.TextAlign_Top || vAlign == TextUtil.TextAlign_Bottom)
-         {
-            if (vAlign == TextUtil.TextAlign_Top)
-               mTextBitmap_MouseOver.y = - displayHalfHeight + 5 + halfDisplayBorderThickness;
-            else
-               mTextBitmap_MouseOver.y = displayHalfHeight - 5 - halfDisplayBorderThickness - mTextBitmap_MouseOver.height;
-         }
-         else
-         {
-            mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
-         }
-         
-         // ...
-         
-         if (hAlign == TextUtil.TextAlign_Left || hAlign == TextUtil.TextAlign_Right)
-         {
-            if (hAlign == TextUtil.TextAlign_Left)
-               mTextBitmap_MouseDown.x = - displayHalfWidth + 5 + halfDisplayBorderThickness;
-            else
-               mTextBitmap_MouseDown.x = displayHalfWidth - 5 - halfDisplayBorderThickness - mTextBitmap_MouseDown.width;
-         }
-         else
-         {
-            mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap.width;
-         }
-         
-         if (vAlign == TextUtil.TextAlign_Top || vAlign == TextUtil.TextAlign_Bottom)
-         {
-            if (vAlign == TextUtil.TextAlign_Top)
-               mTextBitmap_MouseDown.y = - displayHalfHeight + 5 + halfDisplayBorderThickness;
-            else
-               mTextBitmap_MouseDown.y = displayHalfHeight - 5 - halfDisplayBorderThickness - mTextBitmap_MouseDown.height;
-         }
-         else
-         {
-            mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseDown.height;
-         }
+         AlignTextSprite (mTextBitmap, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         AlignTextSprite (mTextBitmap_MouseOver, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         AlignTextSprite (mTextBitmap_MouseDown, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
          mTextBitmap_MouseDown.y += 1;
       }
       

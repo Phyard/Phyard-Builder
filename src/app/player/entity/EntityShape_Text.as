@@ -1,7 +1,9 @@
 
 package player.entity {
-   
+
+   import flash.display.DisplayObject;
    import flash.display.Bitmap;
+   import flash.text.TextField;
    
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
@@ -20,7 +22,7 @@ package player.entity {
          
          mAiTypeChangeable = false;
          
-         mAppearanceObjectsContainer.addChild (mTextBitmap);
+         //mAppearanceObjectsContainer.addChild (mTextBitmap);
       }
       
 //=============================================================
@@ -37,6 +39,12 @@ package player.entity {
                SetText (entityDefine.mText);
             if (entityDefine.mWordWrap != undefined)
                SetWordWrap (entityDefine.mWordWrap);
+            if (entityDefine.mEditable != undefined)
+               SetEditable (entityDefine.mEditable);
+            if (entityDefine.mSelectable != undefined)
+               SetSelectable (entityDefine.mSelectable);
+            if (entityDefine.mIsHtmlText != undefined)
+               SetIsHtmlText (entityDefine.mIsHtmlText);
             if (entityDefine.mTextColor != undefined)
                SetTextColor (entityDefine.mTextColor);
             if (entityDefine.mFontSize != undefined)
@@ -58,12 +66,15 @@ package player.entity {
          }
       }
        
-     override public function ToEntityDefine (entityDefine:Object):Object
-     {
+      override public function ToEntityDefine (entityDefine:Object):Object
+      {
          super.ToEntityDefine (entityDefine);
          
          entityDefine.mText = GetText ();
          entityDefine.mWordWrap = mWordWrap;
+         entityDefine.mEditable = mEditable;
+         entityDefine.mSelectable = mSelectable;
+         entityDefine.mIsHtmlText = mIsHtmlText;
          entityDefine.mTextColor = GetTextColor ();
          entityDefine.mFontSize = GetFontSize ();
          entityDefine.mIsBold = IsBold ();
@@ -75,7 +86,7 @@ package player.entity {
          entityDefine.mEntityType = Define.EntityType_ShapeText;
          
          return entityDefine;
-     }
+      }
       
 //=============================================================
 //   
@@ -84,6 +95,9 @@ package player.entity {
       private var mText:String = "";
       private var mAdaptiveBackgroundSize:Boolean = false;
       private var mWordWrap:Boolean = true;
+      private var mEditable:Boolean = false;
+      private var mSelectable:Boolean = false;
+      private var mIsHtmlText:Boolean = false;
       private var mTextColor:uint = 0x000000;
       private var mFontSize:uint = 10;
       private var mIsBold:Boolean = false;
@@ -110,11 +124,44 @@ package player.entity {
          }
       }
       
-      public function SetWordWrap (auto:Boolean):void
+      public function SetWordWrap (wrap:Boolean):void
       {
-         if (mWordWrap != auto)
+         if (mWordWrap != wrap)
          {
-            mWordWrap = auto;
+            mWordWrap = wrap;
+            
+            // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+            DelayUpdateAppearance ();
+         }
+      }
+      
+      public function SetEditable (editable:Boolean):void
+      {
+         if (mEditable != editable)
+         {
+            mEditable = editable;
+            
+            // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+            DelayUpdateAppearance ();
+         }
+      }
+      
+      public function SetSelectable (selectable:Boolean):void
+      {
+         if (mSelectable != selectable)
+         {
+            mSelectable = selectable;
+            
+            // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+            DelayUpdateAppearance ();
+         }
+      }
+      
+      public function SetIsHtmlText (isHtmlText:Boolean):void
+      {
+         if (mIsHtmlText != isHtmlText)
+         {
+            mIsHtmlText = isHtmlText;
             
             // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
             DelayUpdateAppearance ();
@@ -230,12 +277,17 @@ package player.entity {
 //=============================================================
 //   appearance
 //=============================================================
-      
+
+      // one and only one of the two will be shown      
+      protected var mTextField:TextField;
       protected var mTextBitmap:Bitmap = new Bitmap ();
+      
       protected var mNeedRebuildTextSprite:Boolean = false;
       
       override public function UpdateAppearance ():void
       {
+         PreUpdateTextAppearance ();
+         
          if (mNeedRebuildTextSprite)
          {
             mNeedRebuildTextSprite = false;
@@ -243,49 +295,76 @@ package player.entity {
             RebuildTextBitmap ();
          }
          
+         
          var oldHalfWidth:Number = GetHalfWidth ();
          var oldHalfHeight:Number = GetHalfHeight ();
          
+         // 
          AdjustBackgroundSize ();
          
+         // no need for text button 
          mNeedRebuildAppearanceObjects = mNeedRebuildAppearanceObjects || oldHalfWidth != GetHalfWidth () || oldHalfHeight != GetHalfHeight ();
          super.UpdateAppearance ();
          
-         AlignText (mTextAlign & 0x0F, 
+         PostUpdateTextAppearance ();
+      }
+      
+      protected function PreUpdateTextAppearance ():void
+      {
+         //
+         if (mTextBitmap != null && mTextBitmap.parent == mAppearanceObjectsContainer)
+            mAppearanceObjectsContainer.removeChild (mTextBitmap);
+         if (mTextField != null && mTextField.parent == mAppearanceObjectsContainer)
+            mAppearanceObjectsContainer.removeChild (mTextField);
+      }
+      
+      protected function PostUpdateTextAppearance ():void
+      {  
+         //
+         var textSprite:DisplayObject = ((! mEditable) && (! mSelectable) && mTextBitmap != null) ? mTextBitmap : mTextField; 
+         AlignTextSprite (textSprite,
+                    mTextAlign & 0x0F, 
                     mTextAlign & 0xF0,
                     mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth),
                     mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight),
                     0.5 * mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness)
                    );
+         
+         mAppearanceObjectsContainer.addChild (textSprite);
       }
       
-      protected function AlignText (hAlign:int, vAlign:int, displayHalfWidth:Number, displayHalfHeight:Number, halfDisplayBorderThickness:Number):void
+      protected function AlignTextSprite (textSprite:DisplayObject, hAlign:int, vAlign:int, displayHalfWidth:Number, displayHalfHeight:Number, halfDisplayBorderThickness:Number):void
       {
          // ...
          
          if (hAlign == TextUtil.TextAlign_Left || hAlign == TextUtil.TextAlign_Right)
          {
             if (hAlign == TextUtil.TextAlign_Left)
-               mTextBitmap.x = - displayHalfWidth + 5 + halfDisplayBorderThickness;
+               textSprite.x = - displayHalfWidth + 5 + halfDisplayBorderThickness;
             else
-               mTextBitmap.x = displayHalfWidth - 5 - halfDisplayBorderThickness - mTextBitmap.width;
+               textSprite.x = displayHalfWidth - 5 - halfDisplayBorderThickness - textSprite.width;
          }
          else
          {
-            mTextBitmap.x = - 0.5 * mTextBitmap.width;
+            textSprite.x = - 0.5 * textSprite.width;
          }
          
          if (vAlign == TextUtil.TextAlign_Top || vAlign == TextUtil.TextAlign_Bottom)
          {
             if (vAlign == TextUtil.TextAlign_Top)
-               mTextBitmap.y = - displayHalfHeight + 5 + halfDisplayBorderThickness;
+               textSprite.y = - displayHalfHeight + 5 + halfDisplayBorderThickness;
             else
-               mTextBitmap.y = displayHalfHeight - 5 - halfDisplayBorderThickness - mTextBitmap.height;
+               textSprite.y = displayHalfHeight - 5 - halfDisplayBorderThickness - textSprite.height;
          }
          else
          {
-            mTextBitmap.y = - 0.5 * mTextBitmap.height;
+            textSprite.y = - 0.5 * textSprite.height;
          }
+      }
+      
+      protected function ShouldCacheTextAsBitmap ():Boolean
+      {
+         return false;
       }
       
       protected function AdjustBackgroundSize ():void
@@ -317,13 +396,13 @@ package player.entity {
       //   }
       //   else
       //   {
-      //      var textFiled:TextFieldEx;
+      //      var textField:TextFieldEx;
       //      if (mWordWrap && (! mAdaptiveBackgroundSize))
-      //         textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor, true, displayHalfWidth * 2 - 10 - displayBorderThickness);
+      //         textField = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor, true, displayHalfWidth * 2 - 10 - displayBorderThickness);
       //      else
-      //         textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor);
+      //         textField = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor);
       //      
-      //      DisplayObjectUtil.CreateCacheDisplayObjectInBitmap (textFiled, mTextBitmap);
+      //      DisplayObjectUtil.CreateCacheDisplayObjectInBitmap (textField, mTextBitmap);
       //   }
       //   
       //   mTextBitmap.x = - 0.5 * mTextBitmap.width;
@@ -340,17 +419,24 @@ package player.entity {
          
          if (infoText == null)
          {
-            mTextBitmap.bitmapData = null;
+            infoText = "";
          }
+
+         var textField:TextFieldEx;
+         if (mWordWrap)
+            textField = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor, true, displayHalfWidth * 2 - 10 - displayBorderThickness);
          else
+            textField = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor);
+         
+         mTextField = textField;
+         
+         try
          {
-            var textFiled:TextFieldEx;
-            if (mWordWrap)
-               textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor, true, displayHalfWidth * 2 - 10 - displayBorderThickness);
-            else
-               textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor);
-            
-            DisplayObjectUtil.CreateCacheDisplayObjectInBitmap (textFiled, mTextBitmap);
+            DisplayObjectUtil.CreateCacheDisplayObjectInBitmap (textField, mTextBitmap);
+         }
+         catch (error:Error)
+         {
+            mTextBitmap = null;
          }
       }
       

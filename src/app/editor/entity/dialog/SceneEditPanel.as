@@ -206,7 +206,7 @@ package editor.entity.dialog {
                                                mScene.GetWorldBorderLeftThickness (), mScene.GetWorldBorderTopThickness (), mScene.GetWorldBorderRightThickness (), mScene.GetWorldBorderBottomThickness (),
                                                mScene.GetBackgroundColor (), mScene.GetBorderColor (), mScene.IsBuildBorder (),
                                                sceneCameraCenter.x, sceneCameraCenter.y, mScene.scaleX, mScene.scaleY,
-                                               GetPanelWidth (), GetPanelHeight (), mBackgroundGridSize);
+                                               GetPanelWidth (), GetPanelHeight (), mBackgroundGridCellWidth, mBackgroundGridCellHeight);
          }
       }
       
@@ -302,6 +302,30 @@ package editor.entity.dialog {
             return true;
          
          return super.OnKeyDownInternal (keyCode, ctrlHold, shiftHold);
+      }
+      
+//=====================================================================
+// context menu
+//=====================================================================
+      
+      // used in panel and assets
+      override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+         var menuItemSetGridCellSize:ContextMenuItem = new ContextMenuItem("Set Grid Cell Size ...", true);
+         
+         menuItemSetGridCellSize.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnSetGridSize);
+
+         customMenuItemsStack.push (menuItemSetGridCellSize);
+      }
+      
+      private function OnSetGridSize (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateMoveDialog, SetGridSize, {mLabelTextX: "Grid Cell Width:", mLabelTextY: "Grid Cell Height:", mX: mBackgroundGridCellWidth, mY: mBackgroundGridCellHeight});
+      }
+      
+      private function SetGridSize (params:Object):void
+      {
+         SetBackgroundGridSize (params.mX, params.mY);
       }
 
 //=====================================================================
@@ -832,11 +856,15 @@ package editor.entity.dialog {
          mDialogCallbacks.UpdateInterface (selectionsInfo);
       }
       
-      private var mBackgroundGridSize:int = 50;
+      private var mBackgroundGridCellWidth:int = 50;
+      private var mBackgroundGridCellHeight:int = 50;
       
-      public function SetBackgroundGridSize (gridSize:Number):void
+      public function SetBackgroundGridSize (cellWidth:Number, cellHeight:Number):void
       {
-         mBackgroundGridSize = gridSize;
+         if (cellWidth >= 10 && cellWidth <= 100)
+            mBackgroundGridCellWidth = cellWidth;
+         if (cellHeight >= 10 && cellHeight <= 100)
+            mBackgroundGridCellHeight = cellHeight;
       }
       
       private var mMaskFieldInPlaying:Boolean = false;

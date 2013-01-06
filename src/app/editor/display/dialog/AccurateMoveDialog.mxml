@@ -47,13 +47,11 @@
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
 
-         private var mIsMoveTo:Boolean = false;
+         private var mInputValues:Object = null;
+         
          public function SetValues (initialValues:Object):void
          {
-            if (initialValues != null && initialValues.mIsMoveTo != null)
-            {
-               mIsMoveTo = initialValues.mIsMoveTo as Boolean;
-            }
+            mInputValues = initialValues;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -68,10 +66,22 @@
          
          private function OnInitPanel ():void
          {
-            if (mIsMoveTo)
+            //if (mIsMoveTo)
+            //{
+            //   Label_X.text = "Move Target X:";
+            //   Label_Y.text = "Move Target Y:";
+            //}
+            
+            if (mInputValues != null)
             {
-               Label_X.text = "Move Target X:";
-               Label_Y.text = "Move Target Y:";
+               if (mInputValues.mLabelTextX != null)
+                  Label_X.text = mInputValues.mLabelTextX;
+               if (mInputValues.mLabelTextY != null)
+                  Label_Y.text = mInputValues.mLabelTextY;
+               if (mInputValues.mX != null)
+                  TextInput_MoveX.text = "" + mInputValues.mX;
+               if (mInputValues.mY != null)
+                  TextInput_MoveY.text = "" + mInputValues.mY;
             }
          }
          
@@ -89,16 +99,18 @@
             
             var params:Object = new Object ();
             
-            if (mIsMoveTo)
-            {
-               params.mTargetX = valueX;
-               params.mTargetY = valueY;
-            }
-            else
-            {
-               params.mOffsetX = valueX;
-               params.mOffsetY = valueY;
-            }
+            //if (mIsMoveTo)
+            //{
+            //   params.mTargetX = valueX;
+            //   params.mTargetY = valueY;
+            //}
+            //else
+            //{
+            //   params.mOffsetX = valueX;
+            //   params.mOffsetY = valueY;
+            //}
+            params.mX = valueX;
+            params.mY = valueY;
             
             if (OnClose != null)
                OnClose ();

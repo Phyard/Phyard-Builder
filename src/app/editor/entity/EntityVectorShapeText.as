@@ -24,6 +24,11 @@ package editor.entity {
       private var mText:String;
       private var mWordWrap:Boolean = true;
       
+      // from v2.04
+      private var mEditable:Boolean = false;
+      private var mSelectable:Boolean = false;
+      private var mIsHtmlText:Boolean = false;
+      
       // from v1.07
       private var mTextColor:uint = 0x000000;
       private var mFontSize:uint = 10;
@@ -86,14 +91,16 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
-         if (mTextSprite != null)
-            mTextLayer.removeChild (mTextSprite);
+         while (mTextLayer.numChildren > 0)
+            mTextLayer.removeChildAt (0);
          
          RebuildTextSprite ();
          
          AdjustBackgroundSize ();
          
+//trace ("111 mTextLayer.parent = " + mTextLayer.parent);
          super.UpdateAppearance ();
+//trace ("222 mTextLayer.parent = " + mTextLayer.parent);
          
          addChild (mTextLayer);
          
@@ -208,8 +215,8 @@ package editor.entity {
             mTextSprite = textBitmap;
          }
          
-         mTextSprite.x = - mTextSprite.width * 0.5;
-         mTextSprite.y = - mTextSprite.height * 0.5;
+         //mTextSprite.x = - mTextSprite.width * 0.5;
+         //mTextSprite.y = - mTextSprite.height * 0.5;
       }
       
       public function GetText ():String
@@ -236,6 +243,36 @@ package editor.entity {
       public function SetWordWrap (auto:Boolean):void
       {
          mWordWrap = auto;
+      }
+      
+      public function IsEditable ():Boolean
+      {
+         return mEditable;
+      }
+      
+      public function SetEditable (auto:Boolean):void
+      {
+         mEditable = auto;
+      }
+      
+      public function IsSelectable ():Boolean
+      {
+         return mSelectable;
+      }
+      
+      public function SetSelectable (auto:Boolean):void
+      {
+         mSelectable = auto;
+      }
+      
+      public function IsHtmlText ():Boolean
+      {
+         return mIsHtmlText;
+      }
+      
+      public function SetIsHtmlText (auto:Boolean):void
+      {
+          mIsHtmlText = auto;
       }
       
       public function GetTextColor ():uint

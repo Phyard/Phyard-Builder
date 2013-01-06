@@ -12,7 +12,13 @@
          <mx:HBox width="650" verticalAlign="middle">
             <mx:CheckBox id="CheckBox_AdaptiveBackgroundSize" label="Adaptive Background Size" click="OnChangeAdaptiveBackgroundSize ()"/>
             <mx:CheckBox id="CheckBox_WordWrap" label="Word Wrap"/>
-            <mx:Spacer width="5"/>
+            <mx:CheckBox id="CheckBox_Editable" label="Editable"/>
+            <mx:CheckBox id="CheckBox_Selectable" label="Selectable"/>
+            <mx:CheckBox id="CheckBox_IsHtmlText" label="Is Html Text" visible="false"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:HBox width="650" verticalAlign="middle">
+            <mx:Label text="Font Size:" click="CheckBox_IsHtmlText.visible = ! CheckBox_IsHtmlText.visible;"/>
             <mx:ComboBox id="SelectList_FontSize"/>
             <mx:ColorPicker id="ColorPicker_TextColor" showTextField="true" selectedColor="0x000000"/>
             <mx:Button id="Button_Bold" toolTip="Bold" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_bold.png')" downIcon="@Embed('../../../res/dialog/text_bold-sel.png')" overIcon="@Embed('../../../res/dialog/text_bold.png')" selectedUpIcon="@Embed('../../../res/dialog/text_bold-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_bold-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_bold.png')" />
@@ -24,6 +30,7 @@
             <mx:Button id="Button_AlignTop" change="OnTextAlignChanged (event);" toolTip="Align Top" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_top.png')" downIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_top.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_top.png')" />
             <mx:Button id="Button_AlignMiddle" change="OnTextAlignChanged (event);" toolTip="Align Middle" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_middle.png')" downIcon="@Embed('../../../res/dialog/text_align_middle-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_middle.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_middle-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_middle-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_middle.png')" />
             <mx:Button id="Button_AlignBottom" change="OnTextAlignChanged (event);" toolTip="Align Bottom" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_bottom.png')" downIcon="@Embed('../../../res/dialog/text_align_bottom-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_bottom.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_bottom-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_bottom-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_bottom.png')" />
+            <mx:Spacer width="100%"/>
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:TextArea id="TextArea_Text" width="100%" height="200" editable="true" wordWrap="true">
@@ -158,6 +165,11 @@
                Button_AlignTop.selected = true;
 
             TextArea_Text.text = inputValues.mText;
+            
+            if (inputValues.mDisableEditableEditing != null && inputValues.mDisableEditableEditing)
+               CheckBox_Editable.enabled = false;
+            if (inputValues.mDisableSelectableEditing != null && inputValues.mDisableSelectableEditing)
+               CheckBox_Selectable.enabled = false;
 
             OnChangeAdaptiveBackgroundSize ();
          }

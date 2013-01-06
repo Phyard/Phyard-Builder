@@ -358,6 +358,12 @@ package editor.asset {
 // context menu
 //=====================================================================
       
+      // used in panel and assets
+      public function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+         // to override
+      }
+      
       final private function BuildContextMenu ():void
       {
          var theContextMenu:ContextMenu = new ContextMenu ();
@@ -379,6 +385,8 @@ package editor.asset {
          {
             mAssetManager.BuildContextMenuInternal (theContextMenu.customItems);
          }
+         
+         BuildContextMenuInternal (theContextMenu.customItems);
          
          theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
@@ -1232,12 +1240,14 @@ package editor.asset {
       
       private function OnMoveTransformRingAccurately (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mIsMoveTo: true});
+         //EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mIsMoveTo: true});
+         EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mLabelTextX: "Move Target X:", mLabelTextY: "Move Target Y:"});
       }
       
       private function MoveTransformRingAccurately (params:Object):void
       {
-         var panelPoint:Point = ManagerToPanel (new Point (params.mTargetX, params.mTargetY));
+         //var panelPoint:Point = ManagerToPanel (new Point (params.mTargetX, params.mTargetY));
+         var panelPoint:Point = ManagerToPanel (new Point (params.mX, params.mY));
          
          MoveScaleRotateFlipHandlers (panelPoint.x - mScaleRotateFlipHandlersContainer.x, panelPoint.y - mScaleRotateFlipHandlersContainer.y);
       }
@@ -1249,7 +1259,8 @@ package editor.asset {
       
       private function MoveSelectionsAccurately (params:Object):void
       {
-         MoveSelectedAssets (false, params.mOffsetX, params.mOffsetY, true);
+         //MoveSelectedAssets (false, params.mOffsetX, params.mOffsetY, true);
+         MoveSelectedAssets (false, params.mX, params.mY, true);
       }
       
       private function OnRotateSelectionsAccurately (event:ContextMenuEvent):void

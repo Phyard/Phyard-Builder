@@ -417,15 +417,15 @@ package editor.codelib {
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          /*
-         var menuItemLoadLocalSoundss:ContextMenuItem = new ContextMenuItem("Load Local Sounds(s) ...", true);
+         var menuItemLoadLocalSounds:ContextMenuItem = new ContextMenuItem("Load Local Sounds(s) ...", true);
          //var menuItemCreateSound:ContextMenuItem = new ContextMenuItem("Create Blank Sound ...");
          var menuItemDeleteSelecteds:ContextMenuItem = new ContextMenuItem("Delete Selected(s) ...", true);
          
-         menuItemLoadLocalSoundss.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_LocalSounds);
+         menuItemLoadLocalSounds.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_LocalSounds);
          //menuItemCreateSound.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateSound);
          menuItemDeleteSelecteds.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_DeleteSelectedAssets);
 
-         customMenuItemsStack.push (menuItemLoadLocalSoundss);
+         customMenuItemsStack.push (menuItemLoadLocalSounds);
          //customMenuItemsStack.push (menuItemCreateSound);
          customMenuItemsStack.push (menuItemDeleteSelecteds);
          */

@@ -93,6 +93,8 @@
 
          private function OnTextSettingPanelCreationComplete ():void
          {
+            mParams.mDisableEditableEditing = true;
+            mParams.mDisableSelectableEditing = true;
             theTextSettingPanel.SetValues (mParams);
          }
 

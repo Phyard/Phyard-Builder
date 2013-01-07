@@ -4,6 +4,7 @@ package editor.entity.dialog {
    import flash.utils.ByteArray;
    import flash.display.Shape;
    import flash.display.Sprite;
+   import flash.display.InteractiveObject;
    import flash.events.Event;
    import flash.geom.Point;
    
@@ -113,8 +114,23 @@ package editor.entity.dialog {
       
       private function OnEnterFrame (event:Event):void 
       {
+         // before v2.04
+         //if (mDesignViewer != null)
+         //   stage.focus = this;
+         
+         // since v2.04
          if (mDesignViewer != null)
-            stage.focus = this;
+         {
+            var io:InteractiveObject = stage.focus; // may be an editable text field
+            while (io != this && io != null)
+            {
+               io = io.parent;
+            }
+            if (io != this)
+            {
+               stage.focus = this;
+            }
+         }
          
          UpdateInterface ();
       }

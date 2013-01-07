@@ -1734,13 +1734,30 @@ package common {
                {
                   element.@text = entityDefine.mText;
                   if (worldDefine.mVersion < 0x0108)
-                     element.@autofit_width = entityDefine.mWordWrap ? 1 : 0;
+                  {
+                     //element.@autofit_width = entityDefine.mWordWrap ? 1 : 0;
+                     element.@autofit_width = (entityDefine.mFlags1 & TextUtil.TextFlag_WordWrap) == TextUtil.TextFlag_WordWrap ? 1 : 0;
+                  }
+                  else if (worldDefine.mVersion < 0x0204)
+                  {
+                     //element.@word_wrap = entityDefine.mWordWrap ? 1 : 0;
+                     element.@word_wrap = (entityDefine.mFlags1 & TextUtil.TextFlag_WordWrap) == TextUtil.TextFlag_WordWrap ? 1 : 0;
+                  }
                   else
-                     element.@word_wrap = entityDefine.mWordWrap ? 1 : 0;
+                  {
+                     element.@flags1 = entityDefine.mFlags1;
+                  }
 
                   if (worldDefine.mVersion >= 0x0108)
                   {
-                     element.@adaptive_background_size = entityDefine.mAdaptiveBackgroundSize ? 1 : 0;
+                     if (worldDefine.mVersion < 0x0204)
+                     {
+                        element.@adaptive_background_size = entityDefine.mAdaptiveBackgroundSize ? 1 : 0;
+                     }
+                     else
+                     {
+                        element.@flags2 = entityDefine.mFlags2;
+                     }
                      element.@text_color = UInt2ColorString (entityDefine.mTextColor);
                      element.@font_size = entityDefine.mFontSize;
                      element.@bold = entityDefine.mIsBold ? 1 : 0;
@@ -2575,11 +2592,13 @@ package common {
                      )
                   {
                      entityDefine.mText = byteArray.readUTF ();
-                     entityDefine.mWordWrap = byteArray.readByte ();
+                     //entityDefine.mWordWrap = byteArray.readByte (); // before v2.04
+                     entityDefine.mFlags1 = byteArray.readByte (); // since v2.04
 
                      if (worldDefine.mVersion >= 0x0108)
                      {
-                        entityDefine.mAdaptiveBackgroundSize = byteArray.readByte () != 0;
+                        //entityDefine.mAdaptiveBackgroundSize = byteArray.readByte () != 0; // before v2.04
+                        entityDefine.mFlags2 = byteArray.readByte (); // since v2.04
                         entityDefine.mTextColor = byteArray.readUnsignedInt ();
                         entityDefine.mFontSize = byteArray.readShort ();
                         entityDefine.mIsBold  = byteArray.readByte () != 0;
@@ -3797,7 +3816,8 @@ package common {
                      {
                         if (worldDefine.mVersion < 0x0108)
                         {
-                           entityDefine.mAdaptiveBackgroundSize = false;
+                           //entityDefine.mAdaptiveBackgroundSize = false; // before v2.04
+                           entityDefine.mFlags2 = 0; // since v2.04
                            entityDefine.mTextColor = 0x0;
                            entityDefine.mFontSize = 10;
                            entityDefine.mIsBold = false;

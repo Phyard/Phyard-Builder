@@ -739,10 +739,12 @@ package common {
                      entityDefine.mHalfWidth = (vectorShape as EntityVectorShapeRectangle).GetHalfWidth ();
                      entityDefine.mHalfHeight = (vectorShape as EntityVectorShapeRectangle).GetHalfHeight ();
                      
-                     entityDefine.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap ();
+                     //entityDefine.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap (); // before v2.04
+                     entityDefine.mFlags1 = (vectorShape as EntityVectorShapeText).GetFlags1 (); // since v2.04
                      
                      //from v1.08
-                     entityDefine.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
+                     //entityDefine.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize (); // before v2.04
+                     entityDefine.mFlags2 = (vectorShape as EntityVectorShapeText).GetFlags2 (); // since v2.04
                      entityDefine.mTextColor = (vectorShape as EntityVectorShapeText).GetTextColor ();
                      entityDefine.mFontSize = (vectorShape as EntityVectorShapeText).GetFontSize ();
                      entityDefine.mIsBold = (vectorShape as EntityVectorShapeText).IsBold ();
@@ -2478,10 +2480,12 @@ package common {
                      }
                      
                      text.SetText (entityDefine.mText);
-                     text.SetWordWrap (entityDefine.mWordWrap);
+                     //text.SetWordWrap (entityDefine.mWordWrap); // before v2.04
+                     text.SetFlags1 (entityDefine.mFlags1); // since v2.04
                      
                      //from v1.08
-                     text.SetAdaptiveBackgroundSize (entityDefine.mAdaptiveBackgroundSize);
+                     //text.SetAdaptiveBackgroundSize (entityDefine.mAdaptiveBackgroundSize); // before v2.04
+                     text.SetFlags2 (entityDefine.mFlags2); // since v2.04
                      text.SetTextColor (entityDefine.mTextColor);
                      text.SetFontSize (entityDefine.mFontSize);
                      text.SetBold (entityDefine.mIsBold);
@@ -4111,13 +4115,32 @@ package common {
                {
                   entityDefine.mText = element.@text;
                   if (worldDefine.mVersion < 0x0108)
-                     entityDefine.mWordWrap = parseInt (element.@autofit_width) != 0;
+                  {
+                     //entityDefine.mWordWrap = parseInt (element.@autofit_width) != 0;
+                     entityDefine.mFlags1 = parseInt (element.@autofit_width);
+                  }
+                  else if (worldDefine.mVersion < 0x0204)
+                  {
+                     //entityDefine.mWordWrap = parseInt (element.@word_wrap) != 0;
+                     entityDefine.mFlags1 = parseInt (element.@word_wrap);
+                  }
                   else
-                     entityDefine.mWordWrap = parseInt (element.@word_wrap) != 0;
+                  {
+                     entityDefine.mFlags1 = parseInt (element.@flags1);
+                  }
                   
                   if (worldDefine.mVersion >= 0x0108)
                   {
-                     entityDefine.mAdaptiveBackgroundSize = parseInt (element.@adaptive_background_size) != 0;
+                     if (worldDefine.mVersion < 0x0204)
+                     {
+                        //entityDefine.mAdaptiveBackgroundSize = parseInt (element.@adaptive_background_size) != 0;
+                        entityDefine.mFlags2 = parseInt (element.@adaptive_background_size);
+                     }
+                     else
+                     {
+                        entityDefine.mFlags2 = parseInt (element.@flags2);
+                     }
+                     
                      entityDefine.mTextColor = element.@text_color == undefined ? 0x0 : parseInt ( (element.@text_color).substr (2), 16);
                      entityDefine.mFontSize = parseInt (element.@font_size);
                      entityDefine.mIsBold = parseInt (element.@bold) != 0;
@@ -4915,11 +4938,13 @@ package common {
                      )
                   {
                      byteArray.writeUTF (entityDefine.mText);
-                     byteArray.writeByte (entityDefine.mWordWrap ? 1 : 0);
+                     //byteArray.writeByte (entityDefine.mWordWrap ? 1 : 0); // before v2.04
+                     byteArray.writeByte (entityDefine.mFlags1); // since v2.04
                      
                      if (worldDefine.mVersion >= 0x0108)
                      {
-                        byteArray.writeByte (entityDefine.mAdaptiveBackgroundSize ? 1 : 0);
+                        //byteArray.writeByte (entityDefine.mAdaptiveBackgroundSize ? 1 : 0); // before v2.04
+                        byteArray.writeByte (entityDefine.mFlags2); // since v2.04
                         byteArray.writeUnsignedInt (entityDefine.mTextColor);
                         byteArray.writeShort (entityDefine.mFontSize);
                         byteArray.writeByte (entityDefine.mIsBold ? 1 : 0);

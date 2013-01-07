@@ -7,7 +7,21 @@ package common.shape
    public class VectorShapeText extends VectorShapeRectangle
    {
       protected var mText:String = "(not set yet)";
-      protected var mWordWrap:Boolean = true;
+      private var mFlags1:int = TextUtil.TextFlag_WordWrap; // from v2.04
+      
+        // private var mWordWrap:Boolean = true;
+        // 
+        // // from v2.04
+        // private var mEditable:Boolean = false;
+        // private var mSelectable:Boolean = false;
+        // private var mIsHtmlText:Boolean = false;
+      
+      private var mFlags2:int = 0; // from v2.04
+         
+         //private var mAdaptiveBackgroundSize:Boolean = false;
+         //
+         // // from v2.04
+         // private var mClipText:Boolean = false;
 
       // from v1.07
       protected var mTextColor:uint = 0x000000;
@@ -18,8 +32,6 @@ package common.shape
       // from v1.09
       protected var mIsUnderlined:Boolean = false;
       protected var mTextAlign:int = TextUtil.TextAlign_Left | TextUtil.TextAlign_Middle;
-
-      protected var mAdaptiveBackgroundSize:Boolean = false;
 
       //.......
 
@@ -44,16 +56,114 @@ package common.shape
 
          mText = text;
       }
-
-      public function IsWordWrap ():Boolean
+      
+      public function GetFlags1 ():int
       {
-         return mWordWrap;
+         return mFlags1;
       }
-
-      public function SetWordWrap (auto:Boolean):void
+      
+      public function SetFlags1 (flags1:int):void
       {
-         mWordWrap = auto;
+         mFlags1 = flags1;
       }
+      
+            public function IsWordWrap ():Boolean
+            {
+               //return mWordWrap;
+               return (mFlags1 & TextUtil.TextFlag_WordWrap) == TextUtil.TextFlag_WordWrap;
+            }
+            
+            public function SetWordWrap (wrap:Boolean):void
+            {
+               //mWordWrap = wrap;
+               if (wrap)
+                  mFlags1 |= TextUtil.TextFlag_WordWrap;
+               else
+                  mFlags1 &= ~TextUtil.TextFlag_WordWrap;
+            }
+            
+            public function IsEditable ():Boolean
+            {
+               //return mEditable;
+               return (mFlags1 & TextUtil.TextFlag_Editable) == TextUtil.TextFlag_Editable;
+            }
+            
+            public function SetEditable (editable:Boolean):void
+            {
+               //mEditable = editable;
+               if (editable)
+                  mFlags1 |= TextUtil.TextFlag_Editable;
+               else
+                  mFlags1 &= ~TextUtil.TextFlag_Editable;
+            }
+            
+            public function IsSelectable ():Boolean
+            {
+               //return mSelectable;
+               return (mFlags1 & TextUtil.TextFlag_Selectable) == TextUtil.TextFlag_Selectable;
+            }
+            
+            public function SetSelectable (selectable:Boolean):void
+            {
+               //mSelectable = selectable;
+               if (selectable)
+                  mFlags1 |= TextUtil.TextFlag_Selectable;
+               else
+                  mFlags1 &= ~TextUtil.TextFlag_Selectable;
+            }
+            
+            public function IsHtmlText ():Boolean
+            {
+               //return mIsHtmlText;
+               return (mFlags1 & TextUtil.TextFlag_IsHtmlText) == TextUtil.TextFlag_IsHtmlText;
+            }
+            
+            public function SetIsHtmlText (isHtmlText:Boolean):void
+            {
+               //mIsHtmlText = isHtmlText;
+               if (isHtmlText)
+                  mFlags1 |= TextUtil.TextFlag_IsHtmlText;
+               else
+                  mFlags1 &= ~TextUtil.TextFlag_IsHtmlText;
+            }
+      
+      public function GetFlags2 ():int
+      {
+         return mFlags2;
+      }
+      
+      public function SetFlags2 (flags2:int):void
+      {
+         mFlags2 = flags2;
+      }
+      
+            public function IsAdaptiveBackgroundSize ():Boolean
+            {
+               //return mAdaptiveBackgroundSize;
+               return (mFlags2 & TextUtil.TextFlag_AdaptiveBackgroundSize) == TextUtil.TextFlag_AdaptiveBackgroundSize;
+            }
+            
+            public function SetAdaptiveBackgroundSize (adapt:Boolean):void
+            {
+               //mAdaptiveBackgroundSize = adapt;
+               if (adapt)
+                  mFlags2 |= TextUtil.TextFlag_AdaptiveBackgroundSize;
+               else
+                  mFlags2 &= ~TextUtil.TextFlag_AdaptiveBackgroundSize;
+            }
+      
+            public function IsClipText ():Boolean
+            {
+               return (mFlags2 & TextUtil.TextFlag_ClipText) == TextUtil.TextFlag_ClipText;
+            }
+            
+            public function SetClipText (clip:Boolean):void
+            {
+               if (clip)
+                  mFlags2 |= TextUtil.TextFlag_ClipText;
+               else
+                  mFlags2 &= ~TextUtil.TextFlag_ClipText;
+            }
 
       public function GetTextColor ():uint
       {
@@ -113,16 +223,6 @@ package common.shape
       public function SetTextAlign (align:int):void
       {
          mTextAlign = align;
-      }
-
-      public function IsAdaptiveBackgroundSize ():Boolean
-      {
-         return mAdaptiveBackgroundSize;
-      }
-
-      public function SetAdaptiveBackgroundSize (adapt:Boolean):void
-      {
-         mAdaptiveBackgroundSize = adapt;
       }
    }
 }

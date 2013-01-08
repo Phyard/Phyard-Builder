@@ -347,6 +347,13 @@ package editor.world {
                      ],
                      null
                   );
+         
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CopyToClipboard, system_package, "Copy To Clipboard", null, null,
+                     [
+                        new VariableDefinitionString ("Text To Copy"),
+                     ],
+                     null
+                  );
 
       // services
 
@@ -3101,6 +3108,54 @@ package editor.world {
                      ],
                      null
                   );
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetHorizontalScrollPosition, shape_text_package, "Get Horizontal Scroll Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses, mExceptClasses: Filters.sTextButtonEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Horizontal Scroll Position"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetHorizontalScrollPosition, shape_text_package, "Set Horizontal Scroll Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses, mExceptClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("Horizontal Scroll Position"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetVerticalScrollPosition, shape_text_package, "Get Vertical Scroll Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses, mExceptClasses: Filters.sTextButtonEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Vertical Scroll Position"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetVerticalScrollPosition, shape_text_package, "Set Vertical Scroll Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses, mExceptClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("Vertical Scroll Position"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetMaxHorizontalScrollPosition, shape_text_package, "Get Max Horizontal Scroll Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses, mExceptClasses: Filters.sTextButtonEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Max Horizontal Scroll Position"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetMaxVerticalScrollPosition, shape_text_package, "Get Max Vertical Scroll Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses, mExceptClasses: Filters.sTextButtonEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Max Vertical Scroll Position"),
+                     ]
+                  );
+                  
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize, shape_text_package, "Set Font Size", null, null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
@@ -3121,6 +3176,29 @@ package editor.world {
                              new VariableDefinitionNumber ("Red"),
                              new VariableDefinitionNumber ("Green"),
                              new VariableDefinitionNumber ("Blue"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseOver, shape_text_package, "Set Font Size For Mouse Over", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("New Font Size For Mouse Over"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseOver, shape_text_package, "Set Text Color For Mouse Over", "@Set Text Color ($0, Color ($1))", null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("New Color For Mouse Over", null, {mIsColorValue: true}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB_MouseOver, shape_text_package, "Set Text Color By RGB For Mouse Over", "@RGB (#0, #1, #2) = Set Text Color ($0)", null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("Red For Mouse Over"),
+                             new VariableDefinitionNumber ("Green For Mouse Over"),
+                             new VariableDefinitionNumber ("Blue For Mouse Over"),
                      ],
                      null
                   );

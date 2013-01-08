@@ -6,6 +6,7 @@ package player.entity {
    import flash.text.TextField;
    import flash.text.TextFieldType;
    import flash.text.TextFieldAutoSize;
+   import flash.events.Event;
    
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
@@ -43,16 +44,16 @@ package player.entity {
                SetFlags1 (entityDefine.mFlags1);
                //if (entityDefine.mWordWrap != undefined)
                //   SetWordWrap (entityDefine.mWordWrap);
+               //if (entityDefine.mEditable != undefined)
+               //   SetEditable (entityDefine.mEditable);
+               //if (entityDefine.mSelectable != undefined)
+               //   SetSelectable (entityDefine.mSelectable);
+               //if (entityDefine.mTextFormat != undefined)
+               //   SetTextFormat (entityDefine.mTextFormat);
             if (entityDefine.mFlags2 != undefined)
                SetFlags2 (entityDefine.mFlags2);
                //if (entityDefine.mAdaptiveBackgroundSize != undefined)
                //   SetAdaptiveBackgroundSize (entityDefine.mAdaptiveBackgroundSize);
-            if (entityDefine.mEditable != undefined)
-               SetEditable (entityDefine.mEditable);
-            if (entityDefine.mSelectable != undefined)
-               SetSelectable (entityDefine.mSelectable);
-            if (entityDefine.mIsHtmlText != undefined)
-               SetIsHtmlText (entityDefine.mIsHtmlText);
             if (entityDefine.mTextColor != undefined)
                SetTextColor (entityDefine.mTextColor);
             if (entityDefine.mFontSize != undefined)
@@ -81,7 +82,7 @@ package player.entity {
             //entityDefine.mWordWrap = mWordWrap;
             //entityDefine.mEditable = mEditable;
             //entityDefine.mSelectable = mSelectable;
-            //entityDefine.mIsHtmlText = mIsHtmlText;
+            //entityDefine.mTextFormat = mTextFormat;
          entityDefine.mFlags2 = mFlags2;
             //entityDefine.mAdaptiveBackgroundSize = IsAdaptiveBackgroundSize ();
          entityDefine.mTextColor = GetTextColor ();
@@ -100,6 +101,53 @@ package player.entity {
 //   
 //=============================================================
       
+      private function OnTextChangedByUserInput (event:Event):void
+      {
+//trace ("OnTextChangedByUserInput");
+         if (mTextField != null)
+         {
+            mText = mTextField.text;
+         }
+      }
+
+      // command:
+      //   0 - get max
+      //   1 - get current
+      //   2 - set current
+      public function ScrollInfo (isHorizontal:Boolean, command:int, setValue:Number = 0):Number
+      {
+         if (mTextField != null)
+         {
+            if (command == 1)
+            {
+               return isHorizontal ? mTextField.scrollH : mTextField.scrollV;
+            }
+            else if (command == 2)
+            {
+               if (isHorizontal)
+                  mTextField.scrollH = setValue;
+               else
+                  mTextField.scrollV = setValue;
+               
+               if (ShouldUseBitmap ())
+               {
+                  // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+                  DelayUpdateAppearance ();
+               }
+            }
+            else// if (command == 0)
+            {
+               return isHorizontal ? mTextField.maxScrollH : mTextField.maxScrollV;
+            }
+         }
+         
+         return 0;
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       private var mText:String = "";
       
       private var mFlags1:int = TextUtil.TextFlag_WordWrap; // from v2.04
@@ -109,7 +157,7 @@ package player.entity {
         // // from v2.04
         // private var mEditable:Boolean = false;
         // private var mSelectable:Boolean = false;
-        // private var mIsHtmlText:Boolean = false;
+        // private var mTextFormat:int = TextUtil.TextFormat_Plain;
       
       private var mFlags2:int = 0; // from v2.04
          
@@ -118,8 +166,8 @@ package player.entity {
          // // from v2.04
          // private var mClipText:Boolean = false;
       
-      private var mTextColor:uint = 0x000000;
-      private var mFontSize:uint = 10;
+      protected var mTextColor:uint = 0x000000;
+      protected var mFontSize:uint = 10;
       private var mIsBold:Boolean = false;
       private var mIsItalic:Boolean = false;
       private var mIsUnderlined:Boolean = false;
@@ -211,19 +259,14 @@ package player.entity {
                DelayUpdateAppearance ();
             }
             
-            public function IsHtmlText ():Boolean
+            public function GetTextFormat ():int
             {
-               //return mIsHtmlText;
-               return (mFlags1 & TextUtil.TextFlag_IsHtmlText) == TextUtil.TextFlag_IsHtmlText;
+               return (mFlags1 & TextUtil.Mask_TextFormat) >> TextUtil.Shift_TextFormat;
             }
             
-            public function SetIsHtmlText (isHtmlText:Boolean):void
+            public function SetTextFormat (format:int):void
             {
-               //mIsHtmlText = isHtmlText;
-               if (isHtmlText)
-                  mFlags1 |= TextUtil.TextFlag_IsHtmlText;
-               else
-                  mFlags1 &= ~TextUtil.TextFlag_IsHtmlText;
+               mFlags1 = (mFlags1 & ~TextUtil.Mask_TextFormat) | ((format << TextUtil.Shift_TextFormat) & TextUtil.Mask_TextFormat);
                
                // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
                DelayUpdateAppearance ();
@@ -425,7 +468,7 @@ package player.entity {
 
          //
          AlignTextSprite (mTextField,
-                    mTextAlign & 0x0F, 
+                    mTextAlign & 0x0F,
                     mTextAlign & 0xF0,
                     mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth),
                     mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight),
@@ -485,11 +528,6 @@ package player.entity {
          }
       }
       
-      protected function ShouldCacheTextAsBitmap ():Boolean
-      {
-         return false;
-      }
-      
       protected function AdjustBackgroundSize ():void
       {
          if (IsAdaptiveBackgroundSize ())
@@ -538,7 +576,7 @@ package player.entity {
          var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
          var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
          
-         var infoText:String = TextUtil.GetHtmlWikiText (GetText (), IsHtmlText (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
+         var infoText:String = TextUtil.GetHtmlWikiText (GetText (), GetTextFormat (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
          
          if (infoText == null)
          {
@@ -554,15 +592,12 @@ package player.entity {
          else
             textField = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor);
          
+         if (mTextField != null)
+            mTextField.removeEventListener (Event.CHANGE, OnTextChangedByUserInput);
          mTextField = textField;
-         mTextField.selectable = IsSelectable ();
+         mTextField.addEventListener (Event.CHANGE, OnTextChangedByUserInput);
+         mTextField.selectable = IsSelectable () || IsEditable ();
          mTextField.type = IsEditable () ? TextFieldType.INPUT : TextFieldType.DYNAMIC;
-         if (IsClipText ())
-         {
-            mTextField.autoSize = TextFieldAutoSize.NONE;
-            mTextField.width  = fixedWidth;
-            mTextField.height = fixedHeight;
-         }
          
          if (ShouldUseBitmap ())
          {
@@ -573,6 +608,12 @@ package player.entity {
             catch (error:Error)
             {
             }
+         }
+         else if (IsClipText ())
+         {
+            mTextField.autoSize = TextFieldAutoSize.NONE;
+            mTextField.width  = fixedWidth;
+            mTextField.height = fixedHeight;
          }
       }
       

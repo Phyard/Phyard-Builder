@@ -2,6 +2,8 @@ package editor.world {
    
    import flash.ui.Keyboard;
    
+   import com.tapirgames.util.TextUtil;
+   
    import common.Define;
    import common.KeyCodes;
    import common.trigger.ValueDefine;
@@ -133,6 +135,12 @@ package editor.world {
             {label:"Random Number Generator Slot 1", data:1},
             {label:"Random Number Generator Slot 2", data:2},
             {label:"Random Number Generator Slot 3", data:3},
+         ];
+      
+      public static const mTextFormatList:Array = [
+            {label:"Plain", data:TextUtil.TextFormat_Plain},
+            {label:"Wiki", data:TextUtil.TextFormat_Wiki},
+            {label:"Html", data:TextUtil.TextFormat_Html},
          ];
    }
 }

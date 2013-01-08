@@ -1404,7 +1404,7 @@ package editor.entity.dialog {
                   values.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap ();
                   values.mEditable = (vectorShape as EntityVectorShapeText).IsEditable ();
                   values.mSelectable = (vectorShape as EntityVectorShapeText).IsSelectable ();
-                  values.mIsHtmlText = (vectorShape as EntityVectorShapeText).IsHtmlText ();
+                  values.mTextFormat = (vectorShape as EntityVectorShapeText).GetTextFormat ();
                   values.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
                   values.mClipText = (vectorShape as EntityVectorShapeText).IsClipText ();
                   
@@ -1908,7 +1908,7 @@ package editor.entity.dialog {
                   (vectorShape as EntityVectorShapeText).SetWordWrap (params.mWordWrap);
                   (vectorShape as EntityVectorShapeText).SetEditable (params.mEditable);
                   (vectorShape as EntityVectorShapeText).SetSelectable (params.mSelectable);
-                  (vectorShape as EntityVectorShapeText).SetIsHtmlText (params.mIsHtmlText);
+                  (vectorShape as EntityVectorShapeText).SetTextFormat (params.mTextFormat);
                   (vectorShape as EntityVectorShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
                   (vectorShape as EntityVectorShapeText).SetClipText (params.mClipText);
                   

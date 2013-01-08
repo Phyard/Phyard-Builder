@@ -68,6 +68,8 @@ package common.trigger {
 
       public static const ID_OpenURL:int                = IdPool.CoreApiId_78; // from v2.03
 
+      public static const ID_CopyToClipboard:int                = IdPool.CoreApiId_114; // from v2.04
+
    // services
 
       public static const ID_SubmitHighScore:int                = IdPool.CoreApiId_579; // from v2.03
@@ -521,9 +523,18 @@ package common.trigger {
       public static const ID_EntityText_SetText:int                   = IdPool.CoreApiId_1551;
       public static const ID_EntityText_AppendText:int                = IdPool.CoreApiId_1552;
       public static const ID_EntityText_AppendNewLine:int             = IdPool.CoreApiId_1553;
+      public static const ID_EntityText_GetHorizontalScrollPosition:int                   = IdPool.CoreApiId_1576;
+      public static const ID_EntityText_SetHorizontalScrollPosition:int                   = IdPool.CoreApiId_1577;
+      public static const ID_EntityText_GetVerticalScrollPosition:int                     = IdPool.CoreApiId_1578;
+      public static const ID_EntityText_SetVerticalScrollPosition:int                     = IdPool.CoreApiId_1579;
+      public static const ID_EntityText_GetMaxHorizontalScrollPosition:int                = IdPool.CoreApiId_1586;
+      public static const ID_EntityText_GetMaxVerticalScrollPosition:int                  = IdPool.CoreApiId_1587;
       public static const ID_EntityText_SetSize:int                   = IdPool.CoreApiId_1570;
       public static const ID_EntityText_SetColor:int                  = IdPool.CoreApiId_1571;
       public static const ID_EntityText_SetColorByRGB:int             = IdPool.CoreApiId_1572;
+      public static const ID_EntityText_SetSize_MouseOver:int                   = IdPool.CoreApiId_1573;
+      public static const ID_EntityText_SetColor_MouseOver:int                  = IdPool.CoreApiId_1574;
+      public static const ID_EntityText_SetColorByRGB_MouseOver:int             = IdPool.CoreApiId_1575;
 
    // game / entity / shape / circle
 

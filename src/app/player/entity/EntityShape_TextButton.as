@@ -70,6 +70,9 @@ package player.entity {
          
          if (createStageId == 0)
          {
+            SetTextColor_MouseOver (GetTextColor ());
+            SetFontSize_MouseOver (GetFontSize ());
+            
             if (entityDefine.mUsingHandCursor != undefined)
                SetUsingHandCursor (entityDefine.mUsingHandCursor);
             
@@ -87,12 +90,22 @@ package player.entity {
                mTransparency_MouseOver = entityDefine.mBackgroundTransparency_MouseOver;
             if (entityDefine.mBorderTransparency_MouseOver != undefined)
                mBorderTransparency_MouseOver = entityDefine.mBorderTransparency_MouseOver;
+            
+            // not set in editor, set in Clone API
+            if (entityDefine.mTextColor_MouseOver != undefined)
+               SetTextColor_MouseOver (entityDefine.mTextColor_MouseOver);
+            if (entityDefine.mFontSize_MouseOver != undefined)
+               SetFontSize_MouseOver (entityDefine.mFontSize_MouseOver);
+
          }
       }
       
      override public function ToEntityDefine (entityDefine:Object):Object
      {
          super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mTextColor_MouseOver = GetTextColor_MouseOver ();
+         entityDefine.mFontSize_MouseOver = GetFontSize_MouseOver ();
          
          entityDefine.mUsingHandCursor = UsingHandCursor ();
          entityDefine.mDrawBorder_MouseOver = mDrawBorder_MouseOver;
@@ -156,6 +169,38 @@ package player.entity {
       private var mTransparency_MouseOver:uint = 100;
       private var mBorderTransparency_MouseOver:uint = 100;
       
+      // these are not defined in editor, they are changed by API
+      private var mTextColor_MouseOver:uint = 0x000000;
+      private var mFontSize_MouseOver:uint = 10;
+      
+      public function GetTextColor_MouseOver ():uint
+      {
+         return mTextColor_MouseOver;
+      }
+      
+      public function SetTextColor_MouseOver (color:uint):void
+      {
+         mTextColor_MouseOver = color;
+         
+         mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance ();
+      }
+      
+      public function GetFontSize_MouseOver ():uint
+      {
+         return mFontSize_MouseOver;
+      }
+      
+      public function SetFontSize_MouseOver (size:uint):void
+      {
+         mFontSize_MouseOver = size;
+         
+         mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance ();
+      }
+      
 //=============================================================
 //   appearance
 //=============================================================
@@ -207,15 +252,32 @@ package player.entity {
       
       override protected function RebuildTextBitmap ():void
       {
+         // create the over bitmap, some tricky here.
+         var textColor_Backup:uint = mTextColor;
+         var fontSize_Backup:uint = mFontSize;
+         try
+         {
+            mTextColor = mTextColor_MouseOver;
+            mFontSize = mFontSize_MouseOver;
+            
+            super.RebuildTextBitmap ();
+            
+            mTextBitmap_MouseOver.bitmapData = mTextBitmap.bitmapData;
+            //mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap_MouseOver.width;
+            //mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
+            
+            mTextBitmap_MouseDown.bitmapData = mTextBitmap.bitmapData;
+            //mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseOver.width;
+            //mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseOver.height + 1;
+         }
+         catch (error:Error)
+         {
+         }
+         
+         // create the up bitmap
+         mTextColor = textColor_Backup;
+         mFontSize = fontSize_Backup;
          super.RebuildTextBitmap ();
-         
-         mTextBitmap_MouseOver.bitmapData = mTextBitmap.bitmapData;
-         //mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap_MouseOver.width;
-         //mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
-         
-         mTextBitmap_MouseDown.bitmapData = mTextBitmap.bitmapData;
-         //mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseOver.width;
-         //mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseOver.height + 1;
       }
       
       override protected function RebuildBackgroundAndBorder (displayHalfWidth:Number, displayHalfHeight:Number, displayBorderThickness:Number):void

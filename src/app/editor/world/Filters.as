@@ -91,6 +91,11 @@ package editor.world {
             ];
 
       // object can be an Entity subclass.prototype or a subclass instance
+      public static const sTextButtonEntityClasses:Array = [
+                  EntityVectorShapeTextButton,
+            ];
+
+      // object can be an Entity subclass.prototype or a subclass instance
       public static const sModuleShapeEntityClasses:Array = [
                   EntityShapeImageModule,
                   EntityShapeImageModuleButton,

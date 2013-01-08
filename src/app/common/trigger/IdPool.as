@@ -158,6 +158,7 @@ package common.trigger {
       public static const CoreApiId_111:int = 111; //
       public static const CoreApiId_112:int = 112; //
       public static const CoreApiId_113:int = 113; //
+      public static const CoreApiId_114:int = 114; //
 
       public static const CoreApiId_120:int = 120; //
       public static const CoreApiId_121:int = 121; //
@@ -525,7 +526,6 @@ package common.trigger {
       public static const CoreApiId_1551:int = 1551; // entity.shape.text
       public static const CoreApiId_1552:int = 1552; // entity.shape.text
       public static const CoreApiId_1553:int = 1553; // entity.shape.text
-
       public static const CoreApiId_1554:int = 1554; // entity.shape.circle
       public static const CoreApiId_1555:int = 1555; // entity.shape.circle
       public static const CoreApiId_1556:int = 1556; // entity.shape.rectangle
@@ -542,17 +542,24 @@ package common.trigger {
       public static const CoreApiId_1567:int = 1567; // entity.shape.poly
       public static const CoreApiId_1568:int = 1568; // entity.shape.poly
       public static const CoreApiId_1569:int = 1569; // entity.shape.poly
-
       public static const CoreApiId_1570:int = 1570; // entity.shape.text
       public static const CoreApiId_1571:int = 1571; // entity.shape.text
       public static const CoreApiId_1572:int = 1572; // entity.shape.text
-
+      public static const CoreApiId_1573:int = 1573; // entity.shape.text
+      public static const CoreApiId_1574:int = 1574; // entity.shape.text
+      public static const CoreApiId_1575:int = 1575; // entity.shape.text
+      public static const CoreApiId_1576:int = 1576; // entity.shape.text
+      public static const CoreApiId_1577:int = 1577; // entity.shape.text
+      public static const CoreApiId_1578:int = 1578; // entity.shape.text
+      public static const CoreApiId_1579:int = 1579; // entity.shape.text
       public static const CoreApiId_1580:int = 1580; // entity.shape.module
       public static const CoreApiId_1581:int = 1581; // entity.shape.module
       public static const CoreApiId_1582:int = 1582; // entity.shape.module.button
       public static const CoreApiId_1583:int = 1583; // entity.shape.module.button
       public static const CoreApiId_1584:int = 1584; // entity.shape.module.button
       public static const CoreApiId_1585:int = 1585; // entity.shape.module.button
+      public static const CoreApiId_1586:int = 1586; // entity.shape.text
+      public static const CoreApiId_1587:int = 1587; // entity.shape.text
 
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint

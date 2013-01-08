@@ -18,10 +18,16 @@ package com.tapirgames.util {
       public static const TextFlag_WordWrap:int   = 1 << 0;
       public static const TextFlag_Editable:int   = 1 << 1;
       public static const TextFlag_Selectable:int = 1 << 2;
-      public static const TextFlag_IsHtmlText:int = 1 << 3;
       
       public static const TextFlag_AdaptiveBackgroundSize:int   = 1 << 0;
       public static const TextFlag_ClipText:int   = 1 << 1;
+      
+      public static const Shift_TextFormat:int = 4;
+      public static const Mask_TextFormat:int = 0xF0;
+      
+      public static const TextFormat_Plain:int = 0;
+      public static const TextFormat_Wiki:int = 1;
+      public static const TextFormat_Html:int = 2;
 
       public static function GetTextAlignText (hAlign:int):String
       {
@@ -45,17 +51,20 @@ package com.tapirgames.util {
          return "#" + colorString;
       }
       
-      public static function GetHtmlWikiText (theText:String, isHtmlText:Boolean, textAlign:String, fontSize:int = 16, fontColor:String = null, fontFace:String = null, bold:Boolean = false, italic:Boolean = false, underline:Boolean = false):String
+      public static function GetHtmlWikiText (theText:String, textFormat:int, textAlign:String, fontSize:int = 16, fontColor:String = null, fontFace:String = null, bold:Boolean = false, italic:Boolean = false, underline:Boolean = false):String
       {
          if (fontFace == null)
             fontFace = "Verdana";
          
          var wikiText:String = theText;
          
-         if (! isHtmlText)
+         if (textFormat != TextFormat_Html)
          {
             wikiText = TextUtil.GetHtmlEscapedText (theText);
-            wikiText = TextUtil.ParseWikiString (wikiText);
+            if (textFormat == TextFormat_Wiki)
+            {
+               wikiText = TextUtil.ParseWikiString (wikiText);
+            }
          }
          wikiText = TextUtil.CreateHtmlText (wikiText, fontSize, fontColor, fontFace, bold, italic, underline);
          wikiText = "<p align='" + textAlign + "'>" + wikiText + "</p>";

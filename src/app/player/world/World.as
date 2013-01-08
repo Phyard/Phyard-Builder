@@ -9,6 +9,7 @@ package player.world {
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
+   import flash.text.TextField;
    import flash.geom.Point;
    import flash.geom.Rectangle;
 

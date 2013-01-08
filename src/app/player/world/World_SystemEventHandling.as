@@ -291,6 +291,9 @@
    
    public function OnMouseDown (event:MouseEvent):void
    {
+      if ((stage.focus is TextField) && (! (event.target is TextField)))
+         stage.focus = stage;
+
       // sometime, user release mouse out of world, ...
       if (IsKeyHold (KeyCodes.LeftMouseButton))
       {

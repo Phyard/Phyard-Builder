@@ -31,7 +31,7 @@ package editor.entity {
         // // from v2.04
         // private var mEditable:Boolean = false;
         // private var mSelectable:Boolean = false;
-        // private var mIsHtmlText:Boolean = false;
+        // private var mTextFormat:int = TextUtil.TextFormat_Plain;
       
       private var mFlags2:int = 0; // from v2.04
          
@@ -207,7 +207,7 @@ package editor.entity {
       
       protected function RebuildTextSprite ():void
       {
-         var displayText:String = TextUtil.GetHtmlWikiText (GetText (), IsHtmlText (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
+         var displayText:String = TextUtil.GetHtmlWikiText (GetText (), GetTextFormat (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
          
          var fixedWidth:Number = GetHalfWidth () * 2  - GetBorderThickness () - TextUtil.TextPadding * 2;
          var fixedHeight:Number = GetHalfHeight () * 2  - GetBorderThickness () - TextUtil.TextPadding * 2;
@@ -309,19 +309,14 @@ package editor.entity {
                   mFlags1 &= ~TextUtil.TextFlag_Selectable;
             }
             
-            public function IsHtmlText ():Boolean
+            public function GetTextFormat ():int
             {
-               //return mIsHtmlText;
-               return (mFlags1 & TextUtil.TextFlag_IsHtmlText) == TextUtil.TextFlag_IsHtmlText;
+               return (mFlags1 & TextUtil.Mask_TextFormat) >> TextUtil.Shift_TextFormat;
             }
             
-            public function SetIsHtmlText (isHtmlText:Boolean):void
+            public function SetTextFormat (format:int):void
             {
-               //mIsHtmlText = isHtmlText;
-               if (isHtmlText)
-                  mFlags1 |= TextUtil.TextFlag_IsHtmlText;
-               else
-                  mFlags1 &= ~TextUtil.TextFlag_IsHtmlText;
+               mFlags1 = (mFlags1 & ~TextUtil.Mask_TextFormat) | ((format << TextUtil.Shift_TextFormat) & TextUtil.Mask_TextFormat);
             }
       
       public function GetFlags2 ():int

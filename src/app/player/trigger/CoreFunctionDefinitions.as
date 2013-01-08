@@ -4,6 +4,7 @@ package player.trigger {
    import flash.geom.Point;
    import flash.ui.Mouse;
    import flash.system.Capabilities;
+   import flash.system.System;
    import flash.utils.Dictionary;
 
    import player.design.Global;
@@ -89,6 +90,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_GetScreenDPI,                GetScreenDPI);
          RegisterCoreFunction (CoreFunctionIds.ID_GetOsNameString,                GetOsNameString);
          RegisterCoreFunction (CoreFunctionIds.ID_OpenURL,                     OpenURL);
+         RegisterCoreFunction (CoreFunctionIds.ID_CopyToClipboard,                     CopyToClipboard);
 
       // services
 
@@ -505,9 +507,20 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetText,                  SetTextForTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendText,               AppendTextToTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendNewLine,            AppendNewLineToTextComponent);
+
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_GetHorizontalScrollPosition,                  GetHorizontalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetHorizontalScrollPosition,                  SetHorizontalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_GetVerticalScrollPosition,                  GetVerticalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetVerticalScrollPosition,                  SetVerticalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_GetMaxHorizontalScrollPosition,                GetMaxHorizontalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_GetMaxVerticalScrollPosition,                  GetMaxVerticalScrollPosition);
+
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetSize,                  SetTextDefaultSize);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColor,                 SetTextDefaultColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColorByRGB,            SetTextDefaultColorByRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetSize_MouseOver,                  SetTextDefaultSize_MouseOver);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColor_MouseOver,                 SetTextDefaultColor_MouseOver);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColorByRGB_MouseOver,            SetTextDefaultColorByRGB_MouseOver);
 
       // game / entity / shape / circle
 
@@ -764,6 +777,16 @@ package player.trigger {
          if (url != null && url.length > 0)
          {
             Global.Viewer_mLibAppp.OpenURL (url);
+         }
+      }
+      
+      public static function CopyToClipboard (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var text:String = valueSource.EvaluateValueObject () as String;
+         
+         if (text != null && text.length > 0)
+         {
+            System.setClipboard (text);
          }
       }
 
@@ -5034,6 +5057,66 @@ package player.trigger {
 
          entity_text.SetText (entity_text.GetText () + "\n");
       }
+      
+      public static function GetHorizontalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueTarget.AssignValueObject (entity_text.ScrollInfo (true, 1));
+      }
+
+      public static function SetHorizontalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var scrollValue:Number = Number (valueSource.EvaluateValueObject ());
+
+         entity_text.ScrollInfo (true, 2, scrollValue);
+      }
+
+      public static function GetVerticalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueTarget.AssignValueObject (entity_text.ScrollInfo (false, 1));
+      }
+
+      public static function SetVerticalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var scrollValue:Number = Number (valueSource.EvaluateValueObject ());
+
+         entity_text.ScrollInfo (false, 2, scrollValue);
+      }
+
+      public static function GetMaxHorizontalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueTarget.AssignValueObject (entity_text.ScrollInfo (true, 0));
+      }
+
+      public static function GetMaxVerticalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueTarget.AssignValueObject (entity_text.ScrollInfo (false, 0));
+      }
 
       public static function SetTextDefaultSize (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -5075,6 +5158,48 @@ package player.trigger {
          var blue:int =  valueSource.EvaluateValueObject () as Number;
 
          entity_text.SetTextColor ((red << 16) | (green << 8) | (blue));
+      }
+
+      public static function SetTextDefaultSize_MouseOver (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var size:Number = Number (valueSource.EvaluateValueObject ());
+
+         entity_text.SetFontSize_MouseOver (size);
+      }
+
+      public static function SetTextDefaultColor_MouseOver (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+
+         entity_text.SetTextColor_MouseOver (color);
+      }
+
+      public static function SetTextDefaultColorByRGB_MouseOver (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var red:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var green:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var blue:int =  valueSource.EvaluateValueObject () as Number;
+
+         entity_text.SetTextColor_MouseOver ((red << 16) | (green << 8) | (blue));
       }
 
    //*******************************************************************

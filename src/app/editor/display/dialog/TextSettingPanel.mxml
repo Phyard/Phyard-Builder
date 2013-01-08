@@ -10,16 +10,17 @@
       >
       <mx:VBox height="100%" width="100%">
          <mx:HBox width="650" verticalAlign="middle">
-            <mx:CheckBox id="CheckBox_AdaptiveBackgroundSize" label="Adaptive Background Size" click="OnChangeAdaptiveBackgroundSize ();"/>
-            <mx:CheckBox id="CheckBox_ClipText" label="Clip Text"/>
+            <mx:CheckBox id="CheckBox_AdaptiveBackgroundSize" label="Adaptive Background Size"/>
             <mx:CheckBox id="CheckBox_WordWrap" label="Word Wrap"/>
             <mx:CheckBox id="CheckBox_Editable" label="Editable" click="OnChangeEditable ();"/>
-            <mx:CheckBox id="CheckBox_Selectable" label="Selectable"/>
-            <mx:CheckBox id="CheckBox_IsHtmlText" label="Is Html Text" visible="false"/>
+            <mx:CheckBox id="CheckBox_Selectable" label="Selectable" click="OnChangeSelectable ();"/>
+            <mx:CheckBox id="CheckBox_ClipText" label="Clip Text"/>
             <mx:Spacer width="100%"/>
          </mx:HBox>
          <mx:HBox width="650" verticalAlign="middle">
-            <mx:Label text="Font Size:" click="CheckBox_IsHtmlText.visible = ! CheckBox_IsHtmlText.visible;"/>
+            <mx:Label text="Text Format:"/>
+            <mx:ComboBox id="SelectList_TextFormat" rowCount="10" change="OnChangeTextFormat ();"/>
+            <mx:Label text="Font Size:"/>
             <mx:ComboBox id="SelectList_FontSize"/>
             <mx:ColorPicker id="ColorPicker_TextColor" showTextField="true" selectedColor="0x000000"/>
             <mx:Button id="Button_Bold" toolTip="Bold" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_bold.png')" downIcon="@Embed('../../../res/dialog/text_bold-sel.png')" overIcon="@Embed('../../../res/dialog/text_bold.png')" selectedUpIcon="@Embed('../../../res/dialog/text_bold-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_bold-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_bold.png')" />
@@ -48,6 +49,9 @@
          import flash.events.Event;
    
          import com.tapirgames.util.TextUtil;
+         
+         import editor.util.DataUtil;
+         import editor.world.Lists;
 
          import common.Define;
 
@@ -75,45 +79,64 @@
          private function OnInitPanel ():void
          {
             //TextArea_Text.maxChars = 0; //Define.MaxTextLength;
+            
+            SelectList_TextFormat.dataProvider = DataUtil.GetListWithDataInLabel (Lists.mTextFormatList);
          }
-
-         private function OnChangeAdaptiveBackgroundSize ():void
+         
+         private function OnChangeTextFormat ():void
          {
-            if (CheckBox_AdaptiveBackgroundSize.selected)
+            if (SelectList_TextFormat.selectedItem.data == TextUtil.TextFormat_Plain)
             {
-               CheckBox_ClipText.selected = false;
-               CheckBox_ClipText.enabled = false;
+               CheckBox_Editable.enabled = true;
             }
             else
             {
-               CheckBox_ClipText.enabled = true;
+               CheckBox_Editable.enabled = false;
+               CheckBox_Editable.selected = false;
             }
+            
+            OnChangeEditable ();
          }
          
          private function OnChangeEditable ():void
          {
             if (CheckBox_Editable.selected)
             {
-               CheckBox_IsHtmlText.selected = false;
                Button_AlignTop.selected = true;
                Button_AlignMiddle.selected = false;
                Button_AlignBottom.selected = false;
                
-               CheckBox_IsHtmlText.enabled = false;
                Button_AlignTop.enabled = false;
                Button_AlignMiddle.enabled = false;
                Button_AlignBottom.enabled = false;
                
+               CheckBox_Selectable.enabled = false;
                CheckBox_Selectable.selected = true;
             }
             else
             {
-               CheckBox_IsHtmlText.enabled = true;
                Button_AlignTop.enabled = true;
                Button_AlignMiddle.enabled = true;
                Button_AlignBottom.enabled = true;
+               
+               CheckBox_Selectable.enabled = true;
             }
-         }           
+            
+            OnChangeSelectable ();
+         }
+         
+         private function OnChangeSelectable ():void
+         {
+            if (CheckBox_Selectable.selected || CheckBox_Editable.selected)
+            {
+               CheckBox_ClipText.enabled = true;
+            }
+            else
+            {
+               CheckBox_ClipText.enabled = false;
+               CheckBox_ClipText.selected = false;
+            }
+         }
 
          private function OnTextAlignChanged (event:Event):void
          {
@@ -173,10 +196,10 @@
             CheckBox_WordWrap.selected = inputValues.mWordWrap;
             CheckBox_Editable.selected = inputValues.mEditable;
             CheckBox_Selectable.selected = inputValues.mSelectable;
-            CheckBox_IsHtmlText.selected = inputValues.mIsHtmlText;
             ColorPicker_TextColor.selectedColor = inputValues.mTextColor;
             CheckBox_AdaptiveBackgroundSize.selected = inputValues.mAdaptiveBackgroundSize;
             CheckBox_ClipText.selected = inputValues.mClipText;
+            SelectList_TextFormat.selectedIndex = DataUtil.SelectedValue2SelectedIndex (Lists.mTextFormatList, inputValues.mTextFormat);
             
             var hAlign:int = inputValues.mTextAlign & 0x0F;
             if (hAlign == TextUtil.TextAlign_Right)
@@ -195,14 +218,13 @@
                Button_AlignTop.selected = true;
 
             TextArea_Text.text = inputValues.mText;
+
+            OnChangeTextFormat ();
             
             if (inputValues.mDisableEditableEditing != null && inputValues.mDisableEditableEditing)
                CheckBox_Editable.enabled = false;
             if (inputValues.mDisableSelectableEditing != null && inputValues.mDisableSelectableEditing)
                CheckBox_Selectable.enabled = false;
-
-            OnChangeAdaptiveBackgroundSize ();
-            OnChangeEditable ();
          }
 
          public function GetValues (returnValues:Object):void
@@ -212,12 +234,12 @@
             returnValues.mWordWrap = CheckBox_WordWrap.selected;
             returnValues.mEditable = CheckBox_Editable.selected;
             returnValues.mSelectable = CheckBox_Selectable.selected;
-            returnValues.mIsHtmlText = CheckBox_IsHtmlText.selected;
             returnValues.mTextColor = ColorPicker_TextColor.selectedColor;
             returnValues.mFontSize = mFontSizes [SelectList_FontSize.selectedIndex].label;
             returnValues.mIsBold = Button_Bold.selected;
             returnValues.mIsItalic = Button_Italic.selected;
             returnValues.mIsUnderlined = Button_Underlined.selected;
+            returnValues.mTextFormat = SelectList_TextFormat.selectedItem.data;
 
             if (Button_AlignRight.selected)
                returnValues.mTextAlign = TextUtil.TextAlign_Right;

@@ -291,6 +291,9 @@ package editor.entity.dialog {
                if (ctrlHold && shiftHold)
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMouseGesture), OnPutCreating, OnCreatingCancelled));
                break;
+            case 78: // N
+               SnapSelectedEnttiesToGrid ();
+               break;
             default:
             {
                handled = false;
@@ -2556,6 +2559,30 @@ package editor.entity.dialog {
          if (entities.length > 0)
          {
             CreateUndoPoint ("Round entity positons");
+            
+            OnAssetSelectionsChanged ();
+         }
+      }
+      
+      public function SnapSelectedEnttiesToGrid ():void
+      {
+         var entities:Array = mScene.GetSelectedAssets ();
+         var entity:Entity;
+         var i:int;
+         var posX:Number;
+         var posY:Number;
+         for (i = 0; i < entities.length; ++ i)
+         {
+            entity = entities [i] as Entity;
+            posX = Math.round (entity.GetPositionX () / mBackgroundGridCellWidth) * mBackgroundGridCellWidth;
+            posY = Math.round (entity.GetPositionY () / mBackgroundGridCellHeight) * mBackgroundGridCellHeight;
+            entity.SetPosition (posX, posY);
+            entity.OnTransformIntentDone ();
+         }
+         
+         if (entities.length > 0)
+         {
+            CreateUndoPoint ("Snap entities");
             
             OnAssetSelectionsChanged ();
          }

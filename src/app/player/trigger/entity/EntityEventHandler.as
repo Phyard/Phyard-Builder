@@ -152,6 +152,8 @@ package player.trigger.entity
             // joint
             case CoreEventIds.ID_OnJointReachLowerLimit:
             case CoreEventIds.ID_OnJointReachUpperLimit:
+            // text
+            case CoreEventIds.ID_OnTextChanged:
             // shape
             case CoreEventIds.ID_OnPhysicsShapeMouseDown:
             case CoreEventIds.ID_OnPhysicsShapeMouseUp:

@@ -56,6 +56,9 @@
       if (! IsInteractiveEnabledNow ())
          return;
       
+      if (mKeyHoldListHead < 0)
+         return;
+      
       var info:Array;
       var ticks:int;
       var listElement:ListElement_EventHandler;
@@ -107,6 +110,9 @@
 
    private function KeyPressed (keyCode:int, charCode:int):void
    {
+      if (mKeyHoldInfo == null) // world is not inited yet
+         return;
+      
       if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return;
       
@@ -128,6 +134,9 @@
 
    private function KeyReleased (keyCode:int, charCode:int):void
    {
+      if (mKeyHoldInfo == null) // world is not inited yet
+         return;
+      
       if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return;
       
@@ -164,6 +173,9 @@
 
    public function IsKeyHold (keyCode:int):Boolean
    {
+      if (mKeyHoldInfo == null) // world is not inited yet
+         return false;
+      
       if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return false;
 
@@ -188,6 +200,9 @@
 
    public function ClearKeyHoldInfo (fireKeyReleasedEvents:Boolean):void
    {
+      if (mKeyHoldInfo == null) // world is not inited yet
+         return;
+      
       // mouse
       
       mIsMouseButtonDown = false; // the status may be different with that one in mKeyHoldListHead. Remove this variable later?

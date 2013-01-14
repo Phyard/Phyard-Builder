@@ -15,6 +15,12 @@ package player.entity {
    
    import player.world.World;
    
+   import player.trigger.entity.EntityEventHandler;
+   import player.trigger.data.ListElement_EventHandler;
+   import player.trigger.Parameter_Direct;
+   
+   import common.trigger.CoreEventIds;
+   
    import common.Define;
    
    public class EntityShape_Text extends EntityShapeRectangle
@@ -96,6 +102,43 @@ package player.entity {
          
          return entityDefine;
       }
+
+//=============================================================
+//   text events
+//=============================================================
+      
+      private var mTextChangedEventHandlerList:ListElement_EventHandler = null;
+      
+      override public function RegisterEventHandler (eventId:int, eventHandler:EntityEventHandler):void
+      {
+         super.RegisterEventHandler (eventId, eventHandler);
+         
+         switch (eventId)
+         {
+            case CoreEventIds.ID_OnTextChanged:
+               mTextChangedEventHandlerList = RegisterEventHandlerToList (mTextChangedEventHandlerList, eventHandler);
+               break;
+            default:
+               break;
+         }
+      }
+
+      final public function OnTextChanged ():void
+      {
+         var  list_element:ListElement_EventHandler = mTextChangedEventHandlerList;
+         
+         //mEventHandlerValueSource0.mValueObject = this;
+         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         
+         mWorld.IncStepStage ();
+         while (list_element != null)
+         {
+            //list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (valueSource0);
+            
+            list_element = list_element.mNextListElement;
+         }
+      }
       
 //=============================================================
 //   
@@ -107,6 +150,8 @@ package player.entity {
          if (mTextField != null)
          {
             mText = mTextField.text;
+            
+            OnTextChanged ();
          }
       }
 

@@ -1933,7 +1933,14 @@ package viewer {
       {
          if (mWorldSourceCode != null)
          {
-            System.setClipboard(mWorldSourceCode);
+            try
+            {
+               System.setClipboard(mWorldSourceCode);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
       }
 
@@ -1985,7 +1992,14 @@ package viewer {
                //"</object>"
                ;
 
-            System.setClipboard(embedCode);
+            try
+            {
+               System.setClipboard(embedCode);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
       }
 
@@ -2069,7 +2083,14 @@ package viewer {
 
             if (forumEmbedCode != null)
             {
-               System.setClipboard (forumEmbedCode);
+               try
+               {
+                  System.setClipboard (forumEmbedCode);
+               }
+               catch (error:Error)
+               {
+                  trace (error.getStackTrace ());
+               }
             }
          }
       }

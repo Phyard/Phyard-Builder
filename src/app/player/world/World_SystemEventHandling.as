@@ -59,6 +59,9 @@
    
    private function RegisterCachedSystemEvent (eventInfo:Array):void
    {
+      if (! mInitialized)
+         return;
+         
       if (mCacheSystemEvents)
       {
          mCachedSystemEvents.push (eventInfo);
@@ -582,10 +585,13 @@
 //=============================================================
 //   focus events
 //=============================================================
+
+   // todo: the 2 event handlers should put in Viewer.
+   //       for when switching scens or the world is not inited, there would be problems.
    
    public function OnActivated (event:Event):void
    {
-      HandleEventById (CoreEventIds.ID_OnGameActivated, null)
+      HandleEventById (CoreEventIds.ID_OnGameActivated, null);
    }
    
    public function OnDeactivated (event:Event):void
@@ -596,7 +602,7 @@
       // todo: also a ClearMouseHoldInfo () ? This needs tracking the mouse position.
       
       // ...
-      HandleEventById (CoreEventIds.ID_OnGameDeactivated, null)
+      HandleEventById (CoreEventIds.ID_OnGameDeactivated, null);
    }
    
 //=============================================================

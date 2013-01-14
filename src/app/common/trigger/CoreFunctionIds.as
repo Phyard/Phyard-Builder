@@ -116,6 +116,7 @@ package common.trigger {
       public static const ID_Array_ConditionAssign:int       = IdPool.CoreApiId_81; // v1.54
       public static const ID_Array_SwapValues:int            = IdPool.CoreApiId_82; // v1.54
       public static const ID_Array_Equals:int                = IdPool.CoreApiId_83; // v1.54
+      public static const ID_Array_ExactEquals:int                = IdPool.CoreApiId_115; // 2.04
       public static const ID_Array_ToString:int                = IdPool.CoreApiId_101; // v1.56
       public static const ID_Array_Create:int                = IdPool.CoreApiId_84; // v1.54
       public static const ID_Array_IsNull:int                = IdPool.CoreApiId_85; // v1.54
@@ -516,6 +517,10 @@ package common.trigger {
       public static const ID_Entity_IsBombShapeEntity:int             = IdPool.CoreApiId_1404;
       public static const ID_Entity_IsWorldBorderShapeEntity:int      = IdPool.CoreApiId_1405;
 
+      public static const ID_Entity_IsCameraEntity:int      = IdPool.CoreApiId_1406;
+      public static const ID_Entity_IsTextShapeEntity:int      = IdPool.CoreApiId_1407;
+      public static const ID_Entity_IsModuleShapeEntity:int      = IdPool.CoreApiId_1408;
+      public static const ID_Entity_IsButtonShapeEntity:int      = IdPool.CoreApiId_1409;
 
    // game / entity / shape / text
 

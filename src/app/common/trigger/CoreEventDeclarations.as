@@ -88,6 +88,13 @@ package common.trigger {
                     [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                     ]);
+
+      // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnTextChanged,
+                    [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                    ]);
       }
 
        // ...

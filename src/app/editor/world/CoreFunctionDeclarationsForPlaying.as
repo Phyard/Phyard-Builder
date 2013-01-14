@@ -657,6 +657,15 @@ package editor.world {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ExactEquals, array_package, "Array === Array?", "@#0 = ($0 === $1)", "@#0 = ($0 === $1)",
+                     [
+                              new VariableDefinitionArray ("Array 1"),
+                              new VariableDefinitionArray ("Array 2"),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Result"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ToString, array_package, "Array -> String", "ArrayToString", "ArrayToString",
                      [
                               new VariableDefinitionArray ("Array"),
@@ -2368,6 +2377,38 @@ package editor.world {
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntity, shape_is_subtype_package, "Is World Border?", null, "IsWorldBorder",
+                     [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                        new VariableDefinitionBoolean ("Is World Border?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsCameraEntity, shape_is_subtype_package, "Is Camera?", null, "IsCamera",
+                     [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                        new VariableDefinitionBoolean ("Is World Border?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTextShapeEntity, shape_is_subtype_package, "Is Text Shape?", null, "IsTextShape",
+                     [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                        new VariableDefinitionBoolean ("Is World Border?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsModuleShapeEntity, shape_is_subtype_package, "Is Module Shape?", null, "IsModuleShape",
+                     [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                        new VariableDefinitionBoolean ("Is World Border?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsButtonShapeEntity, shape_is_subtype_package, "Is Button Shape?", null, "IsButtonShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],

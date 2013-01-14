@@ -141,6 +141,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_ConditionAssign,      ConditionAssignArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SwapValues,           SwapArrayValues);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Equals,               EqualsWith_Arrays);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_ExactEquals,               ExactEqualsWith_Arrays);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_ToString,             ArrayToString);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Create,               CreateArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_IsNull,               IsNullArray);
@@ -410,6 +411,10 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity,            IsPolylineShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsBombShapeEntity,               IsBombShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntity,        IsWorldBorderEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsCameraEntity,        IsCameraEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTextShapeEntity,     IsTextShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsModuleShapeEntity,   IsModuleShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsButtonShapeEntity,   IsButtonShapeEntity);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetOriginalCIType,           GetShapeOriginalCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetOriginalCIType,           SetShapeOriginalCIType);
@@ -786,7 +791,14 @@ package player.trigger {
          
          if (text != null && text.length > 0)
          {
-            System.setClipboard (text);
+            try
+            {
+               System.setClipboard (text);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
       }
 
@@ -1252,6 +1264,64 @@ package player.trigger {
          var value2:Array = valueSource.EvaluateValueObject () as Array;
 
          valueTarget.AssignValueObject (value1 == value2);
+      }
+      
+
+      public static function ExactEqualsWith_Arrays (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value1:Array = valueSource.EvaluateValueObject () as Array;
+
+         valueSource = valueSource.mNextParameter;
+         var value2:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueTarget.AssignValueObject (CompareArrays (value1, value2));
+      }
+
+      private static function CompareArrays (values1:Array, values2:Array, numRegisterdArrays:int = 0, registerdArrays:Dictionary = null, registedComparePairs:Dictionary = null):Boolean
+      {
+         if (values1 == values2)
+            return true;
+
+         if (values1 == null || values2 == null || values1.length != values2.length)
+            return false;
+         
+         if (numRegisterdArrays == 0)
+         {
+            registerdArrays = new Dictionary ();
+            registedComparePairs = new Dictionary ();
+         }
+         var index1:Object = registerdArrays [values1];
+         if (index1 == null)
+            registerdArrays [values1] = index1 = numRegisterdArrays ++;
+         var index2:Object = registerdArrays [values2];
+         if (index2 == null)
+            registerdArrays [values2] = index2 = numRegisterdArrays ++;
+         var pairId:int = (index1 as int) < (index2 as int) ? (((index1 as int) << 16) | (index2 as int)) : (((index2 as int) << 16) | (index1 as int)); // !! max 65536 aryays
+         if (registedComparePairs [pairId] != null)
+            return true;
+         registedComparePairs [pairId] = 1;            
+         
+         var count:int = values1.length;
+         for (var i:int = 0; i < count; ++ i)
+         {
+            var element1:Object = values1 [i];
+            var element2:Object = values2 [i];
+            
+            if (element1 != element2)
+            {
+               if (element1 is Array && element2 is Array)
+               {
+                  if (CompareArrays (element1 as Array, element2 as Array, numRegisterdArrays, registerdArrays, registedComparePairs))
+                     continue;
+               }
+               else
+               {
+                  return false;
+               }
+            }
+         }
+         
+         return true;
       }
 
       public static function ArrayToString (valueSource:Parameter, valueTarget:Parameter):void
@@ -3529,6 +3599,34 @@ package player.trigger {
          var shape:EntityShape_WorldBorder = valueSource.EvaluateValueObject () as EntityShape_WorldBorder;
 
          valueTarget.AssignValueObject (shape != null);
+      }
+
+      public static function IsCameraEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape_Camera = valueSource.EvaluateValueObject () as EntityShape_Camera;
+
+         valueTarget.AssignValueObject (shape != null);
+      }
+
+      public static function IsTextShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+
+         valueTarget.AssignValueObject (shape != null);
+      }
+
+      public static function IsModuleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
+
+         valueTarget.AssignValueObject (shape != null);
+      }
+
+      public static function IsButtonShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         valueTarget.AssignValueObject (shape != null && (shape is EntityShape_TextButton || shape is EntityShapeImageModuleButton));
       }
 
       // ...

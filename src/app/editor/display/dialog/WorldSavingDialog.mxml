@@ -139,7 +139,14 @@
          
          private function OnClickCopySourceCode ():void
          {
-            System.setClipboard(GetValidatedSourceCode ());
+            try
+            {
+               System.setClipboard(GetValidatedSourceCode ());
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
          
          private function GetValidatedSourceCode ():String
@@ -155,13 +162,27 @@
          
          private function OnClickCopyEmbedCode ():void
          {
-            System.setClipboard (mInputValues.mEmbedCode);
+            try
+            {
+               System.setClipboard (mInputValues.mEmbedCode);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
          
          private function OnClickCopyPlayCode ():void
          {
             //System.setClipboard (TextArea_PlayCode.text);
-            System.setClipboard (mInputValues.mHexString);
+            try
+            {
+               System.setClipboard (mInputValues.mHexString);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
          
          //private function OnClickCopyEmbedCode ():void

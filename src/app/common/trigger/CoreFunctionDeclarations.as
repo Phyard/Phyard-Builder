@@ -567,6 +567,15 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_ExactEquals,
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_ToString,
                      [
                         [ValueTypeDefine.ValueType_Array,       null],
@@ -2304,6 +2313,38 @@ package common.trigger {
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntity,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsCameraEntity,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTextShapeEntity,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsModuleShapeEntity,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsButtonShapeEntity,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                      ],

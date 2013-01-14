@@ -73,6 +73,11 @@ package editor {
       [Embed("../res/create/event_on_joint_reach_upper_limit.png")]
       public static const IconOnJointReachUpperLimitEvent:Class;
       
+      // text changed
+      
+      [Embed("../res/create/event_on_text_changed.png")]
+      public static const IconOnTextChangedEvent:Class;
+      
       // level init / update
       
       [Embed("../res/create/event_on_level_before_initilizing.png")]
@@ -177,6 +182,8 @@ package editor {
             
             sEventId2IconClass [CoreEventIds.ID_OnJointReachLowerLimit] = IconOnJointReachLowerLimitEvent;
             sEventId2IconClass [CoreEventIds.ID_OnJointReachUpperLimit] = IconOnJointReachUpperLimitEvent;
+
+            sEventId2IconClass [CoreEventIds.ID_OnTextChanged] = IconOnTextChangedEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeInitializing] = IconOnBeforeLevelInitializingEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldAfterInitialized  ] = IconOnAfterLevelInitializedEvent;

@@ -87,6 +87,11 @@ package editor.world {
                        new VariableDefinitionEntity ("The Joint", null, {mValidClasses: Filters.sLimitsConfigureableJointEntityClasses}),
                     ]);
 
+         RegisterEventDeclaration (CoreEventIds.ID_OnTextChanged, "OnTextChanged", "OnTextChanged",
+                    [
+                       new VariableDefinitionEntity ("The Text Shape", null, {mValidClasses: Filters.sTextEntityClasses}),
+                    ]);
+
       // ...
 
          //RegisterEventDeclaration (CoreEventIds.ID_OnSensorContainsPhysicsShape, "OnSensorContainsPhysicsShape", "When shape 1 containing the center of shape 2",

@@ -52,6 +52,10 @@ package common.trigger {
       public static const ID_OnJointReachLowerLimit:int = IdPool.EventId_111;
       public static const ID_OnJointReachUpperLimit:int = IdPool.EventId_112;
 
+   // entity / text
+   
+      public static const ID_OnTextChanged:int = IdPool.EventId_120;
+
    // entity pair
 
       //public static const ID_OnSensorContainsPhysicsShape:int = IdPool.EventId_130;

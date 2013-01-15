@@ -510,15 +510,12 @@ package player.design
          
          //
          //if (! isRestartLevel) // before v2.00
-         if (!dontReloadGlobalAssets) // from v2.00
+         if (! dontReloadGlobalAssets) // from v2.00
          {
             mImageBitmaps         = null;
             mImageBitmapDivisions = null;
-            //mAssembledModules     = null;
-            //mSequencedModules     = null;
-               // for scenes may have different coordinate system.
-               // the cached physics values for modules will also be different.
-               // TODO: remove cached physics values or update cached physics values in loading stage later.
+            mAssembledModules     = null;
+            mSequencedModules     = null;
             
             mSounds = null;
          }
@@ -837,12 +834,12 @@ package player.design
             }
          }
          
-         //var needLoadAssembledModules:Boolean = false;
-         //var needLoadSequencedModules:Boolean = false;
+         var needLoadAssembledModules:Boolean = false;
+         var needLoadSequencedModules:Boolean = false;
 
          if (mAssembledModules == null)
          {
-            //needLoadAssembledModules = true;
+            needLoadAssembledModules = true;
             
             mAssembledModules     = new Array (assembledModuleDefines.length);
    
@@ -860,7 +857,7 @@ package player.design
          
          if (mSequencedModules == null)
          {
-            //needLoadSequencedModules = true;
+            needLoadSequencedModules = true;
             
             mSequencedModules     = new Array (sequencedModuleDefines.length);
    
@@ -876,8 +873,8 @@ package player.design
             mNumTotalModules += mSequencedModules.length;
          }
          
-         //if (needLoadAssembledModules)
-         //{
+         if (needLoadAssembledModules)
+         {
             for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
             {
                var assembledModuleDefine:Object = assembledModuleDefines [assembledModuleId];
@@ -886,10 +883,10 @@ package player.design
                
                (mAssembledModules [assembledModuleId] as AssembledModule).SetModuleParts (moduleParts);
             }
-         //}
+         }
 
-         //if (needLoadSequencedModules)
-         //{
+         if (needLoadSequencedModules)
+         {
             for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
             {
                var sequencedModuleDefine:Object = sequencedModuleDefines [sequencedModuleId];
@@ -900,7 +897,19 @@ package player.design
                
                (mSequencedModules [sequencedModuleId] as SequencedModule).SetModuleSequences (moduleSequences);
             }
-         //}
+         }
+         
+         // ... 
+         
+         for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
+         {
+            (mAssembledModules [assembledModuleId] as AssembledModule).AdjustModulePartsTransformInPhysics (GetCurrentWorld ().GetCoordinateSystem ());
+         }
+         
+         for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
+         {
+            (mSequencedModules [sequencedModuleId] as SequencedModule).AdjustModuleSequencesTransformInPhysics (GetCurrentWorld ().GetCoordinateSystem ());
+         }
       }
       
       protected static function CreateModulePartsOrSequences (moduleInstanceDefines:Array, forSequencedModule:Boolean):Array
@@ -916,22 +925,17 @@ package player.design
                                                          moduleInstanceDefine.mScale, moduleInstanceDefine.mIsFlipped != 0, 
                                                          moduleInstanceDefine.mRotation
                                                       );
-            var transformInPhysics:Transform2D = new Transform2D (
-                                                         GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mPosX), 
-                                                         GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mPosY), 
-                                                         moduleInstanceDefine.mScale, moduleInstanceDefine.mIsFlipped != 0, 
-                                                         GetCurrentWorld ().GetCoordinateSystem ().D2P_RotationRadians (moduleInstanceDefine.mRotation)
-                                                      );
             
-            var modulePart:ModulePart;
             if (forSequencedModule)
             {
-               modulePartsOrSequences [miId] = new ModuleSequence (module, transform, transformInPhysics, moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha, 
+               modulePartsOrSequences [miId] = new ModuleSequence (module, transform, 
+                                                                   moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha, 
                                                                    moduleInstanceDefine.mModuleDuration);
             }
             else
             {
-               modulePartsOrSequences [miId] = new ModulePart (module, transform, transformInPhysics, moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha);
+               modulePartsOrSequences [miId] = new ModulePart (module, transform, 
+                                                               moduleInstanceDefine.mVisible != 0, moduleInstanceDefine.mAlpha);
             }
          }
          

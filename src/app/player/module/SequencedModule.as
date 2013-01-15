@@ -4,6 +4,7 @@ package player.module {
    
    import player.physics.PhysicsProxyShape;
    
+   import common.CoordinateSystem;
    import common.Transform2D;
 
    public class SequencedModule extends Module
@@ -20,6 +21,17 @@ package player.module {
       public function SetModuleSequences (moduleSequences:Array):void
       {
          mModuleSequences = moduleSequences;
+      }
+      
+      public function AdjustModuleSequencesTransformInPhysics (worldCoordinateSystem:CoordinateSystem):void
+      {
+         if (mModuleSequences != null)
+         {
+            for each (var moduleSequence:ModuleSequence in mModuleSequences)
+            {
+               moduleSequence.AdjustTransformInPhysics (worldCoordinateSystem);
+            }
+         }
       }
       
       override public function GetNumFrames ():int

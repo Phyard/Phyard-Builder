@@ -1,5 +1,6 @@
 package player.module {
    
+   import common.CoordinateSystem;
    import common.Transform2D;
 
    public class ModulePart
@@ -12,18 +13,17 @@ package player.module {
          // for module sequences, must NOT be null
          // for module parts, can be null
 
-      protected var mTransformInPhysics:Transform2D;
-         // for physics
-      
       protected var mIsVisible:Boolean = true;
       protected var mAlpha:Number  = 1.0;
       
-      public function ModulePart (module:Module, transform:Transform2D, transformInPhysics:Transform2D, visible:Boolean, alpha:Number)
+      protected var mTransformInPhysics:Transform2D;
+         // for physics (should update on switching scenes, other values don't need to update)
+      
+      public function ModulePart (module:Module, transform:Transform2D, visible:Boolean, alpha:Number)
       {
          mModule = module;
          
          mTransform = transform;
-         mTransformInPhysics = transformInPhysics;
          
          mIsVisible = visible;
          mAlpha = alpha;
@@ -37,6 +37,17 @@ package player.module {
       public function GetTransform ():Transform2D
       {
          return mTransform;
+      }
+      
+      public function AdjustTransformInPhysics (worldCoordinateSystem:CoordinateSystem):void
+      {
+         mTransformInPhysics = new Transform2D (
+                                       worldCoordinateSystem.D2P_Length (mTransform.mOffsetX), 
+                                       worldCoordinateSystem.D2P_Length (mTransform.mOffsetY), 
+                                       mTransform.mScale, mTransform.mFlipped, 
+                                       worldCoordinateSystem.D2P_RotationRadians (mTransform.mRotation)
+                                    );
+         
       }
       
       public function GetTransformInPhysics ():Transform2D

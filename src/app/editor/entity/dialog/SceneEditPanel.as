@@ -287,9 +287,12 @@ package editor.entity.dialog {
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSystemBack), OnPutCreating, OnCreatingCancelled));
                break;
             case 71: // G
-            case 77: // M
                if (ctrlHold && shiftHold)
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMouseGesture), OnPutCreating, OnCreatingCancelled));
+               break;
+            case 77: // M
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSequencedModuleLoopToEnd), OnPutCreating, OnCreatingCancelled));
                break;
             case 78: // N
                SnapSelectedEnttiesToGrid ();

@@ -771,7 +771,7 @@ package common {
       
       //public static function VariableSpaceDefine2VariableSpace (scene:Scene, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void // v1.52 only
       // since v1.53, return a variableIndex_CorrectionTable
-      public static function VariableDefines2VariableSpace (scene:Scene, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false):Array
+      public static function VariableDefines2VariableSpace (scene:Scene, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false, overrideValueOnExisting:Boolean = true):Array
       {
          //>> v1.52 only
          //var numVariables:int = spaceDefine.mVariableDefines.length;
@@ -793,7 +793,7 @@ package common {
             //var variableInstanceDefine:VariableInstanceDefine = spaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
             var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
 
-            var vi:VariableInstance = VariableDefine2VariableInstance (scene, variableInstanceDefine, variableSpace, supportInitalValues, avoidNameConflicting, variablesHaveKey);
+            var vi:VariableInstance = VariableDefine2VariableInstance (scene, variableInstanceDefine, variableSpace, supportInitalValues, avoidNameConflicting, variablesHaveKey, overrideValueOnExisting);
             
             variableIndex_CorrectionTable [variableId] = (vi == null ? - 1 : vi.GetIndex ());
          }
@@ -801,7 +801,7 @@ package common {
          return variableIndex_CorrectionTable;
       }
       
-      public static function VariableDefine2VariableInstance (scene:Scene, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false):VariableInstance
+      public static function VariableDefine2VariableInstance (scene:Scene, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false, overrideValueOnExisting:Boolean = true):VariableInstance
       {
          var directValueSourceDefine:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
          
@@ -846,8 +846,13 @@ package common {
          
          if (variableDefinition != null)
          {
+            var oldNum:int = variableSpace.GetNumVariableInstances ();
             var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variablesHaveKey ? variableInstanceDefine.mKey : null, variableDefinition, avoidNameConflicting);
-            vi.SetValueObject (valueObject);
+
+            if (oldNum != variableSpace.GetNumVariableInstances () || overrideValueOnExisting)
+            {
+               vi.SetValueObject (valueObject);
+            }
              
             return vi;
          }

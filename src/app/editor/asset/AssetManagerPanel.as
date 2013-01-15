@@ -487,7 +487,14 @@ package editor.asset {
          {
             mShowAllAssetIDs = show;
             RepaintAllAssetIDs ();
+            
+            UpdateInterface ();
          }
+      }
+      
+      public function IsShowAllAssetIDs ():Boolean
+      {
+         return mShowAllAssetIDs;
       }
       
       public function ToggleShowAllAssetLinks ():void
@@ -501,7 +508,14 @@ package editor.asset {
          {
             mShowAllAssetLinks = show;
             RepaintAllAssetLinks ();
+            
+            UpdateInterface ();
          }
+      }
+      
+      public function IsShowAllAssetLinks ():Boolean
+      {
+         return mShowAllAssetLinks;
       }
       
 //==================================================================================
@@ -932,7 +946,14 @@ package editor.asset {
             {
                mScaleRotateFlipHandlersContainer.visible = mShowScaleRotateFlipHandlers;
             }
+            
+            UpdateInterface ();
          }
+      }
+      
+      public function IsShowScaleRotateFlipHandlers ():Boolean
+      {
+         return mShowScaleRotateFlipHandlers;
       }
       
       protected function SupportScaleRotateFlipTransforms ():Boolean

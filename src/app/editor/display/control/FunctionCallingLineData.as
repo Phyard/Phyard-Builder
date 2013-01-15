@@ -20,6 +20,13 @@ package editor.display.control {
    
    public class FunctionCallingLineData
    {
+      public static const kPattern1:RegExp = /&/g;
+      public static const kReplace1:String = "&amp;";
+      public static const kPattern2:RegExp = /</g;
+      public static const kReplace2:String = "&lt;";
+   
+   //=================
+   
       public var mInfo:FunctionCallingLineInfo = new FunctionCallingLineInfo ();
       
       public function UpdateCodeLineText ():Boolean
@@ -27,6 +34,9 @@ package editor.display.control {
          if (mInfo.mHtmlText == null)
          {
             mInfo.mHtmlText = mFuncDeclaration.CreateFormattedCallingText (mCurrentValueSources, mCurrentValueTargets);
+            
+            mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern1, kReplace1);
+            mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern2, kReplace2);
             
             if (! mInfo.mIsValid)
             {

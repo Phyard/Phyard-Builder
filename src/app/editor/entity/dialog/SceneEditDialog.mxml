@@ -689,6 +689,10 @@
          var sceneSnapshotManager:HistoryManager = scene == null ? null : EditorContext.GetEditorApp ().GetSceneSnapshotManager (scene, false);
          Button_Undo.enabled = sceneSnapshotManager != null && sceneSnapshotManager.GetPrevHistoryState () != null;
          Button_Redo.enabled = sceneSnapshotManager != null && sceneSnapshotManager.GetNextHistoryState () != null;
+         
+         Button_ShowEntityIDs.selected = mCurrentSceneEditPanel.IsShowAllAssetIDs ();
+         Button_ShowAllEntityLinks.selected =  mCurrentSceneEditPanel.IsShowAllAssetLinks ();
+         Button_ShowTransformRing.selected =  mCurrentSceneEditPanel.IsShowScaleRotateFlipHandlers ();
       }
 
    //========================================================================================

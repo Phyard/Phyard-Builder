@@ -1889,10 +1889,10 @@ package common {
             //editorWorld.GetCommonCustomEntityVariableSpace ().NotifyEntityVariableSpaceModified ();
          */
 
-            var gameSaveVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mGameSaveVariableDefines, editorWorld.GetGameSaveVariableSpace (), true, true, true);
-            var worldVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mWorldVariableDefines, editorWorld.GetWorldVariableSpace (), true, true, false);
-            var commonGlobalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonGlobalVariableDefines, editorWorld.GetCommonSceneGlobalVariableSpace (), true, true, false);
-            var commonEntityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonEntityPropertyDefines, editorWorld.GetCommonCustomEntityVariableSpace (), true, true, false);
+            var gameSaveVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mGameSaveVariableDefines, editorWorld.GetGameSaveVariableSpace (), true, true, true, false);
+            var worldVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mWorldVariableDefines, editorWorld.GetWorldVariableSpace (), true, true, false, false);
+            var commonGlobalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonGlobalVariableDefines, editorWorld.GetCommonSceneGlobalVariableSpace (), true, true, false, false);
+            var commonEntityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonEntityPropertyDefines, editorWorld.GetCommonCustomEntityVariableSpace (), true, true, false, false);
          //<<
 
          // scenes
@@ -2797,7 +2797,7 @@ package common {
          {
             if (mergeVariablesWithSameNames)
                scene.GetCodeLibManager ().GetGlobalVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
-            TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), truee);
+            TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), true);
          }
          if (sceneDefine.mEntityPropertyDefines.length > 0)
          {
@@ -2810,9 +2810,9 @@ package common {
          //scene.GetCodeLibManager ().NotifyEntityVariableSpaceModified ();
          */
 
-         var sessionVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mSessionVariableDefines, scene.GetCodeLibManager ().GetSessionVariableSpace (), true, mergeVariablesWithSameNames, false);
-         var globalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), true, mergeVariablesWithSameNames, false);
-         var entityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mEntityPropertyDefines, scene.GetCodeLibManager ().GetEntityVariableSpace (), true, mergeVariablesWithSameNames, false);
+         var sessionVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mSessionVariableDefines, scene.GetCodeLibManager ().GetSessionVariableSpace (), true, mergeVariablesWithSameNames, false, false);
+         var globalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), true, mergeVariablesWithSameNames, false, false);
+         var entityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mEntityPropertyDefines, scene.GetCodeLibManager ().GetEntityVariableSpace (), true, mergeVariablesWithSameNames, false, false);
          //<<<
          
          //>>> load custom functions

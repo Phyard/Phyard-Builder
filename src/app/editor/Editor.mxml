@@ -1546,6 +1546,8 @@
       
       public function Undo ():void
       {
+         var currentHistoryState:HistoryState = sceneSnapshotManager.GetCurrentHistoryState ();
+         
          var historyState:HistoryState = GetWorldSnapshotManager ().UndoHistory ();
          
          if (historyState == null)
@@ -1556,7 +1558,7 @@
          
          if (RestoreWorld (historyState))
          {
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Undo (" + historyState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (currentHistoryState == null ? "Undo" : "Undo (" + historyState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
       }
       
@@ -1683,6 +1685,8 @@
          if (sceneSnapshotManager == null)
             return;
          
+         var currentHistoryState:HistoryState = sceneSnapshotManager.GetCurrentHistoryState ();
+         
          var historyState:HistoryState = sceneSnapshotManager.UndoHistory ();
          
          if (historyState == null)
@@ -1693,7 +1697,7 @@
          
          if (RestoreScene (sceneEditPanel, historyState, sceneSnapshotManager))
          {
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Undo (" + historyState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (currentHistoryState == null ? "Undo" : "Undo (" + currentHistoryState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
       }
       

@@ -5687,7 +5687,7 @@ package player.trigger {
          //var module:Module = valueSource.EvaluateValueObject () as Module;
          var moduleIndex:int = valueSource.EvaluateValueObject () as int;
 
-         buttonModuleShape.SetModuleIndexOver (Global.ValiddateModuleIndex (moduleIndex));
+         buttonModuleShape.SetModuleIndexDown (Global.ValiddateModuleIndex (moduleIndex));
       }
 
    //*******************************************************************

@@ -55,6 +55,9 @@ package editor {
       [Embed("../res/create/event_on_game_deactivated.png")]
       public static const IconOnGameDeactivatedEvent:Class;
       
+      [Embed("../res/create/event_on_world_before_repainting.png")]
+      public static const IconOnWorldBeforeRepaintingEvent:Class;
+      
       // entity init / update / destroy
       
       [Embed("../res/create/event_on_entity_created.png")]
@@ -173,7 +176,9 @@ package editor {
             sEventId2IconClass = new Dictionary ();
             
             sEventId2IconClass [CoreEventIds.ID_OnGameActivated  ] = IconOnGameActivatedEvent;
-            sEventId2IconClass [CoreEventIds.ID_OnGameDeactivated] = IconOnGameDeactivatedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnGameDeactivated] = IconOnWorldBeforeRepaintingEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeRepainting] = IconOnWorldBeforeRepaintingEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnEntityCreated] = IconOnEntityCteatedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityInitialized] = IconOnEntityInitilizedEvent;

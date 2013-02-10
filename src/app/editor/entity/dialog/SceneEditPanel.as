@@ -297,6 +297,10 @@ package editor.entity.dialog {
             case 78: // N
                SnapSelectedEnttiesToGrid ();
                break;
+            case 80: // P
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnWorldBeforeRepainting), OnPutCreating, OnCreatingCancelled));
+               break;
             default:
             {
                handled = false;

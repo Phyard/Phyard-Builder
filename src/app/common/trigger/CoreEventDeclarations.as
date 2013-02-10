@@ -26,6 +26,10 @@ package common.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnGameDeactivated,
                     null
                     );
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeRepainting,
+                    null
+                    );
 
       // ...
 

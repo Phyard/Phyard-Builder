@@ -27,6 +27,10 @@ package editor.world {
                     null
                     );
 
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldBeforeRepainting, "OnLevelBeforeRepainting", "",
+                    null
+                    );
+
       // ...
 
          RegisterEventDeclaration (CoreEventIds.ID_OnWorldBeforeInitializing, "OnLevelBeginInitialize", "",

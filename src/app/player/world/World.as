@@ -887,6 +887,12 @@ package player.world {
             mFunc_StepUpdate (escapedTime, speedX);
 
       //-----------------------------
+      // todo: need a BeforeRepaint event handler
+      //-----------------------------
+         
+         HandleEventById (CoreEventIds.ID_OnWorldBeforeRepainting);
+         
+      //-----------------------------
       // repaint
       //-----------------------------
 

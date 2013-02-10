@@ -12,6 +12,8 @@ package common.trigger {
 
       public static const ID_OnGameActivated:int = IdPool.EventId_6;
       public static const ID_OnGameDeactivated:int = IdPool.EventId_7;
+      
+      public static const ID_OnWorldBeforeRepainting:int = IdPool.EventId_5;
 
    // world (maybe in later versions)
 

@@ -351,9 +351,10 @@
                   <mx:Button id="Button_MoveUpScene" click="OnMoveUpScene ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
                   <mx:Button id="Button_MoveDownScene" click="OnMoveDownScene ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
                   <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CloneScene" click="OnCloneSelectedScene ();" toolTip="Clone Selected Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/command-clone-scene.png')" />
                   <mx:Button id="Button_CreateScene" click="OnCreateNewScene ();" toolTip="New Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
                </mx:HBox>
-               <mx:List id="List_Scenes" width="100%" height="100%" change="OnCurrentSceneSwitched ();"  labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false" />
+               <mx:List id="List_Scenes" width="100%" height="100%" change="OnCurrentSceneSwitched ();"  doubleClickEnabled="true" itemDoubleClick="OnSceneListDoubleClicked (event);" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false" />
             </mx:VBox>
          </mx:HBox>
       </mx:HBox>
@@ -416,6 +417,9 @@
 
   <mx:Script><![CDATA[
       
+      import flash.geom.Rectangle;
+      import flash.display.DisplayObject;
+      
       import flash.events.Event;
       import flash.events.MouseEvent;
       import flash.ui.ContextMenu;
@@ -431,6 +435,7 @@
       import editor.undo.HistoryManager;
       
       import editor.display.dialog.NameSettingDialog;
+      import editor.display.sprite.EffectMessagePopup;
       
       import editor.entity.dialog.SceneEditPanel;
       import editor.entity.dialog.ScenePlayPanel;
@@ -441,6 +446,8 @@
       import editor.EditorContext;
       
       import common.trigger.CoreEventIds;
+      import common.WorldDefine;
+      import common.SceneDefine;
       import common.ValueAdjuster;
       import common.Define;
       import common.Version;
@@ -558,8 +565,17 @@
          if (world == null)
             return;
          
+         if (List_Scenes.dataProvider == null || List_Scenes.dataProvider.length == 0)
+            return;
+         
          if (List_Scenes.selectedIndex >= 0)
          {
+            //var rect:Rectangle = (List_Scenes.selectedItem as DisplayObject).getBounds (List_Scenes);
+            //if (rect.top < 0)
+            //   List_Scenes.verticalScrollPosition -= rect.top;
+            //if (rect.bottom > List_Scenes.height)
+            //   List_Scenes.verticalScrollPosition += (rect.bottom - List_Scenes.height);
+            
             List_Scenes.scrollToIndex (List_Scenes.selectedIndex);
          }
 
@@ -732,6 +748,51 @@
          }
       }
       
+      private function OnCloneSelectedScene ():void
+      {
+         var scene:editor.entity.Scene = null;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var item:Object = List_Scenes.dataProvider.getItemAt (List_Scenes.selectedIndex);
+            
+            scene = item.mData as editor.entity.Scene;
+         }
+         
+         if (scene != null)
+         {
+            //EditorContext.ShowModalDialog (NameSettingDialog, ConfirmCloneSelectedScene, {mName: "(cloned) " + scene.GetName ()});
+            
+            ConfirmCloneSelectedScene ({mName: "(cloned) " + scene.GetName ()});
+         }
+      }
+      
+      private function ConfirmCloneSelectedScene (params:Object):void
+      {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         try
+         {
+            var worldDefine:WorldDefine = EditorContext.GetEditorApp ().OfflineExportCurrentScene (true);
+            var sceneDefine:SceneDefine = worldDefine.mSceneDefines [worldDefine.mCurrentSceneId];
+            sceneDefine.mName = params.mName;
+            
+            var newScenes:Array = EditorContext.GetEditorApp ().OfflineImportScenes ({mWorldDefine : worldDefine}, true);
+            var newScene:editor.entity.Scene = newScenes [0] as editor.entity.Scene;
+            
+            var newClonedSceneIndex:int = world.ChangeSceneIndex (newScene.GetSceneIndex (), List_Scenes.selectedIndex + 1);
+            
+            OnWorldChanged (newClonedSceneIndex);
+         }
+         catch (error:Error)
+         {
+            GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Clone scene failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetSceneEditPanel ().GetPanelWidth ()));
+         }
+      }
+      
       private function ChangeCurrentSceneName (params:Object):void
       {
          var world:World = EditorContext.GetEditorApp ().GetWorld ();
@@ -766,6 +827,11 @@
          }
       }
       
+      private function OnSetCurrentSceneAsEntry ():void
+      {
+         ChangeCurrentSceneIndex (0);
+      }
+      
       private function OnMoveUpScene ():void
       {
          ChangeCurrentSceneIndex (-1);
@@ -776,9 +842,29 @@
          ChangeCurrentSceneIndex (1);
       }
       
-      private function OnSetCurrentSceneAsEntry ():void
+      private function OnSceneListDoubleClicked (event:Event):void
       {
-         ChangeCurrentSceneIndex (0);
+         EditorContext.ShowModalDialog (NameSettingDialog, ConfirmMoveSceneIndex, 
+                                    {mName: "" + List_Scenes.selectedIndex, 
+                                     mLabel: "Move To New Index",
+                                     mTitle: "Change Scene Order"});
+      }
+      
+      private function ConfirmMoveSceneIndex (params:Object):void
+      {
+         if (params == null || params.mName == null)
+            return;
+         
+         var newIndex:int = parseInt (params.mName);
+         if (isNaN (newIndex) || newIndex < 0)
+            return;
+         
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         ChangeCurrentSceneIndex (newIndex - List_Scenes.selectedIndex);
       }
       
       private function ChangeCurrentSceneIndex (deltaInex:int):void

@@ -210,19 +210,6 @@ package editor.entity.dialog {
          }
       }
       
-      override public function OnAssetSelectionsChanged (passively:Boolean = false):void
-      {
-         if (! passively)
-         {
-            if (! mInCookieSelectMode)
-            {
-               mScene.SelectAllBrothersOfSelectedAssets ();
-            }
-         }
-         
-         super.OnAssetSelectionsChanged (passively);
-      }
-      
       // return true to indicate handled successfully
       override protected function OnKeyDownInternal (keyCode:int, ctrlHold:Boolean, shiftHold:Boolean):Boolean
       {

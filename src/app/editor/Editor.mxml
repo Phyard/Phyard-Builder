@@ -1044,17 +1044,22 @@
          }
       }
       
-      public function OfflineImportScenes (params:Object):void
+      public function OfflineImportScenes (params:Object, returnImportedScenes:Boolean = false):Array
       {
          var worldDefine:WorldDefine = null;
          
          try
          {
-            var xmlString:String = params.mXmlString;    
-            
-            var xml:XML = new XML (xmlString);
-            
-            worldDefine = DataFormat.Xml2WorldDefine (xml);
+            if (params.mWorldDefine != null)
+               worldDefine = params.mWorldDefine;
+            else
+            {
+               var xmlString:String = params.mXmlString;    
+               
+               var xml:XML = new XML (xmlString);
+               
+               worldDefine = DataFormat.Xml2WorldDefine (xml);
+            }
          }
          catch (error:Error)
          {
@@ -1065,9 +1070,11 @@
          }
          
          if (worldDefine == null)
-         {  
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed (data error)", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
-            return;
+         {
+            if (! returnImportedScenes)
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed (data error)", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            
+            return null;
          }
          
          try
@@ -1089,14 +1096,19 @@
                }
             }
             
-            if (numSucceeds == 0)
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scenes failed to import", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
-            else if (numFaileds == 0)
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes are imported", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
-            else  
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes succeeded and " + numFaileds + " scenes failed to import", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            if (! returnImportedScenes)
+            {
+               if (numSucceeds == 0)
+                  mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scenes failed to import", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               else if (numFaileds == 0)
+                  mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes are imported", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               else  
+                  mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes succeeded and " + numFaileds + " scenes failed to import", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            }
             
             //CreateWorldSnapshot ("Import Scenes");
+            
+            return newImportedScenes;
          }
          catch (error:Error)
          {
@@ -1105,8 +1117,13 @@
             
             //RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ());
             
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            if (! returnImportedScenes)
+            {
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            }
          }
+         
+         return null;
       }
       
       public function GetOfflineSaveData ():Object
@@ -1170,16 +1187,6 @@
       
       public function OfflineExportSelecteds ():void
       {
-         OfflineExport (true);
-      }
-      
-      public function OfflineExportCurrentScene ():void
-      {
-         OfflineExport (false);
-      }
-      
-      private function OfflineExport (onlyExportSelecteds:Boolean):void
-      {
          try
          {
             var currentScene:editor.entity.Scene = mSceneEditDialog.GetCurrentSceneInEditing ();
@@ -1191,17 +1198,10 @@
             DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
                // !!! here may be some bugs: somewhere will call EditorContext.GetCurrentWorld, which is not the newWorld
             
-            // remove other scenes
-            // (EditorWorld2WorldDefine add a theOnlySceneId param, so no need to remove other scenes)
-            //while (newWorld.GetNumScenes () > sceneIndex + 1)
-            //   newWorld.DeleteSceneByIndex (newWorld.GetNumScenes () - 1, false);
-            //while (newWorld.GetNumScenes () > 1)
-            //   newWorld.DeleteSceneByIndex (0, false);
-            
             var newScene:editor.entity.Scene = newWorld.GetSceneByIndex (0);
             
-            if (onlyExportSelecteds)
-            {
+            //if (onlyExportSelecteds)
+            //{
                var selectedEntities:Array = currentScene.GetSelectedAssets ();
                if (selectedEntities.length == 0)
                   return;
@@ -1300,7 +1300,7 @@
                      cm.DestroyAsset (ccat);
                   }
                }
-            }
+            //} // onlyExportSelecteds
             
             System.setClipboard(DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (newWorld)));
             
@@ -1320,6 +1320,40 @@
             if (newWorld != null)
                newWorld.Destroy ();
          //}
+      }
+      
+      public function OfflineExportCurrentScene (toReturnWorldDefine:Boolean = false):WorldDefine
+      {
+         try
+         {
+            var currentScene:editor.entity.Scene = mSceneEditDialog.GetCurrentSceneInEditing ();
+            //var sceneIndex:int = currentScene.GetSceneIndex ();
+            
+            var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld, currentScene);
+            
+            if (toReturnWorldDefine)
+            {
+               return worldDefine;
+            }
+            
+            System.setClipboard(DataFormat2.WorldDefine2Xml (worldDefine));
+            
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Export succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         }
+         catch (error:Error)
+         {
+            //Alert.show("Sorry, export  error!", "Error");
+            
+            if (! toReturnWorldDefine)
+            {
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Export failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            }
+            
+            if (Capabilities.isDebugger)
+               throw error;
+         }
+         
+         return null;
       }
       
    //========================================================================================

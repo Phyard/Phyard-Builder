@@ -4,13 +4,13 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Name Setting" width="300"
+    title="Name Setting" 
     creationComplete="OnInitPanel()"
     >
 
-   <mx:HBox width="100%">
+   <mx:HBox width="100%" paddingLeft="30" paddingRight="30">
       <mx:Spacer width="100%" />
-      <mx:Label text="Name:" textAlign="right"/>
+      <mx:Label id="Label_Name" text="Name:" textAlign="right"/>
       <mx:TextInput id="TextInput_Name" width="167" text="100"/>
       <mx:Spacer width="100%" />
    </mx:HBox>
@@ -55,7 +55,14 @@
          
          private function OnInitPanel ():void
          {
-            TextInput_Name.text = (mInputValues.mName == null ? "" : mInputValues.mName);
+            if (mInputValues.mName != null)
+               TextInput_Name.text = mInputValues.mName;
+            
+            if (mInputValues.mLabel != null)
+               Label_Name.text = mInputValues.mLabel;
+            
+            if (mInputValues.mTitle != null)
+               this.title = mInputValues.mTitle;
          }
          
          private function OnClickOkButton():void 

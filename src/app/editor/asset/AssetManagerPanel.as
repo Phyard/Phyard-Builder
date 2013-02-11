@@ -819,6 +819,14 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
+         if (! passively)
+         {
+            if (! mInCookieSelectMode)
+            {
+               mAssetManager.SelectAllBrothersOfSelectedAssets ();
+            }
+         }
+         
          SetScaleRotateFlipHandlersVisible (mAssetManager.GetNumSelectedAssets () > 0);
          SetMoveSelectionsAccuratelyMenuItemShown (mAssetManager.GetNumSelectedAssets () > 0);
          
@@ -911,6 +919,9 @@ package editor.asset {
          
          if (mIsCtrlDownOnMouseDown || mInCookieSelectMode)
          {
+            if (! mInCookieSelectMode)
+               newSelectedAssets = mAssetManager.GetAllBrothersOfAssets (newSelectedAssets);
+            
             if (mAssetManager.SetSelectedAssetsByToggleTwoAssetArrays (oldSelectedAssets, newSelectedAssets))
             {
                OnAssetSelectionsChanged ();

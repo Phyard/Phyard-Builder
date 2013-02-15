@@ -4,6 +4,7 @@ package editor.asset {
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
    import flash.geom.Matrix;
    
    import flash.utils.Dictionary;
@@ -26,9 +27,14 @@ package editor.asset {
          return true;
       }
       
-      public function SupportMoveSelectedAssets ():Boolean
+      //public function SupportSmoothMoveSelectedAssets ():Boolean
+      //{
+      //   return true;
+      //}
+      
+      public function GetMoveSelectedAssetsStyle ():int
       {
-         return true;
+         return AssetManagerPanel.kMoveSelectedAssetsStyle_None;
       }
 
       public function GetAssetSpriteWidth ():Number
@@ -49,6 +55,12 @@ package editor.asset {
       public function DoLayout (forcely:Boolean = false, alsoUpdateAssetAppearance:Boolean = false):void
       {
          
+      }
+      
+      // return insertion index
+      public function GetInsertionInfo (insertionPoint:Point, correctedPoint:Point):int
+      {
+         return 0;
       }
    }
 }

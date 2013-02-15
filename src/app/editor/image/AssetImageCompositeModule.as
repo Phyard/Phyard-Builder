@@ -37,6 +37,10 @@ package editor.image {
    
    import editor.image.dialog.AssetImageCompositeModuleEditDialog;
    
+   import editor.EditorContext;
+   
+   import common.DataFormat;
+   
    import common.Transform2D;
    
    import common.Define;
@@ -319,12 +323,15 @@ package editor.image {
       }
       
       protected var mMenuItemEditModule:ContextMenuItem = new ContextMenuItem("Edit ...");
+      protected var mMenuItemCloneModule:ContextMenuItem = new ContextMenuItem("Clone");
       
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          mMenuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_EditModule);
+         mMenuItemCloneModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CloneModule);
          
          customMenuItemsStack.push (mMenuItemEditModule);
+         customMenuItemsStack.push (mMenuItemCloneModule);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
@@ -332,6 +339,34 @@ package editor.image {
       private function OnContextMenuEvent_EditModule (event:ContextMenuEvent):void
       {
          AssetImageCompositeModuleEditDialog.ShowAssetImageCompositeModuleEditDialog (this);
+      }
+      
+      private function OnContextMenuEvent_CloneModule (event:ContextMenuEvent):void
+      {
+         try
+         {
+            var newMoudle:AssetImageCompositeModule = GetAssetImageCompositeModuleManager ().CreateImageCompositeModule (null, true, false);
+            
+            var modulePartDefines:Array = DataFormat.ModuleInstances2Define (EditorContext.GetEditorApp ().GetWorld (), GetModuleInstanceManager (), GetAssetImageCompositeModuleManager ().IsSequencedModuleManager ());
+            
+            var numImageModules:int = EditorContext.GetEditorApp ().GetWorld ().GetNumImageModules ();
+            var imageModuleRefIndex_CorrectionTable:Array = new Array (numImageModules);
+            for (var i:int = 0; i < numImageModules; ++ i)
+               imageModuleRefIndex_CorrectionTable [i] = i;
+            
+            DataFormat.ModuleInstanceDefinesToModuleInstances (modulePartDefines, imageModuleRefIndex_CorrectionTable, EditorContext.GetEditorApp ().GetWorld (), newMoudle.GetModuleInstanceManager (), newMoudle.GetAssetImageCompositeModuleManager ().IsSequencedModuleManager ());
+            
+            GetAssetImageCompositeModuleManager ().MoveSelectedAssetsToIndex (GetAssetImageCompositeModuleManager ().getChildIndex (this) + 1);
+            
+            newMoudle.UpdateTimeModified ();
+            newMoudle.UpdateAppearance ();
+            
+            GetAssetImageCompositeModuleManager ().UpdateLayout (true);
+         }
+         catch (error:Error)
+         {
+            trace (error.getStackTrace ());
+         }
       }
       
 //=============================================================

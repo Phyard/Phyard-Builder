@@ -52,9 +52,14 @@ package editor.asset {
          return false;
       }
       
-      override public function SupportMoveSelectedAssets ():Boolean
+      //override public function SupportSmoothMoveSelectedAssets ():Boolean
+      //{
+      //   return false;
+      //}
+      
+      override public function GetMoveSelectedAssetsStyle ():int
       {
-         return false;
+         return AssetManagerPanel.kMoveSelectedAssetsStyle_Delayed;
       }
       
 //==========================================================      

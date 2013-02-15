@@ -48,7 +48,7 @@ package editor.image {
 // 
 //========================================================== 
 
-      public function CreateImageCompositeModule (key:String, insertBeforeSelectedThenSelectNew:Boolean = false):AssetImageCompositeModule
+      public function CreateImageCompositeModule (key:String, insertBeforeSelectedThenSelectNew:Boolean = false, updateLayout:Boolean = true):AssetImageCompositeModule
       {
          var module:AssetImageCompositeModule = new AssetImageCompositeModule (this, IsSequencedModuleManager (), ValidateAssetKey (key));
          module.UpdateTimeModified ();
@@ -59,7 +59,8 @@ package editor.image {
          if (insertBeforeSelectedThenSelectNew)
             SetSelectedAsset (module);
          
-         UpdateLayout (true);
+         if (updateLayout)
+            UpdateLayout (true);
          
          return module;
       }

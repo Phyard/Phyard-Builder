@@ -459,6 +459,15 @@ package editor.world {
          return mAssetImageSequencedModuleManager;
       }
       
+      public function GetNumImageModules ():int
+      {
+         return mAssetImageManager.GetNumAssets ()
+              + mAssetImagePureModuleManager.GetNumAssets ()
+              + mAssetImageAssembledModuleManager.GetNumAssets ()
+              + mAssetImageSequencedModuleManager.GetNumAssets ()
+              ;
+      }
+      
       // The global module index
       public function GetImageModuleIndex (imageModule:AssetImageModule):int
       {

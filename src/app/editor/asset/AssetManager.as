@@ -818,9 +818,17 @@ package editor.asset {
          return count > 0;
       }
       
+      public function GetMoveSelectedAssetsStyle ():int
+      {
+         if (mAssetManagerLayout == null)
+            return AssetManagerPanel.kMoveSelectedAssetsStyle_Smooth;
+            
+         return mAssetManagerLayout.GetMoveSelectedAssetsStyle ();
+      }
+      
       public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
       {
-         if (mAssetManagerLayout != null && (! mAssetManagerLayout.SupportMoveSelectedAssets ()) && (! moveBodyTexture))
+         if ((GetMoveSelectedAssetsStyle () != AssetManagerPanel.kMoveSelectedAssetsStyle_Smooth) && (! moveBodyTexture))
             return;
          
          var assetArray:Array = GetSelectedAssets ();
@@ -961,6 +969,47 @@ package editor.asset {
             if (updateSelectionProxy)
             {
                asset.OnTransformIntentDone ();
+            }
+         }
+         
+         if (assetArray.length > 0)
+         {
+            NotifyModifiedForReferers ();
+         }
+      }
+      
+      public function MoveSelectedAssetsToIndex (aCurrentIndex:int):void
+      {
+         var assetArray:Array = GetSelectedAssets ();
+         assetArray.sortOn("appearanceLayerId", Array.NUMERIC);
+         
+         var count:int = numChildren;
+         
+         if (count == assetArray.length)
+            return;
+         
+         var beforeAsset:Asset = null;
+         
+         var asset:Asset;
+         var i:int;
+         for (i = aCurrentIndex; i < count; ++ i)
+         {
+            asset = getChildAt (i) as Asset;
+            if ((! asset.IsSelected ()) && contains (asset))
+            {
+               beforeAsset = asset;
+               break;
+            }
+         }
+         
+         for (i = 0; i < assetArray.length; ++ i)
+         {
+            asset = assetArray [i] as Asset;
+            
+            if ( asset != null && contains (asset) )
+            {
+               removeChild (asset);
+               addChildAt (asset, beforeAsset == null ? count - 1 : getChildIndex (beforeAsset));
             }
          }
          

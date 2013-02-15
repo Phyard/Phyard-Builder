@@ -147,6 +147,18 @@ package editor.asset {
          return 1.0 / 4.0;
       }
       
+      public static const kMoveSelectedAssetsStyle_None:int = 0;
+      public static const kMoveSelectedAssetsStyle_Smooth:int = 1;
+      public static const kMoveSelectedAssetsStyle_Delayed:int = 2;
+      
+      public function GetMoveSelectedAssetsStyle ():int
+      {
+         if (mAssetManager == null)
+            return kMoveSelectedAssetsStyle_None;
+         
+         return mAssetManager.GetMoveSelectedAssetsStyle ();
+      }
+      
       public static const kMouseWheelFunction_None:int = 0;
       public static const kMouseWheelFunction_Zoom:int = 1;
       public static const kMouseWheelFunction_Scroll:int = 2; // vertically
@@ -397,7 +409,7 @@ package editor.asset {
       {
          if (shown)
          {
-            if (mAssetManager == null || (mAssetManager.GetLayout () != null && (! mAssetManager.GetLayout ().SupportMoveSelectedAssets ())))
+            if (GetMoveSelectedAssetsStyle () != kMoveSelectedAssetsStyle_Smooth)
             {
                shown = false;
             }
@@ -607,7 +619,13 @@ package editor.asset {
          
          if (mAssetManager.AreSelectedAssetsContainingPoint (managerX, managerY))
          {
-            SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, true));
+            if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Smooth)
+               SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, false));
+            else if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Delayed)
+               SetCurrentIntent (new IntentMoveSelectedAssetsDelayed (this));
+            else
+               return;
+            
             mCurrentIntent.OnMouseDown (managerX, managerY);
           
             return;
@@ -632,7 +650,13 @@ package editor.asset {
 
          if (PointSelectAsset (managerX, managerY, selectableObjects.concat ()))
          {
-            SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, false));
+            if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Smooth)
+               SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, false));
+            else if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Delayed)
+               SetCurrentIntent (new IntentMoveSelectedAssetsDelayed (this));
+            else
+               return;
+               
             mCurrentIntent.OnMouseDown (managerX, managerY);
    
             return;
@@ -760,7 +784,7 @@ package editor.asset {
       // return true to indicate handled successfully
       protected function OnKeyDownInternal (keyCode:int, ctrlHold:Boolean, shiftHold:Boolean):Boolean
       {
-         if (mAssetManager != null && (mAssetManager.GetLayout () == null || mAssetManager.GetLayout ().SupportMoveSelectedAssets ()))
+         if (GetMoveSelectedAssetsStyle () != kMoveSelectedAssetsStyle_Smooth)
          {
             switch (keyCode)
             {

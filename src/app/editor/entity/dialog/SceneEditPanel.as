@@ -49,7 +49,6 @@ package editor.entity.dialog {
    
    import editor.trigger.CodeSnippet;
    
-   import editor.display.sprite.BackgroundSprite;
    import editor.display.sprite.EffectMessagePopup;
    import editor.display.sprite.EffectCrossingAiming;
    import editor.display.dialog.*;
@@ -66,12 +65,11 @@ package editor.entity.dialog {
    
    public class SceneEditPanel extends AssetManagerPanel
    {  
-      private var mSceneBackground:BackgroundSprite = new BackgroundSprite ();
       private var mScene:Scene = null;
       
       public function SceneEditPanel ()
       {
-         mBackgroundLayer.addChild (mSceneBackground);
+         super ();
       }
       
 //============================================================================
@@ -89,7 +87,7 @@ package editor.entity.dialog {
          
          super.SetAssetManager (scene);
          
-         mSceneBackground.visible = (mScene != null);
+         SetGridShown (mScene != null);
          
          if (mScene != null)
          {
@@ -172,14 +170,8 @@ package editor.entity.dialog {
       
       override protected function UpdateInternal (dt:Number):void
       {
-         if (mScene == null)
+         if (mScene != null)
          {
-            mSceneBackground.visible = false;
-         }
-         else
-         {
-            mSceneBackground.visible = true;
-             
             var sceneLeft  :Number;
             var sceneTop   :Number;
             var sceneWidth :Number;
@@ -187,8 +179,8 @@ package editor.entity.dialog {
             
             if (mScene.IsInfiniteSceneSize ())
             {
-               sceneLeft   = -1000000000; // about halft of - 0x7FFFFFFF;
-               sceneTop    = - 1000000000; // about half of - 0x7FFFFFFF;
+               sceneLeft   = -1000000000; // about half of - 0x7FFFFFFF;
+               sceneTop    = -1000000000; // about half of - 0x7FFFFFFF;
                sceneWidth  = 2000000000; // about half of uint (0xFFFFFFFF);
                sceneHeight = 2000000000; // about half of uint (0xFFFFFFFF);
             }
@@ -200,13 +192,13 @@ package editor.entity.dialog {
                sceneHeight = mScene.GetWorldHeight ();
             }
             
-            var sceneCameraCenter:Point = PanelToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
-            
-            mSceneBackground.UpdateAppearance (sceneLeft, sceneTop, sceneWidth, sceneHeight, 
-                                               mScene.GetWorldBorderLeftThickness (), mScene.GetWorldBorderTopThickness (), mScene.GetWorldBorderRightThickness (), mScene.GetWorldBorderBottomThickness (),
-                                               mScene.GetBackgroundColor (), mScene.GetBorderColor (), mScene.IsBuildBorder (),
-                                               sceneCameraCenter.x, sceneCameraCenter.y, mScene.scaleX, mScene.scaleY,
-                                               GetPanelWidth (), GetPanelHeight (), mBackgroundGridCellWidth, mBackgroundGridCellHeight);
+            UpdateGridSprite (true, 0xA0A0A0,
+                              false, 
+                              sceneLeft, sceneTop, sceneWidth, sceneHeight,
+                              true, mScene.GetBackgroundColor (), 
+                              mScene.IsBuildBorder (), mScene.GetBorderColor (), 
+                              mScene.GetWorldBorderLeftThickness (), mScene.GetWorldBorderTopThickness (), mScene.GetWorldBorderRightThickness (), mScene.GetWorldBorderBottomThickness ()
+                             );
          }
       }
       
@@ -310,19 +302,9 @@ package editor.entity.dialog {
       {
          var menuItemSetGridCellSize:ContextMenuItem = new ContextMenuItem("Set Grid Cell Size ...", true);
          
-         menuItemSetGridCellSize.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnSetGridSize);
+         menuItemSetGridCellSize.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnSetGridCellSize);
 
          customMenuItemsStack.push (menuItemSetGridCellSize);
-      }
-      
-      private function OnSetGridSize (event:ContextMenuEvent):void
-      {
-         EditorContext.ShowModalDialog (AccurateMoveDialog, SetGridSize, {mLabelTextX: "Grid Cell Width:", mLabelTextY: "Grid Cell Height:", mX: mBackgroundGridCellWidth, mY: mBackgroundGridCellHeight});
-      }
-      
-      private function SetGridSize (params:Object):void
-      {
-         SetBackgroundGridSize (params.mX, params.mY);
       }
 
 //=====================================================================
@@ -851,17 +833,6 @@ package editor.entity.dialog {
             selectionsInfo.mSelectedEntitiesInfos = selectedEntities.length + " entities are selected.";
          
          mDialogCallbacks.UpdateInterface (selectionsInfo);
-      }
-      
-      private var mBackgroundGridCellWidth:int = 50;
-      private var mBackgroundGridCellHeight:int = 50;
-      
-      public function SetBackgroundGridSize (cellWidth:Number, cellHeight:Number):void
-      {
-         if (cellWidth >= 10 && cellWidth <= 100)
-            mBackgroundGridCellWidth = cellWidth;
-         if (cellHeight >= 10 && cellHeight <= 100)
-            mBackgroundGridCellHeight = cellHeight;
       }
       
       private var mMaskFieldInPlaying:Boolean = false;
@@ -2553,30 +2524,6 @@ package editor.entity.dialog {
          if (entities.length > 0)
          {
             CreateUndoPoint ("Round entity positons");
-            
-            OnAssetSelectionsChanged ();
-         }
-      }
-      
-      public function SnapSelectedEnttiesToGrid ():void
-      {
-         var entities:Array = mScene.GetSelectedAssets ();
-         var entity:Entity;
-         var i:int;
-         var posX:Number;
-         var posY:Number;
-         for (i = 0; i < entities.length; ++ i)
-         {
-            entity = entities [i] as Entity;
-            posX = Math.round (entity.GetPositionX () / mBackgroundGridCellWidth) * mBackgroundGridCellWidth;
-            posY = Math.round (entity.GetPositionY () / mBackgroundGridCellHeight) * mBackgroundGridCellHeight;
-            entity.SetPosition (posX, posY);
-            entity.OnTransformIntentDone ();
-         }
-         
-         if (entities.length > 0)
-         {
-            CreateUndoPoint ("Snap entities");
             
             OnAssetSelectionsChanged ();
          }

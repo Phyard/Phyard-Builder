@@ -50,8 +50,6 @@ package editor.image.dialog {
    import editor.image.AssetImageShapeModule;
    import editor.image.AssetImageNullModule;
    
-   import editor.display.sprite.CoordinateSprite;
-   
    import editor.core.EditorObject;
    import editor.core.ReferPair;
    
@@ -63,12 +61,11 @@ package editor.image.dialog {
    
    public class AssetImageCompositeModuleEditPanel extends AssetManagerPanel
    {
-      protected var mCoordinateSprite:CoordinateSprite = new CoordinateSprite ();
       protected var mAssetImageModuleInstanceManager:AssetImageModuleInstanceManager;
       
       public function AssetImageCompositeModuleEditPanel ()
       {
-         mBackgroundLayer.addChild (mCoordinateSprite);
+         SetGridCellSize (4, 4);
       }
       
       public function GetAssetImageModuleInstanceManager ():AssetImageModuleInstanceManager
@@ -81,6 +78,8 @@ package editor.image.dialog {
          super.SetAssetManager (amim);
          
          mAssetImageModuleInstanceManager = amim;
+         
+         SetGridShown (mAssetImageModuleInstanceManager != null);
          
          if (mAssetImageModuleInstanceManager != null)
          {
@@ -117,19 +116,23 @@ package editor.image.dialog {
          }
       }
       
-//=====================================================================
-//
-//=====================================================================
+//=============================================================
+//   grid
+//=============================================================
       
       override protected function UpdateInternal (dt:Number):void
       {
          if (mAssetImageModuleInstanceManager != null)
          {
-            mCoordinateSprite.UpdateAppearance (GetPanelWidth (), GetPanelHeight (), mAssetImageModuleInstanceManager.x, mAssetImageModuleInstanceManager.y, mAssetImageModuleInstanceManager.scaleX);
-            
             mManagerCameraCenter = PanelToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
+
+            UpdateGridSprite (false, 0xA0A0A0, true);
          }
       }
+      
+//=====================================================================
+//
+//=====================================================================
       
       override public function OnAssetSelectionsChanged (passively:Boolean = false):void
       {

@@ -34,6 +34,7 @@ package editor.asset {
    import editor.display.sprite.EditingEffect;
    import editor.display.sprite.EffectCrossingAiming;
    import editor.display.sprite.EffectMessagePopup;
+   import editor.display.sprite.GridSprite;
    
    import editor.EditorContext;
    
@@ -43,6 +44,7 @@ package editor.asset {
    public class AssetManagerPanel extends UIComponent
    {
       protected var mBackgroundLayer:Sprite;
+      protected var mGridLayer:Sprite;
       protected var mAssetLinksLayer:Sprite;
       protected var mAssetManager:AssetManager = null;
       protected var mAssetIDsLayer:Sprite;
@@ -62,6 +64,9 @@ package editor.asset {
          
          mBackgroundLayer = new Sprite ();
          addChild (mBackgroundLayer);
+         
+         mGridLayer = new Sprite ();
+         addChild (mGridLayer);
          
          mAssetLinksLayer = new Sprite ();
          addChild (mAssetLinksLayer);
@@ -215,7 +220,7 @@ package editor.asset {
       {
          if (mAssetManager != null)
          {
-            ScaleManagerToAroundFixedPoint (mAssetManager.scaleX * scale, fixedPanelPointX, fixedPanelPointY);          
+            ScaleManagerToAroundFixedPoint (mAssetManager.scaleX * scale, fixedPanelPointX, fixedPanelPointY);
          }
       }
       
@@ -957,6 +962,112 @@ package editor.asset {
             {
                OnAssetSelectionsChanged ();
             }
+         }
+      }
+      
+//=================================================================================
+//   grid
+//=================================================================================
+      
+      private var mGridSprite:GridSprite = new GridSprite ();
+      
+      private var mGridCellWidth:int = 50;
+      private var mGridCellHeight:int = 50;
+      
+      public function IsGridShown ():Boolean
+      {
+         return mGridSprite != null && mGridSprite.visible;
+      }
+      
+      public function SetGridShown (shown:Boolean):void
+      {
+         if (shown)
+         {
+            if (mGridSprite == null)
+               mGridSprite = new GridSprite ();
+            
+            if (! mGridLayer.contains (mGridSprite))
+            {
+               mGridLayer.addChild (mGridSprite);
+            }
+         }
+         else
+         {
+            if (mGridSprite != null && mGridLayer.contains (mGridSprite))
+            {
+               mGridLayer.removeChild (mGridSprite);
+            }
+         }
+      }
+      
+      public function SetGridCellSize (cellWidth:Number, cellHeight:Number):void
+      {
+         if (cellWidth >= 10 && cellWidth <= 100)
+            mGridCellWidth = cellWidth;
+         if (cellHeight >= 10 && cellHeight <= 100)
+            mGridCellHeight = cellHeight;
+      }
+      
+      protected function OnSetGridCellSize (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (AccurateMoveDialog, OnSetGridCellSizeDone, {mTitle: "Change Grid Cell Size", mLabelTextX: "Grid Cell Width:", mLabelTextY: "Grid Cell Height:", mX: mGridCellWidth, mY: mGridCellHeight});
+      }
+      
+      protected function OnSetGridCellSizeDone (params:Object):void
+      {
+         SetGridCellSize (params.mX, params.mY);
+      }
+      
+      public function UpdateGridSprite (drawGrid :Boolean, gridColor :uint,
+                                        drawCoodinateSystem:Boolean = false, 
+                                        sceneLeft  :Number = -1000000000, sceneTop   :Number = -1000000000, sceneWidth :Number = 2000000000, sceneHeight :Number = 2000000000,
+                                        drawBackground :Boolean = false, backgroundColor :uint = 0xFFFFFFF,
+                                        sceneDrawBorder :Boolean = false, sceneBorderColor :uint = 0x808080,
+                                        sceneBorderLeftThickness :Number = 0, sceneBorderTopThickness :Number = 0, sceneBorderRightThickness :Number = 0, sceneBorderBottomThickness :Number = 0
+                                       ):void
+      {
+         if (mAssetManager == null)
+         {
+            SetGridShown (false);
+            return;
+         }
+         
+         if (IsGridShown ())
+         {  
+            var sceneCameraCenter:Point = PanelToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
+            
+            mGridSprite.UpdateAppearance (sceneLeft, sceneTop, sceneWidth, sceneHeight, 
+                                         drawBackground, backgroundColor, 
+                                         sceneDrawBorder, sceneBorderColor, 
+                                         sceneBorderLeftThickness, sceneBorderTopThickness, sceneBorderRightThickness, sceneBorderBottomThickness,
+                                         sceneCameraCenter.x, sceneCameraCenter.y, mAssetManager.scaleX, mAssetManager.scaleY,
+                                         GetPanelWidth (), GetPanelHeight (), 
+                                         drawGrid, gridColor, mGridCellWidth, mGridCellHeight,
+                                         drawCoodinateSystem);
+         }
+      }
+      
+      public function SnapSelectedEnttiesToGrid ():void
+      {
+         var assets:Array = mAssetManager.GetSelectedAssets ();
+         var asset:Asset;
+         var i:int;
+         var posX:Number;
+         var posY:Number;
+         for (i = 0; i < assets.length; ++ i)
+         {
+            asset = assets [i] as Asset;
+            posX = Math.round (asset.GetPositionX () / mGridCellWidth) * mGridCellWidth;
+            posY = Math.round (asset.GetPositionY () / mGridCellHeight) * mGridCellHeight;
+            asset.SetPosition (posX, posY);
+            asset.OnTransformIntentDone ();
+         }
+         
+         if (assets.length > 0)
+         {
+            CreateUndoPoint ("Snap selected(s)");
+            
+            OnAssetSelectionsChanged ();
          }
       }
       

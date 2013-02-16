@@ -74,6 +74,8 @@
             
             if (mInputValues != null)
             {
+               if (mInputValues.mTitle != null)
+                  this.title = mInputValues.mTitle;
                if (mInputValues.mLabelTextX != null)
                   Label_X.text = mInputValues.mLabelTextX;
                if (mInputValues.mLabelTextY != null)

@@ -58,9 +58,9 @@ package editor.asset {
       }
       
       // return insertion index
-      public function GetInsertionInfo (insertionPoint:Point, correctedPoint:Point):int
+      public function GetInsertionInfo (insertionPoint:Point):Array
       {
-         return 0;
+         return null;
       }
    }
 }

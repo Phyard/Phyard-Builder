@@ -217,38 +217,6 @@ package editor.image {
          }
       }
       
-      public function MoveUpDownTheOnlySelectedModuleInstance (moveUp:Boolean):void
-      {  
-         var selectedMoudleInstances:Array = GetSelectedAssets ();
-         if (selectedMoudleInstances.length != 1)
-            return;
-         
-         var moudleInstance:AssetImageModuleInstance = selectedMoudleInstances [0] as AssetImageModuleInstance;
-         var oldIndex:int = moudleInstance.GetAppearanceLayerId ();
-         var newIndex:int;
-         if (moveUp)
-         {
-            if (oldIndex <= 0)
-               return;
-            
-            newIndex = oldIndex - 1;
-         }
-         else
-         {
-            if (oldIndex >= GetNumAssets () - 1)
-               return;
-            
-            newIndex = oldIndex + 1;
-         }
-         
-         AdjustAssetAppearanceOrder (moudleInstance, newIndex);
-         moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().AdjustAssetAppearanceOrder (moudleInstance.GetModuleInstaneForListingPeer (), newIndex);
-         
-         moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
-         
-         NotifyChangedForPanel ();
-      }
-      
 //=============================================================
 //   context menu
 //=============================================================

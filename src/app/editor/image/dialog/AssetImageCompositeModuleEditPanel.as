@@ -222,22 +222,6 @@ package editor.image.dialog {
          }
       }
       
-      public function MoveModuleInstanceUp ():void
-      {
-         if (mAssetImageModuleInstanceManager == null)
-            return;
-         
-         mAssetImageModuleInstanceManager.MoveUpDownTheOnlySelectedModuleInstance (true);
-      }
-      
-      public function MoveModuleInstanceDown ():void
-      {
-         if (mAssetImageModuleInstanceManager == null)
-            return;
-         
-         mAssetImageModuleInstanceManager.MoveUpDownTheOnlySelectedModuleInstance (false);
-      }
-      
       public function AlignTextureCenterWithShapeCenter ():void
       {
          var assets:Array = mAssetImageModuleInstanceManager.GetSelectedAssets ();

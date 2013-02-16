@@ -99,7 +99,27 @@ package editor.image.dialog {
             
             mAssetImageCompositeModuleEditPanelPeer.OnAssetSelectionsChanged (true);
          }
-      } 
+      }
+      
+//=====================================================================
+//
+//=====================================================================
+      
+      public function MoveModuleInstanceUp ():void
+      {
+         if (mAssetImageModuleInstanceManagerForListing == null)
+            return;
+         
+         mAssetImageModuleInstanceManagerForListing.MoveUpDownTheOnlySelectedModuleInstance (true);
+      }
+      
+      public function MoveModuleInstanceDown ():void
+      {
+         if (mAssetImageModuleInstanceManagerForListing == null)
+            return;
+         
+         mAssetImageModuleInstanceManagerForListing.MoveUpDownTheOnlySelectedModuleInstance (false);
+      }
       
    }
 }

@@ -124,14 +124,16 @@ package editor.asset {
                      {
                         return [i, 
                                 asset.GetPositionX () + boundRect.left - 0.5 * GetAssetSpriteGap (), 
-                                asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom)
+                                asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom),
+                                true
                                 ];
                      }
                      else if (i == numAssets - 1)
                      {
                         return [numAssets, 
                                 asset.GetPositionX () + boundRect.right + 0.5 * GetAssetSpriteGap (), 
-                                asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom)
+                                asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom),
+                                true
                                 ];
                      }
                   }
@@ -175,14 +177,9 @@ package editor.asset {
          return null;
       }
       
-      override public function GetInsertionInfo (insertionPoint:Point, correctedPoint:Point):int
+      override public function GetInsertionInfo (insertionPoint:Point):Array
       {
-         var info:Array = DoLayoutOrGetInsertionInfo (true, false, insertionPoint);
-         
-         correctedPoint.x = info [1] as Number;
-         correctedPoint.y = info [2] as Number;
-         
-         return info [0] as int;
+         return DoLayoutOrGetInsertionInfo (true, false, insertionPoint);
       }
    }
 }

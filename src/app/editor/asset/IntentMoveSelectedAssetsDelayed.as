@@ -22,8 +22,8 @@ package editor.asset {
       protected var mMoveIntentConfirmed:Boolean = false;
       
       protected var mInsertionHintSprite:Shape = null;
-      protected var mLastHintSpriteStartX:Number = 0x7FFFFFFF;
-      protected var mLastHintSpriteStartY:Number = 0x7FFFFFFF;
+      protected var mLastHintSpriteCenterX:Number = 0x7FFFFFFF;
+      protected var mLastHintSpriteCenterY:Number = 0x7FFFFFFF;
       protected var mLastHintSpriteWidth:Number = 0x7FFFFFFF;
       protected var mLastHintSpriteHeight:Number = 0x7FFFFFFF;
       
@@ -50,8 +50,12 @@ package editor.asset {
          
          if (mMoveIntentConfirmed)
          {
-            var insertionPoint:Point = new Point ();
-            var beforeIndex:int = layout.GetInsertionInfo (new Point (mCurrentX, mCurrentY), insertionPoint);
+            var insertionInfo:Array = layout.GetInsertionInfo (new Point (mCurrentX, mCurrentY));
+            var beforeIndex:int = insertionInfo [0];
+            var correctedPointX:Number = insertionInfo [1];
+            var correctedPointY:Number = insertionInfo [2];
+            var isVerticalHint:Boolean = insertionInfo [3];
+            
             if (finished)
             {
                mAssetManagerPanel.GetAssetManager ().MoveSelectedAssetsToIndex (beforeIndex);
@@ -67,27 +71,42 @@ package editor.asset {
                }
                
                // assume manager has no angle offset to panel
-               var panelPoint1:Point = mAssetManagerPanel.ManagerToPanel (new Point (0, 0));
-               var panelPoint2:Point = mAssetManagerPanel.ManagerToPanel (new Point (0, layout.GetAssetSpriteHeight ()));
-               insertionPoint = mAssetManagerPanel.ManagerToPanel (insertionPoint);
+               var panelPoint1:Point;
+               var panelPoint2:Point;
+               var hintSpriteEndWidth:Number;
+               var hintSpriteEndHeight:Number;
                
-               var hintSpriteStartX:Number = insertionPoint.x;
-               var hintSpriteStartY:Number = insertionPoint.y;
-               var hintSpriteEndWidth:Number = 5;
-               var hintSpriteEndHeight:Number = Math.abs (panelPoint2.y - panelPoint1.y);
+               if (isVerticalHint)
+               {
+                  panelPoint1 = mAssetManagerPanel.ManagerToPanel (new Point (0, 0));
+                  panelPoint2 = mAssetManagerPanel.ManagerToPanel (new Point (0, layout.GetAssetSpriteHeight ()));
+   
+                  hintSpriteEndWidth = 5;
+                  hintSpriteEndHeight = Math.abs (panelPoint2.y - panelPoint1.y);
+               }
+               else
+               {
+                  panelPoint1 = mAssetManagerPanel.ManagerToPanel (new Point (0, 0));
+                  panelPoint2 = mAssetManagerPanel.ManagerToPanel (new Point (layout.GetAssetSpriteWidth (), 0));
+   
+                  hintSpriteEndWidth = Math.abs (panelPoint2.x - panelPoint1.x);
+                  hintSpriteEndHeight = 5;
+               }
                
-               if (mLastHintSpriteStartX != hintSpriteStartX || mLastHintSpriteStartY != hintSpriteStartY
+               var insertionPoint:Point = mAssetManagerPanel.ManagerToPanel (new Point (correctedPointX, correctedPointY));
+               
+               if (mLastHintSpriteCenterX != insertionPoint.x || mLastHintSpriteCenterY != insertionPoint.y
                   || mLastHintSpriteWidth != hintSpriteEndWidth || mLastHintSpriteHeight != hintSpriteEndHeight)
                {
                   GraphicsUtil.ClearAndDrawRect (mInsertionHintSprite, 
-                                                 hintSpriteStartX - 0.5 * hintSpriteEndWidth,
-                                                 hintSpriteStartY - 0.5 * hintSpriteEndHeight, 
+                                                 insertionPoint.x - 0.5 * hintSpriteEndWidth,
+                                                 insertionPoint.y - 0.5 * hintSpriteEndHeight, 
                                                  hintSpriteEndWidth, 
                                                  hintSpriteEndHeight, 
                                                  0x0, -1, true, 0x008000);
                   
-                  mLastHintSpriteStartX = hintSpriteStartX;
-                  mLastHintSpriteStartY = hintSpriteStartY;
+                  mLastHintSpriteCenterX = insertionPoint.x;
+                  mLastHintSpriteCenterY = insertionPoint.y;
                   mLastHintSpriteWidth = hintSpriteEndWidth;
                   mLastHintSpriteHeight = hintSpriteEndHeight;
                }

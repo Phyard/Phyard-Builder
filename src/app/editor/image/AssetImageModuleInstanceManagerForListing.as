@@ -39,6 +39,31 @@ package editor.image {
       
 //==========================================================      
 // 
+//==========================================================      
+
+      public function CreateImageModuleInstanceForListing (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstanceForListing
+      {
+         var moduleInstane:AssetImageModuleInstanceForListing = new AssetImageModuleInstanceForListing (this, module);
+         
+         if (atIndex < 0 || atIndex > GetNumAssets ())
+            addChild (moduleInstane);
+         else
+            addChildAt (moduleInstane, atIndex);
+         
+         moduleInstane.UpdateAppearance ();
+         moduleInstane.UpdateSelectionProxy ();
+         
+         
+         if (selectIt)
+            SetSelectedAsset (moduleInstane);
+         
+         UpdateLayout (true);
+         
+         return moduleInstane;
+      }
+      
+//==========================================================      
+// 
 //========================================================== 
       
       // for loading
@@ -68,26 +93,90 @@ package editor.image {
          
          return false;
       }
-
-      public function CreateImageModuleInstanceForListing (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstanceForListing
+      
+      override public function MoveSelectedAssetsToIndex (aCurrentIndex:int):void
       {
-         var moduleInstane:AssetImageModuleInstanceForListing = new AssetImageModuleInstanceForListing (this, module);
+         super.MoveSelectedAssetsToIndex (aCurrentIndex);
          
-         if (atIndex < 0 || atIndex > GetNumAssets ())
-            addChild (moduleInstane);
+         NotifyPeerAppearanceOrdersChanged ();
+      }
+      
+      private function NotifyPeerAppearanceOrdersChanged ():void
+      {  
+         mAssetImageCompositeModule.SynchronizePartAppearanceOrdersFromListingToEditing ();
+         mAssetImageCompositeModule.GetModuleInstanceManager ().UpdateLayout (true);
+         mAssetImageCompositeModule.GetModuleInstanceManager ().NotifyModifiedForReferers ();
+         mAssetImageCompositeModule.GetModuleInstanceManager ().NotifyChangedForPanel ();
+      }
+      
+      public function MoveUpDownTheOnlySelectedModuleInstance (moveUp:Boolean):void
+      {  
+         var selectedMoudleInstances:Array = GetSelectedAssets ();
+         if (selectedMoudleInstances.length != 1)
+            return;
+         
+         var moudleInstance:AssetImageModuleInstanceForListing = selectedMoudleInstances [0] as AssetImageModuleInstanceForListing;
+         var oldIndex:int = moudleInstance.GetAppearanceLayerId ();
+         var newIndex:int;
+         if (moveUp)
+         {
+            if (oldIndex <= 0)
+               return;
+            
+            newIndex = oldIndex - 1;
+         }
          else
-            addChildAt (moduleInstane, atIndex);
+         {
+            if (oldIndex >= GetNumAssets () - 1)
+               return;
+            
+            newIndex = oldIndex + 2;
+         }
          
-         moduleInstane.UpdateAppearance ();
-         moduleInstane.UpdateSelectionProxy ();
-         
-         
-         if (selectIt)
-            SetSelectedAsset (moduleInstane);
-         
+         MoveSelectedAssetsToIndex (newIndex);
          UpdateLayout (true);
          
-         return moduleInstane;
+         NotifyPeerAppearanceOrdersChanged ();
+         
+         //AdjustAssetAppearanceOrder (moudleInstance, newIndex);
+         //moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().AdjustAssetAppearanceOrder (moudleInstance.GetModuleInstaneForListingPeer (), newIndex);
+         //
+         //moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
+         //
+         //NotifyChangedForPanel ();
       }
+      
+      // originally put in AssetImageModuleInstanceManager
+      //public function MoveUpDownTheOnlySelectedModuleInstance (moveUp:Boolean):void
+      //{  
+      //   var selectedMoudleInstances:Array = GetSelectedAssets ();
+      //   if (selectedMoudleInstances.length != 1)
+      //      return;
+      //   
+      //   var moudleInstance:AssetImageModuleInstance = selectedMoudleInstances [0] as AssetImageModuleInstance;
+      //   var oldIndex:int = moudleInstance.GetAppearanceLayerId ();
+      //   var newIndex:int;
+      //   if (moveUp)
+      //   {
+      //      if (oldIndex <= 0)
+      //         return;
+      //      
+      //      newIndex = oldIndex - 1;
+      //   }
+      //   else
+      //   {
+      //      if (oldIndex >= GetNumAssets () - 1)
+      //         return;
+      //      
+      //      newIndex = oldIndex + 1;
+      //   }
+      //   
+      //   AdjustAssetAppearanceOrder (moudleInstance, newIndex);
+      //   moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().AdjustAssetAppearanceOrder (moudleInstance.GetModuleInstaneForListingPeer (), newIndex);
+      //   
+      //   moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
+      //   
+      //   NotifyChangedForPanel ();
+      //}
    }
 }

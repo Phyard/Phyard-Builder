@@ -276,10 +276,6 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
-      
-//=============================================================
-//   
-//=============================================================
 
       public function SynchronizeManagerSelectionsFromListingToEditing ():void
       {
@@ -311,6 +307,19 @@ package editor.image {
          }
          
          mModuleInstanceManagerForListing.SetSelectedAssets (moduleInstanceForListingToSelect);
+      }
+      
+      public function SynchronizePartAppearanceOrdersFromListingToEditing ():void
+      {
+         while (mModuleInstanceManager.numChildren > 0)
+            mModuleInstanceManager.removeChildAt (0);
+         
+         var count:int = mModuleInstanceManagerForListing.numChildren;
+         for (var i:int = 0; i < count; ++ i)
+         {
+            var peer:AssetImageModuleInstanceForListing = mModuleInstanceManagerForListing.getChildAt (i) as AssetImageModuleInstanceForListing;
+            mModuleInstanceManager.addChild (peer.GetModuleInstaneForEditingPeer ());
+         }
       }
 
 //=============================================================

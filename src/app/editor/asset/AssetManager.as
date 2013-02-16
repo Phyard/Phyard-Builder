@@ -978,6 +978,24 @@ package editor.asset {
          }
       }
       
+      //public function AdjustAssetAppearanceOrder (asset:Asset, newIndex:int):void
+      //{
+      //   if (newIndex < 0 || newIndex >= GetNumAssets ())
+      //      return;
+      //   
+      //   if (asset == null || asset.GetAssetManager () != this)
+      //      return;
+      //   
+      //   var currentIndex:int = asset.GetAppearanceLayerId ();
+      //   if (currentIndex == newIndex)
+      //      return;
+      //   
+      //   removeChild (asset);
+      //   addChildAt (asset, newIndex);
+      //   
+      //   NotifyModifiedForReferers ();
+      //}
+      
       public function MoveSelectedAssetsToIndex (aCurrentIndex:int):void
       {
          var assetArray:Array = GetSelectedAssets ();
@@ -1408,24 +1426,6 @@ package editor.asset {
             return null;
          
          return getChildAt (appearanceId) as Asset;
-      }
-      
-      public function AdjustAssetAppearanceOrder (asset:Asset, newIndex:int):void
-      {
-         if (newIndex < 0 || newIndex >= GetNumAssets ())
-            return;
-         
-         if (asset == null || asset.GetAssetManager () != this)
-            return;
-         
-         var currentIndex:int = asset.GetAppearanceLayerId ();
-         if (currentIndex == newIndex)
-            return;
-         
-         removeChild (asset);
-         addChildAt (asset, newIndex);
-         
-         NotifyModifiedForReferers ();
       }
       
       private var mNeedToCorrectAssetCreationIds:Boolean = false;

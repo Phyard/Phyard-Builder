@@ -440,6 +440,12 @@ package editor.asset {
 //   selection list
 //=================================================================================
       
+      public function OnAssetSelectionsChanged ():void
+      {
+         // called by Panel
+         // to override
+      }
+      
       //============= 3 basic ones
       
       public function CancelAllAssetSelections ():void

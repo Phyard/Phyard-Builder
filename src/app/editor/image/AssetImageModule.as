@@ -182,7 +182,7 @@ package editor.image {
       
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         var menuItemEditModule:ContextMenuItem = new ContextMenuItem("Set As Current Module", true);
+         var menuItemEditModule:ContextMenuItem = new ContextMenuItem("Set As Current Module", false);
          
          menuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_SetAsCurrentModule);
          

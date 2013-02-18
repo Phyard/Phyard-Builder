@@ -848,6 +848,8 @@ package editor.asset {
          if (mAssetManager == null)
             return;
          
+         mAssetManager.OnAssetSelectionsChanged ();
+         
          if (! passively)
          {
             if (! mInCookieSelectMode)

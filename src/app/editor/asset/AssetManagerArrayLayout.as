@@ -118,23 +118,45 @@ package editor.asset {
                   
                   if (insertionPoint != null)
                   {
-                     if (insertionPoint.y < asset.GetPositionY () + boundRect.top
-                         || insertionPoint.x < asset.GetPositionX () + 0.5 * (boundRect.left + boundRect.right)
-                            && insertionPoint.y < asset.GetPositionY () + boundRect.bottom)
+                     if (mNumColumns == 1)
                      {
-                        return [i, 
-                                asset.GetPositionX () + boundRect.left - 0.5 * GetAssetSpriteGap (), 
-                                asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom),
-                                true
-                                ];
+                        if (insertionPoint.y < asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom))
+                        {
+                           return [i, 
+                                   asset.GetPositionX () + 0.5 * (boundRect.left + boundRect.right),
+                                   asset.GetPositionY () + boundRect.top - 0.5 * GetAssetSpriteGap (), 
+                                   false
+                                   ];
+                        }
+                        else if (i == numAssets - 1)
+                        {
+                           return [numAssets, 
+                                   asset.GetPositionX () + 0.5 * (boundRect.left + boundRect.right),
+                                   asset.GetPositionY () + boundRect.bottom + 0.5 * GetAssetSpriteGap (), 
+                                   false
+                                   ];
+                        }
                      }
-                     else if (i == numAssets - 1)
+                     else
                      {
-                        return [numAssets, 
-                                asset.GetPositionX () + boundRect.right + 0.5 * GetAssetSpriteGap (), 
-                                asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom),
-                                true
-                                ];
+                        if (insertionPoint.y < asset.GetPositionY () + boundRect.top
+                            || insertionPoint.x < asset.GetPositionX () + 0.5 * (boundRect.left + boundRect.right)
+                               && insertionPoint.y < asset.GetPositionY () + boundRect.bottom)
+                        {
+                           return [i, 
+                                   asset.GetPositionX () + boundRect.left - 0.5 * GetAssetSpriteGap (), 
+                                   asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom),
+                                   true
+                                   ];
+                        }
+                        else if (i == numAssets - 1)
+                        {
+                           return [numAssets, 
+                                   asset.GetPositionX () + boundRect.right + 0.5 * GetAssetSpriteGap (), 
+                                   asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom),
+                                   true
+                                   ];
+                        }
                      }
                   }
                   

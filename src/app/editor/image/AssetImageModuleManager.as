@@ -24,19 +24,26 @@ package editor.image {
       public function GetModuleIconSize ():Number
       {
          return 86;
+         
+         mMenuItemDeleteSelecteds.enabled = false;
       }
         
 //=====================================================================
 // context menu
 //=====================================================================
       
+      override public function OnAssetSelectionsChanged ():void
+      {
+         mMenuItemDeleteSelecteds.enabled = GetNumSelectedAssets () != 0;
+      }
+      
+      private var mMenuItemDeleteSelecteds:ContextMenuItem = new ContextMenuItem("Delete Selected(s) ...", true);
+      
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         var menuItemDeleteSelecteds:ContextMenuItem = new ContextMenuItem("Delete Selected(s) ...", true);
-         
-         menuItemDeleteSelecteds.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_DeleteSelectedAssets);
+         mMenuItemDeleteSelecteds.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_DeleteSelectedAssets);
 
-         customMenuItemsStack.push (menuItemDeleteSelecteds);
+         customMenuItemsStack.push (mMenuItemDeleteSelecteds);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }

@@ -38,6 +38,7 @@ package editor.image.dialog {
    import editor.asset.AssetManagerArrayLayout; 
    
    import editor.image.AssetImageModuleInstanceManagerForListing;
+   import editor.image.AssetImageModuleInstance;
    
    import common.Define;
    import common.Version;
@@ -119,6 +120,77 @@ package editor.image.dialog {
             return;
          
          mAssetImageModuleInstanceManagerForListing.MoveUpDownTheOnlySelectedModuleInstance (false);
+      }
+      
+//==========================================================      
+// 
+//========================================================== 
+      
+      private var mInPreviewMode:Boolean = false;
+      private var mSelectedInstancesBeforePreviewing:Array = null;
+      private var mNumFrames:int = 0;
+      private var mCurrentFrame:int = 0;
+      private var mCurrentFrameDuration:int = 0;
+      private var mCurrentFrameStep:int = 0;
+      
+      public function SetInPreviewMode (preview:Boolean):void
+      {
+         if (mInPreviewMode == preview)
+            return;
+         
+         mInPreviewMode = preview;
+         
+         if (mAssetImageModuleInstanceManagerForListing == null)
+            return;
+         
+         if (mInPreviewMode) // start
+         {
+            mSelectedInstancesBeforePreviewing = mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().GetSelectedAssets ();
+            
+            mNumFrames = mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetNumFrames ();
+
+            mCurrentFrame = 0;
+            OnPreviewFrameChanged ();
+         }
+         else // stop
+         {
+            mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().SetSelectedAssets (mSelectedInstancesBeforePreviewing);
+         }
+      }
+      
+      override protected function UpdateInternal (dt:Number):void
+      {
+         if (mAssetImageModuleInstanceManagerForListing == null)
+            return;
+         
+         if (mInPreviewMode)
+         {
+            if (mCurrentFrameStep >= mCurrentFrameDuration)
+            {
+               if (++ mCurrentFrame >= mNumFrames)
+               {
+                  mCurrentFrame = 0;
+               }
+               
+               OnPreviewFrameChanged ();
+            }
+            else
+            {
+               ++ mCurrentFrameStep;
+            }
+         }
+      }
+      
+      private function OnPreviewFrameChanged ():void
+      {
+         if (mCurrentFrame < 0 || mCurrentFrame >= mNumFrames)
+            return;
+         
+         var moduleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().GetAssetByCreationId (mCurrentFrame) as AssetImageModuleInstance;
+         mCurrentFrameDuration = moduleInstance.GetDuration ();
+         mCurrentFrameStep = 0;
+         
+         mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().SetSelectedAsset (moduleInstance);
       }
       
    }

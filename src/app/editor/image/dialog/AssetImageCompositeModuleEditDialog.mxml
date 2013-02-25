@@ -15,7 +15,7 @@
     >
 
    <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off">
-      <mx:VBox width="216" height="576" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0" horizontalScrollPolicy="off">
+      <mx:VBox id="Box_PropertySettings" width="216" height="576" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0" horizontalScrollPolicy="off">
          <mx:Form enabled="false" id="FormBasicPropertySettings" width="100%" labelWidth="90" backgroundColor="0xFFFFFF" horizontalScrollPolicy="off" autoLayout="true" verticalGap="3" paddingTop="6" paddingBottom="6" paddingLeft="3" paddingRight="3">
             <mx:HBox backgroundColor="0x7FCEFF" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                <mx:Label fontWeight="bold" text="Basic Properties" />
@@ -128,7 +128,7 @@
                      <mx:Button height="100%" id="ButtonViewAppearance" label="View Appearance" toggle="true" click=";" />
                   </mx:HBox>
                   -->
-                  <mx:Spacer width="5"/>
+                  <mx:Spacer width="100%"/>
                   <mx:Button id="ButtonStartPreview" click="StartPreviewing ();" toolTip="Preview" focusEnabled="false" fontSize="8"  width="26" height="26" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/preview.png')" />
                </mx:HBox>
                <mx:HBox id="Box_PreviewCommands" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle">
@@ -403,6 +403,8 @@
          {
             panelAssetImageCompositeModuleEditing.SychronizeCompositeModulePropertiesFromUI ();
          }
+
+         private var mIsPropertySettingPanelEnabledsBeforePreviewing:Boolean = true;
          
          private function StartPreviewing ():void
          {
@@ -410,6 +412,9 @@
             boxInstanceList.enabled = false;
             
             panelAssetImageModuleInstanceListing.SetInPreviewMode (true);
+            
+            mIsPropertySettingPanelEnabledsBeforePreviewing = Box_PropertySettings.enabled;
+            Box_PropertySettings.enabled = false;
          }
          
          private function StopPreviewing ():void
@@ -418,6 +423,7 @@
             boxInstanceList.enabled = true;
             
             panelAssetImageModuleInstanceListing.SetInPreviewMode (false);
+            Box_PropertySettings.enabled = mIsPropertySettingPanelEnabledsBeforePreviewing;
          } 
 
      ]]>

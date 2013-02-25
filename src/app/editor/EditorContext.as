@@ -309,6 +309,9 @@ package editor {
             case Keyboard.F6:
                CodeLibListDialog.ShowCodeLibListDialog ();
                break;
+            case Keyboard.F7:
+               CodeLibListDialog.ShowCodeLibListDialog ();
+               break;
             //case 67: // C. It seems flash will never fire CTL+C events
             //   if (ctrlDown)
             //      GetEditorApp ().OnStartOfflineExporting ();

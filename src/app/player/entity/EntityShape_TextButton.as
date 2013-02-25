@@ -250,7 +250,7 @@ package player.entity {
       //   }
       //}
       
-      override protected function RebuildTextBitmap ():void
+      override protected function RebuildTextAppearance ():void
       {
          // create the over bitmap, some tricky here.
          var textColor_Backup:uint = mTextColor;
@@ -260,7 +260,7 @@ package player.entity {
             mTextColor = mTextColor_MouseOver;
             mFontSize = mFontSize_MouseOver;
             
-            super.RebuildTextBitmap ();
+            super.RebuildTextAppearance ();
             
             mTextBitmap_MouseOver.bitmapData = mTextBitmap.bitmapData;
             //mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap_MouseOver.width;
@@ -277,7 +277,7 @@ package player.entity {
          // create the up bitmap
          mTextColor = textColor_Backup;
          mFontSize = fontSize_Backup;
-         super.RebuildTextBitmap ();
+         super.RebuildTextAppearance ();
       }
       
       override protected function RebuildBackgroundAndBorder (displayHalfWidth:Number, displayHalfHeight:Number, displayBorderThickness:Number):void

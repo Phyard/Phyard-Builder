@@ -39,6 +39,9 @@
          <mx:Spacer width="10" />
          <mx:Button id="Button_ShowModuleEditDialog" toolTip="Edit Image Modules" click="EditorContext.GetEditorApp ().ShowAssetImageModuleListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-modules.png')" />
          <mx:Button id="Button_ShowSoundEditDialog" toolTip="Edit Sounds" click="EditorContext.GetEditorApp ().ShowAssetSoundListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-sounds.png')" />
+         <!--
+         <mx:Button id="Button_ShowGlobalCodeLibEditDialog" toolTip="Edit Global Functions" click="EditorContext.GetEditorApp ().ShowGlobalCodeLibEditDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/big-world-global-functions.png')" />
+         -->
          <mx:Spacer width="10" />
          <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
             <mx:Spacer width="2"/>

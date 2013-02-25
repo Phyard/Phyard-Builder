@@ -328,6 +328,14 @@
          }
       }
       
+      public function ShowGlobalCodeLibEditDialog ():void
+      {
+         if (EditorContext.GetSingleton () != null)
+         {
+            EditorContext.GetSingleton ().OnKeyDownDefault (Keyboard.F7);
+         }
+      }
+      
    //========================================================================================
    // load / save
    //========================================================================================

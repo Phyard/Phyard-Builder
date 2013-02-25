@@ -1,5 +1,7 @@
 
 package com.tapirgames.util {
+
+   import flash.text.TextFormatAlign;
    
    import com.tapirgames.util.Logger;
    
@@ -34,11 +36,11 @@ package com.tapirgames.util {
          hAlign = hAlign & 0x0F;
          
          if (hAlign == TextAlign_Right)
-            return "right";
+            return TextFormatAlign.RIGHT; // "right";
          else if (hAlign == TextAlign_Center)
-            return "center";
+            return TextFormatAlign.CENTER; // "center";
          else
-            return "left";
+            return TextFormatAlign.LEFT; // "left";
       }
       
       public static function Uint2ColorString (colorValue:uint):String
@@ -67,7 +69,8 @@ package com.tapirgames.util {
             }
          }
          wikiText = TextUtil.CreateHtmlText (wikiText, fontSize, fontColor, fontFace, bold, italic, underline);
-         wikiText = "<p align='" + textAlign + "'>" + wikiText + "</p>";
+         if (textAlign != null)
+            wikiText = "<p align='" + textAlign + "'>" + wikiText + "</p>";
          
          return wikiText;
       }

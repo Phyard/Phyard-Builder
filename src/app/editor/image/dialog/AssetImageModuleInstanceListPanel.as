@@ -127,7 +127,10 @@ package editor.image.dialog {
 //========================================================== 
       
       private var mInPreviewMode:Boolean = false;
+      
       private var mSelectedInstancesBeforePreviewing:Array = null;
+      private var mIsTransformRingVisibleBeforePreviewing:Boolean = true;
+      
       private var mNumFrames:int = 0;
       private var mCurrentFrame:int = 0;
       private var mCurrentFrameDuration:int = 0;
@@ -146,6 +149,8 @@ package editor.image.dialog {
          if (mInPreviewMode) // start
          {
             mSelectedInstancesBeforePreviewing = mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().GetSelectedAssets ();
+            mIsTransformRingVisibleBeforePreviewing = mAssetImageCompositeModuleEditPanelPeer.IsShowScaleRotateFlipHandlers ();
+            mAssetImageCompositeModuleEditPanelPeer.SetShowScaleRotateFlipHandlers (false);
             
             mNumFrames = mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetNumFrames ();
 
@@ -155,6 +160,7 @@ package editor.image.dialog {
          else // stop
          {
             mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().SetSelectedAssets (mSelectedInstancesBeforePreviewing);
+            mAssetImageCompositeModuleEditPanelPeer.SetShowScaleRotateFlipHandlers (mIsTransformRingVisibleBeforePreviewing);
          }
       }
       

@@ -77,7 +77,7 @@
 
       // static functions
          
-         public static function ShowCodeLibListDialog (OnCCatPicked:Function = null):void
+         public static function ShowCodeLibListDialog (OnItemPicked:Function = null):void
          {
             if (EditorContext.GetSingleton ().mCodeLibListDialog == null)
             {
@@ -86,24 +86,24 @@
             
             EditorContext.GetSingleton ().mCodeLibListDialog.SetAsCurrentFocusedTitleWindow ();
             
-            if (EditorContext.GetSingleton ().mCodeLibListDialog.parent != null) // OnCCatPicked must be null
+            if (EditorContext.GetSingleton ().mCodeLibListDialog.parent != null) // OnItemPicked must be null
             {
                PopUpManager.bringToFront (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
             else
             {
-               PopUpManager.addPopUp (EditorContext.GetSingleton ().mCodeLibListDialog, EditorContext.GetEditorApp (), true || OnCCatPicked != null);
+               PopUpManager.addPopUp (EditorContext.GetSingleton ().mCodeLibListDialog, EditorContext.GetEditorApp (), true || OnItemPicked != null);
                PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
             
             //EditorContext.GetSingleton ().SetHasSettingDialogOpened (true); // bug: will prevent functions's setting dialog pop up
             EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCodeLibManager ());
             
-            if (OnCCatPicked != null)
+            if (OnItemPicked != null)
             {
                EditorContext.GetSingleton ().mCodeLibListDialog.mInPickingMode = true;
                
-               EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
+               EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().EnterPickAssetIntent (OnItemPicked, EndPickingMode);
             }
          }
          
@@ -120,14 +120,14 @@
             }
          }
          
-         public static function StartPickingMode (OnCCatPicked:Function):void
+         public static function StartPickingMode (OnItemPicked:Function):void
          {
             if (EditorContext.GetSingleton ().mCodeLibListDialog != null)
             {
                PopUpManager.removePopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
             }
             
-            ShowCodeLibListDialog (OnCCatPicked);
+            ShowCodeLibListDialog (OnItemPicked);
          }
          
          public static function EndPickingMode ():void

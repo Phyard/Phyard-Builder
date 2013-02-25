@@ -6,6 +6,7 @@ package player.entity {
    import flash.text.TextField;
    import flash.text.TextFieldType;
    import flash.text.TextFieldAutoSize;
+   import flash.text.TextFormat;
    import flash.events.Event;
    
    import com.tapirgames.util.GraphicsUtil;
@@ -476,7 +477,7 @@ package player.entity {
          {
             mNeedRebuildTextSprite = false;
             
-            RebuildTextBitmap ();
+            RebuildTextAppearance ();
          }
          
          
@@ -538,7 +539,7 @@ package player.entity {
             mTextBitmap.visible = showBitmap;
             if (mTextBitmap.visible)
             {
-               mAppearanceObjectsContainer.mouseChildren = true;
+               mAppearanceObjectsContainer.mouseChildren = false;
                mAppearanceObjectsContainer.addChild (mTextBitmap);
             }
          }
@@ -577,18 +578,22 @@ package player.entity {
       {
          if (IsAdaptiveBackgroundSize ())
          {
-            var halfDisplayBorderThickness:Number = 0.5 * mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
-
-            if (! IsWordWrap ())
-               SetHalfWidth (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.width + TextUtil.TextPadding + halfDisplayBorderThickness));
-            
-            SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.height + TextUtil.TextPadding + halfDisplayBorderThickness));
-            
-            mNeedRebuildAppearanceObjects = true;
+            var textSprite:DisplayObject = GetTextSprite ();
+            if (textSprite != null)
+            {
+               var halfDisplayBorderThickness:Number = 0.5 * mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
+   
+               if (! IsWordWrap ())
+                  SetHalfWidth (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * textSprite.width + TextUtil.TextPadding + halfDisplayBorderThickness));
+               
+               SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * textSprite.height + TextUtil.TextPadding + halfDisplayBorderThickness));
+               
+               mNeedRebuildAppearanceObjects = true;
+            }
          }
       }
       
-      //protected function RebuildTextBitmap ():void
+      //protected function RebuildTextAppearance ():void
       //{
       //   var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
       //   //var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
@@ -615,13 +620,21 @@ package player.entity {
       //   mTextBitmap.y = - 0.5 * mTextBitmap.height;
       //}
       
-      protected function RebuildTextBitmap ():void
+      protected function GetTextSprite ():DisplayObject
+      {
+         return ShouldUseBitmap () ? mTextBitmap : mTextField;
+      }
+      
+      protected function RebuildTextAppearance ():void
       {
          var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
          var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
          var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
          
-         var infoText:String = TextUtil.GetHtmlWikiText (GetText (), GetTextFormat (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
+         var infoText:String = TextUtil.GetHtmlWikiText (GetText (), GetTextFormat (), 
+                                                         /*TextUtil.GetTextAlignText (mTextAlign & 0x0F)*/null, 
+                                                         mFontSize, TextUtil.Uint2ColorString (mTextColor), null, 
+                                                         mIsBold, mIsItalic, mIsUnderlined);
          
          if (infoText == null)
          {
@@ -643,6 +656,9 @@ package player.entity {
          mTextField.addEventListener (Event.CHANGE, OnTextChangedByUserInput);
          mTextField.selectable = IsSelectable () || IsEditable ();
          mTextField.type = IsEditable () ? TextFieldType.INPUT : TextFieldType.DYNAMIC;
+         var textFormat:TextFormat = new TextFormat ();
+         textFormat.align = TextUtil.GetTextAlignText (mTextAlign & 0x0F);
+         mTextField.setTextFormat (textFormat);
          
          if (ShouldUseBitmap ())
          {

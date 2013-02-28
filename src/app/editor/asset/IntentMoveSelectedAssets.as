@@ -66,7 +66,9 @@ package editor.asset {
             //if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDown ())
             //if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDownInCookieMode ())
             if (mAssetManagerPanel.IsMouseZeroMoveSinceLastDown () && (mPerformPointSelectOnUpIfZeroMouseMove || mAssetManagerPanel.IsCookieSelectMode ()))
+            {
                mAssetManagerPanel.PointSelectAsset (mCurrentX, mCurrentY); //mAssetManager.mouseX, mAssetManager.mouseY);
+            }
          }
          
          super.TerminateInternal (passively);

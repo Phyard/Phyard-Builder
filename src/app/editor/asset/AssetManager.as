@@ -1004,7 +1004,14 @@ package editor.asset {
       
       public function MoveSelectedAssetsToIndex (aCurrentIndex:int):void
       {
-         var assetArray:Array = GetSelectedAssets ();
+         MoveAssetsToIndex (GetSelectedAssets (), aCurrentIndex);
+      }
+      
+      public function MoveAssetsToIndex (assetArray:Array, aCurrentIndex:int):void
+      {
+         if (assetArray == null)
+            return;
+         
          assetArray.sortOn("appearanceLayerId", Array.NUMERIC);
          
          var count:int = numChildren;

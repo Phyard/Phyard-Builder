@@ -631,15 +631,19 @@ package editor.asset {
          if (mAssetManager.AreSelectedAssetsContainingPoint (managerX, managerY))
          {
             if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Smooth)
-               SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, false));
-            else if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Delayed)
-               SetCurrentIntent (new IntentMoveSelectedAssetsDelayed (this));
-            else
+            {
+               SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, true));
+               
+               mCurrentIntent.OnMouseDown (managerX, managerY);
                return;
-            
-            mCurrentIntent.OnMouseDown (managerX, managerY);
-          
-            return;
+            }
+            else if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Delayed)
+            {
+               SetCurrentIntent (new IntentMoveSelectedAssetsDelayed (this));
+               
+               mCurrentIntent.OnMouseDown (managerX, managerY);
+               return;
+            }
          }
          
          // ... 
@@ -795,7 +799,7 @@ package editor.asset {
       // return true to indicate handled successfully
       protected function OnKeyDownInternal (keyCode:int, ctrlHold:Boolean, shiftHold:Boolean):Boolean
       {
-         if (GetMoveSelectedAssetsStyle () != kMoveSelectedAssetsStyle_Smooth)
+         if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Smooth)
          {
             switch (keyCode)
             {
@@ -815,19 +819,23 @@ package editor.asset {
                   MoveSelectedAssets (ctrlHold, 0, 1, true, false);
                   
                   return true;
-               case 73: // key I
-                  ToggleShowAllAssetIDs ();
-                  
-                  return true;
-               case 76: // key L
-                  ToggleShowAllAssetLinks ();
-                  
-                  return true;
                case 82: // key R
                   ToggleShowScaleRotateFlipHandlers ();
                   
                   return true;
             }
+         }
+         
+         switch (keyCode)
+         {
+            case 73: // key I
+               ToggleShowAllAssetIDs ();
+               
+               return true;
+            case 76: // key L
+               ToggleShowAllAssetLinks ();
+               
+               return true;
          }
          
          return false;
@@ -1107,6 +1115,8 @@ package editor.asset {
             }
             
             UpdateInterface ();
+            
+            RepositionScaleRotateFlipHandlersContainer ();
          }
       }
       
@@ -1290,7 +1300,7 @@ package editor.asset {
          if (mCurrentIntent != null)
             return;
          
-         SetCurrentIntent (new IntentMovemScaleRotateFlipHandlers (this));
+         SetCurrentIntent (new IntentMoveScaleRotateFlipHandlers (this));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       

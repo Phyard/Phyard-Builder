@@ -103,10 +103,15 @@ package editor.codelib {
          
          super.DestroyAsset (asset);
          
+         UpdateFunctionAppearances ();
+      }
+      
+      private function UpdateFunctionAppearances ():void
+      {
          // ids changed, maybe
          for (var i:int = 0; i < numChildren; ++ i)
          {
-            asset = getChildAt (i) as Asset;
+            var asset:Asset = getChildAt (i) as Asset;
             if (asset != null) // should be
             {
                asset.UpdateAppearance ();
@@ -250,12 +255,34 @@ package editor.codelib {
          SetChanged (true);
       }
       
-      private function UpdateFunctionIndexes ():void
+      public function UpdateFunctionIndexes ():void
       {
          for (var index:int = 0; index < mFunctionAssets.length; ++ index)
          {
             (mFunctionAssets [index] as AssetFunction).SetFunctionIndex (index);
          }
+      }
+      
+      public function ChangeFunctionOrderIDs (fromId:int, toId:int):void
+      {
+         if (fromId < 0 || fromId >= mFunctionAssets.length)
+            return;
+         if (toId < 0)
+            toId = 0;
+         if (toId >= mFunctionAssets.length)
+            toId = mFunctionAssets.length - 1;
+         
+         var aFunction:AssetFunction = mFunctionAssets [fromId] as AssetFunction;
+         mFunctionAssets.splice (fromId, 1);
+         mFunctionAssets.splice (toId, 0, aFunction);
+         
+         // ...
+         
+         UpdateFunctionIndexes ();
+         
+         SetChanged (true);
+         
+         UpdateFunctionAppearances ();
       }
       
 //=============================================
@@ -308,9 +335,33 @@ package editor.codelib {
          // mCustomMenuGroup.AddChildMenuGroup ();
          // mCustomMenuGroup.AddFunctionDeclaration ();
          
-         for (var i:int = 0; i < mFunctionAssets.length; ++ i)
+         var i:int;
+         
+         if (mFunctionAssets.length > 16)
          {
-            mCustomMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
+            var numGroups:int = Math.floor ((mFunctionAssets.length + 15) / 16);
+            for (var g:int = 0; g < numGroups; ++ g)
+            {
+               var fromId:int = g * 16;
+               var toId:int = fromId + 16;
+               if (toId > mFunctionAssets.length)
+                  toId = mFunctionAssets.length;
+               
+               var aMenuGroup:FunctionMenuGroup = new FunctionMenuGroup (fromId + " - " + (toId - 1));
+               mCustomMenuGroup.AddChildMenuGroup (aMenuGroup);
+               
+               for (i = fromId; i < toId; ++ i)
+               {
+                  aMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
+               }
+            }
+         }
+         else
+         {
+            for (i = 0; i < mFunctionAssets.length; ++ i)
+            {
+               mCustomMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
+            }
          }
          
          //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
@@ -324,12 +375,12 @@ package editor.codelib {
          parent = mMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0].parent ();
          delete mMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0];
 
-         ConvertMenuGroupToXML (mCustomMenuGroup, parent, null)
+         ConvertMenuGroupToXML (mCustomMenuGroup, parent, null);
 
          parent = mMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0].parent ();
          delete mMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0];
 
-         ConvertMenuGroupToXML (mCustomMenuGroup, parent, null)
+         ConvertMenuGroupToXML (mCustomMenuGroup, parent, null);
       }
       
       //========================

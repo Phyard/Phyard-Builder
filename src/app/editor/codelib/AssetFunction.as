@@ -48,6 +48,10 @@ package editor.codelib {
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.FunctionDeclaration_Custom;
    
+   import editor.display.dialog.NameSettingDialog;
+   
+   import editor.EditorContext;
+   
    import common.Define;
    
    public class AssetFunction extends Asset
@@ -68,6 +72,8 @@ package editor.codelib {
       public function AssetFunction (codeLibManager:CodeLibManager, key:String)
       {
          super (codeLibManager, key);
+         
+         doubleClickEnabled = true;
          
          mCodeLibManager = codeLibManager;
          
@@ -266,20 +272,39 @@ package editor.codelib {
       
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         //var menuItemBreakAllLinks:ContextMenuItem = new ContextMenuItem("Break All Friend(s)");
-         //
-         //menuItemBreakAllLinks.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_BreakAllLinks);
-         //
-         //customMenuItemsStack.push (menuItemBreakAllLinks);
+         var menuItemChangeOrder:ContextMenuItem = new ContextMenuItem("Change Function Order ID ...");
+         
+         menuItemChangeOrder.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeOrderID);
+         
+         customMenuItemsStack.push (menuItemChangeOrder);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
          mCodeLibManager.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      //private function OnContextMenuEvent_BreakAllLinks (event:ContextMenuEvent):void
-      //{
-      //   mCollisionCategoryManager.BreakFriendLinks (this);
-      //}
+      private function OnContextMenuEvent_ChangeOrderID (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (NameSettingDialog, ConfirmChangeOrderID, 
+                                    {mName: "" + GetFunctionIndex (), 
+                                     mLabel: "New Order ID",
+                                     mTitle: "Change Function Order ID"});
+      }
+      
+      private function ConfirmChangeOrderID (params:Object):void
+      {
+         if (params == null || params.mName == null)
+            return;
+         
+         var newIndex:int = parseInt (params.mName);
+         if (isNaN (newIndex) || newIndex < 0)
+            return;
+         
+         var codeLibManager:CodeLibManager = GetAssetManager () as CodeLibManager; 
+         //codeLibManager.MoveAssetsToIndex ([this], newIndex);
+         //codeLibManager.OnFunctionOrderIDsChanged ();
+         
+         codeLibManager.ChangeFunctionOrderIDs (GetFunctionIndex (), newIndex);
+      }
 
   }
 }

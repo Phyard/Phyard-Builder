@@ -23,6 +23,8 @@ package editor.asset {
    import flash.geom.Matrix;
    import flash.geom.Rectangle;
    
+   import flash.system.Capabilities;
+   
    import mx.core.UIComponent;
    
    import com.tapirgames.util.TimeSpan;
@@ -50,6 +52,7 @@ package editor.asset {
       protected var mAssetIDsLayer:Sprite;
       protected var mEditingEffectLayer:Sprite;
       protected var mFloatingMessageLayer:Sprite;
+      protected var mDebugInfoLayer:Sprite;
       public var mForegroundLayer:Sprite; // some intents will access it.
       
       public function AssetManagerPanel ()
@@ -84,6 +87,9 @@ package editor.asset {
          
          mFloatingMessageLayer = new Sprite ();
          addChild (mFloatingMessageLayer);
+         
+         mDebugInfoLayer = new Sprite ();
+         addChild (mDebugInfoLayer);
          
          mForegroundLayer = new Sprite ();
          addChild (mForegroundLayer);
@@ -886,6 +892,11 @@ package editor.asset {
          }
          
          UpdateInterface ();
+         
+         if (Capabilities.isDebugger)
+         {
+            //RepaintContactsInLastRegionSelecting ();
+         }
       }
       
       public function CancelAllAssetSelections ():void
@@ -1950,6 +1961,27 @@ package editor.asset {
          }
          
          return null;
+      }
+
+//=================================================================================
+//   debug info
+//=================================================================================
+
+      // todo: move into 
+      public function RepaintContactsInLastRegionSelecting ():void
+      {
+         if (mAssetManager != null)
+         {
+            while (mDebugInfoLayer.numChildren > 0)
+               mDebugInfoLayer.removeChildAt (0);
+            
+            mDebugInfoLayer.x = mAssetManager.x;
+            mDebugInfoLayer.y = mAssetManager.y;
+            mDebugInfoLayer.scaleX = mAssetManager.scaleX;
+            mDebugInfoLayer.scaleY = mAssetManager.scaleY;
+            
+            mAssetManager.GetSelectionEngine ().RepaintContactsInLastRegionSelecting (mDebugInfoLayer);
+         }
       }
       
    }

@@ -24,7 +24,6 @@ package viewer {
    import flash.system.ApplicationDomain;
    import flash.system.Capabilities;
    import flash.utils.getTimer;
-   
 
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;

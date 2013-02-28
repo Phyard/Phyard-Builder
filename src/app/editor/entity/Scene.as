@@ -1980,17 +1980,6 @@ package editor.entity {
             mAssetLinksChangedCallback ();
          }
       }
-
-
-//=================================================================================
-//   debug info
-//=================================================================================
-
-      // todo: move into 
-      public function RepaintContactsInLastRegionSelecting (container:Sprite):void
-      {
-         mSelectionEngine.RepaintContactsInLastRegionSelecting (container);
-      }
    }
 }
 

@@ -792,6 +792,18 @@ package player.world {
 
          HandleEventById (CoreEventIds.ID_OnWorldAfterInitialized);
 
+      //-----------------------------
+      // update camera
+      //-----------------------------
+
+         UpdateCamera ();
+
+      //-----------------------------
+      // BeforeRepaint event handler
+      //-----------------------------
+         
+         HandleEventById (CoreEventIds.ID_OnWorldBeforeRepainting);
+
       //------------------------------------
       // Repaint
       //------------------------------------
@@ -817,12 +829,6 @@ package player.world {
 
          if (mDestroyed)
             DestroyReally ();
-
-      //-----------------------------
-      // update camera
-      //-----------------------------
-
-         UpdateCamera ();
 
       //-----------------------------
       // delay handle LoadScene
@@ -887,7 +893,7 @@ package player.world {
             mFunc_StepUpdate (escapedTime, speedX);
 
       //-----------------------------
-      // todo: need a BeforeRepaint event handler
+      // BeforeRepaint event handler
       //-----------------------------
          
          HandleEventById (CoreEventIds.ID_OnWorldBeforeRepainting);

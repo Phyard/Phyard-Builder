@@ -339,14 +339,14 @@ package editor.world {
          if (targetIndex < 0 || targetIndex >= mScenes.length)
             return -1;
          
-         if (targetIndex == fromIndex)
-            return -1;
-         
-         var scene:Scene = mScenes [fromIndex];
-         mScenes.splice (fromIndex, 1);
-         mScenes.splice (targetIndex, 0, scene);
-         
-         UpdateSceneListDataProvider ();
+         if (targetIndex != fromIndex)
+         {
+            var scene:Scene = mScenes [fromIndex];
+            mScenes.splice (fromIndex, 1);
+            mScenes.splice (targetIndex, 0, scene);
+            
+            UpdateSceneListDataProvider ();
+         }
          
          return targetIndex;
       }
@@ -369,6 +369,14 @@ package editor.world {
       public function GetSceneListDataProvider ():Array
       {
          return mSceneListDataProvider;
+      }
+      
+      public function GetSceneListDataProviderItem (index:int):Object
+      {
+         if (index < 0 || index >= mSceneListDataProvider.length)
+            return null;
+         
+         return mSceneListDataProvider [index];
       }
       
       public function UpdateSceneListDataProvider ():void
@@ -401,7 +409,7 @@ package editor.world {
 //   select list
 //=================================================================================
 
-      public function GetESceneSelectListDataProvider ():Array
+      public function GetSceneSelectListDataProvider ():Array
       {
          var list:Array = new Array ();
 

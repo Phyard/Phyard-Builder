@@ -2980,8 +2980,8 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_FlipSelf, shape_common_package, "Local Flip Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                             new VariableDefinitionBoolean ("Teleport Connected Movables?"),
-                             new VariableDefinitionBoolean ("Teleport Connected Statics?"),
+                             new VariableDefinitionBoolean ("Flip Connected Movables?"),
+                             new VariableDefinitionBoolean ("Flip Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
                              new VariableDefinitionBoolean ("Flip Linear Velocity?"),
                      ],

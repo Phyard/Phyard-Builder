@@ -176,7 +176,7 @@ package editor {
             sEventId2IconClass = new Dictionary ();
             
             sEventId2IconClass [CoreEventIds.ID_OnGameActivated  ] = IconOnGameActivatedEvent;
-            sEventId2IconClass [CoreEventIds.ID_OnGameDeactivated] = IconOnWorldBeforeRepaintingEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnGameDeactivated] = IconOnGameDeactivatedEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeRepainting] = IconOnWorldBeforeRepaintingEvent;
             

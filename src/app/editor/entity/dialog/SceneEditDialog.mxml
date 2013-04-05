@@ -512,6 +512,8 @@
             var oldSelectedIndex:int = List_Scenes.selectedIndex;
             
             var dataProvider:Array = world.GetSceneListDataProvider ();
+//trace ("newClonedSceneIndex = " + selectedSceneIndex + ", oldSelectedIndex = " + oldSelectedIndex + ", dataProvider.length = " + dataProvider.length);
+//trace (new Error ().getStackTrace ());
             List_Scenes.dataProvider = dataProvider;
             if (selectedSceneIndex < 0)
                selectedSceneIndex = oldSelectedIndex;
@@ -522,7 +524,6 @@
          }
          
          OnCurrentSceneSwitched ();
-         UpdateSceneListInterface ();
       }
       
       public function OnCurrentSceneSwitched ():void
@@ -571,6 +572,7 @@
          if (List_Scenes.dataProvider == null || List_Scenes.dataProvider.length == 0)
             return;
          
+//trace ("UpdateSceneListInterface: " + List_Scenes.selectedIndex);
          if (List_Scenes.selectedIndex >= 0)
          {
             //var rect:Rectangle = (List_Scenes.selectedItem as DisplayObject).getBounds (List_Scenes);
@@ -579,7 +581,14 @@
             //if (rect.bottom > List_Scenes.height)
             //   List_Scenes.verticalScrollPosition += (rect.bottom - List_Scenes.height);
             
+            //List_Scenes.invalidateList ();
+            //List_Scenes.scrollToIndex (List_Scenes.selectedIndex);
+            // !!! scrollToIndex has bugs.
+            List_Scenes.selectedItem = world.GetSceneListDataProviderItem (List_Scenes.selectedIndex);
             List_Scenes.scrollToIndex (List_Scenes.selectedIndex);
+               // scrollToIndex must put behind updating List_Scenes.selectedItem
+            
+            //List_Scenes.verticalScrollPosition = List_Scenes.selectedIndex * List_Scenes.rowHeight;
          }
 
          SceneSettingsMenuData.menuitem.(@data == "delete_current_scene").@enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;

@@ -601,6 +601,7 @@
          {
             //Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
             mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            return;
          }
          
          var worldDefine:WorldDefine = null;

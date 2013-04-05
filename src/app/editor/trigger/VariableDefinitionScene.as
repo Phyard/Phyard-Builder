@@ -66,7 +66,7 @@ package editor.trigger {
       
       override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
-         var scene_list:Array = scene.GetWorld ().GetESceneSelectListDataProvider ();
+         var scene_list:Array = scene.GetWorld ().GetSceneSelectListDataProvider ();
          
          var scene:Scene = valueSourceDirect.GetValueObject () as Scene;
          var scene_index:int = scene == null ? -1 : scene.GetSceneIndex ();

@@ -354,6 +354,12 @@ package editor.world {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetLanguageCode, system_package, "Get Native System Language Code", null, null,
+                     null,
+                     [
+                        new VariableDefinitionString ("Language Code"),
+                     ]
+                  );
 
       // services
 
@@ -504,13 +510,23 @@ package editor.world {
                              new VariableDefinitionString ("The Substring"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Split, string_package, "SplitString", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Split, string_package, "Split String", null, null,
                      [
                              new VariableDefinitionString ("The Input String"),
                              new VariableDefinitionString ("The Delimiter"),
                      ],
                      [
                              new VariableDefinitionArray ("Array of Substrings"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Replace, string_package, "String Replace", null, null,
+                     [
+                             new VariableDefinitionString ("Original String"),
+                             new VariableDefinitionString ("From Substring"),
+                             new VariableDefinitionString ("To Substring"),
+                     ],
+                     [
+                             new VariableDefinitionString ("Result String"),
                      ]
                   );
 
@@ -1662,6 +1678,12 @@ package editor.world {
 
       // game / world
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetPhysicsSimulationEnabled, world_physics_package, "Set Physics Simulation Enabled", null, null,
+                     [
+                             new VariableDefinitionBoolean ("Including Half Intersecteds?"),
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians, world_physics_package, "Set Gravity Acceleration By Radians", "@SetGravityAcceleration ($0, Radians($1))", null,
                      [
                              new VariableDefinitionNumber ("Magnitude"),

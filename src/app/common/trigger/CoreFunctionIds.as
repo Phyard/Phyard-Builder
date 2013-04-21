@@ -69,6 +69,7 @@ package common.trigger {
       public static const ID_OpenURL:int                = IdPool.CoreApiId_78; // from v2.03
 
       public static const ID_CopyToClipboard:int                = IdPool.CoreApiId_114; // from v2.04
+      public static const ID_GetLanguageCode:int                = IdPool.CoreApiId_116; // from v2.04
 
    // services
 
@@ -93,6 +94,7 @@ package common.trigger {
       public static const ID_String_LastIndexOf:int               = IdPool.CoreApiId_131; // from v1.54
       public static const ID_String_Substring:int                 = IdPool.CoreApiId_132; // from v1.54
       public static const ID_String_Split:int                     = IdPool.CoreApiId_133; // from v1.56
+      public static const ID_String_Replace:int                   = IdPool.CoreApiId_134; // from v2.04
 
    // bool
 
@@ -277,6 +279,7 @@ package common.trigger {
 
    // game / world
 
+      public static const ID_World_SetPhysicsSimulationEnabled:int       = IdPool.CoreApiId_726;
       public static const ID_World_SetGravityAcceleration_Radians:int       = IdPool.CoreApiId_710;
       public static const ID_World_SetGravityAcceleration_Degrees:int       = IdPool.CoreApiId_711;
       public static const ID_World_SetGravityAcceleration_Vector:int        = IdPool.CoreApiId_712;

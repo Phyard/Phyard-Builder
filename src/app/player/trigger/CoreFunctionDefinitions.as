@@ -91,6 +91,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_GetOsNameString,                GetOsNameString);
          RegisterCoreFunction (CoreFunctionIds.ID_OpenURL,                     OpenURL);
          RegisterCoreFunction (CoreFunctionIds.ID_CopyToClipboard,                     CopyToClipboard);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetLanguageCode,                     GetLanguageCode);
 
       // services
 
@@ -115,6 +116,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_String_LastIndexOf,                 LastIndexOfSubstring);
          RegisterCoreFunction (CoreFunctionIds.ID_String_Substring,                   Substring);
          RegisterCoreFunction (CoreFunctionIds.ID_String_Split,                       SplitString);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_Replace,                     ReplacetString);
 
       // bool
 
@@ -290,6 +292,7 @@ package player.trigger {
 
       // game / world
 
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPhysicsSimulationEnabled,     SetPhysicsSimulationEnabled);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,     SetWorldGravityAcceleration_Radians);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
@@ -801,6 +804,11 @@ package player.trigger {
             }
          }
       }
+      
+      public static function GetLanguageCode (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Capabilities.language);
+      }
 
    //*******************************************************************
    // services
@@ -992,6 +1000,30 @@ package player.trigger {
          }
 
          valueTarget.AssignValueObject (substrings);
+      }
+      
+      public static function ReplacetString(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var resultString:String = null;
+
+         var text:String = valueSource.EvaluateValueObject () as String;
+         if (text != null)
+         {
+            valueSource = valueSource.mNextParameter;
+            var from:String = valueSource.EvaluateValueObject () as String;
+            if (from != null && from.length > 0)
+            {
+               valueSource = valueSource.mNextParameter;
+               var to:String = valueSource.EvaluateValueObject () as String;
+               resultString = text.replace (from, to == null ? "" : to);
+            }
+            else
+            {
+               resultString = text;
+            }
+         }
+
+         valueTarget.AssignValueObject (resultString);
       }
 
       public static function LastIndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void
@@ -2573,6 +2605,13 @@ package player.trigger {
    //*******************************************************************
    // game / world
    //*******************************************************************
+
+      public static function SetPhysicsSimulationEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var enabled:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         Global.GetCurrentWorld ().SetPhysicsEnabled (enabled);
+      }
 
       public static function SetWorldGravityAcceleration_Radians (valueSource:Parameter, valueTarget:Parameter):void
       {

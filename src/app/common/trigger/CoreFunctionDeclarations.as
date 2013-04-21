@@ -265,6 +265,12 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetLanguageCode,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ]
+                  );
 
       // services
 
@@ -422,6 +428,16 @@ package common.trigger {
                      ],
                      [
                         [ValueTypeDefine.ValueType_Array,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Replace,
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
 
@@ -1575,6 +1591,12 @@ package common.trigger {
 
       // game / world
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetPhysicsSimulationEnabled,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearAccelerationMagnitude,       9.8],

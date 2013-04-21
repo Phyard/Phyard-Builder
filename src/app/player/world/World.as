@@ -954,11 +954,14 @@ package player.world {
          //-----------------------------
          // update physics
          //-----------------------------
-
-            UpdatePhysics (dt);
-
-            mLastSimulatedStepInterval = dt;
-            mLastSimulatedStepInterval_Inv = dt == 0 ? 0 : 1.0 / dt;
+            
+            if (mPhysicsEnabled)
+            {
+               UpdatePhysics (dt);
+   
+               mLastSimulatedStepInterval = dt;
+               mLastSimulatedStepInterval_Inv = dt == 0 ? 0 : 1.0 / dt;
+            }
 
             ++ mNumSimulatedSteps;
             mStepStage = 0;
@@ -1424,6 +1427,18 @@ package player.world {
 //====================================================================================================
 //   physics
 //====================================================================================================
+
+      private var mPhysicsEnabled:Boolean = true;
+
+      public function IsPhysicsEnabled ():Boolean
+      {
+         return mPhysicsEnabled;
+      }
+
+      public function SetPhysicsEnabled (enabled:Boolean):void
+      {
+         mPhysicsEnabled = enabled;
+      }
 
       // the 2 are both physics values
       private var mDefaultGravityAccelerationMagnitude:Number;

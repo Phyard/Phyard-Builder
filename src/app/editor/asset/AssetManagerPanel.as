@@ -585,7 +585,7 @@ package editor.asset {
             return;
          }
          
-         if (mIsShiftDownOnMouseDown || mInMoveManagerMode)
+         if ((mIsCtrlDownOnMouseDown && mIsShiftDownOnMouseDown) || mInMoveManagerMode)
          {
             SetCurrentIntent (new IntentPanManager (this));
             mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
@@ -630,7 +630,17 @@ package editor.asset {
          
          if (mAssetManager.AreSelectedAssetsContainingPoint (managerX, managerY))
          {
-            if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Smooth)
+            if (mIsShiftDownOnMouseDown)
+            {
+               if (SupportScaleRotateFlipTransforms ())
+               {
+                  var centerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+                  SetCurrentIntent (new IntentRotateSelectedAssets (this, false/*mIsCtrlDownOnMouseDown*/, centerPoint.x, centerPoint.y, true, true));
+                  mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
+                  return;
+               }
+            }
+            else if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Smooth)
             {
                SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, true));
                
@@ -1190,6 +1200,7 @@ package editor.asset {
             flipVerticallyHandler.addEventListener (MouseEvent.MOUSE_DOWN, OnFlipSelectedsVertically);
             
             DisplayObjectUtil.AppendContextMenuItem (handlersBaseCircle, "Move Transform Ring Accurately ...", OnMoveTransformRingAccurately);
+            DisplayObjectUtil.AppendContextMenuItem (handlersBaseCircle, "Move Transform Ring Accurately (By Offset) ...", OnMoveTransformRingAccuratelyByOffset);
 
             DisplayObjectUtil.AppendContextMenuItem (rotateBothHandler, "Rotate Selection(s) Accurately", OnRotateSelectionsAccurately);
             DisplayObjectUtil.AppendContextMenuItem (rotatePosHandler, "Rotate Selection(s) Accurately (Positions Only)", OnRotateSelectionsAccurately_PositionsOnly);
@@ -1442,6 +1453,21 @@ package editor.asset {
          MoveScaleRotateFlipHandlers (panelPoint.x - mScaleRotateFlipHandlersContainer.x, panelPoint.y - mScaleRotateFlipHandlersContainer.y);
       }
       
+      private function OnMoveTransformRingAccuratelyByOffset (event:ContextMenuEvent):void
+      {
+         //EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mIsMoveTo: true});
+         EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccuratelyByOffset, null);
+      }
+      
+      private function MoveTransformRingAccuratelyByOffset (params:Object):void
+      {
+         //var panelPoint:Point = ManagerToPanel (new Point (params.mTargetX, params.mTargetY));
+         var panelPoint:Point = ManagerToPanel (new Point (params.mX, params.mY));
+         var oriPoint:Point = ManagerToPanel (new Point (0, 0));
+         
+         MoveScaleRotateFlipHandlers (panelPoint.x - oriPoint.x, panelPoint.y - oriPoint.y);
+      }
+      
       private function OnMoveSelectionsAccurately (event:ContextMenuEvent):void
       {
          EditorContext.ShowModalDialog (AccurateMoveDialog, MoveSelectionsAccurately, null);
@@ -1462,7 +1488,7 @@ package editor.asset {
       {
          var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
          
-         RotateSelectedAssets (false, managerPoint.x, managerPoint.y, params.mRotationAngle * Define.kDegrees2Radians, true, true, true);   
+         RotateSelectedAssets (false, managerPoint.x, managerPoint.y, params.mRotationAngle * Define.kDegrees2Radians, true, true, true);
       }
       
       private function OnRotateSelectionsAccurately_PositionsOnly (event:ContextMenuEvent):void

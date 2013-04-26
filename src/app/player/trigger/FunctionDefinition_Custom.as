@@ -122,6 +122,9 @@ package player.trigger
             mCurrentFunctionInstance = mPrimaryFunctionInstance;
             
             mCurrentFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+            //>> fixed in v2.04
+            mPrimaryFunctionInstance.mOutputVariableSpace.GetValuesFromParameters (outputParamList); // set default values. (output parameters are also input parameters)
+            //<<
             mCodeSnippet.Excute ();
             mCurrentFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
             
@@ -138,6 +141,9 @@ package player.trigger
             
             mCurrentFunctionInstance = mCurrentFunctionInstance.mNextFunctionInstance;
             mCurrentFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+            //>> fixed in v2.04
+            mPrimaryFunctionInstance.mOutputVariableSpace.GetValuesFromParameters (outputParamList); // set default values. (output parameters are also input parameters)
+            //<<
             mCurrentFunctionInstance.SetAsCurrent ();
             
             mCodeSnippet.Excute ();
@@ -155,6 +161,10 @@ package player.trigger
       {
          mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
          
+         //>> fixed in v2.04
+         mPrimaryFunctionInstance.mOutputVariableSpace.GetValuesFromParameters (outputParamList); // set default values. (output parameters are also input parameters)
+         //<<
+         
          mCodeSnippet.Excute ();
          
          if (outputParamList != null)
@@ -162,29 +172,5 @@ package player.trigger
             mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
          }
       }
-      
-      // EvaluateCondition and ExcuteAction are disabled now for it is wrong to call them in CallScript API, which may call these functions in iteration functions
-      // 
-      //// as condition component, no inputs
-      //public function EvaluateCondition (outputParamList:Parameter):void
-      //{
-      //   // no inputs
-      //   //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
-      //   
-      //   mCodeSnippet.Excute ();
-      //   
-      //   mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
-      //}
-      //
-      //// as action, no inputs, returns
-      //public function ExcuteAction ():void
-      //{
-      //   //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
-      //   
-      //   mCodeSnippet.Excute ();
-      //   
-      //   // no returns
-      //   //mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
-      //}
    }
 }

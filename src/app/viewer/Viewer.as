@@ -200,7 +200,7 @@ package viewer {
       {
          mIsAppDeactivated = true;
          
-         if (mStateId == StateId_Playing && mWorldDesignProperties != null && (mWorldDesignProperties.mPauseOnFocusLost as Boolean))
+         if (mStateId == StateId_Playing && mWorldDesignProperties != null && (mWorldDesignProperties.GetPauseOnFocusLost () as Boolean))
          {
             if (mSkin != null) mSkin.OnDeactivate ();
          }
@@ -424,7 +424,7 @@ package viewer {
       {  
          if (mGesturePaintLayer.visible && mGestureAnalyzer == null)
          {
-            mGesturePaintLayer.alpha -= 1.0 / stage.frameRate; // mWorldDesignProperties.mPreferredFPS
+            mGesturePaintLayer.alpha -= 1.0 / stage.frameRate; // mWorldDesignProperties.GetPreferredFPS ()
             if (mGesturePaintLayer.alpha < 0)
             {
                ClearGesturePaintLayer ();
@@ -941,8 +941,8 @@ package viewer {
          if (mWorldDesignProperties.mHasSounds == undefined)                 mWorldDesignProperties.mHasSounds = false;
          if (mWorldDesignProperties.mInitialSpeedX == undefined)             mWorldDesignProperties.mInitialSpeedX = 2;
          if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
-         if (mWorldDesignProperties.mPreferredFPS == undefined)              mWorldDesignProperties.mPreferredFPS = 30;
-         if (mWorldDesignProperties.mPauseOnFocusLost == undefined)          mWorldDesignProperties.mPauseOnFocusLost = false;
+         if (mWorldDesignProperties.GetPreferredFPS == undefined)                   mWorldDesignProperties.GetPreferredFPS = DummyCallback_GetFps;
+         if (mWorldDesignProperties.GetPauseOnFocusLost == undefined)             mWorldDesignProperties.GetPauseOnFocusLost = DummyCallback_ReturnFalse;
          if (mWorldDesignProperties.RegisterGestureEvent == undefined)       mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
@@ -970,6 +970,11 @@ package viewer {
       private function DummyCallback_GetScale ():Number
       {
          return 1.0;
+      }
+
+      private function DummyCallback_GetFps ():Number
+      {
+         return 30;
       }
 
       private function DummyCallback_ViewSize ():int
@@ -1109,7 +1114,8 @@ package viewer {
             mSkin.SetZoomScale (mPlayerWorldZoomScale);
             
             // set fps. Don't forget restore fps when exit playing.
-            stage.frameRate = mWorldDesignProperties.mPreferredFPS;
+            mLastPreferredFPS = mWorldDesignProperties.GetPreferredFPS ();
+            stage.frameRate = mLastPreferredFPS;
             
             ChangeState (StateId_Building);
          }
@@ -1127,6 +1133,8 @@ package viewer {
       }
 
       private var mFirstTimePlaying:Boolean = true;
+      
+      private var mLastPreferredFPS:Number = 30;
       
       private function InitPlayerWorld ():void
       {
@@ -1183,6 +1191,14 @@ package viewer {
             return;
 
          UpdateGesturePaintLayer ();
+
+         // ...
+         
+         if (mLastPreferredFPS != mWorldDesignProperties.GetPreferredFPS ())
+         {
+            mLastPreferredFPS = mWorldDesignProperties.GetPreferredFPS ();
+            stage.frameRate = mLastPreferredFPS;
+         }
 
          // update scale
          if (mWorldDesignProperties.GetZoomScale () != mPlayerWorldZoomScale)

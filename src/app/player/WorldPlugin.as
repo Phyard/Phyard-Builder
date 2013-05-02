@@ -67,8 +67,8 @@ package player
                   mInitialSoundEnabled : Global.IsSoundEnabled (), // from v1.59
                   SetSoundEnabled : Global.SetSoundEnabled, // from v1.59
                   
-                  mPreferredFPS : world.GetPreferredFPS (), // from v1.60
-                  mPauseOnFocusLost : world.IsPauseOnFocusLost (), // from v1.60 
+                  GetPreferredFPS : world.GetPreferredFPS, // from v1.60
+                  IsPauseOnFocusLost : world.IsPauseOnFocusLost, // from v1.60 
                   
                   RegisterGestureEvent : world.RegisterGestureEvent, // from v1.60
                   

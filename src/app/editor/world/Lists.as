@@ -35,6 +35,11 @@ package editor.world {
             {label:"CI Infected Color", data:Define.LevelProperty_CiInfectedColor},
             {label:"CI Uninfected Color", data:Define.LevelProperty_CiUninfectedColor},
             {label:"CI Dont-Infect Color", data:Define.LevelProperty_CiDontInfectColor},
+            {label:"Render Quality", data:Define.LevelProperty_RenderQuality},
+         ];
+      public static const mLevelStringPropertyList:Array = [
+            {label:"Invalid", data:Define.LevelProperty_Invalid},
+            {label:"Render Quality", data:Define.LevelProperty_RenderQuality},
          ];
       
       public static const mEntityTaskStatusList:Array = [

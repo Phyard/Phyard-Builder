@@ -136,6 +136,7 @@ package common {
       public static const LevelProperty_CiUninfectedColor:int = 104;
       public static const LevelProperty_CiDontInfectColor:int = 105;
       public static const LevelProperty_ColorBlindMode:int = 1000;
+      public static const LevelProperty_RenderQuality:int = 1001;
       
 //===========================================================================
 // sound / module

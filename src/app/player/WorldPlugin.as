@@ -42,7 +42,7 @@ package player
                
                Global.Viewer_mLibSound = params.mLibSound; // from v2.02
                
-               Global.Viewer_mLibImage = params.mLibImage; // from v2.03
+               Global.Viewer_mLibGraphics = params.mLibGraphics; // from v2.03
                
                Global.Viewer_mLibAppp = params.mLibApp; // v2.03
                
@@ -95,8 +95,8 @@ package player
                   //mInitialSoundEnabled : Global.IsSoundEnabled (), // from v1.59 to v2.02 (seems never used in Viewer)
                   //SetSoundEnabled : Global.SetSoundEnabled, // from v1.59 to v2.02 (become useless in Viewer from v2.02)
                   
-                  mPreferredFPS : world.GetPreferredFPS (), // from v1.60
-                  mPauseOnFocusLost : world.IsPauseOnFocusLost (), // from v1.60
+                  GetPreferredFPS : world.GetPreferredFPS, // from v1.60
+                  IsPauseOnFocusLost : world.IsPauseOnFocusLost, // from v1.60
                   
                   RegisterGestureEvent : world.RegisterGestureEvent, // from v1.60
                   

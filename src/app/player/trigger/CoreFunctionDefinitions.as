@@ -288,11 +288,15 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelBooleanProperty,                SetLevelProperty_Boolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelNumberProperty,                SetLevelProperty_Number);
-         //RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelStringProperty,                SetLevelProperty_String);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelStringProperty,                SetLevelProperty_String);
 
       // game / world
 
-         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPhysicsSimulationEnabled,     SetPhysicsSimulationEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_IsPhysicsEngineEnabled,      IsPhysicsEngineEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPhysicsEngineEnabled,     SetPhysicsEngineEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetRealtimeFPS,                       GetRealtimeFP);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetPreferredFpsAndStepTimeLangth,     GetPreferredFpsAndStepTimeLangth);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPreferredFpsAndStepTimeLangth,     SetPreferredFpsAndStepTimeLangth);         
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,     SetWorldGravityAcceleration_Radians);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
@@ -2592,27 +2596,56 @@ package player.trigger {
          Global.GetCurrentWorld ().SetLevelProperty (property, value);
       }
       
-      //public static function SetLevelProperty_String (valueSource:Parameter, valueTarget:Parameter):void
-      //{
-      //   var property:int = valueSource.EvaluateValueObject () as int;
-      //
-      //   valueSource = valueSource.mNextParameter;
-      //   var value:String = valueSource.EvaluateValueObject () as String;
-      //   
-      //   Global.GetCurrentWorld ().SetLevelProperty (property, value);
-      //}
+      public static function SetLevelProperty_String (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var property:int = valueSource.EvaluateValueObject () as int;
+      
+         valueSource = valueSource.mNextParameter;
+         var value:String = valueSource.EvaluateValueObject () as String;
+         
+         Global.GetCurrentWorld ().SetLevelProperty (property, value);
+      }
 
    //*******************************************************************
    // game / world
    //*******************************************************************
 
-      public static function SetPhysicsSimulationEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsPhysicsEngineEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsPhysicsEngineEnabled ());
+      }
+
+      public static function SetPhysicsEngineEnabled (valueSource:Parameter, valueTarget:Parameter):void
       {
          var enabled:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.GetCurrentWorld ().SetPhysicsEnabled (enabled);
+         Global.GetCurrentWorld ().SetPhysicsEngineEnabled (enabled);
       }
 
+      public static function GetRealtimeFP (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.Viewer_mLibAppp.GetRealtimeFps ());
+      }
+
+      public static function GetPreferredFpsAndStepTimeLangth (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPreferredFPS ());
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsSimulationStepTimeLength ());
+      }
+
+      public static function SetPreferredFpsAndStepTimeLangth (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var preferredFps:Number = Number (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var timeLength:Number = Number (valueSource.EvaluateValueObject ());
+
+         Global.GetCurrentWorld ().SetPreferredFPS (preferredFps);
+         Global.GetCurrentWorld ().SetPhysicsSimulationStepTimeLength (timeLength);
+      }
+      
       public static function SetWorldGravityAcceleration_Radians (valueSource:Parameter, valueTarget:Parameter):void
       {
          var magnitude:Number = valueSource.EvaluateValueObject () as Number;

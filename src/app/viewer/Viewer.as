@@ -14,6 +14,7 @@ package viewer {
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.display.Stage;
+   import flash.display.StageQuality;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.ProgressEvent;
@@ -69,7 +70,7 @@ package viewer {
       include "LibCapabilities.as";
       include "LibGesture.as";
       include "LibSound.as";
-      include "LibImage.as";
+      include "LibGraphics.as";
       include "LibCookie.as";
       include "LibServices.as";
       
@@ -195,10 +196,14 @@ package viewer {
          
          var containerSize:Point = mParamsFromContainer.GetViewportSize ();
          RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
+         
+         mDefaultRenderQuality = stage.quality;
       }
 
       private function OnRemovedFromStage (e:Event):void
       {
+         stage.quality = mDefaultRenderQuality;
+
          stage.removeEventListener (Event.ACTIVATE, OnActivated);
          stage.removeEventListener (Event.DEACTIVATE, OnDeactivated);
          
@@ -249,7 +254,7 @@ package viewer {
       {
          mIsAppDeactivated = true;
          
-         if (mStateId == StateId_Playing && mWorldDesignProperties != null && (mWorldDesignProperties.mPauseOnFocusLost as Boolean))
+         if (mStateId == StateId_Playing && mWorldDesignProperties != null && (mWorldDesignProperties.GetPauseOnFocusLost () as Boolean))
          {
             if (mSkin != null) mSkin.OnDeactivate ();
          }
@@ -488,7 +493,7 @@ package viewer {
       {  
          if (mGesturePaintLayer.visible && mGestureAnalyzer == null)
          {
-            mGesturePaintLayer.alpha -= 1.0 / stage.frameRate; // mWorldDesignProperties.mPreferredFPS
+            mGesturePaintLayer.alpha -= 1.0 / stage.frameRate; // mWorldDesignProperties.GetPreferredFPS ()
             if (mGesturePaintLayer.alpha < 0)
             {
                ClearGesturePaintLayer ();
@@ -1040,8 +1045,8 @@ package viewer {
          if (mWorldDesignProperties.mHasSounds == undefined)                      mWorldDesignProperties.mHasSounds = false;
          if (mWorldDesignProperties.mInitialSoundEnabled == undefined)            mWorldDesignProperties.mInitialSoundEnabled = true;
          if (mWorldDesignProperties.SetSoundEnabled == undefined)                 mWorldDesignProperties.SetSoundEnabled = DummyCallback;
-         if (mWorldDesignProperties.mPreferredFPS == undefined)                   mWorldDesignProperties.mPreferredFPS = 30;
-         if (mWorldDesignProperties.mPauseOnFocusLost == undefined)               mWorldDesignProperties.mPauseOnFocusLost = false;
+         if (mWorldDesignProperties.GetPreferredFPS == undefined)                   mWorldDesignProperties.GetPreferredFPS = DummyCallback_GetFps;
+         if (mWorldDesignProperties.GetPauseOnFocusLost == undefined)             mWorldDesignProperties.GetPauseOnFocusLost = DummyCallback_ReturnFalse;
          if (mWorldDesignProperties.RegisterGestureEvent == undefined)            mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
          if (mWorldDesignProperties.OnViewerEvent == undefined)                   mWorldDesignProperties.OnViewerEvent = DummyCallback;
          if (mWorldDesignProperties.OnViewerDestroyed == undefined)               mWorldDesignProperties.OnViewerDestroyed = DummyCallback;
@@ -1075,6 +1080,11 @@ package viewer {
       private function DummyCallback_GetScale ():Number
       {
          return 1.0;
+      }
+
+      private function DummyCallback_GetFps ():Number
+      {
+         return 30;
       }
 
       private function DummyCallback_ViewSize ():int
@@ -1247,13 +1257,15 @@ package viewer {
                              
                               // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
                   },
-                  mLibImage : {
-                              LoadImageFromBytes : LoadImageFromBytes
+                  mLibGraphics : {
+                              LoadImageFromBytes : LoadImageFromBytes,
+                              SetRenderQuality : SetRenderQuality
                   },
                   mLibApp : {
                               IsNativeApp: IsNativeApp,
                               OnExitApp : ExitLevel,
-                              OpenURL : UrlUtil.PopupPage
+                              OpenURL : UrlUtil.PopupPage,
+                              GetRealtimeFps : GetRealtimeFps
                   },
                   mLibCookie : {
                               LoadCookie : LoadCookie,
@@ -1318,7 +1330,8 @@ package viewer {
             mSkin.SetZoomScale (mPlayerWorldZoomScale);
             
             // set fps. Don't forget restore fps when exit playing.
-            stage.frameRate = mWorldDesignProperties.mPreferredFPS;
+            mLastPreferredFPS = mWorldDesignProperties.GetPreferredFPS ();
+            stage.frameRate = mLastPreferredFPS;
             
             ChangeState (StateId_Building);
             
@@ -1340,6 +1353,8 @@ package viewer {
       }
 
       private var mFirstTimePlaying:Boolean = true;
+      
+      private var mLastPreferredFPS:Number = 30;
       
       private function InitPlayerWorld ():void
       {
@@ -1420,6 +1435,9 @@ package viewer {
 
       public function UpdateFrame (singleStepMode:Boolean = false):void
       {
+         mStepTimeSpan.End ();
+         mStepTimeSpan.Start ();
+         
          if (mErrorMessageLayer.visible)
          {
             ExitLevelIfBackKeyEverPressed ();
@@ -1449,22 +1467,22 @@ package viewer {
          
          if (mFadingStatus != 0)
          {
+            var fadingSpeed:Number = mStepTimeSpan.GetLastSpan ();
+            
             if (mFadingStatus > 0)
             {
-               mFadingLayer.alpha += 0.02;
+               mFadingLayer.alpha += fadingSpeed;
                if (mFadingLayer.alpha >= 1.0)
                   SetFadingStatus (0);
             }
             else
             {
-               if (mFadingLayer.alpha > 0.97)
-                  mFadingLayer.alpha -= 0.005;
-               else if (mFadingLayer.alpha > 0.88)
-                  mFadingLayer.alpha -= 0.01;
-               else if (mFadingLayer.alpha > 0.60)
-                  mFadingLayer.alpha -= 0.02;
-               else if (mFadingLayer.alpha > 0.10)
-                  mFadingLayer.alpha -= 0.05;
+               fadingSpeed *= 1.2;
+               
+               if (mFadingLayer.alpha > 0.2)
+                  mFadingLayer.alpha -= fadingSpeed;
+               else if (mFadingLayer.alpha > 0.1)
+                  mFadingLayer.alpha -= (fadingSpeed + fadingSpeed);
                else
                   SetFadingStatus (0);
             }
@@ -1475,6 +1493,12 @@ package viewer {
          UpdateGesturePaintLayer ();
 
          // ...
+         
+         if (mLastPreferredFPS != mWorldDesignProperties.GetPreferredFPS ())
+         {
+            mLastPreferredFPS = mWorldDesignProperties.GetPreferredFPS ();
+            stage.frameRate = mLastPreferredFPS;
+         }
          
          // assert (mSkin != null);
          
@@ -1551,8 +1575,6 @@ package viewer {
          }
 
          //
-         mStepTimeSpan.End ();
-         mStepTimeSpan.Start ();
 
          var paused:Boolean = (! IsPlaying ()) || mSkin.IsHelpDialogVisible ();
 
@@ -2187,6 +2209,14 @@ package viewer {
             return 2;
 
          return mSkin.GetPlayingSpeedX ();
+      }
+      
+      public function GetRealtimeFps ():Number
+      {
+         if (mSkin == null)
+            return 0;
+
+         return mSkin.GetFPS ();
       }
       
       public function IsShowPlayBar ():Boolean

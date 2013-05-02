@@ -275,11 +275,16 @@ package common.trigger {
       
       public static const ID_Design_SetLevelBooleanProperty:int                        = IdPool.CoreApiId_617;
       public static const ID_Design_SetLevelNumberProperty:int                        = IdPool.CoreApiId_616;
-      //public static const ID_Design_SetLevelStringProperty:int                        = IdPool.CoreApiId_618;
+      public static const ID_Design_SetLevelStringProperty:int                        = IdPool.CoreApiId_618;
 
    // game / world
 
-      public static const ID_World_SetPhysicsSimulationEnabled:int       = IdPool.CoreApiId_726;
+      public static const ID_World_IsPhysicsEngineEnabled:int       = IdPool.CoreApiId_727;
+      public static const ID_World_SetPhysicsEngineEnabled:int       = IdPool.CoreApiId_726;
+      public static const ID_World_GetRealtimeFPS:int            = IdPool.CoreApiId_714;
+      public static const ID_World_GetPreferredFpsAndStepTimeLangth:int       = IdPool.CoreApiId_734;
+      public static const ID_World_SetPreferredFpsAndStepTimeLangth:int       = IdPool.CoreApiId_735;
+      
       public static const ID_World_SetGravityAcceleration_Radians:int       = IdPool.CoreApiId_710;
       public static const ID_World_SetGravityAcceleration_Degrees:int       = IdPool.CoreApiId_711;
       public static const ID_World_SetGravityAcceleration_Vector:int        = IdPool.CoreApiId_712;

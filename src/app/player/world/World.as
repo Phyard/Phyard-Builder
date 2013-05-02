@@ -688,6 +688,11 @@ package player.world {
          return mPreferredFPS;
       }
       
+      public function SetPreferredFPS (fps:Number):void
+      {
+         mPreferredFPS = fps;
+      }
+      
       public function IsPauseOnFocusLost ():Boolean
       {
          return mPauseOnFocusLost;
@@ -955,7 +960,7 @@ package player.world {
          // update physics
          //-----------------------------
             
-            if (mPhysicsEnabled)
+            if (mPhysicsEngineEnabled)
             {
                UpdatePhysics (dt);
    
@@ -1428,16 +1433,16 @@ package player.world {
 //   physics
 //====================================================================================================
 
-      private var mPhysicsEnabled:Boolean = true;
+      private var mPhysicsEngineEnabled:Boolean = true;
 
-      public function IsPhysicsEnabled ():Boolean
+      public function IsPhysicsEngineEnabled ():Boolean
       {
-         return mPhysicsEnabled;
+         return mPhysicsEngineEnabled;
       }
 
-      public function SetPhysicsEnabled (enabled:Boolean):void
+      public function SetPhysicsEngineEnabled (enabled:Boolean):void
       {
-         mPhysicsEnabled = enabled;
+         mPhysicsEngineEnabled = enabled;
       }
 
       // the 2 are both physics values
@@ -1463,6 +1468,11 @@ package player.world {
       public function GetPhysicsSimulationStepTimeLength ():Number
       {
          return mPhysicsSimulationStepTimeLength;
+      }
+
+      public function SetPhysicsSimulationStepTimeLength (timeLength:Number):void
+      {
+         mPhysicsSimulationStepTimeLength = timeLength;
       }
 
       public function SetDefaultGravityAccelerationMagnitude (magnitude:Number):void

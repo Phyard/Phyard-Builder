@@ -1581,19 +1581,45 @@ package common.trigger {
                      ],
                      null
                   );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelStringProperty,
-         //            [
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
-         //               [ValueTypeDefine.ValueType_String,       ""],
-         //            ],
-         //            null
-         //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelStringProperty,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
+                     null
+                  );
 
       // game / world
 
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetPhysicsSimulationEnabled,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_IsPhysicsEngineEnabled,
+                     null,
                      [
                         [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetPhysicsEngineEnabled,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetRealtimeFPS,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       50],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetPreferredFpsAndStepTimeLangth,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       50],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.02],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetPreferredFpsAndStepTimeLangth,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       50],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.02],
                      ],
                      null
                   );

@@ -57,6 +57,7 @@ package editor.world {
          var system_package:FunctionMenuGroup = new FunctionMenuGroup ("System", sGlobalMenuGroup);
          var services_package:FunctionMenuGroup = new FunctionMenuGroup ("Services", sGlobalMenuGroup);
 
+         var world_io_package:FunctionMenuGroup  = new FunctionMenuGroup ("IO", sWorldMenuGroup);
          var world_scene_package:FunctionMenuGroup  = new FunctionMenuGroup ("Scene", sWorldMenuGroup);
          var world_level_package:FunctionMenuGroup  = new FunctionMenuGroup ("Level", sWorldMenuGroup);
          var ccat_package:FunctionMenuGroup    = new FunctionMenuGroup ("CCat", sWorldMenuGroup);
@@ -1466,6 +1467,23 @@ package editor.world {
                   );
 
       // game / design
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_WriteSaveData, world_io_package, "Write Save Data", null, null,
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadSaveData, world_io_package, "Load Save Data", null, null,
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_ResetSaveData, world_io_package, "Reset Save Data", null, null,
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_DeleteSaveData, world_io_package, "Delete Save Data", null, null,
+                     null,
+                     null
+                  );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadLevel, world_scene_package, "Load Scene", null, null,
                      [
@@ -1542,23 +1560,6 @@ package editor.world {
                      [
                         new VariableDefinitionString ("Result"),
                      ]
-                  );
-                  
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_WriteSaveData, world_level_package, "Write Save Data", null, null,
-                     null,
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadSaveData, world_level_package, "Load Save Data", null, null,
-                     null,
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_ResetSaveData, world_level_package, "Reset Save Data", null, null,
-                     null,
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_DeleteSaveData, world_level_package, "Delete Save Data", null, null,
-                     null,
-                     null
                   );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_RestartLevel, world_level_package, "Restart Level", null, null,
@@ -1668,19 +1669,45 @@ package editor.world {
                      ],
                      null
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelStringProperty, world_level_package, "Set Level String Property", null, null,
-         //            [
-         //               new VariableDefinitionNumber ("Property", null, {mValueLists: Lists.mLevelStringPropertyList}),
-         //               new VariableDefinitionString ("Property Value"),
-         //            ],
-         //            null
-         //         );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelStringProperty, world_level_package, "Set Level String Property", null, null,
+                     [
+                        new VariableDefinitionNumber ("Property", null, {mValueLists: Lists.mLevelStringPropertyList}),
+                        new VariableDefinitionString ("Property Value"),
+                     ],
+                     null
+                  );
 
       // game / world
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetPhysicsSimulationEnabled, world_physics_package, "Set Physics Simulation Enabled", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_IsPhysicsEngineEnabled, world_physics_package, "Is Physics Engine Enabled?", null, null,
+                     null,
                      [
-                             new VariableDefinitionBoolean ("Including Half Intersecteds?"),
+                             new VariableDefinitionBoolean ("Enabled?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetPhysicsEngineEnabled, world_physics_package, "Set Physics Engine Enabled", null, null,
+                     [
+                             new VariableDefinitionBoolean ("Enabled?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetRealtimeFPS, world_physics_package, "Get Realtime FPS", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Current FPS"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetPreferredFpsAndStepTimeLangth, world_physics_package, "Get Preferred Fps And Step Time Langth", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Prefered FPS"),
+                             new VariableDefinitionNumber ("Step Time Length"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetPreferredFpsAndStepTimeLangth, world_physics_package, "Set Preferred Fps And Step Time Langth", null, null,
+                     [
+                             new VariableDefinitionNumber ("Prefered FPS"),
+                             new VariableDefinitionNumber ("Step Time Length"),
                      ],
                      null
                   );

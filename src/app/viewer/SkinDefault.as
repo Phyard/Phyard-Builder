@@ -74,16 +74,21 @@ package viewer {
       }
       
       override public function Update (dt:Number):void
-      {
-         if (mDeactivated)
-         {
-            UpdateDeactivatedLayer ();
-            return;
-         }
-         
+      {  
          mFpsTime += dt; 
          ++ mFpsSteps;
-         if (mFpsSteps >= 30)
+         
+         if (mTotalSteps < 30)
+         {
+            ++ mTotalSteps;
+            mFps = mFpsSteps / mFpsTime;
+            
+            if (mInfosLayer.visible)
+            {
+               UpdateInfosPanel ();
+            }
+         }
+         else if (mFpsSteps >= 30)
          {
             mFps = mFpsSteps / mFpsTime;
             mFpsTime = 0.0;
@@ -95,7 +100,13 @@ package viewer {
             }
          }
          
-         var fadingSpeed:Number = 0.05;
+         if (mDeactivated)
+         {
+            UpdateDeactivatedLayer ();
+            return;
+         }
+         
+         var fadingSpeed:Number = dt;
          
          if (mLevelFinishedDialog != null)
          {
@@ -199,6 +210,8 @@ package viewer {
          //RebuildLevelFinishedDialog ();
          CenterSpriteOnContentRegion (mLevelFinishedDialogLayer);
          CenterSpriteOnContentRegion (mHelpDialog);
+         
+         mFps = (stage == null ? 30 : stage.frameRate);
       }
 
       override protected function OnStartedChanged ():void
@@ -498,8 +511,9 @@ package viewer {
       private var mPauseTimes:Array = new Array (0, 0, 0, 0, 0);
       private var mPausedIndex:int = 0;
       
-      private var mFpsTime:Number = 0.0; 
+      private var mTotalSteps:int = 0;
       private var mFpsSteps:int = 0;
+      private var mFpsTime:Number = 0.0; 
       private var mFps:Number = 0.0;
       
       private var mInfosPanel:Sprite = null;

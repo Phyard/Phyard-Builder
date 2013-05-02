@@ -50,6 +50,9 @@
                mInColorBlindMode = Boolean (value);
                UpdateEntityAppearances (IsCiShape);
                break;
+            case Define.LevelProperty_RenderQuality:
+               Global.Viewer_mLibGraphics.SetRenderQuality (value as String);
+               break;
          }
       }
       

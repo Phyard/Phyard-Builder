@@ -24,6 +24,15 @@ package player
                   
                   "" : null
                };
+            case "SetViewerParams":               
+               Global.Viewer_mLibCapabilities = params.mLibCapabilities; // from v1.60
+                           //IsAccelerometerSupported:Function; // from v1.60
+                           //GetAcceleration:Function; // from v1.60
+               Global._GetDebugString = params.GetDebugString as Function; // from v1.60
+               
+               Global.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
+               
+               break;
             case "GetWorldProperties":
                world = params.mWorld as World;
                
@@ -86,13 +95,6 @@ package player
                Global.UI_SetZoomScale = params.SetZoomScale as Function; // from v1.53, SetScale has a 2nd param: changeScaleSmoothly, default value is true
                Global.UI_IsSoundEnabled = params.IsSoundEnabled as Function; // from v1.59
                Global.UI_SetSoundEnabled = params.SetSoundEnabled as Function; // from v1.59
-               
-               Global.Viewer_mLibCapabilities = params.mLibCapabilities; // from v1.60
-                           //IsAccelerometerSupported:Function; // from v1.60
-                           //GetAcceleration:Function; // from v1.60
-               Global._GetDebugString = params.GetDebugString as Function; // from v1.60
-               
-               Global.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
                
                break;
             default:

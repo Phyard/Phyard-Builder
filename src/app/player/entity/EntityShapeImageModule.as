@@ -114,11 +114,11 @@ package player.entity {
 //   
 //=============================================================
       
-      public function OnModuleAppearanceChanged ():void
-      {
-         mNeedRebuildAppearanceObjects = true;
-         DelayUpdateAppearance ();
-      }
+      //public function OnModuleAppearanceChanged ():void
+      //{
+      //   mNeedRebuildAppearanceObjects = true;
+      //   DelayUpdateAppearance ();
+      //}
       
 //=============================================================
 //   update

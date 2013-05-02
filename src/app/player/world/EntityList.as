@@ -286,28 +286,28 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      internal function UpdateImageModuleAppearances ():void
-      {
-         var entity:Entity = mHead;
-         if (entity != null)
-         {
-            var tail:Entity = mTail;
-
-            while (true)
-            {
-               // to optimize
-               if (entity is EntityShapeImageModule)
-                  (entity as EntityShapeImageModule).OnModuleAppearanceChanged ();
-               else if (entity is EntityShapeImageModuleButton)
-                  (entity as EntityShapeImageModuleButton).OnModuleAppearanceChanged ();
-
-               if (entity == tail)
-                  break;
-
-               entity = entity.mNextEntity;
-            }
-         }
-      }
+      //internal function UpdateImageModuleAppearances ():void
+      //{
+      //   var entity:Entity = mHead;
+      //   if (entity != null)
+      //   {
+      //      var tail:Entity = mTail;
+      //
+      //      while (true)
+      //      {
+      //         // to optimize
+      //         if (entity is EntityShapeImageModule)
+      //            (entity as EntityShapeImageModule).OnModuleAppearanceChanged ();
+      //         else if (entity is EntityShapeImageModuleButton)
+      //            (entity as EntityShapeImageModuleButton).OnModuleAppearanceChanged ();
+      //
+      //         if (entity == tail)
+      //            break;
+      //
+      //         entity = entity.mNextEntity;
+      //      }
+      //   }
+      //}
 
       internal function BuildShapePhysics (fromLastMarkedTail:Boolean = false):void
       {

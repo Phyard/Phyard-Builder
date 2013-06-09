@@ -868,9 +868,12 @@ package editor.asset {
          defaultItems.print = true;
          contextMenu = theContextMenu;
          
-         BuildContextMenuInternal (theContextMenu.customItems);
-         
-         theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
+         if (theContextMenu.customItems != null) // may be null on some deviecs
+         {
+            BuildContextMenuInternal (theContextMenu.customItems);
+            
+            theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
+         }
       }
       
       protected function BuildContextMenuInternal (customMenuItemsStack:Array):void

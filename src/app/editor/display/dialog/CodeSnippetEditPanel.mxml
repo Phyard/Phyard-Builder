@@ -1102,14 +1102,18 @@
             if (sprite.contextMenu == null)
             {
                sprite.contextMenu = new ContextMenu ();
-               sprite.contextMenu.hideBuiltInItems ();
+               
+               if (sprite.contextMenu != null) // may be null on some devices
+                  sprite.contextMenu.hideBuiltInItems ();
             }
 
             var menuItem:ContextMenuItem = new ContextMenuItem(caption, addSaperator);
             menuItem.enabled = isEnabled;
             if (selectedListener != null)
                menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
-            sprite.contextMenu.customItems.push (menuItem);
+               
+            if (sprite.contextMenu != null) // may be null on some devices
+               sprite.contextMenu.customItems.push (menuItem);
          }
 
          private function ClearCustomContextMenus (sprite:InteractiveObject, alsoSetNull:Boolean):void
@@ -1135,7 +1139,9 @@
             if (sprite.contextMenu == null)
             {
                sprite.contextMenu = new ContextMenu ();
-               sprite.contextMenu.hideBuiltInItems ();
+               
+               if (sprite.contextMenu != null) // may be null on some devices
+                  sprite.contextMenu.hideBuiltInItems ();
             }
             else
             {
@@ -1877,11 +1883,14 @@
             if (sprite.contextMenu == null)
             {
                sprite.contextMenu = new ContextMenu ();
-               sprite.contextMenu.hideBuiltInItems ();
+               
+               if (sprite.contextMenu != null) // may be null on some devices
+                  sprite.contextMenu.hideBuiltInItems ();
             }
             else
             {
-               sprite.contextMenu.customItems.splice (0, sprite.contextMenu.customItems.length);
+               if (sprite.contextMenu.customItems != null)
+                  sprite.contextMenu.customItems.splice (0, sprite.contextMenu.customItems.length);
             }
 
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();

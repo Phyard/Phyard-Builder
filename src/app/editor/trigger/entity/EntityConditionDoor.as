@@ -239,6 +239,10 @@ package editor.trigger.entity {
          mouseChildren = true;
          
          mContextMenu = new ContextMenu ();
+         this.contextMenu = mContextMenu;
+         if (this.contextMenu == null) // may be still null on some devices
+            return;
+         
          mContextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = mContextMenu.builtInItems;
          defaultItems.print = false;
@@ -250,8 +254,6 @@ package editor.trigger.entity {
          mContextMenuItem_ToggleNot = new ContextMenuItem (kText_AddNot, false);
          mContextMenu.customItems.push (mContextMenuItem_ToggleNot);
          mContextMenuItem_ToggleNot.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         
-         this.contextMenu = mContextMenu;
          
          UpdateMenuItems ();
       }

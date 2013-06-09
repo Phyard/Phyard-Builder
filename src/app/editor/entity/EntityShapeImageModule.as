@@ -224,6 +224,9 @@ package editor.entity {
       private function BuildContextMenu ():void
       {
          contextMenu = new ContextMenu ();
+         if (contextMenu == null) // may be still null on some devivces
+            return;
+         
          contextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
          defaultItems.print = false;

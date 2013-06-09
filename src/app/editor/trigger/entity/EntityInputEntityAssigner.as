@@ -217,6 +217,11 @@ package editor.trigger.entity {
             return;
          
          sContextMenu = new ContextMenu ();
+         
+         contextMenu = sContextMenu;
+         if (contextMenu == null) // may be still null on some devices
+            return;
+         
          sContextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = sContextMenu.builtInItems;
          defaultItems.print = false;
@@ -257,16 +262,12 @@ package editor.trigger.entity {
          {
             mSelectorLayer.visible = true;
             
-            contextMenu = sContextMenu;
-            
             for (var i:int = 0; i < sContextMenuItems.length; ++ i)
                (sContextMenuItems [i] as ContextMenuItem).enabled = (sContextMenuItemValues[i] != mEntityAssignerType);
          }
          else
          {
             mSelectorLayer.visible = false;
-            
-            contextMenu = null;
          }
          
          if (! visible && mInputEntitySelector != null)

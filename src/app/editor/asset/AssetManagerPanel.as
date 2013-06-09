@@ -404,14 +404,17 @@ package editor.asset {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
          
-         if (mAssetManager != null)
+         if (theContextMenu.customItems != null) // may be null on some deviecs
          {
-            mAssetManager.BuildContextMenuInternal (theContextMenu.customItems);
+            if (mAssetManager != null)
+            {
+               mAssetManager.BuildContextMenuInternal (theContextMenu.customItems);
+            }
+            
+            BuildContextMenuInternal (theContextMenu.customItems);
+            
+            theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
          }
-         
-         BuildContextMenuInternal (theContextMenu.customItems);
-         
-         theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
       }
       
       private var mMoveSelectionsAccuratelyMenuItem:ContextMenuItem = null;
@@ -425,7 +428,10 @@ package editor.asset {
                shown = false;
             }
          }
-          
+         
+         if (contextMenu == null || contextMenu.customItems) // may be null on some deviecs
+            return;
+         
          if (shown)
          {
             if (mMoveSelectionsAccuratelyMenuItem == null)

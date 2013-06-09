@@ -290,13 +290,24 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelNumberProperty,                SetLevelProperty_Number);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelStringProperty,                SetLevelProperty_String);
 
-      // game / world
+      // game / world / appearance
+      
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_GetFilledColor,         GetLevelFilledColor);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_SetFilledColor,         SetLevelFilledColor);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_GetFilledColorRGB,      GetLevelFilledColorRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_SetFilledColorRGB,      SetLevelFilledColorRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_GetBorderColor,         GetLevelBorderColor);         
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_SetBorderColor,         SetLevelBorderColor);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_GetBorderColorRGB,      GetLevelBorderColorRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_SetBorderColorRGB,      SetLevelBorderColorRGB);
 
-         RegisterCoreFunction (CoreFunctionIds.ID_World_IsPhysicsEngineEnabled,      IsPhysicsEngineEnabled);
-         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPhysicsEngineEnabled,     SetPhysicsEngineEnabled);
-         RegisterCoreFunction (CoreFunctionIds.ID_World_GetRealtimeFPS,                       GetRealtimeFP);
+      // game / world / physics
+
+         RegisterCoreFunction (CoreFunctionIds.ID_World_IsPhysicsEngineEnabled,          IsPhysicsEngineEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPhysicsEngineEnabled,         SetPhysicsEngineEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetRealtimeFPS,                       GetRealtimeFPS);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetPreferredFpsAndStepTimeLangth,     GetPreferredFpsAndStepTimeLangth);
-         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPreferredFpsAndStepTimeLangth,     SetPreferredFpsAndStepTimeLangth);         
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPreferredFpsAndStepTimeLangth,     SetPreferredFpsAndStepTimeLangth);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,     SetWorldGravityAcceleration_Radians);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
@@ -2607,7 +2618,91 @@ package player.trigger {
       }
 
    //*******************************************************************
-   // game / world
+   // game / world / appearance
+   //*******************************************************************
+      
+      public static function GetLevelFilledColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var filledColor:uint = Global.GetCurrentWorld ().GetBackgroundColor ();
+
+         valueTarget.AssignValueObject (filledColor);
+      }
+
+      public static function SetLevelFilledColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+         
+         Global.GetCurrentWorld ().SetBackgroundColor (color);
+      }
+
+      public static function GetLevelFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var filledColor:uint = Global.GetCurrentWorld ().GetBackgroundColor ();
+
+         valueTarget.AssignValueObject ((filledColor >> 16) & 0xFF);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((filledColor >> 8) & 0xFF);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((filledColor >> 0) & 0xFF);
+      }
+
+      public static function SetLevelFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var red:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var green:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var blue:int =  valueSource.EvaluateValueObject () as Number;
+         
+         Global.GetCurrentWorld ().SetBackgroundColor ((red << 16) | (green << 8) | (blue));
+      }
+
+      public static function GetLevelBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var borderColor:uint = Global.GetCurrentWorld ().GetBorderColor ();
+
+         valueTarget.AssignValueObject (borderColor);
+      }
+
+      public static function SetLevelBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+
+         Global.GetCurrentWorld ().SetBorderColor (color);
+      }
+
+      public static function GetLevelBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var borderColor:uint = Global.GetCurrentWorld ().GetBorderColor ();
+
+         valueTarget.AssignValueObject ((borderColor >> 16) & 0xFF);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((borderColor >> 8) & 0xFF);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((borderColor >> 0) & 0xFF);
+      }
+
+      public static function SetLevelBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var red:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var green:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var blue:int =  valueSource.EvaluateValueObject () as Number;
+         
+         Global.GetCurrentWorld ().SetBorderColor ((red << 16) | (green << 8) | (blue));
+      }
+
+   //*******************************************************************
+   // game / world / physics
    //*******************************************************************
 
       public static function IsPhysicsEngineEnabled (valueSource:Parameter, valueTarget:Parameter):void
@@ -2622,7 +2717,7 @@ package player.trigger {
          Global.GetCurrentWorld ().SetPhysicsEngineEnabled (enabled);
       }
 
-      public static function GetRealtimeFP (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetRealtimeFPS (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.Viewer_mLibAppp.GetRealtimeFps ());
       }
@@ -3781,7 +3876,7 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
-         var filledColor:uint;
+         var filledColor:uint = 0x000000;
 
          if (shape == null)
          {
@@ -3826,7 +3921,7 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
-         var filledColor:uint;
+         var filledColor:uint = 0x000000;
 
          if (shape == null)
          {
@@ -3921,7 +4016,7 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
-         var borderColor:uint;
+         var borderColor:uint = 0x000000;
 
          if (shape == null)
          {
@@ -3966,7 +4061,7 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
-         var borderColor:uint;
+         var borderColor:uint = 0x000000;
 
          if (shape == null)
          {

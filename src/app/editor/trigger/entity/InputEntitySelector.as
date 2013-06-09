@@ -235,6 +235,9 @@ package editor.trigger.entity {
          
          contextMenu = new ContextMenu ();
          
+         if (contextMenu == null) // may be still null on some devices
+            return;
+         
          contextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
          defaultItems.print = false;

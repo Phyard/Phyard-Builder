@@ -1589,7 +1589,66 @@ package common.trigger {
                      null
                   );
 
-      // game / world
+      // game / world / appearance
+                  
+          RegisterCoreDeclaration (CoreFunctionIds.ID_Level_GetFilledColor,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Level_SetFilledColor,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Level_GetFilledColorRGB,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Level_SetFilledColorRGB,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Level_GetBorderColor,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Level_SetBorderColor,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Level_GetBorderColorRGB,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Level_SetBorderColorRGB,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
+                     null
+                  );
+
+      // game / world / physics
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_IsPhysicsEngineEnabled,
                      null,

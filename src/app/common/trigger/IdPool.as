@@ -308,12 +308,22 @@ package common.trigger {
 
       public static const CoreApiId_609:int = 609; // design
       public static const CoreApiId_610:int = 610; // design
+      
       public static const CoreApiId_612:int = 612; // design
+      
       public static const CoreApiId_614:int = 614; // design
       public static const CoreApiId_615:int = 615; // gesture
       public static const CoreApiId_616:int = 616; // 
       public static const CoreApiId_617:int = 617; // 
       public static const CoreApiId_618:int = 618; // 
+      public static const CoreApiId_619:int = 619; // 
+      public static const CoreApiId_620:int = 620; // 
+      public static const CoreApiId_621:int = 621; // 
+      public static const CoreApiId_622:int = 622; // 
+      public static const CoreApiId_623:int = 623; // 
+      public static const CoreApiId_624:int = 624; // 
+      public static const CoreApiId_625:int = 625; // 
+      public static const CoreApiId_626:int = 626; // 
 
       public static const CoreApiId_700:int = 700; // world
 

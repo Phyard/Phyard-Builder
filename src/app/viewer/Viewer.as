@@ -644,8 +644,7 @@ package viewer {
                   
                   SetErrorMessage (null); // will call this.visible = true
                   
-                  if (! ((mParamsFromEditor != null) || (mParamsFromUniViewer != null && mFirstTimePlaying)))
-                     SetFadingStatus (-1);
+                  SetFadingStatus (-1);
                   
                   ChangeState (StateId_Playing);
                }
@@ -1468,6 +1467,16 @@ package viewer {
          if (mFadingStatus != 0)
          {
             var fadingSpeed:Number = mStepTimeSpan.GetLastSpan ();
+            if ((mParamsFromEditor != null) || (mParamsFromUniViewer != null && mFirstTimePlaying))
+            {
+               if (fadingSpeed < 0.2)
+                  fadingSpeed = 0.2;
+            }
+            else
+            {
+               if (fadingSpeed > 0.1)
+                  fadingSpeed = 0.1;
+            }
             
             if (mFadingStatus > 0)
             {
@@ -1477,12 +1486,8 @@ package viewer {
             }
             else
             {
-               fadingSpeed *= 1.2;
-               
-               if (mFadingLayer.alpha > 0.2)
+               if (mFadingLayer.alpha > 0.07)
                   mFadingLayer.alpha -= fadingSpeed;
-               else if (mFadingLayer.alpha > 0.1)
-                  mFadingLayer.alpha -= (fadingSpeed + fadingSpeed);
                else
                   SetFadingStatus (0);
             }

@@ -277,7 +277,18 @@ package common.trigger {
       public static const ID_Design_SetLevelNumberProperty:int                        = IdPool.CoreApiId_616;
       public static const ID_Design_SetLevelStringProperty:int                        = IdPool.CoreApiId_618;
 
-   // game / world
+   // game / world / appearance
+      
+      public static const ID_Level_GetFilledColor:int                        = IdPool.CoreApiId_619;
+      public static const ID_Level_SetFilledColor:int                        = IdPool.CoreApiId_620;
+      public static const ID_Level_GetFilledColorRGB:int                        = IdPool.CoreApiId_621;
+      public static const ID_Level_SetFilledColorRGB:int                        = IdPool.CoreApiId_622;
+      public static const ID_Level_GetBorderColor:int                        = IdPool.CoreApiId_623;
+      public static const ID_Level_SetBorderColor:int                        = IdPool.CoreApiId_624;
+      public static const ID_Level_GetBorderColorRGB:int                        = IdPool.CoreApiId_625;
+      public static const ID_Level_SetBorderColorRGB:int                        = IdPool.CoreApiId_626;
+
+   // game / world / physics
 
       public static const ID_World_IsPhysicsEngineEnabled:int       = IdPool.CoreApiId_727;
       public static const ID_World_SetPhysicsEngineEnabled:int       = IdPool.CoreApiId_726;

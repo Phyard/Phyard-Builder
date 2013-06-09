@@ -107,6 +107,8 @@ package viewer {
          }
          
          var fadingSpeed:Number = dt;
+         if (fadingSpeed > 0.1)
+            fadingSpeed = 0.1;
          
          if (mLevelFinishedDialog != null)
          {

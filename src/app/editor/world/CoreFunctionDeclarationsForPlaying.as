@@ -61,8 +61,8 @@ package editor.world {
          var world_scene_package:FunctionMenuGroup  = new FunctionMenuGroup ("Scene", sWorldMenuGroup);
          var world_level_package:FunctionMenuGroup  = new FunctionMenuGroup ("Level", sWorldMenuGroup);
          var ccat_package:FunctionMenuGroup    = new FunctionMenuGroup ("CCat", sWorldMenuGroup);
+         var world_appearance_package:FunctionMenuGroup    = new FunctionMenuGroup ("Appearance", sWorldMenuGroup);
          var world_physics_package:FunctionMenuGroup    = new FunctionMenuGroup ("Physics", sWorldMenuGroup);
-         //var world_appearance_package:FunctionMenuGroup    = new FunctionMenuGroup ("Appearance", sWorldMenuGroup);
          var world_camera_package:FunctionMenuGroup    = new FunctionMenuGroup ("Camera", sWorldMenuGroup);
          var world_script_package:FunctionMenuGroup    = new FunctionMenuGroup ("Script Calling", sWorldMenuGroup);
          var world_create_entity_package:FunctionMenuGroup    = new FunctionMenuGroup ("Create Entity", sWorldMenuGroup);
@@ -1677,7 +1677,66 @@ package editor.world {
                      null
                   );
 
-      // game / world
+      // game / world / appearance
+                  
+          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Level_GetFilledColor, world_appearance_package, "Get Level Background Color", "@Color (#0) = Get Level Background Color ()", null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Level_SetFilledColor, world_appearance_package, "Set Level Background Color", "@Set Level Background Color (Color ($0))", null,
+                     [
+                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Level_GetFilledColorRGB, world_appearance_package, "Get Level Background Color RGB", "@RGB (#0, #1, #2) = Get Level Background Color ()", null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Red"),
+                             new VariableDefinitionNumber ("Green"),
+                             new VariableDefinitionNumber ("Blue"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Level_SetFilledColorRGB, world_appearance_package, "Set Level Background Color RGB", "@Set Level Background Color (RGB ($0, $1, $2))", null,
+                     [
+                             new VariableDefinitionNumber ("Red"),
+                             new VariableDefinitionNumber ("Green"),
+                             new VariableDefinitionNumber ("Blue"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Level_GetBorderColor, world_appearance_package, "Get Level Border Color", "@Color (#0) = Get Level Border Color ()", null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Border Color", null, {mIsColorValue: true}),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Level_SetBorderColor, world_appearance_package, "Set Level Border Color", "@Set Level Border Color (Color ($0))", null,
+                     [
+                             new VariableDefinitionNumber ("Border Color", null, {mIsColorValue: true}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Level_GetBorderColorRGB, world_appearance_package, "Get Level Border Color RGB", "@RGB (#0, #1, #2) = Get Level Border Color ()", null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Red"),
+                             new VariableDefinitionNumber ("Green"),
+                             new VariableDefinitionNumber ("Blue"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Level_SetBorderColorRGB, world_appearance_package, "Set Level Border Color RGB", "@Set Level Border Color (RGB ($0, $1, $2))", null,
+                     [
+                             new VariableDefinitionNumber ("Red"),
+                             new VariableDefinitionNumber ("Green"),
+                             new VariableDefinitionNumber ("Blue"),
+                     ],
+                     null
+                  );
+
+      // game / world / physics
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_IsPhysicsEngineEnabled, world_physics_package, "Is Physics Engine Enabled?", null, null,
                      null,
@@ -2497,7 +2556,7 @@ package editor.world {
                      null
                   );
 
-          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBodyTexture, shape_appearance_package, "Get Body Texture", null, null,
+          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBodyTexture, shape_appearance_package, "Get Shape Body Texture", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
                      ],
@@ -2505,31 +2564,31 @@ package editor.world {
                              new VariableDefinitionModule ("Texture Module", null, {mIsTextureValue: true}),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBodyTexture, shape_appearance_package, "Set Body Texture", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBodyTexture, shape_appearance_package, "Set Shape Body Texture", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
                              new VariableDefinitionModule ("Texture Module", null, {mIsTextureValue: true}),
                      ],
                      null
                   );
-          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Background Color", "@Color (#0) = Get Background Color ($0)", null,
+          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Shape Background Color", "@Color (#0) = Get Shape Background Color ($0)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                      ],
                      [
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, shape_appearance_package, "Set Background Color", "@Set Background Color ($0, Color ($1))", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, shape_appearance_package, "Set Shape Background Color", "@Set Shape Background Color ($0, Color ($1))", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, shape_appearance_package, "Get Background Color RGB", "@RGB (#0, #1, #2) = Get Background Color ($0)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, shape_appearance_package, "Get Shape Background Color RGB", "@RGB (#0, #1, #2) = Get Shape Background Color ($0)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                      ],
                      [
                              new VariableDefinitionNumber ("Red"),
@@ -2537,16 +2596,16 @@ package editor.world {
                              new VariableDefinitionNumber ("Blue"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB, shape_appearance_package, "Set Background Color RGB", "@Set Background Color ($0, RGB ($1, $2, $3))", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB, shape_appearance_package, "Set Shape Background Color RGB", "@Set Shape Background Color ($0, RGB ($1, $2, $3))", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                              new VariableDefinitionNumber ("Red"),
                              new VariableDefinitionNumber ("Green"),
                              new VariableDefinitionNumber ("Blue"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledOpacity, shape_appearance_package, "Get Background Opacity", "@Set Background Opacity ($0, $1)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledOpacity, shape_appearance_package, "Get Shape Background Opacity", "@Set Shape Background Opacity ($0, $1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                      ],
@@ -2554,14 +2613,14 @@ package editor.world {
                              new VariableDefinitionNumber ("Background Opacity"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledOpacity, shape_appearance_package, "Set Background Opacity", "@Set Background Opacity ($0, $1)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledOpacity, shape_appearance_package, "Set Shape Background Opacity", "@Set Shape Background Opacity ($0, $1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),
                              new VariableDefinitionNumber ("Background Opacity"),
                      ],
                      null
                   );
-          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsShowBorder, shape_appearance_package, "Is Border Visible", null, null,
+          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsShowBorder, shape_appearance_package, "Is Shape Border Visible", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
                      ],
@@ -2569,31 +2628,31 @@ package editor.world {
                              new VariableDefinitionBoolean ("Border Visible?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetShowBorder, shape_appearance_package, "Set Border Visible", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetShowBorder, shape_appearance_package, "Set Shape Border Visible", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Border Visible?"),
                      ],
                      null
                   );
-          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColor, shape_appearance_package, "Get Border Color", "@Color (#0) = Get Border Color ($0)", null,
+          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColor, shape_appearance_package, "Get Shape Border Color", "@Color (#0) = Get Shape Border Color ($0)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:false}),
                      ],
                      [
-                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
+                             new VariableDefinitionNumber ("Border Color", null, {mIsColorValue: true}),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColor, shape_appearance_package, "Set Border Color", "@Set Border Color ($0, Color ($1))", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColor, shape_appearance_package, "Set Shape Border Color", "@Set Shape Border Color ($0, Color ($1))", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:true}),
-                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:false}),
+                             new VariableDefinitionNumber ("Border Color", null, {mIsColorValue: true}),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColorRGB, shape_appearance_package, "Get Border Color RGB", "@RGB (#0, #1, #2) = Get Border Color ($0)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColorRGB, shape_appearance_package, "Get Shape Border Color RGB", "@RGB (#0, #1, #2) = Get Shape Border Color ($0)", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:false}),
                      ],
                      [
                              new VariableDefinitionNumber ("Red"),
@@ -2601,16 +2660,16 @@ package editor.world {
                              new VariableDefinitionNumber ("Blue"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB, shape_appearance_package, "Set Border Color RGB", "@Set Border Color ($0, RGB ($1, $2, $3))", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB, shape_appearance_package, "Set Shape Border Color RGB", "@Set Shape Border Color ($0, RGB ($1, $2, $3))", null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:true}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:false}),
                              new VariableDefinitionNumber ("Red"),
                              new VariableDefinitionNumber ("Green"),
                              new VariableDefinitionNumber ("Blue"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderOpacity, shape_appearance_package, "Get Border Opacity", "@Set Border Opacity ($0, $1)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderOpacity, shape_appearance_package, "Get Shape Border Opacity", "@Set Shape Border Opacity ($0, $1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:false}),
                      ],
@@ -2618,16 +2677,16 @@ package editor.world {
                              new VariableDefinitionNumber ("Border Opacity"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderOpacity, shape_appearance_package, "Set Border Opacity", "@Set Border Opacity ($0, $1)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderOpacity, shape_appearance_package, "Set Shape Border Opacity", "@Set Shape Border Opacity ($0, $1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses, mGroundSelectable:false}),
                              new VariableDefinitionNumber ("Border Opacity"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCacheAsBitmap, shape_appearance_package, "Cache As Bitmap", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCacheAsBitmap, shape_appearance_package, "Cache Shape As Bitmap", null, null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Cache As Bitmap?"),
                      ],
                      null

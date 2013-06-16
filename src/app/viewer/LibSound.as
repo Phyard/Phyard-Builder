@@ -70,6 +70,7 @@
       {
          if (IsSoundEnabled () && sound != null)
          {
+trace (">>>>>> crossingLevels = " + crossingLevels);
             if (crossingLevels && mCrossingLevelsSounds.indexOf (sound) >= 0)
             {
                return;
@@ -91,23 +92,23 @@
                
                if (crossingLevels)
                {
-//trace ("PlaySound, crossing level: times = " + times);
+trace ("PlaySound, crossing level: times = " + times);
                   mCrossingLevelsSounds [mNumCrossingLevelsSounds] = sound; // for c/java, need check index out of range
                   mCrossingLevelsSoundChannels [mNumCrossingLevelsSounds ++] = channel; // for c/java, need check index out of range
                }
                else
                {
-//trace ("PlaySound, in level: times = " + times);
+trace ("PlaySound, in level: times = " + times);
                   mInLevelSoundChannels [mNumInLevelSounds ++] = channel; // for c/java, need check index out of range
                }
             }
-//trace ("+++++ mNumInLevelSounds = " + mNumInLevelSounds + ", mNumCrossingLevelsSounds = " + mNumCrossingLevelsSounds);
+trace ("+++++ mNumInLevelSounds = " + mNumInLevelSounds + ", mNumCrossingLevelsSounds = " + mNumCrossingLevelsSounds);
          }
       }
       
       private function OnSoundCompletePlaying (event:Event):void
       {
-//trace ("========= OnSoundCompletePlaying");
+trace ("========= OnSoundCompletePlaying");
 
          var index:int;
          
@@ -116,7 +117,7 @@
          index = mInLevelSoundChannels.indexOf (channel);
          if (index >= 0)
          {
-//trace ("in level");
+trace ("in level");
             mInLevelSoundChannels [index] = mInLevelSoundChannels [-- mNumInLevelSounds];
             mInLevelSoundChannels [mNumInLevelSounds] = null;
          }
@@ -124,7 +125,7 @@
          index = mCrossingLevelsSoundChannels.indexOf (channel);
          if (index >= 0)
          {
-//trace ("crossing level");
+trace ("crossing level");
             mCrossingLevelsSoundChannels [index] = mCrossingLevelsSoundChannels [-- mNumCrossingLevelsSounds];
             mCrossingLevelsSoundChannels [mNumCrossingLevelsSounds] = null;
             
@@ -132,7 +133,7 @@
             mCrossingLevelsSounds [mNumCrossingLevelsSounds] = null;
          }
          
-//trace ("----- mNumInLevelSounds = " + mNumInLevelSounds + ", mNumCrossingLevelsSounds = " + mNumCrossingLevelsSounds);
+trace ("----- mNumInLevelSounds = " + mNumInLevelSounds + ", mNumCrossingLevelsSounds = " + mNumCrossingLevelsSounds);
       }
       
       // todo
@@ -149,7 +150,7 @@
             
             channel.stop ();
             
-            mCrossingLevelsSounds [index] = null;
+            mInLevelSoundChannels [index] = null;
          }
          
          mNumInLevelSounds = 0;
@@ -172,8 +173,8 @@
                
                channel.stop ();
                
-               mCrossingLevelsSoundChannels [index] = 0;
-               mCrossingLevelsSounds [index] = 0;
+               mCrossingLevelsSoundChannels [index] = null;
+               mCrossingLevelsSounds [index] = null;
             }
             
             mNumCrossingLevelsSounds = 0;

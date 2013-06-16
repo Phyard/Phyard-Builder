@@ -56,8 +56,6 @@ package editor.trigger.entity {
          addChild (mSelectorLayer);
          
          RebuildEntityArray ();
-         
-         BuildContextMenu ();
       }
       
       override public function GetTypeName ():String
@@ -194,52 +192,40 @@ package editor.trigger.entity {
          UpdateInternalComponents ();
       }
       
-      
-//==============================================================================================================
-//
-//==============================================================================================================
-      
-      protected /*static*/ var sContextMenu:ContextMenu = null;
-      protected /*static*/ var sContextMenuItems:Array = [
-               new ContextMenuItem ("One", false),
-               new ContextMenuItem ("Many", false),
-               new ContextMenuItem ("Any", false),
-            ];
+//=============================================================
+//   context menu
+//=============================================================
+
       protected static var sContextMenuItemValues:Array = [
                Define.EntityAssignerType_Single,
                Define.EntityAssignerType_Many,
                Define.EntityAssignerType_Any,
             ];
       
-      private /*static*/ function BuildContextMenu ():void
+      protected var mContextMenuItems:Array = [
+               new ContextMenuItem ("One", false),
+               new ContextMenuItem ("Many", false),
+               new ContextMenuItem ("Any", false),
+            ];
+      
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         if (sContextMenu != null)
-            return;
-         
-         sContextMenu = new ContextMenu ();
-         
-         contextMenu = sContextMenu;
-         if (contextMenu == null) // may be still null on some devices
-            return;
-         
-         sContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = sContextMenu.builtInItems;
-         defaultItems.print = false;
-         
-         for (var i:int = 0; i < sContextMenuItems.length; ++ i)
+         for (var i:int = 0; i < mContextMenuItems.length; ++ i)
          {
-            sContextMenu.customItems.push (sContextMenuItems [i] as ContextMenuItem);
-            (sContextMenuItems [i] as ContextMenuItem).addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+            customMenuItemsStack.push (mContextMenuItems [i] as ContextMenuItem);
+            (mContextMenuItems [i] as ContextMenuItem).addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          }
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      private /*static*/ function OnContextMenuEvent (event:ContextMenuEvent):void
+      private function OnContextMenuEvent (event:ContextMenuEvent):void
       {
          var assigner:EntityInputEntityAssigner = event.mouseTarget as EntityInputEntityAssigner;
          if (assigner == null)
             return;
          
-         var index:int = sContextMenuItems.indexOf (event.target);
+         var index:int = mContextMenuItems.indexOf (event.target);
          
          if (index >= 0)
             assigner.SetSelectorType (sContextMenuItemValues[index]);
@@ -262,8 +248,8 @@ package editor.trigger.entity {
          {
             mSelectorLayer.visible = true;
             
-            for (var i:int = 0; i < sContextMenuItems.length; ++ i)
-               (sContextMenuItems [i] as ContextMenuItem).enabled = (sContextMenuItemValues[i] != mEntityAssignerType);
+            for (var i:int = 0; i < mContextMenuItems.length; ++ i)
+               (mContextMenuItems [i] as ContextMenuItem).enabled = (sContextMenuItemValues[i] != mEntityAssignerType);
          }
          else
          {
@@ -286,8 +272,8 @@ package editor.trigger.entity {
          var oldType:int = mEntityAssignerType;
          mEntityAssignerType = newType;
          
-         for (var i:int = 0; i < sContextMenuItems.length; ++ i)
-            (sContextMenuItems [i] as ContextMenuItem).enabled = (sContextMenuItemValues [i] != mEntityAssignerType);
+         for (var i:int = 0; i < mContextMenuItems.length; ++ i)
+            (mContextMenuItems [i] as ContextMenuItem).enabled = (sContextMenuItemValues [i] != mEntityAssignerType);
          
          if (AreInternalLinkablesVisible () && oldType != newType)
          {

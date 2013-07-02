@@ -3579,9 +3579,19 @@ package editor.world {
 
       // game / entity / joint
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetJointConnectedShapes, entity_joint_package, "Get Joint Connected Shapes", null, null,
+                      [
+                        new VariableDefinitionEntity ("The Joint", null, {mValidClasses: Filters.sLimitsConfigureableJointEntityClasses}),
+                     ],
+                     [
+                        new VariableDefinitionEntity ("Shape 1 (null for ground)", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionEntity ("Shape 2 (null for ground)", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ]
+                  );
+
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled, entity_joint_package, "Set Joint Limits Enabled", null, null,
                      [
-                        new VariableDefinitionEntity ("The Joints", null, {mValidClasses: Filters.sLimitsConfigureableJointEntityClasses}),
+                        new VariableDefinitionEntity ("The Joint", null, {mValidClasses: Filters.sLimitsConfigureableJointEntityClasses}),
                         new VariableDefinitionBoolean ("Enabled?"),
                      ],
                      null

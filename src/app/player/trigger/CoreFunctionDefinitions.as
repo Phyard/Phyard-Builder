@@ -589,6 +589,8 @@ package player.trigger {
 
       // game / entity / joint
 
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetJointConnectedShapes,                      GetJointConnectedShapes);
+
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,                      SetJointMotorEnabled);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled,                     SetJointLimitsEnabled);
 
@@ -1408,13 +1410,21 @@ package player.trigger {
             {
                convertedArrays [values] = "(length: " + numElements + ")"; // A not good but not worst value. Avoid dead loop.
 
-               value = values [0];
-               returnText = returnText + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
+               var sep:String = "";
 
-               for (var i:int = 1; i < numElements; ++ i)
+               for (var i:int = 0; i < numElements; ++ i)
                {
                   value = values [i];
-                  returnText = returnText + "," + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
+                  if (value is Array)
+                     returnText = returnText + sep + ConvertArrayToString (value as Array, convertedArrays);
+                  else if (value is Entity)
+                     returnText = returnText + sep + (value as Entity).ToString ();
+                  //else if (value is CollisionCategory)
+                  //   returnText = returnText + sep + (value as CollisionCategory).ToString ();
+                  else
+                     returnText = returnText + sep + String (value);
+                  
+                  sep = ",";
                }
 
                convertedArrays [values] = returnText; // correct the value. Avoid dead loop.
@@ -3302,14 +3312,14 @@ package player.trigger {
 
       public static function IsJointEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var joint:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
 
          valueTarget.AssignValueObject (joint != null);
       }
 
       public static function IsTriggerEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var trigger:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         var trigger:EntityLogic = valueSource.EvaluateValueObject () as EntityLogic;
 
          valueTarget.AssignValueObject (trigger != null);
       }
@@ -5145,8 +5155,11 @@ package player.trigger {
          if (shape2 == null || shape2.IsDestroyedAlready ())
             return;
 
-         //shape1.AttachWith (shape2);
-         EntityShape.AttachTwoShapes (shape1, shape2);
+         if (shape1.GetBody () != shape2.GetBody ())
+         {
+            //shape1.AttachWith (shape2);
+            EntityShape.AttachTwoShapes (shape1, shape2);
+         }
       }
 
 	  public static function DetachShapeThenAttachWithAnother (valueSource:Parameter, valueTarget:Parameter):void
@@ -5860,6 +5873,25 @@ package player.trigger {
    //*******************************************************************
    // entity / joint
    //*******************************************************************
+
+      public static function GetJointConnectedShapes (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
+
+         var shape1:EntityShape = null;
+         var shape2:EntityShape = null;
+         
+         if (joint != null)
+         {
+            shape1 = joint.GetAnchor1 ().GetShape ();
+            shape2 = joint.GetAnchor2 ().GetShape ();
+         }
+         
+         valueTarget.AssignValueObject (shape1);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (shape2);
+      }
 
       public static function SetJointMotorEnabled (valueSource:Parameter, valueTarget:Parameter):void
       {

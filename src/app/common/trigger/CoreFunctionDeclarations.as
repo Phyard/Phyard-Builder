@@ -3515,6 +3515,16 @@ package common.trigger {
 
       // game / entity / joint
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetJointConnectedShapes,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ]
+                  );
+
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],

@@ -1,6 +1,6 @@
       
       private static var mIsSoundEnabled:Boolean = true; // to record and init sound setting
-      private static var mSoundVolume:Number = 0.5;
+      private static var mSoundVolume:Number = -1;
       
       public static function IsSoundEnabled ():Boolean
       {
@@ -22,8 +22,11 @@
          }
       }
       
-      public static function GetSoundVolume (volume:Number):Number
-      {
+      public static function GetSoundVolume ():Number
+      {  
+         if (mSoundVolume < 0)
+            mSoundVolume = ValidateVolume (SoundMixer.soundTransform.volume);
+         
          return mSoundVolume;
       }
       
@@ -46,9 +49,14 @@
       
       private static function UpdateSoundVolume ():void
       {
-         var transform:SoundTransform = new SoundTransform();
-         transform.volume = mIsSoundEnabled ? mSoundVolume : 0.0;
-         SoundMixer.soundTransform = transform;
+         //var transform:SoundTransform = new SoundTransform();
+         //transform.volume = mIsSoundEnabled ? mSoundVolume : 0.0;
+         //SoundMixer.soundTransform = transform;
+         
+         if (mSoundVolume < 0)
+            mSoundVolume = SoundMixer.soundTransform.volume;
+
+         SoundMixer.soundTransform.volume = mIsSoundEnabled ? GetSoundVolume () : 0.0;
       }
       
       private function LoadSoundFromBytes (soundFileData:ByteArray, onComplete:Function, onError:Function, soundProperties:Object):void
@@ -70,7 +78,7 @@
       {
          if (IsSoundEnabled () && sound != null)
          {
-trace (">>>>>> crossingLevels = " + crossingLevels);
+//trace (">>>>>> crossingLevels = " + crossingLevels);
             if (crossingLevels && mCrossingLevelsSounds.indexOf (sound) >= 0)
             {
                return;
@@ -92,23 +100,23 @@ trace (">>>>>> crossingLevels = " + crossingLevels);
                
                if (crossingLevels)
                {
-trace ("PlaySound, crossing level: times = " + times);
+//trace ("PlaySound, crossing level: times = " + times);
                   mCrossingLevelsSounds [mNumCrossingLevelsSounds] = sound; // for c/java, need check index out of range
                   mCrossingLevelsSoundChannels [mNumCrossingLevelsSounds ++] = channel; // for c/java, need check index out of range
                }
                else
                {
-trace ("PlaySound, in level: times = " + times);
+//trace ("PlaySound, in level: times = " + times);
                   mInLevelSoundChannels [mNumInLevelSounds ++] = channel; // for c/java, need check index out of range
                }
             }
-trace ("+++++ mNumInLevelSounds = " + mNumInLevelSounds + ", mNumCrossingLevelsSounds = " + mNumCrossingLevelsSounds);
+//trace ("+++++ mNumInLevelSounds = " + mNumInLevelSounds + ", mNumCrossingLevelsSounds = " + mNumCrossingLevelsSounds);
          }
       }
       
       private function OnSoundCompletePlaying (event:Event):void
       {
-trace ("========= OnSoundCompletePlaying");
+//trace ("========= OnSoundCompletePlaying");
 
          var index:int;
          
@@ -117,7 +125,7 @@ trace ("========= OnSoundCompletePlaying");
          index = mInLevelSoundChannels.indexOf (channel);
          if (index >= 0)
          {
-trace ("in level");
+//trace ("in level");
             mInLevelSoundChannels [index] = mInLevelSoundChannels [-- mNumInLevelSounds];
             mInLevelSoundChannels [mNumInLevelSounds] = null;
          }
@@ -125,7 +133,7 @@ trace ("in level");
          index = mCrossingLevelsSoundChannels.indexOf (channel);
          if (index >= 0)
          {
-trace ("crossing level");
+//trace ("crossing level");
             mCrossingLevelsSoundChannels [index] = mCrossingLevelsSoundChannels [-- mNumCrossingLevelsSounds];
             mCrossingLevelsSoundChannels [mNumCrossingLevelsSounds] = null;
             
@@ -133,7 +141,7 @@ trace ("crossing level");
             mCrossingLevelsSounds [mNumCrossingLevelsSounds] = null;
          }
          
-trace ("----- mNumInLevelSounds = " + mNumInLevelSounds + ", mNumCrossingLevelsSounds = " + mNumCrossingLevelsSounds);
+//trace ("----- mNumInLevelSounds = " + mNumInLevelSounds + ", mNumCrossingLevelsSounds = " + mNumCrossingLevelsSounds);
       }
       
       // todo

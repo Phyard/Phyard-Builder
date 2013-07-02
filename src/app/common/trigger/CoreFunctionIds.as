@@ -605,6 +605,8 @@ package common.trigger {
 
       // from 2000
 
+      public static const ID_EntityJoint_GetJointConnectedShapes:int                   = IdPool.CoreApiId_1989;
+
       public static const ID_EntityJoint_SetJointMotorEnabled:int                   = IdPool.CoreApiId_1990;
       public static const ID_EntityJoint_SetJointLimitsEnabled:int                  = IdPool.CoreApiId_1991;
 

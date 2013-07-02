@@ -827,7 +827,7 @@ package viewer {
                   {
                      buttonX = mViewerWidth - margin;
                      buttonY = mViewerHeight - margin;
-                     
+
                      if (params.mShowSoundController)
                      {
                         mSoundOnButton_Overlay = CreateButton (0, mSoundOnButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickSoundOn);

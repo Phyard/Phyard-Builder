@@ -185,8 +185,8 @@
             DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Scene Session Variables ...", OnEditSessionVariables, false);
             //DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit World Global Variables ...", OnEditWorldVariables, true);
             //DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Game Save Variables ...", OnEditGameSaveVariables, false);
-            DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Common Global Properties (For All Scenes) ...", OnEditCommonGlobalVariables, true);
-            DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Common Custom Entity Properties (For All Scenes) ...", OnEditCommonEntityVariables, false);
+            DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Common Custom Entity Properties (For All Scenes) ...", OnEditCommonEntityVariables, true);
+            DisplayObjectUtil.AppendContextMenuItem (Box_EditVariableSpaceCommands, "Edit Common Global Properties (For All Scenes) ...", OnEditCommonGlobalVariables, false);
          }
             
       //==========================================================

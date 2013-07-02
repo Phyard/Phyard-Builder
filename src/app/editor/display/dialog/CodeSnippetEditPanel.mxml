@@ -371,8 +371,8 @@
                DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Scene Session Variables ...", OnEditSessionVariables, false);
                //DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit World Global Variables ...", OnEditWorldVariables, true);
                //DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Game Save Variables ...", OnEditGameSaveVariables, false);
-               DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Common Global Properties (For All Scenes) ...", OnEditCommonGlobalVariables, true);
-               DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Common Custom Entity Properties (For All Scenes) ...", OnEditCommonEntityVariables, false);
+               DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Common Custom Entity Properties (For All Scenes) ...", OnEditCommonEntityVariables, true);
+               DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Common Global Properties (For All Scenes) ...", OnEditCommonGlobalVariables, false);
             }
 
             Initialize ();
@@ -1154,7 +1154,8 @@
             var space_type:int;
             if (valueSource is ValueSource_Property)
             {
-               space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+               //space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+               space_type = ((valueSource as ValueSource_Property).GetPropertyValueSource () as ValueSource_Variable).GetVariableInstance ().GetSpaceType ();
 
                BuildContextMenuForValueSource (
                               (((sprite as Container).getChildAt (0) as Container).getChildAt (0)) as InteractiveObject,
@@ -1899,7 +1900,8 @@
             var space_type:int;
             if (valueTarget is ValueTarget_Property)
             {
-               space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+               //space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+               space_type = ((valueTarget as ValueTarget_Property).GetPropertyValueTarget () as ValueTarget_Variable).GetVariableInstance ().GetSpaceType ();
 
                BuildContextMenuForValueSource (
                               (((sprite as Container).getChildAt (0) as Container).getChildAt (0)) as InteractiveObject,

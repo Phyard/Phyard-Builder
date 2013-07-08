@@ -686,34 +686,124 @@
 
          private function OnMoveCallingUp ():void
          {
-            if (List_Commands.selectedIndex >= 1)
+            //if (List_Commands.selectedIndex >= 1)
+            //{
+            //   var index:int = List_Commands.selectedIndex;
+            //
+            //   var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index - 1);
+            //   List_Commands.dataProvider.setItemAt (item, index);
+            //
+            //   List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index - 1);
+            //
+            //   UpdateCallingIndents ();
+            //   UpdateInterface ();
+            //}
+            
+            if (CanMoveUpOrDown (true))
             {
-               var index:int = List_Commands.selectedIndex;
-
-               var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index - 1);
-               List_Commands.dataProvider.setItemAt (item, index);
-
-               List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index - 1);
-
+//trace (">>> List_Commands.selectedIndices = " + List_Commands.selectedIndices);
+//trace (">>> List_Commands.selectedIndex = " + List_Commands.selectedIndex);
+               var selectedItems:Array = List_Commands.selectedItems;
+               
+               var selectedIndices:Array = List_Commands.selectedIndices;
+               selectedIndices.sort (Array.NUMERIC);
+               
+               var item:Object = List_Commands.dataProvider.getItemAt (selectedIndices [0] - 1);
+               for (var i:int = 0; i < selectedIndices.length; ++ i)
+               {
+                  List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (selectedIndices [i]), selectedIndices [i] - 1);
+               }
+               List_Commands.dataProvider.setItemAt (item, selectedIndices [selectedIndices.length - 1]);
+               
+               List_Commands.selectedItems = selectedItems;
+               
                UpdateCallingIndents ();
                UpdateInterface ();
+//trace ("*** List_Commands.selectedIndices = " + List_Commands.selectedIndices);
+//trace ("*** List_Commands.selectedIndex = " + List_Commands.selectedIndex);
             }
          }
 
          private function OnMoveCallingDown ():void
          {
-            if (List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1)
+            //if (List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1)
+            //{
+            //   var index:int = List_Commands.selectedIndex;
+            //
+            //   var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index + 1);
+            //   List_Commands.dataProvider.setItemAt (item, index);
+            //
+            //   List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index + 1);
+            //
+            //   UpdateCallingIndents ();
+            //   UpdateInterface ();
+            //}
+            
+            if (CanMoveUpOrDown (false))
             {
-               var index:int = List_Commands.selectedIndex;
-
-               var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index + 1);
-               List_Commands.dataProvider.setItemAt (item, index);
-
-               List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index + 1);
-
+//trace (">>> List_Commands.selectedIndices = " + List_Commands.selectedIndices);
+//trace (">>> List_Commands.selectedIndex = " + List_Commands.selectedIndex);
+               var selectedItems:Array = List_Commands.selectedItems;
+               
+               var selectedIndices:Array = List_Commands.selectedIndices;
+               selectedIndices.sort (Array.NUMERIC);
+               
+               var item:Object = List_Commands.dataProvider.getItemAt (selectedIndices [selectedIndices.length - 1] + 1);
+               for (var i:int = selectedIndices.length - 1; i >= 0; -- i)
+               {
+                  List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (selectedIndices [i]), selectedIndices [i] + 1);
+               }
+               List_Commands.dataProvider.setItemAt (item, selectedIndices [0]);
+               
+               List_Commands.selectedItems = selectedItems;
+               
                UpdateCallingIndents ();
                UpdateInterface ();
+//trace ("*** List_Commands.selectedIndices = " + List_Commands.selectedIndices);
+//trace ("*** List_Commands.selectedIndex = " + List_Commands.selectedIndex);
             }
+         }
+         
+         private function CanMoveUpOrDown (up:Boolean):Boolean
+         {
+            var selectedIndices:Array = List_Commands.selectedIndices;
+            if (selectedIndices == null)
+               return false;
+               
+            var length:int = selectedIndices.length;
+            if (length == 0)
+               return false;
+
+            var index:int;
+            if (length == 1)
+            {
+               index = selectedIndices [0];
+               if (up)
+                  return List_Commands.selectedIndex >= 1;
+               else
+                  return index < List_Commands.dataProvider.length - 1;
+            }
+            
+            selectedIndices.sort (Array.NUMERIC);
+            
+            var lastIndex:int = selectedIndices [0];
+            
+            if (up && lastIndex == 0)
+               return false;
+            
+            for (var i:int = 1; i < length; ++ i)
+            {
+               index = selectedIndices [i];
+               if (index != lastIndex + 1)
+                  return false;
+               
+               lastIndex = index;
+            }
+            
+            if ((! up) && lastIndex == List_Commands.dataProvider.length - 1)
+               return false;
+            
+            return true;
          }
 
          private function UpdateInterface (scroolToSeelectedCommand:Boolean = true):void
@@ -735,8 +825,8 @@
             }
 
             Button_DeleteCommmand.enabled = List_Commands.selectedIndex >= 0;
-            Button_MoveUpCommmand.enabled = List_Commands.selectedIndex >= 1;
-            Button_MoveDownCommmand.enabled = List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1;
+            Button_MoveUpCommmand.enabled = CanMoveUpOrDown (true); // List_Commands.selectedIndex >= 1;
+            Button_MoveDownCommmand.enabled = CanMoveUpOrDown (false); // List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1;
 
             mCopySelectedMenuItem.enabled = List_Commands.selectedIndices.length > 0;
             mCopyAllMenuItem.enabled = List_Commands.dataProvider.length > 0;

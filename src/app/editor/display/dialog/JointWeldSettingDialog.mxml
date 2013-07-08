@@ -18,6 +18,7 @@
             </mx:HBox>
 
          </mx:VBox>
+         <mx:Spacer height="36" />
       </mx:VBox>
 
       <mx:VBox label="Joint Basic" borderStyle="solid" height="100%" width="100%"

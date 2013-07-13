@@ -138,6 +138,15 @@ package common {
       public static const LevelProperty_ColorBlindMode:int = 1000;
       public static const LevelProperty_RenderQuality:int = 1001;
       
+      // DOPN"T change these values. They are must same as the values in Viewer.
+      public static const SceneSwitchingStyle_None:int = 0;
+      public static const SceneSwitchingStyle_FadingIn:int = 1;
+      public static const SceneSwitchingStyle_FadingOut:int = 2;
+      public static const SceneSwitchingStyle_FadingOutThenFadingIn:int = 3;
+      public static const SceneSwitchingStyle_Blend:int = 4;
+      
+      //curtain
+      
 //===========================================================================
 // sound / module
 //===========================================================================

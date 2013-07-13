@@ -1383,6 +1383,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_LoadLevel,
                      [
                         [ValueTypeDefine.ValueType_Scene,         null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       Define.SceneSwitchingStyle_FadingIn],
                      ],
                      null
                   );
@@ -1475,7 +1476,9 @@ package common.trigger {
                   );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_RestartLevel,
-                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       Define.SceneSwitchingStyle_FadingIn],
+                     ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused,

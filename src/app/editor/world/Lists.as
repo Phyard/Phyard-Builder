@@ -147,5 +147,13 @@ package editor.world {
             {label:"Wiki", data:TextUtil.TextFormat_Wiki},
             {label:"Html", data:TextUtil.TextFormat_Html},
          ];
+         
+      public static const mSceneSwitchingStyleList:Array = [
+            {label:"None", data:Define.SceneSwitchingStyle_None},
+            {label:"Fade In", data:Define.SceneSwitchingStyle_FadingIn},
+            {label:"Fade Out", data:Define.SceneSwitchingStyle_FadingOut},
+            {label:"Fade Out + Fade In", data:Define.SceneSwitchingStyle_FadingOutThenFadingIn},
+            {label:"Blend", data:Define.SceneSwitchingStyle_Blend},
+         ];
    }
 }

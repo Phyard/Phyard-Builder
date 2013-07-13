@@ -1488,6 +1488,7 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_LoadLevel, world_scene_package, "Load Scene", null, null,
                      [
                         new VariableDefinitionScene ("Scene To Load"),
+                        new VariableDefinitionNumber ("Scene Switching Style", null, {mValueLists: Lists.mSceneSwitchingStyleList}),
                      ],
                      null
                   );
@@ -1563,7 +1564,9 @@ package editor.world {
                   );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_RestartLevel, world_level_package, "Restart Level", null, null,
-                     null,
+                     [
+                        new VariableDefinitionNumber ("Scene Switching Style", null, {mValueLists: Lists.mSceneSwitchingStyleList}),
+                     ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused, world_level_package, "Is Level Paused?", null, null,

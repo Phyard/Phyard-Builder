@@ -2367,9 +2367,12 @@ package player.trigger {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
          if (Global.IsInvalidScene (levelIndex))
             return;
+         
+         valueSource = valueSource.mNextParameter;
+         var sceneSwitchingStyle:int = valueSource.EvaluateValueObject () as int;
 
          //Global.Viewer_OnLoadScene (levelIndex); // if call this at this time, there will be many check point needed to be aded.
-         Global.GetCurrentWorld ().SetDelayToLoadSceneIndex (levelIndex);
+         Global.GetCurrentWorld ().SetDelayToLoadSceneIndex (levelIndex, sceneSwitchingStyle);
       }
       
       public static function MergeLevelIntoTheCurrentOne (valueSource:Parameter, valueTarget:Parameter):void
@@ -2480,10 +2483,12 @@ package player.trigger {
 
       public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
-         //Global.UI_RestartPlay (); // cause bug
-         Global.GetCurrentWorld ().SetDelayRestartRequested ();
-      }
+         var sceneSwitchingStyle:int = valueSource.EvaluateValueObject () as int;
 
+         //Global.UI_RestartPlay (); // cause bug
+         Global.GetCurrentWorld ().SetDelayRestartRequested (sceneSwitchingStyle);
+      }
+      
       public static function IsLevelPaused (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (! Global.UI_IsPlaying ());

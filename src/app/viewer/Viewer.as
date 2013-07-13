@@ -379,11 +379,6 @@ package viewer {
          catch (error:Error)
          {
             TraceError (error);
-         
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
          }
       }
       
@@ -555,7 +550,7 @@ package viewer {
       
       private function RegisterGesturePoint (event:MouseEvent):void
       {
-         if (mFadingStatus != 0)
+         if (mStateId != StateId_Playing || mCurrentPlayingStatePhase != PlayingStatePhase_Stepping)
             return;
          
          if (mGestureAnalyzer == null)
@@ -611,13 +606,9 @@ package viewer {
 //======================================================================
 
       private static const StateId_Unknown:int = -1;
-      private static const StateId_ParsingError:int = 0;
-      private static const StateId_Loading:int = 1;
-      private static const StateId_LoadingError:int = 2;
-      private static const StateId_Building:int = 3;
-      private static const StateId_BuildingError:int = 4;
-      private static const StateId_Playing:int = 5;
-      private static const StateId_PlayingError:int = 6;
+      private static const StateId_Loading:int = 0;
+      private static const StateId_Playing:int = 1;
+      private static const StateId_Error:int = 2;
 
       private var mStateId:int = StateId_Unknown;
 
@@ -631,41 +622,14 @@ package viewer {
             case StateId_Loading:
                // Load progress on screen
                break;
-            case StateId_LoadingError:
-               ExitLevelIfBackKeyEverPressed ();
-               // todo: "Copy Error Message" and "Report Error" in Context Menu
-               break;
-            case StateId_Building:
-               // "Build ..." text on screen
-               var buildStatus:int = mWorldDesignProperties.GetBuildingStatus (); 
-               if (buildStatus > 0)
-               {
-                  InitPlayerWorld ();
-                  
-                  SetErrorMessage (null); // will call this.visible = true
-                  
-                  SetFadingStatus (-1);
-                  
-                  ChangeState (StateId_Playing);
-               }
-               else if (buildStatus < 0)
-               {
-                  ChangeState (StateId_BuildingError);
-               }
-               
-               break;
-            case StateId_BuildingError:
-               ExitLevelIfBackKeyEverPressed ();
-               // todo: "Copy Error Message" and "Report Error" in Context Menu
-               break;
             case StateId_Playing:
-               UpdateFrame (false);
+               UpdatePlaying ();
                break;
-            case StateId_PlayingError:
+            case StateId_Error:
                ExitLevelIfBackKeyEverPressed ();
                // todo: "Copy Error Message" and "Report Error" in Context Menu
                break;
-            case StateId_Unknown:
+            //case StateId_Unknown:
             default:
                ExitLevelIfBackKeyEverPressed ();
                break;
@@ -674,44 +638,93 @@ package viewer {
 
       public function ChangeState (stateId:int):void
       {
-      //trace ("change state: " + stateId + "\n" + new Error ().getStackTrace ());
+         //trace ("change state: " + stateId + "\n" + new Error ().getStackTrace ());
+         
          mStateId = stateId;
-         switch (mStateId)
+         
+         //switch (mStateId)
+         //{
+         //   case StateId_Loading:
+         //      break;
+         //   case StateId_Playing:
+         //      break;
+         //   case StateId_Error:
+         //      //SetErrorMessage ("Runtime error!");
+         //      break;
+         //   //case StateId_Unknown:
+         //   default:
+         //      break;
+         //}
+      }
+      
+//======================================================================
+//
+//======================================================================
+      
+      private function OnError (errorTitle:String, error:Error):void
+      {
+         if (error == null)
+            SetErrorMessage ("Error: title=" + errorTitle);
+         else
+            SetErrorMessage ("Error: id=" + error.errorID + ", title=" + errorTitle 
+                           + "\nerror message: " + error.message 
+                           + "\n" + error.getStackTrace ()
+                           );
+
+         ChangeState (StateId_Error);
+         
+         TraceError (error);
+     }
+     
+     private static function TraceError (error:Error):void
+     {
+         if (Capabilities.isDebugger)
          {
-            case StateId_Loading:
-               break;
-            case StateId_LoadingError:
-               SetErrorMessage ("Loading error!");
-               break;
-            case StateId_Building:
-               //if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
-               //{
-               //   mParamsFromUniViewer.SetLoadingText ("Building ...");
-               //}
-               //this.visible = false;
-               break;
-            case StateId_BuildingError:
-               SetErrorMessage ("Building error!");
-               break;
-            case StateId_Playing:
-               break;
-            case StateId_PlayingError:
-               SetErrorMessage ("Runtime error!");
-               break;
-            case StateId_Unknown:
-            default:
-               break;
+            trace (error.getStackTrace ());
+            throw error;
          }
       }
 
-      private static var mLastErrorInfo:String = null;
+      private var mErrorMessageText:TextFieldEx = null;
       
-      public static function TraceError (error:Error):void
-      {
-         if (Capabilities.isDebugger)
-            trace (error.getStackTrace ());
+      private function SetErrorMessage (errorMessage:String):void
+      {           
+         this.visible = true;
          
-         mLastErrorInfo = "Error: id=" + error.errorID + ", msg=" + error.message + "\n" + error.getStackTrace ();
+         if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
+         {
+            mParamsFromUniViewer.SetLoadingText (null);
+         }
+         
+         if (errorMessage == null)
+         {
+            mErrorMessageLayer.visible = false;
+            return;
+         }
+         
+         mErrorMessageLayer.visible = true;
+         
+         if (mErrorMessageText != null && mErrorMessageText.parent == mErrorMessageLayer)
+            mErrorMessageLayer.removeChild (mErrorMessageText);
+         
+         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage), true, 0xFFFFFF);
+         mErrorMessageLayer.addChild (mErrorMessageText);
+         
+//mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
+
+         CenterErrorMessageText ();
+      }
+//public static var debugInfo:String = "";
+      
+      private function CenterErrorMessageText ():void
+      {
+         if (mErrorMessageText != null)
+         {
+            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+            
+            mErrorMessageText.x = 0.5 * (containerSize.x - mErrorMessageText.width );
+            mErrorMessageText.y = 0.5 * (containerSize.y - mErrorMessageText.height);
+         }
       }
 
 //======================================================================
@@ -808,40 +821,22 @@ package viewer {
                }
 
                //
+               
+               ChangeState (StateId_Loading);
+               
                if (mWorldPlayCode == null)
                {
-                  if (StartOnlineLoadingData ())
-                  {
-                     ChangeState (StateId_Loading);
-                  }
-                  else
-                  {
-                     ChangeState (StateId_LoadingError);
-                  }
+                  StartOnlineLoadingData ();
                }
                else
                {
-                  if (StartOnlineLoadingWorldPlugin ())
-                  {
-                     ChangeState (StateId_Loading);
-                  }
-                  else
-                  {
-                     ChangeState (StateId_LoadingError);
-                  }
+                  StartOnlineLoadingWorldPlugin ();
                }
             }
          }
          catch (error:Error)
          {
-            TraceError (error);
-            
-            ChangeState (StateId_ParsingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
+            OnError ("parsing error!", error);
          }
       }
 
@@ -882,11 +877,8 @@ package viewer {
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            if (Capabilities.isDebugger)
-               throw error;
-
+            OnError ("start loading error!", error);
+            
             return false;
          }
 
@@ -930,14 +922,7 @@ package viewer {
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            ChangeState (StateId_LoadingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
+            OnError ("online loading word data error!", error);
          }
       }
 
@@ -966,11 +951,8 @@ package viewer {
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            if (flash.system.Capabilities.isDebugger)
-               throw error;
-
+            OnError ("onlone loading world plugin error!", error);
+            
             return false;
          }
 
@@ -1044,14 +1026,15 @@ package viewer {
          if (mWorldDesignProperties.mHasSounds == undefined)                      mWorldDesignProperties.mHasSounds = false;
          if (mWorldDesignProperties.mInitialSoundEnabled == undefined)            mWorldDesignProperties.mInitialSoundEnabled = true;
          if (mWorldDesignProperties.SetSoundEnabled == undefined)                 mWorldDesignProperties.SetSoundEnabled = DummyCallback;
-         if (mWorldDesignProperties.GetPreferredFPS == undefined)                   mWorldDesignProperties.GetPreferredFPS = DummyCallback_GetFps;
+         if (mWorldDesignProperties.GetPreferredFPS == undefined)                 mWorldDesignProperties.GetPreferredFPS = DummyCallback_GetFps;
          if (mWorldDesignProperties.GetPauseOnFocusLost == undefined)             mWorldDesignProperties.GetPauseOnFocusLost = DummyCallback_ReturnFalse;
          if (mWorldDesignProperties.RegisterGestureEvent == undefined)            mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
          if (mWorldDesignProperties.OnViewerEvent == undefined)                   mWorldDesignProperties.OnViewerEvent = DummyCallback;
          if (mWorldDesignProperties.OnViewerDestroyed == undefined)               mWorldDesignProperties.OnViewerDestroyed = DummyCallback;
          if (mWorldDesignProperties.OnSystemBackEvent == undefined)               mWorldDesignProperties.OnSystemBackEvent = DummyOnSystemBackEvent;      
          if (mWorldDesignProperties.HasRestartLevelRequest == undefined)          mWorldDesignProperties.HasRestartLevelRequest = DummyCallback_ReturnFalse;      
-         if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)        mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;      
+         if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)        mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;
+         if (mWorldDesignProperties.GetSceneSwitchingStyle == undefined)          mWorldDesignProperties.GetSceneSwitchingStyle = DummyGetSceneSwitchingStyle;      
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -1133,6 +1116,12 @@ package viewer {
          return -1;
       }
       
+      // from v2.04
+      private function DummyGetSceneSwitchingStyle ():int
+      {
+         return SceneSwitchingStyle_FadingIn; // before v2.04
+      }
+      
       private function DummyGetBackgroundColor ():uint
       {
          return mParamsFromContainer.mBackgroundColor;
@@ -1141,6 +1130,10 @@ package viewer {
 //======================================================================
 //
 //======================================================================
+      
+      private var mFirstTimePlaying:Boolean = true;
+      
+      private var mLastPreferredFPS:Number = 30;
       
       private var mCurrentSceneID:int = 0;
       
@@ -1192,13 +1185,22 @@ package viewer {
                   }
                }
             }
+            //else
+            //{
+            //   mWorldDesignProperties.Destroy ();
+            //
+            //   if (mWorldLayer.contains (mPlayerWorld as Sprite))
+            //      mWorldLayer.removeChild (mPlayerWorld as Sprite);
+            //
+            //   mPlayerWorld = null;
+            //}
             else
             {
-               mWorldDesignProperties.Destroy ();
+               // delay to remove old data for scene switching
+               mOldWorldDesignProperties = mWorldDesignProperties;
+               mOldPlayerWorld = mPlayerWorld;
 
-               if (mWorldLayer.contains (mPlayerWorld as Sprite))
-                  mWorldLayer.removeChild (mPlayerWorld as Sprite);
-
+               // .
                mPlayerWorld = null;
             }
 
@@ -1282,6 +1284,8 @@ package viewer {
             if (mPlayerWorld == null)
                throw new Error ("Fails to create world");
 
+            mPlayerWorld.visible = false;
+
             RetrieveWorldDesignProperties ();
 
             mWorldDesignProperties.SetCacheSystemEvent (mShowPlayBar);
@@ -1332,28 +1336,33 @@ package viewer {
             mLastPreferredFPS = mWorldDesignProperties.GetPreferredFPS ();
             stage.frameRate = mLastPreferredFPS;
             
-            ChangeState (StateId_Building);
-            
             // avoid flashing
             var containerSize:Point = mParamsFromContainer.GetViewportSize ();
             RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
+            
+            if (mOldPlayerWorld == null) // first loading
+            {
+               mSceneSwitchingStyle = SceneSwitchingStyle_FadingIn;
+               mFadingLayer.visible = true;
+            }
+            else
+            {
+               mFadingLayer.visible = false;
+            }
+            
+            // ...
+            ChangeState (StateId_Playing);
+            
+            if (CheckBuildingStatus ())
+            {
+               mCurrentPlayingStatePhase = PlayingStatePhase_Building;
+            }
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            ChangeState (StateId_LoadingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
+            OnError ("building error!", error);
          }
       }
-
-      private var mFirstTimePlaying:Boolean = true;
-      
-      private var mLastPreferredFPS:Number = 30;
       
       private function InitPlayerWorld ():void
       {
@@ -1399,40 +1408,23 @@ package viewer {
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            ChangeState (StateId_BuildingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
-         }
+            OnError ("initing error!", error);
+         }         
       }
 
 //======================================================================
 //
 //======================================================================
-      
-      private var mFadingStatus:int = 0;
-      
-      private function SetFadingStatus (status:int):void
-      {
-         if (mFadingStatus != status)
-         {
-            mFadingStatus = status;
-            
-            mFadingLayer.visible = mFadingStatus != 0;
-            if (mFadingLayer.visible)
-            {
-               mFadingLayer.alpha = mFadingStatus > 0 ? 0.0 : 1.0;
-            }
-         }
-      } 
-      
-      private var mStepTimeSpan:TimeSpan = new TimeSpan ();
 
-      public function UpdateFrame (singleStepMode:Boolean = false):void
+      private var PlayingStatePhase_Building:int = 0;
+      private var PlayingStatePhase_Switching:int = 1;
+      private var PlayingStatePhase_Stepping:int = 2;
+      
+      private var mCurrentPlayingStatePhase:int;
+     
+      private var mStepTimeSpan:TimeSpan = new TimeSpan ();
+      
+      public function UpdatePlaying ():void
       {
          mStepTimeSpan.End ();
          mStepTimeSpan.Start ();
@@ -1449,51 +1441,201 @@ package viewer {
             return;
          }
          
+         if (TryToSwitchScene ())
+         {
+            return;
+         }
+         
+         // ...
+         
+         if (mCurrentPlayingStatePhase == PlayingStatePhase_Stepping)
+         {
+            UpdateFrame (false);
+         }
+         else if (mCurrentPlayingStatePhase == PlayingStatePhase_Switching)
+         {
+            UpdateSceneSwitching (false);
+         }
+         else if (mCurrentPlayingStatePhase == PlayingStatePhase_Building)
+         {
+            CheckBuildingStatus ();
+         }
+      }
+      
+      // return if still in building
+      private function CheckBuildingStatus ():Boolean
+      {
+         var buildStatus:int = mWorldDesignProperties.GetBuildingStatus (); 
+         if (buildStatus > 0)
+         {
+            InitPlayerWorld ();
+            
+            SetErrorMessage (null); // will call this.visible = true
+            
+            UpdateSceneSwitching (true);
+         }
+         else if (buildStatus < 0)
+         {
+            OnError ("error in building.", null);
+         }
+         else
+         {
+            return true;
+         }
+         
+         return false;
+      }
+      
+      // DON'T change these const values. They muse be same as the values in player.World.
+      private static const SceneSwitchingStyle_None:int = 0;
+      private static const SceneSwitchingStyle_FadingIn:int = 1;
+      private static const SceneSwitchingStyle_FadingOut:int = 2;
+      private static const SceneSwitchingStyle_FadingOutThenFadingIn:int = 3;
+      private static const SceneSwitchingStyle_Blend:int = 4;
+      
+      private var mSceneSwitchingStyle:int = SceneSwitchingStyle_None;
+      
+      private var mOldWorldDesignProperties:Object = null;
+      private var mOldPlayerWorld:Object = null;
+      
+      private function UpdateSceneSwitching (isInit:Boolean):void
+      {
+         var nextPlayingStatePhase:int = -1;
+         var toDestroyOldWorld:Boolean = false;
+         
+         if (isInit)
+            nextPlayingStatePhase = PlayingStatePhase_Switching;
+         
+         var fadingSpeed:Number = 2.0 * mStepTimeSpan.GetLastSpan ();
+         if ((mParamsFromEditor != null || mParamsFromUniViewer != null) && mFirstTimePlaying)
+            fadingSpeed *= 3.0;
+         
+         switch (mSceneSwitchingStyle)
+         {
+            case SceneSwitchingStyle_FadingOutThenFadingIn:
+            case SceneSwitchingStyle_FadingOut:
+               if (isInit)
+               {
+                  mFadingLayer.visible = true;
+                  mFadingLayer.alpha = 0.0;
+               }
+               else
+               {
+                  mFadingLayer.alpha += fadingSpeed;
+                  if (mFadingLayer.alpha >= 0.99)
+                  {  
+                     if (mSceneSwitchingStyle == SceneSwitchingStyle_FadingOutThenFadingIn)
+                     {
+                        mSceneSwitchingStyle = SceneSwitchingStyle_FadingIn;
+                        UpdateSceneSwitching (true);
+                     }
+                     else // if (mSceneSwitchingStyle == SceneSwitchingStyle_FadingOut)
+                     {
+                        mFadingLayer.alpha = 1.0;
+                        mFadingLayer.visible = false;
+                        toDestroyOldWorld = true;
+                        mPlayerWorld.visible = true;
+                        
+                        nextPlayingStatePhase = PlayingStatePhase_Stepping;
+                     }
+                  }
+               }
+               break;
+            case SceneSwitchingStyle_FadingIn:
+               if (isInit)
+               {
+                  toDestroyOldWorld = true;
+                  mPlayerWorld.visible = true; 
+                  mFadingLayer.visible = true;
+                  mFadingLayer.alpha = 1.0;
+               }
+               else
+               {
+                  mFadingLayer.alpha -= fadingSpeed;
+                  if (mFadingLayer.alpha <= 0.1)
+                  {
+                     mFadingLayer.alpha = 0.0;
+                     mFadingLayer.visible = false;
+                     nextPlayingStatePhase = PlayingStatePhase_Stepping;
+                  }
+               }
+               break;
+            case SceneSwitchingStyle_Blend:
+               if (isInit)
+               {
+                  mPlayerWorld.visible = true;
+                  mFadingLayer.visible = false;
+                  mOldPlayerWorld.alpha = 1.0;
+                  mPlayerWorld.alpha = 0.0;
+               }
+               else
+               {
+                  fadingSpeed *= 0.3;
+                  
+                  mOldPlayerWorld.alpha -= fadingSpeed;
+                  mPlayerWorld.alpha += fadingSpeed;
+                  if (mPlayerWorld.alpha >= 0.95)
+                  {
+                     toDestroyOldWorld = true;
+                     nextPlayingStatePhase = PlayingStatePhase_Stepping;
+                  }
+               }
+               break;
+            case SceneSwitchingStyle_None:
+            default:
+            {
+               if (isInit)
+                  nextPlayingStatePhase = PlayingStatePhase_Stepping;
+               
+               toDestroyOldWorld = true;
+               mFadingLayer.visible = false;
+               mPlayerWorld.visible = true;
+               
+               break;
+            }
+         }
+         
+         if (nextPlayingStatePhase >= 0)
+            mCurrentPlayingStatePhase = nextPlayingStatePhase;
+
+         if (toDestroyOldWorld)
+         {
+            if (mOldPlayerWorld != null)
+            {
+               if (mWorldLayer.contains (mOldPlayerWorld as Sprite))
+                  mWorldLayer.removeChild (mOldPlayerWorld as Sprite);
+               
+               mOldWorldDesignProperties.Destroy ();
+               mOldPlayerWorld = null;
+            }
+         }
+      }
+      
+      private function TryToSwitchScene ():Boolean
+      {
          //>>>>>>>>>>>>>>>>>>>> moved from player.World.Update () from v2.03
          if (mWorldDesignProperties.HasRestartLevelRequest ())
          {
+            //mSceneSwitchingStyle = SceneSwitchingStyle_FadingIn;
+            mSceneSwitchingStyle = mWorldDesignProperties.GetSceneSwitchingStyle ();
             mSkin.Restart ();
-            return;
+            return true;
          }
          
          var delayToLoadSceneIndex:int = mWorldDesignProperties.GetDelayToLoadSceneIndex ();
          if (delayToLoadSceneIndex >= 0)
          {
+            mSceneSwitchingStyle = mWorldDesignProperties.GetSceneSwitchingStyle ();
             OnLoadScene (delayToLoadSceneIndex);
-            return;
+            return true;
          }
-         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          
-         if (mFadingStatus != 0)
-         {
-            var fadingSpeed:Number = mStepTimeSpan.GetLastSpan ();
-            if ((mParamsFromEditor != null) || (mParamsFromUniViewer != null && mFirstTimePlaying))
-            {
-               if (fadingSpeed < 0.2)
-                  fadingSpeed = 0.2;
-            }
-            else
-            {
-               if (fadingSpeed > 0.1)
-                  fadingSpeed = 0.1;
-            }
-            
-            if (mFadingStatus > 0)
-            {
-               mFadingLayer.alpha += fadingSpeed;
-               if (mFadingLayer.alpha >= 1.0)
-                  SetFadingStatus (0);
-            }
-            else
-            {
-               if (mFadingLayer.alpha > 0.07)
-                  mFadingLayer.alpha -= fadingSpeed;
-               else
-                  SetFadingStatus (0);
-            }
-            
-            return;
-         }
+         return false;
+         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      }
+
+      public function UpdateFrame (singleStepMode:Boolean = false):void
+      {  
          
          UpdateGesturePaintLayer ();
 
@@ -1579,7 +1721,7 @@ package viewer {
             }
          }
 
-         //
+         // ...
 
          var paused:Boolean = (! IsPlaying ()) || mSkin.IsHelpDialogVisible ();
 
@@ -1597,17 +1739,12 @@ package viewer {
             }
             catch (error:Error)
             {
-               TraceError (error);
+               OnError ("playing error", error);
 
                // todo show dialog: "stop" or "continue";
                // write log of send message to server
-
-               ChangeState (StateId_PlayingError);
-
-               if (Capabilities.isDebugger)
-               {
-                  throw error;
-               }
+               
+               return;
             }
 
             mSkin.SetStarted (true);
@@ -1797,15 +1934,8 @@ package viewer {
          }
          catch (error:Error)
          {
-            TraceError (error);
-            
-            ChangeState (StateId_PlayingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
-            
+            OnError ("resizing error", error);
+                        
             return;
          }
          
@@ -1821,52 +1951,6 @@ package viewer {
          var bgColor:uint = (mParamsFromEditor == null ? faddingColor : 0xFFFFFF);
          GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, bgColor);
          GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, faddingColor);
-      }
-
-//======================================================================
-//
-//======================================================================
-      
-      private var mErrorMessageText:TextFieldEx = null;
-      
-      private function SetErrorMessage (errorMessage:String):void
-      {           
-         this.visible = true;
-         
-         if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
-         {
-            mParamsFromUniViewer.SetLoadingText (null);
-         }
-         
-         if (errorMessage == null)
-         {
-            mErrorMessageLayer.visible = false;
-            return;
-         }
-         
-         mErrorMessageLayer.visible = true;
-         
-         if (mErrorMessageText != null && mErrorMessageText.parent == mErrorMessageLayer)
-            mErrorMessageLayer.removeChild (mErrorMessageText);
-         
-         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage) + "<br>" + mLastErrorInfo, true, 0xFFFFFF);
-         mErrorMessageLayer.addChild (mErrorMessageText);
-         
-//mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
-
-         CenterErrorMessageText ();
-      }
-//public static var debugInfo:String = "";
-      
-      private function CenterErrorMessageText ():void
-      {
-         if (mErrorMessageText != null)
-         {
-            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
-            
-            mErrorMessageText.x = 0.5 * (containerSize.x - mErrorMessageText.width );
-            mErrorMessageText.y = 0.5 * (containerSize.y - mErrorMessageText.height);
-         }
       }
 
 //======================================================================
@@ -2168,6 +2252,8 @@ package viewer {
       // also used for context menu
       public function OnRestartGame (data:Object = null):void
       {
+         mSceneSwitchingStyle = SceneSwitchingStyle_None;
+         
          OnLoadScene (0);
       }
 
@@ -2182,6 +2268,8 @@ package viewer {
       // restart current scene/level
       private function OnRestart (data:Object = null):void
       {
+         mSceneSwitchingStyle = SceneSwitchingStyle_None;
+         
          ReloadPlayerWorld (mCurrentSceneID, true, true);
 
          if (_onPlayStatusChanged != null)

@@ -852,6 +852,7 @@ package player.world {
          //}
          
          // now, forbid calling LoadScene and RestartLevel API in Initialize
+         
          // [update]: now calling LoadScene and RestartLevel API is not forbidded in Initialize since v2.03
          
          //mDelayToLoadSceneIndex = -1;
@@ -1008,17 +1009,19 @@ package player.world {
          // delay handle LoadScene
          //-----------------------------
             
-            if (mDelayRestartRequested)
-            {
-               Global.UI_RestartPlay ();
-               return;
-            }
+            // 
             
-            if (! Global.IsInvalidScene (mDelayToLoadSceneIndex))
-            {
-               Global.Viewer_OnLoadScene (mDelayToLoadSceneIndex);
-               return;
-            }
+            //if (mDelayRestartRequested)
+            //{
+            //   Global.UI_RestartPlay ();
+            //   return;
+            //}
+            //
+            //if (! Global.IsInvalidScene (mDelayToLoadSceneIndex))
+            //{
+            //   Global.Viewer_OnLoadScene (mDelayToLoadSceneIndex);
+            //   return;
+            //}
          }
 
          //-----------------------------
@@ -1031,21 +1034,26 @@ package player.world {
          UpdatePhysics (0.0);
       }
       
-      private var mDelayToLoadSceneIndex:int = -1;
-      public function SetDelayToLoadSceneIndex (sceneIndex:int):void
+      
+      private var mDelayToLoadSceneIndex:int = -1;      
+      private var mSceneSwitchingStyle:int = Define.SceneSwitchingStyle_None;
+      
+      public function SetDelayToLoadSceneIndex (sceneIndex:int, sceneSwitchingStyle:int):void
       {
          if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
          {
             mDelayToLoadSceneIndex = sceneIndex;
+            mSceneSwitchingStyle = sceneSwitchingStyle;
          }
       }
       
       private var mDelayRestartRequested:Boolean = false;
-      public function SetDelayRestartRequested ():void
+      public function SetDelayRestartRequested (sceneSwitchingStyle:int):void
       {
          if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
          {
             mDelayRestartRequested = true;
+            mSceneSwitchingStyle = sceneSwitchingStyle;
          }
       }
       
@@ -1057,6 +1065,11 @@ package player.world {
       public function GetDelayToLoadSceneIndex ():int
       {
          return mDelayToLoadSceneIndex;
+      }
+      
+      public function GetSceneSwitchingStyle ():int
+      {
+         return mSceneSwitchingStyle;
       }
 
 //=============================================================

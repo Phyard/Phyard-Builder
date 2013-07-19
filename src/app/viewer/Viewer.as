@@ -1365,8 +1365,6 @@ package viewer {
          }
       }
       
-      private var mLastPreferredFPS:Number = 30;
-      
       private function InitPlayerWorld ():void
       {
       //trace ("InitPlayerWorld");

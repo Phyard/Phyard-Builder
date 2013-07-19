@@ -38,15 +38,6 @@ package editor.trigger.entity {
       public static const kHalfHeight:Number = 12;
       public static const kBandWidth:Number = 12;
       
-      public static const kText_SetAsAnd:String = "Set As \"And\" Door";
-      public static const kText_SetAsOr:String = "Set As \"Or\" Door";
-      public static const kText_AddNot:String = "Add \"Not\" Door";
-      public static const kText_ClearNot:String = "Clear \"Not\" Door";
-      
-      protected var mContextMenu:ContextMenu;
-      protected var mContextMenuItem_ToggleAndOr:ContextMenuItem;
-      protected var mContextMenuItem_ToggleNot:ContextMenuItem;
-      
       protected var mBorderThickness:Number = 1;
       
    // ...
@@ -59,8 +50,6 @@ package editor.trigger.entity {
       public function EntityConditionDoor (container:Scene)
       {
          super (container);
-         
-         BuildContextMenu ();
       }
       
       override public function GetTypeName ():String
@@ -227,33 +216,32 @@ package editor.trigger.entity {
          conditionDoor.SetInputConditionByCreationId (GetInputConditions ());
       }
       
-//==============================================================================================================
-//
-//==============================================================================================================
+//=============================================================
+//   context menu
+//=============================================================
       
-      private function BuildContextMenu ():void
+      public static const kText_SetAsAnd:String = "Set As \"And\" Door";
+      public static const kText_SetAsOr:String = "Set As \"Or\" Door";
+      public static const kText_AddNot:String = "Add \"Not\" Door";
+      public static const kText_ClearNot:String = "Clear \"Not\" Door";
+      
+      protected var mContextMenuItem_ToggleAndOr:ContextMenuItem;
+      protected var mContextMenuItem_ToggleNot:ContextMenuItem;
+      
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         if (mContextMenu != null)
-            return;
-         
-         mouseChildren = true;
-         
-         mContextMenu = new ContextMenu ();
-         mContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = mContextMenu.builtInItems;
-         defaultItems.print = false;
-         
          mContextMenuItem_ToggleAndOr = new ContextMenuItem (kText_SetAsAnd, false);
-         mContextMenu.customItems.push (mContextMenuItem_ToggleAndOr);
-         mContextMenuItem_ToggleAndOr.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         
          mContextMenuItem_ToggleNot = new ContextMenuItem (kText_AddNot, false);
-         mContextMenu.customItems.push (mContextMenuItem_ToggleNot);
+
+         mContextMenuItem_ToggleAndOr.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          mContextMenuItem_ToggleNot.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
-         this.contextMenu = mContextMenu;
-         
          UpdateMenuItems ();
+
+         customMenuItemsStack.push (mContextMenuItem_ToggleAndOr);
+         customMenuItemsStack.push (mContextMenuItem_ToggleNot);
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
       private function OnContextMenuEvent (event:ContextMenuEvent):void
@@ -280,20 +268,6 @@ package editor.trigger.entity {
             mContextMenuItem_ToggleAndOr.caption = door.IsAnd () ? kText_SetAsOr : kText_SetAsAnd;
             mContextMenuItem_ToggleNot.caption = door.IsNot () ? kText_ClearNot : kText_AddNot;
          }
-      }
-      
-      override public function SetInternalLinkablesVisible (visible:Boolean):void
-      {
-         super.SetInternalLinkablesVisible (visible);
-         
-         if (AreInternalLinkablesVisible ())
-         {
-            contextMenu = mContextMenu;
-            
-            UpdateMenuItems ();
-         }
-         else
-            contextMenu = null;
       }
       
       private function UpdateMenuItems ():void

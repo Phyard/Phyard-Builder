@@ -23,18 +23,24 @@ package editor {
    
    import editor.world.World;
    
+   import editor.asset.Asset;
+   
    import editor.entity.Entity;
    
-   import editor.asset.Asset;
+   import editor.entity.Scene;
+   
+   import editor.codelib.CodeLibManager;
    
    import editor.image.dialog.AssetImageModuleListDialog;
    import editor.image.AssetImageModule;
    import editor.sound.dialog.AssetSoundListDialog;
    import editor.ccat.dialog.CollisionCategoryListDialog;
    import editor.codelib.dialog.CodeLibListDialog;
+   import editor.display.dialog.VariablesEditDialog;
    
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDefinition;
+   import editor.trigger.VariableSpace;
    
    import editor.trigger.entity.InputEntitySelector;
    
@@ -103,7 +109,7 @@ package editor {
          return menuItemAbout;
       }
       
-      private static function OnAbout (event:ContextMenuEvent):void
+      public static function OnAbout (event:ContextMenuEvent = null):void
       {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
@@ -140,10 +146,10 @@ package editor {
       
       public static function ShowModalDialog (DialogClass:Class, onConfirmCallback:Function, initialParams:Object = null):void
       {
-         if (sEditorContext.HasSettingDialogOpened ())
+         if (GetSingleton ().HasSettingDialogOpened ())
             return;
          
-         sEditorContext.OnOpenModalDialog ();
+         GetSingleton ().OnOpenModalDialog ();
          
          var settingDialog:Object = new DialogClass ();
          
@@ -153,7 +159,7 @@ package editor {
          if (settingDialog.hasOwnProperty ("SetConfirmFunc"))
             settingDialog.SetConfirmFunc (onConfirmCallback);
          
-         settingDialog.SetCloseFunc (sEditorContext.OnCloseModalDialog);
+         settingDialog.SetCloseFunc (GetSingleton ().OnCloseModalDialog);
          
          PopUpManager.addPopUp (settingDialog as IFlexDisplayObject, sEditorApp, true);
          PopUpManager.centerPopUp (settingDialog as IFlexDisplayObject);
@@ -176,6 +182,34 @@ package editor {
          {
             onYesHandler ();
          }
+      }
+      
+   //=====================================================================
+   // variable space edit dialog
+   //=====================================================================
+      
+      public static function ShowVariableSpaceEditDialog (parent:DisplayObject, variableSpace:VariableSpace, onCloseFunc:Function):void
+      {
+         if (GetSingleton ().mVariablesEditDialog == null)
+         {
+            GetSingleton ().mVariablesEditDialog = new VariablesEditDialog ();
+         }
+         
+         GetSingleton ().mVariablesEditDialog.SetTitle (variableSpace.GetSpaceName ());
+         GetSingleton ().mVariablesEditDialog.SetCloseFunc (onCloseFunc);
+         //GetSingleton ().mVariablesEditDialog.visible = false; // useless, when change to true first time, show-event will not triggered
+         
+         //GetSingleton ().mVariablesEditDialog.SetOptions ({mSupportEditingInitialValues: mSupportEditingInitialValue});
+         
+         //GetSingleton ().mVariablesEditDialog.SetVariableSpace (variableSpace);
+         
+         PopUpManager.addPopUp (GetSingleton ().mVariablesEditDialog, parent, true);
+         PopUpManager.centerPopUp (GetSingleton ().mVariablesEditDialog);
+         PopUpManager.bringToFront (GetSingleton ().mVariablesEditDialog);
+         
+         //GetSingleton ().mVariablesEditDialog.NotifyVariableSpaceModified ();
+         
+         GetSingleton ().mVariablesEditDialog.UpdateVariableSpace (variableSpace);
       }
       
 //=====================================================================
@@ -204,6 +238,9 @@ package editor {
          
          if (mCodeLibListDialog != null)
             CodeLibListDialog.HideCodeLibListDialog ();
+         
+         if (mVariablesEditDialog != null)
+            PopUpManager.removePopUp (mVariablesEditDialog);
          
          CloseOtherPopupModelessDialog ();
       }
@@ -272,24 +309,34 @@ package editor {
             case Keyboard.F6:
                CodeLibListDialog.ShowCodeLibListDialog ();
                break;
+            case Keyboard.F7:
+               CodeLibListDialog.ShowCodeLibListDialog ();
+               break;
             //case 67: // C. It seems flash will never fire CTL+C events
             //   if (ctrlDown)
             //      GetEditorApp ().OnStartOfflineExporting ();
             //   break;
+            
             case 83: // S
-               if (ctrlDown)
+               if (GetSingleton ().mVariablesEditDialog == null || GetSingleton ().mVariablesEditDialog.parent == null) // this fixing is not graceful
                {
-                  if (shiftDown)
-                     GetEditorApp ().OnStartOnlineSaving ();
-                  //else
-                  // local save
-               }
-               else
-               {
-                  if (shiftDown)
-                     GetEditorApp ().OnStartOfflineSaving ();
+                  if (ctrlDown)
+                  {
+                     //if (shiftDown)
+                     //   GetEditorApp ().OnStartOnlineSaving ();
+                     //else
+                     // local save
+                  }
                   else
-                     GetEditorApp ().CreateWorldSnapshot ("Snapshot created manually");
+                  {
+                     //if (shiftDown)
+                     //   GetEditorApp ().OnStartOfflineSaving ();
+                     //else
+                     {
+                        //GetEditorApp ().CreateWorldSnapshot ("Undo point created manually");
+                        GetEditorApp ().CreateSnapshotForCurrentScene ("Undo point created manually");
+                     }
+                  }
                }
                break;
          }
@@ -316,7 +363,7 @@ package editor {
          if (mCurrentFocusedTitleWindow == null)
          {
             if (GetEditorApp ().stage.focus == null || (! GetEditorApp ().contains (GetEditorApp ().stage.focus)))
-               GetEditorApp ().stage.focus = GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ();
+               GetEditorApp ().GetSceneEditDialog ().SetAsFocus ();
          }
          else
          {
@@ -334,7 +381,8 @@ package editor {
       public var mAssetImageModuleListDialog:AssetImageModuleListDialog = null;      
       public var mAssetSoundListDialog:AssetSoundListDialog = null;
       public var mCollisionCategoryListDialog:CollisionCategoryListDialog = null;
-      public var mCodeLibListDialog:CodeLibListDialog  = null;
+      public var mCodeLibListDialog:CodeLibListDialog = null;
+      public var mVariablesEditDialog:VariablesEditDialog = null;
       
       private var mOtherPopupModelessDialogs:Array = new Array ();
       
@@ -409,19 +457,6 @@ package editor {
          }
       }
       
-      public function OpenSettingsDialog (DialigClass:Class, initialValues:Object, onConfirmFunc:Function):void
-      {
-         OnOpenModalDialog ();
-         
-         var settingDialog:Object = new DialigClass ();
-         settingDialog.SetValues (initialValues);
-         settingDialog.SetConfirmFunc (onConfirmFunc);
-         settingDialog.SetCloseFunc (OnCloseModalDialog);
-         
-         PopUpManager.addPopUp (settingDialog as UIComponent, sEditorApp, true);
-         PopUpManager.centerPopUp (settingDialog as UIComponent);
-      }
-      
       private var mAlertOnYesCallback:Function = null;
       
       public function SetAlertOnYesCallback (callback:Function):void
@@ -438,17 +473,18 @@ package editor {
    //
    //=====================================================================
       
-      public var mSessionVariablesEditingDialogClosedCallBack:Function = null;
-      public var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
-      public var mEntityVariablesEditingDialogClosedCallBack:Function = null;
-      public var mLocalVariablesEditingDialogClosedCallBack:Function = null;
-      public var mInputVariablesEditingDialogClosedCallBack:Function = null;
-      public var mOutputVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mSessionVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mEntityVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mLocalVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mInputVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mOutputVariablesEditingDialogClosedCallBack:Function = null;
       
    //=====================================================================
    // todo: use defines instead so that the (static) copied snippet can be used across worlds.
    //=====================================================================
       
+      private var mCopiedCodeSnippetSceneKey:String = null;
       private var mCopiedCodeSnippet:CodeSnippet = null;
       
       public function ClearCopiedCodeSnippet ():void
@@ -461,23 +497,26 @@ package editor {
          return mCopiedCodeSnippet != null;
       }
       
-      public function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array):void
+      public function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array, scene:Scene):void
       {
          if (copiedCallings == null || copiedCallings.length == 0)
          {
              ClearCopiedCodeSnippet ();
+             mCopiedCodeSnippetSceneKey = null;
          }
          else
          {
-            var codeSnippet:CodeSnippet =  new CodeSnippet (ownerFunctionDefinition);
+            var codeSnippet:CodeSnippet = new CodeSnippet (ownerFunctionDefinition);
             codeSnippet.AssignFunctionCallings (copiedCallings);
-            codeSnippet.PhysicsValues2DisplayValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            //codeSnippet.PhysicsValues2DisplayValues (scene.GetCoordinateSystem ()); 
+               // superfluous? and should it be DisplayValues2PhysicsValues? (removed from v2.00)
             
-            mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
+            mCopiedCodeSnippetSceneKey = scene.GetKey ();
+            mCopiedCodeSnippet = codeSnippet.Clone (scene, true, ownerFunctionDefinition.Clone ()); // cloning a definition is essential
          }
       }
       
-      public function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition):CodeSnippet
+      public function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, scene:Scene):CodeSnippet
       {
          if (mCopiedCodeSnippet == null)
          {
@@ -487,8 +526,9 @@ package editor {
          {
             mCopiedCodeSnippet.ValidateCallings ();
             
-            var codeSnippet:CodeSnippet = mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
-            codeSnippet.DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            var codeSnippet:CodeSnippet = mCopiedCodeSnippet.Clone (scene, scene.GetKey () == mCopiedCodeSnippetSceneKey, ownerFunctionDefinition);
+            //codeSnippet.DisplayValues2PhysicsValues (scene.GetCoordinateSystem ());
+               // superfluous? and should it be PhysicsValues2DisplayValues? (removed from v2.00)
             
             return codeSnippet;
          }
@@ -498,20 +538,21 @@ package editor {
    // hooks to detect if any variable definitions are changed
    //=====================================================================
       
-      private var mLastSessionVariableSpaceModifiedTimes:int = 0;
-      private var mLastGlobalVariableSpaceModifiedTimes:int = 0;
-      private var mLastEntityVariableSpaceModifiedTimes:int = 0;
+      //private var mLastSessionVariableSpaceModifiedTimes:int = 0;
+      //private var mLastGlobalVariableSpaceModifiedTimes:int = 0;
+      //private var mLastEntityVariableSpaceModifiedTimes:int = 0;
       
       public function StartSettingEntityProperties ():void
       {
-         mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
-         mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
-         mLastEntityVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
+         //mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes ();
+         //mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+         //mLastEntityVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
       }
       
       public function CancelSettingEntityProperties ():void
       {
-         var sessionVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
+         /*
+         var sessionVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
          var globalVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
          var entityVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes () > mLastEntityVariableSpaceModifiedTimes;
          
@@ -538,8 +579,10 @@ package editor {
             
             message = message + ") are modified";
             
-            GetEditorApp ().CreateWorldSnapshot (message);
+            //GetEditorApp ().CreateWorldSnapshot (message);
+            GetEditorApp ().CreateSnapshotForCurrentScene (message);
          }
+         */
       }
       
       

@@ -12,6 +12,8 @@ package common.trigger {
 
       public static const ID_OnGameActivated:int = IdPool.EventId_6;
       public static const ID_OnGameDeactivated:int = IdPool.EventId_7;
+      
+      public static const ID_OnWorldBeforeRepainting:int = IdPool.EventId_5;
 
    // world (maybe in later versions)
 
@@ -51,6 +53,10 @@ package common.trigger {
 
       public static const ID_OnJointReachLowerLimit:int = IdPool.EventId_111;
       public static const ID_OnJointReachUpperLimit:int = IdPool.EventId_112;
+
+   // entity / text
+   
+      public static const ID_OnTextChanged:int = IdPool.EventId_120;
 
    // entity pair
 
@@ -92,6 +98,10 @@ package common.trigger {
    // mouse gesture
 
       public static const ID_OnMouseGesture:int = IdPool.EventId_190;
+      
+   // system back
+      
+      public static const ID_OnSystemBack:int = IdPool.EventId_189;
 
    // ================================
    }

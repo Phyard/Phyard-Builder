@@ -33,6 +33,8 @@ package editor.entity.dialog {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.MathUtil;
    
+   import editor.world.Filters;
+   
    import editor.asset.Asset;
    import editor.asset.AssetManagerPanel;
    import editor.asset.Linkable;
@@ -46,9 +48,7 @@ package editor.entity.dialog {
    import editor.trigger.entity.*;
    
    import editor.trigger.CodeSnippet;
-   import editor.trigger.Filters;
    
-   import editor.display.sprite.BackgroundSprite;
    import editor.display.sprite.EffectMessagePopup;
    import editor.display.sprite.EffectCrossingAiming;
    import editor.display.dialog.*;
@@ -65,17 +65,21 @@ package editor.entity.dialog {
    
    public class SceneEditPanel extends AssetManagerPanel
    {  
-      private var mSceneBackground:BackgroundSprite = new BackgroundSprite ();
       private var mScene:Scene = null;
       
       public function SceneEditPanel ()
       {
-         mBackgroundLayer.addChild (mSceneBackground);
+         super ();
       }
       
 //============================================================================
 //   
 //============================================================================
+      
+      public function GetScene ():Scene
+      {
+         return mScene;
+      }
       
       public function SetScene (scene:Scene):void
       {
@@ -83,7 +87,7 @@ package editor.entity.dialog {
          
          super.SetAssetManager (scene);
          
-         mSceneBackground.visible = (mScene != null);
+         SetGridShown (mScene != null);
          
          if (mScene != null)
          {
@@ -166,14 +170,8 @@ package editor.entity.dialog {
       
       override protected function UpdateInternal (dt:Number):void
       {
-         if (mScene == null)
+         if (mScene != null)
          {
-            mSceneBackground.visible = false;
-         }
-         else
-         {
-            mSceneBackground.visible = true;
-             
             var sceneLeft  :Number;
             var sceneTop   :Number;
             var sceneWidth :Number;
@@ -181,8 +179,8 @@ package editor.entity.dialog {
             
             if (mScene.IsInfiniteSceneSize ())
             {
-               sceneLeft   = -1000000000; // about halft of - 0x7FFFFFFF;
-               sceneTop    = - 1000000000; // about half of - 0x7FFFFFFF;
+               sceneLeft   = -1000000000; // about half of - 0x7FFFFFFF;
+               sceneTop    = -1000000000; // about half of - 0x7FFFFFFF;
                sceneWidth  = 2000000000; // about half of uint (0xFFFFFFFF);
                sceneHeight = 2000000000; // about half of uint (0xFFFFFFFF);
             }
@@ -194,27 +192,14 @@ package editor.entity.dialog {
                sceneHeight = mScene.GetWorldHeight ();
             }
             
-            var sceneCameraCenter:Point = PanelToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
-            
-            mSceneBackground.UpdateAppearance (sceneLeft, sceneTop, sceneWidth, sceneHeight, 
-                                               mScene.GetWorldBorderLeftThickness (), mScene.GetWorldBorderTopThickness (), mScene.GetWorldBorderRightThickness (), mScene.GetWorldBorderBottomThickness (),
-                                               mScene.GetBackgroundColor (), mScene.GetBorderColor (), mScene.IsBuildBorder (),
-                                               sceneCameraCenter.x, sceneCameraCenter.y, mScene.scaleX, mScene.scaleY,
-                                               GetPanelWidth (), GetPanelHeight (), mBackgroundGridSize);
+            UpdateGridSprite (true, 0xA0A0A0,
+                              false, 
+                              sceneLeft, sceneTop, sceneWidth, sceneHeight,
+                              true, mScene.GetBackgroundColor (), 
+                              mScene.IsBuildBorder (), mScene.GetBorderColor (), 
+                              mScene.GetWorldBorderLeftThickness (), mScene.GetWorldBorderTopThickness (), mScene.GetWorldBorderRightThickness (), mScene.GetWorldBorderBottomThickness ()
+                             );
          }
-      }
-      
-      override public function OnAssetSelectionsChanged (passively:Boolean = false):void
-      {
-         if (! passively)
-         {
-            if (! mInCookieSelectMode)
-            {
-               mScene.SelectAllBrothersOfSelectedAssets ();
-            }
-         }
-         
-         super.OnAssetSelectionsChanged (passively);
       }
       
       // return true to indicate handled successfully
@@ -237,10 +222,18 @@ package editor.entity.dialog {
                   DeleteSelectedEntities ();
                break;
             case Keyboard.INSERT:
-               if (ctrlHold)
+               if (ctrlHold) 
                   InsertControlPoint ();
                else
                   CloneSelectedEntities ();
+               break;
+            case 88: // X
+               //if (ctrlHold)
+                  AlignControlPointsVertically ();
+               break;
+            case 89: // Y
+               //if (ctrlHold)
+                  AlignControlPointsHorizontally ();
                break;
             case 67: // C
                if (ctrlHold)
@@ -263,15 +256,29 @@ package editor.entity.dialog {
             case Keyboard.NUMPAD_SUBTRACT:
                RoundPositionForSelectedEntities ();
                break;
-            case 75: // k
+            case 75: // K
             case 190: // >
                if (ctrlHold && shiftHold)
                   ConvertOldRegisterVariablesToGlobalVariables ();
                break;
+            case 66: // B
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSystemBack), OnPutCreating, OnCreatingCancelled));
+               break;
             case 71: // G
-            case 77: // M
                if (ctrlHold && shiftHold)
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMouseGesture), OnPutCreating, OnCreatingCancelled));
+               break;
+            case 77: // M
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSequencedModuleLoopToEnd), OnPutCreating, OnCreatingCancelled));
+               break;
+            case 78: // N
+               SnapSelectedEnttiesToGrid ();
+               break;
+            case 80: // P
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnWorldBeforeRepainting), OnPutCreating, OnCreatingCancelled));
                break;
             default:
             {
@@ -285,6 +292,20 @@ package editor.entity.dialog {
          
          return super.OnKeyDownInternal (keyCode, ctrlHold, shiftHold);
       }
+      
+//=====================================================================
+// context menu
+//=====================================================================
+      
+      // used in panel and assets
+      override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+         var menuItemSetGridCellSize:ContextMenuItem = new ContextMenuItem("Set Grid Cell Size ...", true);
+         
+         menuItemSetGridCellSize.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnSetGridCellSize);
+
+         customMenuItemsStack.push (menuItemSetGridCellSize);
+      }
 
 //=====================================================================
 // undo point
@@ -292,7 +313,8 @@ package editor.entity.dialog {
 
       override protected function CreateUndoPoint (undoPointName:String):void
       {
-         EditorContext.GetEditorApp ().CreateWorldSnapshot (undoPointName);
+         //EditorContext.GetEditorApp ().CreateWorldSnapshot (undoPointName);
+         EditorContext.GetEditorApp ().CreateSceneSnapshot (mScene, undoPointName);
       }
 
 //============================================================================
@@ -813,13 +835,6 @@ package editor.entity.dialog {
          mDialogCallbacks.UpdateInterface (selectionsInfo);
       }
       
-      private var mBackgroundGridSize:int = 50;
-      
-      public function SetBackgroundGridSize (gridSize:Number):void
-      {
-         mBackgroundGridSize = gridSize;
-      }
-      
       private var mMaskFieldInPlaying:Boolean = false;
       
       public function IsMaskFieldInPlaying ():Boolean
@@ -832,13 +847,22 @@ package editor.entity.dialog {
          mMaskFieldInPlaying = mask; 
       }
       
-      public function ClearAllEntities ():void
+      public function ResetScene ():void
       {
-         mScene.DestroyAllAssets ();
+         mScene.Reset ();
          
          OnAssetSelectionsChanged ();
           
-         CreateUndoPoint ("Clear world");
+         CreateUndoPoint ("Reset Scene");
+      }
+      
+      public function ClearAllEntities ():void
+      {
+         mScene.DestroyAllEntities ();
+         
+         OnAssetSelectionsChanged ();
+          
+         CreateUndoPoint ("Clear Entities");
       }
 
       public function ShowLevelRulesEditDialog ():void
@@ -991,8 +1015,11 @@ package editor.entity.dialog {
       
       // find entity
       
-      public function SearchEntitiesByIDs (entityIds:Array):void
+      public function SearchEntitiesByIDs (entityIds:Array, addSelections:Boolean, selectBrothers:Boolean):void
       {
+         if (! addSelections)
+            CancelAllAssetSelections ();
+         
          var numIds:int = entityIds.length;
          
          for (var i:int = 0; i < numIds; ++ i)
@@ -1028,7 +1055,7 @@ package editor.entity.dialog {
          
          if (numIds > 0)
          {
-            OnAssetSelectionsChanged ();
+            OnAssetSelectionsChanged (! selectBrothers);
          }
       }
       
@@ -1088,7 +1115,7 @@ package editor.entity.dialog {
       private function RetrieveShapePhysicsProperties (shape:EntityShape, values:Object):void
       {        
          values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
-         values.mCollisionCategoryListDataProvider = EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
+         values.mCollisionCategoryListDataProvider = mScene.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
          values.mCollisionCategoryListSelectedIndex = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
          
          values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
@@ -1125,6 +1152,8 @@ package editor.entity.dialog {
          values.mPosX = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_PositionX (entity.GetPositionX ()), 12);
          values.mPosY = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_PositionY (entity.GetPositionY ()), 12);
          values.mAngle = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_RotationRadians (entity.GetRotation ()) * Define.kRadians2Degrees, 6);
+         values.mScale = ValueAdjuster.Number2Precision (entity.GetScale (), 6);
+         values.mIsFlipped = entity.IsFlipped ();
          
          values.mIsVisible = entity.IsVisible ();
          values.mAlpha = entity.GetAlpha ();
@@ -1137,9 +1166,10 @@ package editor.entity.dialog {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
                event_handler.GetCodeSnippet ().ValidateCallings ();
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
                values.mEventId = event_handler.GetEventId ();
-               values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (null);
+               values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                if (entity is EntityEventHandler_Timer)
@@ -1153,8 +1183,8 @@ package editor.entity.dialog {
                   {
                      var timer_event_handler_withPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = entity as EntityEventHandler_TimerWithPrePostHandling;
                      
-                     values.mPreCodeSnippet  = timer_event_handler_withPrePostHandling.GetPreCodeSnippet  ().Clone (null);
-                     values.mPostCodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ().Clone (null);
+                     values.mPreCodeSnippet  = timer_event_handler_withPrePostHandling.GetPreCodeSnippet  ().Clone (mScene, true, null);
+                     values.mPostCodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ().Clone (mScene, true, null);
                      
                      EditorContext.ShowModalDialog (LogicTimerEventHandlerWithPrePostHandlingEditDialog, ConfirmSettingEntityProperties, values);
                   }
@@ -1206,8 +1236,9 @@ package editor.entity.dialog {
                var condition:EntityBasicCondition = entity as EntityBasicCondition;
                condition.GetCodeSnippet ().ValidateCallings ();
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = condition.GetCodeSnippetName ();
-               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
+               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                EditorContext.ShowModalDialog (LogicConditionEditDialog, ConfirmSettingEntityProperties, values);
@@ -1217,8 +1248,9 @@ package editor.entity.dialog {
                var action:EntityAction = entity as EntityAction;
                action.GetCodeSnippet ().ValidateCallings ();
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = action.GetCodeSnippetName ();
-               values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);
+               values.mCodeSnippet  = action.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                EditorContext.ShowModalDialog (LogicActionEditDialog, ConfirmSettingEntityProperties, values);
@@ -1227,8 +1259,9 @@ package editor.entity.dialog {
             {
                var entityFilter:EntityInputEntityScriptFilter = entity as EntityInputEntityScriptFilter;
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = entityFilter.GetCodeSnippetName ();
-               values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (null);
+               values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                EditorContext.ShowModalDialog (LogicEntityFilterEditDialog, ConfirmSettingEntityProperties, values);
@@ -1237,8 +1270,9 @@ package editor.entity.dialog {
             {
                var pairFilter:EntityInputEntityPairScriptFilter = entity as EntityInputEntityPairScriptFilter;
                
+               values.mCodeLibManager = mScene.GetCodeLibManager ();
                values.mCodeSnippetName = pairFilter.GetCodeSnippetName ();
-               values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (null);
+               values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
                EditorContext.ShowModalDialog (LogicEntityPairFilterEditDialog, ConfirmSettingEntityProperties, values);
@@ -1336,7 +1370,11 @@ package editor.entity.dialog {
                   values.mTextAlign = (vectorShape as EntityVectorShapeText).GetTextAlign ();
                   
                   values.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap ();
+                  values.mEditable = (vectorShape as EntityVectorShapeText).IsEditable ();
+                  values.mSelectable = (vectorShape as EntityVectorShapeText).IsSelectable ();
+                  values.mTextFormat = (vectorShape as EntityVectorShapeText).GetTextFormat ();
                   values.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
+                  values.mClipText = (vectorShape as EntityVectorShapeText).IsClipText ();
                   
                   values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mScene.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
                   values.mHeight = ValueAdjuster.Number2Precision (2.0 * mScene.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
@@ -1633,6 +1671,8 @@ package editor.entity.dialog {
          
          entity.SetPosition (newPosX, newPosY);
          entity.SetRotation (mScene.GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
+         entity.SetScale (params.mScale);
+         entity.SetFlipped (params.mIsFlipped);
          entity.SetVisible (params.mIsVisible);
          entity.SetAlpha (params.mAlpha);
          entity.SetEnabled (params.mIsEnabled);
@@ -1834,7 +1874,11 @@ package editor.entity.dialog {
                   }
                   
                   (vectorShape as EntityVectorShapeText).SetWordWrap (params.mWordWrap);
+                  (vectorShape as EntityVectorShapeText).SetEditable (params.mEditable);
+                  (vectorShape as EntityVectorShapeText).SetSelectable (params.mSelectable);
+                  (vectorShape as EntityVectorShapeText).SetTextFormat (params.mTextFormat);
                   (vectorShape as EntityVectorShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
+                  (vectorShape as EntityVectorShapeText).SetClipText (params.mClipText);
                   
                   (vectorShape as EntityVectorShapeText).SetUnderlined (params.mIsUnderlined);
                   (vectorShape as EntityVectorShapeText).SetTextAlign (params.mTextAlign);
@@ -2087,7 +2131,7 @@ package editor.entity.dialog {
       
       public function ShowBatchModifyShapePhysicsPropertiesDialog ():void
       {
-         EditorContext.ShowModalDialog (BatchShapePhysicsPropertiesModifyDialog, OnBatchModifyShapePhysicsProperties, null);
+         EditorContext.ShowModalDialog (BatchShapePhysicsPropertiesModifyDialog, OnBatchModifyShapePhysicsProperties, {mScene: mScene});
       }
       
       public function ShowBatchModifyShapeAppearancePropertiesDialog ():void
@@ -2165,6 +2209,8 @@ package editor.entity.dialog {
                   shape.SetTransparency (params.mTransparency);
                if (params.mToModifyBackgroundColor)
                   shape.SetFilledColor (params.mBackgroundColor);
+               if (params.mToModifyBodyTexture)
+                  shape.SetBodyTextureModule (params.mBodyTextureModule);   
                if (params.mToModifyDrawBorder)
                   shape.SetDrawBorder (params.mDrawBorder);
                if (params.mToModifyBorderColor)
@@ -2173,9 +2219,9 @@ package editor.entity.dialog {
                   shape.SetBorderThickness (params.mBorderThickness);
                if (params.mToModifyBorderTransparency)
                   shape.SetBorderTransparency (params.mBorderTransparency);
+               
+               shape.UpdateAppearance ();
             }
-            
-            shape.UpdateAppearance ();
          }
          
          if (selectedEntities.length > 0)

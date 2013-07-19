@@ -15,7 +15,7 @@
     >
 
    <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off">
-      <mx:VBox width="216" height="556" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0" horizontalScrollPolicy="off">
+      <mx:VBox id="Box_PropertySettings" width="216" height="576" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0" horizontalScrollPolicy="off">
          <mx:Form enabled="false" id="FormBasicPropertySettings" width="100%" labelWidth="90" backgroundColor="0xFFFFFF" horizontalScrollPolicy="off" autoLayout="true" verticalGap="3" paddingTop="6" paddingBottom="6" paddingLeft="3" paddingRight="3">
             <mx:HBox backgroundColor="0x7FCEFF" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                <mx:Label fontWeight="bold" text="Basic Properties" />
@@ -107,35 +107,46 @@
       </mx:VBox>
       <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
          <mx:VBox width="100%" height="100%" backgroundColor="0xD0D0D0" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
-            <mx:HBox width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-               <mx:Button id="ButtonCreateGeneralModuleInstance" toolTip="Create New Module Instance From Current Module" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/module/create-bitmap-module.png')" downIcon="@Embed('../../../res/module/create-bitmap-module-sel.png')" overIcon="@Embed('../../../res/module/create-bitmap-module.png')" selectedUpIcon="@Embed('../../../res/module/create-bitmap-module-sel.png')" selectedOverIcon="@Embed('../../../res/module/create-bitmap-module-sel.png')" selectedDownIcon="@Embed('../../../res/module/create-bitmap-module.png')"   />
-               <mx:Button id="ButtonCreateShapeBoxInstance" click=";" toolTip="Create Rectangle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/box.png')" downIcon="@Embed('../../../res/create/box-sel.png')" overIcon="@Embed('../../../res/create/box.png')" selectedUpIcon="@Embed('../../../res/create/box-sel.png')" selectedOverIcon="@Embed('../../../res/create/box-sel.png')" selectedDownIcon="@Embed('../../../res/create/box.png')"   />
-               <mx:Button id="ButtonCreateShapeCircleInstance" click=";" toolTip="Create Circle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/ball.png')" downIcon="@Embed('../../../res/create/ball-sel.png')" overIcon="@Embed('../../../res/create/ball.png')" selectedUpIcon="@Embed('../../../res/create/ball-sel.png')" selectedOverIcon="@Embed('../../../res/create/ball-sel.png')" selectedDownIcon="@Embed('../../../res/create/ball.png')"   />
-               <mx:Button id="ButtonCreateShapePolygonInstance" click=";" toolTip="Create Polygon" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polygon.png')" downIcon="@Embed('../../../res/create/polygon-sel.png')" overIcon="@Embed('../../../res/create/polygon.png')" selectedUpIcon="@Embed('../../../res/create/polygon-sel.png')" selectedOverIcon="@Embed('../../../res/create/polygon-sel.png')" selectedDownIcon="@Embed('../../../res/create/polygon.png')"   />
-               <mx:Button id="ButtonCreateShapePolylineInstance" click=";" toolTip="Create Polyline" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polyline.png')" downIcon="@Embed('../../../res/create/polyline-sel.png')" overIcon="@Embed('../../../res/create/polyline.png')" selectedUpIcon="@Embed('../../../res/create/polyline-sel.png')" selectedOverIcon="@Embed('../../../res/create/polyline-sel.png')" selectedDownIcon="@Embed('../../../res/create/polyline.png')"   />
-               <!--
-               <mx:Button id="ButtonCreateShapeTextInstance" toolTip="Create Text" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/text.png')" downIcon="@Embed('../../../res/create/text-sel.png')" overIcon="@Embed('../../../res/create/text.png')" selectedUpIcon="@Embed('../../../res/create/text-sel.png')" selectedOverIcon="@Embed('../../../res/create/text-sel.png')" selectedDownIcon="@Embed('../../../res/create/text.png')"   />
-               -->
-               <mx:Spacer width="100%"/>
-               <mx:HBox visible="false" paddingTop="5" paddingLeft="0" paddingRight="0" paddingBottom="5" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-                  <mx:Button height="100%" id="ButtonEditMode" label="Edit Mode" toggle="true" click=";" />
-                  <mx:Spacer width="5"/>
-                  <mx:Button height="100%" id="ButtonViewPhysics" label="View Physics" toggle="true" click=";" />
-                  <mx:Spacer width="5"/>
-                  <mx:Button height="100%" id="ButtonViewAppearance" label="View Appearance" toggle="true" click=";" />
+            <mx:ViewStack id="ViewStack_CommandBar" creationPolicy="all" borderStyle="none" width="100%">
+               <mx:HBox id="Box_EditCommands" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle">
+                  <mx:Button id="ButtonCreateGeneralModuleInstance" toolTip="Create New Module Instance From Current Module" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/module/create-bitmap-module.png')" downIcon="@Embed('../../../res/module/create-bitmap-module-sel.png')" overIcon="@Embed('../../../res/module/create-bitmap-module.png')" selectedUpIcon="@Embed('../../../res/module/create-bitmap-module-sel.png')" selectedOverIcon="@Embed('../../../res/module/create-bitmap-module-sel.png')" selectedDownIcon="@Embed('../../../res/module/create-bitmap-module.png')"   />
+                  <mx:Button id="ButtonCreateShapeBoxInstance" click=";" toolTip="Create Rectangle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/box.png')" downIcon="@Embed('../../../res/create/box-sel.png')" overIcon="@Embed('../../../res/create/box.png')" selectedUpIcon="@Embed('../../../res/create/box-sel.png')" selectedOverIcon="@Embed('../../../res/create/box-sel.png')" selectedDownIcon="@Embed('../../../res/create/box.png')"   />
+                  <mx:Button id="ButtonCreateShapeCircleInstance" click=";" toolTip="Create Circle" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/ball.png')" downIcon="@Embed('../../../res/create/ball-sel.png')" overIcon="@Embed('../../../res/create/ball.png')" selectedUpIcon="@Embed('../../../res/create/ball-sel.png')" selectedOverIcon="@Embed('../../../res/create/ball-sel.png')" selectedDownIcon="@Embed('../../../res/create/ball.png')"   />
+                  <mx:Button id="ButtonCreateShapePolygonInstance" click=";" toolTip="Create Polygon" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polygon.png')" downIcon="@Embed('../../../res/create/polygon-sel.png')" overIcon="@Embed('../../../res/create/polygon.png')" selectedUpIcon="@Embed('../../../res/create/polygon-sel.png')" selectedOverIcon="@Embed('../../../res/create/polygon-sel.png')" selectedDownIcon="@Embed('../../../res/create/polygon.png')"   />
+                  <mx:Button id="ButtonCreateShapePolylineInstance" click=";" toolTip="Create Polyline" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/polyline.png')" downIcon="@Embed('../../../res/create/polyline-sel.png')" overIcon="@Embed('../../../res/create/polyline.png')" selectedUpIcon="@Embed('../../../res/create/polyline-sel.png')" selectedOverIcon="@Embed('../../../res/create/polyline-sel.png')" selectedDownIcon="@Embed('../../../res/create/polyline.png')"   />
+                  <!--
+                  <mx:Button id="ButtonCreateShapeTextInstance" toolTip="Create Text" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/text.png')" downIcon="@Embed('../../../res/create/text-sel.png')" overIcon="@Embed('../../../res/create/text.png')" selectedUpIcon="@Embed('../../../res/create/text-sel.png')" selectedOverIcon="@Embed('../../../res/create/text-sel.png')" selectedDownIcon="@Embed('../../../res/create/text.png')"   />
+                  -->
+                  <mx:Spacer width="100%"/>
+                  <mx:CheckBox selected="false" id="CheckBoxSamePhysicsProxyForAllFrames" label="Same Physics Geometry For All Frames"/>
+                  <!--
+                  <mx:HBox visible="false" paddingTop="5" paddingLeft="0" paddingRight="0" paddingBottom="5" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+                     <mx:Button height="100%" id="ButtonEditMode" label="Edit Mode" toggle="true" click=";" />
+                     <mx:Spacer width="5"/>
+                     <mx:Button height="100%" id="ButtonViewPhysics" label="View Physics" toggle="true" click=";" />
+                     <mx:Spacer width="5"/>
+                     <mx:Button height="100%" id="ButtonViewAppearance" label="View Appearance" toggle="true" click=";" />
+                  </mx:HBox>
+                  -->
+                  <mx:Spacer width="100%"/>
+                  <mx:Button id="ButtonStartPreview" click="StartPreviewing ();" toolTip="Preview" focusEnabled="false" fontSize="8"  width="26" height="26" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/preview.png')" />
                </mx:HBox>
-            </mx:HBox>
+               <mx:HBox id="Box_PreviewCommands" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle">
+                  <mx:Spacer width="100%"/>
+                  <mx:Button id="ButtonStopPreview" click="StopPreviewing ();" toolTip="Stop Previewing" focusEnabled="false" fontSize="8"  width="26" height="26" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-stop.png')" />
+               </mx:HBox>
+            </mx:ViewStack>
             <mx:ViewStack id="ViewStack_ModuleInstancesPanel" creationPolicy="all" borderStyle="none" width="100%" height="100%">
                <mx:HDividedBox id="theDividedBox_H" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
                   <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                      <image:AssetImageCompositeModuleEditPanel id="panelAssetImageCompositeModuleEditing_H" width="100%" height="100%"/>
                   </mx:HBox>
-                  <mx:VBox width="100" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+                  <mx:VBox id="Box_InstanceList_H" width="100" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                      <mx:HBox borderStyle="solid" borderThickness="1" width="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
                         <mx:Button id="ButtonDeleteModuleInstances_H" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" toolTip="Delete" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
                         <mx:Spacer width="100%"/>
-                        <mx:Button id="ButtonMoveUpModuleInstance_H" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceUp ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
-                        <mx:Button id="ButtonMoveDownModuleInstance_H" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
+                        <mx:Button id="ButtonMoveUpModuleInstance_H" click="panelAssetImageModuleInstanceListing.MoveModuleInstanceUp ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
+                        <mx:Button id="ButtonMoveDownModuleInstance_H" click="panelAssetImageModuleInstanceListing.MoveModuleInstanceDown ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
                      </mx:HBox>
                      <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                         <image:AssetImageModuleInstanceListPanel id="panelAssetImageModuleInstanceListing_H" width="100%" height="100%"/>
@@ -146,12 +157,12 @@
                   <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                      <image:AssetImageCompositeModuleEditPanel id="panelAssetImageCompositeModuleEditing_V" width="100%" height="100%"/>
                   </mx:HBox>
-                  <mx:HBox width="100%" height="100" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+                  <mx:HBox id="Box_InstanceList_V" width="100%" height="100" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                      <mx:VBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
                         <mx:Button id="ButtonDeleteModuleInstances_V" click="panelAssetImageCompositeModuleEditing.DeleteModuleInstances ();" toolTip="Delete" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
                         <mx:Spacer height="100%"/>
-                        <mx:Button id="ButtonMoveUpModuleInstance_V" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceUp ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveleft.png')" disabledIcon="@Embed('../../../res/action/command_moveleft-disabled.png')" />
-                        <mx:Button id="ButtonMoveDownModuleInstance_V" click="panelAssetImageCompositeModuleEditing.MoveModuleInstanceDown ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveright.png')" disabledIcon="@Embed('../../../res/action/command_moveright-disabled.png')" />
+                        <mx:Button id="ButtonMoveUpModuleInstance_V" click="panelAssetImageModuleInstanceListing.MoveModuleInstanceUp ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveleft.png')" disabledIcon="@Embed('../../../res/action/command_moveleft-disabled.png')" />
+                        <mx:Button id="ButtonMoveDownModuleInstance_V" click="panelAssetImageModuleInstanceListing.MoveModuleInstanceDown ();" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveright.png')" disabledIcon="@Embed('../../../res/action/command_moveright-disabled.png')" />
                      </mx:VBox>
                      <mx:HBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
                         <image:AssetImageModuleInstanceListPanel id="panelAssetImageModuleInstanceListing_V" width="100%" height="100%"/>
@@ -168,6 +179,7 @@
       
          import mx.managers.PopUpManager;
          import mx.controls.Button;
+         import mx.containers.Box;
          
          import editor.image.AssetImageCompositeModule;
          import editor.image.dialog.AssetImageCompositeModuleEditPanel;
@@ -249,6 +261,7 @@
       
          private var panelAssetImageCompositeModuleEditing:AssetImageCompositeModuleEditPanel;
          private var panelAssetImageModuleInstanceListing:AssetImageModuleInstanceListPanel;
+         private var boxInstanceList:Box;
          private var ButtonDeleteModuleInstances:Button;
          private var ButtonMoveUpModuleInstance:Button;
          private var ButtonMoveDownModuleInstance:Button;
@@ -274,6 +287,8 @@
                ButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance_V;
                
                ViewStack_ModuleInstancesPanel.selectedChild = theDividedBox_V;
+               
+               boxInstanceList = Box_InstanceList_V;
             }
             else
             {
@@ -282,6 +297,11 @@
                ButtonDeleteModuleInstances = ButtonDeleteModuleInstances_H;
                ButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance_H;
                ButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance_H;
+               
+               boxInstanceList = Box_InstanceList_H;
+               
+               CheckBoxSamePhysicsProxyForAllFrames.visible = false;
+               ButtonStartPreview.visible = false;
             }
 
             //...
@@ -299,6 +319,10 @@
             ButtonCreateShapePolylineInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
             //ButtonCreateShapeTextInstance.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnClickCreateButton);
             
+            panelAssetImageCompositeModuleEditing.mCheckBoxSamePhysicsProxyForAllFrames = CheckBoxSamePhysicsProxyForAllFrames;
+            
+            CheckBoxSamePhysicsProxyForAllFrames.addEventListener (MouseEvent.CLICK, panelAssetImageCompositeModuleEditing.OnModuleSettingsChanged);
+
             panelAssetImageCompositeModuleEditing.mButtonMoveUpModuleInstance = ButtonMoveUpModuleInstance;
             panelAssetImageCompositeModuleEditing.mButtonMoveDownModuleInstance = ButtonMoveDownModuleInstance;
             panelAssetImageCompositeModuleEditing.mButtonDeleteModuleInstances = ButtonDeleteModuleInstances;
@@ -379,6 +403,28 @@
          {
             panelAssetImageCompositeModuleEditing.SychronizeCompositeModulePropertiesFromUI ();
          }
+
+         private var mIsPropertySettingPanelEnabledsBeforePreviewing:Boolean = true;
+         
+         private function StartPreviewing ():void
+         {
+            ViewStack_CommandBar.selectedChild = Box_PreviewCommands;
+            boxInstanceList.enabled = false;
+            
+            panelAssetImageModuleInstanceListing.SetInPreviewMode (true);
+            
+            mIsPropertySettingPanelEnabledsBeforePreviewing = Box_PropertySettings.enabled;
+            Box_PropertySettings.enabled = false;
+         }
+         
+         private function StopPreviewing ():void
+         {
+            ViewStack_CommandBar.selectedChild = Box_EditCommands;
+            boxInstanceList.enabled = true;
+            
+            panelAssetImageModuleInstanceListing.SetInPreviewMode (false);
+            Box_PropertySettings.enabled = mIsPropertySettingPanelEnabledsBeforePreviewing;
+         } 
 
      ]]>
    </mx:Script>

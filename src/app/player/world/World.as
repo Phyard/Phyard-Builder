@@ -9,6 +9,7 @@ package player.world {
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
+   import flash.text.TextField;
    import flash.geom.Point;
    import flash.geom.Rectangle;
 
@@ -35,6 +36,8 @@ package player.world {
    import player.entity.EntityVoid;
    import player.entity.EntityBody;
    import player.entity.EntityShape;
+   import player.entity.EntityJoint;
+   import player.entity.SubEntityJointAnchor;
    import player.entity.EntityShape_Particle;
    import player.entity.EntityShape_CircleBomb;
    import player.entity.EntityShape_RectangleBomb;
@@ -98,11 +101,19 @@ package player.world {
    // ...
 
       private var mVersion:int = 0x0;
+      private var mWorldKey:String = "";
       private var mAuthorName:String = "";
-      private var mAuthorHonepage:String = "";
+      private var mAuthorHomepage:String = "";
       private var mShareSourceCode:Boolean = false;
       private var mPermitPublishing:Boolean = false;
       
+   // ...
+      
+      private var mCurrentSceneId:int;
+   
+      private var mSceneKey:String;
+      private var mSceneName:String;
+   
    // ...
 
       private var mNumEntitiesInEditor:int;
@@ -123,15 +134,24 @@ package player.world {
 // construct
 //==============================================================================
 
+      // todo:
+      //   World -> Scene
+      //   worldDefine -> sceneDefine
+
       public function World (worldDefine:Object)
       {
-      // basic
-
-         mVersion          = worldDefine.mVersion;
-         mAuthorName       = worldDefine.mAuthorName;
-         mAuthorHonepage   = worldDefine.mAuthorHomepage;
-         mShareSourceCode  = worldDefine.mShareSourceCode;
-         mPermitPublishing = worldDefine.mPermitPublishing;
+         // basic
+         //
+         //mVersion          = worldDefine.mVersion;
+         //mAuthorName       = worldDefine.mAuthorName;
+         //mAuthorHomepage   = worldDefine.mAuthorHomepage;
+         //mShareSourceCode  = worldDefine.mShareSourceCode;
+         //mPermitPublishing = worldDefine.mPermitPublishing;
+         
+         // ...
+         
+         mSceneKey  = worldDefine.mKey;
+         mSceneName = worldDefine.mName;
          
          // ...
          
@@ -226,8 +246,6 @@ package player.world {
 
          CreatePhysicsEngine ();
 
-         CreateCollisionCategories (worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
-
       // ...
 
          CreateGraphicsLayers ();
@@ -275,10 +293,26 @@ package player.world {
 //==============================================================================
 //
 //==============================================================================
+      
+      // temp function
+      public function SetBasicInfos (worldDefine:Object):void
+      {
+         mVersion          = worldDefine.mVersion;
+         mWorldKey         = worldDefine.mKey;
+         mAuthorName       = worldDefine.mAuthorName;
+         mAuthorHomepage   = worldDefine.mAuthorHomepage;
+         mShareSourceCode  = worldDefine.mShareSourceCode;
+         mPermitPublishing = worldDefine.mPermitPublishing;
+      }
 
       public function GetVersion ():int
       {
          return mVersion;
+      }
+      
+      public function GetWorldKey ():String
+      {
+         return mWorldKey;
       }
 
       public function GetAuthorName ():String
@@ -288,7 +322,7 @@ package player.world {
 
       public function GetAuthorHomepage ():String
       {
-         return mAuthorHonepage;
+         return mAuthorHomepage;
       }
 
       public function IsShareSourceCode ():Boolean
@@ -304,6 +338,30 @@ package player.world {
       public function GetCoordinateSystem ():CoordinateSystem
       {
          return mCoordinateSystem;
+      }
+
+//==============================================================================
+// 
+//==============================================================================
+      
+      public function GetSceneKey ():String
+      {
+         return mSceneKey;
+      }
+      
+      public function GetSceneName ():String
+      {
+         return mSceneName;
+      }
+      
+      public function GetCurrentSceneId ():int
+      {
+         return mCurrentSceneId;
+      }
+      
+      public function SetCurrentSceneId (sceneId:int):void
+      {
+         mCurrentSceneId = sceneId;
       }
 
 //==============================================================================
@@ -353,8 +411,7 @@ package player.world {
             var creationId:int = entity.GetCreationId ();
             if (creationId >= 0 && creationId < mNumEntitiesInEditor)
             {
-               mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = entity;
-               mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = entity;
+               mEntityArrayOrderByCreationId [creationId] = entity;
             }
             else // runtime created
             {
@@ -363,6 +420,12 @@ package player.world {
 
                mDynamicCrreatedEntities [nextId] = entity;
             }
+            
+            //var appearanceId:int = entity.GetAppearanceId ();
+            //if (appearanceId >= 0 && appearanceId < mNumEntitiesInEditor)
+            //{
+            //   mEntityArrayOrderByAppearanceId [appearanceId] = entity;
+            //}
          }
       }
 
@@ -425,17 +488,17 @@ package player.world {
          }
       }
 
-      public function GetEntityByAppearanceId (appearanceId:int):Entity
-      {
-         if (appearanceId >= 0 && appearanceId < mNumEntitiesInEditor)
-         {
-            return mEntityArrayOrderByAppearanceId [appearanceId] as Entity;
-         }
-         else
-         {
-            return null;
-         }
-      }
+      //public function GetEntityByAppearanceId (appearanceId:int):Entity
+      //{
+      //   if (appearanceId >= 0 && appearanceId < mNumEntitiesInEditor)
+      //   {
+      //      return mEntityArrayOrderByAppearanceId [appearanceId] as Entity;
+      //   }
+      //   else
+      //   {
+      //      return null;
+      //   }
+      //}
 
       // for physics-potential shapes
 
@@ -530,6 +593,11 @@ package player.world {
             mCreationIdsToDelete_ThisStep = oldCreationIds_LastStep;
          }
       }
+      
+      public function OnNumCustomEntityVariablesChanged ():void
+      {
+         mEntityList.OnNumCustomEntityVariablesChanged ();
+      }
 
 //==============================================================================
 //   some world data
@@ -620,6 +688,11 @@ package player.world {
          return mPreferredFPS;
       }
       
+      public function SetPreferredFPS (fps:Number):void
+      {
+         mPreferredFPS = fps;
+      }
+      
       public function IsPauseOnFocusLost ():Boolean
       {
          return mPauseOnFocusLost;
@@ -628,6 +701,10 @@ package player.world {
 //=============================================================
 //   init
 //=============================================================
+      
+      private var mInitialized:Boolean = false;
+      
+      private var mFirstRepaintCommitted:Boolean = false;
 
       private var mShouldInitRuntimeCteatedEntitiesManually:Boolean = false;
 
@@ -635,14 +712,12 @@ package player.world {
       {
          return mShouldInitRuntimeCteatedEntitiesManually;
       }
-      
-      private var mInitialized:Boolean = false;
 
       public function Initialize ():void
       {
          if (mInitialized)
             return;
-         
+
          mInitialized = true;
          
       //------------------------------------
@@ -680,7 +755,11 @@ package player.world {
 
          // register OnEntityCreated event handlers for entities.
          RegisterEventHandlersForEntity (true);
-
+            // currently, OnDestroy etc event handlers are not registered yet. So destroying an entities will not trigger any OnDestroy event handlers.
+            // Those event handlers will be registered at following.
+            // (why? forget)
+            // it seems the reason is to give every entity a chance to modify some properties, so that to change the select result of EntityFilters.
+            
          mEntityList.OnCreated ();
 
       //------------------------------------
@@ -709,7 +788,6 @@ package player.world {
 
          // register non-OnEntityCreated event handlers for entities. Entity.OnCreated may change some variable values which will affect the registering of non-OnEntityCreated event handlers
          RegisterEventHandlersForEntity (false);
-            // currently,OnDestroy event handlers are not registered yet. So destroying an entities will not trigger any OnDestroy event handlres.
 
          mEntityList.InitEntities ();
 
@@ -719,10 +797,23 @@ package player.world {
 
          HandleEventById (CoreEventIds.ID_OnWorldAfterInitialized);
 
+      //-----------------------------
+      // update camera
+      //-----------------------------
+
+         UpdateCamera ();
+
+      //-----------------------------
+      // BeforeRepaint event handler
+      //-----------------------------
+         
+         HandleEventById (CoreEventIds.ID_OnWorldBeforeRepainting);
+
       //------------------------------------
       // Repaint
       //------------------------------------
 
+         mFirstRepaintCommitted = true;
          Repaint ();
 
       //------------------------------------
@@ -745,13 +836,30 @@ package player.world {
             DestroyReally ();
 
       //-----------------------------
-      // update camera
+      // delay handle LoadScene
       //-----------------------------
-
-         UpdateCamera ();
+         
+         //if (mDelayRestartRequested)
+         //{
+         //   Global.UI_RestartPlay ();
+         //   return;
+         //}
+         //
+         //if (! Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         //{
+         //   Global.Viewer_OnLoadScene (mDelayToLoadSceneIndex);
+         //   return;
+         //}
+         
+         // now, forbid calling LoadScene and RestartLevel API in Initialize
+         
+         // [update]: now calling LoadScene and RestartLevel API is not forbidded in Initialize since v2.03
+         
+         //mDelayToLoadSceneIndex = -1;
+         //mDelayRestartRequested = false;
 
       //-----------------------------
-      // system dispatchs mouse, keyboard and other events
+      // system will dispatch mouse, keyboard and other events out of this function
       //-----------------------------
       }
 
@@ -791,9 +899,15 @@ package player.world {
             mFunc_StepUpdate (escapedTime, speedX);
 
       //-----------------------------
+      // BeforeRepaint event handler
+      //-----------------------------
+         
+         HandleEventById (CoreEventIds.ID_OnWorldBeforeRepainting);
+         
+      //-----------------------------
       // repaint
       //-----------------------------
-
+         
          Repaint ();
 
       //------------------------------------
@@ -846,11 +960,14 @@ package player.world {
          //-----------------------------
          // update physics
          //-----------------------------
-
-            UpdatePhysics (dt);
-
-            mLastSimulatedStepInterval = dt;
-            mLastSimulatedStepInterval_Inv = dt == 0 ? 0 : 1.0 / dt;
+            
+            if (mPhysicsEngineEnabled)
+            {
+               UpdatePhysics (dt);
+   
+               mLastSimulatedStepInterval = dt;
+               mLastSimulatedStepInterval_Inv = dt == 0 ? 0 : 1.0 / dt;
+            }
 
             ++ mNumSimulatedSteps;
             mStepStage = 0;
@@ -889,14 +1006,70 @@ package player.world {
             UpdateCamera ();
 
          //-----------------------------
-         // system dispatchs mouse, keyboard and other events
+         // delay handle LoadScene
          //-----------------------------
+            
+            // 
+            
+            //if (mDelayRestartRequested)
+            //{
+            //   Global.UI_RestartPlay ();
+            //   return;
+            //}
+            //
+            //if (! Global.IsInvalidScene (mDelayToLoadSceneIndex))
+            //{
+            //   Global.Viewer_OnLoadScene (mDelayToLoadSceneIndex);
+            //   return;
+            //}
          }
+
+         //-----------------------------
+         // system will dispatch mouse, keyboard and other events out of this function
+         //-----------------------------
       }
       
       public function UpdateShapeContactStatusInfos ():void
       {
          UpdatePhysics (0.0);
+      }
+      
+      
+      private var mDelayToLoadSceneIndex:int = -1;      
+      private var mSceneSwitchingStyle:int = Define.SceneSwitchingStyle_None;
+      
+      public function SetDelayToLoadSceneIndex (sceneIndex:int, sceneSwitchingStyle:int):void
+      {
+         if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         {
+            mDelayToLoadSceneIndex = sceneIndex;
+            mSceneSwitchingStyle = sceneSwitchingStyle;
+         }
+      }
+      
+      private var mDelayRestartRequested:Boolean = false;
+      public function SetDelayRestartRequested (sceneSwitchingStyle:int):void
+      {
+         if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         {
+            mDelayRestartRequested = true;
+            mSceneSwitchingStyle = sceneSwitchingStyle;
+         }
+      }
+      
+      public function HasRestartLevelRequest ():Boolean
+      {
+         return mDelayRestartRequested;
+      }
+      
+      public function GetDelayToLoadSceneIndex ():int
+      {
+         return mDelayToLoadSceneIndex;
+      }
+      
+      public function GetSceneSwitchingStyle ():int
+      {
+         return mSceneSwitchingStyle;
       }
 
 //=============================================================
@@ -1273,6 +1446,18 @@ package player.world {
 //   physics
 //====================================================================================================
 
+      private var mPhysicsEngineEnabled:Boolean = true;
+
+      public function IsPhysicsEngineEnabled ():Boolean
+      {
+         return mPhysicsEngineEnabled;
+      }
+
+      public function SetPhysicsEngineEnabled (enabled:Boolean):void
+      {
+         mPhysicsEngineEnabled = enabled;
+      }
+
       // the 2 are both physics values
       private var mDefaultGravityAccelerationMagnitude:Number;
       private var mDefaultGravityAccelerationAngle:Number;
@@ -1296,6 +1481,11 @@ package player.world {
       public function GetPhysicsSimulationStepTimeLength ():Number
       {
          return mPhysicsSimulationStepTimeLength;
+      }
+
+      public function SetPhysicsSimulationStepTimeLength (timeLength:Number):void
+      {
+         mPhysicsSimulationStepTimeLength = timeLength;
       }
 
       public function SetDefaultGravityAccelerationMagnitude (magnitude:Number):void
@@ -1388,7 +1578,7 @@ package player.world {
 
          mLastStepGravityAccelerationX = mCurrentGravityAccelerationX;
          mLastStepGravityAccelerationY = mCurrentGravityAccelerationY;
-         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX, mCurrentGravityAccelerationY);
+         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX, mCurrentGravityAccelerationY, true);
       }   
 
    //===============================
@@ -1398,7 +1588,6 @@ package player.world {
       private function InitPhysics ():void
       {
       // clear contact info
-
          mNumContactInfos = 0;
          mShapeContactInfoHashtable = new Dictionary ();
          mFirstShapeContactInfo = null;
@@ -1441,7 +1630,7 @@ package player.world {
       {
          mLastStepGravityAccelerationX = mCurrentGravityAccelerationX + mGlobalForceX;
          mLastStepGravityAccelerationY = mCurrentGravityAccelerationY + mGlobalForceY;
-         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX + mGlobalForceX, mCurrentGravityAccelerationY + mGlobalForceY);
+         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX + mGlobalForceX, mCurrentGravityAccelerationY + mGlobalForceY, false);
          ClearGlobalForces ();
 
          mPhysicsEngine.Update (dt);
@@ -1464,22 +1653,41 @@ package player.world {
 
       // all custom cateogories are shifted back by one
       // the first is the hidden category
-      private function CreateCollisionCategories (collisionCategoryDefines:Array, collisionCategoryFriendLinkDefines:Array):void
+      public function CreateCollisionCategories (collisionCategoryDefines:Array, collisionCategoryFriendLinkDefines:Array, isMerging:Boolean = false):void
       {
          var ccat:CollisionCategory;
 
          if (collisionCategoryDefines == null)
          {
+            if (isMerging)
+               return;
+            
             mCollisionCategories = new Array (1);
          }
          else
          {
-            mCollisionCategories = new Array (1 + collisionCategoryDefines.length);
-            var catId:int;
             var catArrayIndex:int;
-            for (catArrayIndex = 1; catArrayIndex <= collisionCategoryDefines.length; ++ catArrayIndex)
+            var baseIndex:int;
+            if (isMerging)
             {
-               catId = catArrayIndex - 1;
+               baseIndex = mCollisionCategories.length;
+               mCollisionCategories.length = baseIndex + collisionCategoryDefines.length; // for c/java, more need to do
+               
+               for (catArrayIndex = 0; catArrayIndex < baseIndex; ++ catArrayIndex)
+               {
+                  (mCollisionCategories [catArrayIndex] as CollisionCategory).SetTableLength (mCollisionCategories.length); // to enlarge
+               }
+            }
+            else
+            {
+               baseIndex = 1;
+               mCollisionCategories = new Array (1 + collisionCategoryDefines.length);
+            }
+            
+            for (var catId:int = 0; catId < collisionCategoryDefines.length; ++ catId)
+            {
+               catArrayIndex = catId + baseIndex;
+
                ccat = new CollisionCategory ();
                ccat.mCategoryIndex = catId;
                ccat.mArrayIndex = catArrayIndex;
@@ -1491,20 +1699,23 @@ package player.world {
          }
 
          // the hidden one
-         ccat = new CollisionCategory ();
-         ccat.mCategoryIndex = -1;
-         ccat.mArrayIndex = 0;
-         ccat.SetTableLength (mCollisionCategories.length);
-         mCollisionCategories [0] = ccat;
-         BreakOrCreateCollisionCategoryFriendLink (ccat, ccat, true);
+         if (! isMerging)
+         {
+            ccat = new CollisionCategory ();
+            ccat.mCategoryIndex = -1;
+            ccat.mArrayIndex = 0;
+            ccat.SetTableLength (mCollisionCategories.length);
+            mCollisionCategories [0] = ccat;
+            BreakOrCreateCollisionCategoryFriendLink (ccat, ccat, true);
+         }
 
          // friends
          if (collisionCategoryFriendLinkDefines != null)
          {
             var link_def:Object;
-            for (var j:int = 0; j < collisionCategoryFriendLinkDefines.length; ++ j)
+            for (var linkId:int = 0; linkId < collisionCategoryFriendLinkDefines.length; ++ linkId)
             {
-               link_def =  collisionCategoryFriendLinkDefines [j];
+               link_def =  collisionCategoryFriendLinkDefines [linkId];
                BreakOrCreateCollisionCategoryFriendLinkByIds (link_def.mCollisionCategory1Index, link_def.mCollisionCategory2Index, false);
             }
          }
@@ -1558,6 +1769,11 @@ package player.world {
 
          if (changed1 || changed2)
             mPhysicsEngine.FlagForFilteringForAllContacts ();
+      }
+      
+      public function GetNumCollisionCategories ():int
+      {
+         return mCollisionCategories.length;
       }
 
       public function GetCollisionCategoryById (ccatId:int):CollisionCategory

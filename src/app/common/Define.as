@@ -20,9 +20,6 @@ package common {
       public static const kDegrees2Radians:Number = Math.PI / 180.0;
       
       public static const kFloatEpsilon:Number = 1.192092896e-07;
-      
-      public static const kDefaultCoordinateSystem:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.05, false);
-      public static const kDefaultCoordinateSystem_BeforeV0108:CoordinateSystem = kDefaultCoordinateSystem; // new CoordinateSystem (0.0, 0.0, 0.1, false);
 
 //===========================================================================
 // network return code
@@ -66,13 +63,14 @@ package common {
       public static const DefaultPlayerHeight:int = 500; //600; 
       
       // there are 32 bits for the flags (this flags are added from v1.51)
-      public static const PlayerUiFlag_UseDefaultSkin:int          = 1 << 0;
-      public static const PlayerUiFlag_ShowSpeedAdjustor:int    = 1 << 1;
-      public static const PlayerUiFlag_ShowScaleAdjustor:int    = 1 << 2;
-      public static const PlayerUiFlag_ShowHelpButton:int       = 1 << 3;
-      public static const PlayerUiFlag_ShowSoundController:int  = 1 << 4; // add from v1.59
-      public static const PlayerUiFlag_AdaptiveViewportSize:int = 1 << 7;
-      public static const PlayerUiFlag_UseOverlaySkin:int       = 1 << 8; // add from v1.59
+      public static const PlayerUiFlag_UseDefaultSkin:int               = 1 << 0;
+      public static const PlayerUiFlag_ShowSpeedAdjustor:int            = 1 << 1;
+      public static const PlayerUiFlag_ShowScaleAdjustor:int            = 1 << 2;
+      public static const PlayerUiFlag_ShowHelpButton:int               = 1 << 3;
+      public static const PlayerUiFlag_ShowSoundController:int          = 1 << 4; // add from v1.59
+      public static const PlayerUiFlag_UseCustomLevelFinishedDialog:int = 1 << 5; // add from v2.02
+      public static const PlayerUiFlag_AdaptiveViewportSize:int         = 1 << 7;
+      public static const PlayerUiFlag_UseOverlaySkin:int               = 1 << 8; // add from v1.59
                                                                  // bit 9-15 are reserved for skin type
       
       // not include v1.51
@@ -117,6 +115,49 @@ package common {
       // ...
       public static const BodyCloneOffsetX:uint = 20;
       public static const BodyCloneOffsetY:uint = 0;
+      
+      //=======
+      
+      public static function GetDefaultWorldSavedDataFilename (worldKey:String):String
+      {
+         return "-" + worldKey;
+      }
+      
+//===========================================================================
+// level
+//===========================================================================
+      
+      public static const LevelProperty_Invalid:int = -1;
+      public static const LevelProperty_JointColor:int = 0;
+      public static const LevelProperty_CiStaticColor:int = 100;
+      public static const LevelProperty_CiMovableColor:int = 101;
+      public static const LevelProperty_CiBreakableColor:int = 102;
+      public static const LevelProperty_CiInfectedColor:int = 103;
+      public static const LevelProperty_CiUninfectedColor:int = 104;
+      public static const LevelProperty_CiDontInfectColor:int = 105;
+      public static const LevelProperty_ColorBlindMode:int = 1000;
+      public static const LevelProperty_RenderQuality:int = 1001;
+      
+      // DOPN"T change these values. They are must same as the values in Viewer.
+      public static const SceneSwitchingStyle_None:int = 0;
+      public static const SceneSwitchingStyle_FadingIn:int = 1;
+      public static const SceneSwitchingStyle_FadingOut:int = 2;
+      public static const SceneSwitchingStyle_FadingOutThenFadingIn:int = 3;
+      public static const SceneSwitchingStyle_Blend:int = 4;
+      
+      //curtain
+      
+//===========================================================================
+// sound / module
+//===========================================================================
+      
+      public static const ModuleId_None:int = -1;
+      public static const SoundId_None:int = -1;
+      
+      
+            
+      public static const SequencedModule_ConstantPhysicsGeomForAllFrames:int = 1 << 0;
+      //public SequencedModule_StopAtTheLastFrameLint = 1 << 1; // (<=> not loop)
       
 //===========================================================================
 // entity common

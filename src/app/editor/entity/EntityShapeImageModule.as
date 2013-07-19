@@ -13,7 +13,9 @@ package editor.entity {
    import flash.events.ContextMenuEvent;
 
    import com.tapirgames.util.GraphicsUtil;
-
+   
+   import editor.world.World;
+   
    import editor.selection.SelectionProxy;
    
    import editor.core.EditorObject;
@@ -30,11 +32,6 @@ package editor.entity {
    public class EntityShapeImageModule extends EntityShape
    {
       
-      public static const kText_ChangeModule:String = "Change To The Current Module";
-      
-      protected var mContextMenu:ContextMenu;
-      protected var mContextMenuItem_ChangeModule:ContextMenuItem;
-      
       //============================================
       
       protected var mAssetImageModule:AssetImageModule;
@@ -48,8 +45,6 @@ package editor.entity {
          super (container);
          
          SetAssetImageModule (null);
-         
-         BuildContextMenu ();
       }
 
       override public function GetTypeName ():String
@@ -90,9 +85,10 @@ package editor.entity {
       }
       
       // for loading
-      public function SetAssetImageModuleByIndex (index:int):void
+      public function SetAssetImageModuleByIndex (index:int, world:World):void
       {
-         SetAssetImageModule (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));
+         //SetAssetImageModule (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));// bug!
+         SetAssetImageModule (world.GetImageModuleByIndex (index));
       }
       
 //=============================================================
@@ -214,28 +210,26 @@ package editor.entity {
          imageModuleShape.SetAssetImageModule (GetAssetImageModule ());
       }
       
-//==============================================================================================================
-//
-//==============================================================================================================
+//=============================================================
+//   context menu
+//=============================================================
       
-      private function BuildContextMenu ():void
+      private static const kText_ChangeModule:String = "Change Module";
+      
+      override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         contextMenu = new ContextMenu ();
-         contextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
-         defaultItems.print = false;
+         var menuItemChangeModule:ContextMenuItem = new ContextMenuItem (kText_ChangeModule, false);
          
-         mContextMenuItem_ChangeModule = new ContextMenuItem (kText_ChangeModule, false);
-         contextMenu.customItems.push (mContextMenuItem_ChangeModule);
-         mContextMenuItem_ChangeModule.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         menuItemChangeModule.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeModule);
+
+         customMenuItemsStack.push (menuItemChangeModule);
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      private function OnContextMenuEvent (event:ContextMenuEvent):void
+      private function OnContextMenuEvent_ChangeModule (event:ContextMenuEvent):void
       {
-         if (event.target == mContextMenuItem_ChangeModule)
-         {
-            ChangeToCurrentAssetImageModule ();
-         }
+         ChangeToCurrentAssetImageModule ();
       }
       
       public function ChangeToCurrentAssetImageModule ():void

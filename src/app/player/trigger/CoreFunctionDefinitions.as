@@ -3,7 +3,8 @@ package player.trigger {
    import flash.utils.getTimer;
    import flash.geom.Point;
    import flash.ui.Mouse;
-
+   import flash.system.Capabilities;
+   import flash.system.System;
    import flash.utils.Dictionary;
 
    import player.design.Global;
@@ -11,6 +12,8 @@ package player.trigger {
    import player.world.*;
    import player.entity.*;
    import player.trigger.entity.*;
+
+   import player.module.Module;
 
    import player.sound.Sound;
 
@@ -27,12 +30,13 @@ package player.trigger {
    import common.trigger.FunctionDeclaration;
    import common.trigger.CoreFunctionDeclarations;
 
-   import common.Define;
-   import common.ValueAdjuster;
-
    import common.trigger.ValueDefine;
    import common.trigger.IdPool;
    import common.trigger.CoreEventIds;
+
+   import common.SceneDefine;
+   import common.Define;
+   import common.ValueAdjuster;
 
    import common.TriggerFormatHelper2;
 
@@ -80,6 +84,19 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_SetMouseVisible,                  SetMouseVisible);
          RegisterCoreFunction (CoreFunctionIds.ID_IsAccelerometerSupported,                  IsAccelerometerSupported);
          RegisterCoreFunction (CoreFunctionIds.ID_GetAcceleration,                     GetAccelerationVector);
+         RegisterCoreFunction (CoreFunctionIds.ID_IsNativeApp,                     IsNativeApp);
+         RegisterCoreFunction (CoreFunctionIds.ID_ExitApp,                     ExitApp);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetScreenResolution,         GetScreenResolution);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetScreenDPI,                GetScreenDPI);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetOsNameString,                GetOsNameString);
+         RegisterCoreFunction (CoreFunctionIds.ID_OpenURL,                     OpenURL);
+         RegisterCoreFunction (CoreFunctionIds.ID_CopyToClipboard,                     CopyToClipboard);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetLanguageCode,                     GetLanguageCode);
+
+      // services
+
+         RegisterCoreFunction (CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
+         RegisterCoreFunction (CoreFunctionIds.ID_SubmitKeyValue_Number,               SubmitKeyValue_Number);
 
       // string
 
@@ -99,6 +116,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_String_LastIndexOf,                 LastIndexOfSubstring);
          RegisterCoreFunction (CoreFunctionIds.ID_String_Substring,                   Substring);
          RegisterCoreFunction (CoreFunctionIds.ID_String_Split,                       SplitString);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_Replace,                     ReplacetString);
 
       // bool
 
@@ -125,11 +143,13 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_ConditionAssign,      ConditionAssignArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SwapValues,           SwapArrayValues);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Equals,               EqualsWith_Arrays);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_ExactEquals,               ExactEqualsWith_Arrays);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_ToString,             ArrayToString);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Create,               CreateArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_IsNull,               IsNullArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetLength,               GetArrayLength);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetLength,               SetArrayLength);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SubArray,               SubArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_RemoveElements,               RemoveArrayElements);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_InsertElements,               InsertArrayElements);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Concat,                       ConcatArrays);
@@ -145,6 +165,10 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsCCat,       GetArrayElementAsCCat);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithEntity,     SetArrayElementWithEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsEntity,       GetArrayElementAsEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithModule,     SetArrayElementWithModule);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsModule,       GetArrayElementAsModule);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithSound,     SetArrayElementWithSound);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsSound,       GetArrayElementAsSound);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithArray,     SetArrayElementWithArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsArray,       GetArrayElementAsArray);
 
@@ -226,6 +250,22 @@ package player.trigger {
 
       // game / design
 
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelByIdOffset,           GetLevelByIdOffset);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelId,           GetLevelId);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelByKey,           GetLevelByKey);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelKey,           GetLevelKey);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetCurrentLevel,           GetCurrentLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_IsNullLevel,            IsNullLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SceneEquals,            EqualsWith_Scenes);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_Scene2String,           Scene2String);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_WriteSaveData,          WriteSaveData);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_LoadSaveData,           LoadSaveData);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_ResetSaveData,          ResetSaveData);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_DeleteSaveData,          DeleteSaveData);
+
          RegisterCoreFunction (CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelPaused,            SetLevelPaused);
@@ -245,9 +285,29 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelFailed,                    IsLevelFailed);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelUnfinished,                IsLevelUnfinished);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetMouseGestureEnabled,                SetMouseGestureEnabled);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelBooleanProperty,                SetLevelProperty_Boolean);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelNumberProperty,                SetLevelProperty_Number);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelStringProperty,                SetLevelProperty_String);
 
-      // game / world
+      // game / world / appearance
+      
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_GetFilledColor,         GetLevelFilledColor);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_SetFilledColor,         SetLevelFilledColor);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_GetFilledColorRGB,      GetLevelFilledColorRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_SetFilledColorRGB,      SetLevelFilledColorRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_GetBorderColor,         GetLevelBorderColor);         
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_SetBorderColor,         SetLevelBorderColor);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_GetBorderColorRGB,      GetLevelBorderColorRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_Level_SetBorderColorRGB,      SetLevelBorderColorRGB);
 
+      // game / world / physics
+
+         RegisterCoreFunction (CoreFunctionIds.ID_World_IsPhysicsEngineEnabled,          IsPhysicsEngineEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPhysicsEngineEnabled,         SetPhysicsEngineEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetRealtimeFPS,                       GetRealtimeFPS);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetPreferredFpsAndStepTimeLangth,     GetPreferredFpsAndStepTimeLangth);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetPreferredFpsAndStepTimeLangth,     SetPreferredFpsAndStepTimeLangth);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,     SetWorldGravityAcceleration_Radians);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
@@ -260,6 +320,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment,         GetFirstOutcomingIntersectionWithLineSegment);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,         GetIntersectedShapesWithLineSegment);
 
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetViewportSize,                           GetViewportSize);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraRotationByDegrees,                GetCameraRotation_Degrees);
@@ -281,10 +342,20 @@ package player.trigger {
 
          RegisterCoreFunction (CoreFunctionIds.ID_World_CreateExplosion,                            CreateExplosion);
 
-      // game / world / create
+      // game / world / sound
 
-         RegisterCoreFunction (CoreFunctionIds.ID_World_StopAllSounds,                        StopAllSounds);
          RegisterCoreFunction (CoreFunctionIds.ID_World_PlaySound,                            PlaySound);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_StopSounds_InLevel,                   StopAllSounds_InLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_StopSound_CrossLevels,                StopSound_CrossLevels);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_IsSoundEnabled,                       IsSoundEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetSoundEnabled,                      SetSoundEnabled);
+         //RegisterCoreFunction (CoreFunctionIds.ID_World_GetGlobalSoundVolume,                 GetGlobalSoundVolume);
+         //RegisterCoreFunction (CoreFunctionIds.ID_World_SetGlobalSoundVolume,                 SetGlobalSoundVolume);
+
+      // game / world / module
+
+         RegisterCoreFunction (CoreFunctionIds.ID_Module_Assign,                   AssignModule);
+         RegisterCoreFunction (CoreFunctionIds.ID_Module_Equals,                   EqualsWith_Module);
 
       // game / collision category
 
@@ -358,31 +429,41 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity,            IsPolylineShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsBombShapeEntity,               IsBombShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntity,        IsWorldBorderEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsCameraEntity,        IsCameraEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTextShapeEntity,     IsTextShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsModuleShapeEntity,   IsModuleShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsButtonShapeEntity,   IsButtonShapeEntity);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetOriginalCIType,           GetShapeOriginalCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetOriginalCIType,           SetShapeOriginalCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCIType,                   GetShapeCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCIType,                   SetShapeCIType);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBodyTexture,              GetBodyTexture);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBodyTexture,              SetBodyTexture);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledColor,              GetShapeFilledColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledColor,              SetShapeFilledColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,           GetShapeFilledColorRGB);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,           SetShapeFilledColorRGB);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledOpacity,            GetFilledOpacity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledOpacity,            SetFilledOpacity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsShowBorder,                IsShapeShowBorder);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetShowBorder,               SetShapeShowBorder);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderColor,              GetShapeBorderColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderColor,              SetShapeBorderColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderColorRGB,           GetShapeBorderColorRGB);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB,           SetShapeBorderColorRGB);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderOpacity,            GetBorderOpacity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderOpacity,            SetBorderOpacity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCacheAsBitmap,            SetCacheAsBitmap);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,            IsShapePhysicsEnabled);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetPhysicsEnabled,         SetShapePhysicsEnabled);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsStatic,                    IsStaticShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCollisionCategory,        GetShapeCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,        SetShapeCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSensor,                    IsSensorShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsStatic,                    IsStatic);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetStatic,                   SetStatic);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsRotationFixed,                  IsShapeRotationFixed);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetRotationFixed,                 SetShapeRotationFixed);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
@@ -449,9 +530,20 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetText,                  SetTextForTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendText,               AppendTextToTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendNewLine,            AppendNewLineToTextComponent);
+
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_GetHorizontalScrollPosition,                  GetHorizontalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetHorizontalScrollPosition,                  SetHorizontalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_GetVerticalScrollPosition,                  GetVerticalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetVerticalScrollPosition,                  SetVerticalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_GetMaxHorizontalScrollPosition,                GetMaxHorizontalScrollPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_GetMaxVerticalScrollPosition,                  GetMaxVerticalScrollPosition);
+
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetSize,                  SetTextDefaultSize);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColor,                 SetTextDefaultColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColorByRGB,            SetTextDefaultColorByRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetSize_MouseOver,                  SetTextDefaultSize_MouseOver);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColor_MouseOver,                 SetTextDefaultColor_MouseOver);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColorByRGB_MouseOver,            SetTextDefaultColorByRGB_MouseOver);
 
       // game / entity / shape / circle
 
@@ -479,11 +571,25 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPositions,            GetVertexWorldPositions);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPositions,            SetVertexWorldPositions);
 
+      // game / entity / shape / thickness
+      
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderThickness,            GetShapeBorderThickness);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderThickness,            SetShapeBorderThickness);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCurveThickness,            GetCurveThickness);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCurveThickness,            SetCurveThickness);
+
       // game / entity / shape / module
 
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModule_GetModule,            GetShapeModule);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModule_ChangeModule,            ChangeShapeModule);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModuleButton_GetOverModule,            GetShapeModuleButton_OverState);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModuleButton_ChangeOverModule,            ChangeShapeModuleButton_OverState);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModuleButton_GetDownModule,            GetShapeModuleButton_DownState);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeModuleButton_ChangeDownModule,            ChangeShapeModuleButton_DownState);
 
       // game / entity / joint
+
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetJointConnectedShapes,                      GetJointConnectedShapes);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,                      SetJointMotorEnabled);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled,                     SetJointLimitsEnabled);
@@ -634,14 +740,14 @@ package player.trigger {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsMouseButtonDown ());
       }
 
-      public static function SetMouseVisible(valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetMouseVisible (valueSource:Parameter, valueTarget:Parameter):void
       {
          var visible:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
          Global.GetCurrentWorld ().SetMouseVisible (visible);
       }
 
-      public static function IsAccelerometerSupported(valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsAccelerometerSupported (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.Viewer_mLibCapabilities.IsAccelerometerSupported ());
       }
@@ -657,6 +763,95 @@ package player.trigger {
 
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (vector3d [2] as Number);
+      }
+
+      public static function IsNativeApp (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.Viewer_mLibAppp.IsNativeApp ());
+      }
+
+      public static function ExitApp (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.Viewer_mLibAppp.OnExitApp ();
+      }
+
+      public static function GetScreenResolution (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var size:Point = Global.Viewer_mLibCapabilities.GetScreenResolution ();
+
+         valueTarget.AssignValueObject (size.x);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (size.y);
+      }
+
+      public static function GetScreenDPI (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.Viewer_mLibCapabilities.GetScreenDPI ());
+      }
+      
+      public static function GetOsNameString (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Capabilities.os);
+      }
+      
+      public static function OpenURL (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var url:String = valueSource.EvaluateValueObject () as String;
+         
+         if (url != null && url.length > 0)
+         {
+            Global.Viewer_mLibAppp.OpenURL (url);
+         }
+      }
+      
+      public static function CopyToClipboard (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var text:String = valueSource.EvaluateValueObject () as String;
+         
+         if (text != null && text.length > 0)
+         {
+            try
+            {
+               System.setClipboard (text);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
+         }
+      }
+      
+      public static function GetLanguageCode (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Capabilities.language);
+      }
+
+   //*******************************************************************
+   // services
+   //*******************************************************************
+   
+      public static function SubmitHighScore (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value:Number = Number (valueSource.EvaluateValueObject ());
+
+         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SubmitKeyValue)
+         {
+            Global.Viewer_mLibServices.SubmitKeyValue ("HighScore", value);
+         }
+      }
+      
+      public static function SubmitKeyValue_Number (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var key:String = valueSource.EvaluateValueObject () as String;
+
+         valueSource = valueSource.mNextParameter;
+         var value:Number = Number (valueSource.EvaluateValueObject ());
+
+         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SubmitKeyValue)
+         {
+            Global.Viewer_mLibServices.SubmitKeyValue (key, value);
+         }
       }
 
    //*******************************************************************
@@ -822,6 +1017,30 @@ package player.trigger {
          }
 
          valueTarget.AssignValueObject (substrings);
+      }
+      
+      public static function ReplacetString(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var resultString:String = null;
+
+         var text:String = valueSource.EvaluateValueObject () as String;
+         if (text != null)
+         {
+            valueSource = valueSource.mNextParameter;
+            var from:String = valueSource.EvaluateValueObject () as String;
+            if (from != null && from.length > 0)
+            {
+               valueSource = valueSource.mNextParameter;
+               var to:String = valueSource.EvaluateValueObject () as String;
+               resultString = text.replace (from, to == null ? "" : to);
+            }
+            else
+            {
+               resultString = text;
+            }
+         }
+
+         valueTarget.AssignValueObject (resultString);
       }
 
       public static function LastIndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void
@@ -1095,6 +1314,64 @@ package player.trigger {
 
          valueTarget.AssignValueObject (value1 == value2);
       }
+      
+
+      public static function ExactEqualsWith_Arrays (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value1:Array = valueSource.EvaluateValueObject () as Array;
+
+         valueSource = valueSource.mNextParameter;
+         var value2:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueTarget.AssignValueObject (CompareArrays (value1, value2));
+      }
+
+      private static function CompareArrays (values1:Array, values2:Array, numRegisterdArrays:int = 0, registerdArrays:Dictionary = null, registedComparePairs:Dictionary = null):Boolean
+      {
+         if (values1 == values2)
+            return true;
+
+         if (values1 == null || values2 == null || values1.length != values2.length)
+            return false;
+         
+         if (numRegisterdArrays == 0)
+         {
+            registerdArrays = new Dictionary ();
+            registedComparePairs = new Dictionary ();
+         }
+         var index1:Object = registerdArrays [values1];
+         if (index1 == null)
+            registerdArrays [values1] = index1 = numRegisterdArrays ++;
+         var index2:Object = registerdArrays [values2];
+         if (index2 == null)
+            registerdArrays [values2] = index2 = numRegisterdArrays ++;
+         var pairId:int = (index1 as int) < (index2 as int) ? (((index1 as int) << 16) | (index2 as int)) : (((index2 as int) << 16) | (index1 as int)); // !! max 65536 aryays
+         if (registedComparePairs [pairId] != null)
+            return true;
+         registedComparePairs [pairId] = 1;            
+         
+         var count:int = values1.length;
+         for (var i:int = 0; i < count; ++ i)
+         {
+            var element1:Object = values1 [i];
+            var element2:Object = values2 [i];
+            
+            if (element1 != element2)
+            {
+               if (element1 is Array && element2 is Array)
+               {
+                  if (CompareArrays (element1 as Array, element2 as Array, numRegisterdArrays, registerdArrays, registedComparePairs))
+                     continue;
+               }
+               else
+               {
+                  return false;
+               }
+            }
+         }
+         
+         return true;
+      }
 
       public static function ArrayToString (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -1133,13 +1410,21 @@ package player.trigger {
             {
                convertedArrays [values] = "(length: " + numElements + ")"; // A not good but not worst value. Avoid dead loop.
 
-               value = values [0];
-               returnText = returnText + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
+               var sep:String = "";
 
-               for (var i:int = 1; i < numElements; ++ i)
+               for (var i:int = 0; i < numElements; ++ i)
                {
                   value = values [i];
-                  returnText = returnText + "," + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
+                  if (value is Array)
+                     returnText = returnText + sep + ConvertArrayToString (value as Array, convertedArrays);
+                  else if (value is Entity)
+                     returnText = returnText + sep + (value as Entity).ToString ();
+                  //else if (value is CollisionCategory)
+                  //   returnText = returnText + sep + (value as CollisionCategory).ToString ();
+                  else
+                     returnText = returnText + sep + String (value);
+                  
+                  sep = ",";
                }
 
                convertedArrays [values] = returnText; // correct the value. Avoid dead loop.
@@ -1288,6 +1573,25 @@ package player.trigger {
 
             array.length = new_len;
          }
+      }
+      
+      public static function SubArray (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var resultArray:Array = null;
+         
+         var inputArray:Array = valueSource.EvaluateValueObject () as Array;
+         if (inputArray != null)
+         {
+            valueSource = valueSource.mNextParameter;
+            var startIndex:int = int (valueSource.EvaluateValueObject ());
+
+            valueSource = valueSource.mNextParameter;
+            var endIndex:int = int (valueSource.EvaluateValueObject ());
+            
+            resultArray = inputArray.slice (startIndex, endIndex);
+         }
+         
+         valueTarget.AssignValueObject (resultArray);
       }
 
       public static function RemoveArrayElements (valueSource:Parameter, valueTarget:Parameter):void
@@ -1490,6 +1794,26 @@ package player.trigger {
       public static function GetArrayElementAsEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
          GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Entity);
+      }
+
+      public static function SetArrayElementWithModule (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Module);
+      }
+
+      public static function GetArrayElementAsModule (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Module);
+      }
+
+      public static function SetArrayElementWithSound (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Sound);
+      }
+
+      public static function GetArrayElementAsSound (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Sound);
       }
 
       public static function SetArrayElementWithArray (valueSource:Parameter, valueTarget:Parameter):void
@@ -2038,11 +2362,133 @@ package player.trigger {
    // game / design
    //*******************************************************************
 
-      public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void
+      public static function LoadLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.UI_RestartPlay ();
+         var levelIndex:int = int (valueSource.EvaluateValueObject ());
+         if (Global.IsInvalidScene (levelIndex))
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var sceneSwitchingStyle:int = valueSource.EvaluateValueObject () as int;
+
+         //Global.Viewer_OnLoadScene (levelIndex); // if call this at this time, there will be many check point needed to be aded.
+         Global.GetCurrentWorld ().SetDelayToLoadSceneIndex (levelIndex, sceneSwitchingStyle);
+      }
+      
+      public static function MergeLevelIntoTheCurrentOne (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = int (valueSource.EvaluateValueObject ());
+         if (Global.IsInvalidScene (levelIndex))
+            return;
+         
+         Global.MergeScene (levelIndex);
+      }
+      
+      public static function GetLevelByIdOffset (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var indexOffset:int = int (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var relativeTolevelIndex:int = valueSource.EvaluateValueObject () as int;
+         
+         if (Global.IsInvalidScene (relativeTolevelIndex))
+            relativeTolevelIndex =  Global.GetCurrentWorld ().GetCurrentSceneId ();
+         
+         var levelIndex:int = relativeTolevelIndex + indexOffset;
+         valueTarget.AssignValueObject (Global.IsInvalidScene (levelIndex) ? -1 : levelIndex);
+      }
+      
+      public static function GetLevelId (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         if (Global.IsInvalidScene (levelIndex))
+            levelIndex = -1;
+         
+         valueTarget.AssignValueObject (levelIndex);
+      }
+      
+      public static function GetLevelByKey (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var key:String = valueSource.EvaluateValueObject () as String;
+         
+         valueTarget.AssignValueObject (Global.GetSceneByKey (key));
+      }
+      
+      public static function GetLevelKey (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         var sceneDefine:SceneDefine = Global.GetSceneDefine (levelIndex);
+         if (sceneDefine == null)
+            valueTarget.AssignValueObject (null);
+         else
+            valueTarget.AssignValueObject (sceneDefine.mKey);
+      }
+      
+      public static function GetCurrentLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentSceneId ());
+      }
+      
+      public static function IsNullLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = valueSource.EvaluateValueObject () as int;
+         valueTarget.AssignValueObject (Global.IsInvalidScene (levelIndex));
+      }
+      
+      public static function EqualsWith_Scenes (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex1:int = valueSource.EvaluateValueObject () as int;
+
+         valueSource = valueSource.mNextParameter;
+         var levelIndex2:int = valueSource.EvaluateValueObject () as int;
+
+         if (Global.IsInvalidScene (levelIndex1) && Global.IsInvalidScene (levelIndex2))
+            valueTarget.AssignValueObject (true);
+         else
+            valueTarget.AssignValueObject (levelIndex1 == levelIndex2);
+      }
+      
+      public static function Scene2String (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var levelIndex:int = valueSource.EvaluateValueObject () as int;
+         
+         var sceneDefine:SceneDefine = Global.GetSceneDefine (levelIndex);
+         if (sceneDefine == null)
+            valueTarget.AssignValueObject ("null");
+         else
+            valueTarget.AssignValueObject ("scene#" + levelIndex + "[" + sceneDefine.mName + "]");
+      }
+      
+      public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.Viewer_mLibCookie.WriteCookie (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()), Global.GetSavedData ());
+      }
+      
+      public static function LoadSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.SetSavedData (Global.Viewer_mLibCookie.LoadCookie (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ())));
+      }
+      
+      public static function ResetSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.ResetGameSaveVariableSpace ();
+      }
+      
+      public static function DeleteSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.Viewer_mLibCookie.ClearCookie (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()));
       }
 
+      public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var sceneSwitchingStyle:int = valueSource.EvaluateValueObject () as int;
+
+         //Global.UI_RestartPlay (); // cause bug
+         Global.GetCurrentWorld ().SetDelayRestartRequested (sceneSwitchingStyle);
+      }
+      
       public static function IsLevelPaused (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (! Global.UI_IsPlaying ());
@@ -2155,11 +2601,161 @@ package player.trigger {
 
          Global.Viewer_SetMouseGestureSupported (enableGesture, drawGesture);
       }
+      
+      public static function SetLevelProperty_Boolean (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var property:int = valueSource.EvaluateValueObject () as int;
+
+         valueSource = valueSource.mNextParameter;
+         var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
+         
+         Global.GetCurrentWorld ().SetLevelProperty (property, value);
+      }
+      
+      public static function SetLevelProperty_Number (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var property:int = valueSource.EvaluateValueObject () as int;
+
+         valueSource = valueSource.mNextParameter;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
+         
+         Global.GetCurrentWorld ().SetLevelProperty (property, value);
+      }
+      
+      public static function SetLevelProperty_String (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var property:int = valueSource.EvaluateValueObject () as int;
+      
+         valueSource = valueSource.mNextParameter;
+         var value:String = valueSource.EvaluateValueObject () as String;
+         
+         Global.GetCurrentWorld ().SetLevelProperty (property, value);
+      }
 
    //*******************************************************************
-   // game / world
+   // game / world / appearance
+   //*******************************************************************
+      
+      public static function GetLevelFilledColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var filledColor:uint = Global.GetCurrentWorld ().GetBackgroundColor ();
+
+         valueTarget.AssignValueObject (filledColor);
+      }
+
+      public static function SetLevelFilledColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+         
+         Global.GetCurrentWorld ().SetBackgroundColor (color);
+      }
+
+      public static function GetLevelFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var filledColor:uint = Global.GetCurrentWorld ().GetBackgroundColor ();
+
+         valueTarget.AssignValueObject ((filledColor >> 16) & 0xFF);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((filledColor >> 8) & 0xFF);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((filledColor >> 0) & 0xFF);
+      }
+
+      public static function SetLevelFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var red:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var green:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var blue:int =  valueSource.EvaluateValueObject () as Number;
+         
+         Global.GetCurrentWorld ().SetBackgroundColor ((red << 16) | (green << 8) | (blue));
+      }
+
+      public static function GetLevelBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var borderColor:uint = Global.GetCurrentWorld ().GetBorderColor ();
+
+         valueTarget.AssignValueObject (borderColor);
+      }
+
+      public static function SetLevelBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+
+         Global.GetCurrentWorld ().SetBorderColor (color);
+      }
+
+      public static function GetLevelBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var borderColor:uint = Global.GetCurrentWorld ().GetBorderColor ();
+
+         valueTarget.AssignValueObject ((borderColor >> 16) & 0xFF);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((borderColor >> 8) & 0xFF);
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((borderColor >> 0) & 0xFF);
+      }
+
+      public static function SetLevelBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var red:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var green:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var blue:int =  valueSource.EvaluateValueObject () as Number;
+         
+         Global.GetCurrentWorld ().SetBorderColor ((red << 16) | (green << 8) | (blue));
+      }
+
+   //*******************************************************************
+   // game / world / physics
    //*******************************************************************
 
+      public static function IsPhysicsEngineEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsPhysicsEngineEnabled ());
+      }
+
+      public static function SetPhysicsEngineEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var enabled:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         Global.GetCurrentWorld ().SetPhysicsEngineEnabled (enabled);
+      }
+
+      public static function GetRealtimeFPS (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.Viewer_mLibAppp.GetRealtimeFps ());
+      }
+
+      public static function GetPreferredFpsAndStepTimeLangth (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPreferredFPS ());
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsSimulationStepTimeLength ());
+      }
+
+      public static function SetPreferredFpsAndStepTimeLangth (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var preferredFps:Number = Number (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var timeLength:Number = Number (valueSource.EvaluateValueObject ());
+
+         Global.GetCurrentWorld ().SetPreferredFPS (preferredFps);
+         Global.GetCurrentWorld ().SetPhysicsSimulationStepTimeLength (timeLength);
+      }
+      
       public static function SetWorldGravityAcceleration_Radians (valueSource:Parameter, valueTarget:Parameter):void
       {
          var magnitude:Number = valueSource.EvaluateValueObject () as Number;
@@ -2196,6 +2792,14 @@ package player.trigger {
 
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentGravityAccelerationY ());
+      }
+      
+      public static function GetViewportSize (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetRealViewportWidth ());
+
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetRealViewportHeight ());
       }
 
       public static function SetCurrentCamera (valueSource:Parameter, valueTarget:Parameter):void
@@ -2362,7 +2966,9 @@ package player.trigger {
          if (boolFunction != null)
          {
             while (boolFunction.RunBoolFunction ())
-               ;
+            {
+               // do nothing
+            }
          }
       }
 
@@ -2422,25 +3028,91 @@ package player.trigger {
    // game / world / create
    //*******************************************************************
 
-      public static function StopAllSounds (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         Sound.StopAllSounds ();
-      }
-
       public static function PlaySound (valueSource:Parameter, valueTarget:Parameter):void
       {
          var soundIndex:int = valueSource.EvaluateValueObject () as int;
          if (isNaN (soundIndex))
             soundIndex = -1;
 
-         valueSource = valueSource.mNextParameter;
-         var times:int = int (valueSource.EvaluateValueObject ());
-
          var sound:Sound = Global.GetSoundByIndex (soundIndex);
-         if (sound != null)
+         if (sound != null && sound.GetSoundObject () != null)
          {
-            sound.Play (times);
+            valueSource = valueSource.mNextParameter;
+            var times:int = int (valueSource.EvaluateValueObject ());
+   
+            valueSource = valueSource.mNextParameter;
+            var crossingLevels:Boolean = Boolean (valueSource.EvaluateValueObject ());
+            
+            Global.Viewer_mLibSound.PlaySound (sound.GetSoundObject (), times, crossingLevels);
          }
+      }
+
+      public static function StopAllSounds_InLevel (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         Global.Viewer_mLibSound.StopAllInLevelSounds ();
+      }
+      
+      public static function StopSound_CrossLevels (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var soundIndex:int = valueSource.EvaluateValueObject () as int;
+         if (isNaN (soundIndex))
+            soundIndex = -1;
+         
+         var sound:Sound = null;
+         if (soundIndex >= 0)
+         {
+            sound = Global.GetSoundByIndex (soundIndex);
+            if (sound == null || sound.GetSoundObject () == null)
+               return;
+         }
+         
+         // null means all (when soundIndex < 0)
+            
+         Global.Viewer_mLibSound.StopCrossLevelsSound (sound == null ? null : sound.GetSoundObject ());
+      }
+      
+      public static function IsSoundEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.UI_IsSoundEnabled ());
+      }
+      
+      public static function SetSoundEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var soundOn:Boolean = Boolean (valueSource.EvaluateValueObject ());
+         
+         Global.UI_SetSoundEnabled (soundOn);
+      }
+      
+      //public static function GetGlobalSoundVolume (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //}
+      //
+      //public static function SetGlobalSoundVolume (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //}
+      
+   //*******************************************************************
+   // game / world / module
+   //*******************************************************************
+
+      public static function AssignModule (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         //var module:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex:int = valueSource.EvaluateValueObject () as int;
+
+         valueTarget.AssignValueObject (Global.ValiddateModuleIndex (moduleIndex));
+      }
+
+      public static function EqualsWith_Module (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         //var module:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex:int = valueSource.EvaluateValueObject () as int;
+         
+         valueSource = valueSource.mNextParameter;
+         //var module2:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex2:int = valueSource.EvaluateValueObject () as int;
+
+         valueTarget.AssignValueObject (Global.ValiddateModuleIndex (moduleIndex) == Global.ValiddateModuleIndex (moduleIndex2));
       }
 
    //*******************************************************************
@@ -2645,14 +3317,14 @@ package player.trigger {
 
       public static function IsJointEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var joint:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
 
          valueTarget.AssignValueObject (joint != null);
       }
 
       public static function IsTriggerEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var trigger:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         var trigger:EntityLogic = valueSource.EvaluateValueObject () as EntityLogic;
 
          valueTarget.AssignValueObject (trigger != null);
       }
@@ -3111,6 +3783,34 @@ package player.trigger {
          valueTarget.AssignValueObject (shape != null);
       }
 
+      public static function IsCameraEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape_Camera = valueSource.EvaluateValueObject () as EntityShape_Camera;
+
+         valueTarget.AssignValueObject (shape != null);
+      }
+
+      public static function IsTextShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+
+         valueTarget.AssignValueObject (shape != null);
+      }
+
+      public static function IsModuleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
+
+         valueTarget.AssignValueObject (shape != null);
+      }
+
+      public static function IsButtonShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         valueTarget.AssignValueObject (shape != null && (shape is EntityShape_TextButton || shape is EntityShapeImageModuleButton));
+      }
+
       // ...
 
       public static function GetShapeOriginalCIType (valueSource:Parameter, valueTarget:Parameter):void
@@ -3164,12 +3864,34 @@ package player.trigger {
 
          shape.SetShapeAiType (ciType);
       }
+      
+      public static function GetBodyTexture (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape_WithBodyTexture = valueSource.EvaluateValueObject () as EntityShape_WithBodyTexture;
+
+         valueTarget.AssignValueObject (shape == null ? -1 : shape.GetBodyTextureModuleIndex ());       
+      }
+      
+      public static function SetBodyTexture (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape_WithBodyTexture = valueSource.EvaluateValueObject () as EntityShape_WithBodyTexture;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var textureModuleIndex:int = valueSource.EvaluateValueObject () as int;
+         
+         shape.SetBodyTextureModuleIndex (Global.ValiddateModuleIndex (textureModuleIndex));
+      }
 
       public static function GetShapeFilledColor (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
-         var filledColor:uint;
+         var filledColor:uint = 0x000000;
 
          if (shape == null)
          {
@@ -3214,7 +3936,7 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
-         var filledColor:uint;
+         var filledColor:uint = 0x000000;
 
          if (shape == null)
          {
@@ -3270,10 +3992,8 @@ package player.trigger {
       public static function GetFilledOpacity (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-         if (shape == null)
-            return;
 
-         valueTarget.AssignValueObject (shape.GetTransparency ());
+         valueTarget.AssignValueObject (shape == null ? 100 : shape.GetTransparency ());
       }
 
       public static function SetFilledOpacity (valueSource:Parameter, valueTarget:Parameter):void
@@ -3287,12 +4007,31 @@ package player.trigger {
 
          shape.SetTransparency (opacity);
       }
+      
+      public static function IsShapeShowBorder (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         valueTarget.AssignValueObject (shape == null ? true : shape.IsDrawBorder ());
+      }
+      
+      public static function SetShapeShowBorder (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var drawBorder:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         shape.SetDrawBorder (drawBorder);
+      }
 
       public static function GetShapeBorderColor (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
-         var borderColor:uint;
+         var borderColor:uint = 0x000000;
 
          if (shape == null)
          {
@@ -3337,7 +4076,7 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
-         var borderColor:uint;
+         var borderColor:uint = 0x000000;
 
          if (shape == null)
          {
@@ -3393,10 +4132,8 @@ package player.trigger {
       public static function GetBorderOpacity (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-         if (shape == null)
-            return;
 
-         valueTarget.AssignValueObject (shape.GetBorderTransparency ());
+         valueTarget.AssignValueObject (shape == null ? 100 : shape.GetBorderTransparency ());
       }
 
       public static function SetBorderOpacity (valueSource:Parameter, valueTarget:Parameter):void
@@ -3409,6 +4146,18 @@ package player.trigger {
          var opacity:Number = Number (valueSource.EvaluateValueObject ());
 
          shape.SetBorderTransparency (opacity);
+      }
+      
+      public static function SetCacheAsBitmap (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var asBitmap:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         shape.SetCacheAsBitmap (asBitmap);
       }
 
       public static function IsShapePhysicsEnabled (valueSource:Parameter, valueTarget:Parameter):void
@@ -3425,14 +4174,6 @@ package player.trigger {
          //   return;
          //
       //}
-
-      public static function IsStaticShape (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-
-         var static:Boolean = shape == null ? true : shape.IsBodyStatic ();
-         valueTarget.AssignValueObject (static);
-      }
 
       public static function GetShapeCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -3480,6 +4221,29 @@ package player.trigger {
          var sensor:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          shape.SetAsSensor (sensor);
+      }
+
+      public static function IsStatic (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         var static:Boolean = shape == null ? true : (shape.IsDestroyedAlready () ? shape.IsStatic () : shape.GetBody ().IsStatic ());
+         valueTarget.AssignValueObject (static);
+      }
+
+      public static function SetStatic (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var static:Boolean = valueSource.EvaluateValueObject () as Boolean;
+         
+         shape.GetBody ().ModifyShapeStatic (shape, static);
       }
 
       public static function IsShapeRotationFixed(valueSource:Parameter, valueTarget:Parameter):void
@@ -4396,8 +5160,11 @@ package player.trigger {
          if (shape2 == null || shape2.IsDestroyedAlready ())
             return;
 
-         //shape1.AttachWith (shape2);
-         EntityShape.AttachTwoShapes (shape1, shape2);
+         if (shape1.GetBody () != shape2.GetBody ())
+         {
+            //shape1.AttachWith (shape2);
+            EntityShape.AttachTwoShapes (shape1, shape2);
+         }
       }
 
 	  public static function DetachShapeThenAttachWithAnother (valueSource:Parameter, valueTarget:Parameter):void
@@ -4437,7 +5204,7 @@ package player.trigger {
          {
             body.DestroyEntity ();
          }
-      }
+     }
 
      public static function BreakShapeJoints (valueSource:Parameter, valueTarget:Parameter):void
      {
@@ -4573,6 +5340,66 @@ package player.trigger {
 
          entity_text.SetText (entity_text.GetText () + "\n");
       }
+      
+      public static function GetHorizontalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueTarget.AssignValueObject (entity_text.ScrollInfo (true, 1));
+      }
+
+      public static function SetHorizontalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var scrollValue:Number = Number (valueSource.EvaluateValueObject ());
+
+         entity_text.ScrollInfo (true, 2, scrollValue);
+      }
+
+      public static function GetVerticalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueTarget.AssignValueObject (entity_text.ScrollInfo (false, 1));
+      }
+
+      public static function SetVerticalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var scrollValue:Number = Number (valueSource.EvaluateValueObject ());
+
+         entity_text.ScrollInfo (false, 2, scrollValue);
+      }
+
+      public static function GetMaxHorizontalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueTarget.AssignValueObject (entity_text.ScrollInfo (true, 0));
+      }
+
+      public static function GetMaxVerticalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueTarget.AssignValueObject (entity_text.ScrollInfo (false, 0));
+      }
 
       public static function SetTextDefaultSize (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -4614,6 +5441,102 @@ package player.trigger {
          var blue:int =  valueSource.EvaluateValueObject () as Number;
 
          entity_text.SetTextColor ((red << 16) | (green << 8) | (blue));
+      }
+
+      public static function SetTextDefaultSize_MouseOver (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var size:Number = Number (valueSource.EvaluateValueObject ());
+
+         entity_text.SetFontSize_MouseOver (size);
+      }
+
+      public static function SetTextDefaultColor_MouseOver (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+
+         entity_text.SetTextColor_MouseOver (color);
+      }
+
+      public static function SetTextDefaultColorByRGB_MouseOver (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var red:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var green:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var blue:int =  valueSource.EvaluateValueObject () as Number;
+
+         entity_text.SetTextColor_MouseOver ((red << 16) | (green << 8) | (blue));
+      }
+
+   //*******************************************************************
+   // entity / shape
+   //*******************************************************************
+
+      public static function GetShapeBorderThickness (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)// || shape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetBorderThickness ());
+         }
+      }
+      
+      public static function SetShapeBorderThickness (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null || shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var thickness:Number = valueSource.EvaluateValueObject () as Number;
+
+         EntityShape.ChangeBorderThickness (shape, thickness);
+      }
+
+      public static function GetCurveThickness (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShapePolyline = valueSource.EvaluateValueObject () as EntityShapePolyline;
+         if (shape == null)// || shape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetCurveThickness ());
+         }
+      }
+
+      public static function SetCurveThickness (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShapePolyline = valueSource.EvaluateValueObject () as EntityShapePolyline;
+         if (shape == null || shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var thickness:Number = valueSource.EvaluateValueObject () as Number;
+
+         EntityShape.ChangeCurveThickness (shape, thickness);
       }
 
    //*******************************************************************
@@ -4863,6 +5786,20 @@ package player.trigger {
    // entity / joint
    //*******************************************************************
 
+      public static function GetShapeModule (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var moduleShape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
+
+         if (moduleShape == null)
+         {
+            valueTarget.AssignValueObject (-1);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (moduleShape.GetModuleIndex ());
+         }
+      }
+
       public static function ChangeShapeModule (valueSource:Parameter, valueTarget:Parameter):void
       {
          var moduleShape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
@@ -4873,20 +5810,93 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          //var module:Module = valueSource.EvaluateValueObject () as Module;
          var moduleIndex:int = valueSource.EvaluateValueObject () as int;
-         if (isNaN (moduleIndex))
-            moduleIndex = -1;
 
          valueSource = valueSource.mNextParameter;
          var loopToEndHandler:EntityEventHandler = valueSource.EvaluateValueObject () as EntityEventHandler;
          if (loopToEndHandler != null && loopToEndHandler.GetEventId () != CoreEventIds.ID_OnSequencedModuleLoopToEnd) // generally, impossible
             loopToEndHandler = null;
 
-         moduleShape.SetModuleIndexByAPI (moduleIndex, loopToEndHandler);
+         moduleShape.SetModuleIndexByAPI (Global.ValiddateModuleIndex (moduleIndex), loopToEndHandler);
+      }
+
+      public static function GetShapeModuleButton_OverState (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
+
+         if (buttonModuleShape == null)
+         {
+            valueTarget.AssignValueObject (-1);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (buttonModuleShape.GetModuleIndexOver ());
+         }
+      }
+
+      public static function ChangeShapeModuleButton_OverState (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
+
+         if (buttonModuleShape == null || buttonModuleShape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         //var module:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex:int = valueSource.EvaluateValueObject () as int;
+
+         buttonModuleShape.SetModuleIndexOver (Global.ValiddateModuleIndex (moduleIndex));
+      }
+
+      public static function GetShapeModuleButton_DownState (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
+
+         if (buttonModuleShape == null)
+         {
+            valueTarget.AssignValueObject (-1);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (buttonModuleShape.GetModuleIndexDown ());
+         }
+      }
+
+      public static function ChangeShapeModuleButton_DownState (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
+
+         if (buttonModuleShape == null || buttonModuleShape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         //var module:Module = valueSource.EvaluateValueObject () as Module;
+         var moduleIndex:int = valueSource.EvaluateValueObject () as int;
+
+         buttonModuleShape.SetModuleIndexDown (Global.ValiddateModuleIndex (moduleIndex));
       }
 
    //*******************************************************************
    // entity / joint
    //*******************************************************************
+
+      public static function GetJointConnectedShapes (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
+
+         var shape1:EntityShape = null;
+         var shape2:EntityShape = null;
+         
+         if (joint != null)
+         {
+            shape1 = joint.GetAnchor1 ().GetShape ();
+            shape2 = joint.GetAnchor2 ().GetShape ();
+         }
+         
+         valueTarget.AssignValueObject (shape1);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (shape2);
+      }
 
       public static function SetJointMotorEnabled (valueSource:Parameter, valueTarget:Parameter):void
       {

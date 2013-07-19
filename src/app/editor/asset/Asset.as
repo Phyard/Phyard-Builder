@@ -12,6 +12,8 @@ package editor.asset {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
+   import flash.system.Capabilities;
+   
    import com.tapirgames.display.TextFieldEx;
    
    import editor.core.EditorObject;
@@ -27,6 +29,7 @@ package editor.asset {
    public class Asset extends EditorObject
    {
       protected var mAssetManager:AssetManager;
+      protected var mKey:String = null;
       protected var mCreationOrderId:int = -1; // to reduce random factors
       protected var mAppearanceLayerId:int = -1;
       public function get appearanceLayerId ():int // for MoveSelectedAssetsToTop/Bottom
@@ -50,12 +53,22 @@ package editor.asset {
       private var mAlpha:Number = 1.0;
       private var mIsVisible:Boolean = true;
       
-      public function Asset (assetManager:AssetManager)
+      public function Asset (assetManager:AssetManager, key:String = null)
       {
          mAssetManager = assetManager;
+         SetKey (key);
          
          if (mAssetManager != null) // at some special cases, mAssetManager is null
             mAssetManager.OnAssetCreated (this);
+
+         // really allow mAssetManager == null? seems it is a historical issue.
+         //if (Capabilities.isDebugger)
+         //{
+         //   if (mAssetManager == null)
+         //      throw new Error ("mAssetManager == null");
+         //}
+         //
+         // found it: for AssetImageShapeModule, the mAssetManager is really null.
          
          //SetName (null);
          
@@ -74,7 +87,7 @@ package editor.asset {
          return GetTypeName ();
       }
       
-      public function ToCodeString ():String
+      override public function ToCodeString ():String
       {
          return "Asset#" + mCreationOrderId;
       }
@@ -150,6 +163,8 @@ package editor.asset {
             mSelectionProxy.Destroy ();
          
          SetControlPointsVisible (false);
+         
+         DestroyAssetIdText ();
          
          mAssetManager.OnAssetDestroyed (this);
          
@@ -302,6 +317,8 @@ package editor.asset {
          
          x = posX;
          y = posY;
+         
+         UpdateIdTextPositionAndScale ();
       }
       
       public function GetScale ():Number
@@ -698,8 +715,9 @@ package editor.asset {
          controlPoint.SetSelectedLevel (ControlPoint.SelectedLevel_Primary);
       }
 
-      public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
+      public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):Boolean
       {
+         return false;
       }
 
       public function DeleteControlPoint (controlPoint:ControlPoint):Boolean
@@ -708,6 +726,16 @@ package editor.asset {
       }
 
       public function InsertControlPointBefore (controlPoint:ControlPoint):Boolean
+      {
+         return false;
+      }
+
+      public function AlignControlPointsHorizontally (primaryControlPoint:ControlPoint, secondaryControlPoint:ControlPoint):Boolean
+      {
+         return false;
+      }
+
+      public function AlignControlPointsVertically (primaryControlPoint:ControlPoint, secondaryControlPoint:ControlPoint):Boolean
       {
          return false;
       }
@@ -773,20 +801,46 @@ package editor.asset {
 //   draw entity id
 //====================================================================
       
-      public function DrawAssetId (canvasSprite:Sprite):void
+      private var mIdText:TextFieldEx = null;
+      private var mOldId:int = -1;
+      
+      public function UpdateAssetIdText (canvasSprite:Sprite):void
       {
          if (canvasSprite == null)
             return;
          
-         var creationOrderId:int = GetCreationOrderId ();
-         var idText:TextFieldEx = TextFieldEx.CreateTextField (creationOrderId.toString (), true, 0xFFFFFF, 0x0, false, 0, false, true, 0x0);
+         var oldId:int = mOldId;
+         mOldId = GetCreationOrderId ();
          
-         canvasSprite.addChild (idText);
+         if (mIdText == null)
+            mIdText = TextFieldEx.CreateTextField (mOldId.toString (), true, 0xFFFFFF, 0x0, false, 0, false, true, 0x0);
+         else if (mOldId != oldId)
+            mIdText.text = mOldId.toString ();
          
-         idText.scaleX = 1.0 / mAssetManager.scaleX;
-         idText.scaleY = 1.0 / mAssetManager.scaleY;
-         idText.x = GetLinkPointX () - 0.5 * idText.width;
-         idText.y = GetLinkPointY () - 0.5 * idText.height;
+         if (mIdText.parent != canvasSprite)
+            canvasSprite.addChild (mIdText);
+         
+         UpdateIdTextPositionAndScale ();
+      }
+      
+      protected function UpdateIdTextPositionAndScale ():void
+      { 
+         if (mIdText != null)
+         {
+            mIdText.scaleX = 1.0 / mAssetManager.scaleX;
+            mIdText.scaleY = 1.0 / mAssetManager.scaleY;
+            mIdText.x = GetLinkPointX () - 0.5 * mIdText.width;
+            mIdText.y = GetLinkPointY () - 0.5 * mIdText.height;
+         }
+      }
+      
+      protected function DestroyAssetIdText ():void
+      {
+         if (mIdText != null && mIdText.parent != null)
+            mIdText.parent.removeChild (mIdText);
+         
+         mIdText = null;
+         mOldId = -1;
       }
       
 //====================================================================
@@ -814,9 +868,12 @@ package editor.asset {
          defaultItems.print = true;
          contextMenu = theContextMenu;
          
-         BuildContextMenuInternal (theContextMenu.customItems);
-         
-         theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
+         if (theContextMenu.customItems != null) // may be null on some deviecs
+         {
+            BuildContextMenuInternal (theContextMenu.customItems);
+            
+            theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
+         }
       }
       
       protected function BuildContextMenuInternal (customMenuItemsStack:Array):void

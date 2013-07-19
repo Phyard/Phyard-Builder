@@ -27,9 +27,9 @@ package player.entity {
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -63,6 +63,12 @@ package player.entity {
          protected var mBodyTextureModule:ImageBitmap = null;
       protected var mBodyTextureTransform:Transform2D;
       
+      
+      public function GetBodyTextureModuleIndex ():int
+      {
+         return mBodyTextureModuleIndex;
+      }
+      
       // for calling in loading 
       public function SetBodyTextureModuleIndex (bodyTextureModuleIndex:int):void
       {
@@ -73,8 +79,10 @@ package player.entity {
          
          mBodyTextureModuleIndex = bodyTextureModuleIndex;
          mBodyTextureModule = Global.GetImageModuleByGlobalIndex (mBodyTextureModuleIndex) as ImageBitmap;
+         if (mBodyTextureModule == null)
+            mBodyTextureModuleIndex = -1;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
    }

@@ -1,13 +1,14 @@
 
 package editor.trigger.entity {
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
    import editor.entity.Entity;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   import editor.trigger.TriggerEngine;
    import editor.trigger.FunctionDeclaration_EventHandler;
    import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableDefinition;
@@ -34,11 +35,11 @@ package editor.trigger.entity {
       {
          super (container, defaultEventId, potientialEventIds);
          
-         mPreEventHandlerDefinition  = new FunctionDefinition (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
+         mPreEventHandlerDefinition  = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetEventDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
          mPreEventHandlerDefinition.SetLocalVariableSpace (mEventHandlerDefinition.GetLocalVariableSpace ());
          mPreCodeSnippet = new CodeSnippet (mPreEventHandlerDefinition);
          
-         mPostEventHandlerDefinition = new FunctionDefinition (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
+         mPostEventHandlerDefinition = new FunctionDefinition (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetEventDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
          mPostEventHandlerDefinition.SetLocalVariableSpace (mEventHandlerDefinition.GetLocalVariableSpace ());
          mPostCodeSnippet = new CodeSnippet (mPostEventHandlerDefinition);
       }
@@ -77,10 +78,10 @@ package editor.trigger.entity {
          var timerHandler:EntityEventHandler_TimerWithPrePostHandling = entity as EntityEventHandler_TimerWithPrePostHandling;
          
          timerHandler.mPreEventHandlerDefinition.SetLocalVariableSpace (timerHandler.mEventHandlerDefinition.GetLocalVariableSpace ());
-         timerHandler.mPreCodeSnippet.CopyCallingsFrom (mPreCodeSnippet);
+         timerHandler.mPreCodeSnippet.CopyCallingsFrom (mEntityContainer, true, mPreCodeSnippet);
          
          timerHandler.mPostEventHandlerDefinition.SetLocalVariableSpace (timerHandler.mEventHandlerDefinition.GetLocalVariableSpace ());
-         timerHandler.mPostCodeSnippet.CopyCallingsFrom (mPostCodeSnippet);
+         timerHandler.mPostCodeSnippet.CopyCallingsFrom (mEntityContainer, true, mPostCodeSnippet);
       }
       
    }

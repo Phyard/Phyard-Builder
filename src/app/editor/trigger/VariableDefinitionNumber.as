@@ -4,7 +4,11 @@ package editor.trigger {
    import mx.controls.TextInput;
    import mx.controls.ComboBox;
    
+   import editor.entity.Scene;
+   
    import com.tapirgames.util.TextUtil;
+   
+   import editor.util.DataUtil;
    
    import common.trigger.ValueTypeDefine;
    
@@ -54,10 +58,10 @@ package editor.trigger {
          mDefaultValue = Number (valueObject);
       }
       
-      public function GetDefaultValue ():Number
-      {
-         return mDefaultValue;
-      }
+      //public function GetDefaultValue ():Number
+      //{
+      //   return mDefaultValue;
+      //}
       
       protected function ValidateValue (value:Number):Number
       {
@@ -115,7 +119,7 @@ package editor.trigger {
          return new ValueSource_Direct (mDefaultValue);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var directValue:Number = Number (valueSourceDirect.GetValueObject ());
          
@@ -123,8 +127,8 @@ package editor.trigger {
          {
             var combo_box:ComboBox = new ComboBox ();
             
-            combo_box.dataProvider = Lists.GetListWithDataInLabel (mValueLists);
-            combo_box.selectedIndex = Lists.SelectedValue2SelectedIndex (mValueLists, directValue);
+            combo_box.dataProvider = DataUtil.GetListWithDataInLabel (mValueLists);
+            combo_box.selectedIndex = DataUtil.SelectedValue2SelectedIndex (mValueLists, directValue);
             combo_box.rowCount = 11;
             
             return combo_box;
@@ -150,7 +154,7 @@ package editor.trigger {
          }
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          var value:Number = mDefaultValue;
          
@@ -176,19 +180,20 @@ package editor.trigger {
                {
                   value = parseInt (text.substr (2), 16);
                }
-               else if (text.length > 1 && text.substr (0, 1).toLowerCase() == "#")
-               {
-                  value = parseInt (text.substr (1));
-                  if (isNaN (value))
-                  {
-                     value = mDefaultValue;
-                  }
-                  else
-                  {
-                     var vi:VariableInstance = triggerEngine.GetRegisterVariableSpace (ValueTypeDefine.ValueType_Number).GetVariableInstanceAt (value);
-                     return new ValueSource_Variable (vi);
-                  }
-               }
+               // register variables are disabled now
+               //else if (text.length > 1 && text.substr (0, 1).toLowerCase() == "#")
+               //{
+               //   value = parseInt (text.substr (1));
+               //   if (isNaN (value))
+               //   {
+               //      value = mDefaultValue;
+               //   }
+               //   else
+               //   {
+               //      var vi:VariableInstance = triggerEngine.GetRegisterVariableSpace (ValueTypeDefine.ValueType_Number).GetVariableInstanceAt (value);
+               //      return new ValueSource_Variable (vi);
+               //   }
+               //}
                else
                {
                   value = parseFloat (text);

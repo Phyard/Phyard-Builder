@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Spring Setting" width="600">
+    title="Spring Setting" width="700">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Joint" borderStyle="solid" height="100%" width="100%"
@@ -183,6 +183,8 @@
          {
             mParams.mJointValues.mPositionNonSense = true;
             mParams.mJointValues.mRotationNonSense = true;
+            mParams.mJointValues.mScaleNonSense = true;
+            mParams.mJointValues.mFlippedNonSense = true;
             mParams.mJointValues.mEnabledNonsense = true;
             JointBasicSettingPanel.SetValues (mParams.mJointValues);
          }

@@ -22,6 +22,8 @@ package common.trigger {
                return "Module";
             case ValueType_Sound:
                return "Sound";
+            case ValueType_Scene:
+               return "Scene";
             case ValueType_Array:
                return "Array";
             case ValueType_Void:
@@ -49,6 +51,8 @@ package common.trigger {
                return -1;
             case ValueType_Sound:
                return -1;
+            case ValueType_Scene:
+               return -1;
             case ValueType_Array:
                return null;
             case ValueType_Void:
@@ -63,6 +67,7 @@ package common.trigger {
              || valueType == ValueType_CollisionCategory
              || valueType == ValueType_Module
              || valueType == ValueType_Sound
+             || valueType == ValueType_Scene
              ;
       }
       
@@ -100,6 +105,7 @@ package common.trigger {
       
       public static const ValueType_Object:int = 50;
       public static const ValueType_Function:int = 51;
+      public static const ValueType_Class:int = 52; // or "type" type, type is a type
       
       public static const ValueType_Entity:int            = 60;
       public static const ValueType_CollisionCategory:int = 61;
@@ -107,6 +113,8 @@ package common.trigger {
       public static const ValueType_Module:int            = 70;
 
       public static const ValueType_Sound:int            = 90;
+      
+      public static const ValueType_Scene:int            = 100;
 
 //=============================================================================
 // number value type hints, generally, the hints are only useful for saving input parameters

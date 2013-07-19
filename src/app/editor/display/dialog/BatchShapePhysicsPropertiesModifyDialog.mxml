@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Batch Shape Physics Setting" width="600"
+    title="Batch Shape Physics Setting" width="700"
     creationComplete="OnInitPanel()"
     >
 
@@ -141,14 +141,14 @@
 
          private var mParams:Object = new Object ();
 
-         //public function SetValues (initialValues:Object):void
-         //{
-         //   mParams = initialValues;
-         //}
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+         }
 
          private function OnInitPanel ():void
          {
-            SelectList_CollisionCategory.dataProvider = EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
+            SelectList_CollisionCategory.dataProvider = mParams.mScene.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
             SelectList_CollisionCategory.selectedIndex = 0;
          }
 

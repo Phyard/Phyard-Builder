@@ -4,17 +4,10 @@ package editor.asset {
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
    import flash.geom.Matrix;
    
-   import flash.geom.Rectangle;
-   
    import flash.events.Event;
-   
-   import editor.selection.SelectionEngine;
-   
-   import editor.core.EditorObject;
-   
-   import common.CoordinateSystem;
    
    import common.Define;
    import common.ValueAdjuster;
@@ -64,9 +57,14 @@ package editor.asset {
          return false;
       }
       
-      override public function SupportMoveSelectedAssets ():Boolean
+      //override public function SupportSmoothMoveSelectedAssets ():Boolean
+      //{
+      //   return false;
+      //}
+      
+      override public function GetMoveSelectedAssetsStyle ():int
       {
-         return false;
+         return AssetManagerPanel.kMoveSelectedAssetsStyle_Delayed;
       }
       
 //========================================================
@@ -77,80 +75,134 @@ package editor.asset {
       protected var mContentWidth:Number;
       protected var mContentHeight:Number;
       
-      override public function DoLayout (forcely:Boolean = false):void
+      override public function DoLayout (forcely:Boolean = false, alsoUpdateAssetAppearance:Boolean = false):void
       {
-         if (mAssetManager.parent == null)
-            return;
-         
-         var managerViewWidth:Number  = mAssetManager.parent.width  / mAssetManager.scaleX;
-         var managerViewHeight:Number = mAssetManager.parent.height / mAssetManager.scaleY;
-         
-         var cellSize:Number = GetAssetSpriteSize () + GetAssetSpriteGap ();
-         var numCols:int = Math.floor ((managerViewWidth - GetAssetSpriteGap ()) / cellSize);
-         if (numCols < 1)
-            numCols = 1;
-         
-         if (numCols != mNumColumns || forcely)
+         DoLayoutOrGetInsertionInfo (forcely, alsoUpdateAssetAppearance);
+      }
+      
+      private function DoLayoutOrGetInsertionInfo (forcely:Boolean = false, alsoUpdateAssetAppearance:Boolean = false, insertionPoint:Point = null):Array
+      {
+         if (mAssetManager.parent != null)
          {
-            mNumColumns = numCols;
+            var managerViewWidth:Number  = mAssetManager.parent.width  / mAssetManager.scaleX;
+            var managerViewHeight:Number = mAssetManager.parent.height / mAssetManager.scaleY;
             
-            mContentWidth  = GetAssetSpriteGap () + mNumColumns * cellSize;
-            mContentHeight = GetAssetSpriteGap ();
+            var cellSize:Number = GetAssetSpriteSize () + GetAssetSpriteGap ();
+            var numCols:int = Math.floor ((managerViewWidth - GetAssetSpriteGap ()) / cellSize);
+            if (numCols < 1)
+               numCols = 1;
             
-            var col:int = 0;
-            var maxRowHeight:Number = 0;
             var numAssets:int = mAssetManager.GetNumAssets ();
-            for (var i:int = 0; i < numAssets; ++ i)
+   
+            if (numCols != mNumColumns || forcely)
             {
-               var asset:Asset = mAssetManager.GetAssetByAppearanceId (i);
-               var boundRect:Rectangle = asset.getBounds (asset);
-               if (boundRect.height > maxRowHeight)
-                  maxRowHeight = boundRect.height;
+               mNumColumns = numCols;
                
-               asset.SetPosition (GetAssetSpriteGap () + col * cellSize - boundRect.left, mContentHeight - boundRect.top);
-               asset.UpdateSelectionProxy ();
+               mContentWidth  = GetAssetSpriteGap () + mNumColumns * cellSize;
+               mContentHeight = GetAssetSpriteGap ();
                
-               if (++ col == mNumColumns || i == numAssets)
+               var col:int = 0;
+               var maxRowHeight:Number = 0;
+               for (var i:int = 0; i < numAssets; ++ i)
                {
-                  mContentHeight += maxRowHeight + GetAssetSpriteGap ();
-                  col = 0;
-                  maxRowHeight = 0;
+                  var asset:Asset = mAssetManager.GetAssetByAppearanceId (i);
+                  if (alsoUpdateAssetAppearance)
+                     asset.UpdateAppearance ();
+                  
+                  var boundRect:Rectangle = asset.getBounds (asset);
+                  if (boundRect.height > maxRowHeight)
+                     maxRowHeight = boundRect.height;
+                  
+                  asset.SetPosition (GetAssetSpriteGap () + col * cellSize - boundRect.left, mContentHeight - boundRect.top);
+                  asset.UpdateSelectionProxy ();
+                  
+                  if (insertionPoint != null)
+                  {
+                     if (mNumColumns == 1)
+                     {
+                        if (insertionPoint.y < asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom))
+                        {
+                           return [i, 
+                                   asset.GetPositionX () + 0.5 * (boundRect.left + boundRect.right),
+                                   asset.GetPositionY () + boundRect.top - 0.5 * GetAssetSpriteGap (), 
+                                   false
+                                   ];
+                        }
+                        else if (i == numAssets - 1)
+                        {
+                           return [numAssets, 
+                                   asset.GetPositionX () + 0.5 * (boundRect.left + boundRect.right),
+                                   asset.GetPositionY () + boundRect.bottom + 0.5 * GetAssetSpriteGap (), 
+                                   false
+                                   ];
+                        }
+                     }
+                     else
+                     {
+                        if (insertionPoint.y < asset.GetPositionY () + boundRect.top
+                            || insertionPoint.x < asset.GetPositionX () + 0.5 * (boundRect.left + boundRect.right)
+                               && insertionPoint.y < asset.GetPositionY () + boundRect.bottom)
+                        {
+                           return [i, 
+                                   asset.GetPositionX () + boundRect.left - 0.5 * GetAssetSpriteGap (), 
+                                   asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom),
+                                   true
+                                   ];
+                        }
+                        else if (i == numAssets - 1)
+                        {
+                           return [numAssets, 
+                                   asset.GetPositionX () + boundRect.right + 0.5 * GetAssetSpriteGap (), 
+                                   asset.GetPositionY () + 0.5 * (boundRect.top + boundRect.bottom),
+                                   true
+                                   ];
+                        }
+                     }
+                  }
+                  
+                  if (++ col == mNumColumns || (i == numAssets - 1))
+                  {
+                     mContentHeight += maxRowHeight + GetAssetSpriteGap ();
+                     col = 0;
+                     maxRowHeight = 0;
+                  }
+               }
+            }
+            
+            if (mContentWidth < managerViewWidth)
+               mAssetManager.x = 0;
+            else if (mAssetManager.x > 0)
+               mAssetManager.x = 0;
+            else
+            {
+               var minX:Number = (managerViewWidth - mContentWidth) * mAssetManager.scaleX;
+               if (mAssetManager.x < minX)
+               {
+                  mAssetManager.x = minX;
+               }
+            }
+            
+            if (mContentHeight < managerViewHeight)
+               mAssetManager.y = 0;
+            else if (mAssetManager.y > 0)
+               mAssetManager.y = 0;
+            else
+            {
+               var minY:Number = (managerViewHeight - mContentHeight) * mAssetManager.scaleY;
+               if (mAssetManager.y < minY)
+               {
+                  mAssetManager.y = minY;
                }
             }
          }
          
-         if (mContentWidth < managerViewWidth)
-            mAssetManager.x = 0;
-         else if (mAssetManager.x > 0)
-            mAssetManager.x = 0;
-         else
-         {
-            var minX:Number = (managerViewWidth - mContentWidth) * mAssetManager.scaleX;
-            if (mAssetManager.x < minX)
-            {
-               mAssetManager.x = minX;
-            }
-         }
-         
-         if (mContentHeight < managerViewHeight)
-            mAssetManager.y = 0;
-         else if (mAssetManager.y > 0)
-            mAssetManager.y = 0;
-         else
-         {
-            var minY:Number = (managerViewHeight - mContentHeight) * mAssetManager.scaleY;
-            if (mAssetManager.y < minY)
-            {
-               mAssetManager.y = minY;
-            }
-         }
+         return null;
       }
       
-      // ?
-      //protected function GetAssetIdBeforeModuleId (posX:Number, posY:Number):int
-      //{
-      //   return 0;
-      //}
+      override public function GetInsertionInfo (insertionPoint:Point):Array
+      {
+         return DoLayoutOrGetInsertionInfo (true, false, insertionPoint);
+      }
    }
 }
 

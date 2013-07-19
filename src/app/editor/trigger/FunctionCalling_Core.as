@@ -11,16 +11,16 @@ package editor.trigger {
    {
       public var mCoreFunctionDeclatation:FunctionDeclaration_Core;
       
-      public function FunctionCalling_Core (triggerEngine:TriggerEngine, coreFunctionDeclatation:FunctionDeclaration_Core, createDefaultSourcesAndTargets:Boolean = true)
+      public function FunctionCalling_Core (/*triggerEngine:TriggerEngine, */coreFunctionDeclatation:FunctionDeclaration_Core, createDefaultSourcesAndTargets:Boolean = true)
       {
-         super (triggerEngine, coreFunctionDeclatation, createDefaultSourcesAndTargets);
+         super (/*triggerEngine, */coreFunctionDeclatation, createDefaultSourcesAndTargets);
          
          mCoreFunctionDeclatation = coreFunctionDeclatation;
       }
       
       override protected function CloneShell ():FunctionCalling
       {
-         return new FunctionCalling_Core (mTriggerEngine, mCoreFunctionDeclatation, false);
+         return new FunctionCalling_Core (/*mTriggerEngine, */mCoreFunctionDeclatation, false);
       }
    }
 }

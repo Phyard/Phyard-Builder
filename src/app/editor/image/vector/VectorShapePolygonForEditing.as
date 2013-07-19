@@ -176,6 +176,8 @@ package editor.image.vector
 
          selectionProxy.AddConcavePolygonShape (vertexPoints, transform);
 
+         vertexPoints = GraphicsUtil.DeepClonePointArray (mLocalVertexPoints); // !!! for vertexPoints is transformed in last calling
+
          if (selectionProxy.GetProxyShapesCount () == 0)
          {
             mPhysicsBuildable = false;
@@ -205,7 +207,7 @@ package editor.image.vector
                point1 = vertexPoints [0] as Point;
                offsetTransform.mOffsetX = point1.x;
                offsetTransform.mOffsetY = point1.y;
-               selectionProxy.AddCircleShape (halfThickness, Transform2D.CombineTransforms (transform, offsetTransform, offsetTransform));
+               selectionProxy.AddCircleShape (halfThickness, Transform2D.CombineTransforms (transform, offsetTransform, finalTransform));
             }
 
             for (var i:int = 1; i < numVertexes; ++ i)
@@ -214,7 +216,7 @@ package editor.image.vector
                selectionProxy.AddLineSegmentShape (point1.x, point1.y, point2.x, point2.y, borderThickness, transform);
                offsetTransform.mOffsetX = point2.x;
                offsetTransform.mOffsetY = point2.y;
-               selectionProxy.AddCircleShape (halfThickness, Transform2D.CombineTransforms (transform, offsetTransform, offsetTransform));
+               selectionProxy.AddCircleShape (halfThickness, Transform2D.CombineTransforms (transform, offsetTransform, finalTransform));
                point1 = point2;
             }
 
@@ -393,5 +395,6 @@ package editor.image.vector
          
          return r;
       }
+      
    }
 }

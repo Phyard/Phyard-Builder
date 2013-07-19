@@ -48,9 +48,10 @@ package editor.image {
 // 
 //========================================================== 
 
-      public function CreateImageCompositeModule (insertBeforeSelectedThenSelectNew:Boolean = false):AssetImageCompositeModule
+      public function CreateImageCompositeModule (key:String, insertBeforeSelectedThenSelectNew:Boolean = false, updateLayout:Boolean = true):AssetImageCompositeModule
       {
-         var module:AssetImageCompositeModule = new AssetImageCompositeModule (this, IsSequencedModuleManager ());
+         var module:AssetImageCompositeModule = new AssetImageCompositeModule (this, IsSequencedModuleManager (), ValidateAssetKey (key));
+         module.UpdateTimeModified ();
          module.UpdateAppearance ();
          module.UpdateSelectionProxy ();
          addChild (module);
@@ -58,7 +59,8 @@ package editor.image {
          if (insertBeforeSelectedThenSelectNew)
             SetSelectedAsset (module);
          
-         UpdateLayout (true);
+         if (updateLayout)
+            UpdateLayout (true);
          
          return module;
       }
@@ -95,7 +97,7 @@ package editor.image {
       
       private function OnContextMenuEvent_CreateCompositeModule (event:ContextMenuEvent):void
       {
-         var module:AssetImageCompositeModule = CreateImageCompositeModule (true);
+         var module:AssetImageCompositeModule = CreateImageCompositeModule (null, true);
       }
    }
 }

@@ -4,9 +4,10 @@ package player.world {
    import player.entity.EntityBody;
    import player.entity.EntityShape;
    import player.entity.EntityJoint;
+   import player.entity.SubEntityJointAnchor;
    
-   import player.entity.EntityShapeImageModule;
-   import player.entity.EntityShapeImageModuleButton;
+   //import player.entity.EntityShapeImageModuleGeneral;
+   //import player.entity.EntityShapeImageModuleButton;
 
    public class EntityList
    {
@@ -296,8 +297,8 @@ package player.world {
       //      while (true)
       //      {
       //         // to optimize
-      //         if (entity is EntityShapeImageModule)
-      //            (entity as EntityShapeImageModule).OnModuleAppearanceChanged ();
+      //         if (entity is EntityShapeImageModuleGeneral)
+      //            (entity as EntityShapeImageModuleGeneral).OnModuleAppearanceChanged ();
       //         else if (entity is EntityShapeImageModuleButton)
       //            (entity as EntityShapeImageModuleButton).OnModuleAppearanceChanged ();
       //
@@ -308,6 +309,26 @@ package player.world {
       //      }
       //   }
       //}
+      
+      internal function UpdateEntityAppearances (filterFunc:Function = null):void
+      {
+         var entity:Entity = mHead;
+         if (entity != null)
+         {
+            var tail:Entity = mTail;
+
+            while (true)
+            {
+               if (filterFunc == null || filterFunc (entity))
+                  entity.DelayUpdateAppearance ();
+
+               if (entity == tail)
+                  break;
+
+               entity = entity.mNextEntity;
+            }
+         }
+      }
 
       internal function BuildShapePhysics (fromLastMarkedTail:Boolean = false):void
       {
@@ -465,6 +486,31 @@ package player.world {
             while (true)
             {
                entity.ResetSpecialId ();
+
+               if (entity == tail)
+                  break;
+
+               entity = entity.mNextEntity;
+            }
+         }
+
+         mIsRemovingLocked = false;
+
+         DelayUnregisterEntities ();
+      }
+      
+      internal function OnNumCustomEntityVariablesChanged ():void
+      {
+         mIsRemovingLocked = true;
+
+         var entity:Entity = mHead;
+         if (entity != null)
+         {
+            var tail:Entity = mTail;
+
+            while (true)
+            {
+               entity.OnNumCustomEntityVariablesChanged ();
 
                if (entity == tail)
                   break;

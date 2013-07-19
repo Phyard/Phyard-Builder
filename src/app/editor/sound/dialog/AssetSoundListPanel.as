@@ -53,16 +53,22 @@ package editor.sound.dialog {
          {
             mAssetSoundManager = assetSoundManager;
             
-            if (mAssetSoundManager != null)
+            if (mAssetSoundManager != null && mAssetSoundManager.GetLayout () == null)
             {
                mAssetSoundManager.SetLayout (new AssetManagerListLayout (mAssetSoundManager, 76));
-               mAssetSoundManager.UpdateLayout (true);
+               mAssetSoundManager.UpdateLayout (true, true);
             }
          }
       }
       
-      override public function GetMouseWheelFunction ():int
+      override public function GetMouseWheelFunction (ctrlDown:Boolean, shiftDown:Boolean):int
       {
+         //if (! (ctrlDown || shiftDown))
+         //   return kMouseWheelFunction_Scroll;
+         //
+         //return kMouseWheelFunction_None;
+         //
+         
          return kMouseWheelFunction_Scroll;
       }
       

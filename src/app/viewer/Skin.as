@@ -64,6 +64,18 @@ package viewer {
       protected var _OnNextLevel:Function;
       protected var _OnGoToPhyard:Function;
       
+      protected function OnExitLevel (dummyParam:Object = null):void
+      {
+         if (_OnExitLevel != null)
+            _OnExitLevel ();
+      }
+      
+      protected function OnGoToPhyard (dummyParam:Object = null):void
+      {
+         if (_OnGoToPhyard != null)
+            _OnGoToPhyard ();
+      }
+      
 //======================================================================
 // skin interfaces for viewer
 //======================================================================
@@ -124,32 +136,35 @@ package viewer {
       {
          // to override
       }
-
+      
       final public function IsStarted ():Boolean
       {
          return mIsStarted;
       }
       
-      final public function NotifyStarted ():void
+      final public function SetStarted (started:Boolean):void
       {
-         if (mIsStarted)
+         if (! mIsStarted)
+         {
+            mHasLevelFinishedDialogEverOpened = false;
+         }
+         
+         if (mIsStarted == started)
             return;
          
-         mIsStarted = true;
+         mIsStarted = started;
          
          OnStartedChanged ();
       }
       
       final public function Restart ():void
       {
-         mHasLevelFinishedDialogEverOpened = false;
-         
-         mIsStarted = false;
+         //mIsStarted = false;
          
          if (_OnRestart != null)
             _OnRestart ();
          
-         OnStartedChanged ();
+         //OnStartedChanged ();
       }
       
       protected function OnStartedChanged ():void

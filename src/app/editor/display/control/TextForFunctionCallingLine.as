@@ -35,15 +35,42 @@ package editor.display.control {
          {
             var callingData:FunctionCallingLineData = data as FunctionCallingLineData;
             
-            setStyle ("paddingLeft", 16 * callingData.mIndentLevel);
+            //setStyle ("paddingLeft", 16 * callingData.mIndentLevel);
+            //
+            //if (Capabilities.isDebugger)
+            //{
+            //   htmlText = callingData.mLineNumber + ": " + callingData.mHtmlText;
+            //}
+            //else
+            //{
+            //   htmlText = callingData.mHtmlText;
+            //}
             
-            if (Capabilities.isDebugger)
+            if (sIntentStrings == null)
+               CreateIntentStrings ();
+            
+            htmlText = callingData.mLineNumber + sIntentStrings [callingData.mIndentLevel] + callingData.mHtmlText;
+
+            if (callingData.mLineNumber < 10)
+               htmlText = "   " + htmlText;
+            else if (callingData.mLineNumber < 100)
+               htmlText = "  " + htmlText;
+            else if (callingData.mLineNumber < 1000)
+               htmlText = " " + htmlText;
+         }
+      }
+      
+      private static var sIntentStrings:Array = null;
+      
+      private static function CreateIntentStrings ():void
+      {
+         if (sIntentStrings == null)
+         {
+            sIntentStrings = new Array (100);
+            sIntentStrings [0] = ": ";
+            for (var i:int = 1; i < 100; ++ i)
             {
-               htmlText = callingData.mLineNumber + ": " + callingData.mHtmlText;
-            }
-            else
-            {
-               htmlText = callingData.mHtmlText;
+               sIntentStrings [i] = sIntentStrings [i - 1] + "   ";
             }
          }
       }

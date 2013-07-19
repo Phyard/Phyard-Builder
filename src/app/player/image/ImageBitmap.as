@@ -12,14 +12,13 @@ package player.image
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
    
-   import com.tapirgames.util.ResourceLoader;
-   import com.tapirgames.util.ResourceLoadEvent;
-   
    import player.physics.PhysicsProxyBody;
    
    import common.Transform2D;
    
    import player.module.Module;
+   
+   import player.design.Global;
 
    public class ImageBitmap extends Module
    {
@@ -77,18 +76,13 @@ package player.image
             mCallbackOnLoadError = onLoadError;
             
             // ...
-            var loader:ResourceLoader = new ResourceLoader ();
-            loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
-            loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
-            loader.addEventListener (ResourceLoadEvent.RESOURCE_LOADED, OnLoadImageComplete);
-            loader.loadImageFromByteArray (fileData);
+            Global.Viewer_mLibGraphics.LoadImageFromBytes (fileData, OnLoadImageComplete, OnLoadImageError);
          }
       }
       
-      private function OnLoadImageComplete (event:Event):void
+      private function OnLoadImageComplete (bitmap:Bitmap):void
       {
-         var newBitmap:Bitmap = (event as ResourceLoadEvent).resource as Bitmap;
-         mBitmapData = newBitmap.bitmapData;
+         mBitmapData = bitmap.bitmapData;
          
          mStatus = 1;
          
@@ -99,8 +93,10 @@ package player.image
          mCallbackOnLoadError = null;
       }
       
-      private function OnLoadImageError (event:Object):void
+      private function OnLoadImageError (message:String):void
       {
+         trace ("Loading image error: " + message);
+         
          mStatus = -1;
          
          if (mCallbackOnLoadError != null)

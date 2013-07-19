@@ -25,19 +25,20 @@ package player.trigger.entity
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
             if (entityDefine.mFunctionDefine != undefined)
             {
+               // ! clone is important
                var codeSnippetDefine:CodeSnippetDefine = ((entityDefine.mFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
                mVoidFunctionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetVoidFunctionDeclaration  ());
-               mVoidFunctionDefinition.SetCodeSnippetDefine (codeSnippetDefine);
+               mVoidFunctionDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
             }
          }
       }

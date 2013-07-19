@@ -42,9 +42,9 @@ package player.entity {
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -213,8 +213,8 @@ package player.entity {
          mTextG.y = - 0.5 * mTextG.height - 1;
    
          mNeedUpdateAppearanceProperties = true;
-         mNeedRebuildAppearanceObjects = true;
          mNeedRepaintDirection = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -243,7 +243,7 @@ package player.entity {
          if (mInteractive != lastInteractive)
          {
             mNeedUpdateAppearanceProperties = true;
-            mNeedRebuildAppearanceObjects = true;
+            // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
             DelayUpdateAppearance ();
          }
       }

@@ -9,9 +9,14 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      public function VariableSpaceOutput (triggerEngine:TriggerEngine)
+      public function VariableSpaceOutput (/*triggerEngine:TriggerEngine*/)
       {
-         super(triggerEngine);
+         //super(triggerEngine);
+      }
+      
+      override public function SupportEditingInitialValues ():Boolean
+      {
+         return false;
       }
       
       override public function GetSpaceType ():int

@@ -58,14 +58,16 @@
       <![CDATA[       
          
          import common.Define;
-         import editor.trigger.Lists;
+         
+         import editor.util.DataUtil;
+         import editor.world.Lists;
          
          private var mInputValues:Object;
          private var mOnCiTypeChanged:Function = null;
          
          private function OnInitPanel ():void
          {
-            SelectList_AiType.dataProvider = Lists.GetListWithDataInLabel (Lists.mAiTypeList);
+            SelectList_AiType.dataProvider = DataUtil.GetListWithDataInLabel (Lists.mAiTypeList);
          }
          
          private function OnCiTypeSelectListClick ():void
@@ -117,7 +119,7 @@
             mOnCiTypeChanged = inputValues.mOnCiTypeChanged;
             
             CheckBox_IsCiShape.selected = inputValues.mAiType >= 0;
-            SelectList_AiType.selectedIndex = Lists.SelectedValue2SelectedIndex (Lists.mAiTypeList, inputValues.mAiType);
+            SelectList_AiType.selectedIndex = DataUtil.SelectedValue2SelectedIndex (Lists.mAiTypeList, inputValues.mAiType);
             
             NumericStepper_Opacity.value = inputValues.mTransparency;
             ColorPicker_BackgroundColor.selectedColor = inputValues.mBackgroundColor;

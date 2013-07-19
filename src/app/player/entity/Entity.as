@@ -19,8 +19,9 @@ package player.entity {
    import player.design.Global;
 
    import common.trigger.CoreEventIds;
-
+   import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.ValueDefine;
+   
    import common.Define;
    import common.Transform2D;
 
@@ -58,7 +59,7 @@ package player.entity {
          mWorld.RegisterEntity (this);
       }
 
-      public function Create (createStageId:int, entityDefine:Object):void
+      public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
          if (createStageId == 0)
          {
@@ -348,10 +349,23 @@ package player.entity {
 
       //protected var mCustomProeprtySpaces:Array = new Array (); // v1.52 only
       protected var mCustomProeprtySpace:VariableSpace;
+      protected var mCommonCustomProeprtySpace:VariableSpace;
 
       public function InitCustomPropertyValues ():void
       {
-         mCustomProeprtySpace = Global.CloneEntityPropertyInitialValues ();
+         mCustomProeprtySpace = Global.GetCustomEntityVariableSpace ().CloneSpace ();
+         mCommonCustomProeprtySpace = Global.GetCommonCustomEntityVariableSpace ().CloneSpace ();
+      }
+      
+      public function OnNumCustomEntityVariablesChanged ():void
+      {
+         mCustomProeprtySpace = Global.GetCustomEntityVariableSpace ().AppendMissedVariablesFor (mCustomProeprtySpace);
+         
+         // mCommonCustomProeprtySpace'e length will not change
+         if (mCommonCustomProeprtySpace == null)
+         {
+            mCommonCustomProeprtySpace = Global.GetCommonCustomEntityVariableSpace ().CloneSpace ();
+         }
       }
 
       public function GetCustomProperty (spaceId:int, propertyId:int):Object
@@ -361,7 +375,13 @@ package player.entity {
          //
          //return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId).GetValueObject ();
 
-         var vi:VariableInstance = mCustomProeprtySpace.GetVariableAt (propertyId);
+         var vi:VariableInstance;
+         
+         if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+            vi = mCommonCustomProeprtySpace.GetVariableAt (propertyId);
+         else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+            vi = mCustomProeprtySpace.GetVariableAt (propertyId);
+            
          if (vi != null)
          {
             return vi.GetValueObject ();
@@ -370,7 +390,7 @@ package player.entity {
          if (propertyId < 0)
             return null;
 
-         return vi == Global.GetDefaultEntityPropertyValue (propertyId);
+         return vi == Global.GetDefaultEntityPropertyValue (spaceId, propertyId);
       }
 
       public function SetCustomProperty (spaceId:int, propertyId:int, valueObject:Object):void
@@ -380,7 +400,13 @@ package player.entity {
          //
          //var vi:VariableInstance = (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId);
 
-         var vi:VariableInstance = mCustomProeprtySpace.GetVariableAt (propertyId);
+         var vi:VariableInstance;
+         
+         if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+            vi = mCommonCustomProeprtySpace.GetVariableAt (propertyId);
+         else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+            vi = mCustomProeprtySpace.GetVariableAt (propertyId);
+         
          if (vi != null)
          {
             vi.SetValueObject (valueObject);
@@ -475,7 +501,7 @@ package player.entity {
 
       final public function Initialize ():void
       {
-         if (mAlreadyDestroyed || mAlreadyInitialized) // if is possible an entity initialized before this entity has made this entity destroyed.
+         if (mAlreadyDestroyed || mAlreadyInitialized) // it is possible an entity initialized before this entity has made this entity destroyed.
             return;
 
          mAlreadyInitialized = true;
@@ -605,7 +631,14 @@ package player.entity {
          {
             mIsAlreadyInDelayUpdateAppearanceList = true;
             mWorld.DelayUpdateEntityAppearance (this);
+            
+            DelayUpdateAppearanceInternal ();
          }
+      }
+      
+      protected function DelayUpdateAppearanceInternal ():void
+      {
+         // to overrride
       }
 
       // to override
@@ -640,6 +673,7 @@ package player.entity {
             layerContainer = relativeTo.mAppearanceObject.parent as DisplayObjectContainer;
             if (layerContainer != null)
             {
+               layerContainer.removeChild (mAppearanceObject);
                layerContainer.addChildAt (mAppearanceObject, layerContainer.getChildIndex (relativeTo.mAppearanceObject) + (frontOfRelativeTo ? 1 : 0));
             }
          }

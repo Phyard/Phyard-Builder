@@ -1,22 +1,46 @@
 
 package com.tapirgames.util {
+
+   import flash.text.TextFormatAlign;
    
    import com.tapirgames.util.Logger;
    
    public class TextUtil
    {
+      public static const TextPadding:Number = 5;
+      
       public static const TextAlign_Left:int = 0;
       public static const TextAlign_Center:int = 1;
       public static const TextAlign_Right:int = 2;
       
-      public static function GetTextAlignText (align:int):String
+      public static const TextAlign_Top:int = 0 << 4;
+      public static const TextAlign_Middle:int = 1 << 4;
+      public static const TextAlign_Bottom:int = 2 << 4;      
+      
+      public static const TextFlag_WordWrap:int   = 1 << 0;
+      public static const TextFlag_Editable:int   = 1 << 1;
+      public static const TextFlag_Selectable:int = 1 << 2;
+      
+      public static const TextFlag_AdaptiveBackgroundSize:int   = 1 << 0;
+      public static const TextFlag_ClipText:int   = 1 << 1;
+      
+      public static const Shift_TextFormat:int = 4;
+      public static const Mask_TextFormat:int = 0xF0;
+      
+      public static const TextFormat_Plain:int = 0;
+      public static const TextFormat_Wiki:int = 1;
+      public static const TextFormat_Html:int = 2;
+
+      public static function GetTextAlignText (hAlign:int):String
       {
-         if (align == TextAlign_Right)
-            return "right";
-         else if (align == TextAlign_Center)
-            return "center";
+         hAlign = hAlign & 0x0F;
+         
+         if (hAlign == TextAlign_Right)
+            return TextFormatAlign.RIGHT; // "right";
+         else if (hAlign == TextAlign_Center)
+            return TextFormatAlign.CENTER; // "center";
          else
-            return "left";
+            return TextFormatAlign.LEFT; // "left";
       }
       
       public static function Uint2ColorString (colorValue:uint):String
@@ -29,15 +53,24 @@ package com.tapirgames.util {
          return "#" + colorString;
       }
       
-      public static function GetHtmlWikiText (plainText:String, textAlign:String, fontSize:int = 16, fontColor:String = null, fontFace:String = null, bold:Boolean = false, italic:Boolean = false, underline:Boolean = false):String
+      public static function GetHtmlWikiText (theText:String, textFormat:int, textAlign:String, fontSize:int = 16, fontColor:String = null, fontFace:String = null, bold:Boolean = false, italic:Boolean = false, underline:Boolean = false):String
       {
          if (fontFace == null)
             fontFace = "Verdana";
          
-         var wikiText:String = TextUtil.GetHtmlEscapedText (plainText);
-         wikiText = TextUtil.ParseWikiString (wikiText);
+         var wikiText:String = theText;
+         
+         if (textFormat != TextFormat_Html)
+         {
+            wikiText = TextUtil.GetHtmlEscapedText (theText);
+            if (textFormat == TextFormat_Wiki)
+            {
+               wikiText = TextUtil.ParseWikiString (wikiText);
+            }
+         }
          wikiText = TextUtil.CreateHtmlText (wikiText, fontSize, fontColor, fontFace, bold, italic, underline);
-         wikiText = "<p align='" + textAlign + "'>" + wikiText + "</p>";
+         if (textAlign != null)
+            wikiText = "<p align='" + textAlign + "'>" + wikiText + "</p>";
          
          return wikiText;
       }
@@ -106,13 +139,16 @@ package com.tapirgames.util {
          result = ParseBoldItalic(result); 
          result = ParseBold(result); 
          result = ParseItalic(result); 
+         //result = ParseBullets(result); 
+         //result = ParseLinks(result);
+         // since v2.04
+         result = ParseLinks(result);
          result = ParseBullets(result); 
-         result = ParseLinks(result); 
          
          //trace ("wikiString = " + wikiString);
          //trace ("result = " + result);
          
-         return result; 
+         return result;
       }
       
       private static function ParseBoldItalic(input:String):String 
@@ -135,7 +171,7 @@ package com.tapirgames.util {
       
       private static function ParseBullets(input:String):String 
       { 
-          var pattern:RegExp = /^\*(.*)(\r)/gm; 
+          var pattern:RegExp = /^\*(.*)([\r\n]|$)/gm; 
           return input.replace(pattern, TrimBulletsTextBeginningSpaces); 
       }
       
@@ -153,14 +189,35 @@ package com.tapirgames.util {
          //return input.replace(urlPattern, "<font color='#0000FF'><a href='$1$2$3'><u>$1$2$3</u></a></font>");
          
       //trace ("input = " + input);
+         var startUrlPart:String = "([ \t\r\n\v\f]|^)"; 
          var protocol:String = "((?:http|https)://)"; 
          var urlPart:String = "([\x21-\x7E]+)"; 
-         var optionalUrlPart:String = "([ \t\r\n\v\f])"; 
-         var urlPattern:RegExp = new RegExp(protocol + urlPart + optionalUrlPart, "ig");
-         var output:String = input.replace(urlPattern, "<font color='#0000FF'><a href='$1$2' target='_blank'><u>$1$2</u></a></font>$3");
+         var endUrlPart:String = "([ \<\t\r\n\v\f]|$)"; 
+         var urlPattern:RegExp = new RegExp(startUrlPart + protocol + urlPart + endUrlPart, "ig");
+         //var output:String = input.replace(urlPattern, "$1<font color='#0000FF'><a href='$2$3' target='_blank'><u>$2$3</u></a></font>$4");
+         var output:String = input.replace(urlPattern, RegReplace);
       //trace ("output = " + output);
          
          return output;
+      }
+      
+      private static function RegReplace ():String
+      {
+trace ("arguments = " + arguments);
+trace ("        1 = " + arguments [1]);
+trace ("        2 = " + arguments [2]);
+trace ("        3 = " + arguments [3]);
+trace ("        4 = " + arguments [4]);
+         var url:String = arguments[2] + arguments[3];
+         var endPart:String = arguments[4];
+         var lastChar:String = url.charAt (url.length - 1);
+         if (lastChar == "." || lastChar == ",")
+         {
+            endPart = lastChar + endPart;
+            url = url.substring (0, url.length - 1);
+         }
+         
+         return arguments[1] + "<font color='#0000FF'><a href='" + url + "' target='_blank'><u>" + url + "</u></a></font>" + endPart;
       }
       
       // the following is copied from adobe website, url is forgetten

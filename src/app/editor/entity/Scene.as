@@ -8,6 +8,8 @@ package editor.entity {
    import flash.utils.Dictionary;
    
    import com.tapirgames.util.Logger;
+   
+   import editor.world.World;
 
    import editor.entity.Entity;
 
@@ -38,6 +40,7 @@ package editor.entity {
    import editor.entity.SubEntityJointAnchor;
 
    import editor.trigger.entity.EntityLogic;
+   import editor.trigger.entity.EntityCodeSnippetHolder;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityTask;
@@ -61,12 +64,26 @@ package editor.entity {
    //import editor.trigger.entity.EntityFunctionPackage;
    //import editor.trigger.entity.EntityFunction;
    
+   import editor.trigger.CodeSnippet;
+   
    import editor.selection.SelectionEngine;
    
    import editor.EditorContext;
    
    import editor.asset.Asset;
    import editor.asset.AssetManager;
+   
+   //
+   
+   import editor.codelib.CodeLibManager;
+   import editor.codelib.AssetFunction;
+   
+   //
+   
+   import editor.ccat.CollisionCategoryManager;
+   import editor.ccat.CollisionCategory;
+   
+   //
    
    import common.CoordinateSystem;
    
@@ -75,12 +92,105 @@ package editor.entity {
    
    public class Scene extends AssetManager //Sprite 
    {
+      protected var mWorld:World;
       
-      public function Scene ()
+      public function Scene (world:World, key:String)
       {
          super ();
          
-         SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium)
+         mWorld = world;
+         SetKey (key);
+         
+         mCodeLibManager = new CodeLibManager (this);
+         
+         mCollisionCategoryManager = new CollisionCategoryManager (this);
+         
+         SetPhysicsSimulationIterations (Define.WorldStepVelocityIterations_Medium, Define.WorldStepPositionIterations_Medium);
+      }
+      
+      public function GetWorld ():World
+      {
+         return mWorld;
+      }
+
+      override public function Destroy ():void
+      {  
+         mCodeLibManager.Destroy (); 
+         
+         mCollisionCategoryManager.Destroy ();
+         
+         super.Destroy ();
+      }
+
+      override public function DestroyAllAssets ():void
+      {
+         mCodeLibManager.DestroyAllAssets ();
+         
+         mCollisionCategoryManager.DestroyAllAssets ();
+         
+         super.DestroyAllAssets ();
+      }
+      
+      public function DestroyAllEntities ():void
+      {
+         super.DestroyAllAssets ();
+      }
+      
+      public function Reset ():void
+      {
+         // todo
+      }
+      
+      override public function ToCodeString ():String
+      {
+         return "Scene#" + GetSceneIndex ();
+      }
+      
+//=================================================================================
+//   scene id
+//=================================================================================
+      
+      private var mSceneIndex:int = 0;
+      
+      public function GetSceneIndex ():int
+      {
+         return mSceneIndex;
+      }
+      
+      public function SetSceneIndex (sceneIndex:int):void
+      {
+         mSceneIndex = sceneIndex;
+      }
+      
+//=================================================================================
+//   functions
+//=================================================================================
+      
+      protected var mCodeLibManager:CodeLibManager;
+
+      public function GetCodeLibManager ():CodeLibManager
+      {
+         return mCodeLibManager;
+      }
+      
+//=================================================================================
+//   collision categories
+//=================================================================================
+      
+      protected var mCollisionCategoryManager:CollisionCategoryManager;
+
+      public function GetCollisionCategoryManager ():CollisionCategoryManager
+      {
+         return mCollisionCategoryManager;
+      }
+
+      public function CreateCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
+      {
+         var category1:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex1);
+         var category2:CollisionCategory = mCollisionCategoryManager.GetCollisionCategoryByIndex (categoryIndex2);
+
+         if (category1 != null && category2 != null)
+            mCollisionCategoryManager.CreateCollisionCategoryFriendLink (category1, category2);
       }
       
 //================================================================================
@@ -169,6 +279,31 @@ package editor.entity {
       //>>v1.60
       private var mPauseOnFocusLost:Boolean = false;
       //<<
+      
+      //>>v2.00
+      private var mName:String = "";
+      //<<
+      
+      public function SetName (name:String):void
+      {
+         mName = ValidateSceneName (name);
+      }
+      
+      public function GetName ():String
+      {
+         return ValidateSceneName (mName);
+      }
+      
+      private function ValidateSceneName (name:String):String
+      {
+         if (name == null)
+            return "";
+         
+         if (name.length > 32)
+            name = name.substring (0, 32);
+         
+         return name;
+      }
 
       public function SetWorldLeft (left:int):void
       {
@@ -609,7 +744,7 @@ package editor.entity {
          if (selectIt)
          {
             circle.ValidateAfterJustCreated ();
-            circle.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            circle.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
             
             circle.SetPosition (mouseX, mouseY);
             SetSelectedAsset (circle);
@@ -630,7 +765,7 @@ package editor.entity {
          if (selectIt)
          {
             rect.ValidateAfterJustCreated ();
-            rect.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            rect.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
             
             rect.SetPosition (mouseX, mouseY);
             SetSelectedAsset (rect);
@@ -651,7 +786,7 @@ package editor.entity {
          if (selectIt)
          {
             polygon.ValidateAfterJustCreated ();
-            polygon.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            polygon.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
             
             polygon.SetPosition (mouseX, mouseY);
             SetSelectedAsset (polygon);
@@ -672,7 +807,7 @@ package editor.entity {
          if (selectIt)
          {
             polyline.ValidateAfterJustCreated ();
-            polyline.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+            polyline.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
             
             polyline.SetPosition (mouseX, mouseY);
             SetSelectedAsset (polyline);
@@ -832,7 +967,7 @@ package editor.entity {
             SetSelectedAsset (imageModule);
          }
 
-         imageModule.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         imageModule.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return imageModule;
       }
@@ -852,7 +987,7 @@ package editor.entity {
             SetSelectedAsset (imageModuleButton);
          }
 
-         imageModuleButton.SetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetCollisionCategoryIndex (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ().GetDefaultCollisionCategory ()));
+         imageModuleButton.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
 
          return imageModuleButton;
       }
@@ -1583,6 +1718,55 @@ package editor.entity {
          }
       }
       
+      // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - now ccats and functions are edit in dialogs
+      public function ConvertRegisterVariablesToGlobalVariables ():void
+      {
+         var oldNumGlobalVariables:int = mCodeLibManager.GetGlobalVariableSpace ().GetNumVariableInstances ();
+         
+         //
+         
+         var variableMapTable:Dictionary = new Dictionary ();
+         var codeSnippet:CodeSnippet;
+         
+         // check script holders
+         
+         var numAssets:int = GetNumAssets ();
+         
+         for (var createId:int = 0; createId < numAssets; ++ createId)
+         {
+            var entity:Entity = GetAssetByCreationId (createId) as Entity;
+            if (entity is EntityCodeSnippetHolder)
+            {
+               codeSnippet = (entity as EntityCodeSnippetHolder).GetCodeSnippet () as CodeSnippet;
+               if (codeSnippet != null)
+               {
+                  codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
+               }
+            }
+         }
+         
+         // check custom functions
+         
+         var numFunctions:int = mCodeLibManager.GetNumFunctions ();
+         for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+         {
+            var functionAsset:AssetFunction = mCodeLibManager.GetFunctionByIndex (functionId);
+            
+            codeSnippet = functionAsset.GetCodeSnippet ();
+            if (codeSnippet != null)
+            {
+               codeSnippet.ConvertRegisterVariablesToGlobalVariables (this);
+            }
+         }
+         
+         // ...
+         
+         //if (oldNumGlobalVariables != mTriggerEngine.GetGlobalVariableSpace ().GetNumVariableInstances ())
+         //{
+         //   mTriggerEngine.NotifyGlobalVariableSpaceModified ();
+         //}
+      }
+      
 //=================================================================================
 //   visibility in editing, not playing
 //=================================================================================
@@ -1679,20 +1863,20 @@ package editor.entity {
       }
       
 //=================================================================================
-//   queries
+//   select list
 //=================================================================================
 
-      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, includeGround:Boolean = false, nullEntityLable:String = null, isForPureCustomFunction:Boolean = false):Array
+      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, includeGround:Boolean = false, nullEntityText:String = null, isForPureCustomFunction:Boolean = false):Array
       {
          var list:Array = new Array ();
 
          if (includeGround)
-            list.push({label:Define.EntityId_Ground + ":{Ground}", mEntityIndex:Define.EntityId_Ground});
+            list.push ({label:Define.EntityId_Ground + ": {Ground}", mEntityIndex:Define.EntityId_Ground});
 
-         if (nullEntityLable == null)
-            nullEntityLable = "(null)";
+         if (nullEntityText == null)
+            nullEntityText = "(null)";
 
-         list.push({label:Define.EntityId_None + ":" + nullEntityLable, mEntityIndex:Define.EntityId_None});
+         list.push ({label:Define.EntityId_None + ": " + nullEntityText, mEntityIndex:Define.EntityId_None});
 
          if (! isForPureCustomFunction)
          {
@@ -1795,16 +1979,6 @@ package editor.entity {
          {
             mAssetLinksChangedCallback ();
          }
-      }
-
-//=================================================================================
-//   debug info
-//=================================================================================
-
-      // todo: move into 
-      public function RepaintContactsInLastRegionSelecting (container:Sprite):void
-      {
-         mSelectionEngine.RepaintContactsInLastRegionSelecting (container);
       }
    }
 }

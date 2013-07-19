@@ -14,6 +14,7 @@ package player.trigger.entity
    
    import common.trigger.ValueDefine;
    
+   import common.DataFormat2;
    import common.Define;
    
    public class EntityInputEntityAssigner extends EntitySelector
@@ -42,9 +43,9 @@ package player.trigger.entity
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          var i:int;
          
@@ -58,14 +59,24 @@ package player.trigger.entity
                   mAssignerType = Define.EntityPairAssignerType_OneToOne;
                
                if (entityDefine.mEntityCreationIds1 != undefined)
+               {
                   mEntitiesIndexes1 = entityDefine.mEntityCreationIds1.concat ();
+                  DataFormat2.CorrectEntityRefIndexes (mEntitiesIndexes1, extraInfos.mEntityIdCorrectionTable);
+               }
                else
+               {
                   mEntitiesIndexes1 = new Array ();
+               }
                
                if (entityDefine.mEntityCreationIds2 != null)
+               {
                   mEntitiesIndexes2 = entityDefine.mEntityCreationIds2.concat ();
+                  DataFormat2.CorrectEntityRefIndexes (mEntitiesIndexes2, extraInfos.mEntityIdCorrectionTable);
+               }
                else
+               {
                   mEntitiesIndexes2 = new Array ();
+               }
                
                // to optimize: sort by creation id
                
@@ -79,7 +90,7 @@ package player.trigger.entity
                   if (length > mEntitiesIndexes2.length)
                      length = mEntitiesIndexes2.length; // some ones in array 2 will be ignored
                   
-                  // create hash for fast judgement
+                  // create hash for fast lookup
                   
                   var id:int;
                   var id1:int;
@@ -116,6 +127,7 @@ package player.trigger.entity
                if (entityDefine.mEntityCreationIds != undefined)
                {
                   mEntitiesIndexes1 = entityDefine.mEntityCreationIds.concat ();
+                  DataFormat2.CorrectEntityRefIndexes (mEntitiesIndexes1, extraInfos.mEntityIdCorrectionTable);
                   
                   // to optimize: sort by creation id
                }
@@ -132,7 +144,8 @@ package player.trigger.entity
                mInputEntityArray1 = new Array (mEntitiesIndexes1.length);
                for (i = 0; i < mEntitiesIndexes1.length; ++ i)
                {
-                  mInputEntityArray1 [i] = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes1 [i], false); // must be an entity placed in editor
+                  //mInputEntityArray1 [i] = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes1 [i], false); // must be an entity placed in editor
+                  mInputEntityArray1 [i] = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes1 [i], true); // may be runtime-created entities from v2.02 by introducing MergeLevel API
                }
             }
             
@@ -141,7 +154,8 @@ package player.trigger.entity
                mInputEntityArray2 = new Array (mEntitiesIndexes2.length);
                for (i = 0; i < mEntitiesIndexes2.length; ++ i)
                {
-                  mInputEntityArray2 [i] = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes2 [i], false); // must be an entity placed in editor
+                  //mInputEntityArray2 [i] = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes2 [i], false); // must be an entity placed in editor
+                  mInputEntityArray2 [i] = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes2 [i], true); // may be runtime-created entities from v2.02 by introducing MergeLevel API
                }
             }
          } // if (createStageId == 0)
@@ -194,8 +208,14 @@ package player.trigger.entity
                
                var numEntitiesInEditor:int = mWorld.GetNumEntitiesInEditor ();      
          
-               if (entityIndex1 >= numEntitiesInEditor || entityIndex2 >= numEntitiesInEditor)
-                  return PairContainingResult_False;
+               //if (entityIndex1 >= numEntitiesInEditor || entityIndex2 >= numEntitiesInEditor)
+               //   return PairContainingResult_False;
+               //
+               // !!! from v2.02, MergeScene is introduced. Merged entities will be viewed as runtime-created entities.
+               //     limit: "entity creation id > 0xFFFF" will not be supported.
+               //
+               //if (entityIndex1 >= 0xFFFF || entityIndex2 >= 0xFFFF)
+               //   return PairContainingResult_False;
                
                // ...
                var id:int = ((entityIndex1 & 0xFFFF) << 16) | (entityIndex2 & 0xFFFF);
@@ -314,7 +334,8 @@ package player.trigger.entity
             {
                // only support entities placed in editor now
                
-               var entity:Entity = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes1 [i], false);
+               //var entity:Entity = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes1 [i], false);
+               var entity:Entity = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes1 [i], true); // from v2.02, to support runtime-created entities caused by MergeLevel API
                if (entity == null || entity.IsDestroyedAlready ())
                   continue;
                
@@ -326,9 +347,22 @@ package player.trigger.entity
       // as input of an event handler
       override public function RegisterEventHandlerForRuntimeCreatedEntity (entity:Entity, eventId:int, eventHandler:EntityEventHandler):void
       {
+         if (mIsPairSelector)
+            return;
+         
+         if (entity == null || entity.IsDestroyedAlready ())
+            return;
+         
          if (mAssignerType == Define.EntitySelectorType_Any)
          {
             entity.RegisterEventHandler (eventId, eventHandler);
+         }
+         else // if (mAssignerType == Define.EntitySelectorType_Single || mAssignerType == Define.EntitySelectorType_Many)
+         {
+            if (mEntitiesIndexes1.indexOf (entity.GetCreationId ()) >= 0)
+            {
+               entity.RegisterEventHandler (eventId, eventHandler);
+            }
          }
       }
       

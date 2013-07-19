@@ -31,6 +31,8 @@ package editor.display.control {
          
          sKeyBitmapClasses = new Array (KeyCodes.kNumKeys);
          
+         sKeyBitmapClasses [KeyCodes.Escape] = Resource.KeyEscape;
+         
          sKeyBitmapClasses [KeyCodes.Key_A] = Resource.KeyA;
          sKeyBitmapClasses [KeyCodes.Key_B] = Resource.KeyB;
          sKeyBitmapClasses [KeyCodes.Key_C] = Resource.KeyC;
@@ -105,6 +107,8 @@ package editor.display.control {
          
          sKeyRegions = new Array (KeyCodes.kNumKeys);
          
+         sKeyRegions [KeyCodes.Escape] = [8, 7, 26, 16];
+
          sKeyRegions [KeyCodes.Key_Q] = [46, 48, 22, 22];
          sKeyRegions [KeyCodes.Key_W] = [71, 48, 22, 22];
          sKeyRegions [KeyCodes.Key_E] = [95, 48, 22, 22];

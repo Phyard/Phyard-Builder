@@ -10,7 +10,7 @@ package editor.trigger {
    public class VariableInstance // implements ValueSource, ValueTarget
    {
    //========================================================================================================
-   // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - now ccats and functions are edit in dialogs
+   // !!! revert some bad changes in revison 2b7b691dca3f454921e229eb20163850675adda1 - "now ccats and functions are edit in dialogs"
    // for ConvertRegisterVariablesToGlobalVariables
    //========================================================================================================
       
@@ -20,7 +20,7 @@ package editor.trigger {
       {
          return mVariableSpace.GetCodeName () + "[" + mIndex + "]";
       }
-   
+      
    //========================================================================================================
    //
    //========================================================================================================
@@ -70,7 +70,7 @@ package editor.trigger {
             return;
          }
          
-         SetValueObject (mVariableDefinition.GetDefaultValueSource (mVariableSpace.GetTriggerEngine ()).GetValueObject ());
+         SetValueObject (mVariableDefinition.GetDefaultValueSource (/*mVariableSpace.GetTriggerEngine ()*/).GetValueObject ());
          SetName (variableDefinition.GetName ());
       }
       
@@ -83,9 +83,9 @@ package editor.trigger {
       {
          if (mIndex < 0)
             return forTarget ? "void" : "null";
-         else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Entity)
+         else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_EntityProperties)
             return "[" + mIndex + ":\"" + GetName () + "\"]";
-         else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
+         else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Register)
             return mVariableSpace.GetCodeName () + "[" + mIndex + "]";
          else
             return mVariableSpace.GetCodeName () + "[" + mIndex + ":\"" + GetName () + "\"]";
@@ -111,15 +111,15 @@ package editor.trigger {
          return mVariableSpace.GetSpaceType ();
       }
       
+      public function IsNull ():Boolean
+      {
+         return mIndex < 0;
+      }
+      
       // only for mVariableSpace to arrange the id
       public function SetIndex (id:int):void
       {
          mIndex = id;
-      }
-      
-      public function IsNull ():Boolean
-      {
-         return mIndex < 0;
       }
       
       public function GetIndex ():int
@@ -185,6 +185,36 @@ package editor.trigger {
       public function GetValueObject ():Object
       {
          return mValueObject;
+      }
+      
+      // it seems VariableDefinition has no the "GetDefaultValue" function.
+      // even if mVariableDefinition != null, the mValueObject is still in use.
+      // 
+      // todo: if seems "mVariableDefinition == null" is only for register and null variables.
+      // to check why and try to make register and null variables also use mVariableDefinition.
+      // if it is possible to achieve this, then one VariableInstance must have a private mVariableDefinition,
+      // then, the VariableInstance class will be not essential?
+      
+      //public function GetValueObject ():Object
+      //{
+      //   if (mVariableDefinition == null)
+      //      return mValueObject;
+      //   
+      //   return mVariableDefinition.GetDefaultValue (); 
+      //}
+   
+   // uuid
+   
+      private var mKey:String = "";
+      
+      public function GetKey ():String
+      {
+         return mKey;
+      }
+      
+      public function SetKey (key:String):void
+      {
+         mKey = key;
       }
       
 //=========================================================================================

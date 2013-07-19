@@ -65,7 +65,7 @@ package Box2D.Common
 			//m_stack[m_count] = element;
 			//++m_count;
 
-			push (element);
+			push (element); // will crash on iOS. Don't know why.
 		}
 
 		public function Pop():Object

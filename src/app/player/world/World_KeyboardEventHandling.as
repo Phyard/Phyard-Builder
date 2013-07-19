@@ -56,6 +56,9 @@
       if (! IsInteractiveEnabledNow ())
          return;
       
+      if (mKeyHoldListHead < 0)
+         return;
+      
       var info:Array;
       var ticks:int;
       var listElement:ListElement_EventHandler;
@@ -107,6 +110,9 @@
 
    private function KeyPressed (keyCode:int, charCode:int):void
    {
+      if (mKeyHoldInfo == null) // world is not inited yet
+         return;
+      
       if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return;
       
@@ -128,6 +134,9 @@
 
    private function KeyReleased (keyCode:int, charCode:int):void
    {
+      if (mKeyHoldInfo == null) // world is not inited yet
+         return;
+      
       if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return;
       
@@ -164,9 +173,12 @@
 
    public function IsKeyHold (keyCode:int):Boolean
    {
-      if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
+      if (mKeyHoldInfo == null) // world is not inited yet
          return false;
       
+      if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
+         return false;
+
       return mKeyHoldInfo [keyCode][KeyHoldInfo_IsHold];
    }
 
@@ -188,6 +200,9 @@
 
    public function ClearKeyHoldInfo (fireKeyReleasedEvents:Boolean):void
    {
+      if (mKeyHoldInfo == null) // world is not inited yet
+         return;
+      
       // mouse
       
       mIsMouseButtonDown = false; // the status may be different with that one in mKeyHoldListHead. Remove this variable later?
@@ -203,28 +218,32 @@
       
       while (keyCode >= 0)
       {
-         info = mKeyHoldInfo [keyCode];
-         
-         if (fireKeyReleasedEvents)
+         if (keyCode != KeyCodes.LeftMouseButton)
          {
-            _KeyboardUpEvent.keyCode  = keyCode;
-            _KeyboardUpEvent.charCode = info [KeyHoldInfo_CharCode];
-            _KeyboardUpEvent.ctrlKey  = IsKeyHold (Keyboard.CONTROL);
-            _KeyboardUpEvent.shiftKey = IsKeyHold (Keyboard.SHIFT);
-            //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
-            RegisterKeyboardEvent (keyCode, _KeyboardUpEvent, mKeyUpEventHandlerLists);
+            info = mKeyHoldInfo [keyCode];
+            
+            if (fireKeyReleasedEvents)
+            {
+               _KeyboardUpEvent.keyCode  = keyCode;
+               _KeyboardUpEvent.charCode = info [KeyHoldInfo_CharCode];
+               _KeyboardUpEvent.ctrlKey  = IsKeyHold (Keyboard.CONTROL);
+               _KeyboardUpEvent.shiftKey = IsKeyHold (Keyboard.SHIFT);
+               //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
+               RegisterKeyboardEvent (keyCode, _KeyboardUpEvent, mKeyUpEventHandlerLists);
+            }
+            
+            var nextKeyCode:int = info [KeyHoldInfo_Next];
+            
+            info [KeyHoldInfo_IsHold] = false;
+            info [KeyHoldInfo_Ticks ] = 0;
+            info [KeyHoldInfo_Next  ] = -1;
+            info [KeyHoldInfo_Prev  ] = -1;
          }
          
-         keyCode = info [KeyHoldInfo_Next];
-         
-         info [KeyHoldInfo_IsHold] = false;
-         info [KeyHoldInfo_Ticks ] = 0;
-         info [KeyHoldInfo_Next  ] = -1;
-         info [KeyHoldInfo_Prev  ] = -1;
+         keyCode = nextKeyCode;
       }
    }
    
-
    //public function SetKeyboardEventHandlingEnabled (enabled:Boolean):void
    //{
    //   

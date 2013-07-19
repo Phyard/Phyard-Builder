@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+    title="Name Setting" 
+    creationComplete="OnInitPanel()"
+    >
+
+   <mx:HBox width="100%" paddingLeft="30" paddingRight="30">
+      <mx:Spacer width="100%" />
+      <mx:Label id="Label_Name" text="Name:" textAlign="right"/>
+      <mx:TextInput id="TextInput_Name" width="167" text="100"/>
+      <mx:Spacer width="100%" />
+   </mx:HBox>
+
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[       
+         import mx.managers.PopUpManager;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         private var mInputValues:Object;
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         public function SetValues (inputValues:Object):void
+         {
+            mInputValues = inputValues;
+         }
+         
+         private function OnInitPanel ():void
+         {
+            if (mInputValues.mName != null)
+               TextInput_Name.text = mInputValues.mName;
+            
+            if (mInputValues.mLabel != null)
+               Label_Name.text = mInputValues.mLabel;
+            
+            if (mInputValues.mTitle != null)
+               this.title = mInputValues.mTitle;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            PopUpManager.removePopUp(this);
+            
+            var params:Object = new Object ();
+            
+            params.mName = TextInput_Name.text;
+             
+           if (OnClose != null)
+              OnClose ();
+            
+           if (OnConfirm != null)
+              OnConfirm (params);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

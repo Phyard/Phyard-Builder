@@ -1,7 +1,7 @@
 
 package editor.display.control {
    
-   import editor.trigger.TriggerEngine;
+   //import editor.trigger.TriggerEngine;
    import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableDefinition;
    import editor.trigger.FunctionDeclaration;
@@ -11,6 +11,8 @@ package editor.display.control {
    import editor.trigger.ValueSource;
    import editor.trigger.ValueTarget;
    
+   import editor.entity.Scene;
+   
    import editor.EditorContext;
    
    import common.trigger.CoreFunctionIds;
@@ -18,6 +20,13 @@ package editor.display.control {
    
    public class FunctionCallingLineData
    {
+      public static const kPattern1:RegExp = /&/g;
+      public static const kReplace1:String = "&amp;";
+      public static const kPattern2:RegExp = /</g;
+      public static const kReplace2:String = "&lt;";
+   
+   //=================
+   
       public var mInfo:FunctionCallingLineInfo = new FunctionCallingLineInfo ();
       
       public function UpdateCodeLineText ():Boolean
@@ -25,6 +34,9 @@ package editor.display.control {
          if (mInfo.mHtmlText == null)
          {
             mInfo.mHtmlText = mFuncDeclaration.CreateFormattedCallingText (mCurrentValueSources, mCurrentValueTargets);
+            
+            mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern1, kReplace1);
+            mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern2, kReplace2);
             
             if (! mInfo.mIsValid)
             {
@@ -108,7 +120,7 @@ package editor.display.control {
          }
       }
       
-      public function BuildFromFunctionDeclaration (funcDeclaration:FunctionDeclaration, triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition):void
+      public function BuildFromFunctionDeclaration (scene:Scene, funcDeclaration:FunctionDeclaration, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition):void
       {
          SetFunctionDeclaration (funcDeclaration);
          
@@ -126,17 +138,17 @@ package editor.display.control {
          for (j = 0; j < funcDeclaration.GetNumInputs (); ++ j)
          {
             variableDefinition = funcDeclaration.GetInputParamDefinitionAt (j);
-            valueSource = variableDefinition.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
-            initialValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
-            currentValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
+            valueSource = variableDefinition.GetDefaultValueSource (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
+            initialValueSources.push (valueSource.CloneSource (scene, /*triggerEngine, */targetFunctionDefinition, funcDeclaration, j));
+            currentValueSources.push (valueSource.CloneSource (scene, /*triggerEngine, */targetFunctionDefinition, funcDeclaration, j));
          }
          
          for (j = 0; j < funcDeclaration.GetNumOutputs (); ++ j)
          {
             variableDefinition = funcDeclaration.GetOutputParamDefinitionAt (j);
             valueTarget = variableDefinition.GetDefaultValueTarget ();
-            initialReturnTargets.push (valueTarget.CloneTarget (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
-            currentReturnTargets.push (valueTarget.CloneTarget (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
+            initialReturnTargets.push (valueTarget.CloneTarget (scene, /*triggerEngine, */targetFunctionDefinition, funcDeclaration, j));
+            currentReturnTargets.push (valueTarget.CloneTarget (scene, /*triggerEngine, */targetFunctionDefinition, funcDeclaration, j));
          }
          
          mInitialValueSources = initialValueSources;
@@ -146,7 +158,7 @@ package editor.display.control {
          mInfo.mHtmlText = funcDeclaration.GetName ();
       }
       
-      public function BuildFromFunctionCalling (funcCalling:FunctionCalling, triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition):void
+      public function BuildFromFunctionCalling (scene:Scene, funcCalling:FunctionCalling, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition):void
       {
          var funcDeclaration:FunctionDeclaration = funcCalling.GetFunctionDeclaration ();
          SetFunctionDeclaration (funcDeclaration);
@@ -164,16 +176,16 @@ package editor.display.control {
          {
             valueSource = funcCalling.GetInputValueSource (j);
             
-            initialValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
-            currentValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
+            initialValueSources.push (valueSource.CloneSource (scene, /*triggerEngine, */targetFunctionDefinition, funcDeclaration, j));
+            currentValueSources.push (valueSource.CloneSource (scene, /*triggerEngine, */targetFunctionDefinition, funcDeclaration, j));
          }
          
          for (j = 0; j < funcDeclaration.GetNumOutputs (); ++ j)
          {
             valueTarget = funcCalling.GetOutputValueTarget (j);
             
-            initialReturnTargets.push (valueTarget.CloneTarget (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
-            currentReturnTargets.push (valueTarget.CloneTarget (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
+            initialReturnTargets.push (valueTarget.CloneTarget (scene, /*triggerEngine, */targetFunctionDefinition, funcDeclaration, j));
+            currentReturnTargets.push (valueTarget.CloneTarget (scene, /*triggerEngine, */targetFunctionDefinition, funcDeclaration, j));
          }
          
          mInitialValueSources = initialValueSources;
@@ -228,8 +240,8 @@ package editor.display.control {
                }
                else
                {
-                  newInitialInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
-                  newCurrentInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+                  newInitialInputValueSources [i] = variableDefinition.GetDefaultValueSource (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
+                  newCurrentInputValueSources [i] = variableDefinition.GetDefaultValueSource (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
                }
                
                newInputVariableDefinitions [i] = variableDefinition;

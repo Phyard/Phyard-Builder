@@ -7,7 +7,6 @@ package editor.trigger.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   import editor.trigger.TriggerEngine;
    import editor.trigger.FunctionDeclaration_EventHandler;
    import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableDefinition;
@@ -37,7 +36,7 @@ package editor.trigger.entity {
       //      
       //      mEventHandlerDefinition = new FunctionDefinition (mEntityContainer.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
       //      
-      //      mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
+      //      mCodeSnippet = mCodeSnippet.Clone (mEntityContainer, mEventHandlerDefinition);
       //      
       //      mIconBitmap = Resource.EventId2IconBitmap (mEventId);
       //   }

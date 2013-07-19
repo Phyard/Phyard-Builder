@@ -4,49 +4,122 @@ package player.trigger
    
    public class VariableSpace
    {
-      protected var mFirstVariableInstance:VariableInstance = null;
+      private var mFirstVariableInstance:VariableInstance = null; // the link list is for input and output parameter spaces
       
-      internal var mVariableInstances:Array;
+      private var mVariableInstances:Array = null;
       
       public function VariableSpace (numVariables:int = 0)
       {
-         if (numVariables < 0)
-            numVariables = 0;
-         
-         mVariableInstances = new Array (numVariables);
-         mFirstVariableInstance = null;
-         
-         // the link list is for input and output parameter spaces
-         
-         if (numVariables > 0)
-         {
-            mFirstVariableInstance = new VariableInstance ();
-            mVariableInstances [0] = mFirstVariableInstance;
-            
-            for (var i:int = 1; i < numVariables; ++ i)
-            {
-               mVariableInstances [i] = new VariableInstance ();
-               (mVariableInstances [i-1] as VariableInstance).mNextVariableInstanceInSpace = mVariableInstances [i];
-            }
-         }
+         SetNumVariables (numVariables);
       }
       
       public function CloneSpace ():VariableSpace
       {
-         var numVariables:int = mVariableInstances.length;
+         //var numVariables:int = mVariableInstances.length;
+         //
+         //var variableSpace:VariableSpace = new VariableSpace (numVariables);
+         //for (var i:int = 0; i < numVariables; ++ i)
+         //{
+         //   (variableSpace.mVariableInstances [i] as VariableInstance).SetValueObject ((mVariableInstances [i] as VariableInstance).GetValueObject ());
+         //}
+         //
+         //return variableSpace;
          
-         var variableSpace:VariableSpace = new VariableSpace (numVariables);
-         for (var i:int = 0; i < numVariables; ++ i)
+         return AppendMissedVariablesFor (null);
+      }
+      
+      public function AppendMissedVariablesFor (forVariableSpace:VariableSpace):VariableSpace
+      {
+         var fromIndex:int;
+         var endIndex:int = mVariableInstances.length;
+         
+         if (forVariableSpace == null)
          {
-            (variableSpace.mVariableInstances [i] as VariableInstance).SetValueObject ((mVariableInstances [i] as VariableInstance).GetValueObject ());
+            fromIndex = 0;
+            forVariableSpace = new VariableSpace (endIndex);
+            if (endIndex == 0)
+               return forVariableSpace;
+         }
+         else
+         {
+            fromIndex = forVariableSpace.GetNumVariables ();
+            if (fromIndex >= endIndex)
+               return forVariableSpace;
+            
+            forVariableSpace.SetNumVariables (endIndex);
          }
          
-         return variableSpace;
+         for (var i:int = fromIndex; i < endIndex; ++ i)
+         {
+            var viSource:VariableInstance = (mVariableInstances [i] as VariableInstance);
+            var viTarget:VariableInstance = (forVariableSpace.mVariableInstances [i] as VariableInstance);
+            
+            viSource.CloneFor (viTarget);
+         }
+         
+         return forVariableSpace;
+      }
+      
+      public function GetNumVariables ():int
+      {
+         return mVariableInstances == null ? 0 : mVariableInstances.length;
+      }
+      
+      public function SetNumVariables (numVariables:int):void
+      {  
+         if (numVariables < 0)
+            numVariables = 0;
+         
+         var oldNumVariables:int;
+         if (mVariableInstances == null)
+         {
+            oldNumVariables = 0;
+            mVariableInstances = new Array (numVariables);
+            //mFirstVariableInstance = null;
+         }
+         else
+         {
+            oldNumVariables = mVariableInstances.length;
+         }         
+         
+         
+         var vi:VariableInstance;
+         if (numVariables > oldNumVariables) // need append
+         {
+            mVariableInstances.length = numVariables; // for c/java, more need to do
+            
+            if (oldNumVariables == 0)
+            {
+               mFirstVariableInstance = new VariableInstance ();
+               mVariableInstances [0] = mFirstVariableInstance;
+            }
+            
+            for (var i:int = (oldNumVariables == 0 ? 1 : oldNumVariables); i < numVariables; ++ i)
+            {
+               vi = new VariableInstance ();
+               mVariableInstances [i] = vi;
+               (mVariableInstances [i-1] as VariableInstance).mNextVariableInstanceInSpace = vi;
+            }
+         }
+         else if (numVariables < oldNumVariables) // need truncate
+         {
+            vi =  mVariableInstances [numVariables];
+            if (numVariables == 0)
+            {
+               mFirstVariableInstance = null;
+            }
+            else
+            {
+               (mVariableInstances [numVariables - 1] as VariableInstance).mNextVariableInstanceInSpace = null;
+            }
+            
+            mVariableInstances.length = numVariables; // for c/java, more need to do
+         }
       }
       
       public function GetVariableAt (index:int):VariableInstance
       {
-         if (index < 0 || index >= mVariableInstances.length)
+         if (index < 0 || mVariableInstances == null || index >= mVariableInstances.length)
             return null;
          
          return mVariableInstances [index];

@@ -16,9 +16,9 @@ package editor.trigger {
       
       public var mCustomfunctionDeclatation:FunctionDeclaration_Custom;
       
-      public function FunctionCalling_Custom (triggerEngine:TriggerEngine, customfunctionDeclatation:FunctionDeclaration_Custom, createDefaultSourcesAndTargets:Boolean = true)
+      public function FunctionCalling_Custom (/*triggerEngine:TriggerEngine, */customfunctionDeclatation:FunctionDeclaration_Custom, createDefaultSourcesAndTargets:Boolean = true)
       {
-         super (triggerEngine, customfunctionDeclatation, createDefaultSourcesAndTargets);
+         super (/*triggerEngine, */customfunctionDeclatation, createDefaultSourcesAndTargets);
          
          mCustomfunctionDeclatation = customfunctionDeclatation;
          
@@ -47,7 +47,7 @@ package editor.trigger {
       
       override protected function CloneShell ():FunctionCalling
       {
-         return new FunctionCalling_Custom (mTriggerEngine, mCustomfunctionDeclatation, false);
+         return new FunctionCalling_Custom (/*mTriggerEngine, */mCustomfunctionDeclatation, false);
       }
       
       private var mLastModifiedTimesOfFunctionDeclaration:int;
@@ -85,7 +85,7 @@ package editor.trigger {
                if (index >= 0)
                   newInputValueSources [i] = mInputValueSources [index];
                else
-                  newInputValueSources [i] = variableDefinition.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+                  newInputValueSources [i] = variableDefinition.GetDefaultValueSource (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
                
                newInputVariableDefinitions [i] = variableDefinition;
             }

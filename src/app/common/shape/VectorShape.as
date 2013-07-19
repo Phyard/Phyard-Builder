@@ -170,12 +170,12 @@ package common.shape
 
       public function GetBodyOpacity100 ():int
       {
-         return GetBodyOpacity () * 100.0 / 255.0;
+         return Math.round (GetBodyOpacity () * 100.0 / 255.0);
       }
 
       public function SetBodyOpacity100 (opacity:int):void
       {
-         SetBodyOpacity (opacity * 255.0 / 100.0);
+         SetBodyOpacity (Math.round (opacity * 255.0 / 100.0));
       }
       
       // body texture

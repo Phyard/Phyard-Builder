@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Event Handler Setting" width="600">
+    title="Event Handler Setting" width="700">
 
    <mx:TabNavigator width="100%" height="100%" creationPolicy="all">
       <mx:VBox label="Code Snippet" borderStyle="solid" height="100%" width="100%"
@@ -88,21 +88,24 @@
          {
             this.title = "Event Handler Setting - " + mParams.mCodeSnippet.GetOwnerFunctionDefinition ().GetName ();
 
-            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
+            theCodeSnippetEditPanel.SetCodeSnippetAndCodeLibManager (mParams.mCodeSnippet, mParams.mCodeLibManager);
+            theCodeSnippetEditPanel.OnCodeLibManagerSwitched ();
             theCodeSnippetEditPanel.SetExternalOnSwitchMenuBar (OnSwitchMenuBar);
             theCodeSnippetEditPanel.SetExternalOnVariableEditingDialogClosedCallback (OnVariableEditingDialogClosed);
          }
 
          private function OnPreCodeSnippetSettingPanelCreationComplete ():void
          {
-            preCodeSnippetEditPanel.SetCodeSnippet (mParams.mPreCodeSnippet);
+            preCodeSnippetEditPanel.SetCodeSnippetAndCodeLibManager (mParams.mPreCodeSnippet, mParams.mCodeLibManager);
+            preCodeSnippetEditPanel.OnCodeLibManagerSwitched ();
             preCodeSnippetEditPanel.SetExternalOnSwitchMenuBar (OnSwitchMenuBar);
             preCodeSnippetEditPanel.SetExternalOnVariableEditingDialogClosedCallback (OnVariableEditingDialogClosed);
          }
 
          private function OnPostCodeSnippetSettingPanelCreationComplete ():void
          {
-            postCodeSnippetEditPanel.SetCodeSnippet (mParams.mPostCodeSnippet);
+            postCodeSnippetEditPanel.SetCodeSnippetAndCodeLibManager (mParams.mPostCodeSnippet, mParams.mCodeLibManager);
+            postCodeSnippetEditPanel.OnCodeLibManagerSwitched ();
             postCodeSnippetEditPanel.SetExternalOnSwitchMenuBar (OnSwitchMenuBar);
             postCodeSnippetEditPanel.SetExternalOnVariableEditingDialogClosedCallback (OnVariableEditingDialogClosed);
          }
@@ -147,13 +150,25 @@
          {
             switch (variableSpaceType)
             {
+               case ValueSpaceTypeDefine.ValueSpace_World:
+                  codeSnippetEditPanel.OnWorldVariablesEditingDialogClosed ();
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                  codeSnippetEditPanel.OnGameSaveVariablesEditingDialogClosed ();
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                  codeSnippetEditPanel.OnCommonGlobalVariablesEditingDialogClosed ();
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  codeSnippetEditPanel.OnCommonEntityVariablesEditingDialogClosed ();
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   codeSnippetEditPanel.OnSessionVariablesEditingDialogClosed ();
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   codeSnippetEditPanel.OnGlobalVariablesEditingDialogClosed ();
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_Entity:
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
                   codeSnippetEditPanel.OnEntityVariablesEditingDialogClosed ();
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
@@ -175,6 +190,8 @@
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
             mParams.mRotationNonSense = true;
+            mParams.mScaleNonSense = true;
+            mParams.mFlippedNonSense = true;
             mParams.mVisibleNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }

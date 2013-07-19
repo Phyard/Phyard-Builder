@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*" xmlns:ed="editor.controls.*"
-    title="Event Handler Setting" width="600">
+    title="Event Handler Setting" width="700">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Code Snippet" borderStyle="solid" height="100%" width="100%"
@@ -65,7 +65,8 @@
          // ...
             this.title = "Event Handler Setting - " + mParams.mCodeSnippet.GetOwnerFunctionDefinition ().GetName ();
 
-            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
+            theCodeSnippetEditPanel.SetCodeSnippetAndCodeLibManager (mParams.mCodeSnippet, mParams.mCodeLibManager);
+            theCodeSnippetEditPanel.OnCodeLibManagerSwitched ();
          }
 
          public function GetValues (returnValues:Object):void
@@ -80,6 +81,8 @@
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
             mParams.mRotationNonSense = true;
+            mParams.mScaleNonSense = true;
+            mParams.mFlippedNonSense = true;
             mParams.mVisibleNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }

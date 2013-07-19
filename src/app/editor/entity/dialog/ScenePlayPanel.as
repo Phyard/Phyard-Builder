@@ -4,6 +4,7 @@ package editor.entity.dialog {
    import flash.utils.ByteArray;
    import flash.display.Shape;
    import flash.display.Sprite;
+   import flash.display.InteractiveObject;
    import flash.events.Event;
    import flash.geom.Point;
    
@@ -17,7 +18,9 @@ package editor.entity.dialog {
    import com.tapirgames.util.GraphicsUtil;
    
    import viewer.Viewer;
+   
    import player.world.World;
+   import player.design.Global;
    
    public class ScenePlayPanel extends UIComponent
    {
@@ -37,17 +40,19 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      public function SetWorldViewerParams (worldBinaryData:ByteArray, maskFieldInPlaying:Boolean, surroudingBackgroundColor:uint):void
+      public function SetWorldViewerParams (worldBinaryData:ByteArray, currentSceneId:int, maskFieldInPlaying:Boolean, surroudingBackgroundColor:uint, callbackStopPlaying:Function):void
       {
          CloseViewer ();
          
          mDesignViewer = new Viewer ({mParamsFromEditor: {
                                          mWorldDomain: ApplicationDomain.currentDomain, 
                                          mWorldBinaryData: worldBinaryData, 
+                                         mCurrentSceneId: currentSceneId, 
                                          GetViewportSize: GetViewportSize, 
                                          mStartRightNow: true, 
-                                         mMaskViewport: maskFieldInPlaying,
-                                         mBackgroundColor: surroudingBackgroundColor
+                                         mMaskViewerField: maskFieldInPlaying,
+                                         mBackgroundColor: surroudingBackgroundColor, 
+                                         OnExitLevel: callbackStopPlaying
                                          }
                              });
          
@@ -60,6 +65,7 @@ package editor.entity.dialog {
       {
          if (mDesignViewer != null)
          {
+            mDesignViewer.Destroy ();
             removeChild (mDesignViewer);
             mDesignViewer = null;
          }
@@ -70,6 +76,17 @@ package editor.entity.dialog {
          return new Point (mContentMaskWidth, mContentMaskHeight);
       }
       
+//========================================================================================
+// !!! 
+//========================================================================================
+      
+      import player.WorldPlugin;
+      
+      private function Dummy ():void
+      {
+         new WorldPlugin (); // to make mxmlc include WorldPlugin, so the all player.* package, ...
+      }
+
 //============================================================================
 //   
 //============================================================================
@@ -97,8 +114,23 @@ package editor.entity.dialog {
       
       private function OnEnterFrame (event:Event):void 
       {
+         // before v2.04
+         //if (mDesignViewer != null)
+         //   stage.focus = this;
+         
+         // since v2.04
          if (mDesignViewer != null)
-            stage.focus = this;
+         {
+            var io:InteractiveObject = stage.focus; // may be an editable text field
+            while (io != this && io != null)
+            {
+               io = io.parent;
+            }
+            if (io != this)
+            {
+               stage.focus = this;
+            }
+         }
          
          UpdateInterface ();
       }
@@ -172,17 +204,17 @@ package editor.entity.dialog {
       
       public function OnKeyDown (event:KeyboardEvent):void
       {
-         switch (event.keyCode)
-         {
-            case 70: // F
-            case Keyboard.SPACE:
-               if (event.ctrlKey || event.shiftKey)
-                  AdvanceOneFrame (); 
-               
-               break;
-            default:
-               break;
-         }
+         //switch (event.keyCode)
+         //{
+         //   case 70: // F
+         //   case Keyboard.SPACE:
+         //      if (event.ctrlKey || event.shiftKey)
+         //         AdvanceOneFrame (); 
+         //      
+         //      break;
+         //   default:
+         //      break;
+         //}
          
          //event.stopPropagation (); // will cause Keyboard events not triggered in playing
       }
@@ -213,10 +245,11 @@ package editor.entity.dialog {
          
          var playerWorld:World = mDesignViewer.GetPlayerWorld () as World;
          
-         viewerStatusInfo.mSpeedX = mDesignViewer.GetPlayingSpeedX ();;
+         viewerStatusInfo.mSpeedX = mDesignViewer.GetPlayingSpeedX ();
          viewerStatusInfo.mIsPlaying = mDesignViewer.IsPlaying ();
          viewerStatusInfo.mCurrentSimulationStep = playerWorld == null ? 0 : playerWorld.GetSimulatedSteps ();
          viewerStatusInfo.mFPS = mDesignViewer.GetFPS ();
+         viewerStatusInfo.mShowPlayBar = mDesignViewer.IsShowPlayBar ();
          
          mDialogCallbacks.UpdateInterface (viewerStatusInfo);
       }
@@ -266,6 +299,14 @@ package editor.entity.dialog {
          }
       }
       
+      public function SimulateSystemBack ():void
+      {
+         if (mDesignViewer != null && mDesignViewer.OnBackKeyDown != null)
+         {
+            mDesignViewer.OnBackKeyDown ();
+         }
+      }
+      
       public function Restart ():void
       {
          if (mDesignViewer != null)
@@ -296,6 +337,11 @@ package editor.entity.dialog {
          {
             mDesignViewer.UpdateSingleFrame ();
          }
+      }
+      
+      public function ClearGameSaveData (soFilename:String):void
+      {
+         Viewer.ClearCookie (soFilename);
       }
    }
 }

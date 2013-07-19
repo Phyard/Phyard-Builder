@@ -2,6 +2,8 @@ package editor.trigger {
    
    import mx.core.UIComponent;
    
+   import editor.entity.Scene;
+   
    import common.trigger.ValueSourceTypeDefine;
    
    public interface ValueSource
@@ -10,8 +12,8 @@ package editor.trigger {
       
       function GetValueObject ():Object;
       
-      // to override
-      function CloneSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource;
+      //todo: remove this functions. Use asset->define->new_asset instead (making use of uuid)
+      function CloneSource (scene:Scene, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource;
       
       function ValidateSource ():void;
       

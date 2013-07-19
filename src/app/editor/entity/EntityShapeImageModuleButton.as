@@ -13,6 +13,8 @@ package editor.entity {
    import flash.events.ContextMenuEvent;
 
    import com.tapirgames.util.GraphicsUtil;
+   
+   import editor.world.World;
 
    import editor.selection.SelectionProxy;
    
@@ -94,9 +96,10 @@ package editor.entity {
       }
       
       // for loading
-      public function SetAssetImageModuleForMouseUpByIndex (index:int):void
+      public function SetAssetImageModuleForMouseUpByIndex (index:int, world:World):void
       {
-         SetAssetImageModuleForMouseUp (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));
+         //SetAssetImageModuleForMouseUp (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index)); // ! bug
+         SetAssetImageModuleForMouseUp (world.GetImageModuleByIndex (index));
       }
       
       // over .
@@ -125,9 +128,10 @@ package editor.entity {
       }
       
       // for loading
-      public function SetAssetImageModuleForMouseOverByIndex (index:int):void
+      public function SetAssetImageModuleForMouseOverByIndex (index:int, world:World):void
       {
-         SetAssetImageModuleForMouseOver (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));
+         //SetAssetImageModuleForMouseOver (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index)); // !bug
+         SetAssetImageModuleForMouseOver (world.GetImageModuleByIndex (index));
       }
       
       // down .
@@ -156,9 +160,10 @@ package editor.entity {
       }
       
       // for loading
-      public function SetAssetImageModuleForMouseDownByIndex (index:int):void
+      public function SetAssetImageModuleForMouseDownByIndex (index:int, world:World):void
       {
-         SetAssetImageModuleForMouseDown (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index));
+         //SetAssetImageModuleForMouseDown (EditorContext.GetEditorApp ().GetWorld ().GetImageModuleByIndex (index)); // !bug
+         SetAssetImageModuleForMouseDown (world.GetImageModuleByIndex (index));
       }
       
 //=============================================================

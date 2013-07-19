@@ -6,6 +6,7 @@ package editor.entity {
    import flash.display.Shape;
    import flash.display.Bitmap;
    import flash.geom.Point;
+   import flash.text.TextFieldAutoSize;
    
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.TextUtil;
@@ -15,14 +16,29 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   
+   import editor.image.AssetImageBitmapModule;
    
    import common.Define;
    
    public class EntityVectorShapeText extends EntityVectorShapeRectangle 
    {
       private var mText:String;
-      private var mWordWrap:Boolean = true;
+      
+      private var mFlags1:int = TextUtil.TextFlag_WordWrap; // from v2.04
+      
+        // private var mWordWrap:Boolean = true;
+        // 
+        // // from v2.04
+        // private var mEditable:Boolean = false;
+        // private var mSelectable:Boolean = false;
+        // private var mTextFormat:int = TextUtil.TextFormat_Plain;
+      
+      private var mFlags2:int = 0; // from v2.04
+         
+         //private var mAdaptiveBackgroundSize:Boolean = false;
+         //
+         // // from v2.04
+         // private var mClipText:Boolean = false;
       
       // from v1.07
       private var mTextColor:uint = 0x000000;
@@ -32,9 +48,7 @@ package editor.entity {
       
       // from v1.09
       private var mIsUnderlined:Boolean = false;
-      private var mTextAlign:int = TextUtil.TextAlign_Left;
-      
-      private var mAdaptiveBackgroundSize:Boolean = false;
+      private var mTextAlign:int = TextUtil.TextAlign_Left | TextUtil.TextAlign_Middle;
       
       //
       protected var mTextLayer:Sprite = new Sprite ();
@@ -76,21 +90,63 @@ package editor.entity {
       
       override public function AreControlPointsEnabled ():Boolean
       {
-         return ! IsAdaptiveBackgroundSize ();
+         return ! IsAdaptiveBackgroundSize () || IsWordWrap ();
+      }
+      
+      override public function SetBodyTextureModule (bitmapModule:AssetImageBitmapModule):Boolean
+      {
+         return super.SetBodyTextureModule (null);
       }
       
       override public function UpdateAppearance ():void
       {
-         if (mTextSprite != null)
-            mTextLayer.removeChild (mTextSprite);
+         while (mTextLayer.numChildren > 0)
+            mTextLayer.removeChildAt (0);
          
          RebuildTextSprite ();
          
          AdjustBackgroundSize ();
          
+//trace ("111 mTextLayer.parent = " + mTextLayer.parent);
          super.UpdateAppearance ();
+//trace ("222 mTextLayer.parent = " + mTextLayer.parent);
          
          addChild (mTextLayer);
+         
+         // ...
+         
+         var halfWidth :Number = GetHalfWidth  ();
+         var halfHeight:Number = GetHalfHeight ();
+         var halfBorderThickness:Number = 0.5 * GetBorderThickness ();
+         
+         var hAlign:int = mTextAlign & 0x0F;
+         if (hAlign == TextUtil.TextAlign_Left || hAlign == TextUtil.TextAlign_Right)
+         {  
+            if (hAlign == TextUtil.TextAlign_Left)
+               mTextSprite.x = - halfWidth + TextUtil.TextPadding + halfBorderThickness;
+            else
+               mTextSprite.x = halfWidth - TextUtil.TextPadding - halfBorderThickness - mTextSprite.width;
+         }
+         else
+         {
+            mTextSprite.x = - 0.5 * mTextSprite.width;
+         }
+         
+         var vAlign:int = mTextAlign & 0xF0;
+         if (vAlign == TextUtil.TextAlign_Top || vAlign == TextUtil.TextAlign_Bottom)
+         {
+            if (vAlign == TextUtil.TextAlign_Top)
+               mTextSprite.y = - halfHeight + TextUtil.TextPadding + halfBorderThickness;
+            else
+               mTextSprite.y = halfHeight - TextUtil.TextPadding - halfBorderThickness - mTextSprite.height;
+         }
+         else
+         {
+            mTextSprite.y = - 0.5 * mTextSprite.height;
+         }
+         
+         // ...
+         
          mTextLayer.addChild (mTextSprite);
       }
       
@@ -98,8 +154,10 @@ package editor.entity {
       {
          if (IsAdaptiveBackgroundSize ())
          {
-            SetHalfWidth  (0.5 * mTextSprite.width + 5);
-            SetHalfHeight (0.5 * mTextSprite.height + 5);
+            if (! IsWordWrap ())
+               SetHalfWidth  (0.5 * mTextSprite.width + TextUtil.TextPadding);
+            
+            SetHalfHeight (0.5 * mTextSprite.height + TextUtil.TextPadding);
          }
       }
       
@@ -121,19 +179,52 @@ package editor.entity {
       //   if (mIsUnderlined)
       //      infoText = "<u>" + infoText + "</u>";
       //   
-      //   return "<p align='" + Define.GetTextAlignText (mTextAlign) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
+      //   return "<p align='" + Define.GetTextAlignText (mTextAlign & 0x0F) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
+      //}
+      
+      //protected function RebuildTextSprite ():void
+      //{
+      //   var displayText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
+      //   
+      //   var textField:TextFieldEx;
+      //   
+      //   if (mWordWrap && (! mAdaptiveBackgroundSize))
+      //      textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor, true, GetHalfWidth () * 2 - 10 - GetBorderThickness ());
+      //   else
+      //      textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor);
+      //      
+      //   if (GetRotation () == 0)
+      //      mTextSprite = textField;
+      //   else
+      //   {
+      //      var textBitmap:Bitmap = DisplayObjectUtil.CreateCacheDisplayObject (textField);
+      //      mTextSprite = textBitmap;
+      //   }
+      //   
+      //   mTextSprite.x = - mTextSprite.width * 0.5;
+      //   mTextSprite.y = - mTextSprite.height * 0.5;
       //}
       
       protected function RebuildTextSprite ():void
       {
-         var displayText:String = TextUtil.GetHtmlWikiText (GetText (), TextUtil.GetTextAlignText (mTextAlign), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
+         var displayText:String = TextUtil.GetHtmlWikiText (GetText (), GetTextFormat (), TextUtil.GetTextAlignText (mTextAlign & 0x0F), mFontSize, TextUtil.Uint2ColorString (mTextColor), null, mIsBold, mIsItalic, mIsUnderlined);
          
+         var fixedWidth:Number = GetHalfWidth () * 2  - GetBorderThickness () - TextUtil.TextPadding * 2;
+         var fixedHeight:Number = GetHalfHeight () * 2  - GetBorderThickness () - TextUtil.TextPadding * 2;
+
          var textField:TextFieldEx;
          
-         if (mWordWrap && (! mAdaptiveBackgroundSize))
-            textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor, true, GetHalfWidth () * 2 - 10 - GetBorderThickness ());
+         if (IsWordWrap ())
+            textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor, true, fixedWidth);
          else
             textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor);
+         
+         if (IsClipText ())
+         {
+            textField.autoSize = TextFieldAutoSize.NONE;
+            textField.width  = fixedWidth;
+            textField.height = fixedHeight;
+         }
             
          if (GetRotation () == 0)
             mTextSprite = textField;
@@ -143,8 +234,8 @@ package editor.entity {
             mTextSprite = textBitmap;
          }
          
-         mTextSprite.x = - mTextSprite.width * 0.5;
-         mTextSprite.y = - mTextSprite.height * 0.5;
+         //mTextSprite.x = - mTextSprite.width * 0.5;
+         //mTextSprite.y = - mTextSprite.height * 0.5;
       }
       
       public function GetText ():String
@@ -163,15 +254,121 @@ package editor.entity {
          mText = text;
       }
       
-      public function IsWordWrap ():Boolean
+      public function GetFlags1 ():int
       {
-         return mWordWrap;
+         return mFlags1;
       }
       
-      public function SetWordWrap (auto:Boolean):void
+      public function SetFlags1 (flags1:int):void
       {
-         mWordWrap = auto;
+         mFlags1 = flags1;
       }
+      
+            public function IsWordWrap ():Boolean
+            {
+               //return mWordWrap;
+               return (mFlags1 & TextUtil.TextFlag_WordWrap) == TextUtil.TextFlag_WordWrap;
+            }
+            
+            public function SetWordWrap (wrap:Boolean):void
+            {
+               //mWordWrap = wrap;
+               if (wrap)
+                  mFlags1 |= TextUtil.TextFlag_WordWrap;
+               else
+                  mFlags1 &= ~TextUtil.TextFlag_WordWrap;
+            }
+            
+            public function IsEditable ():Boolean
+            {
+               //return mEditable;
+               return (mFlags1 & TextUtil.TextFlag_Editable) == TextUtil.TextFlag_Editable;
+            }
+            
+            public function SetEditable (editable:Boolean):void
+            {
+               //mEditable = editable;
+               if (editable)
+                  mFlags1 |= TextUtil.TextFlag_Editable;
+               else
+                  mFlags1 &= ~TextUtil.TextFlag_Editable;
+            }
+            
+            public function IsSelectable ():Boolean
+            {
+               //return mSelectable;
+               return (mFlags1 & TextUtil.TextFlag_Selectable) == TextUtil.TextFlag_Selectable;
+            }
+            
+            public function SetSelectable (selectable:Boolean):void
+            {
+               //mSelectable = selectable;
+               if (selectable)
+                  mFlags1 |= TextUtil.TextFlag_Selectable;
+               else
+                  mFlags1 &= ~TextUtil.TextFlag_Selectable;
+            }
+            
+            public function GetTextFormat ():int
+            {
+               return (mFlags1 & TextUtil.Mask_TextFormat) >> TextUtil.Shift_TextFormat;
+            }
+            
+            public function SetTextFormat (format:int):void
+            {
+               mFlags1 = (mFlags1 & ~TextUtil.Mask_TextFormat) | ((format << TextUtil.Shift_TextFormat) & TextUtil.Mask_TextFormat);
+            }
+      
+      public function GetFlags2 ():int
+      {
+         return mFlags2;
+      }
+      
+      public function SetFlags2 (flags2:int):void
+      {
+         mFlags2 = flags2;
+      }
+      
+            public function IsAdaptiveBackgroundSize ():Boolean
+            {
+               //return mAdaptiveBackgroundSize;
+               return (mFlags2 & TextUtil.TextFlag_AdaptiveBackgroundSize) == TextUtil.TextFlag_AdaptiveBackgroundSize;
+            }
+            
+            public function SetAdaptiveBackgroundSize (adapt:Boolean):void
+            {
+               //mAdaptiveBackgroundSize = adapt;
+               if (adapt)
+                  mFlags2 |= TextUtil.TextFlag_AdaptiveBackgroundSize;
+               else
+                  mFlags2 &= ~TextUtil.TextFlag_AdaptiveBackgroundSize;
+               
+               if (IsAdaptiveBackgroundSize ())
+               {
+                  if (IsSelected ())
+                  {
+                     SetControlPointsVisible (true);
+                  }
+               }
+               else
+               {
+                  SetControlPointsVisible (false);
+               }
+            }
+      
+            public function IsClipText ():Boolean
+            {
+               return (mFlags2 & TextUtil.TextFlag_ClipText) == TextUtil.TextFlag_ClipText;
+            }
+            
+            public function SetClipText (clip:Boolean):void
+            {
+               if (clip)
+                  mFlags2 |= TextUtil.TextFlag_ClipText;
+               else
+                  mFlags2 &= ~TextUtil.TextFlag_ClipText;
+            }
+            
       
       public function GetTextColor ():uint
       {
@@ -233,28 +430,6 @@ package editor.entity {
          mTextAlign = align;
       }
       
-      public function IsAdaptiveBackgroundSize ():Boolean
-      {
-         return mAdaptiveBackgroundSize;
-      }
-      
-      public function SetAdaptiveBackgroundSize (adapt:Boolean):void
-      {
-         mAdaptiveBackgroundSize = adapt;
-         
-         if (mAdaptiveBackgroundSize)
-         {
-            if (IsSelected ())
-            {
-               SetControlPointsVisible (true);
-            }
-         }
-         else
-         {
-            SetControlPointsVisible (false);
-         }
-      }
-      
 //====================================================================
 //   clone
 //====================================================================
@@ -270,7 +445,9 @@ package editor.entity {
          
          var text:EntityVectorShapeText = entity as EntityVectorShapeText;
          text.SetText ( GetText () );
-         text.SetWordWrap (IsWordWrap ());
+         //text.SetWordWrap (IsWordWrap ());
+         text.SetFlags1 (GetFlags1 ());
+         text.SetFlags2 (GetFlags2 ());
          text.SetTextColor (GetTextColor ());
          text.SetFontSize (GetFontSize ());
          text.SetBold (IsBold ());

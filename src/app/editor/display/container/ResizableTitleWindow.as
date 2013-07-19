@@ -5,6 +5,7 @@ package editor.display.container
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
    import flash.events.EventPhase;
+   import flash.geom.Rectangle;
    
    import mx.managers.CursorManager;
 	import mx.containers.TitleWindow;
@@ -148,6 +149,32 @@ package editor.display.container
             else
             {
                StopDragging ();
+            }
+         }
+         else if (stage != null)
+         {
+            var offsetX:Number = 0;
+            var offsetY:Number = 0;
+            
+            var rect:Rectangle = titleBar.getRect (stage);
+               // ??? titleBar's height is 500?
+            
+            if (rect.top > stage.stageHeight - 10)
+               offsetY = stage.stageHeight - 10 - rect.top;
+            //if (rect.bottom < 10)
+            //   offsetY = 10 - rect.bottom;
+            if (rect.top + getHeaderHeight () < 10)
+               offsetY = 10 - (rect.top + getHeaderHeight ());
+            if (rect.left > stage.stageWidth - 10)
+               offsetX = stage.stageWidth - 10 - rect.left;
+            if (rect.right < 10)
+               offsetX = 10 - rect.right;
+            
+//trace ("rect = " + rect + ", offsetX = " + offsetX + ", offsetY = " + offsetY);
+            if (offsetX != 0 || offsetY != 0)
+            {
+               x += offsetX;
+               y += offsetY;
             }
          }
       }

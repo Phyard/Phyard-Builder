@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Entity Assigner Setting" width="600">
+    title="Entity Assigner Setting" width="700">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
@@ -12,6 +12,7 @@
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="10" />
          <mx:Spacer height="100%" />
       </mx:VBox>
    </mx:TabNavigator>
@@ -60,6 +61,8 @@
          {
             mParams.mRotationNonSense = true;
             mParams.mVisibleNonsense = true;
+            mParams.mScaleNonSense = true;
+            mParams.mFlippedNonSense = true;
             mParams.mEnabledNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }

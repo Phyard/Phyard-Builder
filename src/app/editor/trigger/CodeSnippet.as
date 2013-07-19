@@ -4,6 +4,7 @@ package editor.trigger {
    import flash.utils.Dictionary;
    
    import editor.world.World;
+   import editor.entity.Scene;
    
    import editor.EditorContext;
    
@@ -100,7 +101,7 @@ package editor.trigger {
             {
                if (func_calling.Validate ())
                {
-                   mFunctionCallings [i] = new FunctionCalling_Core (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
+                   mFunctionCallings [i] = new FunctionCalling_Core (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
                }
             }
          }
@@ -110,7 +111,7 @@ package editor.trigger {
 //
 //====================================================================
       
-      public function CopyCallingsFrom (codeSnippet:CodeSnippet, insertAt:int = 0, callingIds:Array = null):void
+      public function CopyCallingsFrom (scene:Scene, sameAsSourceScene:Boolean, codeSnippet:CodeSnippet, insertAt:int = 0, callingIds:Array = null):void
       {
          if (codeSnippet == null)
             return;
@@ -137,7 +138,7 @@ package editor.trigger {
             callingId = callingIds [i];
             if (callingId >= 0 && callingId < count)
             {
-               clonedCallings [clonedCount ++] = codeSnippet.GetFunctionCallingAt (callingId).Clone (mOwnerFunctionDefinition);
+               clonedCallings [clonedCount ++] = codeSnippet.GetFunctionCallingAt (callingId).Clone (scene, sameAsSourceScene, mOwnerFunctionDefinition);
             }
          }
          
@@ -154,7 +155,7 @@ package editor.trigger {
 //
 //====================================================================
       
-      public function Clone (ownerFunctionDefinition:FunctionDefinition, callingIds:Array = null):CodeSnippet
+      public function Clone (scene:Scene, sameAsSourceScene:Boolean, ownerFunctionDefinition:FunctionDefinition, callingIds:Array = null):CodeSnippet
       {
          ValidateCallings ();
          
@@ -165,7 +166,7 @@ package editor.trigger {
          
          codeSnippet.SetName (mName);
          
-         codeSnippet.CopyCallingsFrom (this, 0, callingIds);
+         codeSnippet.CopyCallingsFrom (scene, sameAsSourceScene, this, 0, callingIds);
          if (ownerFunctionDefinition.IsCustom ())
          {
             ownerFunctionDefinition.SybchronizeDeclarationWithDefinition ();
@@ -208,12 +209,12 @@ package editor.trigger {
 //
 //====================================================================
       
-      public function ConvertRegisterVariablesToGlobalVariables (editorWorld:World):void
+      public function ConvertRegisterVariablesToGlobalVariables (scene:Scene):void
       {
          var num:int = mFunctionCallings.length;
          for (var i:int = 0; i < num; ++ i)
          {
-           (mFunctionCallings [i] as FunctionCalling).ConvertRegisterVariablesToGlobalVariables (editorWorld);
+           (mFunctionCallings [i] as FunctionCalling).ConvertRegisterVariablesToGlobalVariables (scene);
          }
       }
    }

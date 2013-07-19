@@ -4,12 +4,15 @@ package player.module {
    
    import player.physics.PhysicsProxyShape;
    
+   import common.CoordinateSystem;
    import common.Transform2D;
 
    public class SequencedModule extends Module
    {
       protected var mModuleSequences:Array;
          // must NOT be null
+      
+      protected var mIsConstantPhysicsGeom:Boolean = false;
       
       public function SequencedModule ()
       {
@@ -18,6 +21,17 @@ package player.module {
       public function SetModuleSequences (moduleSequences:Array):void
       {
          mModuleSequences = moduleSequences;
+      }
+      
+      public function AdjustModuleSequencesTransformInPhysics (worldCoordinateSystem:CoordinateSystem):void
+      {
+         if (mModuleSequences != null)
+         {
+            for each (var moduleSequence:ModuleSequence in mModuleSequences)
+            {
+               moduleSequence.AdjustTransformInPhysics (worldCoordinateSystem);
+            }
+         }
       }
       
       override public function GetNumFrames ():int
@@ -31,6 +45,16 @@ package player.module {
             return 0;
          
          return (mModuleSequences [frameIndex] as ModuleSequence).GetDuration ();
+      }
+      
+      override public function IsConstantPhysicsGeom ():Boolean
+      {
+         return mIsConstantPhysicsGeom;
+      }
+      
+      public function SetConstantPhysicsGeom (constant:Boolean):void
+      {
+         mIsConstantPhysicsGeom = constant;
       }
       
       override public function BuildAppearance (frameIndex:int, moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void

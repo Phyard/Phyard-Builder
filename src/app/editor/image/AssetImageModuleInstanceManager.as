@@ -59,6 +59,17 @@ package editor.image {
 //   
 //=============================================================
       
+      // for loading
+      public function DestroyAllModuleInstances (passively:Boolean = false):void
+      {
+         DestroyAllAssets ();
+         
+         if (! passively)
+         {
+            mAssetImageCompositeModule.GetModuleInstanceManagerForListing ().DestroyAllModuleInstances (true);
+         }
+      }
+      
       override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
       {
          if (super.DeleteSelectedAssets ())
@@ -155,6 +166,8 @@ package editor.image {
       
       override public function NotifyModifiedForReferers (info:Object = null):void
       {
+         mAssetImageCompositeModule.UpdateTimeModified (); // maybe not a good idea to put it here
+         
          mAssetImageCompositeModule.UpdateAppearance ();
          mAssetImageCompositeModule.NotifyModifiedForReferers ();
         
@@ -202,38 +215,6 @@ package editor.image {
             moduleInstance = moduleInstances [i] as AssetImageModuleInstance;
             moduleInstance.UpdateAppearance ();
          }
-      }
-      
-      public function MoveUpDownTheOnlySelectedModuleInstance (moveUp:Boolean):void
-      {  
-         var selectedMoudleInstances:Array = GetSelectedAssets ();
-         if (selectedMoudleInstances.length != 1)
-            return;
-         
-         var moudleInstance:AssetImageModuleInstance = selectedMoudleInstances [0] as AssetImageModuleInstance;
-         var oldIndex:int = moudleInstance.GetAppearanceLayerId ();
-         var newIndex:int;
-         if (moveUp)
-         {
-            if (oldIndex <= 0)
-               return;
-            
-            newIndex = oldIndex - 1;
-         }
-         else
-         {
-            if (oldIndex >= GetNumAssets () - 1)
-               return;
-            
-            newIndex = oldIndex + 1;
-         }
-         
-         AdjustAssetAppearanceOrder (moudleInstance, newIndex);
-         moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().AdjustAssetAppearanceOrder (moudleInstance.GetModuleInstaneForListingPeer (), newIndex);
-         
-         moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
-         
-         NotifyChangedForPanel ();
       }
       
 //=============================================================

@@ -29,7 +29,7 @@ package common.trigger {
       //public static const ValueSourceId_VariableGlobal:int                 = (ValueSourceTypeDefine.PropertyOwner_Void   << 24) | (ValueSpaceTypeDefine.ValueSpace_Global        << 16) | ValueTypeDefine.ValueType_Void;
       //public static const ValueSourceId_VariableInput:int                  = (ValueSourceTypeDefine.PropertyOwner_Void   << 24) | (ValueSpaceTypeDefine.ValueSpace_Input         << 16) | ValueTypeDefine.ValueType_Void;
       //public static const ValueSourceId_VariableLocal:int                  = (ValueSourceTypeDefine.PropertyOwner_Void   << 24) | (ValueSpaceTypeDefine.ValueSpace_Local         << 16) | ValueTypeDefine.ValueType_Void;
-      //public static const ValueSourceId_VariableRegister:int               = (ValueSourceTypeDefine.PropertyOwner_Void   << 24) | (ValueSpaceTypeDefine.ValueSpace_GlobalRegister      << 16) | ValueTypeDefine.ValueType_Void;
+      //public static const ValueSourceId_VariableRegister:int               = (ValueSourceTypeDefine.PropertyOwner_Void   << 24) | (ValueSpaceTypeDefine.ValueSpace_Register      << 16) | ValueTypeDefine.ValueType_Void;
       //
       //public static const ValueSourceId_PropertyGlobal:int                 = (ValueSourceTypeDefine.PropertyOwner_Global << 24) | (ValueSpaceTypeDefine.ValueSpace_Void          << 16) | ValueTypeDefine.ValueType_Void;
       //public static const ValueSourceId_PropertyWorld:int                  = (ValueSourceTypeDefine.PropertyOwner_World  << 24) | (ValueSpaceTypeDefine.ValueSpace_Void          << 16) | ValueTypeDefine.ValueType_Void;
@@ -37,6 +37,6 @@ package common.trigger {
       //public static const ValueSourceId_PropertyEntityVarialbeGlobal:int   = (ValueSourceTypeDefine.PropertyOwner_Entity << 24) | (ValueSpaceTypeDefine.ValueSpace_Global        << 16) | ValueTypeDefine.ValueType_Void;
       //public static const ValueSourceId_PropertyEntityVarialbeInput:int    = (ValueSourceTypeDefine.PropertyOwner_Entity << 24) | (ValueSpaceTypeDefine.ValueSpace_Input         << 16) | ValueTypeDefine.ValueType_Void;
       //public static const ValueSourceId_PropertyEntityVarialbeLocal:int    = (ValueSourceTypeDefine.PropertyOwner_Entity << 24) | (ValueSpaceTypeDefine.ValueSpace_Local         << 16) | ValueTypeDefine.ValueType_Void;
-      //public static const ValueSourceId_PropertyEntityVarialbeRegister:int = (ValueSourceTypeDefine.PropertyOwner_Entity << 24) | (ValueSpaceTypeDefine.ValueSpace_GlobalRegister      << 16) | ValueTypeDefine.ValueType_Void;
+      //public static const ValueSourceId_PropertyEntityVarialbeRegister:int = (ValueSourceTypeDefine.PropertyOwner_Entity << 24) | (ValueSpaceTypeDefine.ValueSpace_Register      << 16) | ValueTypeDefine.ValueType_Void;
    }
 }

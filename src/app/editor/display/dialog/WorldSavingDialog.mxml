@@ -90,6 +90,8 @@
          
          private var mInputValues:Object;
          
+         private static const kMaxSourceCodeLenghtToShow:int = 100 * 1024;
+         
          public function SetValues (values:Object):void
          {
             mInputValues = values;
@@ -101,8 +103,15 @@
          }
          
          private function OnInitPanel ():void
-         {  
-            TextArea_SourceCode.text = mInputValues.mXmlString;
+         {
+            if (mInputValues.mXmlString.length < kMaxSourceCodeLenghtToShow)
+               TextArea_SourceCode.text = mInputValues.mXmlString;
+            else
+            {
+               TextArea_SourceCode.text = "Too long to show. :(\nPlease click the \"Copy To Clipboard\" button to copy the source code.";
+               TextArea_SourceCode.editable = false;
+            }
+            
             //TextArea_EmbedCode.text = mInputValues.mEmbedCode;
             
             Button_CopyPlayCode.label = Button_CopyPlayCode.label + " (" + mInputValues.mHexString.length +" bytes)";
@@ -130,7 +139,14 @@
          
          private function OnClickCopySourceCode ():void
          {
-            System.setClipboard(GetValidatedSourceCode ());
+            try
+            {
+               System.setClipboard(GetValidatedSourceCode ());
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
          
          private function GetValidatedSourceCode ():String
@@ -138,18 +154,35 @@
             var pattern:RegExp = />\r([\s]*)</g;
             var newStr:String = ">\n$1<";
             
-            return TextArea_SourceCode.text.replace(pattern, newStr);
+            if (mInputValues.mXmlString.length < kMaxSourceCodeLenghtToShow)
+               return TextArea_SourceCode.text.replace(pattern, newStr);
+            else
+               return mInputValues.mXmlString.replace(pattern, newStr);
          }
          
          private function OnClickCopyEmbedCode ():void
          {
-            System.setClipboard (mInputValues.mEmbedCode);
+            try
+            {
+               System.setClipboard (mInputValues.mEmbedCode);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
          
          private function OnClickCopyPlayCode ():void
          {
             //System.setClipboard (TextArea_PlayCode.text);
-            System.setClipboard (mInputValues.mHexString);
+            try
+            {
+               System.setClipboard (mInputValues.mHexString);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
          
          //private function OnClickCopyEmbedCode ():void

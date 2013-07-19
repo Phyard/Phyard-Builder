@@ -12,7 +12,7 @@
             <mx:Spacer width="100%" />
             <mx:Button id="Button_DeleteCommmand" click="OnDeleteVariable ();" toolTip="Delete Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
          </mx:HBox>
-         <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false"  width="100%" height="100%" editable="false" change="OnChangeVariable ()"/>
+         <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" width="100%" height="100%" change="OnChangeVariable ()"  labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false"/>
       </mx:VBox>
       <mx:ViewStack id="ViewStack_VariableProperties" creationPolicy="all" width="100%" height="100%" borderStyle="solid" borderThickness="1">
          <mx:VBox id="Box_BlankPanel" width="100%" height="100%">
@@ -104,6 +104,14 @@
                      <mx:Spacer width="3" />
                   </mx:HBox>
                </mx:VBox>
+               <mx:VBox id="Box_SceneVariableSettingPanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:Label width="65%" text="null" textAlign="left" />
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
                <mx:VBox id="Box_EntityArraySettingPanel" width="100%" height="100%">
                   <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                      <mx:Spacer width="3" />
@@ -122,10 +130,11 @@
          <menuitem label="New Boolean Variable" data="Boolean"/>
          <menuitem label="New Number Variable" data="Number"/>
          <menuitem label="New String Variable" data="String"/>
-         <menuitem label="New Collision Category Variable" data="CCat"/>
-         <menuitem label="New Entity Variable" data="Entity"/>
-         <menuitem label="New Module Variable" data="Module"/>
-         <menuitem label="New Sound Variable" data="Sound"/>
+         <menuitem label="New Collision Category Variable" data="CCat" scene_data_dependent="true"/>
+         <menuitem label="New Entity Variable" data="Entity" scene_data_dependent="true"/>
+         <menuitem label="New Module Variable" data="Module" scene_data_dependent="true"/>
+         <menuitem label="New Sound Variable" data="Sound" scene_data_dependent="true"/>
+         <menuitem label="New Scene Variable" data="Scene" scene_data_dependent="true"/>
          <menuitem label="New Array Variable" data="Array"/>
       </root>
    </mx:XML>
@@ -141,19 +150,20 @@
             import mx.events.MenuEvent;
 
             import editor.trigger.VariableSpace;
-            import editor.trigger.Lists;
 
             import editor.trigger.VariableInstance;
             import editor.trigger.VariableDefinition;
             import editor.trigger.VariableDefinitionBoolean;
             import editor.trigger.VariableDefinitionNumber;
             import editor.trigger.VariableDefinitionString;
+            import editor.trigger.VariableDefinitionScene;
             import editor.trigger.VariableDefinitionEntity;
             import editor.trigger.VariableDefinitionCollisionCategory;
             import editor.trigger.VariableDefinitionModule;
             import editor.trigger.VariableDefinitionSound;
             import editor.trigger.VariableDefinitionArray;
-
+            
+            import common.trigger.ValueSpaceTypeDefine;
             import common.trigger.ValueTypeDefine;
 
             [Bindable]
@@ -167,32 +177,41 @@
             //private var mLastVariableSpace:VariableSpace = null;
             private var mLastVariableSpaceModifiedTimes:int = -1;
 
-            public function SetVariableSpace (variableSpace:VariableSpace):void
-            {
-               if (mVariableSpace != variableSpace || mLastVariableSpaceModifiedTimes < mVariableSpace.GetNumModifiedTimes ())
-               {
-                  mVariableSpace = variableSpace;
-                  NotifyVariableSpaceModified ();
-                  mLastVariableSpaceModifiedTimes = mVariableSpace.GetNumModifiedTimes ();
-               }
-            }
+            //public function SetVariableSpace (variableSpace:VariableSpace):void
+            //{
+            //   if (mVariableSpace != variableSpace || mLastVariableSpaceModifiedTimes < mVariableSpace.GetNumModifiedTimes ())
+            //   {
+            //      mVariableSpace = variableSpace;
+            //      NotifyVariableSpaceModified ();
+            //      mLastVariableSpaceModifiedTimes = mVariableSpace.GetNumModifiedTimes ();
+            //   }
+            //}
 
-            private var mOptions:Object;
-            public function SetOptions (options:Object):void
+            //private var mOptions:Object;
+            //public function SetOptions (options:Object):void
+            //{
+            //   mOptions = options;
+            //
+            //   if (mOptions != null)
+            //   {
+            //      if (mOptions.mSupportEditingInitialValues != undefined && mOptions.mSupportEditingInitialValues == false)
+            //      {
+            //         ViewStack_VariableSetting.visible = false;
+            //      }
+            //   }
+            //}
+            
+            public function UpdateVariableSpace (variableSpace:VariableSpace):void
             {
-               mOptions = options;
-
-               if (mOptions != null)
-               {
-                  if (mOptions.mSupportEditingInitialValues != undefined && mOptions.mSupportEditingInitialValues == false)
-                  {
-                     ViewStack_VariableSetting.visible = false;
-                  }
-               }
+               mVariableSpace = variableSpace;
+               ViewStack_VariableSetting.visible = mVariableSpace != null && mVariableSpace.SupportEditingInitialValues ();
+               NotifyVariableSpaceModified ();
             }
 
             public function NotifyVariableSpaceModified ():void
             {
+               mCreateNewVariableMenu = null;
+               
                List_Variables.dataProvider.removeAll ();
 
                if (visible)
@@ -236,7 +255,22 @@
             {
                if (mCreateNewVariableMenu == null)
                {
-                  mCreateNewVariableMenu = Menu.createMenu(Button_AddCommmand, CreateNewMenuData, false);
+                  var isSceneDataDependent:Boolean = mVariableSpace != null
+                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_Session
+                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_World
+                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GameSave
+                                        ;
+
+                  var xml:XML = <root />;
+                  for each (var menuItem:Object in CreateNewMenuData.menuitem)
+                  {
+                     if (isSceneDataDependent || menuItem.@["scene_data_dependent"] != "true")
+                     {
+                        xml.appendChild (menuItem);
+                     }
+                  }
+                  
+                  mCreateNewVariableMenu = Menu.createMenu(Button_AddCommmand, xml, false);
                   mCreateNewVariableMenu.labelField="@label";
                   mCreateNewVariableMenu.addEventListener(MenuEvent.ITEM_CLICK, OnNewVariable);
                }
@@ -281,6 +315,10 @@
                {
                   variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Sound, "aSound");
                }
+               else if (event.item.@data == "Scene")
+               {
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Scene, "aScene");
+               }
                else if (event.item.@data == "Array")
                {
                   variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Array, "anArray");
@@ -290,7 +328,7 @@
                {
                   var insert_index:int = List_Variables.selectedIndex + 1;
 
-                  var variableInstance:VariableInstance = mVariableSpace.CreateVariableInstanceFromDefinition (variableDefinition);
+                  var variableInstance:VariableInstance = mVariableSpace.CreateVariableInstanceFromDefinition (null, variableDefinition);
                   mVariableSpace.ChangeVariableInstanceIndex (mVariableSpace.GetNumVariableInstances () - 1, insert_index);
                   var name:String = variableInstance.ToVariableDefinitionString ();
                   List_Variables.dataProvider.addItemAt ({mName:name, mDataTip:name, mData:variableInstance}, insert_index);
@@ -420,6 +458,11 @@
                      //RadioButton_EntityType.selected = true;
                      ViewStack_VariableSetting.selectedChild = Box_SoundVariableSettingPanel;
                   }
+                  else if (variableDefinition is VariableDefinitionScene)
+                  {
+                     //RadioButton_EntityType.selected = true;
+                     ViewStack_VariableSetting.selectedChild = Box_SceneVariableSettingPanel;
+                  }
                   else if (variableDefinition is VariableDefinitionArray)
                   {
                      //RadioButton_ArrayType.selected = true;
@@ -476,7 +519,7 @@
                      variableDefinitionBoolean = new VariableDefinitionBoolean (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionBoolean);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   variableInstance.SetValueObject (RadioButton_True.selected);
@@ -502,7 +545,7 @@
                      variableDefinitionNumber = new VariableDefinitionNumber (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionNumber);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   var numberText:String = Text_DefaultNumberValue.text;
@@ -538,13 +581,14 @@
                      variableDefinitionString = new VariableDefinitionString (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionString);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   variableInstance.SetValueObject (Text_DefaultStringValue.text);
                }
             }
 
+         /*
             public function OnCCatVariableSettingChanged ():void
             {
                if (mVariableSpace == null)
@@ -564,7 +608,7 @@
                      variableDefinitionCCat = new VariableDefinitionCollisionCategory (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionCCat);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   // variableInstance.SetValueObject (Text_DefaultStringValue.text);
@@ -590,7 +634,7 @@
                      variableDefinitionEntity = new VariableDefinitionEntity (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionEntity);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   // variableInstance.SetValueObject (Text_DefaultStringValue.text);
@@ -616,12 +660,13 @@
                      variableDefinitionArray = new VariableDefinitionArray (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionArray);
 
-                     OnNameChanged ()
+                     OnNameChanged ();
                   }
 
                   // variableInstance.SetValueObject (Text_DefaultStringValue.text);
                }
             }
+         */
 
        ]]>
    </mx:Script>

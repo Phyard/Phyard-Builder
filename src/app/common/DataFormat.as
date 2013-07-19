@@ -3,8 +3,11 @@ package common {
    
    import flash.utils.ByteArray;
    import flash.geom.Point;
+   import flash.system.Capabilities;
    
    import editor.world.World;
+   
+   import editor.entity.Scene;
    
    import editor.entity.Entity;
    
@@ -39,6 +42,7 @@ package common {
    
    //import editor.entity.EntityCollisionCategory;
    import editor.ccat.CollisionCategory;
+   import editor.ccat.CollisionCategoryManager;
    
    import editor.image.AssetImage;
    import editor.image.AssetImageManager;
@@ -95,6 +99,7 @@ package common {
    
    //import editor.trigger.entity.EntityFunction;
    import editor.codelib.AssetFunction;
+   import editor.codelib.CodeLibManager;
    
    import editor.trigger.VariableSpace;
    import editor.trigger.VariableInstance;
@@ -120,7 +125,7 @@ package common {
       // create a world define from a editor world.
       // the created word define can be used to create either a player world or a editor world
       
-      public static function EditorWorld2WorldDefine (editorWorld:World):WorldDefine
+      public static function EditorWorld2WorldDefine (editorWorld:World, currentScene:Scene = null, forSceneUndoPoint:Boolean = false):WorldDefine
       {
          if (editorWorld == null)
             return null;
@@ -131,6 +136,10 @@ package common {
          {
             worldDefine.mVersion = Version.VersionNumber;
             
+            //>> from v2.03
+            worldDefine.mKey = editorWorld.GetKey ();
+            //<<
+            
             worldDefine.mAuthorName = editorWorld.GetAuthorName ();
             worldDefine.mAuthorHomepage = editorWorld.GetAuthorHomepage ();
             
@@ -138,76 +147,277 @@ package common {
             worldDefine.mShareSourceCode = editorWorld.IsShareSourceCode ();
             worldDefine.mPermitPublishing = editorWorld.IsPermitPublishing ();
             //<<
+            
+            if (forSceneUndoPoint) // from v2.02
+            {
+               // assert (currentScene != null)
+               worldDefine.mCurrentSceneId = currentScene.GetSceneIndex ();
+            }
          }
+         
+         // scenes
+         
+         var numScenes:int = editorWorld.GetNumScenes ();
+         
+         for (var sceneId:int = 0; sceneId < numScenes; ++ sceneId)
+         {
+            var scene:Scene = editorWorld.GetSceneByIndex (sceneId);
+            
+            if (forSceneUndoPoint)
+            {
+               worldDefine.mSceneDefines.push (Scene2Define (editorWorld, scene, currentScene != scene));
+            }
+            else if (currentScene == null || currentScene == scene)
+            {
+               worldDefine.mSceneDefines.push (Scene2Define (editorWorld, scene));
+            }
+         }
+         
+         //>>from v2.03
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetGameSaveVariableSpace (), worldDefine.mGameSaveVariableDefines, true, true);
+            
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetWorldVariableSpace (), worldDefine.mWorldVariableDefines, true, false);
+            
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetCommonSceneGlobalVariableSpace (), worldDefine.mCommonGlobalVariableDefines, true, false);
+            
+            TriggerFormatHelper.VariableSpace2VariableDefines (null, editorWorld.GetCommonCustomEntityVariableSpace (), worldDefine.mCommonEntityPropertyDefines, true, false);
+         //<<
+         
+         // ...
+         worldDefine.mSimpleGlobalAssetDefines = forSceneUndoPoint; // from v2.01
+         
+         //>>from v1.58
+         // image modules
+         //{
+            var assetImageManager:AssetImageManager = editorWorld.GetAssetImageManager ();
+            var pureModuleManager:AssetImagePureModuleManager = editorWorld.GetAssetImagePureModuleManager ();
+            var assembledModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageAssembledModuleManager ();
+            var sequencedModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageSequencedModuleManager ();
+            
+            var numImages:int = assetImageManager.GetNumAssets ();
+            for (var imageId:int = 0; imageId < numImages; ++ imageId)
+            {
+               var imageAsset:AssetImage = assetImageManager.GetAssetByAppearanceId (imageId) as AssetImage;
+               
+               if (forSceneUndoPoint)
+               {
+                  worldDefine.mImageDefines.push ({mKey: imageAsset.GetKey ()});
+               }
+               else
+               {
+                  var imageDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  imageDefine.mKey = imageAsset.GetKey ();
+                  imageDefine.mTimeModified = imageAsset.GetTimeModified ();
+                  //<<
+                  
+                  imageDefine.mName = imageAsset.GetName ();
+                  imageDefine.mFileData = imageAsset.CloneBitmapFileData ();
+                  
+                  worldDefine.mImageDefines.push (imageDefine);
+               }
+            }
+            
+            var numDivisions:int = pureModuleManager.GetNumAssets ();
+            for (var divisionId:int = 0; divisionId < numDivisions; ++ divisionId)
+            {
+               var imageDivison:AssetImageDivision = (pureModuleManager.GetAssetByAppearanceId (divisionId) as AssetImagePureModule).GetImageDivisionPeer ();
+               
+               if (forSceneUndoPoint)
+               {
+                  worldDefine.mPureImageModuleDefines.push ({mKey: imageDivison.GetKey ()});
+               }
+               else
+               {
+                  var divisionDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  divisionDefine.mKey = imageDivison.GetKey ();
+                  divisionDefine.mTimeModified = imageDivison.GetTimeModified ();
+                  //<<
+                  
+                  divisionDefine.mImageIndex = imageDivison.GetAssetImageId ();
+                  divisionDefine.mLeft = imageDivison.GetLeft ();
+                  divisionDefine.mTop = imageDivison.GetTop ();
+                  divisionDefine.mRight = imageDivison.GetRight ();
+                  divisionDefine.mBottom = imageDivison.GetBottom ();
+                  
+                  worldDefine.mPureImageModuleDefines.push (divisionDefine);
+               }
+            }
+            
+            var numAssembledModules:int = assembledModuleManager.GetNumAssets ();
+            for (var assembledModuleId:int = 0; assembledModuleId < numAssembledModules; ++ assembledModuleId)
+            {
+               var assembledModule:AssetImageCompositeModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId) as AssetImageCompositeModule;
+               
+               if (forSceneUndoPoint)
+               {
+                  worldDefine.mAssembledModuleDefines.push ({mKey: assembledModule.GetKey ()});
+               }
+               else
+               {
+                  var assembledModuleDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  assembledModuleDefine.mKey = assembledModule.GetKey ();
+                  assembledModuleDefine.mTimeModified = assembledModule.GetTimeModified ();
+                  //<<
+                  
+                  assembledModuleDefine.mModulePartDefines = ModuleInstances2Define (editorWorld, assembledModule.GetModuleInstanceManager (), false);
+                  
+                  worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
+               }
+            }
+   
+            var numSequencedModules:int = sequencedModuleManager.GetNumAssets ();
+            for (var sequencedModuleId:int = 0; sequencedModuleId < numSequencedModules; ++ sequencedModuleId)
+            {
+               var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId) as AssetImageCompositeModule;
+               
+               if (forSceneUndoPoint)
+               {
+                  worldDefine.mSequencedModuleDefines.push ({mKey: sequencedModule.GetKey ()});
+               }
+               else
+               {
+                  var sequencedModuleDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  sequencedModuleDefine.mKey = sequencedModule.GetKey ();
+                  sequencedModuleDefine.mTimeModified = sequencedModule.GetTimeModified ();
+                  //<<
+                  
+                  //>>from v2.02
+                  sequencedModuleDefine.mSettingFlags = sequencedModule.GetSettingFlags ();
+                  //<<
+                  
+                  sequencedModuleDefine.mModuleSequenceDefines = ModuleInstances2Define (editorWorld, sequencedModule.GetModuleInstanceManager (), true);
+                  
+                  worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
+               }
+            }
+         //}
+         //<<
+         
+         //>>from v1.59
+         // sounds
+         //{
+            var assetSoundManager:AssetSoundManager = editorWorld.GetAssetSoundManager ();
+            
+            var numSounds:int = assetSoundManager.GetNumAssets ();
+            for (var soundId:int = 0; soundId < numSounds; ++ soundId)
+            {
+               var soundAsset:AssetSound = assetSoundManager.GetAssetByAppearanceId (soundId) as AssetSound;
+               
+               if (forSceneUndoPoint)
+               {
+                  worldDefine.mSoundDefines.push ({mKey: soundAsset.GetKey ()});
+               }
+               else
+               {
+                  var soundDefine:Object = new Object ();
+                  
+                  //>>from v2.01
+                  soundDefine.mKey = soundAsset.GetKey ();
+                  soundDefine.mTimeModified = soundAsset.GetTimeModified ();
+                  //<<
+                  soundDefine.mName = soundAsset.GetName ();
+                  soundDefine.mAttributeBits = soundAsset.GetSoundAttributeBits ();
+                  soundDefine.mNumSamples = soundAsset.GetSoundNumSamples ();
+                  soundDefine.mFileData = soundAsset.CloneSoundFileData ();
+                  
+                  worldDefine.mSoundDefines.push (soundDefine);
+               }
+            }
+         //}
+         //<<
+         
+         return worldDefine;
+      }
+      
+      public static function Scene2Define (editorWorld:World, scene:Scene, onlyStoreKey:Boolean = false):SceneDefine
+      {
+         var sceneDefine:SceneDefine = new SceneDefine ();
+         
+         //>>from v2.0
+         sceneDefine.mKey  = scene.GetKey ();
+         if (onlyStoreKey)
+            return sceneDefine;
+         sceneDefine.mName = scene.GetName ();
+         //<< 
+         
+         // ...
          
          // settings
          {
             //>>from v1.51
-            worldDefine.mSettings.mViewerUiFlags = editorWorld.GetEntityContainer ().GetViewerUiFlags ();
-            worldDefine.mSettings.mPlayBarColor = editorWorld.GetEntityContainer ().GetPlayBarColor ();
-            worldDefine.mSettings.mViewportWidth = editorWorld.GetEntityContainer ().GetViewportWidth ();
-            worldDefine.mSettings.mViewportHeight = editorWorld.GetEntityContainer ().GetViewportHeight ();
-            worldDefine.mSettings.mZoomScale = editorWorld.GetEntityContainer ().GetZoomScale ();
+            sceneDefine.mSettings.mViewerUiFlags = scene.GetViewerUiFlags ();
+            sceneDefine.mSettings.mPlayBarColor = scene.GetPlayBarColor ();
+            sceneDefine.mSettings.mViewportWidth = scene.GetViewportWidth ();
+            sceneDefine.mSettings.mViewportHeight = scene.GetViewportHeight ();
+            sceneDefine.mSettings.mZoomScale = scene.GetZoomScale ();
             //<<
             
             //>>from v1.04
-            worldDefine.mSettings.mCameraCenterX = editorWorld.GetEntityContainer ().GetCameraCenterX ();
-            worldDefine.mSettings.mCameraCenterY = editorWorld.GetEntityContainer ().GetCameraCenterY ();
-            worldDefine.mSettings.mWorldLeft = editorWorld.GetEntityContainer ().GetWorldLeft ();
-            worldDefine.mSettings.mWorldTop = editorWorld.GetEntityContainer ().GetWorldTop ();
-            worldDefine.mSettings.mWorldWidth = editorWorld.GetEntityContainer ().GetWorldWidth ();
-            worldDefine.mSettings.mWorldHeight = editorWorld.GetEntityContainer ().GetWorldHeight ();
-            worldDefine.mSettings.mBackgroundColor = editorWorld.GetEntityContainer ().GetBackgroundColor ();
-            worldDefine.mSettings.mBuildBorder = editorWorld.GetEntityContainer ().IsBuildBorder ();
-            worldDefine.mSettings.mBorderColor = editorWorld.GetEntityContainer ().GetBorderColor ();
+            sceneDefine.mSettings.mCameraCenterX = scene.GetCameraCenterX ();
+            sceneDefine.mSettings.mCameraCenterY = scene.GetCameraCenterY ();
+            sceneDefine.mSettings.mWorldLeft = scene.GetWorldLeft ();
+            sceneDefine.mSettings.mWorldTop = scene.GetWorldTop ();
+            sceneDefine.mSettings.mWorldWidth = scene.GetWorldWidth ();
+            sceneDefine.mSettings.mWorldHeight = scene.GetWorldHeight ();
+            sceneDefine.mSettings.mBackgroundColor = scene.GetBackgroundColor ();
+            sceneDefine.mSettings.mBuildBorder = scene.IsBuildBorder ();
+            sceneDefine.mSettings.mBorderColor = scene.GetBorderColor ();
             //<<
             
             //>>added from v1.06
             //>>removed from v1.08
-            editorWorld.GetEntityContainer ().StatisticsPhysicsShapes ();
-            worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = editorWorld.GetEntityContainer ().GetPhysicsShapesPotentialMaxCount ();
-            worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = editorWorld.GetEntityContainer ().GetPhysicsShapesPopulationDensityLevel ();
+            scene.StatisticsPhysicsShapes ();
+            sceneDefine.mSettings.mPhysicsShapesPotentialMaxCount = scene.GetPhysicsShapesPotentialMaxCount ();
+            sceneDefine.mSettings.mPhysicsShapesPopulationDensityLevel = scene.GetPhysicsShapesPopulationDensityLevel ();
             //<<
             //<<
             
             //>>from v1.08
-            worldDefine.mSettings.mIsInfiniteWorldSize = editorWorld.GetEntityContainer ().IsInfiniteSceneSize ();
+            sceneDefine.mSettings.mIsInfiniteWorldSize = scene.IsInfiniteSceneSize ();
             
-            worldDefine.mSettings.mBorderAtTopLayer = editorWorld.GetEntityContainer ().IsBorderAtTopLayer ();
-            worldDefine.mSettings.mWorldBorderLeftThickness = editorWorld.GetEntityContainer ().GetWorldBorderLeftThickness ();
-            worldDefine.mSettings.mWorldBorderTopThickness = editorWorld.GetEntityContainer ().GetWorldBorderTopThickness ();
-            worldDefine.mSettings.mWorldBorderRightThickness = editorWorld.GetEntityContainer ().GetWorldBorderRightThickness ();
-            worldDefine.mSettings.mWorldBorderBottomThickness = editorWorld.GetEntityContainer ().GetWorldBorderBottomThickness ();
+            sceneDefine.mSettings.mBorderAtTopLayer = scene.IsBorderAtTopLayer ();
+            sceneDefine.mSettings.mWorldBorderLeftThickness = scene.GetWorldBorderLeftThickness ();
+            sceneDefine.mSettings.mWorldBorderTopThickness = scene.GetWorldBorderTopThickness ();
+            sceneDefine.mSettings.mWorldBorderRightThickness = scene.GetWorldBorderRightThickness ();
+            sceneDefine.mSettings.mWorldBorderBottomThickness = scene.GetWorldBorderBottomThickness ();
             
-            worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = editorWorld.GetEntityContainer ().GetDefaultGravityAccelerationMagnitude ();
-            worldDefine.mSettings.mDefaultGravityAccelerationAngle     = editorWorld.GetEntityContainer ().GetDefaultGravityAccelerationAngle ();
+            sceneDefine.mSettings.mDefaultGravityAccelerationMagnitude = scene.GetDefaultGravityAccelerationMagnitude ();
+            sceneDefine.mSettings.mDefaultGravityAccelerationAngle     = scene.GetDefaultGravityAccelerationAngle ();
             
-            worldDefine.mSettings.mRightHandCoordinates   = editorWorld.GetEntityContainer ().GetCoordinateSystem ().IsRightHand ();
-            worldDefine.mSettings.mCoordinatesOriginX     = editorWorld.GetEntityContainer ().GetCoordinateSystem ().GetOriginX ();
-            worldDefine.mSettings.mCoordinatesOriginY     = editorWorld.GetEntityContainer ().GetCoordinateSystem ().GetOriginY ();
-            worldDefine.mSettings.mCoordinatesScale       = editorWorld.GetEntityContainer ().GetCoordinateSystem ().GetScale ();
+            sceneDefine.mSettings.mRightHandCoordinates   = scene.GetCoordinateSystem ().IsRightHand ();
+            sceneDefine.mSettings.mCoordinatesOriginX     = scene.GetCoordinateSystem ().GetOriginX ();
+            sceneDefine.mSettings.mCoordinatesOriginY     = scene.GetCoordinateSystem ().GetOriginY ();
+            sceneDefine.mSettings.mCoordinatesScale       = scene.GetCoordinateSystem ().GetScale ();
             
-            worldDefine.mSettings.mIsCiRulesEnabled = editorWorld.GetEntityContainer ().IsCiRulesEnabled ();
+            sceneDefine.mSettings.mIsCiRulesEnabled = scene.IsCiRulesEnabled ();
             //<<
             
             //>>from v1.55
-            worldDefine.mSettings.mAutoSleepingEnabled = editorWorld.GetEntityContainer ().IsAutoSleepingEnabled ();
-            worldDefine.mSettings.mCameraRotatingEnabled = editorWorld.GetEntityContainer ().IsCameraRotatingEnabled ();
+            sceneDefine.mSettings.mAutoSleepingEnabled = scene.IsAutoSleepingEnabled ();
+            sceneDefine.mSettings.mCameraRotatingEnabled = scene.IsCameraRotatingEnabled ();
             //<<
             
             //>>from v1.60
-            worldDefine.mSettings.mInitialSpeedX = editorWorld.GetEntityContainer ().GetInitialSpeedX ();
-            worldDefine.mSettings.mPreferredFPS = editorWorld.GetEntityContainer ().GetPreferredFPS ();
-            worldDefine.mSettings.mPauseOnFocusLost = editorWorld.GetEntityContainer ().IsPauseOnFocusLost ();
+            sceneDefine.mSettings.mInitialSpeedX = scene.GetInitialSpeedX ();
+            sceneDefine.mSettings.mPreferredFPS = scene.GetPreferredFPS ();
+            sceneDefine.mSettings.mPauseOnFocusLost = scene.IsPauseOnFocusLost ();
             
-            worldDefine.mSettings.mPhysicsSimulationEnabled = editorWorld.GetEntityContainer ().IsPhysicsSimulationEnabled ();
-            worldDefine.mSettings.mPhysicsSimulationStepTimeLength = editorWorld.GetEntityContainer ().GetPhysicsSimulationStepTimeLength ();
-            worldDefine.mSettings.mPhysicsSimulationQuality = editorWorld.GetEntityContainer ().GetPhysicsSimulationQuality ();
-            worldDefine.mSettings.mCheckTimeOfImpact = editorWorld.GetEntityContainer ().IsCheckTimeOfImpact ();
+            sceneDefine.mSettings.mPhysicsSimulationEnabled = scene.IsPhysicsSimulationEnabled ();
+            sceneDefine.mSettings.mPhysicsSimulationStepTimeLength = scene.GetPhysicsSimulationStepTimeLength ();
+            sceneDefine.mSettings.mPhysicsSimulationQuality = scene.GetPhysicsSimulationQuality ();
+            sceneDefine.mSettings.mCheckTimeOfImpact = scene.IsCheckTimeOfImpact ();
             //<<
          }
          
-         var numEntities:int = editorWorld.GetEntityContainer ().GetNumAssets ();
+         var numEntities:int = scene.GetNumAssets ();
          var appearId:int;
          var createId:int;
          var editorEntity:Entity;
@@ -215,7 +425,7 @@ package common {
          
          for (createId = 0; createId < numEntities; ++ createId)
          {
-            editorEntity = editorWorld.GetEntityContainer ().GetAssetByCreationId (createId) as Entity;
+            editorEntity = scene.GetAssetByCreationId (createId) as Entity;
             
             var entityDefine:Object = new Object ();
             
@@ -275,14 +485,14 @@ package common {
                   var basicCondition:EntityBasicCondition = editorEntity as EntityBasicCondition;
                   
                   basicCondition.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, basicCondition.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (scene, basicCondition.GetCodeSnippet ());
                }
                else if (editorEntity is EntityTask)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicTask;
                   
                   var task:EntityTask = editorEntity as EntityTask;
-                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (task.GetEntityAssigners ());
+                  entityIndexArray = scene.AssetArray2AssetCreationIdArray (task.GetEntityAssigners ());
                   
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                }
@@ -294,14 +504,14 @@ package common {
                   
                   entityDefine.mIsAnd = conditionDoor.IsAnd ();
                   entityDefine.mIsNot = conditionDoor.IsNot ();
-                  TriggerFormatHelper.ConditionAndTargetValueArray2EntityDefineProperties (editorWorld, conditionDoor.GetInputConditions (), entityDefine);
+                  TriggerFormatHelper.ConditionAndTargetValueArray2EntityDefineProperties (scene, conditionDoor.GetInputConditions (), entityDefine);
                }
                else if (editorEntity is EntityInputEntityAssigner)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicInputEntityAssigner;
                   
                   var entityAssigner:EntityInputEntityAssigner = editorEntity as EntityInputEntityAssigner;
-                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (entityAssigner.GetInputEntities ());
+                  entityIndexArray = scene.AssetArray2AssetCreationIdArray (entityAssigner.GetInputEntities ());
                   
                   entityDefine.mSelectorType = entityAssigner.GetSelectorType ();
                   entityDefine.mNumEntities = entityIndexArray == null ? 0 : entityIndexArray.length;
@@ -316,12 +526,12 @@ package common {
                   entityDefine.mPairingType = pairAssigner.GetPairingType ();
                   
                   var pairEntities:Array = pairAssigner.GetInputPairEntities ();
-                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (pairEntities [0]);
+                  entityIndexArray = scene.AssetArray2AssetCreationIdArray (pairEntities [0]);
                   
                   entityDefine.mNumEntities1 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds1 = entityIndexArray;
                   
-                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (pairEntities [1]);
+                  entityIndexArray = scene.AssetArray2AssetCreationIdArray (pairEntities [1]);
                   
                   entityDefine.mNumEntities2 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds2 = entityIndexArray;
@@ -331,17 +541,17 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicEventHandler;
                   
                   var eventHandler:EntityEventHandler = editorEntity as EntityEventHandler;
-                  entityIndexArray = editorWorld.GetEntityContainer ().AssetArray2AssetCreationIdArray (eventHandler.GetEntityAssigners ());
+                  entityIndexArray = scene.AssetArray2AssetCreationIdArray (eventHandler.GetEntityAssigners ());
                   
                   entityDefine.mEventId = eventHandler.GetEventId ();
                   
-                  entityDefine.mInputConditionEntityCreationId = editorWorld.GetEntityContainer ().GetAssetCreationId (eventHandler.GetInputConditionEntity () as Entity);
+                  entityDefine.mInputConditionEntityCreationId = scene.GetAssetCreationId (eventHandler.GetInputConditionEntity () as Entity);
                   entityDefine.mInputConditionTargetValue = eventHandler.GetInputConditionTargetValue ();
                   
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                   
                   //>>v1.08
-                  entityDefine.mExternalActionEntityCreationId = editorWorld.GetEntityContainer ().GetAssetCreationId (eventHandler.GetExternalAction ());
+                  entityDefine.mExternalActionEntityCreationId = scene.GetAssetCreationId (eventHandler.GetExternalAction ());
                   
                   if (editorEntity is EntityEventHandler_Timer)
                   {
@@ -356,10 +566,10 @@ package common {
                         var timerEventHandlerWithPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = eventHandler as EntityEventHandler_TimerWithPrePostHandling;
                         
                         timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().ValidateCallings ();
-                        entityDefine.mPreFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), false);
+                        entityDefine.mPreFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (scene, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), false);
                         
                         timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().ValidateCallings ();
-                        entityDefine.mPostFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), false);
+                        entityDefine.mPostFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (scene, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), false);
                      }
                      //<<
                   }
@@ -398,7 +608,7 @@ package common {
                   //<<
                   
                   eventHandler.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, eventHandler.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (scene, eventHandler.GetCodeSnippet ());
                }
                else if (editorEntity is EntityAction)
                {
@@ -407,7 +617,7 @@ package common {
                   var action:EntityAction = editorEntity as EntityAction;
                   
                   action.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, action.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (scene, action.GetCodeSnippet ());
                }
                //>>from v1.56
                else if (editorEntity is EntityInputEntityScriptFilter)
@@ -417,7 +627,7 @@ package common {
                   var entityFilter:EntityInputEntityScriptFilter = editorEntity as EntityInputEntityScriptFilter;
                   
                   entityFilter.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, entityFilter.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (scene, entityFilter.GetCodeSnippet ());
                }
                else if (editorEntity is EntityInputEntityPairScriptFilter)
                {
@@ -426,7 +636,7 @@ package common {
                   var entityPairFilter:EntityInputEntityPairScriptFilter = editorEntity as EntityInputEntityPairScriptFilter;
                   
                   entityPairFilter.GetCodeSnippet ().ValidateCallings ();
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, entityPairFilter.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (scene, entityPairFilter.GetCodeSnippet ());
                }
                //<<
             }
@@ -529,10 +739,12 @@ package common {
                      entityDefine.mHalfWidth = (vectorShape as EntityVectorShapeRectangle).GetHalfWidth ();
                      entityDefine.mHalfHeight = (vectorShape as EntityVectorShapeRectangle).GetHalfHeight ();
                      
-                     entityDefine.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap ();
+                     //entityDefine.mWordWrap = (vectorShape as EntityVectorShapeText).IsWordWrap (); // before v2.04
+                     entityDefine.mFlags1 = (vectorShape as EntityVectorShapeText).GetFlags1 (); // since v2.04
                      
                      //from v1.08
-                     entityDefine.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize ();
+                     //entityDefine.mAdaptiveBackgroundSize = (vectorShape as EntityVectorShapeText).IsAdaptiveBackgroundSize (); // before v2.04
+                     entityDefine.mFlags2 = (vectorShape as EntityVectorShapeText).GetFlags2 (); // since v2.04
                      entityDefine.mTextColor = (vectorShape as EntityVectorShapeText).GetTextColor ();
                      entityDefine.mFontSize = (vectorShape as EntityVectorShapeText).GetFontSize ();
                      entityDefine.mIsBold = (vectorShape as EntityVectorShapeText).IsBold ();
@@ -637,7 +849,7 @@ package common {
                   var hinge:EntityJointHinge = editorEntity as EntityJointHinge;
                   
                   entityDefine.mEntityType = Define.EntityType_JointHinge;
-                  entityDefine.mAnchorEntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( hinge.GetAnchor () );
+                  entityDefine.mAnchorEntityIndex = scene.GetAssetCreationId ( hinge.GetAnchor () );
                   
                   entityDefine.mEnableLimits = hinge.IsLimitsEnabled ();
                   entityDefine.mLowerAngle = hinge.GetLowerLimit ();
@@ -655,8 +867,8 @@ package common {
                   var slider:EntityJointSlider = editorEntity as EntityJointSlider;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSlider;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( slider.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( slider.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = scene.GetAssetCreationId ( slider.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = scene.GetAssetCreationId ( slider.GetAnchor2 () );
                   
                   entityDefine.mEnableLimits = slider.IsLimitsEnabled ();
                   entityDefine.mLowerTranslation = slider.GetLowerLimit ();
@@ -674,8 +886,8 @@ package common {
                   var distanceJoint:EntityJointDistance = editorEntity as EntityJointDistance;
                   
                   entityDefine.mEntityType = Define.EntityType_JointDistance;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( distanceJoint.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( distanceJoint.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = scene.GetAssetCreationId ( distanceJoint.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = scene.GetAssetCreationId ( distanceJoint.GetAnchor2 () );
                   
                   //>>from v1.08
                   entityDefine.mBreakDeltaLength = distanceJoint.GetBreakDeltaLength ();
@@ -686,8 +898,8 @@ package common {
                   var spring:EntityJointSpring = editorEntity as EntityJointSpring;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSpring;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( spring.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( spring.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = scene.GetAssetCreationId ( spring.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = scene.GetAssetCreationId ( spring.GetAnchor2 () );
                   
                   entityDefine.mStaticLengthRatio = spring.GetStaticLengthRatio ();
                   //entityDefine.mFrequencyHz = spring.GetFrequencyHz ();
@@ -706,15 +918,15 @@ package common {
                   var weld:EntityJointWeld = editorEntity as EntityJointWeld;
                   
                   entityDefine.mEntityType = Define.EntityType_JointWeld;
-                  entityDefine.mAnchorEntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( weld.GetAnchor () );
+                  entityDefine.mAnchorEntityIndex = scene.GetAssetCreationId ( weld.GetAnchor () );
                }
                else if (editorEntity is EntityJointDummy)
                {
                   var dummy:EntityJointDummy = editorEntity as EntityJointDummy;
                   
                   entityDefine.mEntityType = Define.EntityType_JointDummy;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( dummy.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityContainer ().GetAssetCreationId ( dummy.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = scene.GetAssetCreationId ( dummy.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = scene.GetAssetCreationId ( dummy.GetAnchor2 () );
                }
                
                if (joint != null)
@@ -727,7 +939,7 @@ package common {
                entityDefine.mEntityType = Define.SubEntityType_JointAnchor;
             }
             
-            worldDefine.mEntityDefines.push (entityDefine);
+            sceneDefine.mEntityDefines.push (entityDefine);
             
             //arraySortedByCreationId.push ({entity:editorEntity, creationId:editorEntity.GetCreationOrderId ()});
          }
@@ -737,17 +949,17 @@ package common {
          //for (var arrayIndex:int = 0; arrayIndex < arraySortedByCreationId.length; ++ arrayIndex)
          //{
          //   editorEntity = arraySortedByCreationId [arrayIndex].entity;
-         //   worldDefine.mEntityAppearanceOrder.push (editorEntity.GetEntityIndex ());
+         //   sceneDefine.mEntityAppearanceOrder.push (editorEntity.GetEntityIndex ());
          //}
          
          for (appearId = 0; appearId < numEntities; ++ appearId)
          {
-            editorEntity = editorWorld.GetEntityContainer ().GetAssetByAppearanceId (appearId) as Entity;
-            worldDefine.mEntityAppearanceOrder.push (editorEntity.GetCreationOrderId ());
+            editorEntity = scene.GetAssetByAppearanceId (appearId) as Entity;
+            sceneDefine.mEntityAppearanceOrder.push (editorEntity.GetCreationOrderId ());
          }
          
          // 
-         var brotherGroupArray:Array = editorWorld.GetEntityContainer ().GetBrotherGroups ();
+         var brotherGroupArray:Array = scene.GetBrotherGroups ();
          var groupId:int;
          var brotherId:int;
          var brotherGroup:Array;
@@ -768,7 +980,7 @@ package common {
             }
             if (brotherGroup.length < 2)
             {
-               trace ("one entity group, id = " + editorWorld.GetEntityContainer ().GetAssetCreationId (brotherGroup [brotherId] as Entity));
+               trace ("one entity group, id = " + scene.GetAssetCreationId (brotherGroup [brotherId] as Entity));
                continue;
             }
             
@@ -776,43 +988,48 @@ package common {
             for (brotherId = 0; brotherId < brotherGroup.length; ++ brotherId)
             {
                editorEntity = brotherGroup [brotherId] as Entity;
-               brotherIDs [brotherId] = editorWorld.GetEntityContainer ().GetAssetCreationId (editorEntity);
+               brotherIDs [brotherId] = scene.GetAssetCreationId (editorEntity);
             }
-            worldDefine.mBrotherGroupDefines.push (brotherIDs);
+            sceneDefine.mBrotherGroupDefines.push (brotherIDs);
          }
          
          //>>fromv1.02
          // collision category
          {
-            var numCats:int = editorWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
+            var numCats:int = scene.GetCollisionCategoryManager ().GetNumCollisionCategories ();
             
             for (var ccId:int = 0; ccId < numCats; ++ ccId)
             {
-               var collisionCategory:CollisionCategory = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (ccId);
+               var collisionCategory:CollisionCategory = scene.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (ccId);
                
                var ccDefine:Object = new Object ();
+               
+               //>>from v2.01
+               ccDefine.mKey = collisionCategory.GetKey ();
+               ccDefine.mTimeModified = collisionCategory.GetTimeModified ();
+               //<<
                
                ccDefine.mName = collisionCategory.GetCategoryName ();
                ccDefine.mCollideInternally = collisionCategory.IsCollideInternally ();
                ccDefine.mPosX = collisionCategory.GetPositionX ();
                ccDefine.mPosY = collisionCategory.GetPositionY ();
                
-               worldDefine.mCollisionCategoryDefines.push (ccDefine);
+               sceneDefine.mCollisionCategoryDefines.push (ccDefine);
             }
             
-            worldDefine.mDefaultCollisionCategoryIndex = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (editorWorld.GetCollisionCategoryManager ().GetDefaultCollisionCategory ());
+            sceneDefine.mDefaultCollisionCategoryIndex = scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (scene.GetCollisionCategoryManager ().GetDefaultCollisionCategory ());
             
-            var ccFriendPairs:Array = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryFriendPairs ();
+            var ccFriendPairs:Array = scene.GetCollisionCategoryManager ().GetCollisionCategoryFriendPairs ();
             for (var pairId:int = 0; pairId < ccFriendPairs.length; ++ pairId)
             {
                var friendPair:Object = ccFriendPairs [pairId];
                
                var pairDefine:Object = new Object ();
                
-               pairDefine.mCollisionCategory1Index = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory1);
-               pairDefine.mCollisionCategory2Index = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory2);
+               pairDefine.mCollisionCategory1Index = scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory1);
+               pairDefine.mCollisionCategory2Index = scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory2);
                
-               worldDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
+               sceneDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
             }
          }
          //<<
@@ -821,14 +1038,14 @@ package common {
          // global variables and custom entity properties
          //{
             //>> from v1.57
-            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld, editorWorld.GetTriggerEngine ().GetSessionVariableSpace (), worldDefine.mSessionVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (scene, scene.GetCodeLibManager ().GetSessionVariableSpace (), sceneDefine.mSessionVariableDefines, true, false);
             //<<
             
-            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld, editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), worldDefine.mGlobalVariableDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (scene, scene.GetCodeLibManager ().GetGlobalVariableSpace (), sceneDefine.mGlobalVariableDefines, true, false);
             
-            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld, editorWorld.GetTriggerEngine ().GetEntityVariableSpace (), worldDefine.mEntityPropertyDefines, true);
+            TriggerFormatHelper.VariableSpace2VariableDefines (scene, scene.GetCodeLibManager ().GetEntityVariableSpace (), sceneDefine.mEntityPropertyDefines, true, false);
          //}
-         //<<
+         //<< 
          
          //from v1.53
          // custom functions
@@ -839,13 +1056,19 @@ package common {
             
             // functions 
             
-            var numFunctions:int = editorWorld.GetCodeLibManager().GetNumFunctions ();
+            var numFunctions:int = scene.GetCodeLibManager().GetNumFunctions ();
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
             {
-               var functionAsset:AssetFunction = editorWorld.GetCodeLibManager().GetFunctionByIndex (functionId);
+               var functionAsset:AssetFunction = scene.GetCodeLibManager().GetFunctionByIndex (functionId);
                
                functionAsset.GetCodeSnippet ().ValidateCallings ();
-               var functionDefine:FunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, functionAsset.GetCodeSnippet ());
+               var functionDefine:FunctionDefine = TriggerFormatHelper.Function2FunctionDefine (scene, functionAsset.GetCodeSnippet ());
+               
+               //>>from v2.01
+               functionDefine.mKey = functionAsset.GetKey ();
+               functionDefine.mTimeModified = functionAsset.GetTimeModified ();
+               //<<
+               
                functionDefine.mName = functionAsset.GetName ();
                functionDefine.mPosX = functionAsset.GetPositionX ();
                functionDefine.mPosY = functionAsset.GetPositionY ();
@@ -854,97 +1077,14 @@ package common {
                functionDefine.mDesignDependent = functionAsset.IsDesignDependent ();
                //<<
                
-               worldDefine.mFunctionDefines.push (functionDefine);
+               sceneDefine.mFunctionDefines.push (functionDefine);
             }
          //}
          //<<
          
-         //>>from v1.58
-         // image modules
-         //{
-            var assetImageManager:AssetImageManager = editorWorld.GetAssetImageManager ();
-            var pureModuleManager:AssetImagePureModuleManager = editorWorld.GetAssetImagePureModuleManager ();
-            var assembledModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageAssembledModuleManager ();
-            var sequencedModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageSequencedModuleManager ();
-            
-            var numImages:int = assetImageManager.GetNumAssets ();
-            for (var imageId:int = 0; imageId < numImages; ++ imageId)
-            {
-               var imageAsset:AssetImage = assetImageManager.GetAssetByAppearanceId (imageId) as AssetImage;
-               
-               var imageDefine:Object = new Object ();
-               
-               imageDefine.mName = imageAsset.GetName ();
-               imageDefine.mFileData = imageAsset.CloneBitmapFileData ();
-               
-               worldDefine.mImageDefines.push (imageDefine);
-            }
-            
-            var numDivisions:int = pureModuleManager.GetNumAssets ();
-            for (var divisionId:int = 0; divisionId < numDivisions; ++ divisionId)
-            {
-               var imageDivison:AssetImageDivision = (pureModuleManager.GetAssetByAppearanceId (divisionId) as AssetImagePureModule).GetImageDivisionPeer ();
-               
-               var divisionDefine:Object = new Object ();
-               divisionDefine.mImageIndex = imageDivison.GetAssetImageId ();
-               divisionDefine.mLeft = imageDivison.GetLeft ();
-               divisionDefine.mTop = imageDivison.GetTop ();
-               divisionDefine.mRight = imageDivison.GetRight ();
-               divisionDefine.mBottom = imageDivison.GetBottom ();
-               
-               worldDefine.mPureImageModuleDefines.push (divisionDefine);
-            }
-            
-            var numAssembledModules:int = assembledModuleManager.GetNumAssets ();
-            for (var assembledModuleId:int = 0; assembledModuleId < numAssembledModules; ++ assembledModuleId)
-            {
-               var assembledModule:AssetImageCompositeModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId) as AssetImageCompositeModule;
-               
-               var assembledModuleDefine:Object = new Object ();
-               
-               assembledModuleDefine.mModulePartDefines = ModuleInstances2Define (editorWorld, assembledModule.GetModuleInstanceManager (), false);
-               
-               worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
-            }
-   
-            var numSequencedModules:int = sequencedModuleManager.GetNumAssets ();
-            for (var sequencedModuleId:int = 0; sequencedModuleId < numSequencedModules; ++ sequencedModuleId)
-            {
-               var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId) as AssetImageCompositeModule;
-               
-               var sequencedModuleDefine:Object = new Object ();
-               
-               //sequencedModuleDefine.mIsLooped = sequencedModule.IsLooped ();
-               sequencedModuleDefine.mModuleSequenceDefines = ModuleInstances2Define (editorWorld, sequencedModule.GetModuleInstanceManager (), true);
-               
-               worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
-            }
-         //}
-         //<<
+         // ...
          
-         //>>from v1.59
-         // sounds
-         //{
-            var assetSoundManager:AssetSoundManager = editorWorld.GetAssetSoundManager ();
-            
-            var numSounds:int = assetSoundManager.GetNumAssets ();
-            for (var soundId:int = 0; soundId < numSounds; ++ soundId)
-            {
-               var soundAsset:AssetSound = assetSoundManager.GetAssetByAppearanceId (soundId) as AssetSound;
-               
-               var soundDefine:Object = new Object ();
-               
-               soundDefine.mName = soundAsset.GetName ();
-               soundDefine.mAttributeBits = soundAsset.GetSoundAttributeBits ();
-               soundDefine.mNumSamples = soundAsset.GetSoundNumSamples ();
-               soundDefine.mFileData = soundAsset.CloneSoundFileData ();
-               
-               worldDefine.mSoundDefines.push (soundDefine);
-            }
-         //}
-         //<<
-         
-         return worldDefine;
+         return sceneDefine;
       }
       
       public static function RetrieveShapePhysicsProperties (entityDefine:Object, entityShape:EntityShape):void
@@ -1205,7 +1345,7 @@ package common {
                   areaVectorShape.SetBorderThickness (moduleInstanceDefine.mShapeBorderThickness);
                   
                   //>> from v1.60
-                  SetShapeBodyTexture (editorWorld, areaVectorShape, moduleInstanceDefine.mBodyTextureDefine);
+                  SetShapeBodyTexture (editorWorld, areaVectorShape, moduleInstanceDefine.mBodyTextureDefine, imageModuleRefIndex_CorrectionTable);
                   //<<
                }
                
@@ -1236,27 +1376,31 @@ package common {
          return imageModule;
       }
       
-      public static function SetShapeEntityBodyTexture (editorWorld:World, areaVectorShapeEntity:EntityVectorShapeArea, textureDefine:Object):void
+      public static function SetShapeEntityBodyTexture (editorWorld:World, areaVectorShapeEntity:EntityVectorShapeArea, textureDefine:Object, imageModuleRefIndex_CorrectionTable:Array):void
       {
          if (textureDefine.mModuleIndex >= 0)
          {
+            textureDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [textureDefine.mModuleIndex];
+            
             areaVectorShapeEntity.SetBodyTextureModule (editorWorld.GetImageModuleByIndex (textureDefine.mModuleIndex) as AssetImageBitmapModule);
             areaVectorShapeEntity.SetBodyTextureTransform (new Transform2D (textureDefine.mPosX, textureDefine.mPosY, 
                                                      textureDefine.mScale, textureDefine.mIsFlipped, textureDefine.mRotation));
          }
       }
       
-      public static function SetShapeBodyTexture (editorWorld:World, areaVectorShape:VectorShapeArea, textureDefine:Object):void
+      public static function SetShapeBodyTexture (editorWorld:World, areaVectorShape:VectorShapeArea, textureDefine:Object, imageModuleRefIndex_CorrectionTable:Array):void
       {
          if (textureDefine.mModuleIndex >= 0)
          {
+            textureDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [textureDefine.mModuleIndex];
+            
             areaVectorShape.SetBodyTextureModule (editorWorld.GetImageModuleByIndex (textureDefine.mModuleIndex) as AssetImageBitmapModule);
             areaVectorShape.SetBodyTextureTransform (new Transform2D (textureDefine.mPosX, textureDefine.mPosY, 
                                                      textureDefine.mScale, textureDefine.mIsFlipped, textureDefine.mRotation));
          }
       }
       
-      public static function SetShapePhysicsProperties (shape:EntityShape, entityDefine:Object, beginningCollisionCategoryIndex:int):void
+      public static function SetShapePhysicsProperties (shape:EntityShape, entityDefine:Object, ccatRefIndex_CorrectionTable:Array):void
       {
          //>>from v1.04
          shape.SetPhysicsEnabled (entityDefine.mIsPhysicsEnabled);
@@ -1267,7 +1411,7 @@ package common {
          {
             //>>from v1.02
             if (entityDefine.mCollisionCategoryIndex >= 0)
-               shape.SetCollisionCategoryIndex ( int(entityDefine.mCollisionCategoryIndex) + beginningCollisionCategoryIndex);
+               shape.SetCollisionCategoryIndex (ccatRefIndex_CorrectionTable [int(entityDefine.mCollisionCategoryIndex)]);
             else
                shape.SetCollisionCategoryIndex (entityDefine.mCollisionCategoryIndex);
             //<<
@@ -1296,138 +1440,45 @@ package common {
          }
       }
       
-      public static function WorldDefine2EditorWorld (isNewWorldToLoadAll:Boolean, editorWorld:editor.world.World, worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, mergeVariablesWithSameNames:Boolean = false):editor.world.World
+      public static function WorldDefine2EditorWorld (isNewWorldToLoadAll:Boolean, editorWorld:editor.world.World, worldDefine:WorldDefine,
+                                                      /*isNewWorldToLoadAll:Boolean*/scene:Scene = null, 
+                                                      adjustPrecisionsInWorldDefine:Boolean = true, 
+                                                      mergeVariablesWithSameNames:Boolean = false,
+                                                      policyOnConflictingGlobalAssets:int = 0, // 0: determined by modified time. 1: keep current. 2: override. 3: create new
+                                                      policyOnConflictingSceneAssets:int = 0   // 0: determined by modified time. 1: keep current. 2: override. 3: create new
+                                                      ):Array
       {
-         if (worldDefine == null)
-            return editorWorld;
+         if (! worldDefine.mSimpleGlobalAssetDefines) // from v2.01, many fields may be missed.
+         {
+            // from v1,03
+            DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
+            if (adjustPrecisionsInWorldDefine)
+               DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
+         }
          
-         // from v1,03
-         DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
-         if (adjustPrecisionsInWorldDefine)
-            DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
+         // ...
          
-         //
          if (isNewWorldToLoadAll)
          {
             //editorWorld = new editor.world.World ();
             
             // basic
             {
+               //>> from v2.03
+               //editorWorld.SetKey (worldDefine.mKey); // already set before calling this function
+               //<<
+               
                editorWorld.SetAuthorName (worldDefine.mAuthorName);
                editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
                
                editorWorld.SetShareSourceCode (worldDefine.mShareSourceCode);
                editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
             }
-            
-            // settings
-            {
-               //>>from v1.51
-               editorWorld.GetEntityContainer ().SetViewerUiFlags (worldDefine.mSettings.mViewerUiFlags);
-               editorWorld.GetEntityContainer ().SetPlayBarColor (worldDefine.mSettings.mPlayBarColor);
-               editorWorld.GetEntityContainer ().SetViewportWidth (worldDefine.mSettings.mViewportWidth);
-               editorWorld.GetEntityContainer ().SetViewportHeight (worldDefine.mSettings.mViewportHeight);
-               editorWorld.GetEntityContainer ().SetZoomScale (worldDefine.mSettings.mZoomScale);
-               //<<
-               
-               editorWorld.GetEntityContainer ().SetScale (editorWorld.GetEntityContainer ().GetZoomScale ());
-               
-               //>> from v1.04
-               editorWorld.GetEntityContainer ().SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
-               editorWorld.GetEntityContainer ().SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
-               editorWorld.GetEntityContainer ().SetWorldLeft (worldDefine.mSettings.mWorldLeft);
-               editorWorld.GetEntityContainer ().SetWorldTop (worldDefine.mSettings.mWorldTop);
-               editorWorld.GetEntityContainer ().SetWorldWidth (worldDefine.mSettings.mWorldWidth);
-               editorWorld.GetEntityContainer ().SetWorldHeight (worldDefine.mSettings.mWorldHeight);
-               editorWorld.GetEntityContainer ().SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
-               editorWorld.GetEntityContainer ().SetBuildBorder (worldDefine.mSettings.mBuildBorder);
-               editorWorld.GetEntityContainer ().SetBorderColor (worldDefine.mSettings.mBorderColor);
-               //<<
-               
-               
-               //>> [v1.06, v1.08)
-               //worldDefine.mSettings.mPhysicsShapesPotentialMaxCount;
-               //worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel;
-               //<<
-               
-               //>>from v1.08
-               editorWorld.GetEntityContainer ().SetInfiniteSceneSize (worldDefine.mSettings.mIsInfiniteWorldSize);
-               
-               editorWorld.GetEntityContainer ().SetBorderAtTopLayer (worldDefine.mSettings.mBorderAtTopLayer);
-               editorWorld.GetEntityContainer ().SetWorldBorderLeftThickness (worldDefine.mSettings.mWorldBorderLeftThickness);
-               editorWorld.GetEntityContainer ().SetWorldBorderTopThickness (worldDefine.mSettings.mWorldBorderTopThickness);
-               editorWorld.GetEntityContainer ().SetWorldBorderRightThickness (worldDefine.mSettings.mWorldBorderRightThickness);
-               editorWorld.GetEntityContainer ().SetWorldBorderBottomThickness (worldDefine.mSettings.mWorldBorderBottomThickness);
-               
-               editorWorld.GetEntityContainer ().SetDefaultGravityAccelerationMagnitude (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
-               editorWorld.GetEntityContainer ().SetDefaultGravityAccelerationAngle (worldDefine.mSettings.mDefaultGravityAccelerationAngle);
-               
-               editorWorld.GetEntityContainer ().RebuildCoordinateSystem (
-                     worldDefine.mSettings.mCoordinatesOriginX,
-                     worldDefine.mSettings.mCoordinatesOriginY,
-                     worldDefine.mSettings.mCoordinatesScale,
-                     worldDefine.mSettings.mRightHandCoordinates
-                  );
-               
-               editorWorld.GetEntityContainer ().SetCiRulesEnabled (worldDefine.mSettings.mIsCiRulesEnabled);
-               //<<
-               
-               //>>from v1.55
-               editorWorld.GetEntityContainer ().SetAutoSleepingEnabled (worldDefine.mSettings.mAutoSleepingEnabled);
-               editorWorld.GetEntityContainer ().SetCameraRotatingEnabled (worldDefine.mSettings.mCameraRotatingEnabled);
-               //<<
-            
-               //>>from v1.60
-               editorWorld.GetEntityContainer ().SetInitialSpeedX (worldDefine.mSettings.mInitialSpeedX);
-               editorWorld.GetEntityContainer ().SetPreferredFPS (worldDefine.mSettings.mPreferredFPS);
-               editorWorld.GetEntityContainer ().SetPauseOnFocusLost (worldDefine.mSettings.mPauseOnFocusLost);
-               
-               editorWorld.GetEntityContainer ().SetPhysicsSimulationEnabled (worldDefine.mSettings.mPhysicsSimulationEnabled);
-               editorWorld.GetEntityContainer ().SetPhysicsSimulationStepTimeLength (worldDefine.mSettings.mPhysicsSimulationStepTimeLength);
-               editorWorld.GetEntityContainer ().SetPhysicsSimulationQuality (worldDefine.mSettings.mPhysicsSimulationQuality);
-               editorWorld.GetEntityContainer ().SetCheckTimeOfImpact (worldDefine.mSettings.mCheckTimeOfImpact);
-               //<<
-            }
          }
          
-         // collision category
+         // ...
          
-         var beginningCollisionCategoryIndex:int = editorWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
-         
-         //>> from v1.02
-         {
-            var collisionCategory:CollisionCategory;
-            
-            for (var ccId:int = 0; ccId < worldDefine.mCollisionCategoryDefines.length; ++ ccId)
-            {
-               var ccDefine:Object = worldDefine.mCollisionCategoryDefines [ccId];
-               
-               collisionCategory = editorWorld.GetCollisionCategoryManager ().CreateCollisionCategory (ccDefine.mName);
-               collisionCategory.SetCollideInternally (ccDefine.mCollideInternally);
-               
-               collisionCategory.SetPosition (ccDefine.mPosX, ccDefine.mPosY);
-               
-               collisionCategory.UpdateAppearance ();
-               collisionCategory.UpdateSelectionProxy ();
-            }
-            
-            if (isNewWorldToLoadAll)
-            {
-               collisionCategory = editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (worldDefine.mDefaultCollisionCategoryIndex);
-               if (collisionCategory != null)
-                  collisionCategory.SetAsDefaultCategory (true);
-            }
-            
-            for (var pairId:int = 0; pairId < worldDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
-            {
-               var pairDefine:Object = worldDefine.mCollisionCategoryFriendLinkDefines [pairId];
-               
-               //editorWorld.GetEntityContainer ().CreateEntityCollisionCategoryFriendLink (pairDefine.mCollisionCategory1Index, pairDefine.mCollisionCategory2Index);
-               editorWorld.CreateCollisionCategoryFriendLink (beginningCollisionCategoryIndex + pairDefine.mCollisionCategory1Index, 
-                                                                    beginningCollisionCategoryIndex + pairDefine.mCollisionCategory2Index);
-            }
-         }
-         //<<
+         var toUseNewData:Boolean;
          
          //>> from v1.58
          // iamge modules
@@ -1437,87 +1488,302 @@ package common {
             var assembledModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageAssembledModuleManager ();
             var sequencedModuleManager:AssetImageCompositeModuleManager = editorWorld.GetAssetImageSequencedModuleManager ();
             
-            var oldNumImageModules:int = assetImageManager.GetNumAssets ();
-            var oldNumImageDivisions:int = pureModuleManager.GetNumAssets ();
-            var oldNumAssembledModules:int = assembledModuleManager.GetNumAssets ();
-            var oldNumSequencedModules:int = sequencedModuleManager.GetNumAssets ();
+            //var oldNumImageModules:int = assetImageManager.GetNumAssets ();
+            //var oldNumImageDivisions:int = pureModuleManager.GetNumAssets ();
+            //var oldNumAssembledModules:int = assembledModuleManager.GetNumAssets ();
+            //var oldNumSequencedModules:int = sequencedModuleManager.GetNumAssets ();
+            
+            var imageId:int;
+            var divisionId:int;
+            var assembledModuleId:int;
+            var sequencedModuleId:int;
+            
+            var imageDefine:Object;
+            var divisionDefine:Object;
+            var assembledModuleDefine:Object;
+            var sequencedModuleDefine:Object;
+            
+            var imageAsset:AssetImage;
+            var pureModule:AssetImagePureModule;
+               var imageDivision:AssetImageDivision;
+            var assembledModule:AssetImageCompositeModule;
+            var sequencedModule:AssetImageCompositeModule;
             
             var deltaNumImageModules:int = worldDefine.mImageDefines.length;
             var deltaNumImageDivisions:int = worldDefine.mPureImageModuleDefines.length;
             var deltaNumAssembledModules:int = worldDefine.mAssembledModuleDefines.length;
             var deltaNumSequencedModules:int = worldDefine.mSequencedModuleDefines.length;
-
-            //
-            var imageModuleRefIndex_CorrectionTable:Array = new Array (deltaNumImageModules + deltaNumImageDivisions + deltaNumAssembledModules + deltaNumSequencedModules);
+            
+            var imageModuleRefIndex_CorrectionTable:Array = new Array (deltaNumImageModules + deltaNumImageDivisions + deltaNumAssembledModules + deltaNumSequencedModules);;
             var moduleId:int = 0;
-            //
-         
-            var correctedModuleId:int = oldNumImageModules;
-            for (var imageId:int = 0; imageId < deltaNumImageModules; ++ imageId)
-            {
-               var imageDefine:Object = worldDefine.mImageDefines [imageId]
-               
-               var imageAsset:AssetImage = assetImageManager.CreateImage ();
-               imageAsset.OnLoadLocalImageFinished (imageDefine.mFileData, imageDefine.mName);
-               
-               imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
-            }
             
-            correctedModuleId += oldNumImageDivisions;
-            for (var divisionId:int = 0; divisionId < deltaNumImageDivisions; ++ divisionId)
-            { 
-               var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
-               
-               divisionDefine.mImageIndex += oldNumImageModules;
-               var imageDivision:AssetImageDivision = (assetImageManager.GetAssetByAppearanceId (divisionDefine.mImageIndex) as AssetImage)
-                                             .GetAssetImageDivisionManager ().CreateImageDivision (
-                                                divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom,
-                                                false, pureModuleManager
-                                             );
-               
-               
-               imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
-            }
-            
-            correctedModuleId += oldNumAssembledModules;
-            var numNewAssembledModules:int = deltaNumAssembledModules;
-            while (-- numNewAssembledModules >= 0)
+            // 
+            for (imageId = 0; imageId < deltaNumImageModules; ++ imageId)
             {
-               assembledModuleManager.CreateImageCompositeModule ();
+               imageDefine = worldDefine.mImageDefines [imageId];
                
-               imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
-            }
-   
-            correctedModuleId += oldNumSequencedModules;
-            var numNewSequencedModules:int = deltaNumSequencedModules;
-            while (-- numNewSequencedModules >= 0)
-            {
-               sequencedModuleManager.CreateImageCompositeModule ();
-               
-               imageModuleRefIndex_CorrectionTable [moduleId ++] = correctedModuleId ++;
-            }
-            
-            for (var assembledModuleId:int = 0; assembledModuleId < deltaNumAssembledModules; ++ assembledModuleId)
-            {
-               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
-               
-               var assembledModule:AssetImageCompositeModule = assembledModuleManager.GetAssetByAppearanceId (assembledModuleId + oldNumAssembledModules) as AssetImageCompositeModule;
+               // mKey & mTimeModified are from v2.01
 
-               ModuleInstanceDefinesToModuleInstances (assembledModuleDefine.mModulePartDefines, imageModuleRefIndex_CorrectionTable, editorWorld, assembledModule.GetModuleInstanceManager (), false);
+               imageAsset = assetImageManager.GetAssetByKey (imageDefine.mKey) as AssetImage;
                
-               assembledModule.UpdateAppearance ();
+               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               {
+                  toUseNewData = false;
+               }
+               else if (imageAsset == null) // before v2.01
+               {
+                  toUseNewData = true;
+                  
+                  imageAsset = assetImageManager.CreateImage (imageDefine.mKey);
+               }
+               else if (policyOnConflictingGlobalAssets == 3) // always create new
+               {
+                  toUseNewData = true;
+                  
+                  imageAsset = assetImageManager.CreateImage (null);
+               }
+               else if (policyOnConflictingGlobalAssets == 2) // override
+               {
+                  toUseNewData = true;
+               }
+               else if (policyOnConflictingGlobalAssets == 1) // skip
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingGlobalAssets == 0) // auto
+               {
+                  toUseNewData = imageDefine.mTimeModified > imageAsset.GetTimeModified ();
+               }
+               
+               if (toUseNewData)
+               {
+                  imageAsset.OnLoadLocalImageFinished (imageDefine.mFileData, imageDefine.mName);
+                  
+                  imageAsset.SetTimeModified (imageDefine.mTimeModified);
+               }
+               
+               if (imageAsset != null)
+                  imageDefine.mKey = imageAsset.GetKey ();
+               
+               imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (imageAsset);
+            }
+            
+            //
+            for (divisionId = 0; divisionId < deltaNumImageDivisions; ++ divisionId)
+            { 
+               divisionDefine = worldDefine.mPureImageModuleDefines [divisionId];
+               
+               // mKey & mTimeModified are from v2.01
+               
+               if (divisionDefine.mImageIndex < 0) // generally should not
+               {
+                  pureModule = null;
+               }
+               else
+               {
+                  divisionDefine.mImageIndex = imageModuleRefIndex_CorrectionTable [divisionDefine.mImageIndex];
+                  
+                  pureModule = pureModuleManager.GetAssetByKey (divisionDefine.mKey) as AssetImagePureModule;
+                  
+                  if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+                  {
+                     toUseNewData = false;
+                  }
+                  else if (pureModule == null || policyOnConflictingGlobalAssets == 3) // before v2.01
+                  {
+                     //toUseNewData = true;
+                     toUseNewData = false;
+                     
+                     imageDivision = (assetImageManager.GetAssetByAppearanceId (divisionDefine.mImageIndex) as AssetImage)
+                                                .GetAssetImageDivisionManager ().CreateImageDivision (
+                                                   pureModule != null ? null : divisionDefine.mKey, 
+                                                   divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom,
+                                                   false, pureModuleManager
+                                                );
+                     imageDivision.SetTimeModified (divisionDefine.mTimeModified);
+                     pureModule = imageDivision.GetImagePureModulePeer ();
+                  }
+                  //else if (policyOnConflictingGlobalAssets == 3) // always create new (move to above)
+                  //{
+                  //}
+                  //>> !!! generally impossible
+                  else if (editorWorld.GetImageModuleByIndex (divisionDefine.mImageIndex) != pureModule.GetImageDivisionPeer ().GetAssetImage ())
+                  {
+                     toUseNewData = false;
+                  }
+                  //<<<
+                  else if (policyOnConflictingGlobalAssets == 2) // override
+                  {
+                     toUseNewData = true;
+                  }
+                  else if (policyOnConflictingGlobalAssets == 1) // skip
+                  {
+                     toUseNewData = false;
+                  }
+                  else // if (policyOnConflictingGlobalAssets == 0) // auto
+                  {
+                     toUseNewData = divisionDefine.mTimeModified > pureModule.GetTimeModified ();
+                  }
+                  
+                  if (toUseNewData)
+                  {
+                     imageDivision = pureModule.GetImageDivisionPeer ();
+                     imageDivision.SetRegion (divisionDefine.mLeft, divisionDefine.mTop, divisionDefine.mRight, divisionDefine.mBottom);
+                     
+                     imageDivision.SetTimeModified (divisionDefine.mTimeModified);
+                  }
+               }
+               
+               if (pureModule!= null)
+                  divisionDefine.mKey = pureModule.GetKey ();
+               
+               imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (pureModule);
+            }
+            
+            for (assembledModuleId = 0; assembledModuleId < deltaNumAssembledModules; ++ assembledModuleId)
+            {
+               assembledModuleDefine = worldDefine.mAssembledModuleDefines [assembledModuleId];
+               
+               // mKey & mTimeModified are from v2.01
+
+               assembledModule = assembledModuleManager.GetAssetByKey (assembledModuleDefine.mKey) as AssetImageCompositeModule;
+               
+               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               {
+                  toUseNewData = false;
+               }
+               else if (assembledModule == null) // from v2.01
+               {
+                  toUseNewData = true;
+                  
+                  assembledModule = assembledModuleManager.CreateImageCompositeModule (assembledModuleDefine.mKey);
+               }
+               else if (policyOnConflictingGlobalAssets == 3) // always create new
+               {
+                  toUseNewData = true;
+                  
+                  assembledModule = assembledModuleManager.CreateImageCompositeModule (null);
+               }
+               else if (policyOnConflictingGlobalAssets == 2) // 
+               {
+                  toUseNewData = true;
+                  
+                  assembledModule.GetModuleInstanceManager ().DestroyAllModuleInstances ();
+               }
+               else if (policyOnConflictingGlobalAssets == 1)
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingGlobalAssets == 0)
+               {
+                  toUseNewData = assembledModuleDefine.mTimeModified > assembledModule.GetTimeModified ();
+                  
+                  if (toUseNewData)
+                  {
+                     assembledModule.GetModuleInstanceManager ().DestroyAllModuleInstances ();
+                  }
+               }
+               
+               assembledModuleDefine.mToLoadNewData = toUseNewData;
+               
+               if (assembledModule != null)
+                  assembledModuleDefine.mKey = assembledModule.GetKey ();
+               
+               imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (assembledModule);
+            }
+            
+            for (sequencedModuleId = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
+            {
+               sequencedModuleDefine = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+               
+               // mKey & mTimeModified are from v2.01
+
+               sequencedModule = sequencedModuleManager.GetAssetByKey (sequencedModuleDefine.mKey) as AssetImageCompositeModule;
+               
+               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               {
+                  toUseNewData = false;
+               }
+               else if (sequencedModule == null) // before v2.01
+               {
+                  toUseNewData = true;
+                  
+                  sequencedModule = sequencedModuleManager.CreateImageCompositeModule (sequencedModuleDefine.mKey);
+               }
+               else if (policyOnConflictingGlobalAssets == 3) // always create new
+               {
+                  toUseNewData = true;
+                  
+                  sequencedModule = sequencedModuleManager.CreateImageCompositeModule (null);
+               }
+               else if (policyOnConflictingGlobalAssets == 2) // override
+               {
+                  toUseNewData = true;
+                  
+                  sequencedModule.GetModuleInstanceManager ().DestroyAllModuleInstances ();
+               }
+               else if (policyOnConflictingGlobalAssets == 1) // skip
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingGlobalAssets == 0) // auto
+               {
+                  toUseNewData = sequencedModuleDefine.mTimeModified > sequencedModule.GetTimeModified ();
+                  
+                  if (toUseNewData)
+                  {
+                     sequencedModule.GetModuleInstanceManager ().DestroyAllModuleInstances ();
+                  }
+               }
+               
+               sequencedModuleDefine.mToLoadNewData = toUseNewData;
+               
+               if (sequencedModule != null)
+                  sequencedModuleDefine.mKey = sequencedModule.GetKey ();
+               
+               imageModuleRefIndex_CorrectionTable [moduleId ++] = editorWorld.GetImageModuleIndex (sequencedModule);
+            }
+            
+            for (assembledModuleId = 0; assembledModuleId < deltaNumAssembledModules; ++ assembledModuleId)
+            {
+               assembledModuleDefine = worldDefine.mAssembledModuleDefines [assembledModuleId];
+               
+               if (assembledModuleDefine.mToLoadNewData)
+               {
+                  assembledModule = assembledModuleManager.GetAssetByKey (assembledModuleDefine.mKey) as AssetImageCompositeModule;
+   
+                  ModuleInstanceDefinesToModuleInstances (assembledModuleDefine.mModulePartDefines, imageModuleRefIndex_CorrectionTable, editorWorld, assembledModule.GetModuleInstanceManager (), false);
+                  
+                  assembledModule.SetTimeModified (assembledModuleDefine.mTimeModified);
+                  
+                  assembledModule.UpdateAppearance ();
+                  
+                  if (! isNewWorldToLoadAll)
+                     assembledModule.NotifyModifiedForReferers (); // sometime, duplicated computations
+               }
             }
    
-            for (var sequencedModuleId:int = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
+            for (sequencedModuleId = 0; sequencedModuleId < deltaNumSequencedModules; ++ sequencedModuleId)
             {
-               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+               sequencedModuleDefine = worldDefine.mSequencedModuleDefines [sequencedModuleId];
                
-               var sequencedModule:AssetImageCompositeModule = sequencedModuleManager.GetAssetByAppearanceId (sequencedModuleId + oldNumSequencedModules) as AssetImageCompositeModule;
-               
-               //sequencedModule.SetLooped (sequencedModuleDefine.mIsLooped);
-               ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
-               
-               sequencedModule.UpdateAppearance ();
+               if (sequencedModuleDefine.mToLoadNewData)
+               {
+                  sequencedModule = sequencedModuleManager.GetAssetByKey (sequencedModuleDefine.mKey) as AssetImageCompositeModule;
+                  
+                  //>>from v2.02
+                  sequencedModule.SetSettingFlags (sequencedModuleDefine.mSettingFlags);
+                  //<<
+   
+                  ModuleInstanceDefinesToModuleInstances (sequencedModuleDefine.mModuleSequenceDefines, imageModuleRefIndex_CorrectionTable, editorWorld, sequencedModule.GetModuleInstanceManager (), true);
+                  
+                  sequencedModule.SetTimeModified (sequencedModuleDefine.mTimeModified);
+                  
+                  sequencedModule.UpdateAppearance ();
+                  
+                  if (! isNewWorldToLoadAll)
+                     sequencedModule.NotifyModifiedForReferers (); // sometime, duplicated computations
+               }
             }
          //}
          //<<
@@ -1525,32 +1791,430 @@ package common {
          //>>from v1.59
          // sounds
          //{
-            var beginningSoundIndex:int = editorWorld.GetAssetSoundManager ().GetNumAssets ();
-   
             var assetSoundManager:AssetSoundManager = editorWorld.GetAssetSoundManager ();
-            
+
+            //var beginningSoundIndex:int = assetSoundManager.GetNumAssets ();
+   
+            var soundRefIndex_CorrectionTable:Array = new Array (worldDefine.mSoundDefines.length);
+      
             for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
             {
                var soundDefine:Object = worldDefine.mSoundDefines [soundId];
                
-               var soundAsset:AssetSound = assetSoundManager.CreateSound ();
+               // mKey & mTimeModified are from v2.01
+
+               var soundAsset:AssetSound = assetSoundManager.GetAssetByKey (soundDefine.mKey) as AssetSound;
                
-               soundAsset.SetName (soundDefine.mName);
-               soundAsset.SetSoundAttributeBits (soundDefine.mAttributeBits);
-               soundAsset.SetSoundNumSamples (soundDefine.mNumSamples);
-               soundAsset.SetSoundFileData (soundDefine.mFileData);
+               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               {
+                  toUseNewData = false;
+               }
+               else if (soundAsset == null) // before v2.01
+               {
+                  toUseNewData = true;
+                  
+                  soundAsset = assetSoundManager.CreateSound (soundDefine.mKey);
+               }
+               else if (policyOnConflictingGlobalAssets == 3) // always create new
+               {
+                  toUseNewData = true;
+                  
+                  soundAsset = assetSoundManager.CreateSound (null);
+               }
+               else if (policyOnConflictingGlobalAssets == 2) // override
+               {
+                  toUseNewData = true;
+               }
+               else if (policyOnConflictingGlobalAssets == 1) // skip
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingGlobalAssets == 0) .. auto
+               {
+                  toUseNewData = soundDefine.mTimeModified > soundAsset.GetTimeModified ();
+               }
                
-               soundAsset.UpdateAppearance ();
+               if (toUseNewData)
+               {
+                  soundAsset.SetName (soundDefine.mName);
+                  soundAsset.SetSoundAttributeBits (soundDefine.mAttributeBits);
+                  soundAsset.SetSoundNumSamples (soundDefine.mNumSamples);
+                  soundAsset.SetSoundFileData (soundDefine.mFileData);
+                  soundAsset.SetTimeModified (soundDefine.mTimeModified);
+   
+                  soundAsset.UpdateAppearance ();
+               }
+               
+               if (soundAsset != null)
+                  soundDefine.mKey = soundAsset.GetKey ();
+               
+               soundRefIndex_CorrectionTable [soundId] = editorWorld.GetSoundIndex (soundAsset);
             }
          //}
          //<<
+         
+         //>>from v2.03
+         /*
+            var beginningGameSaveVariableIndex:int = editorWorld.GetGameSaveVariableSpace ().GetNumVariableInstances ();
+            var beginningWorldVariableIndex:int = editorWorld.GetWorldVariableSpace ().GetNumVariableInstances ();
+            var beginningCommonGlobalVariableIndex:int = editorWorld.GetCommonSceneGlobalVariableSpace ().GetNumVariableInstances ();
+            var beginningCommonEntityVariableIndex:int = editorWorld.GetCommonCustomEntityVariableSpace ().GetNumVariableInstances ();
+            if (worldDefine.mGameSaveVariableDefines.length > 0)
+            {
+               //if (mergeVariablesWithSameNames)
+                  editorWorld.GetGameSaveVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
+               TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mGameSaveVariableDefines, editorWorld.GetGameSaveVariableSpace (), true);
+            }
+            if (worldDefine.mWorldVariableDefines.length > 0)
+            {
+               //if (mergeVariablesWithSameNames)
+                  editorWorld.GetWorldVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
+               TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mWorldVariableDefines, editorWorld.GetWorldVariableSpace (), true);
+            }
+            if (worldDefine.mCommonGlobalVariableDefines.length > 0)
+            {
+               //if (mergeVariablesWithSameNames)
+                  editorWorld.GetCommonSceneGlobalVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
+               TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonGlobalVariableDefines, editorWorld.GetCommonSceneGlobalVariableSpace (), true);
+            }
+            if (worldDefine.mCommonEntityPropertyDefines.length > 0)
+            {
+               //if (mergeVariablesWithSameNames)
+                  editorWorld.GetCommonCustomEntityVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables ();
+               TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonEntityPropertyDefines, editorWorld.GetCommonCustomEntityVariableSpace (), true);
+            }
+            //editorWorld.GetWorldVariableSpace ().NotifyGlobalVariableSpaceModified ();
+            //editorWorld.GetGameSaveVariableSpace ().NotifyGlobalVariableSpaceModified ();
+            //editorWorld.GetCommonSceneGlobalVariableSpace ().NotifyGlobalVariableSpaceModified ();
+            //editorWorld.GetCommonCustomEntityVariableSpace ().NotifyEntityVariableSpaceModified ();
+         */
 
+            var gameSaveVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mGameSaveVariableDefines, editorWorld.GetGameSaveVariableSpace (), true, true, true, false);
+            var worldVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mWorldVariableDefines, editorWorld.GetWorldVariableSpace (), true, true, false, false);
+            var commonGlobalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonGlobalVariableDefines, editorWorld.GetCommonSceneGlobalVariableSpace (), true, true, false, false);
+            var commonEntityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (null, worldDefine.mCommonEntityPropertyDefines, editorWorld.GetCommonCustomEntityVariableSpace (), true, true, false, false);
+         //<<
+
+         // scenes
+         
+         var sceneRefIndex_CorrectionTable:Array = new Array (worldDefine.mSceneDefines.length);
+         
+         var newCreatedScenes:Array = null;
+         
+         var sceneId:int;
+         var sceneDefine:SceneDefine;
+         
+         if (scene != null) // uodo scene or import into scene
+         {
+            //sceneRefIndex_CorrectionTable [0] = editorWorld.GetNumScenes ();
+            sceneRefIndex_CorrectionTable [worldDefine.mCurrentSceneId] = scene.GetSceneIndex ();
+
+            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {
+               if (sceneId != worldDefine.mCurrentSceneId)
+               {
+                  sceneDefine = worldDefine.mSceneDefines [sceneId];
+                  
+                  var tempScene:Scene = editorWorld.GetSceneByKey (sceneDefine.mKey);
+                  sceneRefIndex_CorrectionTable [sceneId] = (tempScene == null ? - 1 : tempScene.GetSceneIndex ());
+               }
+            }
+            
+            //sceneDefine = worldDefine.mSceneDefines [0];
+            sceneDefine = worldDefine.mSceneDefines [worldDefine.mCurrentSceneId];
+
+            // worldDefine.mSimpleGlobalAssetDefines == true means uodo scene
+            SceneDefine2Scene (editorWorld, sceneDefine, worldDefine.mSimpleGlobalAssetDefines, scene, mergeVariablesWithSameNames, policyOnConflictingSceneAssets, 
+                               imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable, // here editorWorld.GetNumScenes () will make the scene references as null
+                               //beginningWorldVariableIndex, beginningGameSaveVariableIndex,
+                               //beginningCommonGlobalVariableIndex, beginningCommonEntityVariableIndex
+                               worldVariableIndex_CorrectionTable, gameSaveVariableIndex_CorrectionTable,
+                               commonGlobalVariableIndex_CorrectionTable, commonEntityVariableIndex_CorrectionTable
+                               );
+         }
+         else // load world or import scenes
+         {
+            //var beginningSceneIndex:int = editorWorld.GetNumScenes ();
+            
+            newCreatedScenes = new Array ();
+            
+            var newSceneId:int;
+            var newScene:Scene;
+            
+            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {
+               sceneDefine = worldDefine.mSceneDefines [sceneId];
+               newSceneId = editorWorld.CreateNewScene (sceneDefine.mKey, sceneDefine.mName); // for versions ealier than v2.00, sceneDefine.mKey is undefined
+               newScene = editorWorld.GetSceneByIndex (newSceneId);
+               
+               sceneDefine.mKey = newScene.GetKey ();
+               
+               sceneRefIndex_CorrectionTable [sceneId] = newSceneId;
+            }
+            
+            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {
+               sceneDefine = worldDefine.mSceneDefines [sceneId];
+               
+               newSceneId = sceneRefIndex_CorrectionTable [sceneId];
+               newScene   = editorWorld.GetSceneByIndex (newSceneId);
+               
+               try
+               {
+                  SceneDefine2Scene (editorWorld, worldDefine.mSceneDefines [sceneId], true, newScene, /*mergeVariablesWithSameNames*/false, policyOnConflictingSceneAssets, 
+                                  imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable,
+                                  //beginningWorldVariableIndex, beginningGameSaveVariableIndex,
+                                  //beginningCommonGlobalVariableIndex, beginningCommonEntityVariableIndex
+                                 worldVariableIndex_CorrectionTable, gameSaveVariableIndex_CorrectionTable,
+                                 commonGlobalVariableIndex_CorrectionTable, commonEntityVariableIndex_CorrectionTable
+                                  );
+                  
+                  newCreatedScenes.push (newScene);
+               }
+               catch (error:Error)
+               {
+                  if (Capabilities.isDebugger)
+                     throw error;
+                  
+                  // editorWorld.DeleteSceneByIndex (newSceneId, false); // move to bwlow to avoid scene index mis-align
+                  
+                  newCreatedScenes.push (null);
+                  
+                  EditorContext.mPauseCreateShapeProxy = false; // !!!
+               }
+            }
+            
+            for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {
+               newSceneId = sceneRefIndex_CorrectionTable [sceneId];
+               if (newCreatedScenes [sceneId] == null)
+               {
+                  sceneRefIndex_CorrectionTable [sceneId] = -1;
+                  editorWorld.DeleteSceneByIndex (newSceneId, false);
+               }
+            }
+            
+            if (isNewWorldToLoadAll && editorWorld.GetNumScenes () > 1)
+            {
+               editorWorld.DeleteSceneByIndex (0, false);
+            }
+            
+            editorWorld.UpdateSceneListDataProvider ();
+         }
+         
+         // ...
+         
+         // important
+         /*
+         //if (mergeVariablesWithSameNames)
+         //{
+            if (worldDefine.mGameSaveVariableDefines.length > 0)
+            {
+               editorWorld.GetGameSaveVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+            }
+            if (worldDefine.mWorldVariableDefines.length > 0)
+            {
+               editorWorld.GetWorldVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+            }
+            
+            if (worldDefine.mCommonGlobalVariableDefines.length > 0)
+            {
+               editorWorld.GetCommonSceneGlobalVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+            }
+            if (worldDefine.mCommonEntityPropertyDefines.length > 0)
+            {
+               editorWorld.GetCommonCustomEntityVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+            }
+         //}
+         */
+         
+         //return editorWorld;
+         return newCreatedScenes;
+      }
+      
+      
+      public static function SceneDefine2Scene (editorWorld:World, sceneDefine:SceneDefine, isNewSceneToLoadAll:Boolean, scene:Scene, 
+                                                mergeVariablesWithSameNames:Boolean, 
+                                                policyOnConflictingSceneAssets:int, // 0: determined by modified time. 1: keep current. 2: override. 3: create new
+                                                imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array,
+                                                //beginningWorldVariableIndex:int, beginningGameSaveVariableIndex:int,
+                                                //beginningCommonGlobalVariableIndex:int, beginningCommonEntityVariableIndex:int
+                                                worldVariableIndex_CorrectionTable:Array, gameSaveVariableIndex_CorrectionTable:Array,
+                                                commonGlobalVariableIndex_CorrectionTable:Array, commonEntityVariableIndex_CorrectionTable:Array
+                                                ):void
+      {
+         //
+         
+         //if (isNewWorldToLoadAll)
+         if (isNewSceneToLoadAll)
+         {
+            // settings
+            {
+               //>>from v1.51
+               scene.SetViewerUiFlags (sceneDefine.mSettings.mViewerUiFlags);
+               scene.SetPlayBarColor (sceneDefine.mSettings.mPlayBarColor);
+               scene.SetViewportWidth (sceneDefine.mSettings.mViewportWidth);
+               scene.SetViewportHeight (sceneDefine.mSettings.mViewportHeight);
+               scene.SetZoomScale (sceneDefine.mSettings.mZoomScale);
+               //<<
+               
+               scene.SetScale (scene.GetZoomScale ());
+               
+               //>> from v1.04
+               scene.SetCameraCenterX (sceneDefine.mSettings.mCameraCenterX);
+               scene.SetCameraCenterY (sceneDefine.mSettings.mCameraCenterY);
+               scene.SetWorldLeft (sceneDefine.mSettings.mWorldLeft);
+               scene.SetWorldTop (sceneDefine.mSettings.mWorldTop);
+               scene.SetWorldWidth (sceneDefine.mSettings.mWorldWidth);
+               scene.SetWorldHeight (sceneDefine.mSettings.mWorldHeight);
+               scene.SetBackgroundColor (sceneDefine.mSettings.mBackgroundColor);
+               scene.SetBuildBorder (sceneDefine.mSettings.mBuildBorder);
+               scene.SetBorderColor (sceneDefine.mSettings.mBorderColor);
+               //<<
+               
+               
+               //>> [v1.06, v1.08)
+               //sceneDefine.mSettings.mPhysicsShapesPotentialMaxCount;
+               //sceneDefine.mSettings.mPhysicsShapesPopulationDensityLevel;
+               //<<
+               
+               //>>from v1.08
+               scene.SetInfiniteSceneSize (sceneDefine.mSettings.mIsInfiniteWorldSize);
+               
+               scene.SetBorderAtTopLayer (sceneDefine.mSettings.mBorderAtTopLayer);
+               scene.SetWorldBorderLeftThickness (sceneDefine.mSettings.mWorldBorderLeftThickness);
+               scene.SetWorldBorderTopThickness (sceneDefine.mSettings.mWorldBorderTopThickness);
+               scene.SetWorldBorderRightThickness (sceneDefine.mSettings.mWorldBorderRightThickness);
+               scene.SetWorldBorderBottomThickness (sceneDefine.mSettings.mWorldBorderBottomThickness);
+               
+               scene.SetDefaultGravityAccelerationMagnitude (sceneDefine.mSettings.mDefaultGravityAccelerationMagnitude);
+               scene.SetDefaultGravityAccelerationAngle (sceneDefine.mSettings.mDefaultGravityAccelerationAngle);
+               
+               scene.RebuildCoordinateSystem (
+                     sceneDefine.mSettings.mCoordinatesOriginX,
+                     sceneDefine.mSettings.mCoordinatesOriginY,
+                     sceneDefine.mSettings.mCoordinatesScale,
+                     sceneDefine.mSettings.mRightHandCoordinates
+                  );
+               
+               scene.SetCiRulesEnabled (sceneDefine.mSettings.mIsCiRulesEnabled);
+               //<<
+               
+               //>>from v1.55
+               scene.SetAutoSleepingEnabled (sceneDefine.mSettings.mAutoSleepingEnabled);
+               scene.SetCameraRotatingEnabled (sceneDefine.mSettings.mCameraRotatingEnabled);
+               //<<
+            
+               //>>from v1.60
+               scene.SetInitialSpeedX (sceneDefine.mSettings.mInitialSpeedX);
+               scene.SetPreferredFPS (sceneDefine.mSettings.mPreferredFPS);
+               scene.SetPauseOnFocusLost (sceneDefine.mSettings.mPauseOnFocusLost);
+               
+               scene.SetPhysicsSimulationEnabled (sceneDefine.mSettings.mPhysicsSimulationEnabled);
+               scene.SetPhysicsSimulationStepTimeLength (sceneDefine.mSettings.mPhysicsSimulationStepTimeLength);
+               scene.SetPhysicsSimulationQuality (sceneDefine.mSettings.mPhysicsSimulationQuality);
+               scene.SetCheckTimeOfImpact (sceneDefine.mSettings.mCheckTimeOfImpact);
+               //<<
+            }
+         }
+         
+         // ...
+         
+         var toUseNewData:Boolean;
+         
+         // collision category
+         
+         //>> from v1.02
+         //{
+            var ccatManager:CollisionCategoryManager = scene.GetCollisionCategoryManager ();
+            
+            //var beginningCollisionCategoryIndex:int = scene.GetCollisionCategoryManager ().GetNumCollisionCategories ();
+            
+            var collisionCategory:CollisionCategory;
+            
+            var ccatRefIndex_CorrectionTable:Array = new Array (sceneDefine.mCollisionCategoryDefines.length);
+            
+            for (var ccId:int = 0; ccId < sceneDefine.mCollisionCategoryDefines.length; ++ ccId)
+            {
+               var ccDefine:Object = sceneDefine.mCollisionCategoryDefines [ccId];
+               
+               // mKey and mTimeModified are from v2.01
+               
+               collisionCategory = ccatManager.GetAssetByKey (ccDefine.mKey) as CollisionCategory;
+               
+               if (collisionCategory == null) // before v2.01
+               {
+                  toUseNewData = true;
+                  
+                  collisionCategory = ccatManager.CreateCollisionCategory (ccDefine.mKey, ccDefine.mName);
+               }
+               else if (policyOnConflictingSceneAssets == 3) // always create new 
+               {
+                  toUseNewData = true;
+                  
+                  collisionCategory = ccatManager.CreateCollisionCategory (null, ccDefine.mName);
+               }
+               else if (policyOnConflictingSceneAssets == 2) // override 
+               {
+                  toUseNewData = true;
+               }
+               else if (policyOnConflictingSceneAssets == 1) // skip 
+               {
+                  toUseNewData = false;
+               }
+               else // if (policyOnConflictingSceneAssets == 0) // auto
+               {
+                  toUseNewData = ccDefine.mTimeModified > collisionCategory.GetTimeModified ();
+               }
+               
+               if (toUseNewData)
+               {
+                  collisionCategory.SetCollideInternally (ccDefine.mCollideInternally);
+                  collisionCategory.SetPosition (ccDefine.mPosX, ccDefine.mPosY);
+                  
+                  collisionCategory.SetTimeModified (ccDefine.mTimeModified);
+                  
+                  collisionCategory.UpdateAppearance ();
+                  collisionCategory.UpdateSelectionProxy ();
+               }
+               
+               if (collisionCategory != null)
+                  ccDefine.mKey = collisionCategory.GetKey ();
+               
+               ccatRefIndex_CorrectionTable [ccId] = ccatManager.GetCollisionCategoryIndex (collisionCategory);
+            }
+            
+            //if (isNewWorldToLoadAll)
+            if (isNewSceneToLoadAll)
+            {
+               if (sceneDefine.mDefaultCollisionCategoryIndex >= 0)
+                  sceneDefine.mDefaultCollisionCategoryIndex = ccatRefIndex_CorrectionTable [sceneDefine.mDefaultCollisionCategoryIndex];
+               
+               collisionCategory = scene.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (sceneDefine.mDefaultCollisionCategoryIndex);
+               if (collisionCategory != null)
+                  collisionCategory.SetAsDefaultCategory (true);
+            }
+            
+            for (var pairId:int = 0; pairId < sceneDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
+            {
+               var pairDefine:Object = sceneDefine.mCollisionCategoryFriendLinkDefines [pairId];
+               
+               ////scene.CreateEntityCollisionCategoryFriendLink (pairDefine.mCollisionCategory1Index, pairDefine.mCollisionCategory2Index);
+               //scene.CreateCollisionCategoryFriendLink (beginningCollisionCategoryIndex + pairDefine.mCollisionCategory1Index,
+               //                                           beginningCollisionCategoryIndex + pairDefine.mCollisionCategory2Index);
+               // maybe not perfect
+               scene.CreateCollisionCategoryFriendLink (ccatRefIndex_CorrectionTable [pairDefine.mCollisionCategory1Index],
+                                                        ccatRefIndex_CorrectionTable [pairDefine.mCollisionCategory2Index]);
+            }
+         //}
+         //<<
+         
          //>> todo: move function creations here from the below
          //<<
          
          // entities
          
-         var beginningEntityIndex:int = editorWorld.GetEntityContainer ().GetNumAssets ();
+         var oldNumEntities:int = scene.GetNumAssets ();
          
          var appearId:int;
          var createId:int;
@@ -1563,15 +2227,17 @@ package common {
          var utility:EntityUtility;
          var logic:EntityLogic;
          
-         var numEntities:int = worldDefine.mEntityDefines.length;
+         var numEntities:int = sceneDefine.mEntityDefines.length;
          
-         editorWorld.GetEntityContainer ().SetCreationAssetArrayLocked (true);
+         var entityIndex_CorrectionTable:Array = new Array (numEntities);
+         
+         scene.SetCreationAssetArrayLocked (true);
          
          EditorContext.mPauseCreateShapeProxy = true;
          
          for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityDefine = worldDefine.mEntityDefines [createId];
+            entityDefine = sceneDefine.mEntityDefines [createId];
             
             entity = null;
             
@@ -1582,7 +2248,7 @@ package common {
                //>>from v1.05
                if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
                {
-                  var camera:EntityUtilityCamera = editorWorld.GetEntityContainer ().CreateEntityUtilityCamera ();
+                  var camera:EntityUtilityCamera = scene.CreateEntityUtilityCamera ();
                   
                   //>>from v.108
                   camera.SetFollowedTarget (entityDefine.mFollowedTarget);
@@ -1595,7 +2261,7 @@ package common {
                //>>from v1.10
                else if (entityDefine.mEntityType == Define.EntityType_UtilityPowerSource)
                {
-                  var power_source:EntityUtilityPowerSource = editorWorld.GetEntityContainer ().CreateEntityUtilityPowerSource ();
+                  var power_source:EntityUtilityPowerSource = scene.CreateEntityUtilityPowerSource ();
                   
                   power_source.SetPowerSourceType (entityDefine.mPowerSourceType);
                   power_source.SetPowerMagnitude (entityDefine.mPowerMagnitude);
@@ -1612,42 +2278,42 @@ package common {
                
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
-                  entity = logic = editorWorld.GetEntityContainer ().CreateEntityCondition ();
+                  entity = logic = scene.CreateEntityCondition ();
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
-                  entity = logic = editorWorld.GetEntityContainer ().CreateEntityTask ();
+                  entity = logic = scene.CreateEntityTask ();
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
                {
-                  entity = logic = editorWorld.GetEntityContainer ().CreateEntityConditionDoor ();
+                  entity = logic = scene.CreateEntityConditionDoor ();
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
                {
-                  entity = logic = editorWorld.GetEntityContainer ().CreateEntityInputEntityAssigner ();
+                  entity = logic = scene.CreateEntityInputEntityAssigner ();
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
                {
-                  entity = logic = editorWorld.GetEntityContainer ().CreateEntityInputEntityPairAssigner ();
+                  entity = logic = scene.CreateEntityInputEntityPairAssigner ();
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
                   switch (entityDefine.mEventId)
                   {
                      case CoreEventIds.ID_OnWorldTimer:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_Timer (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler_Timer (entityDefine.mEventId);
                         break;
                      case CoreEventIds.ID_OnEntityTimer:
                      case CoreEventIds.ID_OnEntityPairTimer:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_TimerWithPrePostHandling (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler_TimerWithPrePostHandling (entityDefine.mEventId);
                         break;
                      case CoreEventIds.ID_OnWorldKeyDown:
                      case CoreEventIds.ID_OnWorldKeyUp:
                      case CoreEventIds.ID_OnWorldKeyHold:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_Keyboard (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler_Keyboard (entityDefine.mEventId);
                         break;
                      case CoreEventIds.ID_OnMouseGesture:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_MouseGesture (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler_MouseGesture (entityDefine.mEventId);
                         break;
                      case CoreEventIds.ID_OnPhysicsShapeMouseDown:
                      case CoreEventIds.ID_OnPhysicsShapeMouseUp:
@@ -1661,41 +2327,41 @@ package common {
                      case CoreEventIds.ID_OnWorldMouseDown:
                      case CoreEventIds.ID_OnWorldMouseUp:
                      case CoreEventIds.ID_OnWorldMouseMove:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_Mouse (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler_Mouse (entityDefine.mEventId);
                         break;
                      case CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting:
                      case CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting:
                      case CoreEventIds.ID_OnTwoPhysicsShapesEndContacting:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_Contact (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler_Contact (entityDefine.mEventId);
                         break;
                      case CoreEventIds.ID_OnJointReachLowerLimit:
                      case CoreEventIds.ID_OnJointReachUpperLimit:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_JointReachLimit (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler_JointReachLimit (entityDefine.mEventId);
                         break;
                      case CoreEventIds.ID_OnSequencedModuleLoopToEnd:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_ModuleLoopToEnd (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler_ModuleLoopToEnd (entityDefine.mEventId);
                         break;
                      case CoreEventIds.ID_OnGameActivated:
                      case CoreEventIds.ID_OnGameDeactivated:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler_GameLostOrGotFocus (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler_GameLostOrGotFocus (entityDefine.mEventId);
                         break;
                      default:
-                        entity = logic = editorWorld.GetEntityContainer ().CreateEntityEventHandler (entityDefine.mEventId);
+                        entity = logic = scene.CreateEntityEventHandler (entityDefine.mEventId);
                         break;
                   }
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
-                  entity = logic = editorWorld.GetEntityContainer ().CreateEntityAction ();
+                  entity = logic = scene.CreateEntityAction ();
                }
                //>>1.56
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
-                  entity = logic = editorWorld.GetEntityContainer ().CreateEntityInputEntityScriptFilter ();
+                  entity = logic = scene.CreateEntityInputEntityScriptFilter ();
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
-                  entity = logic = editorWorld.GetEntityContainer ().CreateEntityInputEntityPairScriptFilter ();
+                  entity = logic = scene.CreateEntityInputEntityPairScriptFilter ();
                }
                //<<
             }
@@ -1710,7 +2376,7 @@ package common {
                      //>>from v1.05
                      if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                      {
-                        var polyline:EntityVectorShapePolyline = editorWorld.GetEntityContainer ().CreateEntityVectorShapePolyline ();
+                        var polyline:EntityVectorShapePolyline = scene.CreateEntityVectorShapePolyline ();
                         
                         polyline.SetCurveThickness (entityDefine.mCurveThickness);
                         
@@ -1735,7 +2401,7 @@ package common {
                   {
                      if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                      {
-                        var circle:EntityVectorShapeCircle = editorWorld.GetEntityContainer ().CreateEntityVectorShapeCircle ();
+                        var circle:EntityVectorShapeCircle = scene.CreateEntityVectorShapeCircle ();
                         circle.SetAppearanceType (entityDefine.mAppearanceType);
                         circle.SetRadius (entityDefine.mRadius);
                         
@@ -1743,7 +2409,7 @@ package common {
                      }
                      else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                      {
-                        var rect:EntityVectorShapeRectangle = editorWorld.GetEntityContainer ().CreateEntityVectorShapeRectangle ();
+                        var rect:EntityVectorShapeRectangle = scene.CreateEntityVectorShapeRectangle ();
                         rect.SetHalfWidth (entityDefine.mHalfWidth);
                         rect.SetHalfHeight (entityDefine.mHalfHeight);
                         
@@ -1756,7 +2422,7 @@ package common {
                      //>> from v1.04
                      else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                      {
-                        var polygon:EntityVectorShapePolygon = editorWorld.GetEntityContainer ().CreateEntityVectorShapePolygon ();
+                        var polygon:EntityVectorShapePolygon = scene.CreateEntityVectorShapePolygon ();
                         
                         // commented off, do it in the 2nd round below
                         //   polygon.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
@@ -1768,7 +2434,7 @@ package common {
                      //<<
 
                      //>> from v1.60
-                     SetShapeEntityBodyTexture (editorWorld, vectorShape as EntityVectorShapeArea, entityDefine.mBodyTextureDefine);
+                     SetShapeEntityBodyTexture (editorWorld, vectorShape as EntityVectorShapeArea, entityDefine.mBodyTextureDefine, imageModuleRefIndex_CorrectionTable);
                      //<<      
                   }
                   
@@ -1777,7 +2443,7 @@ package common {
                      vectorShape.SetAiType (entityDefine.mAiType);
                      
                      //
-                     SetShapePhysicsProperties (vectorShape, entityDefine, beginningCollisionCategoryIndex);
+                     SetShapePhysicsProperties (vectorShape, entityDefine, ccatRefIndex_CorrectionTable);
                   }
                }
                else // not physics vectorShape
@@ -1790,7 +2456,7 @@ package common {
                      // from v1.08
                      if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton)
                      {
-                        var textButton:EntityVectorShapeTextButton = editorWorld.GetEntityContainer ().CreateEntityVectorShapeTextButton ();
+                        var textButton:EntityVectorShapeTextButton = scene.CreateEntityVectorShapeTextButton ();
                         
                         textButton.SetUsingHandCursor (entityDefine.mUsingHandCursor);
                         
@@ -1810,14 +2476,16 @@ package common {
                      //<<
                      else
                      {
-                        text = editorWorld.GetEntityContainer ().CreateEntityVectorShapeText ();
+                        text = scene.CreateEntityVectorShapeText ();
                      }
                      
                      text.SetText (entityDefine.mText);
-                     text.SetWordWrap (entityDefine.mWordWrap);
+                     //text.SetWordWrap (entityDefine.mWordWrap); // before v2.04
+                     text.SetFlags1 (entityDefine.mFlags1); // since v2.04
                      
                      //from v1.08
-                     text.SetAdaptiveBackgroundSize (entityDefine.mAdaptiveBackgroundSize);
+                     //text.SetAdaptiveBackgroundSize (entityDefine.mAdaptiveBackgroundSize); // before v2.04
+                     text.SetFlags2 (entityDefine.mFlags2); // since v2.04
                      text.SetTextColor (entityDefine.mTextColor);
                      text.SetFontSize (entityDefine.mFontSize);
                      text.SetBold (entityDefine.mIsBold);
@@ -1836,7 +2504,7 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
                   {
-                     var gController:EntityVectorShapeGravityController = editorWorld.GetEntityContainer ().CreateEntityVectorShapeGravityController ();
+                     var gController:EntityVectorShapeGravityController = scene.CreateEntityVectorShapeGravityController ();
                      
                      gController.SetRadius (entityDefine.mRadius)
                      
@@ -1886,20 +2554,20 @@ package common {
                
                if (entityDefine.mEntityType == Define.EntityType_ShapeImageModule)
                {
-                  var imageModuleShape:EntityShapeImageModule = editorWorld.GetEntityContainer ().CreateEntityShapeImageModule ();
+                  var imageModuleShape:EntityShapeImageModule = scene.CreateEntityShapeImageModule ();
                   
                   if (entityDefine.mModuleIndex >= 0)
                      entityDefine.mModuleIndex = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndex];
                   
-                  imageModuleShape.SetAssetImageModuleByIndex (entityDefine.mModuleIndex);
+                  imageModuleShape.SetAssetImageModuleByIndex (entityDefine.mModuleIndex, editorWorld);
                   
-                  SetShapePhysicsProperties (imageModuleShape, entityDefine, beginningCollisionCategoryIndex);
+                  SetShapePhysicsProperties (imageModuleShape, entityDefine, ccatRefIndex_CorrectionTable);
                   
                   entity = shape = imageModuleShape;
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapeImageModuleButton)
                {
-                  var imageModuleShapeButton:EntityShapeImageModuleButton = editorWorld.GetEntityContainer ().CreateEntityShapeImageModuleButton ();
+                  var imageModuleShapeButton:EntityShapeImageModuleButton = scene.CreateEntityShapeImageModuleButton ();
                   
                   if (entityDefine.mModuleIndexUp >= 0)
                      entityDefine.mModuleIndexUp = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndexUp];
@@ -1908,11 +2576,11 @@ package common {
                   if (entityDefine.mModuleIndexDown >= 0)
                      entityDefine.mModuleIndexDown = imageModuleRefIndex_CorrectionTable [entityDefine.mModuleIndexDown];
                   
-                  imageModuleShapeButton.SetAssetImageModuleForMouseUpByIndex (entityDefine.mModuleIndexUp);
-                  imageModuleShapeButton.SetAssetImageModuleForMouseOverByIndex (entityDefine.mModuleIndexOver);
-                  imageModuleShapeButton.SetAssetImageModuleForMouseDownByIndex (entityDefine.mModuleIndexDown);
+                  imageModuleShapeButton.SetAssetImageModuleForMouseUpByIndex (entityDefine.mModuleIndexUp, editorWorld);
+                  imageModuleShapeButton.SetAssetImageModuleForMouseOverByIndex (entityDefine.mModuleIndexOver, editorWorld);
+                  imageModuleShapeButton.SetAssetImageModuleForMouseDownByIndex (entityDefine.mModuleIndexDown, editorWorld);
                   
-                  SetShapePhysicsProperties (imageModuleShapeButton, entityDefine, beginningCollisionCategoryIndex);
+                  SetShapePhysicsProperties (imageModuleShapeButton, entityDefine, ccatRefIndex_CorrectionTable);
                   
                   entity = shape = imageModuleShapeButton;
                }
@@ -1924,10 +2592,10 @@ package common {
                
                if (entityDefine.mEntityType == Define.EntityType_JointHinge)
                {
-                  var hinge:EntityJointHinge = editorWorld.GetEntityContainer ().CreateEntityJointHinge ();
+                  var hinge:EntityJointHinge = scene.CreateEntityJointHinge ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (hinge.GetAnchor ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchorEntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (hinge.GetAnchor ());
                   anchorDefine.mEntity = hinge.GetAnchor ();
                   
                   hinge.SetLimitsEnabled (entityDefine.mEnableLimits);
@@ -1944,13 +2612,13 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
                {
-                  var slider:EntityJointSlider = editorWorld.GetEntityContainer ().CreateEntityJointSlider ();
+                  var slider:EntityJointSlider = scene.CreateEntityJointSlider ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (slider.GetAnchor1 ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (slider.GetAnchor1 ());
                   anchorDefine.mEntity = slider.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (slider.GetAnchor2 ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (slider.GetAnchor2 ());
                   anchorDefine.mEntity = slider.GetAnchor2 ();
                   
                   slider.SetLimitsEnabled (entityDefine.mEnableLimits);
@@ -1967,13 +2635,13 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
                {
-                  var distanceJoint:EntityJointDistance = editorWorld.GetEntityContainer ().CreateEntityJointDistance ();
+                  var distanceJoint:EntityJointDistance = scene.CreateEntityJointDistance ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (distanceJoint.GetAnchor1 ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (distanceJoint.GetAnchor1 ());
                   anchorDefine.mEntity = distanceJoint.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (distanceJoint.GetAnchor2 ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (distanceJoint.GetAnchor2 ());
                   anchorDefine.mEntity = distanceJoint.GetAnchor2 ();
                   
                   //>>from v1.08
@@ -1984,13 +2652,13 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
                {
-                  var spring:EntityJointSpring = editorWorld.GetEntityContainer ().CreateEntityJointSpring ();
+                  var spring:EntityJointSpring = scene.CreateEntityJointSpring ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (spring.GetAnchor1 ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (spring.GetAnchor1 ());
                   anchorDefine.mEntity = spring.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (spring.GetAnchor2 ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (spring.GetAnchor2 ());
                   anchorDefine.mEntity = spring.GetAnchor2 ();
                   
                   spring.SetStaticLengthRatio (entityDefine.mStaticLengthRatio);
@@ -2010,23 +2678,23 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointWeld)
                {
-                  var weld:EntityJointWeld = editorWorld.GetEntityContainer ().CreateEntityJointWeld ();
+                  var weld:EntityJointWeld = scene.CreateEntityJointWeld ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (hinge.GetAnchor ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchorEntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (hinge.GetAnchor ());
                   anchorDefine.mEntity = weld.GetAnchor ();
                   
                   entity = joint = weld;
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointDummy)
                {
-                  var dummy:EntityJointDummy = editorWorld.GetEntityContainer ().CreateEntityJointDummy ();
+                  var dummy:EntityJointDummy = scene.CreateEntityJointDummy ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (spring.GetAnchor1 ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (spring.GetAnchor1 ());
                   anchorDefine.mEntity = dummy.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
-                  //anchorDefine.mNewIndex = editorWorld.GetEntityContainer ().getChildIndex (spring.GetAnchor2 ());
+                  anchorDefine = sceneDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
+                  //anchorDefine.mNewIndex = scene.getChildIndex (spring.GetAnchor2 ());
                   anchorDefine.mEntity = dummy.GetAnchor2 ();
                   
                   entity = joint = dummy;
@@ -2069,111 +2737,203 @@ package common {
             }
             else
             {
+               // throw Error ("entity is null?!"); // bug !, for joint anchors are created with joints
                //trace ("!!! entity is null, id = " + createId);
             }
          }
          
          // remove entities then readd them by appearance id order
          //>>>
-         while (editorWorld.GetEntityContainer ().numChildren > beginningEntityIndex)
-            editorWorld.GetEntityContainer ().removeChildAt (beginningEntityIndex);
+         while (scene.numChildren > oldNumEntities)
+            scene.removeChildAt (oldNumEntities); // "sceneNumChildren - 1" will be faster? 
          
          for (appearId = 0; appearId < numEntities; ++ appearId)
          {
-            createId = worldDefine.mEntityAppearanceOrder [appearId];
-            entityDefine = worldDefine.mEntityDefines [createId];
-            editorWorld.GetEntityContainer ().addChild (entityDefine.mEntity);
+//trace ("appearId = " + appearId + ", createId = " + createId + ", entityDefine = " + sceneDefine.mEntityDefines [createId]);
+            createId = sceneDefine.mEntityAppearanceOrder [appearId];
+            entityDefine = sceneDefine.mEntityDefines [createId];
+            scene.addChild (entityDefine.mEntity);
          }
          //<<<
          
-         editorWorld.GetEntityContainer ().SetCreationAssetArrayLocked (false);
+         scene.SetCreationAssetArrayLocked (false);
          
          //>>> add entities by creation id order
          // from version 0x0107)
          for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityDefine = worldDefine.mEntityDefines [createId];
+            entityDefine = sceneDefine.mEntityDefines [createId];
             entity = entityDefine.mEntity;
             
-            editorWorld.GetEntityContainer ().AddAssetToCreationArray (entity);
+            scene.AddAssetToCreationArray (entity);
          }
          //<<<
+         
+         // must put after all entities are added by AddAssetToCreationArray
+         for (createId = 0; createId < numEntities; ++ createId)
+         {
+            entityDefine = sceneDefine.mEntityDefines [createId];
+            entity = entityDefine.mEntity;
+            
+            entityIndex_CorrectionTable [createId] = entity.GetCreationOrderId ();
+         }
          
          EditorContext.mPauseCreateShapeProxy = false;
          
          //>>> load custom variables
+         /*
          // from v1.52
-         var beginningSessionVariableIndex:int = editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetNumVariableInstances ();
-         var beginningGlobalVariableIndex:int = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumVariableInstances ();
-         var beginningEntityVariableIndex:int = editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumVariableInstances ();
-         if (worldDefine.mSessionVariableDefines.length > 0)
+         // memo: when variables support uuid later, how to handle the problem of 2 variables with different types but with the same uuid
+         var beginningSessionVariableIndex:int = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetNumVariableInstances ();
+         var beginningGlobalVariableIndex:int = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetNumVariableInstances ();
+         var beginningEntityVariableIndex:int = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetNumVariableInstances ();
+         if (sceneDefine.mSessionVariableDefines.length > 0)
          {
             if (mergeVariablesWithSameNames)
-               editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
-            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mSessionVariableDefines, editorWorld.GetTriggerEngine ().GetSessionVariableSpace (), true);
+               scene.GetCodeLibManager ().GetSessionVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
+            TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mSessionVariableDefines, scene.GetCodeLibManager ().GetSessionVariableSpace (), true);
          }
-         if (worldDefine.mGlobalVariableDefines.length > 0)
+         if (sceneDefine.mGlobalVariableDefines.length > 0)
          {
             if (mergeVariablesWithSameNames)
-               editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
-            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mGlobalVariableDefines, editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), true);
+               scene.GetCodeLibManager ().GetGlobalVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
+            TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), true);
          }
-         if (worldDefine.mEntityPropertyDefines.length > 0)
+         if (sceneDefine.mEntityPropertyDefines.length > 0)
          {
             if (mergeVariablesWithSameNames)
-               editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables ();
-            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mEntityPropertyDefines, editorWorld.GetTriggerEngine ().GetEntityVariableSpace (), true);
+               scene.GetCodeLibManager ().GetEntityVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables ();
+            TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mEntityPropertyDefines, scene.GetCodeLibManager ().GetEntityVariableSpace (), true);
          }
-         editorWorld.GetTriggerEngine ().NotifySessionVariableSpaceModified ();
-         editorWorld.GetTriggerEngine ().NotifyGlobalVariableSpaceModified ();
-         editorWorld.GetTriggerEngine ().NotifyEntityVariableSpaceModified ();
+         //scene.GetCodeLibManager ().NotifySessionVariableSpaceModified ();
+         //scene.GetCodeLibManager ().NotifyGlobalVariableSpaceModified ();
+         //scene.GetCodeLibManager ().NotifyEntityVariableSpaceModified ();
+         */
+
+         var sessionVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mSessionVariableDefines, scene.GetCodeLibManager ().GetSessionVariableSpace (), true, mergeVariablesWithSameNames, false, false);
+         var globalVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mGlobalVariableDefines, scene.GetCodeLibManager ().GetGlobalVariableSpace (), true, mergeVariablesWithSameNames, false, false);
+         var entityVariableIndex_CorrectionTable:Array = TriggerFormatHelper.VariableDefines2VariableSpace (scene, sceneDefine.mEntityPropertyDefines, scene.GetCodeLibManager ().GetEntityVariableSpace (), true, mergeVariablesWithSameNames, false, false);
          //<<<
          
          //>>> load custom functions
          // from v1.53
-         editorWorld.GetCodeLibManager().SetDelayUpdateFunctionMenu (true);
-         var beginningCustomFunctionIndex:int = editorWorld.GetCodeLibManager().GetNumFunctions ();
+         scene.GetCodeLibManager().SetDelayUpdateFunctionMenu (true);
+         
+         var codelibManager:CodeLibManager = scene.GetCodeLibManager ();
+         
+         //var beginningCustomFunctionIndex:int = scene.GetCodeLibManager().GetNumFunctions ();
+         
+         var functionRefIndex_CorrectionTable:Array = new Array (sceneDefine.mFunctionDefines.length);
          
          var functionId:int;
          var functionAsset:AssetFunction;
          var functionDefine:FunctionDefine;
          
-         for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+         for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
          {
-            functionAsset = editorWorld.GetCodeLibManager ().CreateFunction ();
-            functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+            functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
             
-            //>>v1.56
-            functionAsset.SetDesignDependent (functionDefine.mDesignDependent);
-            //<<
+            // mKey and mTimeModified are from v2.01
             
-            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
-            functionAsset.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
+            functionAsset = codelibManager.GetAssetByKey (functionDefine.mKey) as AssetFunction;
+            
+            if (functionAsset == null) // before v2.01
+            {
+               toUseNewData = true;
+               
+               functionAsset = codelibManager.CreateFunction (functionDefine.mKey);
+            }
+            else if (policyOnConflictingSceneAssets == 3) // always create new 
+            {
+               toUseNewData = true;
+               
+               functionAsset = codelibManager.CreateFunction (null);
+            }
+            else if (policyOnConflictingSceneAssets == 2) // override
+            {
+               toUseNewData = true;
+               
+               functionAsset.Reset ();
+            }
+            else if (policyOnConflictingSceneAssets == 1) // skip
+            {
+               toUseNewData = false;
+            }
+            else // if (policyOnConflictingSceneAssets == 0) // auto
+            {
+               toUseNewData = functionDefine.mTimeModified > functionAsset.GetTimeModified ();
+               
+               if (toUseNewData)
+               {
+                  functionAsset.Reset ();
+               }
+            }
+            
+            functionDefine.mToLoadNewData = toUseNewData;
+            if (functionDefine.mToLoadNewData)
+            {
+               //>>added from v1.56, become meaningless from v2.00 
+               functionAsset.SetDesignDependent (functionDefine.mDesignDependent);
+               //<<
+            
+               TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
+               functionAsset.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
+            }
+            
+            if (functionAsset != null)
+               functionDefine.mKey = functionAsset.GetKey ();
+            
+            functionRefIndex_CorrectionTable [functionId] = functionAsset.GetFunctionIndex (); // codelibManager.GetFunctionIndex (functionAsset);
          }
          
-         for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+         var correctionTables:Object = {
+            mEntityIndex_CorrectionTable : entityIndex_CorrectionTable, 
+            mCcatRefIndex_CorrectionTable : ccatRefIndex_CorrectionTable, 
+            mWorldVariableIndex_CorrectionTable : worldVariableIndex_CorrectionTable, 
+            mGameSaveVariableIndex_CorrectionTable : gameSaveVariableIndex_CorrectionTable, 
+            mGlobalVariableIndex_CorrectionTable : globalVariableIndex_CorrectionTable, 
+            mCommonGlobalVariableIndex_CorrectionTable : commonGlobalVariableIndex_CorrectionTable, 
+            mEntityVariableIndex_CorrectionTable : entityVariableIndex_CorrectionTable, 
+            mCommonEntityVariableIndex_CorrectionTable : commonEntityVariableIndex_CorrectionTable, 
+            mFunctionRefIndex_CorrectionTable : functionRefIndex_CorrectionTable, 
+            mSessionVariableIndex_CorrectionTable : sessionVariableIndex_CorrectionTable, 
+            mImageModuleRefIndex_CorrectionTable : imageModuleRefIndex_CorrectionTable, 
+            mSoundRefIndex_CorrectionTable : soundRefIndex_CorrectionTable, 
+            mSceneRefIndex_CorrectionTable : sceneRefIndex_CorrectionTable
+         };
+         
+         for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
          {
-            functionAsset = editorWorld.GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
-            functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+            functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
             
-            functionAsset.SetFunctionName (functionDefine.mName);
-            functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
-            
-            functionAsset.UpdateAppearance ();
-            functionAsset.UpdateSelectionProxy ();
-            
-            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-            TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
+            if (functionDefine.mToLoadNewData)
+            {
+               //functionAsset = scene.GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
+               functionAsset = codelibManager.GetAssetByKey (functionDefine.mKey) as AssetFunction;
+               
+               functionAsset.SetFunctionName (functionDefine.mName);
+               functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
+               
+               functionAsset.UpdateAppearance ();
+               functionAsset.UpdateSelectionProxy ();
+               
+//trace (">>>>>>>>>>>>>> scene: " + scene.GetName ());               
+               TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, true, correctionTables); // beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningWorldVariableIndex, beginningGameSaveVariableIndex, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+               TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
+//trace ("<<<<<<<<<<<<");
+               
+               functionAsset.SetTimeModified (functionDefine.mTimeModified);
+            }
          }
-         editorWorld.GetCodeLibManager().SetDelayUpdateFunctionMenu (false);
-         editorWorld.GetCodeLibManager().UpdateFunctionMenu ();
+         scene.GetCodeLibManager().SetDelayUpdateFunctionMenu (false);
+         scene.GetCodeLibManager().UpdateFunctionMenu ();
          //<<<
          
          // modify, 2nd round
          
          for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityDefine = worldDefine.mEntityDefines [createId];
+            entityDefine = sceneDefine.mEntityDefines [createId];
             entity = entityDefine.mEntity;
             
             if ( Define.IsVectorShapeEntity (entityDefine.mEntityType) )
@@ -2214,7 +2974,7 @@ package common {
                
                entity.GetMainAsset ().UpdateAppearance ();
                
-               //editorWorld.GetEntityContainer ().addChildAt (entity, appearId);
+               //scene.addChildAt (entity, appearId);
             }
             else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
             {
@@ -2222,12 +2982,12 @@ package common {
                
                // from v1.02
                if (entityDefine.mConnectedShape1Index >= 0)
-                  entityDefine.mConnectedShape1Index += beginningEntityIndex;
+                  entityDefine.mConnectedShape1Index = entityIndex_CorrectionTable [entityDefine.mConnectedShape1Index];
                
                joint.SetConnectedShape1Index (entityDefine.mConnectedShape1Index);
                
                if (entityDefine.mConnectedShape2Index >= 0)
-                  entityDefine.mConnectedShape2Index += beginningEntityIndex;
+                  entityDefine.mConnectedShape2Index = entityIndex_CorrectionTable [entityDefine.mConnectedShape2Index];
                
                joint.SetConnectedShape2Index (entityDefine.mConnectedShape2Index);
                //<<
@@ -2238,14 +2998,14 @@ package common {
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, condition.GetCodeSnippet (), condition.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, correctionTables); // beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningWorldVariableIndex, beginningGameSaveVariableIndex, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, condition.GetCodeSnippet (), condition.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
                   var task:EntityTask = entityDefine.mEntity as EntityTask;
                   
-                  ShiftEntityRefIndexes (entityDefine.mInputAssignerCreationIds, beginningEntityIndex);
+                  ShiftEntityRefIndexes (entityDefine.mInputAssignerCreationIds, entityIndex_CorrectionTable);
                   task.SetEntityAssignersByCreationIds (entityDefine.mInputAssignerCreationIds);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
@@ -2253,7 +3013,7 @@ package common {
                   var conditionDoor:EntityConditionDoor = entityDefine.mEntity as EntityConditionDoor;
                   conditionDoor.SetAsAnd (entityDefine.mIsAnd);
                   conditionDoor.SetAsNot (entityDefine.mIsNot);
-                  ShiftEntityRefIndexes (entityDefine.mInputConditionEntityCreationIds, beginningEntityIndex);
+                  ShiftEntityRefIndexes (entityDefine.mInputConditionEntityCreationIds, entityIndex_CorrectionTable);
                   conditionDoor.SetInputConditionsByCreationIds (entityDefine.mInputConditionEntityCreationIds, entityDefine.mInputConditionTargetValues);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
@@ -2261,7 +3021,7 @@ package common {
                   var entityAssigner:EntityInputEntityAssigner = entityDefine.mEntity as EntityInputEntityAssigner;
                   
                   entityAssigner.SetSelectorType (entityDefine.mSelectorType);
-                  ShiftEntityRefIndexes (entityDefine.mEntityCreationIds, beginningEntityIndex);
+                  ShiftEntityRefIndexes (entityDefine.mEntityCreationIds, entityIndex_CorrectionTable);
                   entityAssigner.SetInputEntitiesByCreationIds (entityDefine.mEntityCreationIds);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
@@ -2269,8 +3029,8 @@ package common {
                   var pairAsigner:EntityInputEntityPairAssigner = entityDefine.mEntity as EntityInputEntityPairAssigner;
                   
                   pairAsigner.SetPairingType (entityDefine.mPairingType);
-                  ShiftEntityRefIndexes (entityDefine.mEntityCreationIds1, beginningEntityIndex);
-                  ShiftEntityRefIndexes (entityDefine.mEntityCreationIds2, beginningEntityIndex);
+                  ShiftEntityRefIndexes (entityDefine.mEntityCreationIds1, entityIndex_CorrectionTable);
+                  ShiftEntityRefIndexes (entityDefine.mEntityCreationIds2, entityIndex_CorrectionTable);
                   pairAsigner.SetInputPairEntitiesByCreationdIds (entityDefine.mEntityCreationIds1, entityDefine.mEntityCreationIds2);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
@@ -2278,16 +3038,16 @@ package common {
                   var eventHandler:EntityEventHandler = entityDefine.mEntity as EntityEventHandler;
                   
                   if (entityDefine.mInputConditionEntityCreationId >= 0)
-                     entityDefine.mInputConditionEntityCreationId += beginningEntityIndex;
+                     entityDefine.mInputConditionEntityCreationId = entityIndex_CorrectionTable [entityDefine.mInputConditionEntityCreationId];
                   
                   eventHandler.SetInputConditionByCreationId (entityDefine.mInputConditionEntityCreationId, entityDefine.mInputConditionTargetValue);
-                  ShiftEntityRefIndexes (entityDefine.mInputAssignerCreationIds, beginningEntityIndex);
+                  ShiftEntityRefIndexes (entityDefine.mInputAssignerCreationIds, entityIndex_CorrectionTable);
                   eventHandler.SetEntityAssignersByCreationIds (entityDefine.mInputAssignerCreationIds);
 
-                  //>> from v1.08, if (worldDefine.mVersion >= 0x0108)
+                  //>> from v1.08, if (sceneDefine.mVersion >= 0x0108)
                   {
                      if (entityDefine.mExternalActionEntityCreationId >= 0)
-                        entityDefine.mExternalActionEntityCreationId += beginningEntityIndex;
+                        entityDefine.mExternalActionEntityCreationId = entityIndex_CorrectionTable [entityDefine.mExternalActionEntityCreationId];
                      
                      eventHandler.SetExternalActionByCreationId (entityDefine.mExternalActionEntityCreationId);
                      
@@ -2340,8 +3100,8 @@ package common {
                   }
                   //<<
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, correctionTables); // beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningWorldVariableIndex, beginningGameSaveVariableIndex, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                   
                   //>>from v1.56
                   if (eventHandler is EntityEventHandler_TimerWithPrePostHandling)
@@ -2350,14 +3110,14 @@ package common {
             
                      if (entityDefine.mPreFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, correctionTables); // beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningWorldVariableIndex, beginningGameSaveVariableIndex, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                      
                      if (entityDefine.mPostFunctionDefine != undefined)
                      {
-                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, correctionTables); // beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningWorldVariableIndex, beginningGameSaveVariableIndex, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
                      }
                   }
                   //<<
@@ -2366,22 +3126,22 @@ package common {
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, action.GetCodeSnippet (), action.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, correctionTables); // beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningWorldVariableIndex, beginningGameSaveVariableIndex, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, action.GetCodeSnippet (), action.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
                   var entityFilter:EntityInputEntityScriptFilter = entityDefine.mEntity as EntityInputEntityScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, entityFilter.GetCodeSnippet (), entityFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, correctionTables); // beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningWorldVariableIndex, beginningGameSaveVariableIndex, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, entityFilter.GetCodeSnippet (), entityFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
                   var entityPairFilter:EntityInputEntityPairScriptFilter = entityDefine.mEntity as EntityInputEntityPairScriptFilter;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, beginningSoundIndex);
-                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, entityPairFilter.GetCodeSnippet (), entityPairFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (scene, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, correctionTables); // beginningEntityIndex, ccatRefIndex_CorrectionTable, beginningWorldVariableIndex, beginningGameSaveVariableIndex, beginningGlobalVariableIndex, beginningCommonGlobalVariableIndex, beginningEntityVariableIndex, beginningCommonEntityVariableIndex, functionRefIndex_CorrectionTable, beginningSessionVariableIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                  TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, entityDefine.mFunctionDefine, entityPairFilter.GetCodeSnippet (), entityPairFilter.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
             }
             
@@ -2398,43 +3158,43 @@ package common {
          var brotherIds:Array;
          var entities:Array;
          
-         for (groupId = 0; groupId < worldDefine.mBrotherGroupDefines.length; ++ groupId)
+         for (groupId = 0; groupId < sceneDefine.mBrotherGroupDefines.length; ++ groupId)
          {
-            brotherIds = worldDefine.mBrotherGroupDefines [groupId] as Array;
+            brotherIds = sceneDefine.mBrotherGroupDefines [groupId] as Array;
             
-            ShiftEntityRefIndexes (brotherIds, beginningEntityIndex);
+            ShiftEntityRefIndexes (brotherIds, entityIndex_CorrectionTable);
             
             for (brotherId = 0; brotherId < brotherIds.length; ++ brotherId)
             {
-               entityDefine = worldDefine.mEntityDefines [brotherIds [brotherId]];
+               entityDefine = sceneDefine.mEntityDefines [brotherIds [brotherId]];
                
                brotherIds [brotherId] = brotherIds [brotherId];
             }
             
-            editorWorld.GetEntityContainer ().MakeBrothersByCreationIds (brotherIds);
+            scene.MakeBrothersByCreationIds (brotherIds);
          }
          
          // important
+         /*
          if (mergeVariablesWithSameNames)
          {
-            if (worldDefine.mSessionVariableDefines.length > 0)
+            if (sceneDefine.mSessionVariableDefines.length > 0)
             {
-               editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+               scene.GetCodeLibManager ().GetSessionVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
             }
-            if (worldDefine.mGlobalVariableDefines.length > 0)
+            if (sceneDefine.mGlobalVariableDefines.length > 0)
             {
-               editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+               scene.GetCodeLibManager ().GetGlobalVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
             }
-            if (worldDefine.mEntityPropertyDefines.length > 0)
+            if (sceneDefine.mEntityPropertyDefines.length > 0)
             {
-               editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+               scene.GetCodeLibManager ().GetEntityVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
             }
          }
-        
-         return editorWorld;
+         */
       }
       
-      public static function ShiftEntityRefIndexes (entityIndexes:Array, idShiftedValue:int):void
+      public static function ShiftEntityRefIndexes (entityIndexes:Array, entityIndex_CorrectionTable:Array):void // idShiftedValue:int):void
       {
          if (entityIndexes != null)
          {
@@ -2445,7 +3205,10 @@ package common {
                id = entityIndexes [i];
                
                if (id >= 0)
-                  entityIndexes [i] = id + idShiftedValue;
+               {
+                  //entityIndexes [i] = id + idShiftedValue;
+                  entityIndexes [i] = entityIndex_CorrectionTable [id];
+               }
             }
          }
       }
@@ -2460,6 +3223,10 @@ package common {
          // basic
          {
             worldDefine.mVersion = parseInt (worldXml.@version, 16);
+            if (worldDefine.mVersion >= 0x0203)
+            {
+               worldDefine.mKey = worldXml.@key;
+            }
             worldDefine.mAuthorName = worldXml.@author_name;
             worldDefine.mAuthorHomepage = worldXml.@author_homepage;
             
@@ -2476,239 +3243,28 @@ package common {
          
          var element:XML;
          
-         // settings
-         if (worldDefine.mVersion >= 0x0104)
+         // scenes
+
+         if (worldDefine.mVersion >= 0x0200)
          {
-            for each (element in worldXml.Settings.Setting)
+            for each (element in worldXml.Scenes.Scene)
             {
-               //>>from v1.51
-               if (element.@name == "ui_flags")
-                  worldDefine.mSettings.mViewerUiFlags = parseInt (element.@value);
-               else if (element.@name == "play_bar_color")
-                  worldDefine.mSettings.mPlayBarColor = parseInt ( (element.@value).substr (2), 16);
-               else if (element.@name == "viewport_width")
-                  worldDefine.mSettings.mViewportWidth = parseInt (element.@value)
-               else if (element.@name == "viewport_height")
-                  worldDefine.mSettings.mViewportHeight = parseInt (element.@value)
-               else if (element.@name == "zoom_scale")
-                  worldDefine.mSettings.mZoomScale = parseFloat (element.@value);
-               //<<
-               
-               else if (element.@name == "camera_center_x")
-                  worldDefine.mSettings.mCameraCenterX = parseInt (element.@value);
-               else if (element.@name == "camera_center_y")
-                  worldDefine.mSettings.mCameraCenterY = parseInt (element.@value);
-               else if (element.@name == "world_left")
-                  worldDefine.mSettings.mWorldLeft = parseInt (element.@value);
-               else if (element.@name == "world_top")
-                  worldDefine.mSettings.mWorldTop  = parseInt (element.@value);
-               else if (element.@name == "world_width")
-                  worldDefine.mSettings.mWorldWidth  = parseInt (element.@value);
-               else if (element.@name == "world_height")
-                  worldDefine.mSettings.mWorldHeight = parseInt (element.@value);
-               else if (element.@name == "background_color")
-                  worldDefine.mSettings.mBackgroundColor  = parseInt ( (element.@value).substr (2), 16);
-               else if (element.@name == "build_border")
-                  worldDefine.mSettings.mBuildBorder  = parseInt (element.@value) != 0;
-               else if (element.@name == "border_color")
-                  worldDefine.mSettings.mBorderColor = parseInt ( (element.@value).substr (2), 16);
-               
-               //>>from v1.06 to v1.08 (not include 1.08)
-               else if (element.@name == "physics_shapes_potential_max_count")
-                  worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = parseInt (element.@value);
-               else if (element.@name == "physics_shapes_population_density_level")
-                  worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = parseInt (element.@value);
-               //<<
-               
-               //>>from v1.08
-               else if (element.@name == "infinite_scene_size")
-                  worldDefine.mSettings.mIsInfiniteWorldSize = parseInt (element.@value) != 0;
-               
-               else if (element.@name == "border_at_top_layer")
-                  worldDefine.mSettings.mBorderAtTopLayer = parseInt (element.@value) != 0;
-               else if (element.@name == "border_left_thinckness")
-                  worldDefine.mSettings.mWorldBorderLeftThickness = parseFloat (element.@value);
-               else if (element.@name == "border_top_thinckness")
-                  worldDefine.mSettings.mWorldBorderTopThickness = parseFloat (element.@value);
-               else if (element.@name == "border_right_thinckness")
-                  worldDefine.mSettings.mWorldBorderRightThickness = parseFloat (element.@value);
-               else if (element.@name == "border_bottom_thinckness")
-                  worldDefine.mSettings.mWorldBorderBottomThickness = parseFloat (element.@value);
-               
-               else if (element.@name == "gravity_acceleration_magnitude")
-                  worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = parseFloat (element.@value);
-               else if (element.@name == "gravity_acceleration_angle")
-                  worldDefine.mSettings.mDefaultGravityAccelerationAngle = parseFloat (element.@value);
-               
-               else if (element.@name == "right_hand_coordinates")
-                  worldDefine.mSettings.mRightHandCoordinates = parseInt (element.@value) != 0;
-               else if (element.@name == "coordinates_origin_x")
-                  worldDefine.mSettings.mCoordinatesOriginX = parseFloat (element.@value);
-               else if (element.@name == "coordinates_origin_y")
-                  worldDefine.mSettings.mCoordinatesOriginY = parseFloat (element.@value);
-               else if (element.@name == "coordinates_scale")
-                  worldDefine.mSettings.mCoordinatesScale = parseFloat (element.@value);
-               
-               else if (element.@name == "ci_rules_enabled")
-                  worldDefine.mSettings.mIsCiRulesEnabled = parseInt (element.@value) != 0;
-               //<<
-               
-               //>>from v1.55
-               else if (element.@name == "auto_sleeping_enabled")
-                  worldDefine.mSettings.mAutoSleepingEnabled = parseInt (element.@value) != 0;
-               else if (element.@name == "camera_rotating_enabled")
-                  worldDefine.mSettings.mCameraRotatingEnabled = parseInt (element.@value) != 0;
-               //<<
-               
-               //>>from v1.60
-               else if (element.@name == "initial_speedx")
-                  worldDefine.mSettings.mInitialSpeedX = parseInt (element.@value);
-               else if (element.@name == "preferred_fps")
-                  worldDefine.mSettings.mPreferredFPS = parseFloat (element.@value);
-               else if (element.@name == "pause_on_focus_lost")
-                  worldDefine.mSettings.mPauseOnFocusLost = parseInt (element.@value) != 0;
-               
-               else if (element.@name == "physics_simulation_enabled")
-                  worldDefine.mSettings.mPhysicsSimulationEnabled = parseInt (element.@value) != 0;
-               else if (element.@name == "physics_simulation_time_step")
-                  worldDefine.mSettings.mPhysicsSimulationStepTimeLength = parseFloat (element.@value);
-               else if (element.@name == "physics_simulation_quality")
-                  worldDefine.mSettings.mPhysicsSimulationQuality = parseInt ( (element.@value).substr (2), 16);
-               else if (element.@name == "physics_simulation_check_toi")
-                  worldDefine.mSettings.mCheckTimeOfImpact = parseInt (element.@value) != 0;
-               //<<
-               
-               else
-                  trace ("Unkown setting: " + element.@name);
+               worldDefine.mSceneDefines.push (XmlElement2SceneDefine (worldDefine, element));
             }
          }
-         
-         // must be loaded before loading codesnippets in entities.
-         if (worldDefine.mVersion >= 0x0153)
+         else
          {
-            var functionDefine:FunctionDefine;
-            
-            for each (element in worldXml.CustomFunctions.Function)
-            {
-               functionDefine = new FunctionDefine ();
-               
-               TriggerFormatHelper.Xml2FunctionDefine (element, functionDefine, true, true, null);
-               
-               worldDefine.mFunctionDefines.push (functionDefine);
-            }
-            
-            var functionId:int = 0;
-            for each (element in worldXml.CustomFunctions.Function)
-            {
-               functionDefine = worldDefine.mFunctionDefines [functionId ++];
-               
-               TriggerFormatHelper.Xml2FunctionDefine (element, functionDefine, true, false, worldDefine.mFunctionDefines);
-               
-               functionDefine.mName = element.@name;
-               functionDefine.mPosX = parseFloat (element.@x);
-               functionDefine.mPosY = parseFloat (element.@y);
-               if (worldDefine.mVersion >= 0x0156)
-               {
-                  functionDefine.mDesignDependent = parseInt (element.@design_dependent) != 0;
-               }
-            }
+            worldDefine.mSceneDefines.push (XmlElement2SceneDefine (worldDefine, worldXml));
          }
          
-         var appearId:int;
-         var createId:int;
+         // scene common variables
          
-         for each (element in worldXml.Entities.Entity)
+         if (worldDefine.mVersion >= 0x0203)
          {
-            var entityDefine:Object = XmlElement2EntityDefine (element, worldDefine);
-            
-            worldDefine.mEntityDefines.push (entityDefine);
-         }
-         
-         // ...
-         // worldDefine.mVersion >= 0x0107
-         if (worldXml.EntityAppearingOrder != undefined)
-         {
-            IndicesString2IntegerArray (worldXml.EntityAppearingOrder.@entity_indices, worldDefine.mEntityAppearanceOrder);
-         }
-         
-         // ...
-         
-         var groupId:int;
-         var brotherGroup:Array;
-         var brotherIDs:Array;
-         
-         for each (element in worldXml.BrotherGroups.BrotherGroup)
-         {
-            brotherIDs = IndicesString2IntegerArray (element.@brother_indices);
-            
-            worldDefine.mBrotherGroupDefines.push (brotherIDs);
-         }
-         
-         // collision category
-         
-         if (worldDefine.mVersion >= 0x0102)
-         {
-            for each (element in worldXml.CollisionCategories.CollisionCategory)
-            {
-               var ccDefine:Object = new Object ();
-               
-               ccDefine.mName = element.@name;
-               ccDefine.mCollideInternally = parseInt (element.@collide_internally) != 0;
-               ccDefine.mPosX = parseFloat (element.@x);
-               ccDefine.mPosY = parseFloat (element.@y);
-               
-               worldDefine.mCollisionCategoryDefines.push (ccDefine);
-            }
-            
-            worldDefine.mDefaultCollisionCategoryIndex = parseInt (worldXml.CollisionCategories.@default_category_index);
-            
-            for each (element in worldXml.CollisionCategoryFriendPairs.CollisionCategoryFriendPair)
-            {
-               var pairDefine:Object = new Object ();
-               
-               pairDefine.mCollisionCategory1Index = parseInt (element.@category1_index);
-               pairDefine.mCollisionCategory2Index = parseInt (element.@category2_index);
-               
-               worldDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
-            }
-         }
-         
-         // custom variables
-         
-         if (worldDefine.mVersion >= 0x0152)
-         {
-            //>> v1.52 only
-            //var variableSpaceDefine:VariableSpaceDefine;
-            //
-            //for each (element in worldXml.GlobalVariables.VariablePackage)
-            //{
-            //   variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
-            //   variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Global;
-            //   worldDefine.mGlobalVariableSpaceDefines.push (variableSpaceDefine);
-            //}
-            
-            //for each (element in worldXml.EntityProperties.VariablePackage)
-            //{
-            //   variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
-            //   variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Entity;
-            //   worldDefine.mEntityPropertySpaceDefines.push (variableSpaceDefine);
-            //}
-            
-            if (worldDefine.mVersion == 0x0152)
-            {
-               TriggerFormatHelper.VariablesXml2Define (worldXml.GlobalVariables.VariablePackage [0], worldDefine.mGlobalVariableDefines, true);
-               TriggerFormatHelper.VariablesXml2Define (worldXml.EntityProperties.VariablePackage [0], worldDefine.mEntityPropertyDefines, true);
-            }
-            else
-            {
-               if (worldDefine.mVersion >= 0x0157)
-               {
-                  TriggerFormatHelper.VariablesXml2Define (worldXml.SessionVariables [0], worldDefine.mSessionVariableDefines, true);
-               }
-               
-               TriggerFormatHelper.VariablesXml2Define (worldXml.GlobalVariables [0], worldDefine.mGlobalVariableDefines, true);
-               TriggerFormatHelper.VariablesXml2Define (worldXml.EntityProperties [0], worldDefine.mEntityPropertyDefines, true);
-            }
+            TriggerFormatHelper.VariablesXml2Define (worldXml.DataSaveVariables [0], worldDefine.mGameSaveVariableDefines, true, true);
+            TriggerFormatHelper.VariablesXml2Define (worldXml.WorldVariables [0], worldDefine.mWorldVariableDefines, true, false);
+            TriggerFormatHelper.VariablesXml2Define (worldXml.CommonSceneGlobalVariables [0], worldDefine.mCommonGlobalVariableDefines, true, false);
+            TriggerFormatHelper.VariablesXml2Define (worldXml.CommonSceneEntityProperties [0], worldDefine.mCommonEntityPropertyDefines, true, false);
          }
          
          // image modules
@@ -2718,6 +3274,12 @@ package common {
             for each (element in worldXml.Images.Image)
             {
                var imageDefine:Object = new Object ();
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  imageDefine.mKey = element.@key;
+                  imageDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
                
                imageDefine.mName = element.@name;
                
@@ -2739,6 +3301,12 @@ package common {
             {
                var divisionDefine:Object = new Object ();
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  divisionDefine.mKey = element.@key;
+                  divisionDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
+               
                divisionDefine.mImageIndex = parseInt (element.@image_index);
                divisionDefine.mLeft = parseInt (element.@left);
                divisionDefine.mTop = parseInt (element.@top);
@@ -2752,6 +3320,12 @@ package common {
             {
                var assembledModuleDefine:Object = new Object ();
                
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  assembledModuleDefine.mKey = element.@key;
+                  assembledModuleDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
+               
                assembledModuleDefine.mModulePartDefines = XmlElements2ModuleInstanceDefines (worldDefine.mVersion, element.ModulePart, false);
                
                worldDefine.mAssembledModuleDefines.push (assembledModuleDefine);
@@ -2761,7 +3335,17 @@ package common {
             {
                var sequencedModuleDefine:Object = new Object ();
                
-               //sequencedModuleDefine.mIsLooped = parseInt(element.@looped) != 0;
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  sequencedModuleDefine.mKey = element.@key;
+                  sequencedModuleDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
+               
+               if (worldDefine.mVersion >= 0x0202)
+               {
+                  sequencedModuleDefine.mSettingFlags = parseInt (element.@setting_flags);
+               }
+               
                sequencedModuleDefine.mModuleSequenceDefines = XmlElements2ModuleInstanceDefines (worldDefine.mVersion, element.ModuleSequence, true);
                
                worldDefine.mSequencedModuleDefines.push (sequencedModuleDefine);
@@ -2775,6 +3359,12 @@ package common {
             for each (element in worldXml.Sounds.Sound)
             {
                var soundDefine:Object = new Object ();
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  soundDefine.mKey = element.@key;
+                  soundDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
                
                soundDefine.mName = element.@name;
                soundDefine.mAttributeBits = parseInt (element.@attribute_bits);
@@ -2796,6 +3386,289 @@ package common {
          }
          
          return worldDefine;
+      }
+      
+      public static function ParseTimeString (timeText:String):Number
+      {
+         if (timeText == null || timeText.length < 3 || timeText.length > 14 || timeText.substring (0, 2).toLowerCase () != "0x")
+            return 0;
+         
+         timeText = timeText.substring (2);
+         if (timeText.length <= 6)
+         {
+            return parseInt (timeText, 16);
+         }
+         else
+         {
+            var time1:Number = parseInt (timeText.substring (0, timeText.length - 6), 16);
+            var time2:Number = parseInt (timeText.substring (timeText.length - 6), 16);
+            
+            return time1 * 0x1000000 + time2;
+         }
+      }
+      
+      public static function XmlElement2SceneDefine (worldDefine:WorldDefine, sceneXML:XML):Object
+      {
+         var sceneDefine:SceneDefine = new SceneDefine;
+         
+         var element:XML;
+         
+         // ...
+         
+         if (worldDefine.mVersion >= 0x0200)
+         {
+            sceneDefine.mKey = sceneXML.@key;
+            sceneDefine.mName = sceneXML.@name;
+         }
+         
+         // settings
+         if (worldDefine.mVersion >= 0x0104)
+         {
+            for each (element in sceneXML.Settings.Setting)
+            {
+               //>>from v1.51
+               if (element.@name == "ui_flags")
+                  sceneDefine.mSettings.mViewerUiFlags = parseInt (element.@value);
+               else if (element.@name == "play_bar_color")
+                  sceneDefine.mSettings.mPlayBarColor = parseInt ( (element.@value).substr (2), 16);
+               else if (element.@name == "viewport_width")
+                  sceneDefine.mSettings.mViewportWidth = parseInt (element.@value)
+               else if (element.@name == "viewport_height")
+                  sceneDefine.mSettings.mViewportHeight = parseInt (element.@value)
+               else if (element.@name == "zoom_scale")
+                  sceneDefine.mSettings.mZoomScale = parseFloat (element.@value);
+               //<<
+               
+               else if (element.@name == "camera_center_x")
+                  sceneDefine.mSettings.mCameraCenterX = parseInt (element.@value);
+               else if (element.@name == "camera_center_y")
+                  sceneDefine.mSettings.mCameraCenterY = parseInt (element.@value);
+               else if (element.@name == "world_left")
+                  sceneDefine.mSettings.mWorldLeft = parseInt (element.@value);
+               else if (element.@name == "world_top")
+                  sceneDefine.mSettings.mWorldTop  = parseInt (element.@value);
+               else if (element.@name == "world_width")
+                  sceneDefine.mSettings.mWorldWidth  = parseInt (element.@value);
+               else if (element.@name == "world_height")
+                  sceneDefine.mSettings.mWorldHeight = parseInt (element.@value);
+               else if (element.@name == "background_color")
+                  sceneDefine.mSettings.mBackgroundColor  = parseInt ( (element.@value).substr (2), 16);
+               else if (element.@name == "build_border")
+                  sceneDefine.mSettings.mBuildBorder  = parseInt (element.@value) != 0;
+               else if (element.@name == "border_color")
+                  sceneDefine.mSettings.mBorderColor = parseInt ( (element.@value).substr (2), 16);
+               
+               //>>from v1.06 to v1.08 (not include 1.08)
+               else if (element.@name == "physics_shapes_potential_max_count")
+                  sceneDefine.mSettings.mPhysicsShapesPotentialMaxCount = parseInt (element.@value);
+               else if (element.@name == "physics_shapes_population_density_level")
+                  sceneDefine.mSettings.mPhysicsShapesPopulationDensityLevel = parseInt (element.@value);
+               //<<
+               
+               //>>from v1.08
+               else if (element.@name == "infinite_scene_size")
+                  sceneDefine.mSettings.mIsInfiniteWorldSize = parseInt (element.@value) != 0;
+               
+               else if (element.@name == "border_at_top_layer")
+                  sceneDefine.mSettings.mBorderAtTopLayer = parseInt (element.@value) != 0;
+               else if (element.@name == "border_left_thinckness")
+                  sceneDefine.mSettings.mWorldBorderLeftThickness = parseFloat (element.@value);
+               else if (element.@name == "border_top_thinckness")
+                  sceneDefine.mSettings.mWorldBorderTopThickness = parseFloat (element.@value);
+               else if (element.@name == "border_right_thinckness")
+                  sceneDefine.mSettings.mWorldBorderRightThickness = parseFloat (element.@value);
+               else if (element.@name == "border_bottom_thinckness")
+                  sceneDefine.mSettings.mWorldBorderBottomThickness = parseFloat (element.@value);
+               
+               else if (element.@name == "gravity_acceleration_magnitude")
+                  sceneDefine.mSettings.mDefaultGravityAccelerationMagnitude = parseFloat (element.@value);
+               else if (element.@name == "gravity_acceleration_angle")
+                  sceneDefine.mSettings.mDefaultGravityAccelerationAngle = parseFloat (element.@value);
+               
+               else if (element.@name == "right_hand_coordinates")
+                  sceneDefine.mSettings.mRightHandCoordinates = parseInt (element.@value) != 0;
+               else if (element.@name == "coordinates_origin_x")
+                  sceneDefine.mSettings.mCoordinatesOriginX = parseFloat (element.@value);
+               else if (element.@name == "coordinates_origin_y")
+                  sceneDefine.mSettings.mCoordinatesOriginY = parseFloat (element.@value);
+               else if (element.@name == "coordinates_scale")
+                  sceneDefine.mSettings.mCoordinatesScale = parseFloat (element.@value);
+               
+               else if (element.@name == "ci_rules_enabled")
+                  sceneDefine.mSettings.mIsCiRulesEnabled = parseInt (element.@value) != 0;
+               //<<
+               
+               //>>from v1.55
+               else if (element.@name == "auto_sleeping_enabled")
+                  sceneDefine.mSettings.mAutoSleepingEnabled = parseInt (element.@value) != 0;
+               else if (element.@name == "camera_rotating_enabled")
+                  sceneDefine.mSettings.mCameraRotatingEnabled = parseInt (element.@value) != 0;
+               //<<
+               
+               //>>from v1.60
+               else if (element.@name == "initial_speedx")
+                  sceneDefine.mSettings.mInitialSpeedX = parseInt (element.@value);
+               else if (element.@name == "preferred_fps")
+                  sceneDefine.mSettings.mPreferredFPS = parseFloat (element.@value);
+               else if (element.@name == "pause_on_focus_lost")
+                  sceneDefine.mSettings.mPauseOnFocusLost = parseInt (element.@value) != 0;
+               
+               else if (element.@name == "physics_simulation_enabled")
+                  sceneDefine.mSettings.mPhysicsSimulationEnabled = parseInt (element.@value) != 0;
+               else if (element.@name == "physics_simulation_time_step")
+                  sceneDefine.mSettings.mPhysicsSimulationStepTimeLength = parseFloat (element.@value);
+               else if (element.@name == "physics_simulation_quality")
+                  sceneDefine.mSettings.mPhysicsSimulationQuality = parseInt ( (element.@value).substr (2), 16);
+               else if (element.@name == "physics_simulation_check_toi")
+                  sceneDefine.mSettings.mCheckTimeOfImpact = parseInt (element.@value) != 0;
+               //<<
+               
+               else
+                  trace ("Unkown setting: " + element.@name);
+            }
+         }
+         
+         // must be loaded before loading codesnippets in entities.
+         if (worldDefine.mVersion >= 0x0153)
+         {
+            var functionDefine:FunctionDefine;
+            
+            for each (element in sceneXML.CustomFunctions.Function)
+            {
+               functionDefine = new FunctionDefine ();
+               
+               TriggerFormatHelper.Xml2FunctionDefine (element, functionDefine, true, true, null);
+               
+               sceneDefine.mFunctionDefines.push (functionDefine);
+            }
+            
+            var functionId:int = 0;
+            for each (element in sceneXML.CustomFunctions.Function)
+            {
+               functionDefine = sceneDefine.mFunctionDefines [functionId ++];
+               
+               TriggerFormatHelper.Xml2FunctionDefine (element, functionDefine, true, false, sceneDefine.mFunctionDefines);
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  functionDefine.mKey = element.@key;
+                  functionDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
+               
+               functionDefine.mName = element.@name;
+               functionDefine.mPosX = parseFloat (element.@x);
+               functionDefine.mPosY = parseFloat (element.@y);
+               if (worldDefine.mVersion >= 0x0156)
+               {
+                  functionDefine.mDesignDependent = parseInt (element.@design_dependent) != 0;
+               }
+            }
+         }
+         
+         var appearId:int;
+         var createId:int;
+         
+         for each (element in sceneXML.Entities.Entity)
+         {
+            var entityDefine:Object = XmlElement2EntityDefine (element, worldDefine, sceneDefine);
+            
+            sceneDefine.mEntityDefines.push (entityDefine);
+         }
+         
+         // ...
+         // worldDefine.mVersion >= 0x0107
+         if (sceneXML.EntityAppearingOrder != undefined)
+         {
+            IndicesString2IntegerArray (sceneXML.EntityAppearingOrder.@entity_indices, sceneDefine.mEntityAppearanceOrder);
+         }
+         
+         // ...
+         
+         var groupId:int;
+         var brotherGroup:Array;
+         var brotherIDs:Array;
+         
+         for each (element in sceneXML.BrotherGroups.BrotherGroup)
+         {
+            brotherIDs = IndicesString2IntegerArray (element.@brother_indices);
+            
+            sceneDefine.mBrotherGroupDefines.push (brotherIDs);
+         }
+         
+         // collision category
+         
+         if (worldDefine.mVersion >= 0x0102)
+         {
+            for each (element in sceneXML.CollisionCategories.CollisionCategory)
+            {
+               var ccDefine:Object = new Object ();
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  ccDefine.mKey = element.@key;
+                  ccDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               }
+               
+               ccDefine.mName = element.@name;
+               ccDefine.mCollideInternally = parseInt (element.@collide_internally) != 0;
+               ccDefine.mPosX = parseFloat (element.@x);
+               ccDefine.mPosY = parseFloat (element.@y);
+               
+               sceneDefine.mCollisionCategoryDefines.push (ccDefine);
+            }
+            
+            sceneDefine.mDefaultCollisionCategoryIndex = parseInt (sceneXML.CollisionCategories.@default_category_index);
+            
+            for each (element in sceneXML.CollisionCategoryFriendPairs.CollisionCategoryFriendPair)
+            {
+               var pairDefine:Object = new Object ();
+               
+               pairDefine.mCollisionCategory1Index = parseInt (element.@category1_index);
+               pairDefine.mCollisionCategory2Index = parseInt (element.@category2_index);
+               
+               sceneDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
+            }
+         }
+         
+         // custom variables
+         
+         if (worldDefine.mVersion >= 0x0152)
+         {
+            //>> v1.52 only
+            //var variableSpaceDefine:VariableSpaceDefine;
+            //
+            //for each (element in sceneXML.GlobalVariables.VariablePackage)
+            //{
+            //   variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
+            //   variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Global;
+            //   sceneDefine.mGlobalVariableSpaceDefines.push (variableSpaceDefine);
+            //}
+            
+            //for each (element in sceneXML.EntityProperties.VariablePackage)
+            //{
+            //   variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
+            //   variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+            //   sceneDefine.mEntityPropertySpaceDefines.push (variableSpaceDefine);
+            //}
+            
+            if (worldDefine.mVersion == 0x0152)
+            {
+               TriggerFormatHelper.VariablesXml2Define (sceneXML.GlobalVariables.VariablePackage [0], sceneDefine.mGlobalVariableDefines, true, false);
+               TriggerFormatHelper.VariablesXml2Define (sceneXML.EntityProperties.VariablePackage [0], sceneDefine.mEntityPropertyDefines, true, false);
+            }
+            else
+            {
+               if (worldDefine.mVersion >= 0x0157)
+               {
+                  TriggerFormatHelper.VariablesXml2Define (sceneXML.SessionVariables [0], sceneDefine.mSessionVariableDefines, true, false);
+               }
+               
+               TriggerFormatHelper.VariablesXml2Define (sceneXML.GlobalVariables [0], sceneDefine.mGlobalVariableDefines, true, false);
+               TriggerFormatHelper.VariablesXml2Define (sceneXML.EntityProperties [0], sceneDefine.mEntityPropertyDefines, true, false);
+            }
+         }
+         
+         return sceneDefine;
       }
       
       public static function XmlElements2ModuleInstanceDefines (worldVersion:int, xmlElements:XMLList, forSequencedModule:Boolean):Array
@@ -2984,7 +3857,7 @@ package common {
          return idArray;
       }
       
-      public static function XmlElement2EntityDefine (element:XML, worldDefine:WorldDefine):Object
+      public static function XmlElement2EntityDefine (element:XML, worldDefine:WorldDefine, sceneDefine:SceneDefine):Object
       {
          var elementLocalVertex:XML;
          
@@ -3036,9 +3909,9 @@ package common {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                else
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
@@ -3092,10 +3965,10 @@ package common {
                            if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                            {
                               entityDefine.mPreFunctionDefine = new FunctionDefine ();
-                              TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mPreFunctionDefine, false, true, worldDefine.mFunctionDefines, false, element.PreHandlingCodeSnippet [0]);
+                              TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mPreFunctionDefine, false, true, sceneDefine.mFunctionDefines, false, element.PreHandlingCodeSnippet [0]);
                               
                               entityDefine.mPostFunctionDefine = new FunctionDefine ();
-                              TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mPostFunctionDefine, false, true, worldDefine.mFunctionDefines, false, element.PostHandlingCodeSnippet [0]);
+                              TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mPostFunctionDefine, false, true, sceneDefine.mFunctionDefines, false, element.PostHandlingCodeSnippet [0]);
                            }
                         }
                         
@@ -3116,11 +3989,11 @@ package common {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                if (worldDefine.mVersion >= 0x0153)
                {
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                }
                else
                {
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
                }
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
@@ -3128,22 +4001,22 @@ package common {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                else
-                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
             }
             //>>from v1.56
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
             {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                
-               TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+               TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
             {
                entityDefine.mFunctionDefine = new FunctionDefine ();
                
-               TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+               TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
             }
             //<<     
          }
@@ -3242,13 +4115,32 @@ package common {
                {
                   entityDefine.mText = element.@text;
                   if (worldDefine.mVersion < 0x0108)
-                     entityDefine.mWordWrap = parseInt (element.@autofit_width) != 0;
+                  {
+                     //entityDefine.mWordWrap = parseInt (element.@autofit_width) != 0;
+                     entityDefine.mFlags1 = parseInt (element.@autofit_width);
+                  }
+                  else if (worldDefine.mVersion < 0x0204)
+                  {
+                     //entityDefine.mWordWrap = parseInt (element.@word_wrap) != 0;
+                     entityDefine.mFlags1 = parseInt (element.@word_wrap);
+                  }
                   else
-                     entityDefine.mWordWrap = parseInt (element.@word_wrap) != 0;
+                  {
+                     entityDefine.mFlags1 = parseInt (element.@flags1);
+                  }
                   
                   if (worldDefine.mVersion >= 0x0108)
                   {
-                     entityDefine.mAdaptiveBackgroundSize = parseInt (element.@adaptive_background_size) != 0;
+                     if (worldDefine.mVersion < 0x0204)
+                     {
+                        //entityDefine.mAdaptiveBackgroundSize = parseInt (element.@adaptive_background_size) != 0;
+                        entityDefine.mFlags2 = parseInt (element.@adaptive_background_size);
+                     }
+                     else
+                     {
+                        entityDefine.mFlags2 = parseInt (element.@flags2);
+                     }
+                     
                      entityDefine.mTextColor = element.@text_color == undefined ? 0x0 : parseInt ( (element.@text_color).substr (2), 16);
                      entityDefine.mFontSize = parseInt (element.@font_size);
                      entityDefine.mIsBold = parseInt (element.@bold) != 0;
@@ -3257,8 +4149,9 @@ package common {
                   
                   if (worldDefine.mVersion >= 0x0109)
                   {
-                     entityDefine.mTextAlign = parseInt (element.@align) != 0;;
-                     entityDefine.mIsUnderlined = parseInt (element.@underlined) != 0;;
+                     //entityDefine.mTextAlign = parseInt (element.@align) != 0; // ?? bug fixed in v2.03
+                     entityDefine.mTextAlign = parseInt (element.@align);
+                     entityDefine.mIsUnderlined = parseInt (element.@underlined) != 0;
                   }
                   
                   if (worldDefine.mVersion >= 0x0108)
@@ -3441,6 +4334,7 @@ package common {
          
          //
          var byteArray:ByteArray = new ByteArray ();
+         //byteArray.length = 1000000;
          
          // COlor INfection
          byteArray.writeByte ("C".charCodeAt (0));
@@ -3452,6 +4346,10 @@ package common {
          {
             // version, author
             byteArray.writeShort (worldDefine.mVersion);
+            if (worldDefine.mVersion >= 0x0203)
+            {
+               byteArray.writeUTF (worldDefine.mKey == null ? "" : worldDefine.mKey);
+            }
             byteArray.writeUTF (worldDefine.mAuthorName);
             byteArray.writeUTF (worldDefine.mAuthorHomepage);
             
@@ -3471,73 +4369,238 @@ package common {
             }
          }
          
+         // scenes
+
+         if (worldDefine.mVersion >= 0x0200)
+         {
+            byteArray.writeShort (worldDefine.mSceneDefines.length);
+            for (var sceneId:int = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
+            {  
+               SceneDefine2ByteArray (worldDefine, worldDefine.mSceneDefines [sceneId], byteArray);
+            }
+         }
+         else
+         {
+            SceneDefine2ByteArray (worldDefine, worldDefine.mSceneDefines [0], byteArray);
+         }
+                  
+         // scene common variables
+         
+         if (worldDefine.mVersion >= 0x0203)
+         {
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mGameSaveVariableDefines, true, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mWorldVariableDefines, true, false);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true, false);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true, false);
+         }
+         
+         // modules
+         
+         if (worldDefine.mVersion >= 0x0158)
+         {
+            byteArray.writeShort (worldDefine.mImageDefines.length);
+            for (var imageId:int = 0; imageId < worldDefine.mImageDefines.length; ++ imageId)
+            {
+               var imageDefine:Object = worldDefine.mImageDefines [imageId];
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (imageDefine.mKey == null ? "" : imageDefine.mKey);
+                  WriteTimeValue (byteArray, imageDefine.mTimeModified);
+               }
+               
+               byteArray.writeUTF (imageDefine.mName == null ? "" : imageDefine.mName);
+               
+               if (imageDefine.mFileData == null || imageDefine.mFileData.length == 0)
+               {
+                  byteArray.writeInt (0);
+               }
+               else
+               {
+                  byteArray.writeInt (imageDefine.mFileData.length);
+                  byteArray.writeBytes (imageDefine.mFileData, 0, imageDefine.mFileData.length);
+               }
+            }
+
+            byteArray.writeShort (worldDefine.mPureImageModuleDefines.length);
+            for (var divisionId:int = 0; divisionId < worldDefine.mPureImageModuleDefines.length; ++ divisionId)
+            {
+               var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (divisionDefine.mKey == null ? "" : divisionDefine.mKey);
+                  WriteTimeValue (byteArray, divisionDefine.mTimeModified);
+               }
+
+               byteArray.writeShort (divisionDefine.mImageIndex);
+               byteArray.writeShort (divisionDefine.mLeft);
+               byteArray.writeShort (divisionDefine.mTop);
+               byteArray.writeShort (divisionDefine.mRight);
+               byteArray.writeShort (divisionDefine.mBottom);
+            }
+
+            byteArray.writeShort (worldDefine.mAssembledModuleDefines.length);
+            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
+            {
+               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (assembledModuleDefine.mKey == null ? "" : assembledModuleDefine.mKey);
+                  WriteTimeValue (byteArray, assembledModuleDefine.mTimeModified);
+               }
+
+               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, assembledModuleDefine.mModulePartDefines, false);
+            }
+
+            byteArray.writeShort (worldDefine.mSequencedModuleDefines.length);
+            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
+            {
+               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (sequencedModuleDefine.mKey == null ? "" : sequencedModuleDefine.mKey);
+                  WriteTimeValue (byteArray, sequencedModuleDefine.mTimeModified);
+               }
+
+               if (worldDefine.mVersion >= 0x0202)
+               {
+                  byteArray.writeShort (sequencedModuleDefine.mSettingFlags);
+               }
+
+               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
+            }
+         }
+         
+         // sounds
+         
+         if (worldDefine.mVersion >= 0x0159)
+         {
+            byteArray.writeShort (worldDefine.mSoundDefines.length);
+            for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
+            {
+               var soundDefine:Object = worldDefine.mSoundDefines [soundId];
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (soundDefine.mKey == null ? "" : soundDefine.mKey);
+                  WriteTimeValue (byteArray, soundDefine.mTimeModified);
+               }
+               
+               byteArray.writeUTF (soundDefine.mName == null ? "" : soundDefine.mName);
+               byteArray.writeInt (soundDefine.mAttributeBits);
+               byteArray.writeInt (soundDefine.mNumSamples);
+               
+               if (soundDefine.mFileData == null || soundDefine.mFileData == 0)
+               {
+                  byteArray.writeInt (0);
+               }
+               else
+               {
+                  byteArray.writeInt (soundDefine.mFileData.length);
+                  byteArray.writeBytes (soundDefine.mFileData, 0, soundDefine.mFileData.length);
+               }
+            }
+         }
+         
+         // ...
+         //byteArray.length = byteArray.position;
+         return byteArray;
+      }
+      
+      public static function WriteTimeValue (byteArray:ByteArray, time:Number):void
+      {
+         var v3:Number = time & 0xFFFF;
+         time /= 0x10000;
+         var v2:Number = time & 0xFFFF;
+         time /= 0x10000;
+         var v1:Number = time & 0xFFFF;
+         
+         byteArray.writeShort (v1);
+         byteArray.writeShort (v2);
+         byteArray.writeShort (v3);
+      }
+      
+      public static function SceneDefine2ByteArray (worldDefine:WorldDefine, sceneDefine:SceneDefine, byteArray:ByteArray):void
+      {
+         
+         // ...
+         
+         if (worldDefine.mVersion >= 0x0200)
+         {
+            byteArray.writeUTF (sceneDefine.mKey  == null ? "" : sceneDefine.mKey);
+            byteArray.writeUTF (sceneDefine.mName == null ? "" : sceneDefine.mName);
+         }
+         
          // settings
          {
             if (worldDefine.mVersion >= 0x0151)
             {
-               byteArray.writeInt (worldDefine.mSettings.mViewerUiFlags);
-               byteArray.writeUnsignedInt (worldDefine.mSettings.mPlayBarColor);
-               byteArray.writeShort (worldDefine.mSettings.mViewportWidth);
-               byteArray.writeShort (worldDefine.mSettings.mViewportHeight);
-               byteArray.writeFloat (worldDefine.mSettings.mZoomScale);
+               byteArray.writeInt (sceneDefine.mSettings.mViewerUiFlags);
+               byteArray.writeUnsignedInt (sceneDefine.mSettings.mPlayBarColor);
+               byteArray.writeShort (sceneDefine.mSettings.mViewportWidth);
+               byteArray.writeShort (sceneDefine.mSettings.mViewportHeight);
+               byteArray.writeFloat (sceneDefine.mSettings.mZoomScale);
             }
             
             if (worldDefine.mVersion >= 0x0104)
             {
-               byteArray.writeInt (worldDefine.mSettings.mCameraCenterX);
-               byteArray.writeInt (worldDefine.mSettings.mCameraCenterY);
-               byteArray.writeInt (worldDefine.mSettings.mWorldLeft);
-               byteArray.writeInt (worldDefine.mSettings.mWorldTop);
-               byteArray.writeInt (worldDefine.mSettings.mWorldWidth);
-               byteArray.writeInt (worldDefine.mSettings.mWorldHeight);
-               byteArray.writeUnsignedInt (worldDefine.mSettings.mBackgroundColor);
-               byteArray.writeByte (worldDefine.mSettings.mBuildBorder ? 1 : 0);
-               byteArray.writeUnsignedInt (worldDefine.mSettings.mBorderColor);
+               byteArray.writeInt (sceneDefine.mSettings.mCameraCenterX);
+               byteArray.writeInt (sceneDefine.mSettings.mCameraCenterY);
+               byteArray.writeInt (sceneDefine.mSettings.mWorldLeft);
+               byteArray.writeInt (sceneDefine.mSettings.mWorldTop);
+               byteArray.writeInt (sceneDefine.mSettings.mWorldWidth);
+               byteArray.writeInt (sceneDefine.mSettings.mWorldHeight);
+               byteArray.writeUnsignedInt (sceneDefine.mSettings.mBackgroundColor);
+               byteArray.writeByte (sceneDefine.mSettings.mBuildBorder ? 1 : 0);
+               byteArray.writeUnsignedInt (sceneDefine.mSettings.mBorderColor);
             }
             
             if (worldDefine.mVersion >= 0x0106 && worldDefine.mVersion < 0x0108)
             {
-               byteArray.writeInt (worldDefine.mSettings.mPhysicsShapesPotentialMaxCount);
-               byteArray.writeShort (worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
+               byteArray.writeInt (sceneDefine.mSettings.mPhysicsShapesPotentialMaxCount);
+               byteArray.writeShort (sceneDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
             }
             
             if (worldDefine.mVersion >= 0x0108)
             {
-               byteArray.writeByte (worldDefine.mSettings.mIsInfiniteWorldSize ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mIsInfiniteWorldSize ? 1 : 0);
                
-               byteArray.writeByte (worldDefine.mSettings.mBorderAtTopLayer ? 1 : 0);
-               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderLeftThickness);
-               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderTopThickness);
-               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderRightThickness);
-               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderBottomThickness);
+               byteArray.writeByte (sceneDefine.mSettings.mBorderAtTopLayer ? 1 : 0);
+               byteArray.writeFloat (sceneDefine.mSettings.mWorldBorderLeftThickness);
+               byteArray.writeFloat (sceneDefine.mSettings.mWorldBorderTopThickness);
+               byteArray.writeFloat (sceneDefine.mSettings.mWorldBorderRightThickness);
+               byteArray.writeFloat (sceneDefine.mSettings.mWorldBorderBottomThickness);
                
-               byteArray.writeFloat (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
-               byteArray.writeFloat (worldDefine.mSettings.mDefaultGravityAccelerationAngle);
+               byteArray.writeFloat (sceneDefine.mSettings.mDefaultGravityAccelerationMagnitude);
+               byteArray.writeFloat (sceneDefine.mSettings.mDefaultGravityAccelerationAngle);
                
-               byteArray.writeByte (worldDefine.mSettings.mRightHandCoordinates ? 1 : 0);
-               byteArray.writeDouble (worldDefine.mSettings.mCoordinatesOriginX);
-               byteArray.writeDouble (worldDefine.mSettings.mCoordinatesOriginY);
-               byteArray.writeDouble (worldDefine.mSettings.mCoordinatesScale);
+               byteArray.writeByte (sceneDefine.mSettings.mRightHandCoordinates ? 1 : 0);
+               byteArray.writeDouble (sceneDefine.mSettings.mCoordinatesOriginX);
+               byteArray.writeDouble (sceneDefine.mSettings.mCoordinatesOriginY);
+               byteArray.writeDouble (sceneDefine.mSettings.mCoordinatesScale);
                
-               byteArray.writeByte (worldDefine.mSettings.mIsCiRulesEnabled ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mIsCiRulesEnabled ? 1 : 0);
             }
             
             if (worldDefine.mVersion >= 0x0155)
             {
-               byteArray.writeByte (worldDefine.mSettings.mAutoSleepingEnabled ? 1 : 0);
-               byteArray.writeByte (worldDefine.mSettings.mCameraRotatingEnabled ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mAutoSleepingEnabled ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mCameraRotatingEnabled ? 1 : 0);
             }
             
             if (worldDefine.mVersion >= 0x0160)
             {
-               byteArray.writeByte (worldDefine.mSettings.mInitialSpeedX);
-               byteArray.writeFloat (worldDefine.mSettings.mPreferredFPS);
-               byteArray.writeByte (worldDefine.mSettings.mPauseOnFocusLost ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mInitialSpeedX);
+               byteArray.writeFloat (sceneDefine.mSettings.mPreferredFPS);
+               byteArray.writeByte (sceneDefine.mSettings.mPauseOnFocusLost ? 1 : 0);
                
-               byteArray.writeByte (worldDefine.mSettings.mPhysicsSimulationEnabled ? 1 : 0);
-               byteArray.writeFloat (worldDefine.mSettings.mPhysicsSimulationStepTimeLength);
-               byteArray.writeUnsignedInt (worldDefine.mSettings.mPhysicsSimulationQuality);
-               byteArray.writeByte (worldDefine.mSettings.mCheckTimeOfImpact ? 1 : 0);
+               byteArray.writeByte (sceneDefine.mSettings.mPhysicsSimulationEnabled ? 1 : 0);
+               byteArray.writeFloat (sceneDefine.mSettings.mPhysicsSimulationStepTimeLength);
+               byteArray.writeUnsignedInt (sceneDefine.mSettings.mPhysicsSimulationQuality);
+               byteArray.writeByte (sceneDefine.mSettings.mCheckTimeOfImpact ? 1 : 0);
             }
          }
          
@@ -3545,10 +4608,16 @@ package common {
          
          if (worldDefine.mVersion >= 0x0102)
          {
-            byteArray.writeShort (worldDefine.mCollisionCategoryDefines.length);
-            for (var ccId:int = 0; ccId < worldDefine.mCollisionCategoryDefines.length; ++ ccId)
+            byteArray.writeShort (sceneDefine.mCollisionCategoryDefines.length);
+            for (var ccId:int = 0; ccId < sceneDefine.mCollisionCategoryDefines.length; ++ ccId)
             {
-               var ccDefine:Object = worldDefine.mCollisionCategoryDefines [ccId];
+               var ccDefine:Object = sceneDefine.mCollisionCategoryDefines [ccId];
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (ccDefine.mKey == null ? "" : ccDefine.mKey);
+                  WriteTimeValue (byteArray, ccDefine.mTimeModified);
+               }
                
                byteArray.writeUTF (ccDefine.mName);
                byteArray.writeByte (ccDefine.mCollideInternally ? 1 : 0);
@@ -3556,12 +4625,12 @@ package common {
                byteArray.writeFloat (ccDefine.mPosY);
             }
             
-            byteArray.writeShort (worldDefine.mDefaultCollisionCategoryIndex);
+            byteArray.writeShort (sceneDefine.mDefaultCollisionCategoryIndex);
             
-            byteArray.writeShort (worldDefine.mCollisionCategoryFriendLinkDefines.length);
-            for (var pairId:int = 0; pairId < worldDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
+            byteArray.writeShort (sceneDefine.mCollisionCategoryFriendLinkDefines.length);
+            for (var pairId:int = 0; pairId < sceneDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
             {
-               var pairDefine:Object = worldDefine.mCollisionCategoryFriendLinkDefines [pairId];
+               var pairDefine:Object = sceneDefine.mCollisionCategoryFriendLinkDefines [pairId];
                
                byteArray.writeShort (pairDefine.mCollisionCategory1Index);
                byteArray.writeShort (pairDefine.mCollisionCategory2Index);
@@ -3575,18 +4644,24 @@ package common {
             var functionId:int;
             var functionDefine:FunctionDefine;
             
-            byteArray.writeShort (worldDefine.mFunctionDefines.length);
+            byteArray.writeShort (sceneDefine.mFunctionDefines.length);
             
-            for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+            for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
             {
-               functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+               functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
                
                TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, true, true, null);
             }
             
-            for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+            for (functionId = 0; functionId < sceneDefine.mFunctionDefines.length; ++ functionId)
             {
-               functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+               functionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
+               
+               if (worldDefine.mVersion >= 0x0201)
+               {
+                  byteArray.writeUTF (functionDefine.mKey == null ? "" : functionDefine.mKey);
+                  WriteTimeValue (byteArray, functionDefine.mTimeModified);
+               }
                
                byteArray.writeUTF (functionDefine.mName);
                byteArray.writeFloat (functionDefine.mPosX);
@@ -3597,7 +4672,7 @@ package common {
                   byteArray.writeByte (functionDefine.mDesignDependent ? 1 : 0);
                }
                
-               TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, true, false, worldDefine.mFunctionDefines);
+               TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, true, false, sceneDefine.mFunctionDefines);
             }
          }
          
@@ -3609,13 +4684,13 @@ package common {
          
          var i:int;
          
-         var numEntities:int = worldDefine.mEntityDefines.length;
+         var numEntities:int = sceneDefine.mEntityDefines.length;
          
-         byteArray.writeShort (worldDefine.mEntityDefines.length);
+         byteArray.writeShort (sceneDefine.mEntityDefines.length);
          
          for (createId = 0; createId < numEntities; ++ createId)
          {
-            var entityDefine:Object = worldDefine.mEntityDefines [createId];
+            var entityDefine:Object = sceneDefine.mEntityDefines [createId];
             
             byteArray.writeShort (entityDefine.mEntityType);
             if (worldDefine.mVersion >= 0x0103)
@@ -3669,9 +4744,9 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                   else
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -3732,8 +4807,8 @@ package common {
                            {
                               if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                               {
-                                 TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mPreFunctionDefine, false, true, worldDefine.mFunctionDefines, false);
-                                 TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mPostFunctionDefine, false, true, worldDefine.mFunctionDefines, false);
+                                 TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mPreFunctionDefine, false, true, sceneDefine.mFunctionDefines, false);
+                                 TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mPostFunctionDefine, false, true, sceneDefine.mFunctionDefines, false);
                               }
                            }
                            
@@ -3753,28 +4828,28 @@ package common {
                   
                   if (worldDefine.mVersion >= 0x0153)
                   {
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                   }
                   else
                   {
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
                   }
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                   else
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, sceneDefine.mFunctionDefines);
                }
                //>>from v1.56
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
-                  TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
-                  TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
+                  TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, sceneDefine.mFunctionDefines);
                }
                //<<  
             }
@@ -3863,11 +4938,13 @@ package common {
                      )
                   {
                      byteArray.writeUTF (entityDefine.mText);
-                     byteArray.writeByte (entityDefine.mWordWrap ? 1 : 0);
+                     //byteArray.writeByte (entityDefine.mWordWrap ? 1 : 0); // before v2.04
+                     byteArray.writeByte (entityDefine.mFlags1); // since v2.04
                      
                      if (worldDefine.mVersion >= 0x0108)
                      {
-                        byteArray.writeByte (entityDefine.mAdaptiveBackgroundSize ? 1 : 0);
+                        //byteArray.writeByte (entityDefine.mAdaptiveBackgroundSize ? 1 : 0); // before v2.04
+                        byteArray.writeByte (entityDefine.mFlags2); // since v2.04
                         byteArray.writeUnsignedInt (entityDefine.mTextColor);
                         byteArray.writeShort (entityDefine.mFontSize);
                         byteArray.writeByte (entityDefine.mIsBold ? 1 : 0);
@@ -4040,7 +5117,7 @@ package common {
          // ...
          if (worldDefine.mVersion >= 0x0107)
          {
-            WriteShortArrayIntoBinFile (worldDefine.mEntityAppearanceOrder, byteArray);
+            WriteShortArrayIntoBinFile (sceneDefine.mEntityAppearanceOrder, byteArray);
          }
          
          // ...
@@ -4048,11 +5125,11 @@ package common {
          var groupId:int;
          var brotherIDs:Array;
          
-         byteArray.writeShort (worldDefine.mBrotherGroupDefines.length);
+         byteArray.writeShort (sceneDefine.mBrotherGroupDefines.length);
          
-         for (groupId = 0; groupId < worldDefine.mBrotherGroupDefines.length; ++ groupId)
+         for (groupId = 0; groupId < sceneDefine.mBrotherGroupDefines.length; ++ groupId)
          {
-            brotherIDs = worldDefine.mBrotherGroupDefines [groupId] as Array;
+            brotherIDs = sceneDefine.mBrotherGroupDefines [groupId] as Array;
             
             WriteShortArrayIntoBinFile (brotherIDs, byteArray);
          }
@@ -4062,7 +5139,7 @@ package common {
          {
             if (worldDefine.mVersion >= 0x0157)
             {
-               TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mSessionVariableDefines, true);
+               TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mSessionVariableDefines, true, false);
             }
             
             if (worldDefine.mVersion == 0x0152)
@@ -4071,7 +5148,7 @@ package common {
                byteArray.writeUTF ("");//variableSpaceDefine.mName);
                byteArray.writeShort (-1);//variableSpaceDefine.mParentPackageId);
             }
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mGlobalVariableDefines, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mGlobalVariableDefines, true, false);
             
             if (worldDefine.mVersion == 0x0152)
             {
@@ -4079,88 +5156,8 @@ package common {
                byteArray.writeUTF ("");//variableSpaceDefine.mName);
                byteArray.writeShort (-1);//variableSpaceDefine.mParentPackageId);
             }
-            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mEntityPropertyDefines, true);
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, sceneDefine.mEntityPropertyDefines, true, false);
          }
-         
-         // modules
-         
-         if (worldDefine.mVersion >= 0x0158)
-         {
-            byteArray.writeShort (worldDefine.mImageDefines.length);
-            for (var imageId:int = 0; imageId < worldDefine.mImageDefines.length; ++ imageId)
-            {
-               var imageDefine:Object = worldDefine.mImageDefines [imageId];
-               
-               byteArray.writeUTF (imageDefine.mName == null ? "" : imageDefine.mName);
-               
-               if (imageDefine.mFileData == null || imageDefine.mFileData.length == 0)
-               {
-                  byteArray.writeInt (0);
-               }
-               else
-               {
-                  byteArray.writeInt (imageDefine.mFileData.length);
-                  byteArray.writeBytes (imageDefine.mFileData, 0, imageDefine.mFileData.length);
-               }
-            }
-
-            byteArray.writeShort (worldDefine.mPureImageModuleDefines.length);
-            for (var divisionId:int = 0; divisionId < worldDefine.mPureImageModuleDefines.length; ++ divisionId)
-            {
-               var divisionDefine:Object = worldDefine.mPureImageModuleDefines [divisionId];
-
-               byteArray.writeShort (divisionDefine.mImageIndex);
-               byteArray.writeShort (divisionDefine.mLeft);
-               byteArray.writeShort (divisionDefine.mTop);
-               byteArray.writeShort (divisionDefine.mRight);
-               byteArray.writeShort (divisionDefine.mBottom);
-            }
-
-            byteArray.writeShort (worldDefine.mAssembledModuleDefines.length);
-            for (var assembledModuleId:int = 0; assembledModuleId < worldDefine.mAssembledModuleDefines.length; ++ assembledModuleId)
-            {
-               var assembledModuleDefine:Object = worldDefine.mAssembledModuleDefines [assembledModuleId];
-
-               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, assembledModuleDefine.mModulePartDefines, false);
-            }
-
-            byteArray.writeShort (worldDefine.mSequencedModuleDefines.length);
-            for (var sequencedModuleId:int = 0; sequencedModuleId < worldDefine.mSequencedModuleDefines.length; ++ sequencedModuleId)
-            {
-               var sequencedModuleDefine:Object = worldDefine.mSequencedModuleDefines [sequencedModuleId];
-
-               //byteArray.writeByte (sequencedModuleDefine.mIsLooped ? 1 : 0);
-               WriteModuleInstanceDefinesIntoBinFile (worldDefine.mVersion, byteArray, sequencedModuleDefine.mModuleSequenceDefines, true);
-            }
-         }
-         
-         // sounds
-         
-         if (worldDefine.mVersion >= 0x0159)
-         {
-            byteArray.writeShort (worldDefine.mSoundDefines.length);
-            for (var soundId:int = 0; soundId < worldDefine.mSoundDefines.length; ++ soundId)
-            {
-               var soundDefine:Object = worldDefine.mSoundDefines [soundId];
-               
-               byteArray.writeUTF (soundDefine.mName == null ? "" : soundDefine.mName);
-               byteArray.writeInt (soundDefine.mAttributeBits);
-               byteArray.writeInt (soundDefine.mNumSamples);
-               
-               if (soundDefine.mFileData == null || soundDefine.mFileData == 0)
-               {
-                  byteArray.writeInt (0);
-               }
-               else
-               {
-                  byteArray.writeInt (soundDefine.mFileData.length);
-                  byteArray.writeBytes (soundDefine.mFileData, 0, soundDefine.mFileData.length);
-               }
-            }
-         }
-         
-         // ...
-         return byteArray;
       }
       
       public static function WriteShapePhysicsPropertiesAndAiType (byteArray:ByteArray, entityDefine:Object, worldDefine:WorldDefine, writeAiType:Boolean):void

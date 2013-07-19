@@ -7,7 +7,7 @@ package editor.entity {
    
    import editor.selection.SelectionProxy;
    
-   import editor.core.EditorObject;
+   //import editor.core.EditorObject;
    
    import editor.asset.Asset;
    
@@ -27,6 +27,11 @@ package editor.entity {
          super (container);
          
          mEntityContainer = container;
+      }
+      
+      public function GetScene ():Scene
+      {
+         return mEntityContainer;
       }
       
       public function IsUtilityEntity ():Boolean
@@ -61,9 +66,16 @@ package editor.entity {
       
       override public function GetInfoText ():String
       {
-         return     "x = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (GetPositionX ()), 6) 
-                + ", y = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (GetPositionY ()), 6) 
-                + ", angle = " + ValueAdjuster.Number2Precision ((mEntityContainer.GetCoordinateSystem ().D2P_RotationRadians (GetRotation ()) * Define.kRadians2Degrees), 6);
+         var infoText:String = "x = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (GetPositionX ()), 6) 
+                             + ", y = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (GetPositionY ()), 6) 
+                             + ", angle = " + ValueAdjuster.Number2Precision ((mEntityContainer.GetCoordinateSystem ().D2P_RotationRadians (GetRotation ()) * Define.kRadians2Degrees), 6)
+                             + ", scale = " + ValueAdjuster.Number2Precision (GetScale (), 6)
+                             ;
+         
+         if (IsFlipped ())
+            infoText = infoText + ", flipped";
+         
+         return infoText;
       }
       
       public function GetPhysicsShapesCount ():uint

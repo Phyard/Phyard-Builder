@@ -731,7 +731,7 @@ package editor.image {
          }
       }
 
-      override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
+      override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):Boolean
       {
          if (mAssetImageModule is AssetImageShapeModule)
          {
@@ -740,6 +740,8 @@ package editor.image {
             var result:ControlPointModifyResult = (mAssetImageModule as AssetImageShapeModule).GetVectorShape ().OnMoveControlPoint (mControlPoints, controlPoint.GetIndex (), localDisplayment.x, localDisplayment.y);
             OnControlPointsModified (result, done);
          }
+         
+         return false;
       }
 
       override public function DeleteControlPoint (controlPoint:ControlPoint):Boolean

@@ -19,6 +19,13 @@
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:Spacer width="100%"/>
+            <mx:Label id="Label_Scale" text="Scale:" textAlign="right" width="50"/>
+            <mx:TextInput id="Text_Scale" text="" width="100"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="50"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
             <mx:Label id="Label_Alpha" text="Alpha:" textAlign="right" width="50"/>
             <mx:TextInput id="Text_Alpha" text="" width="100"/>
             <mx:Spacer width="100%"/>
@@ -31,6 +38,13 @@
             <mx:Spacer width="100%"/>
             <mx:Label id="Label_Angle" text="Angle:" textAlign="right" width="50"/>
             <mx:TextInput id="Text_Angle" text="" width="100"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_Flipped" label="Flipped" width="100"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="50"/>
+            <mx:Spacer width="100"/>
             <mx:Spacer width="100%"/>
          </mx:HBox>
          <mx:HBox width="100%">
@@ -62,6 +76,8 @@
             Text_PosX.text = "" + inputValues.mPosX;
             Text_PosY.text = "" + inputValues.mPosY;
             Text_Angle.text = "" + inputValues.mAngle;
+            Text_Scale.text = "" + inputValues.mScale;
+            CheckBox_Flipped.selected = inputValues.mIsFlipped;
             Text_Alpha.text = "" + inputValues.mAlpha;
             
             CheckBox_Visible.selected = inputValues.mIsVisible;
@@ -80,6 +96,17 @@
                Label_Angle.enabled = false;
                Text_Angle.enabled = false;
             }
+            
+            if (inputValues.mScaleNonSense != null && inputValues.mScaleNonSense)
+            {
+               Label_Scale.enabled = false;
+               Text_Scale.enabled = false;
+            } 
+            
+            if (inputValues.mFlippedNonSense != null && inputValues.mFlippedNonSense)
+            {
+               CheckBox_Flipped.enabled = false;
+            } 
             
             if (inputValues.mVisibleNonsense != null && inputValues.mVisibleNonsense)
             {
@@ -113,6 +140,14 @@
                returnValues.mAngle = valueAngle;
             else
                returnValues.mAngle = mInputValues.mAngle;
+            
+            var valueScale:Number = parseFloat (Text_Scale.text);
+            if ( ! isNaN (valueScale) )
+               returnValues.mScale = valueScale;
+            else
+               returnValues.mScale = mInputValues.mAngle;
+            
+            returnValues.mIsFlipped = CheckBox_Flipped.selected;
             
             var alpha:Number = parseFloat (Text_Alpha.text);
             if ( ! isNaN (alpha) )

@@ -168,6 +168,23 @@ public static function GetRelatedEntities (seedShape:EntityShape, bTeleportBroth
 // clone and transform
 //================================================================
 
+private static function CreateAndPushEntityDefine (entity:Entity, entityDefineArray:Array, mapEntity2Define:Dictionary):Object
+{
+   var entityDefine:Object = entity.ToEntityDefine (new Object ());
+   if (entityDefine != null)
+   {
+      entityDefine.mCloneFromEntity = entity;
+
+      entityDefine.mAppearanceOrderId = entity.GetAppearanceId ();
+      entityDefine.mCreationOrderId = entity.GetCreationId ();
+      entityDefineArray.push (entityDefine);
+
+      mapEntity2Define [entity] = entityDefine;
+   }
+
+   return entityDefine;
+}
+
 public static function CloneShape (seedShape:EntityShape, targetX:Number, targetY:Number, bCloneBrothers:Boolean, bCloneConnectedMovables:Boolean, bCloneConnectedStatics:Boolean):EntityShape
 {
    if (seedShape == null)
@@ -182,7 +199,10 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    var world:World = seedShape.GetWorld ();
 
    var worldDefine:WorldDefine = new WorldDefine ();
-   var entityDefineArray:Array = worldDefine.mEntityDefines;
+   worldDefine.mVersion = Version.VersionNumber;
+   var sceneDefine:SceneDefine = new SceneDefine ();
+   worldDefine.mSceneDefines.push (sceneDefine);
+   var entityDefineArray:Array = sceneDefine.mEntityDefines;
 
    var entityDefine:Object;
    var entity:Entity;
@@ -239,7 +259,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
 
    var entityDefinesSortByAppearanceId:Array = entityDefineArray.concat ();
    entityDefinesSortByAppearanceId.sortOn ("mAppearanceOrderId", Array.NUMERIC);
-   var appearanceOrderArray:Array = worldDefine.mEntityAppearanceOrder;
+   var appearanceOrderArray:Array = sceneDefine.mEntityAppearanceOrder;
    for (i = 0; i < count; ++ i)
    {
       entityDefine = entityDefinesSortByAppearanceId [i] as Object;
@@ -248,7 +268,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
 
    // create brother groups array
 
-   var brotherGroupDefines:Array = worldDefine.mBrotherGroupDefines;
+   var brotherGroupDefines:Array = sceneDefine.mBrotherGroupDefines;
    count = bodiesToTeleport.length;
    for (i = 0; i < count; ++ i)
    {
@@ -320,7 +340,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    worldEntityList.UnmarkLastTail ();
    worldEntityBodyList.UnmarkLastTail ();
 
-   // bug! OnCreated and InitEntities may call cline APIs, which then call EntityList.MarkLastTail (),
+   // bug! OnCreated and InitEntities may call clone APIs, which then call EntityList.MarkLastTail (),
    //which will make nest MarkLastTail, ..., then bugs.
 
    //world.RegisterEventHandlersForRuntimeCreatedEntities (true);
@@ -348,7 +368,8 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
       joint = jointsToTeleport [i] as EntityJoint;
       entityDefine = mapEntity2Define [joint];
 
-      entity = entityDefine.mEntity; // the cloned one
+      //entity = entityDefine.mEntity; // the cloned one
+      entity = entityDefine.mLoadingTimeInfos.mEntity; // the cloned one
 
       (entity as EntityJoint).CopyRuntimeInfosFrom (joint)
    }
@@ -359,24 +380,8 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    if (entityDefine == null)
       return null;
 
-   return entityDefine.mEntity as EntityShape;
-}
-
-private static function CreateAndPushEntityDefine (entity:Entity, entityDefineArray:Array, mapEntity2Define:Dictionary):Object
-{
-   var entityDefine:Object = entity.ToEntityDefine (new Object ());
-   if (entityDefine != null)
-   {
-      entityDefine.mCloneFromEntity = entity;
-
-      entityDefine.mAppearanceOrderId = entity.GetAppearanceId ();
-      entityDefine.mCreationOrderId = entity.GetCreationId ();
-      entityDefineArray.push (entityDefine);
-
-      mapEntity2Define [entity] = entityDefine;
-   }
-
-   return entityDefine;
+   //return entityDefine.mEntity as EntityShape;
+   return entityDefine.mLoadingTimeInfos.mEntity as EntityShape;
 }
 
 //================================================================
@@ -726,9 +731,39 @@ public static function Scale (seedShape:EntityShape, scaleRatio:Number, fixedPoi
 // change size (different with scale)
 //================================================================
 
+public static function ChangeBorderThickness (shape:EntityShape, thickness:Number):void
+{
+   if (thickness < 0 || thickness == shape.GetBorderThickness ())
+      return;
+
+   var body:EntityBody = shape.GetBody ();
+
+   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+   var isPhysicsShape:Boolean = shape.IsPhysicsShape ();
+
+   shape.SetBorderThickness (thickness);
+
+   OnShapeGeometryChanged (body, isPhysicsBody, shape, isPhysicsShape);
+}
+
+public static function ChangeCurveThickness (shape:EntityShapePolyline, thickness:Number):void
+{
+   if (thickness < 0 || thickness == shape.GetCurveThickness ())
+      return;
+
+   var body:EntityBody = shape.GetBody ();
+
+   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+   var isPhysicsShape:Boolean = shape.IsPhysicsShape ();
+
+   shape.SetCurveThickness (thickness);
+
+   OnShapeGeometryChanged (body, isPhysicsBody, shape, isPhysicsShape);
+}
+
 public static function ChangeCircleRadius (circle:EntityShapeCircle, radius:Number):void
 {
-   if (radius <= 0)
+   if (radius <= 0 || radius == circle.GetRadius ())
       return;
 
    var body:EntityBody = circle.GetBody ();
@@ -1300,8 +1335,7 @@ public function AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity
    }
 }
 
-// todo: 应该像AddLinearMomentum一样加一个onBodyCenter参数。
-// - 需要调用AddLinearMomentum来做适当调整.
+// todo: 搴旇鍍廇ddLinearMomentum涓�牱鍔犱竴涓猳nBodyCenter鍙傛暟銆�// - 闇�璋冪敤AddLinearMomentum鏉ュ仛閫傚綋璋冩暣.
 public function AddAngularMomentum (value:Number, valueIsVelocity:Boolean = false):void
 {
    // non-physics will also be valid

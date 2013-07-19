@@ -167,10 +167,6 @@ package editor.trigger.entity {
          return mSelectionProxy.ContainsPoint (pointX, pointY);
       }
       
-      // these function will be moved to EditorObject
-      
-      
-      
       public function GetWorldPosition ():Point
       {
          return DisplayObjectUtil.LocalToLocal (this, mEntityContainer, new Point (0, 0))
@@ -238,6 +234,9 @@ package editor.trigger.entity {
             return;
          
          contextMenu = new ContextMenu ();
+         
+         if (contextMenu == null) // may be still null on some devices
+            return;
          
          contextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;

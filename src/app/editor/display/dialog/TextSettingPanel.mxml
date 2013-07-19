@@ -9,10 +9,18 @@
       creationComplete="OnInitPanel()"
       >
       <mx:VBox height="100%" width="100%">
-         <mx:HBox width="550" verticalAlign="middle">
-            <mx:CheckBox id="CheckBox_AdaptiveBackgroundSize" label="Adaptive Background Size" click="OnChangeAdaptiveBackgroundSize ()"/>
+         <mx:HBox width="650" verticalAlign="middle">
+            <mx:CheckBox id="CheckBox_AdaptiveBackgroundSize" label="Adaptive Background Size"/>
             <mx:CheckBox id="CheckBox_WordWrap" label="Word Wrap"/>
-            <mx:Spacer width="5"/>
+            <mx:CheckBox id="CheckBox_Editable" label="Editable" click="OnChangeEditable ();"/>
+            <mx:CheckBox id="CheckBox_Selectable" label="Selectable" click="OnChangeSelectable ();"/>
+            <mx:CheckBox id="CheckBox_ClipText" label="Clip Text"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:HBox width="650" verticalAlign="middle">
+            <mx:Label text="Text Format:"/>
+            <mx:ComboBox id="SelectList_TextFormat" rowCount="10" change="OnChangeTextFormat ();"/>
+            <mx:Label text="Font Size:"/>
             <mx:ComboBox id="SelectList_FontSize"/>
             <mx:ColorPicker id="ColorPicker_TextColor" showTextField="true" selectedColor="0x000000"/>
             <mx:Button id="Button_Bold" toolTip="Bold" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_bold.png')" downIcon="@Embed('../../../res/dialog/text_bold-sel.png')" overIcon="@Embed('../../../res/dialog/text_bold.png')" selectedUpIcon="@Embed('../../../res/dialog/text_bold-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_bold-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_bold.png')" />
@@ -21,6 +29,10 @@
             <mx:Button id="Button_AlignLeft" change="OnTextAlignChanged (event);" toolTip="Align Left" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_left.png')" downIcon="@Embed('../../../res/dialog/text_align_left-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_left.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_left-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_left-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_left.png')" />
             <mx:Button id="Button_AlignCenter" change="OnTextAlignChanged (event);" toolTip="Align Center" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_center.png')" downIcon="@Embed('../../../res/dialog/text_align_center-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_center.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_center-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_center-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_center.png')" />
             <mx:Button id="Button_AlignRight" change="OnTextAlignChanged (event);" toolTip="Align Right" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../../res/dialog/text_align_right.png')" downIcon="@Embed('../../../res/dialog/text_align_right-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_right.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_right-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_right-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_right.png')" />
+            <mx:Button id="Button_AlignTop" change="OnTextAlignChanged (event);" toolTip="Align Top" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" disabledIcon="@Embed('../../../res/dialog/text_align_top-disabled.png')" selectedDisabledIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" upIcon="@Embed('../../../res/dialog/text_align_top.png')" downIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_top.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_top-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_top.png')" />
+            <mx:Button id="Button_AlignMiddle" change="OnTextAlignChanged (event);" toolTip="Align Middle" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" disabledIcon="@Embed('../../../res/dialog/text_align_middle-disabled.png')" upIcon="@Embed('../../../res/dialog/text_align_middle.png')" downIcon="@Embed('../../../res/dialog/text_align_middle-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_middle.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_middle-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_middle-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_middle.png')" />
+            <mx:Button id="Button_AlignBottom" change="OnTextAlignChanged (event);" toolTip="Align Bottom" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" disabledIcon="@Embed('../../../res/dialog/text_align_bottom-disabled.png')" upIcon="@Embed('../../../res/dialog/text_align_bottom.png')" downIcon="@Embed('../../../res/dialog/text_align_bottom-sel.png')" overIcon="@Embed('../../../res/dialog/text_align_bottom.png')" selectedUpIcon="@Embed('../../../res/dialog/text_align_bottom-sel.png')" selectedOverIcon="@Embed('../../../res/dialog/text_align_bottom-sel.png')" selectedDownIcon="@Embed('../../../res/dialog/text_align_bottom.png')" />
+            <mx:Spacer width="100%"/>
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:TextArea id="TextArea_Text" width="100%" height="200" editable="true" wordWrap="true">
@@ -37,6 +49,9 @@
          import flash.events.Event;
    
          import com.tapirgames.util.TextUtil;
+         
+         import editor.util.DataUtil;
+         import editor.world.Lists;
 
          import common.Define;
 
@@ -64,18 +79,62 @@
          private function OnInitPanel ():void
          {
             //TextArea_Text.maxChars = 0; //Define.MaxTextLength;
+            
+            SelectList_TextFormat.dataProvider = DataUtil.GetListWithDataInLabel (Lists.mTextFormatList);
          }
-
-         private function OnChangeAdaptiveBackgroundSize ():void
+         
+         private function OnChangeTextFormat ():void
          {
-            if (CheckBox_AdaptiveBackgroundSize.selected)
+            if (SelectList_TextFormat.selectedItem.data == TextUtil.TextFormat_Plain)
             {
-               CheckBox_WordWrap.selected = false;
-               CheckBox_WordWrap.enabled = false;
+               CheckBox_Editable.enabled = true;
             }
             else
             {
-               CheckBox_WordWrap.enabled = true;
+               CheckBox_Editable.enabled = false;
+               CheckBox_Editable.selected = false;
+            }
+            
+            OnChangeEditable ();
+         }
+         
+         private function OnChangeEditable ():void
+         {
+            if (CheckBox_Editable.selected)
+            {
+               Button_AlignTop.selected = true;
+               Button_AlignMiddle.selected = false;
+               Button_AlignBottom.selected = false;
+               
+               Button_AlignTop.enabled = false;
+               Button_AlignMiddle.enabled = false;
+               Button_AlignBottom.enabled = false;
+               
+               CheckBox_Selectable.enabled = false;
+               CheckBox_Selectable.selected = true;
+            }
+            else
+            {
+               Button_AlignTop.enabled = true;
+               Button_AlignMiddle.enabled = true;
+               Button_AlignBottom.enabled = true;
+               
+               CheckBox_Selectable.enabled = true;
+            }
+            
+            OnChangeSelectable ();
+         }
+         
+         private function OnChangeSelectable ():void
+         {
+            if (CheckBox_Selectable.selected || CheckBox_Editable.selected)
+            {
+               CheckBox_ClipText.enabled = true;
+            }
+            else
+            {
+               CheckBox_ClipText.enabled = false;
+               CheckBox_ClipText.selected = false;
             }
          }
 
@@ -93,11 +152,29 @@
                Button_AlignCenter.selected = true;
                Button_AlignRight.selected = false;
             }
-            else
+            else if (event.target == Button_AlignLeft)
             {
                Button_AlignLeft.selected = true;
                Button_AlignCenter.selected = false;
                Button_AlignRight.selected = false;
+            }
+            else if (event.target == Button_AlignBottom)
+            {
+               Button_AlignTop.selected = false;
+               Button_AlignMiddle.selected = false;
+               Button_AlignBottom.selected = true;
+            }
+            else if (event.target == Button_AlignMiddle)
+            {
+               Button_AlignTop.selected = false;
+               Button_AlignMiddle.selected = true;
+               Button_AlignBottom.selected = false;
+            }
+            else if (event.target == Button_AlignTop)
+            {
+               Button_AlignTop.selected = true;
+               Button_AlignMiddle.selected = false;
+               Button_AlignBottom.selected = false;
             }
          }
 
@@ -117,30 +194,52 @@
             Button_Italic.selected = inputValues.mIsItalic;
             Button_Underlined.selected = inputValues.mIsUnderlined;
             CheckBox_WordWrap.selected = inputValues.mWordWrap;
+            CheckBox_Editable.selected = inputValues.mEditable;
+            CheckBox_Selectable.selected = inputValues.mSelectable;
             ColorPicker_TextColor.selectedColor = inputValues.mTextColor;
             CheckBox_AdaptiveBackgroundSize.selected = inputValues.mAdaptiveBackgroundSize;
-
-            if (inputValues.mTextAlign == TextUtil.TextAlign_Right)
+            CheckBox_ClipText.selected = inputValues.mClipText;
+            SelectList_TextFormat.selectedIndex = DataUtil.SelectedValue2SelectedIndex (Lists.mTextFormatList, inputValues.mTextFormat);
+            
+            var hAlign:int = inputValues.mTextAlign & 0x0F;
+            if (hAlign == TextUtil.TextAlign_Right)
                Button_AlignRight.selected = true;
-            else if (inputValues.mTextAlign == TextUtil.TextAlign_Center)
+            else if (hAlign == TextUtil.TextAlign_Center)
                Button_AlignCenter.selected = true;
             else
                Button_AlignLeft.selected = true;
+            
+            var vAlign:int = inputValues.mTextAlign & 0xF0;
+            if (vAlign == TextUtil.TextAlign_Bottom)
+               Button_AlignBottom.selected = true;
+            else if (vAlign == TextUtil.TextAlign_Middle)
+               Button_AlignMiddle.selected = true;
+            else
+               Button_AlignTop.selected = true;
 
             TextArea_Text.text = inputValues.mText;
 
-            OnChangeAdaptiveBackgroundSize ();
+            OnChangeTextFormat ();
+            
+            if (inputValues.mDisableEditableEditing != null && inputValues.mDisableEditableEditing)
+               CheckBox_Editable.enabled = false;
+            if (inputValues.mDisableSelectableEditing != null && inputValues.mDisableSelectableEditing)
+               CheckBox_Selectable.enabled = false;
          }
 
          public function GetValues (returnValues:Object):void
          {
             returnValues.mAdaptiveBackgroundSize = CheckBox_AdaptiveBackgroundSize.selected;
+            returnValues.mClipText = CheckBox_ClipText.selected;
             returnValues.mWordWrap = CheckBox_WordWrap.selected;
+            returnValues.mEditable = CheckBox_Editable.selected;
+            returnValues.mSelectable = CheckBox_Selectable.selected;
             returnValues.mTextColor = ColorPicker_TextColor.selectedColor;
             returnValues.mFontSize = mFontSizes [SelectList_FontSize.selectedIndex].label;
             returnValues.mIsBold = Button_Bold.selected;
             returnValues.mIsItalic = Button_Italic.selected;
             returnValues.mIsUnderlined = Button_Underlined.selected;
+            returnValues.mTextFormat = SelectList_TextFormat.selectedItem.data;
 
             if (Button_AlignRight.selected)
                returnValues.mTextAlign = TextUtil.TextAlign_Right;
@@ -148,6 +247,13 @@
                returnValues.mTextAlign = TextUtil.TextAlign_Center;
             else
                returnValues.mTextAlign = TextUtil.TextAlign_Left;
+            
+            if (Button_AlignBottom.selected)
+               returnValues.mTextAlign |= TextUtil.TextAlign_Bottom;
+            else if (Button_AlignMiddle.selected)
+               returnValues.mTextAlign |= TextUtil.TextAlign_Middle;
+            else
+               returnValues.mTextAlign |= TextUtil.TextAlign_Top;
 
             returnValues.mText = TextArea_Text.text;
          }

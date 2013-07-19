@@ -58,6 +58,13 @@ package editor.codelib.dialog {
          }
          
          super.SetAssetManager (codeLibManager);
+         
+         UpdateInterface ();
+      }
+      
+      public function GetCodeLibManager ():CodeLibManager
+      {
+         return mCodeLibManager;
       }
       
 //============================================================================
@@ -153,12 +160,12 @@ package editor.codelib.dialog {
          {
             case mButtonCreatePureFunction:
                SetCurrentIntent (new IntentPutAsset (
-                                 mCodeLibManager.CreateFunction (null, false, true), 
+                                 mCodeLibManager.CreateFunction (null, null, false, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
             case mButtonCreateDirtyFunction:
                SetCurrentIntent (new IntentPutAsset (
-                                 mCodeLibManager.CreateFunction (null, true, true), 
+                                 mCodeLibManager.CreateFunction (null, null, true, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
             //case mButtonCreatePackage:
@@ -213,6 +220,7 @@ package editor.codelib.dialog {
             if (asset is AssetFunction)
             {
                (asset as AssetFunction).SetFunctionName (mTextInputName.text);
+               (asset as AssetFunction).UpdateTimeModified ();
             }
             
             asset.UpdateAppearance ();
@@ -238,11 +246,12 @@ package editor.codelib.dialog {
          {
             var aFunction:AssetFunction = asset as AssetFunction;
             
+            values.mCodeLibManager = mCodeLibManager;
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
-            values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
-            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (mCodeLibManager.GetScene (), true, null);
+            (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mCodeLibManager.GetScene ().GetCoordinateSystem ());
             
-            EditorContext.GetSingleton ().OpenSettingsDialog (FunctionEditDialog, values, ConfirmSettingAssetProperties);
+            EditorContext.ShowModalDialog (FunctionEditDialog, ConfirmSettingAssetProperties, values);
          }
       }
       
@@ -260,7 +269,9 @@ package editor.codelib.dialog {
             
             var code_snippet:CodeSnippet = aFunction.GetCodeSnippet ();
             code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-            code_snippet.PhysicsValues2DisplayValues (EditorContext.GetEditorApp ().GetWorld ().GetEntityContainer ().GetCoordinateSystem ());
+            code_snippet.PhysicsValues2DisplayValues (mCodeLibManager.GetScene ().GetCoordinateSystem ());
+            
+            aFunction.UpdateTimeModified ();
          }
       }
       

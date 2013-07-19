@@ -1,6 +1,8 @@
 package player.entity {
    
    import flash.geom.Point;
+   import flash.geom.Matrix;
+   
    import flash.display.Sprite;
    
    import flash.events.MouseEvent;
@@ -24,7 +26,9 @@ package player.entity {
    import common.CoordinateSystem;
    import common.Transform2D;
    import common.Define;
+   import common.Version;
    import common.WorldDefine;
+   import common.SceneDefine;
    import common.trigger.CoreEventIds;
    
    // The shape class includes many types. Generally, if a entity has position and rotation and can be glued with other entities, then the entity can be viewed as a shape.
@@ -72,9 +76,9 @@ package player.entity {
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -345,7 +349,7 @@ package player.entity {
             mAiType = aiType;
          }
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
@@ -362,14 +366,6 @@ package player.entity {
       public function IsStatic ():Boolean
       {
          return mIsStatic; // this value may be different with mBody.IsStatic ()
-      }
-      
-      public function IsBodyStatic ():Boolean
-      {
-         if (mBody != null)
-            return mBody.IsStatic ();
-         else
-            return IsStatic ();
       }
       
       public function SetAsBullet (bullet:Boolean):void
@@ -451,7 +447,7 @@ package player.entity {
          
          mDrawBackground = draw;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -470,14 +466,16 @@ package player.entity {
          
          mFilledColor = color;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
       }
       
       public function GetFilledColor ():uint
       {
+         //if (mAiType >= 0)
+         //   return Define.GetShapeFilledColor (mAiType);
          if (mAiType >= 0)
-            return Define.GetShapeFilledColor (mAiType);
+            return mWorld.GetShapeFilledColor (mAiType);
          
          return mFilledColor;
       }
@@ -486,7 +484,7 @@ package player.entity {
       {
          mDrawBorder = drawBorder;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -499,7 +497,7 @@ package player.entity {
       {
          mBorderColor = color;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -515,7 +513,7 @@ package player.entity {
       {
          mBorderThickness = thinkness;
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -532,7 +530,7 @@ package player.entity {
          
          mTransparency = transparency;
          
-         mNeedUpdateAppearanceProperties = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
       }
       
@@ -548,7 +546,7 @@ package player.entity {
       {
          mBorderTransparency = transparency;
          
-         mNeedUpdateAppearanceProperties = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now;
          DelayUpdateAppearance (); 
       }
       
@@ -794,6 +792,28 @@ package player.entity {
       protected function GetMouseOutListener ():Function
       {
          return mMouseOutEventHandlerList == null ? null : OnMouseOut;
+      }
+      
+//=============================================================
+//   paint
+//=============================================================
+      
+      override protected function DelayUpdateAppearanceInternal ():void
+      {
+         mNeedRebuildAppearanceObjects = true;
+      }
+      
+      // maybe "using mBitmapData.draw (this)" is better
+      public function SetCacheAsBitmap (asBitmap:Boolean):void
+      {
+         if (mAppearanceObject.hasOwnProperty ("cacheAsBitmapMatrix")) // for AIR only?
+         {
+            mAppearanceObject.cacheAsBitmap = asBitmap;
+            if (asBitmap)
+            {
+               (mAppearanceObject as Object).cacheAsBitmapMatrix = new Matrix();
+            }
+         }
       }
       
 //=============================================================

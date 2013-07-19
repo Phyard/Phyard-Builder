@@ -6,7 +6,7 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ed="editor.display.control.*"
       borderStyle="solid" borderThickness="0"
       width="100%" height="100%"
-      creationComplete="OnInitPanel();"
+      creationComplete="OnInitPanel ();"
       addedToStage="OnAddedToStage ();"
       removedFromStage="OnRemovedFromStage ();"
       >
@@ -22,9 +22,15 @@
          <mx:HBox id="Box_EditVariablesButtons" borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
             <mx:Button id="Button_EditInputVariables" click="OnEditInputVariables ();" toolTip="Edit Input Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_input_variables.png')" />
             <mx:Button id="Button_EditOutputVariables" click="OnEditOutputVariables ();" toolTip="Edit Output Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_output_variables.png')" />
+            <mx:Button id="Button_EditLocalVariables" click="OnEditLocalVariables ();" toolTip="Edit Local Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_local_variables.png')" />
             <mx:Button id="Button_EditEntityVariables" click="OnEditEntityVariables ()" toolTip="Edit Custom Entity Properties" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_entity_variables.png')" />
             <mx:Button id="Button_EditGlobalVariables" click="OnEditGlobalVariables ()" toolTip="Edit Global Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_global_variables.png')" />
-            <mx:Button id="Button_EditLocalVariables" click="OnEditLocalVariables ();" toolTip="Edit Local Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_local_variables.png')" />
+            <!--
+            <mx:Button id="Button_EditCommonEntityVariables" click="OnEditCommonEntityVariables ()" toolTip="Edit Common Custom Entity Properties (For All Scenes)" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_common-custom-entity-vaiables.png')" />
+            <mx:Button id="Button_EditCommonGlobalVariables" click="OnEditCommonGlobalVariables ()" toolTip="Edit Common Global Variables (For All Scenes)" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_common-global-vaiables.png')" />
+            -->
+            <mx:Button id="Button_EditWorldGlobalVariables" click="OnEditWorldVariables ()" toolTip="Edit World Global Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_world-global-vaiables.png')" />
+            <mx:Button id="Button_EditGameSaveVariables" click="OnEditGameSaveVariables ()" toolTip="Edit Game Save Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../../res/action/command_edit_game-save_variables.png')" />
          </mx:HBox>
          <mx:Spacer width="5"/>
          <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
@@ -91,13 +97,17 @@
 
          import com.tapirgames.util.DisplayObjectUtil;
          import com.tapirgames.util.TextUtil;
+         
+         import editor.world.World;
+         
+         import editor.codelib.CodeLibManager;
 
          import editor.display.control.TextForFunctionCallingLine;
          import editor.display.control.FunctionCallingLineData;
 
          import editor.EditorContext;
 
-         import editor.trigger.TriggerEngine;
+         //import editor.trigger.TriggerEngine;
          import editor.trigger.FunctionDeclaration;
          import editor.trigger.FunctionDeclaration_Core;
          import editor.trigger.FunctionDeclaration_EventHandler;
@@ -116,16 +126,10 @@
          import editor.trigger.ValueTarget_Null;
          import editor.trigger.ValueTarget_Variable;
          import editor.trigger.ValueTarget_Property;
-         import editor.trigger.VariableSpace;
-         import editor.trigger.VariableSpaceInput;
-         import editor.trigger.VariableSpaceOutput;
-         import editor.trigger.VariableSpaceSession;
-         import editor.trigger.VariableSpaceGlobal;
-         import editor.trigger.VariableSpaceLocal;
-         import editor.trigger.VariableSpaceRegister;
 
          //private var mInputValues:Object;
 
+         private var mCodeLibManager:CodeLibManager = null;
          private var mCodeSnippet:CodeSnippet = null;
          private var mIsDesignIndependentCustomFunction:Boolean;
 
@@ -147,9 +151,6 @@
             MenuBar_Api.labelField="@name"
             MenuBar_Api.showRoot = false;
 
-            Button_MenuBarSwitch.selected = EditorContext.mLongerCodeEditorMenuBar;
-            OnSwitchMenuBar ();
-
             mCopySelectedMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy Selected Calling(s)", OnCopySelectedCallings, false);
             mCopyAllMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy All Callings", OnCopyAllCallings);
             mPasteBeforeMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Paste Callings Before The Selected", OnPasteCallingsBefore);
@@ -169,18 +170,27 @@
             mTraditionalFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Traditional Coding Format", OnSwitchToTraditionalFormat, true);
             //mObjectOrientedFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "OO Coding Format (not implemented yet)", OnSwitchToObjectOrientedFormat);
             mPoemFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Poem Coding Format (Partially Support)", OnSwitchToPoemFormat);
-
-            UpdateInterface ();
          }
 
          private function OnAddedToStage ():void
          {
-            CollectVariableEditingDialogsRelatedInfo ();
+            
          }
 
          private function OnRemovedFromStage ():void
          {
-            CloseVariableEditingDialogsAndCleanUpRalatedInfo ();
+            //CloseVariableEditingDialogsAndCleanUpRalatedInfo ();
+         }
+         
+         // from v2.0
+         public function OnCodeLibManagerSwitched ():void
+         {
+            CollectVariableEditingDialogsRelatedInfo ();
+            
+            Button_MenuBarSwitch.selected = EditorContext.mLongerCodeEditorMenuBar;
+            OnSwitchMenuBar ();
+
+            UpdateInterface ();
          }
 
          private function OnCopySelectedCallings (event:ContextMenuEvent):void
@@ -199,7 +209,7 @@
          {
             var copiedCallings:Array = GetFunctionCallings (ids, false);
 
-            EditorContext.GetSingleton ().SetCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), copiedCallings);
+            EditorContext.GetSingleton ().SetCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), copiedCallings, mCodeLibManager.GetScene ());
 
             UpdateInterface (false);
          }
@@ -232,7 +242,7 @@
 
          private function PasteCallingsAt (insertAt:int):void
          {
-            var codeSnippet:CodeSnippet = EditorContext.GetSingleton ().CloneCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition ());
+            var codeSnippet:CodeSnippet = EditorContext.GetSingleton ().CloneCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), mCodeLibManager.GetScene ());
 
             if (codeSnippet == null)
                return;
@@ -266,12 +276,12 @@
             if (Button_MenuBarSwitch.selected)
             {
                Button_MenuBarSwitch.toolTip = "Shorter Menu Bar";
-               MenuBar_Api.dataProvider = TriggerEngine.GetCoreApiFunctionsMenuBarDataProvider_Longer ();
+               MenuBar_Api.dataProvider = mCodeLibManager.GetLongerMenuBarDataProvider (); // TriggerEngine.GetCoreApiFunctionsMenuBarDataProvider_Longer ();
             }
             else
             {
                Button_MenuBarSwitch.toolTip = "Longer Menu Bar";
-               MenuBar_Api.dataProvider = TriggerEngine.GetCoreApiFunctionsMenuBarDataProvider_Shorter ();
+               MenuBar_Api.dataProvider = mCodeLibManager.GetShorterMenuBarDataProvider (); // TriggerEngine.GetCoreApiFunctionsMenuBarDataProvider_Shorter ();
             }
          }
 
@@ -319,9 +329,10 @@
             OnNewCalling (event.item.@type, event.item.@id, -1, true);
          }
 
-         public function SetCodeSnippet (codeSnippet:CodeSnippet):void
+         public function SetCodeSnippetAndCodeLibManager (codeSnippet:CodeSnippet, codeLibManager:CodeLibManager):void
          {
             mCodeSnippet = codeSnippet;
+            mCodeLibManager = codeLibManager;
 
             mIsDesignIndependentCustomFunction = false;
 
@@ -341,6 +352,10 @@
 
                   Box_EditVariablesButtons.removeChild (Button_EditGlobalVariables);
                   Box_EditVariablesButtons.removeChild (Button_EditEntityVariables);
+                  //Box_EditVariablesButtons.removeChild (Button_EditCommonGlobalVariables);
+                  //Box_EditVariablesButtons.removeChild (Button_EditCommonEntityVariables);
+                  Box_EditVariablesButtons.removeChild (Button_EditWorldGlobalVariables);
+                  Box_EditVariablesButtons.removeChild (Button_EditGameSaveVariables);
                }
             }
             else
@@ -353,7 +368,11 @@
 
             if (sessionVariablesEditable)
             {
-               DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Session Variables ...", OnEditSessionVariables, false);
+               DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Scene Session Variables ...", OnEditSessionVariables, false);
+               //DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit World Global Variables ...", OnEditWorldVariables, true);
+               //DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Game Save Variables ...", OnEditGameSaveVariables, false);
+               DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Common Custom Entity Properties (For All Scenes) ...", OnEditCommonEntityVariables, true);
+               DisplayObjectUtil.AppendContextMenuItem (Box_EditVariablesButtons, "Edit Common Global Properties (For All Scenes) ...", OnEditCommonGlobalVariables, false);
             }
 
             Initialize ();
@@ -402,7 +421,7 @@
                func_calling = codeSnippet.GetFunctionCallingAt (i);
 
                var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
-               callingLine.BuildFromFunctionCalling (func_calling, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), mCodeSnippet.GetOwnerFunctionDefinition ());
+               callingLine.BuildFromFunctionCalling (mCodeLibManager.GetScene (), func_calling, /*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */mCodeSnippet.GetOwnerFunctionDefinition ());
 
                List_Commands.dataProvider.addItemAt (callingLine, insertAt ++);
             }
@@ -484,11 +503,11 @@
 
                   if (func_declaration is FunctionDeclaration_Core)
                   {
-                     func_calling = new FunctionCalling_Core (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), func_declaration as FunctionDeclaration_Core, false);
+                     func_calling = new FunctionCalling_Core (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */func_declaration as FunctionDeclaration_Core, false);
                   }
                   else if (func_declaration is FunctionDeclaration_Custom)
                   {
-                     func_calling = new FunctionCalling_Custom (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), func_declaration as FunctionDeclaration_Custom, false);
+                     func_calling = new FunctionCalling_Custom (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */func_declaration as FunctionDeclaration_Custom, false);
                   }
                   else
                   {
@@ -576,18 +595,19 @@
 
             if (type == FunctionTypeDefine.FunctionType_Core)
             {
-               func_declaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (id);
+               func_declaration = World.GetPlayerCoreFunctionDeclarationById (id);
             }
             else if (type == FunctionTypeDefine.FunctionType_Custom)
             {
-               func_declaration = EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager().GetFunctionByIndex (id).GetFunctionDeclaration ();
+               //func_declaration = EditorContext.GetEditorApp ().GetWorld ().GetCodeLibManager().GetFunctionByIndex (id).GetFunctionDeclaration ();
+               func_declaration = mCodeLibManager.GetFunctionByIndex (id).GetFunctionDeclaration ();
             }
 
             if (func_declaration == null)
                return;
 
             var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
-            callingLine.BuildFromFunctionDeclaration (func_declaration, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), mCodeSnippet.GetOwnerFunctionDefinition ());
+            callingLine.BuildFromFunctionDeclaration (mCodeLibManager.GetScene (), func_declaration, /*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */mCodeSnippet.GetOwnerFunctionDefinition ());
 
             var insert_index:int;
             if (insertAt < 0)
@@ -666,34 +686,124 @@
 
          private function OnMoveCallingUp ():void
          {
-            if (List_Commands.selectedIndex >= 1)
+            //if (List_Commands.selectedIndex >= 1)
+            //{
+            //   var index:int = List_Commands.selectedIndex;
+            //
+            //   var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index - 1);
+            //   List_Commands.dataProvider.setItemAt (item, index);
+            //
+            //   List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index - 1);
+            //
+            //   UpdateCallingIndents ();
+            //   UpdateInterface ();
+            //}
+            
+            if (CanMoveUpOrDown (true))
             {
-               var index:int = List_Commands.selectedIndex;
-
-               var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index - 1);
-               List_Commands.dataProvider.setItemAt (item, index);
-
-               List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index - 1);
-
+//trace (">>> List_Commands.selectedIndices = " + List_Commands.selectedIndices);
+//trace (">>> List_Commands.selectedIndex = " + List_Commands.selectedIndex);
+               var selectedItems:Array = List_Commands.selectedItems;
+               
+               var selectedIndices:Array = List_Commands.selectedIndices;
+               selectedIndices.sort (Array.NUMERIC);
+               
+               var item:Object = List_Commands.dataProvider.getItemAt (selectedIndices [0] - 1);
+               for (var i:int = 0; i < selectedIndices.length; ++ i)
+               {
+                  List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (selectedIndices [i]), selectedIndices [i] - 1);
+               }
+               List_Commands.dataProvider.setItemAt (item, selectedIndices [selectedIndices.length - 1]);
+               
+               List_Commands.selectedItems = selectedItems;
+               
                UpdateCallingIndents ();
                UpdateInterface ();
+//trace ("*** List_Commands.selectedIndices = " + List_Commands.selectedIndices);
+//trace ("*** List_Commands.selectedIndex = " + List_Commands.selectedIndex);
             }
          }
 
          private function OnMoveCallingDown ():void
          {
-            if (List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1)
+            //if (List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1)
+            //{
+            //   var index:int = List_Commands.selectedIndex;
+            //
+            //   var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index + 1);
+            //   List_Commands.dataProvider.setItemAt (item, index);
+            //
+            //   List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index + 1);
+            //
+            //   UpdateCallingIndents ();
+            //   UpdateInterface ();
+            //}
+            
+            if (CanMoveUpOrDown (false))
             {
-               var index:int = List_Commands.selectedIndex;
-
-               var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index + 1);
-               List_Commands.dataProvider.setItemAt (item, index);
-
-               List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index + 1);
-
+//trace (">>> List_Commands.selectedIndices = " + List_Commands.selectedIndices);
+//trace (">>> List_Commands.selectedIndex = " + List_Commands.selectedIndex);
+               var selectedItems:Array = List_Commands.selectedItems;
+               
+               var selectedIndices:Array = List_Commands.selectedIndices;
+               selectedIndices.sort (Array.NUMERIC);
+               
+               var item:Object = List_Commands.dataProvider.getItemAt (selectedIndices [selectedIndices.length - 1] + 1);
+               for (var i:int = selectedIndices.length - 1; i >= 0; -- i)
+               {
+                  List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (selectedIndices [i]), selectedIndices [i] + 1);
+               }
+               List_Commands.dataProvider.setItemAt (item, selectedIndices [0]);
+               
+               List_Commands.selectedItems = selectedItems;
+               
                UpdateCallingIndents ();
                UpdateInterface ();
+//trace ("*** List_Commands.selectedIndices = " + List_Commands.selectedIndices);
+//trace ("*** List_Commands.selectedIndex = " + List_Commands.selectedIndex);
             }
+         }
+         
+         private function CanMoveUpOrDown (up:Boolean):Boolean
+         {
+            var selectedIndices:Array = List_Commands.selectedIndices;
+            if (selectedIndices == null)
+               return false;
+               
+            var length:int = selectedIndices.length;
+            if (length == 0)
+               return false;
+
+            var index:int;
+            if (length == 1)
+            {
+               index = selectedIndices [0];
+               if (up)
+                  return List_Commands.selectedIndex >= 1;
+               else
+                  return index < List_Commands.dataProvider.length - 1;
+            }
+            
+            selectedIndices.sort (Array.NUMERIC);
+            
+            var lastIndex:int = selectedIndices [0];
+            
+            if (up && lastIndex == 0)
+               return false;
+            
+            for (var i:int = 1; i < length; ++ i)
+            {
+               index = selectedIndices [i];
+               if (index != lastIndex + 1)
+                  return false;
+               
+               lastIndex = index;
+            }
+            
+            if ((! up) && lastIndex == List_Commands.dataProvider.length - 1)
+               return false;
+            
+            return true;
          }
 
          private function UpdateInterface (scroolToSeelectedCommand:Boolean = true):void
@@ -715,8 +825,8 @@
             }
 
             Button_DeleteCommmand.enabled = List_Commands.selectedIndex >= 0;
-            Button_MoveUpCommmand.enabled = List_Commands.selectedIndex >= 1;
-            Button_MoveDownCommmand.enabled = List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1;
+            Button_MoveUpCommmand.enabled = CanMoveUpOrDown (true); // List_Commands.selectedIndex >= 1;
+            Button_MoveDownCommmand.enabled = CanMoveUpOrDown (false); // List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1;
 
             mCopySelectedMenuItem.enabled = List_Commands.selectedIndices.length > 0;
             mCopyAllMenuItem.enabled = List_Commands.dataProvider.length > 0;
@@ -894,7 +1004,7 @@
             var value_control:UIComponent = null;
             if (value_source is ValueSource_Direct)
             {
-               value_control = variable_def.CreateControlForDirectValueSource (value_source as ValueSource_Direct, mIsDesignIndependentCustomFunction);
+               value_control = variable_def.CreateControlForDirectValueSource (mCodeLibManager.GetScene (), value_source as ValueSource_Direct, mIsDesignIndependentCustomFunction);
             }
             else if (value_source is ValueSource_Variable)
             {
@@ -911,7 +1021,7 @@
             }
             else if (value_source is ValueSource_Property)
             {
-               value_control = variable_def.CreateControlForPropertyValueSource (value_source as ValueSource_Property);
+               value_control = variable_def.CreateControlForPropertyValueSource (mCodeLibManager.GetScene (), value_source as ValueSource_Property);
             }
 
             if (value_control != null)
@@ -961,7 +1071,7 @@
             }
             else if (value_target is ValueTarget_Property)
             {
-               value_control = variable_def.CreateControlForPropertyValueTarget (value_target as ValueTarget_Property);
+               value_control = variable_def.CreateControlForPropertyValueTarget (mCodeLibManager.GetScene (), value_target as ValueTarget_Property);
             }
 
             if (value_control != null)
@@ -1005,7 +1115,7 @@
 
                if (value_source is ValueSource_Direct)
                {
-                  var newValueSource:ValueSource = variable_def.RetrieveDirectValueSourceFromControl (value_source as ValueSource_Direct, source_control, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+                  var newValueSource:ValueSource = variable_def.RetrieveDirectValueSourceFromControl (mCodeLibManager.GetScene (), value_source as ValueSource_Direct, source_control/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
                   if (newValueSource != null)
                      currentValueSources [j] = newValueSource;
                }
@@ -1015,7 +1125,7 @@
                }
                else if (value_source is ValueSource_Property)
                {
-                  variable_def.RetrievePropertyValueSourceFromControl (value_source as ValueSource_Property, source_control);
+                  variable_def.RetrievePropertyValueSourceFromControl (mCodeLibManager.GetScene (), value_source as ValueSource_Property, source_control);
 
                   if (clearContextMenus)
                   {
@@ -1053,7 +1163,7 @@
                }
                else if (value_target is ValueTarget_Property)
                {
-                  variable_def.RetrievePropertyValueTargetFromControl (value_target as ValueTarget_Property, target_control);
+                  variable_def.RetrievePropertyValueTargetFromControl (mCodeLibManager.GetScene (), value_target as ValueTarget_Property, target_control);
 
                   if (clearContextMenus)
                   {
@@ -1082,14 +1192,18 @@
             if (sprite.contextMenu == null)
             {
                sprite.contextMenu = new ContextMenu ();
-               sprite.contextMenu.hideBuiltInItems ();
+               
+               if (sprite.contextMenu != null) // may be null on some devices
+                  sprite.contextMenu.hideBuiltInItems ();
             }
 
             var menuItem:ContextMenuItem = new ContextMenuItem(caption, addSaperator);
             menuItem.enabled = isEnabled;
             if (selectedListener != null)
                menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
-            sprite.contextMenu.customItems.push (menuItem);
+               
+            if (sprite.contextMenu != null) // may be null on some devices
+               sprite.contextMenu.customItems.push (menuItem);
          }
 
          private function ClearCustomContextMenus (sprite:InteractiveObject, alsoSetNull:Boolean):void
@@ -1110,12 +1224,14 @@
    // switch value source types
    //================================================================================================
 
-         private function BuildContextMenuForValueSource (sprite:InteractiveObject, variableDefinition:VariableDefinition, valueSource:ValueSource, isForEntiryPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         private function BuildContextMenuForValueSource (sprite:InteractiveObject, variableDefinition:VariableDefinition, valueSource:ValueSource, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
          {
             if (sprite.contextMenu == null)
             {
                sprite.contextMenu = new ContextMenu ();
-               sprite.contextMenu.hideBuiltInItems ();
+               
+               if (sprite.contextMenu != null) // may be null on some devices
+                  sprite.contextMenu.hideBuiltInItems ();
             }
             else
             {
@@ -1128,7 +1244,8 @@
             var space_type:int;
             if (valueSource is ValueSource_Property)
             {
-               space_type = ValueSpaceTypeDefine.ValueSpace_Entity;
+               //space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+               space_type = ((valueSource as ValueSource_Property).GetPropertyValueSource () as ValueSource_Variable).GetVariableInstance ().GetSpaceType ();
 
                BuildContextMenuForValueSource (
                               (((sprite as Container).getChildAt (0) as Container).getChildAt (0)) as InteractiveObject,
@@ -1146,23 +1263,32 @@
                space_type = ValueSpaceTypeDefine.ValueSpace_Void;
             }
 
-            if (isForEntiryPropertyOwner)
+            if (isForEntityPropertyOwner)
             {
-               AppendContextMenuItem (sprite, "from Direct Entity", isForTarget ? OnSelectValueSource_Direct_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_Direct_ForEntiryPropertyOwner, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
+               AppendContextMenuItem (sprite, "from Direct Entity", isForTarget ? OnSelectValueSource_Direct_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_Direct_ForEntityPropertyOwner, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
                if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
-                  AppendContextMenuItem (sprite, "from Input Entity Variable", isForTarget ? OnSelectValueSource_InputVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_InputVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
-
-               //AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
-
-               if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "from Session Entity Variable", isForTarget ? OnSelectValueSource_SessionVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_SessionVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
-
-               if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "from Global Entity Variable", isForTarget ? OnSelectValueSource_GlobalVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_GlobalVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
+                  AppendContextMenuItem (sprite, "from Input Entity Variable", isForTarget ? OnSelectValueSource_InputVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_InputVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
 
                if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "from Local Entity Variable", isForTarget ? OnSelectValueSource_LocalVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_LocalVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
+                  AppendContextMenuItem (sprite, "from Local Entity Variable", isForTarget ? OnSelectValueSource_LocalVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_LocalVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
+
+               //AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Register);
+
+               if (mCodeLibManager.GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from Session Entity Variable", isForTarget ? OnSelectValueSource_SessionVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_SessionVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
+
+               if (mCodeLibManager.GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from Global Entity Variable", isForTarget ? OnSelectValueSource_GlobalVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_GlobalVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
+
+               if (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from Global Entity Variable (Scene Common)", isForTarget ? OnSelectValueSource_CommonGlobalVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_CommonGlobalVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonGlobal);
+
+               if (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from World Variable", isForTarget ? OnSelectValueSource_WorldVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_WorldVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_World);
+
+               if (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from Game Save Variable", isForTarget ? OnSelectValueSource_GameSaveVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_GameSaveVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_GameSave);
             }
             else
             {
@@ -1176,16 +1302,28 @@
 
                if (! mIsDesignIndependentCustomFunction)
                {
-                  if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
-                     AppendContextMenuItem (sprite, "from Entity Custom Property", OnSelectValueSource_EntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
+                  if (mCodeLibManager.GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                     AppendContextMenuItem (sprite, "from Entity Custom Property", OnSelectValueSource_EntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_EntityProperties);
 
-                  //AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+                  if (mCodeLibManager.GetScene ().GetWorld ().GetCommonCustomEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                     AppendContextMenuItem (sprite, "from Entity Custom Property (Scene Common)", OnSelectValueSource_CommonEntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties);
 
-                  if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  //AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Register);
+
+                  if (mCodeLibManager.GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Session Variable", OnSelectValueSource_SessionVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
 
-                  if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  if (mCodeLibManager.GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Global Variable", OnSelectValueSource_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
+
+                  if (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                     AppendContextMenuItem (sprite, "from Global Variable (Scene Common)", OnSelectValueSource_CommonGlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonGlobal);
+
+                  if (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                     AppendContextMenuItem (sprite, "from World Variable", OnSelectValueSource_WorldVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_World);
+
+                  if (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                     AppendContextMenuItem (sprite, "from Game Save Variable", OnSelectValueSource_GameSaveVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GameSave);
                }
 
                if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
@@ -1208,7 +1346,7 @@
 
             var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
-            var new_value_source:ValueSource = variable_def.GetDefaultValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+            var new_value_source:ValueSource = variable_def.GetDefaultValueSource (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
 
             mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
             CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
@@ -1236,12 +1374,12 @@
             BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
         }
 
-         private function OnSelectValueSource_Direct_ForEntiryPropertyOwner_ForTarget (event:ContextMenuEvent):void
+         private function OnSelectValueSource_Direct_ForEntityPropertyOwner_ForTarget (event:ContextMenuEvent):void
          {
             SelectValueSource_Direct ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
          }
 
-         private function OnSelectValueSource_Direct_ForEntiryPropertyOwner (event:ContextMenuEvent):void
+         private function OnSelectValueSource_Direct_ForEntityPropertyOwner (event:ContextMenuEvent):void
          {
             SelectValueSource_Direct ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
          }
@@ -1251,7 +1389,7 @@
             SelectValueSource_Direct (event.contextMenuOwner as FormItem);
          }
 
-         private function SelectValueSource_Direct (form_item:FormItem, isForEntiryPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         private function SelectValueSource_Direct (form_item:FormItem, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
          {
             if (form_item == null)
                return;
@@ -1266,7 +1404,7 @@
             var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
             var variable_def:VariableDefinition;
 
-            if (isForEntiryPropertyOwner)
+            if (isForEntityPropertyOwner)
             {
                RetrieveCurrentCommandParameterValuesFromControls (true);
 
@@ -1299,12 +1437,12 @@
             }
         }
 
-         private function OnSelectValueSource_InputVariable_ForEntiryPropertyOwner_ForTarget (event:ContextMenuEvent):void
+         private function OnSelectValueSource_InputVariable_ForEntityPropertyOwner_ForTarget (event:ContextMenuEvent):void
          {
             SelectValueSource_InputVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
          }
 
-         private function OnSelectValueSource_InputVariable_ForEntiryPropertyOwner (event:ContextMenuEvent):void
+         private function OnSelectValueSource_InputVariable_ForEntityPropertyOwner (event:ContextMenuEvent):void
          {
             SelectValueSource_InputVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
          }
@@ -1314,7 +1452,7 @@
             SelectValueSource_InputVariable (event.contextMenuOwner as FormItem);
          }
 
-         private function SelectValueSource_InputVariable (form_item:FormItem, isForEntiryPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         private function SelectValueSource_InputVariable (form_item:FormItem, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
          {
             if (form_item == null)
                return;
@@ -1330,7 +1468,7 @@
 
             var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
             var variable_def:VariableDefinition;
-            if (isForEntiryPropertyOwner)
+            if (isForEntityPropertyOwner)
             {
                RetrieveCurrentCommandParameterValuesFromControls (true);
 
@@ -1363,12 +1501,12 @@
             }
          }
 
-         private function OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner_ForTarget (event:ContextMenuEvent):void
+         private function OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner_ForTarget (event:ContextMenuEvent):void
          {
             SelectValueSource_RegisterVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
          }
 
-         private function OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner (event:ContextMenuEvent):void
+         private function OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner (event:ContextMenuEvent):void
          {
             SelectValueSource_RegisterVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
          }
@@ -1378,7 +1516,7 @@
             SelectValueSource_RegisterVariable (event.contextMenuOwner as FormItem);
          }
 
-         private function SelectValueSource_RegisterVariable (form_item:FormItem, isForEntiryPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         private function SelectValueSource_RegisterVariable (form_item:FormItem, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
          {
             if (form_item == null)
                return;
@@ -1392,7 +1530,7 @@
 
             var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
             var variable_def:VariableDefinition;
-            if (isForEntiryPropertyOwner)
+            if (isForEntityPropertyOwner)
             {
                RetrieveCurrentCommandParameterValuesFromControls (true);
 
@@ -1400,7 +1538,7 @@
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
                   var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
-                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetVariableDefinitionForEntityParameter ().GetValueType())));
+                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetRegisterVariableSpace (variable_def.GetVariableDefinitionForEntityParameter ().GetValueType())));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
                }
@@ -1408,7 +1546,7 @@
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
                   var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
-                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetVariableDefinitionForEntityParameter ().GetValueType())));
+                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetRegisterVariableSpace (variable_def.GetVariableDefinitionForEntityParameter ().GetValueType())));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
                }
@@ -1416,139 +1554,19 @@
             else
             {
                variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetValueType()));
+               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetRegisterVariableSpace (variable_def.GetValueType()));
                mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
                CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
             }
          }
 
-         private function OnSelectValueSource_SessionVariable_ForEntiryPropertyOwner_ForTarget (event:ContextMenuEvent):void
-         {
-            SelectValueSource_SessionVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
-         }
-
-         private function OnSelectValueSource_SessionVariable_ForEntiryPropertyOwner (event:ContextMenuEvent):void
-         {
-            SelectValueSource_SessionVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
-         }
-
-         private function OnSelectValueSource_SessionVariable (event:ContextMenuEvent):void
-         {
-            SelectValueSource_SessionVariable (event.contextMenuOwner as FormItem);
-         }
-
-         private function SelectValueSource_SessionVariable (form_item:FormItem, isForEntiryPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
-         {
-            if (form_item == null)
-               return;
-
-            if (mCurrentCallingLine == null)
-               return;
-
-            var param_index:int = isForTarget ? mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item) : mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
-            if (param_index < 0)
-               return;
-
-            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
-            var variable_def:VariableDefinition;
-            if (isForEntiryPropertyOwner)
-            {
-               RetrieveCurrentCommandParameterValuesFromControls (true);
-
-               if (isForTarget)
-               {
-                  variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
-                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ()));
-                  CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
-                  BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
-               }
-               else
-               {
-                  variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
-                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ()));
-                  CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
-                  BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
-               }
-            }
-            else
-            {
-               variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ());
-               mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
-               CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
-               BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
-            }
-         }
-
-         private function OnSelectValueSource_GlobalVariable_ForEntiryPropertyOwner_ForTarget (event:ContextMenuEvent):void
-         {
-            SelectValueSource_GlobalVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
-         }
-
-         private function OnSelectValueSource_GlobalVariable_ForEntiryPropertyOwner (event:ContextMenuEvent):void
-         {
-            SelectValueSource_GlobalVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
-         }
-
-         private function OnSelectValueSource_GlobalVariable (event:ContextMenuEvent):void
-         {
-            SelectValueSource_GlobalVariable (event.contextMenuOwner as FormItem);
-         }
-
-         private function SelectValueSource_GlobalVariable (form_item:FormItem, isForEntiryPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
-         {
-            if (form_item == null)
-               return;
-
-            if (mCurrentCallingLine == null)
-               return;
-
-            var param_index:int = isForTarget ? mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item) : mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
-            if (param_index < 0)
-               return;
-
-            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
-            var variable_def:VariableDefinition;
-            if (isForEntiryPropertyOwner)
-            {
-               RetrieveCurrentCommandParameterValuesFromControls (true);
-
-               if (isForTarget)
-               {
-                  variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
-                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ()));
-                  CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
-                  BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
-               }
-               else
-               {
-                  variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
-                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ()));
-                  CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
-                  BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
-               }
-            }
-            else
-            {
-               variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ());
-               mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
-               CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
-               BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
-            }
-         }
-
-         private function OnSelectValueSource_LocalVariable_ForEntiryPropertyOwner_ForTarget (event:ContextMenuEvent):void
+         private function OnSelectValueSource_LocalVariable_ForEntityPropertyOwner_ForTarget (event:ContextMenuEvent):void
          {
             SelectValueSource_LocalVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
          }
 
-         private function OnSelectValueSource_LocalVariable_ForEntiryPropertyOwner (event:ContextMenuEvent):void
+         private function OnSelectValueSource_LocalVariable_ForEntityPropertyOwner (event:ContextMenuEvent):void
          {
             SelectValueSource_LocalVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
          }
@@ -1558,7 +1576,7 @@
             SelectValueSource_LocalVariable (event.contextMenuOwner as FormItem);
          }
 
-         private function SelectValueSource_LocalVariable (form_item:FormItem, isForEntiryPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         private function SelectValueSource_LocalVariable (form_item:FormItem, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
          {
             if (form_item == null)
                return;
@@ -1572,7 +1590,7 @@
 
             var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
             var variable_def:VariableDefinition;
-            if (isForEntiryPropertyOwner)
+            if (isForEntityPropertyOwner)
             {
                RetrieveCurrentCommandParameterValuesFromControls (true);
 
@@ -1602,6 +1620,306 @@
                BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
             }
          }
+         
+         private function OnSelectValueSource_WorldVariable_ForEntityPropertyOwner_ForTarget (event:ContextMenuEvent):void
+         {
+            SelectValueSource_WorldVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
+         }
+
+         private function OnSelectValueSource_WorldVariable_ForEntityPropertyOwner (event:ContextMenuEvent):void
+         {
+            SelectValueSource_WorldVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
+         }
+
+         private function OnSelectValueSource_WorldVariable (event:ContextMenuEvent):void
+         {
+            SelectValueSource_WorldVariable (event.contextMenuOwner as FormItem);
+         }
+
+         private function SelectValueSource_WorldVariable (form_item:FormItem, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         {
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var param_index:int = isForTarget ? mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item) : mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
+            if (param_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition;
+            if (isForEntityPropertyOwner)
+            {
+               RetrieveCurrentCommandParameterValuesFromControls (true);
+
+               if (isForTarget)
+               {
+                  variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
+                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ()));
+                  CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
+                  BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
+               }
+               else
+               {
+                  variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ()));
+                  CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+                  BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
+               }
+            }
+            else
+            {
+               variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ());
+               mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+               CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+               BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
+            }
+         }
+         
+         private function OnSelectValueSource_GameSaveVariable_ForEntityPropertyOwner_ForTarget (event:ContextMenuEvent):void
+         {
+            SelectValueSource_GameSaveVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
+         }
+
+         private function OnSelectValueSource_GameSaveVariable_ForEntityPropertyOwner (event:ContextMenuEvent):void
+         {
+            SelectValueSource_GameSaveVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
+         }
+
+         private function OnSelectValueSource_GameSaveVariable (event:ContextMenuEvent):void
+         {
+            SelectValueSource_GameSaveVariable (event.contextMenuOwner as FormItem);
+         }
+
+         private function SelectValueSource_GameSaveVariable (form_item:FormItem, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         {
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var param_index:int = isForTarget ? mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item) : mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
+            if (param_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition;
+            if (isForEntityPropertyOwner)
+            {
+               RetrieveCurrentCommandParameterValuesFromControls (true);
+
+               if (isForTarget)
+               {
+                  variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
+                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ()));
+                  CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
+                  BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
+               }
+               else
+               {
+                  variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ()));
+                  CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+                  BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
+               }
+            }
+            else
+            {
+               variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ());
+               mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+               CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+               BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
+            }
+         }
+
+         private function OnSelectValueSource_SessionVariable_ForEntityPropertyOwner_ForTarget (event:ContextMenuEvent):void
+         {
+            SelectValueSource_SessionVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
+         }
+
+         private function OnSelectValueSource_SessionVariable_ForEntityPropertyOwner (event:ContextMenuEvent):void
+         {
+            SelectValueSource_SessionVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
+         }
+
+         private function OnSelectValueSource_SessionVariable (event:ContextMenuEvent):void
+         {
+            SelectValueSource_SessionVariable (event.contextMenuOwner as FormItem);
+         }
+
+         private function SelectValueSource_SessionVariable (form_item:FormItem, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         {
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var param_index:int = isForTarget ? mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item) : mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
+            if (param_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition;
+            if (isForEntityPropertyOwner)
+            {
+               RetrieveCurrentCommandParameterValuesFromControls (true);
+
+               if (isForTarget)
+               {
+                  variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
+                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetSessionVariableSpace ()));
+                  CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
+                  BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
+               }
+               else
+               {
+                  variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetSessionVariableSpace ()));
+                  CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+                  BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
+               }
+            }
+            else
+            {
+               variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (mCodeLibManager.GetSessionVariableSpace ());
+               mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+               CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+               BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
+            }
+         }
+
+         private function OnSelectValueSource_GlobalVariable_ForEntityPropertyOwner_ForTarget (event:ContextMenuEvent):void
+         {
+            SelectValueSource_GlobalVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
+         }
+
+         private function OnSelectValueSource_GlobalVariable_ForEntityPropertyOwner (event:ContextMenuEvent):void
+         {
+            SelectValueSource_GlobalVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
+         }
+
+         private function OnSelectValueSource_GlobalVariable (event:ContextMenuEvent):void
+         {
+            SelectValueSource_GlobalVariable (event.contextMenuOwner as FormItem);
+         }
+
+         private function SelectValueSource_GlobalVariable (form_item:FormItem, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         {
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var param_index:int = isForTarget ? mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item) : mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
+            if (param_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition;
+            if (isForEntityPropertyOwner)
+            {
+               RetrieveCurrentCommandParameterValuesFromControls (true);
+
+               if (isForTarget)
+               {
+                  variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
+                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetGlobalVariableSpace ()));
+                  CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
+                  BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
+               }
+               else
+               {
+                  variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetGlobalVariableSpace ()));
+                  CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+                  BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
+               }
+            }
+            else
+            {
+               variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (mCodeLibManager.GetGlobalVariableSpace ());
+               mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+               CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+               BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
+            }
+         }
+         
+         private function OnSelectValueSource_CommonGlobalVariable_ForEntityPropertyOwner_ForTarget (event:ContextMenuEvent):void
+         {
+            SelectValueSource_CommonGlobalVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true, true);
+         }
+
+         private function OnSelectValueSource_CommonGlobalVariable_ForEntityPropertyOwner (event:ContextMenuEvent):void
+         {
+            SelectValueSource_CommonGlobalVariable ((((event.contextMenuOwner as UIComponent).parent as UIComponent).parent) as FormItem, true);
+         }
+
+         private function OnSelectValueSource_CommonGlobalVariable (event:ContextMenuEvent):void
+         {
+            SelectValueSource_CommonGlobalVariable (event.contextMenuOwner as FormItem);
+         }
+         
+         private function SelectValueSource_CommonGlobalVariable (form_item:FormItem, isForEntityPropertyOwner:Boolean = false, isForTarget:Boolean = false):void
+         {
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var param_index:int = isForTarget ? mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item) : mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
+            if (param_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition;
+            if (isForEntityPropertyOwner)
+            {
+               RetrieveCurrentCommandParameterValuesFromControls (true);
+
+               if (isForTarget)
+               {
+                  variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
+                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ()));
+                  CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
+                  BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
+               }
+               else
+               {
+                  variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ()));
+                  CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+                  BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
+               }
+            }
+            else
+            {
+               variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
+               var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ());
+               mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+               CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+               BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
+            }
+         }
 
          private function OnSelectValueSource_EntityVariable (event:ContextMenuEvent):void
          {
@@ -1618,7 +1936,29 @@
 
             var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
-            var new_value_source:ValueSource = variable_def.GetDefaultPropertyValueSource ();
+            var new_value_source:ValueSource = variable_def.GetDefaultPropertyValueSource (mCodeLibManager.GetEntityVariableSpace ());
+
+            mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+            CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+            BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
+         }
+
+         private function OnSelectValueSource_CommonEntityVariable (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var param_index:int = mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
+            if (param_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
+            var new_value_source:ValueSource = variable_def.GetDefaultPropertyValueSource (mCodeLibManager.GetScene ().GetWorld ().GetCommonCustomEntityVariableSpace ());
 
             mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
             CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
@@ -1634,11 +1974,14 @@
             if (sprite.contextMenu == null)
             {
                sprite.contextMenu = new ContextMenu ();
-               sprite.contextMenu.hideBuiltInItems ();
+               
+               if (sprite.contextMenu != null) // may be null on some devices
+                  sprite.contextMenu.hideBuiltInItems ();
             }
             else
             {
-               sprite.contextMenu.customItems.splice (0, sprite.contextMenu.customItems.length);
+               if (sprite.contextMenu.customItems != null)
+                  sprite.contextMenu.customItems.splice (0, sprite.contextMenu.customItems.length);
             }
 
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
@@ -1647,7 +1990,8 @@
             var space_type:int;
             if (valueTarget is ValueTarget_Property)
             {
-               space_type = ValueSpaceTypeDefine.ValueSpace_Entity;
+               //space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+               space_type = ((valueTarget as ValueTarget_Property).GetPropertyValueTarget () as ValueTarget_Variable).GetVariableInstance ().GetSpaceType ();
 
                BuildContextMenuForValueSource (
                               (((sprite as Container).getChildAt (0) as Container).getChildAt (0)) as InteractiveObject,
@@ -1675,16 +2019,28 @@
 
             if (! mIsDesignIndependentCustomFunction)
             {
-               if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "to Custom Entity Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
+               if (mCodeLibManager.GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "to Custom Entity Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_EntityProperties);
 
-               //AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+               if (mCodeLibManager.GetScene ().GetWorld ().GetCommonCustomEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "to Custom Entity Property (Scene Common)", OnSelectValueTarget_CommonCustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties);
 
-               if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               //AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Register);
+
+               if (mCodeLibManager.GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Session Variable", OnSelectValueTarget_SessionVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
 
-               if (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               if (mCodeLibManager.GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Global Variable", OnSelectValueTarget_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
+
+               if (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "to Global Variable (Scene Common)", OnSelectValueTarget_CommonGlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonGlobal);
+
+               if (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "to World Variable", OnSelectValueTarget_WorldVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_World);
+
+               if (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "to Game Save Variable", OnSelectValueTarget_GameSaveVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GameSave);
             }
 
             if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
@@ -1759,72 +2115,6 @@
             BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
          }
 
-         private function OnSelectValueTarget_RegisterVariable (event:ContextMenuEvent):void
-         {
-            var form_item:FormItem = event.contextMenuOwner as FormItem;
-            if (form_item == null)
-               return;
-
-            if (mCurrentCallingLine == null)
-               return;
-
-            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
-            if (return_index < 0)
-               return;
-
-            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
-            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
-            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetValueType()));
-
-            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
-            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
-            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
-         }
-
-         private function OnSelectValueTarget_SessionVariable (event:ContextMenuEvent):void
-         {
-            var form_item:FormItem = event.contextMenuOwner as FormItem;
-            if (form_item == null)
-               return;
-
-            if (mCurrentCallingLine == null)
-               return;
-
-            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
-            if (return_index < 0)
-               return;
-
-            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
-            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
-            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ());
-
-            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
-            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
-            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
-         }
-
-         private function OnSelectValueTarget_GlobalVariable (event:ContextMenuEvent):void
-         {
-            var form_item:FormItem = event.contextMenuOwner as FormItem;
-            if (form_item == null)
-               return;
-
-            if (mCurrentCallingLine == null)
-               return;
-
-            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
-            if (return_index < 0)
-               return;
-
-            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
-            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
-            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ());
-
-            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
-            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
-            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
-         }
-
          private function OnSelectValueTarget_LocalVariable (event:ContextMenuEvent):void
          {
             var form_item:FormItem = event.contextMenuOwner as FormItem;
@@ -1847,6 +2137,72 @@
             BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
          }
 
+         private function OnSelectValueTarget_RegisterVariable (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
+            if (return_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
+            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetRegisterVariableSpace (variable_def.GetValueType()));
+
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
+            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
+         }
+
+         private function OnSelectValueTarget_SessionVariable (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
+            if (return_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
+            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (mCodeLibManager.GetSessionVariableSpace ());
+
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
+            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
+         }
+
+         private function OnSelectValueTarget_GlobalVariable (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
+            if (return_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
+            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (mCodeLibManager.GetGlobalVariableSpace ());
+
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
+            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
+         }
+
          private function OnSelectValueTarget_CustomEntityProperty (event:ContextMenuEvent):void
          {
             var form_item:FormItem = event.contextMenuOwner as FormItem;
@@ -1862,7 +2218,95 @@
 
             var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
-            var new_value_target:ValueTarget = variable_def.GetDefaultPropertyValueTarget ();
+            var new_value_target:ValueTarget = variable_def.GetDefaultPropertyValueTarget (mCodeLibManager.GetEntityVariableSpace ());
+
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
+            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
+         }
+
+         private function OnSelectValueTarget_CommonCustomEntityProperty (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
+            if (return_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
+            var new_value_target:ValueTarget = variable_def.GetDefaultPropertyValueTarget (mCodeLibManager.GetScene ().GetWorld ().GetCommonCustomEntityVariableSpace ());
+
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
+            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
+         }
+
+         private function OnSelectValueTarget_CommonGlobalVariable (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
+            if (return_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
+            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ());
+
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
+            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
+         }
+
+         private function OnSelectValueTarget_WorldVariable (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
+            if (return_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
+            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ());
+
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
+            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
+         }
+
+         private function OnSelectValueTarget_GameSaveVariable (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+
+            if (mCurrentCallingLine == null)
+               return;
+
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
+            if (return_index < 0)
+               return;
+
+            var func_declaration:FunctionDeclaration = mCurrentCallingLine.mFuncDeclaration;
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
+            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ());
 
             mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
             CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
@@ -1889,46 +2333,139 @@
 
          public function CollectVariableEditingDialogsRelatedInfo ():void
          {
-            mLastModifyTimesOfSessionVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = OnSessionVariablesEditingDialogClosed;
+            mLastModifyTimesOfWorldVariables = EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace ().GetNumModifiedTimes ();
+            
+            mLastModifyTimesOfGameSaveVariables = EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace ().GetNumModifiedTimes ();
+            
+            mLastModifyTimesOfCommonGlobalVariables = EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace ().GetNumModifiedTimes ();
+            
+            mLastModifyTimesOfCommonEntityVariables = EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace ().GetNumModifiedTimes ();
+            
+            mLastModifyTimesOfSessionVariableSpace = mCodeLibManager.GetSessionVariableSpace ().GetNumModifiedTimes ();
+            //EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = OnSessionVariablesEditingDialogClosed;
 
-            mLastModifyTimesOfGlobalVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = OnGlobalVariablesEditingDialogClosed;
+            mLastModifyTimesOfGlobalVariableSpace = mCodeLibManager.GetGlobalVariableSpace ().GetNumModifiedTimes ();
+            //EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = OnGlobalVariablesEditingDialogClosed;
 
-            mLastModifyTimesOfEntityVariableSpace = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = OnEntityVariablesEditingDialogClosed;
+            mLastModifyTimesOfEntityVariableSpace = mCodeLibManager.GetEntityVariableSpace ().GetNumModifiedTimes ();
+            //EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = OnEntityVariablesEditingDialogClosed;
 
-            EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = OnLocalVariablesEditingDialogClosed;
-            EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = OnInputVariablesEditingDialogClosed;
-            EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = OnOutputVariablesEditingDialogClosed;
+            //EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = OnLocalVariablesEditingDialogClosed;
+            //EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = OnInputVariablesEditingDialogClosed;
+            //EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = OnOutputVariablesEditingDialogClosed;
          }
 
-         private function CloseVariableEditingDialogsAndCleanUpRalatedInfo ():void
+         //private function CloseVariableEditingDialogsAndCleanUpRalatedInfo ():void
+         //{
+         //   EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideSessionVariablesEditDialog ();
+         //   EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideGlobalVariablesEditDialog ();
+         //   EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
+         //
+         //   // ...
+         //   EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = null;
+         //   EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = null;
+         //}
+         
+      // world scope variables
+      
+         private function OnEditWorldVariables (event:Event = null):void
          {
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideSessionVariablesEditDialog ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideGlobalVariablesEditDialog ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), OnWorldVariablesEditingDialogClosed);
+         }
+         
+         private var mLastModifyTimesOfWorldVariables:int = -1;
+         public function OnWorldVariablesEditingDialogClosed ():void
+         {
+            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace ().GetNumModifiedTimes ();
+            if (mLastModifyTimesOfWorldVariables < newModifyTimes)
+            {
+               OnCurrentCommandChanged ();
+               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               mLastModifyTimesOfWorldVariables = newModifyTimes;
 
-            // ...
-            EditorContext.GetSingleton ().mSessionVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mGlobalVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mEntityVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mLocalVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mInputVariablesEditingDialogClosedCallBack = null;
-            EditorContext.GetSingleton ().mOutputVariablesEditingDialogClosedCallBack = null;
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_World);
+            }
+         }
+
+      // game save variables
+      
+         private function OnEditGameSaveVariables (event:Event = null):void
+         {
+            EditorContext.ShowVariableSpaceEditDialog (this,  EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), OnGameSaveVariablesEditingDialogClosed);
+         }
+         
+         private var mLastModifyTimesOfGameSaveVariables:int = -1;
+         public function OnGameSaveVariablesEditingDialogClosed ():void
+         {
+            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace ().GetNumModifiedTimes ();
+            if (mLastModifyTimesOfGameSaveVariables < newModifyTimes)
+            {
+               OnCurrentCommandChanged ();
+               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               mLastModifyTimesOfGameSaveVariables = newModifyTimes;
+
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_GameSave);
+            }
+         }
+      
+      // common global variables for all scenes
+      
+         private function OnEditCommonGlobalVariables (event:Event = null):void
+         {
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), OnCommonGlobalVariablesEditingDialogClosed);
+         }
+         
+         private var mLastModifyTimesOfCommonGlobalVariables:int = -1;
+         public function OnCommonGlobalVariablesEditingDialogClosed ():void
+         {
+            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace ().GetNumModifiedTimes ();
+            if (mLastModifyTimesOfCommonGlobalVariables < newModifyTimes)
+            {
+               OnCurrentCommandChanged ();
+               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               mLastModifyTimesOfCommonGlobalVariables = newModifyTimes;
+
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_CommonGlobal);
+            }
+         }
+      
+      // common entity properties for all scenes
+      
+         private function OnEditCommonEntityVariables (event:Event = null):void
+         {
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), OnCommonEntityVariablesEditingDialogClosed);
+         }
+         
+         private var mLastModifyTimesOfCommonEntityVariables:int = -1;
+         public function OnCommonEntityVariablesEditingDialogClosed ():void
+         {
+            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace ().GetNumModifiedTimes ();
+            if (mLastModifyTimesOfCommonEntityVariables < newModifyTimes)
+            {
+               OnCurrentCommandChanged ();
+               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               mLastModifyTimesOfCommonEntityVariables = newModifyTimes;
+
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties);
+            }
          }
 
       // session variables
 
          private function OnEditSessionVariables (event:Event = null):void
          {
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowSessionVariablesEditDialog (this);
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowSessionVariablesEditDialog (this);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetSessionVariableSpace (), OnSessionVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfSessionVariableSpace:int = -1;
          public function OnSessionVariablesEditingDialogClosed ():void
          {
-            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
+            var newModifyTimes:int = mCodeLibManager.GetSessionVariableSpace ().GetNumModifiedTimes ();
             if (mLastModifyTimesOfSessionVariableSpace < newModifyTimes)
             {
                OnCurrentCommandChanged ();
@@ -1943,13 +2480,14 @@
 
          private function OnEditGlobalVariables ():void
          {
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowGlobalVariablesEditDialog (this);
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowGlobalVariablesEditDialog (this);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetGlobalVariableSpace (), OnGlobalVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfGlobalVariableSpace:int = -1;
          public function OnGlobalVariablesEditingDialogClosed ():void
          {
-            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+            var newModifyTimes:int = mCodeLibManager.GetGlobalVariableSpace ().GetNumModifiedTimes ();
             if (mLastModifyTimesOfGlobalVariableSpace < newModifyTimes)
             {
                OnCurrentCommandChanged ();
@@ -1964,20 +2502,21 @@
 
          private function OnEditEntityVariables ():void
          {
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowEntityVariablesEditDialog (this);
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowEntityVariablesEditDialog (this);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetEntityVariableSpace (), OnEntityVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfEntityVariableSpace:int = -1;
          public function OnEntityVariablesEditingDialogClosed ():void
          {
-            var newModifyTimes:int = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
+            var newModifyTimes:int = mCodeLibManager.GetEntityVariableSpace ().GetNumModifiedTimes ();
             if (mLastModifyTimesOfEntityVariableSpace < newModifyTimes)
             {
                OnCurrentCommandChanged ();
                OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
                mLastModifyTimesOfEntityVariableSpace = newModifyTimes;
 
-               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Entity);
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_EntityProperties);
             }
          }
 
@@ -1985,8 +2524,9 @@
 
          private function OnEditLocalVariables ():void
          {
-            mLastModifyTimesOfEntityVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ());
+            mLastModifyTimesOfLocalVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ().GetNumModifiedTimes ();
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ());
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace (), OnLocalVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfLocalVariableSpace:int = -1;
@@ -2007,8 +2547,9 @@
 
          private function OnEditInputVariables ():void
          {
-            mLastModifyTimesOfEntityVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowInputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ());
+            mLastModifyTimesOfInputVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ().GetNumModifiedTimes ();
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowInputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ());
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace (), OnInputVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfInputVariableSpace:int = -1;
@@ -2036,8 +2577,9 @@
 
          private function OnEditOutputVariables ():void
          {
-            mLastModifyTimesOfEntityVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ().GetNumModifiedTimes ();
-            EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowOutputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ());
+            mLastModifyTimesOfOutputVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ().GetNumModifiedTimes ();
+            //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowOutputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ());
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace (), OnOutputVariablesEditingDialogClosed);
          }
 
          private var mLastModifyTimesOfOutputVariableSpace:int = -1;

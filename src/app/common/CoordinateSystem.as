@@ -6,6 +6,10 @@ package common
    
    public class CoordinateSystem
    {
+      public static const kDefaultCoordinateSystem:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.02, false);
+      public static const kDefaultCoordinateSystem_BeforeV0201:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.05, false); // not include v2.01
+      public static const kDefaultCoordinateSystem_BeforeV0108:CoordinateSystem = kDefaultCoordinateSystem; // new CoordinateSystem (0.0, 0.0, 0.1, false); // not include v1.08
+
 //=========================================================================
 //
 //=========================================================================

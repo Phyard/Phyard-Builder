@@ -17,13 +17,11 @@ package player.entity {
    import common.Define;
    import common.Transform2D;
    
-   public class EntityShapeImageModuleButton extends EntityShape
+   public class EntityShapeImageModuleButton extends EntityShapeImageModule
    {
       public function EntityShapeImageModuleButton (world:World)
       {
          super (world);
-         
-         mPhysicsShapePotentially = true;
          
          mAppearanceObjectsContainer.addChild (mSimpleButton);
          
@@ -38,9 +36,9 @@ package player.entity {
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -105,6 +103,21 @@ package player.entity {
 //   
 //=============================================================
       
+      override protected function SetModuleIndexByAPI_Internal (moduleIndex:int):void
+      {
+         SetModuleIndexUp (moduleIndex);
+      }
+      
+      override public function GetModuleIndex ():int
+      {
+         return mModuleIndexUp;
+      }
+      
+      override protected function GetModuleInstance ():ModuleInstance
+      {
+         return mModuleInstanceUp;
+      }
+      
       protected var mModuleIndexUp:int = -1;
       protected var mModuleIndexOver:int = -1;
       protected var mModuleIndexDown:int = -1;
@@ -118,8 +131,13 @@ package player.entity {
          mModuleIndexUp = moduleIndex;
          mModuleInstanceUp = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexUp));
          
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
+      }
+      
+      public function GetModuleIndexOver ():int
+      {
+         return mModuleIndexOver;
       }
 
       public function SetModuleIndexOver (moduleIndex:int):void
@@ -138,6 +156,11 @@ package player.entity {
          {
             RebuildAppearanceForOverState ();
          }
+      }
+      
+      public function GetModuleIndexDown ():int
+      {
+         return mModuleIndexDown;
       }
 
       public function SetModuleIndexDown (moduleIndex:int):void
@@ -162,9 +185,24 @@ package player.entity {
 //   
 //=============================================================
       
+      private function OnModuleFrameChanged (updatePhysicsProxy:Boolean):void
+      {
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance ();
+         
+         if (updatePhysicsProxy)
+         {
+            OnShapeGeomModified (this);
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       //public function OnModuleAppearanceChanged ():void
       //{
-      //   mNeedRebuildAppearanceObjects = true;
+      //   // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
       //   DelayUpdateAppearance ();
       //   
       //   if (mModuleIndexOver >= 0)
@@ -178,7 +216,7 @@ package player.entity {
       //   }
       //}
       
-      private function RebuildAppearanceForOverState ():void
+      private function RebuildAppearanceForOverState (updatePhysicsProxy:Boolean = false):void
       {
          if (mModuleSpriteOver != null)
          {
@@ -200,7 +238,7 @@ package player.entity {
          }
       }
       
-      private function RebuildAppearanceForDownState ():void
+      private function RebuildAppearanceForDownState (updatePhysicsProxy:Boolean = false):void
       {
          if (mModuleSpriteDown != null)
          {
@@ -228,24 +266,18 @@ package player.entity {
       
       override protected function UpdateInternal (dt:Number):void
       {
-         if (mModuleInstanceUp.Step ())
-         {
-            mNeedRebuildAppearanceObjects = true;
-            DelayUpdateAppearance ();
-            
-            OnShapeGeomModified (this);
-         }
+         mModuleInstanceUp.Step (OnModuleReachesSequeunceEnd, OnModuleFrameChanged);
          
          // for over and down, waste time in most cases
          
-         if (mModuleIndexOver >= 0 && mModuleInstanceOver.Step ())
+         if (mModuleIndexOver >= 0 && mModuleInstanceOver != null)
          {
-            RebuildAppearanceForOverState ();
+            mModuleInstanceOver.Step (null, RebuildAppearanceForOverState);
          }
          
-         if (mModuleIndexDown >= 0 && mModuleInstanceDown.Step ())
+         if (mModuleIndexDown >= 0 && mModuleInstanceDown != null)
          {
-            RebuildAppearanceForDownState ();
+            mModuleInstanceDown.Step (null, RebuildAppearanceForDownState);
          }
       }
       

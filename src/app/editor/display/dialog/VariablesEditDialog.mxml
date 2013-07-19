@@ -3,11 +3,13 @@
     title="Variables Setting" width="500" height="386"
     borderAlpha="0.77"
     showCloseButton="false"
+    mouseDown="PopUpManager.bringToFront (this);"
+    >
+    <!--
     close="OnClickCloseButton ();"
     creationComplete="OnCreateCompete ();"
     show="OnShow ();"
-    mouseDown="PopUpManager.bringToFront (this);"
-    >
+    -->
 
    <mx:VBox label="Custom Entity Properties" borderStyle="solid" height="100%" width="100%"
             paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
@@ -25,43 +27,61 @@
    <mx:Script>
         <![CDATA[
 
+         import flash.display.DisplayObject;
+         
          import mx.managers.PopUpManager;
 
          import editor.trigger.VariableSpace;
+         
+      //==============================================
 
          private var OnClose:Function;
 
-         private var mVariableSpace:VariableSpace;
-         private var mOptions:Object;
+         //private var mVariableSpace:VariableSpace;
+         //private var mOptions:Object;
+         
+      //=================================================
+      
+      //=================================================
 
          private function OnInitPanel ():void
          {
          }
 
-         public function SetVariableSpace (variableSpace:VariableSpace):void
+         //public function SetVariableSpace (variableSpace:VariableSpace):void
+         //{
+         //   mVariableSpace = variableSpace;
+         //}
+         //
+         //public function SetOptions (options:Object):void
+         //{
+         //   mOptions = options;
+         //}
+         //
+         //private function OnCreateCompete ():void
+         //{
+         //   theVariablesEditPanel.SetOptions (mOptions);
+         //   OnShow ();
+         //}
+         //
+         //private function OnShow ():void
+         //{
+         //   if (theVariablesEditPanel != null)
+         //   {
+         //      theVariablesEditPanel.SetVariableSpace (mVariableSpace);
+         //   }
+         //}
+         //
+         //public function NotifyVariableSpaceModified ():void
+         //{
+         //   theVariablesEditPanel.NotifyVariableSpaceModified ();
+         //}
+         
+         public function UpdateVariableSpace (variableSpace:VariableSpace):void
          {
-            mVariableSpace = variableSpace;
-         }
-
-         public function SetOptions (options:Object):void
-         {
-            mOptions = options;
-         }
-
-         private function OnCreateCompete ():void
-         {
-            theVariablesEditPanel.SetOptions (mOptions);
-            OnShow ();
-         }
-
-         private function OnShow ():void
-         {
-            theVariablesEditPanel.SetVariableSpace (mVariableSpace);
-         }
-
-         public function NotifyVariableSpaceModified ():void
-         {
-            theVariablesEditPanel.NotifyVariableSpaceModified ();
+            // assert (theVariablesEditPanel != null)
+            
+            theVariablesEditPanel.UpdateVariableSpace (variableSpace);
          }
 
          public function SetTitle (title:String):void
@@ -76,7 +96,14 @@
 
          private function OnClickCloseButton():void
          {
-            OnClose ();
+            PopUpManager.removePopUp (this);
+            
+            //SetVariableSpace (null);
+            
+            if (OnClose != null)
+            {
+               OnClose ();
+            }
          }
 
        ]]>

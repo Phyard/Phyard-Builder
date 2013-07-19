@@ -1,20 +1,21 @@
 package editor.trigger {
 
    import flash.utils.Dictionary;
+   import editor.entity.Scene;
+   
    import editor.world.World;
    
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.ValueTypeDefine;
-   
+   import common.trigger.CoreFunctionIds;
    import common.ValueAdjuster;
    import common.CoordinateSystem;
-   
    import common.TriggerFormatHelper;
    
    public class FunctionCalling
    {
-      public var mTriggerEngine:TriggerEngine;
+      //public var mTriggerEngine:TriggerEngine;
       
       public var mFunctionDeclaration:FunctionDeclaration;
       
@@ -23,9 +24,9 @@ package editor.trigger {
       
       protected var mCommentedOff:Boolean = false;
       
-      public function FunctionCalling (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, createDefaultSourcesAndTargets:Boolean = true)
+      public function FunctionCalling (/*triggerEngine:TriggerEngine, */functionDeclatation:FunctionDeclaration, createDefaultSourcesAndTargets:Boolean = true)
       {
-         mTriggerEngine = triggerEngine;
+         //mTriggerEngine = triggerEngine;
          
          mFunctionDeclaration = functionDeclatation;
          
@@ -43,7 +44,7 @@ package editor.trigger {
             for (i = 0; i < num_inputs; ++ i)
             {
                variable_def = mFunctionDeclaration.GetInputParamDefinitionAt (i);
-               mInputValueSources [i] = variable_def.GetDefaultValueSource (mTriggerEngine);
+               mInputValueSources [i] = variable_def.GetDefaultValueSource (/*mTriggerEngine*/);
             }
             
             for (i = 0; i < num_returns; ++ i)
@@ -167,9 +168,17 @@ package editor.trigger {
          return null; // to override
       }
       
-      public function Clone (targetFunctionDefinition:FunctionDefinition):FunctionCalling
+      public function Clone (scene:Scene, sameAsSourceScene:Boolean, targetFunctionDefinition:FunctionDefinition):FunctionCalling
       {
-         var calling:FunctionCalling = new FunctionCalling (mTriggerEngine, mFunctionDeclaration, false);
+         if ((sameAsSourceScene == false) && (this is FunctionCalling_Custom))
+         {
+            // currently, crossing scene code snippet copying is not good implemented.
+            // todo.
+            return new FunctionCalling_Core (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
+         }
+         
+         //var calling:FunctionCalling = new FunctionCalling (/*mTriggerEngine, */mFunctionDeclaration, false);
+         var calling:FunctionCalling = CloneShell ();
          
          var i:int;
          var vi:VariableInstance;
@@ -182,7 +191,7 @@ package editor.trigger {
          {
             source = mInputValueSources [i] as ValueSource;
             
-            sourcesArray [i] = source.CloneSource (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
+            sourcesArray [i] = source.CloneSource (scene, /*mTriggerEngine, */targetFunctionDefinition, mFunctionDeclaration, i);
          }
          
          calling.AssignInputValueSources (sourcesArray);
@@ -195,7 +204,7 @@ package editor.trigger {
          {
             target = mOutputValueTargets [i] as ValueTarget;
             
-            targetsArray [i] = target.CloneTarget (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
+            targetsArray [i] = target.CloneTarget (scene, /*mTriggerEngine, */targetFunctionDefinition, mFunctionDeclaration, i);
          }
          
          calling.AssignOutputValueTargets (targetsArray);
@@ -293,10 +302,10 @@ package editor.trigger {
       }
       
 //====================================================================
-//
+// register -> global
 //====================================================================
       
-      public function ConvertRegisterVariablesToGlobalVariables (editorWorld:World):void
+      public function ConvertRegisterVariablesToGlobalVariables (scene:Scene):void
       {
          var i:int;
          var entityValueSource:ValueSource;
@@ -308,20 +317,20 @@ package editor.trigger {
             
             if (source is ValueSource_Variable)
             {
-               ConvertRegisterVariablesForValueSource (editorWorld, source as ValueSource_Variable);
+               ConvertRegisterVariablesForValueSource (scene, source as ValueSource_Variable);
             }
             else if (source is ValueSource_Property)
             {
                entityValueSource = (source as ValueSource_Property).GetEntityValueSource ();
                if (entityValueSource is ValueSource_Variable)
                {
-                  ConvertRegisterVariablesForValueSource (editorWorld, entityValueSource as ValueSource_Variable);
+                  ConvertRegisterVariablesForValueSource (scene, entityValueSource as ValueSource_Variable);
                }
                
                var propertyValueSource:ValueSource = (source as ValueSource_Property).GetPropertyValueSource ();
                if (propertyValueSource is ValueSource_Variable)
                {
-                  ConvertRegisterVariablesForValueSource (editorWorld, propertyValueSource as ValueSource_Variable);
+                  ConvertRegisterVariablesForValueSource (scene, propertyValueSource as ValueSource_Variable);
                }
             }
          }
@@ -333,53 +342,53 @@ package editor.trigger {
             
             if (target is ValueTarget_Variable)
             {
-               ConvertRegisterVariablesForValueTarget (editorWorld, target as ValueTarget_Variable);
+               ConvertRegisterVariablesForValueTarget (scene, target as ValueTarget_Variable);
             }
             else if (target is ValueTarget_Property)
             {
                entityValueSource = (target as ValueTarget_Property).GetEntityValueSource ();
                if (entityValueSource is ValueSource_Variable)
                {
-                  ConvertRegisterVariablesForValueSource (editorWorld, entityValueSource as ValueSource_Variable);
+                  ConvertRegisterVariablesForValueSource (scene, entityValueSource as ValueSource_Variable);
                }
                
                var propertyValueTarget:ValueTarget = (target as ValueTarget_Property).GetPropertyValueTarget ();
                if (propertyValueTarget is ValueTarget_Variable)
                {
-                  ConvertRegisterVariablesForValueTarget (editorWorld, propertyValueTarget as ValueTarget_Variable);
+                  ConvertRegisterVariablesForValueTarget (scene, propertyValueTarget as ValueTarget_Variable);
                }
             }
          }
       }
       
-      private function ConvertRegisterVariablesForValueSource (editorWorld:World, variableValueSource:ValueSource_Variable):void
+      private function ConvertRegisterVariablesForValueSource (scene:Scene, variableValueSource:ValueSource_Variable):void
       {
          if (variableValueSource == null)
             return;
          
          var vi:VariableInstance = variableValueSource.GetVariableInstance ();
-         if (vi == null)
+         if (vi == null) // || vi.IsNull ())
             return;
          
-         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
+         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_Register)
             return;
          
-         variableValueSource.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (editorWorld, vi));
+         variableValueSource.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (scene, vi));
       }
       
-      private function ConvertRegisterVariablesForValueTarget (editorWorld:World, variableValueTarget:ValueTarget_Variable):void
+      private function ConvertRegisterVariablesForValueTarget (scene:Scene, variableValueTarget:ValueTarget_Variable):void
       {
          if (variableValueTarget == null)
             return;
          
          var vi:VariableInstance = variableValueTarget.GetVariableInstance ();
-         if (vi == null)
+         if (vi == null) // || vi.IsNull)
             return;
          
-         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
+         if (vi.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_Register)
             return;
          
-         variableValueTarget.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (editorWorld, vi));
+         variableValueTarget.SetVariableInstance (TriggerFormatHelper.RegisterVariable2GlobalVariable (scene, vi));
       }
    }
 }

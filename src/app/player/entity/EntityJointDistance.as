@@ -30,9 +30,9 @@ package player.entity {
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -126,7 +126,8 @@ package player.entity {
                   mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor1.GetPositionY ()), 
                   mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.GetPositionX ()), 
                   mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor2.GetPositionY ()),
-                  0x0, thinkness
+                  mWorld.mJointColor, //0x0, 
+                  thinkness
                );
          
          mLineShape.visible = mVisible;

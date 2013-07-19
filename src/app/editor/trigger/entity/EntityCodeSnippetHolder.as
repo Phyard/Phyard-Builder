@@ -67,7 +67,7 @@ package editor.trigger.entity {
          
          var codeSnippetHolder:EntityCodeSnippetHolder = entity as EntityCodeSnippetHolder;
          
-         codeSnippetHolder.GetCodeSnippet ().CopyCallingsFrom (mCodeSnippet);
+         codeSnippetHolder.GetCodeSnippet ().CopyCallingsFrom (mEntityContainer, true, mCodeSnippet);
       }
       
    }

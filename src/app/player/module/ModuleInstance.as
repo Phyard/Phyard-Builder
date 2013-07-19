@@ -26,7 +26,7 @@ package player.module {
       }
       
       // return needs call BuildCurrentFrame or not
-      public function Step (callbackOnReachesSequenceEnd:Function = null):Boolean
+      public function Step (callbackOnReachesSequenceEnd:Function = null, onSwitchFrame:Function = null):void
       {
          var frameDutation:int = mModule.GetFrameDuration (mFrameIndex);
          
@@ -39,18 +39,20 @@ package player.module {
             {
                if (callbackOnReachesSequenceEnd != null && callbackOnReachesSequenceEnd (mModule))
                {
-                  return false;
+                  // module changed.
+                  return;
                }
                       
                mFrameIndex = 0;
             }
             
             mFrameStep = 0;
-
-            return mFrameIndex != oldFrameIndex;
+            
+            if (mFrameIndex != oldFrameIndex && onSwitchFrame != null)
+            {
+               onSwitchFrame (! mModule.IsConstantPhysicsGeom ());
+            }
          }
-         
-         return false;
       }
       
       public function RebuildAppearance (moduleSprite:ModuleSprite, transform:Transform2D):void

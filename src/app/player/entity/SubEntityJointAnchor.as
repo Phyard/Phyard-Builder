@@ -1,7 +1,9 @@
 package player.entity {
    
    import flash.display.Shape;
+   
    import flash.geom.Point;
+   import flash.geom.Matrix;
    
    import com.tapirgames.util.GraphicsUtil;
    
@@ -36,6 +38,14 @@ package player.entity {
          
          mWorld.AddChildToEntityLayer (mAnchorShape);
          mAppearanceObject = mAnchorShape;
+
+// test
+//if (mAppearanceObject.hasOwnProperty ("cacheAsBitmapMatrix"))
+//{
+//   mAppearanceObject.cacheAsBitmap = true;
+//   (mAppearanceObject as Object).cacheAsBitmapMatrix = new Matrix();
+//}
+// or use mBitmapData.draw (this)
       }
       
 //=============================================================
@@ -241,7 +251,7 @@ package player.entity {
                   0,
                   0,
                   displayRadius,
-                  0x0, // border color
+                  mWorld.mJointColor, //0x0, // border color
                   1, // border thickness
                   filled, // draw background
                   0xFFFFFF // filled color
@@ -256,7 +266,7 @@ package player.entity {
                   y1,
                   x2,
                   y2,
-                  0x0, 
+                  mWorld.mJointColor, //0x0, 
                   1
                );
       }

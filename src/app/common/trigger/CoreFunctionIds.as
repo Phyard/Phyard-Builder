@@ -32,18 +32,20 @@ package common.trigger {
       public static const ID_StartIf:int                      = IdPool.CoreApiId_30; //
       //public static const ID_ElseIf:int                     = IdPool.CoreApiId_31; //
       public static const ID_Else:int                       = IdPool.CoreApiId_32; //
-      //public static const ID_BreakIf:int                       = IdPool.CoreApiId_; // different with other breaks
+      //public static const ID_BreakIf:int                       = IdPool.CoreApiId_; // different with other breaks. Seems not good as GoTo
       public static const ID_EndIf:int                        = IdPool.CoreApiId_33; //
-      public static const ID_StartSwitch:int                      = IdPool.CoreApiId_34; //
-      //public static const ID_SwitchCase:int                     = IdPool.CoreApiId_35; //
-      //public static const ID_SwitchDefault:int                  = IdPool.CoreApiId_36; //
-      //public static const ID_BreakSwitch:int                        = IdPool.CoreApiId_; // different with other breaks
-      public static const ID_EndSwitch:int                        = IdPool.CoreApiId_37; //
+      
+      public static const ID_RepeatN:int                      = IdPool.CoreApiId_34; //
+      public static const ID_EndRepeatN:int                   = IdPool.CoreApiId_35; //
+
+      public static const ID_ForRange:int                      = IdPool.CoreApiId_36; //
+      public static const ID_EndForRange:int                   = IdPool.CoreApiId_37; //
+
       public static const ID_StartWhile:int                   = IdPool.CoreApiId_38; //
       public static const ID_EndWhile:int                     = IdPool.CoreApiId_39; //
       //public static const ID_StartDoWhile:int                   = IdPool.CoreApiId_40; //
       //public static const ID_EndDoWhile:int                     = IdPool.CoreApiId_41; //
-
+      
    // system
 
       public static const ID_GetProgramMilliseconds:int           = IdPool.CoreApiId_70; //
@@ -56,6 +58,23 @@ package common.trigger {
       public static const ID_IsAccelerometerSupported:int                        = IdPool.CoreApiId_76; // from v1.60
       public static const ID_GetAcceleration:int                                 = IdPool.CoreApiId_77; // from v1.60
       public static const ID_Design_SetMouseGestureEnabled:int            = IdPool.CoreApiId_615; // from v1.60
+      
+      public static const ID_IsNativeApp:int            = IdPool.CoreApiId_109; // from v2.03
+      public static const ID_ExitApp:int                             = IdPool.CoreApiId_592; //
+
+      public static const ID_GetScreenResolution:int    = IdPool.CoreApiId_110; // from v2.03
+      public static const ID_GetScreenDPI:int           = IdPool.CoreApiId_111; // from v2.03
+      public static const ID_GetOsNameString:int           = IdPool.CoreApiId_113; // from v2.03
+
+      public static const ID_OpenURL:int                = IdPool.CoreApiId_78; // from v2.03
+
+      public static const ID_CopyToClipboard:int                = IdPool.CoreApiId_114; // from v2.04
+      public static const ID_GetLanguageCode:int                = IdPool.CoreApiId_116; // from v2.04
+
+   // services
+
+      public static const ID_SubmitHighScore:int                = IdPool.CoreApiId_579; // from v2.03
+      public static const ID_SubmitKeyValue_Number:int          = IdPool.CoreApiId_576; // from v2.03
 
    // string
 
@@ -75,6 +94,7 @@ package common.trigger {
       public static const ID_String_LastIndexOf:int               = IdPool.CoreApiId_131; // from v1.54
       public static const ID_String_Substring:int                 = IdPool.CoreApiId_132; // from v1.54
       public static const ID_String_Split:int                     = IdPool.CoreApiId_133; // from v1.56
+      public static const ID_String_Replace:int                   = IdPool.CoreApiId_134; // from v2.04
 
    // bool
 
@@ -98,11 +118,13 @@ package common.trigger {
       public static const ID_Array_ConditionAssign:int       = IdPool.CoreApiId_81; // v1.54
       public static const ID_Array_SwapValues:int            = IdPool.CoreApiId_82; // v1.54
       public static const ID_Array_Equals:int                = IdPool.CoreApiId_83; // v1.54
+      public static const ID_Array_ExactEquals:int                = IdPool.CoreApiId_115; // 2.04
       public static const ID_Array_ToString:int                = IdPool.CoreApiId_101; // v1.56
       public static const ID_Array_Create:int                = IdPool.CoreApiId_84; // v1.54
       public static const ID_Array_IsNull:int                = IdPool.CoreApiId_85; // v1.54
       public static const ID_Array_GetLength:int                = IdPool.CoreApiId_86; // v1.54
       public static const ID_Array_SetLength:int                = IdPool.CoreApiId_99; // v1.54
+      public static const ID_Array_SubArray:int                = IdPool.CoreApiId_112; // v2.03
       public static const ID_Array_RemoveElements:int                = IdPool.CoreApiId_100; // v1.54
       public static const ID_Array_InsertElements:int                = IdPool.CoreApiId_102; // v1.56
       public static const ID_Array_Concat:int                  = IdPool.CoreApiId_79; // v1.57
@@ -118,6 +140,10 @@ package common.trigger {
       public static const ID_Array_GetElementAsCCat:int          = IdPool.CoreApiId_94; // v1.54
       public static const ID_Array_SetElementWithEntity:int      = IdPool.CoreApiId_95; // v1.54
       public static const ID_Array_GetElementAsEntity:int        = IdPool.CoreApiId_96; // v1.54
+      public static const ID_Array_SetElementWithModule:int      = IdPool.CoreApiId_105; // v2.00
+      public static const ID_Array_GetElementAsModule:int        = IdPool.CoreApiId_106; // v2.00
+      public static const ID_Array_SetElementWithSound:int      = IdPool.CoreApiId_107; // v2.00
+      public static const ID_Array_GetElementAsSound:int        = IdPool.CoreApiId_108; // v2.00
       public static const ID_Array_SetElementWithArray:int       = IdPool.CoreApiId_97; // v1.54
       public static const ID_Array_GetElementAsArray:int         = IdPool.CoreApiId_98; // v1.54
 
@@ -211,6 +237,23 @@ package common.trigger {
 
 
    // game / design
+      
+      public static const ID_Design_LoadLevel:int                      = IdPool.CoreApiId_590;
+      public static const ID_Design_MergeLevel:int                     = IdPool.CoreApiId_591;
+      public static const ID_Design_GetLevelByIdOffset:int       = IdPool.CoreApiId_585;
+      public static const ID_Design_GetLevelId:int           = IdPool.CoreApiId_580;
+      public static const ID_Design_GetLevelByKey:int          = IdPool.CoreApiId_586;
+      public static const ID_Design_GetLevelKey:int          = IdPool.CoreApiId_581;
+      public static const ID_Design_GetCurrentLevel :int       = IdPool.CoreApiId_583;
+      public static const ID_Design_IsNullLevel :int       = IdPool.CoreApiId_587;
+      public static const ID_Design_SceneEquals :int       = IdPool.CoreApiId_584;
+      public static const ID_Design_Scene2String :int       = IdPool.CoreApiId_582;
+      
+      public static const ID_Design_WriteSaveData:int                    = IdPool.CoreApiId_588;
+      public static const ID_Design_LoadSaveData:int                     = IdPool.CoreApiId_589;
+      public static const ID_Design_ResetSaveData:int                    = IdPool.CoreApiId_577;
+      public static const ID_Design_DeleteSaveData:int                    = IdPool.CoreApiId_578;
+      // todo: SaveData_ByteArray version
 
       public static const ID_Design_RestartLevel:int                     = IdPool.CoreApiId_593;
       public static const ID_Design_IsLevelPaused:int                    = IdPool.CoreApiId_594;
@@ -229,9 +272,30 @@ package common.trigger {
       public static const ID_Design_IsLevelSuccessed:int                         = IdPool.CoreApiId_610;
       public static const ID_Design_IsLevelFailed:int                            = IdPool.CoreApiId_612;
       public static const ID_Design_IsLevelUnfinished:int                        = IdPool.CoreApiId_614;
+      
+      public static const ID_Design_SetLevelBooleanProperty:int                        = IdPool.CoreApiId_617;
+      public static const ID_Design_SetLevelNumberProperty:int                        = IdPool.CoreApiId_616;
+      public static const ID_Design_SetLevelStringProperty:int                        = IdPool.CoreApiId_618;
 
-   // game / world
+   // game / world / appearance
+      
+      public static const ID_Level_GetFilledColor:int                        = IdPool.CoreApiId_619;
+      public static const ID_Level_SetFilledColor:int                        = IdPool.CoreApiId_620;
+      public static const ID_Level_GetFilledColorRGB:int                        = IdPool.CoreApiId_621;
+      public static const ID_Level_SetFilledColorRGB:int                        = IdPool.CoreApiId_622;
+      public static const ID_Level_GetBorderColor:int                        = IdPool.CoreApiId_623;
+      public static const ID_Level_SetBorderColor:int                        = IdPool.CoreApiId_624;
+      public static const ID_Level_GetBorderColorRGB:int                        = IdPool.CoreApiId_625;
+      public static const ID_Level_SetBorderColorRGB:int                        = IdPool.CoreApiId_626;
 
+   // game / world / physics
+
+      public static const ID_World_IsPhysicsEngineEnabled:int       = IdPool.CoreApiId_727;
+      public static const ID_World_SetPhysicsEngineEnabled:int       = IdPool.CoreApiId_726;
+      public static const ID_World_GetRealtimeFPS:int            = IdPool.CoreApiId_714;
+      public static const ID_World_GetPreferredFpsAndStepTimeLangth:int       = IdPool.CoreApiId_734;
+      public static const ID_World_SetPreferredFpsAndStepTimeLangth:int       = IdPool.CoreApiId_735;
+      
       public static const ID_World_SetGravityAcceleration_Radians:int       = IdPool.CoreApiId_710;
       public static const ID_World_SetGravityAcceleration_Degrees:int       = IdPool.CoreApiId_711;
       public static const ID_World_SetGravityAcceleration_Vector:int        = IdPool.CoreApiId_712;
@@ -246,7 +310,8 @@ package common.trigger {
       public static const ID_World_GetIntersectedShapesWithLineSegment:int        = IdPool.CoreApiId_732;
       public static const ID_World_GetIntersectionSegmentsWithLineSegment:int        = IdPool.CoreApiId_733;
 
-      public static const ID_World_SetCurrentCamera:int                               = IdPool.CoreApiId_717;
+      public static const ID_World_GetViewportSize:int                               = IdPool.CoreApiId_716; // from v2.03
+      public static const ID_World_SetCurrentCamera:int                              = IdPool.CoreApiId_717;
       public static const ID_World_GetCameraCenter:int                               = IdPool.CoreApiId_719;
       public static const ID_World_GetCameraRotationByDegrees:int                    = IdPool.CoreApiId_718;
       public static const ID_World_FollowCameraWithShape:int                         = IdPool.CoreApiId_720;
@@ -262,14 +327,26 @@ package common.trigger {
       public static const ID_World_ConditionCallScript:int                      = IdPool.CoreApiId_751;
       public static const ID_World_CallBoolFunction:int                         = IdPool.CoreApiId_752;
       public static const ID_World_ConditionCallBoolFunction:int                = IdPool.CoreApiId_753;
-      public static const ID_World_CallScriptMultiTimes:int                   = IdPool.CoreApiId_754;
-      public static const ID_World_CallBoolFunctionMultiTimes:int             = IdPool.CoreApiId_755;
+      public static const ID_World_CallScriptMultiTimes:int                     = IdPool.CoreApiId_754;
+      public static const ID_World_CallBoolFunctionMultiTimes:int               = IdPool.CoreApiId_755;
 
       public static const ID_World_CreateExplosion:int                = IdPool.CoreApiId_770;
 
-      public static const ID_World_StopAllSounds:int            = IdPool.CoreApiId_800;
-      public static const ID_World_PlaySound:int                = IdPool.CoreApiId_801;
+      public static const ID_World_PlaySound:int                    = IdPool.CoreApiId_801;
+      public static const ID_World_StopSounds_InLevel:int           = IdPool.CoreApiId_800;
+      public static const ID_World_StopSound_CrossLevels:int        = IdPool.CoreApiId_802;
+      public static const ID_World_IsSoundEnabled:int               = IdPool.CoreApiId_803;
+      public static const ID_World_SetSoundEnabled:int              = IdPool.CoreApiId_804;
+      //public static const ID_World_GetGlobalSoundVolume:int         = IdPool.CoreApiId_805;
+      //public static const ID_World_SetGlobalSoundVolume:int         = IdPool.CoreApiId_806;
 
+   // game / collision category
+
+      public static const ID_Module_Assign:int                     = IdPool.CoreApiId_854;
+      public static const ID_Module_Equals:int                     = IdPool.CoreApiId_857;
+
+   // ?
+   
       // VirtualClickOnEntityCenter (entity)
 
    // game / collision category
@@ -344,34 +421,36 @@ package common.trigger {
       public static const ID_EntityShape_GetCIType:int                    = IdPool.CoreApiId_1100;
       public static const ID_EntityShape_SetCIType:int                    = IdPool.CoreApiId_1101;
 
+      public static const ID_EntityShape_GetBodyTexture:int            = IdPool.CoreApiId_1140;
+      public static const ID_EntityShape_SetBodyTexture:int            = IdPool.CoreApiId_1129;
       public static const ID_EntityShape_GetFilledColor:int            = IdPool.CoreApiId_1110;
       public static const ID_EntityShape_SetFilledColor:int            = IdPool.CoreApiId_1111;
       public static const ID_EntityShape_GetFilledColorRGB:int         = IdPool.CoreApiId_1112;
       public static const ID_EntityShape_SetFilledColorRGB:int         = IdPool.CoreApiId_1113;
       public static const ID_EntityShape_GetFilledOpacity:int          = IdPool.CoreApiId_1114; // v1.54
       public static const ID_EntityShape_SetFilledOpacity:int          = IdPool.CoreApiId_1115; // v1.54
-      //public static const ID_EntityShape_IsShowBorder:int              = IdPool.CoreApiId_1116;
-      //public static const ID_EntityShape_SetShowBorder:int             = IdPool.CoreApiId_1117;
-      //public static const ID_EntityShape_GetBorderThickness:int        = IdPool.CoreApiId_1118;
-      //public static const ID_EntityShape_SetBorderThickness:int        = IdPool.CoreApiId_1119;
+      public static const ID_EntityShape_IsShowBorder:int              = IdPool.CoreApiId_1116;
+      public static const ID_EntityShape_SetShowBorder:int             = IdPool.CoreApiId_1117;
       public static const ID_EntityShape_GetBorderColor:int            = IdPool.CoreApiId_1120; // v1.54
       public static const ID_EntityShape_SetBorderColor:int            = IdPool.CoreApiId_1121; // v1.54
       public static const ID_EntityShape_GetBorderColorRGB:int         = IdPool.CoreApiId_1122; // v1.54
       public static const ID_EntityShape_SetBorderColorRGB:int         = IdPool.CoreApiId_1123; // v1.54
       public static const ID_EntityShape_GetBorderOpacity:int          = IdPool.CoreApiId_1124; // v1.54
       public static const ID_EntityShape_SetBorderOpacity:int          = IdPool.CoreApiId_1125; // v1.54
+      
+      public static const ID_EntityShape_SetCacheAsBitmap:int          = IdPool.CoreApiId_1128; // v2.03
 
 
 
       public static const ID_EntityShape_IsPhysicsEnabled:int          = IdPool.CoreApiId_1150;
       //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1151;
-      public static const ID_EntityShape_IsStatic:int                  = IdPool.CoreApiId_1155; // from v1.54
-      //public static const ID_EntityShape_SetStatic:int                 = IdPool.CoreApiId_1156;
       public static const ID_EntityShape_GetCollisionCategory:int      = IdPool.CoreApiId_1152;
       public static const ID_EntityShape_SetCollisionCategory:int      = IdPool.CoreApiId_1153;
       //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1154;
       public static const ID_EntityShape_IsSensor:int                  = IdPool.CoreApiId_1157;
       public static const ID_EntityShape_SetAsSensor:int               = IdPool.CoreApiId_1158;
+      public static const ID_EntityShape_IsStatic:int                  = IdPool.CoreApiId_1155; // from v1.54, old IsStatic
+      public static const ID_EntityShape_SetStatic:int                 = IdPool.CoreApiId_1156; // from v2.03
       public static const ID_EntityShape_IsRotationFixed:int                  = IdPool.CoreApiId_1163;
       public static const ID_EntityShape_SetRotationFixed:int               = IdPool.CoreApiId_1164;
       //public static const ID_EntityShape_IsBullet:int                  = IdPool.CoreApiId_1159;
@@ -457,6 +536,10 @@ package common.trigger {
       public static const ID_Entity_IsBombShapeEntity:int             = IdPool.CoreApiId_1404;
       public static const ID_Entity_IsWorldBorderShapeEntity:int      = IdPool.CoreApiId_1405;
 
+      public static const ID_Entity_IsCameraEntity:int      = IdPool.CoreApiId_1406;
+      public static const ID_Entity_IsTextShapeEntity:int      = IdPool.CoreApiId_1407;
+      public static const ID_Entity_IsModuleShapeEntity:int      = IdPool.CoreApiId_1408;
+      public static const ID_Entity_IsButtonShapeEntity:int      = IdPool.CoreApiId_1409;
 
    // game / entity / shape / text
 
@@ -464,9 +547,18 @@ package common.trigger {
       public static const ID_EntityText_SetText:int                   = IdPool.CoreApiId_1551;
       public static const ID_EntityText_AppendText:int                = IdPool.CoreApiId_1552;
       public static const ID_EntityText_AppendNewLine:int             = IdPool.CoreApiId_1553;
+      public static const ID_EntityText_GetHorizontalScrollPosition:int                   = IdPool.CoreApiId_1576;
+      public static const ID_EntityText_SetHorizontalScrollPosition:int                   = IdPool.CoreApiId_1577;
+      public static const ID_EntityText_GetVerticalScrollPosition:int                     = IdPool.CoreApiId_1578;
+      public static const ID_EntityText_SetVerticalScrollPosition:int                     = IdPool.CoreApiId_1579;
+      public static const ID_EntityText_GetMaxHorizontalScrollPosition:int                = IdPool.CoreApiId_1586;
+      public static const ID_EntityText_GetMaxVerticalScrollPosition:int                  = IdPool.CoreApiId_1587;
       public static const ID_EntityText_SetSize:int                   = IdPool.CoreApiId_1570;
       public static const ID_EntityText_SetColor:int                  = IdPool.CoreApiId_1571;
       public static const ID_EntityText_SetColorByRGB:int             = IdPool.CoreApiId_1572;
+      public static const ID_EntityText_SetSize_MouseOver:int                   = IdPool.CoreApiId_1573;
+      public static const ID_EntityText_SetColor_MouseOver:int                  = IdPool.CoreApiId_1574;
+      public static const ID_EntityText_SetColorByRGB_MouseOver:int             = IdPool.CoreApiId_1575;
 
    // game / entity / shape / circle
 
@@ -478,7 +570,7 @@ package common.trigger {
       public static const ID_EntityShapeRectangle_GetSize:int                   = IdPool.CoreApiId_1556;
       public static const ID_EntityShapeRectangle_SetSize:int                   = IdPool.CoreApiId_1557;
 
-   // game /entity / shape / poly
+   // game / entity / shape / poly
 
       public static const ID_EntityShapePoly_GetVertexCount:int                          = IdPool.CoreApiId_1558;
       public static const ID_EntityShapePoly_GetVertexLocalPosition:int                  = IdPool.CoreApiId_1559;
@@ -492,14 +584,28 @@ package common.trigger {
       public static const ID_EntityShapePoly_SetVertexLocalPositions:int                     = IdPool.CoreApiId_1567;
       public static const ID_EntityShapePoly_GetVertexWorldPositions:int                     = IdPool.CoreApiId_1568;
       public static const ID_EntityShapePoly_SetVertexWorldPositions:int                     = IdPool.CoreApiId_1569;
+      
+   // game / entity / shape / thickness
+   
+      public static const ID_EntityShape_GetBorderThickness:int        = IdPool.CoreApiId_1118;
+      public static const ID_EntityShape_SetBorderThickness:int        = IdPool.CoreApiId_1119;
+      public static const ID_EntityShape_GetCurveThickness:int        = IdPool.CoreApiId_1165;
+      public static const ID_EntityShape_SetCurveThickness:int        = IdPool.CoreApiId_1166;
 
-   // game /entity / shape / module
+   // game / entity / shape / module
 
+      public static const ID_EntityShapeModule_GetModule:int                          = IdPool.CoreApiId_1580;
       public static const ID_EntityShapeModule_ChangeModule:int                          = IdPool.CoreApiId_1581;
+      public static const ID_EntityShapeModuleButton_GetOverModule:int                = IdPool.CoreApiId_1582;
+      public static const ID_EntityShapeModuleButton_ChangeOverModule:int                = IdPool.CoreApiId_1583;
+      public static const ID_EntityShapeModuleButton_GetDownModule:int                = IdPool.CoreApiId_1584;
+      public static const ID_EntityShapeModuleButton_ChangeDownModule:int                = IdPool.CoreApiId_1585;
 
    // game / entity / joint
 
       // from 2000
+
+      public static const ID_EntityJoint_GetJointConnectedShapes:int                   = IdPool.CoreApiId_1989;
 
       public static const ID_EntityJoint_SetJointMotorEnabled:int                   = IdPool.CoreApiId_1990;
       public static const ID_EntityJoint_SetJointLimitsEnabled:int                  = IdPool.CoreApiId_1991;

@@ -6,6 +6,8 @@ package editor.trigger {
    import mx.controls.RadioButtonGroup;
    import mx.controls.RadioButton;
    
+   import editor.entity.Scene;
+   
    import common.trigger.ValueTypeDefine;
    
    public class VariableDefinitionBoolean extends VariableDefinition
@@ -68,7 +70,7 @@ package editor.trigger {
          return new ValueSource_Direct (mDefaultValue);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var box:HBox = new HBox ();
          
@@ -92,7 +94,7 @@ package editor.trigger {
          return box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          if (control is HBox)
          {

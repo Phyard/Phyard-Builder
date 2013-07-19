@@ -39,24 +39,7 @@ package editor.image {
       
 //==========================================================      
 // 
-//========================================================== 
-      
-      override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
-      {
-         if (super.DeleteSelectedAssets ())
-         {
-            if (! passively)
-            {
-               mAssetImageCompositeModule.GetModuleInstanceManager().DeleteSelectedAssets (true);
-            }
-            
-            UpdateLayout (true);
-            
-            return true;
-         }
-         
-         return false;
-      }
+//==========================================================      
 
       public function CreateImageModuleInstanceForListing (module:AssetImageModule, selectIt:Boolean = false, atIndex:int = -1):AssetImageModuleInstanceForListing
       {
@@ -78,5 +61,122 @@ package editor.image {
          
          return moduleInstane;
       }
+      
+//==========================================================      
+// 
+//========================================================== 
+      
+      // for loading
+      public function DestroyAllModuleInstances (passively:Boolean = false):void
+      {
+         DestroyAllAssets ();
+         
+         if (! passively)
+         {
+            mAssetImageCompositeModule.GetModuleInstanceManager ().DestroyAllModuleInstances (true);
+         }
+      }
+      
+      override public function DeleteSelectedAssets (passively:Boolean = false):Boolean
+      {
+         if (super.DeleteSelectedAssets ())
+         {
+            if (! passively)
+            {
+               mAssetImageCompositeModule.GetModuleInstanceManager ().DeleteSelectedAssets (true);
+            }
+            
+            UpdateLayout (true);
+            
+            return true;
+         }
+         
+         return false;
+      }
+      
+      override public function MoveSelectedAssetsToIndex (aCurrentIndex:int):void
+      {
+         super.MoveSelectedAssetsToIndex (aCurrentIndex);
+         
+         NotifyPeerAppearanceOrdersChanged ();
+      }
+      
+      private function NotifyPeerAppearanceOrdersChanged ():void
+      {  
+         mAssetImageCompositeModule.SynchronizePartAppearanceOrdersFromListingToEditing ();
+         mAssetImageCompositeModule.GetModuleInstanceManager ().UpdateLayout (true);
+         mAssetImageCompositeModule.GetModuleInstanceManager ().NotifyModifiedForReferers ();
+         mAssetImageCompositeModule.GetModuleInstanceManager ().NotifyChangedForPanel ();
+      }
+      
+      public function MoveUpDownTheOnlySelectedModuleInstance (moveUp:Boolean):void
+      {  
+         var selectedMoudleInstances:Array = GetSelectedAssets ();
+         if (selectedMoudleInstances.length != 1)
+            return;
+         
+         var moudleInstance:AssetImageModuleInstanceForListing = selectedMoudleInstances [0] as AssetImageModuleInstanceForListing;
+         var oldIndex:int = moudleInstance.GetAppearanceLayerId ();
+         var newIndex:int;
+         if (moveUp)
+         {
+            if (oldIndex <= 0)
+               return;
+            
+            newIndex = oldIndex - 1;
+         }
+         else
+         {
+            if (oldIndex >= GetNumAssets () - 1)
+               return;
+            
+            newIndex = oldIndex + 2;
+         }
+         
+         MoveSelectedAssetsToIndex (newIndex);
+         UpdateLayout (true);
+         
+         NotifyPeerAppearanceOrdersChanged ();
+         
+         //AdjustAssetAppearanceOrder (moudleInstance, newIndex);
+         //moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().AdjustAssetAppearanceOrder (moudleInstance.GetModuleInstaneForListingPeer (), newIndex);
+         //
+         //moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
+         //
+         //NotifyChangedForPanel ();
+      }
+      
+      // originally put in AssetImageModuleInstanceManager
+      //public function MoveUpDownTheOnlySelectedModuleInstance (moveUp:Boolean):void
+      //{  
+      //   var selectedMoudleInstances:Array = GetSelectedAssets ();
+      //   if (selectedMoudleInstances.length != 1)
+      //      return;
+      //   
+      //   var moudleInstance:AssetImageModuleInstance = selectedMoudleInstances [0] as AssetImageModuleInstance;
+      //   var oldIndex:int = moudleInstance.GetAppearanceLayerId ();
+      //   var newIndex:int;
+      //   if (moveUp)
+      //   {
+      //      if (oldIndex <= 0)
+      //         return;
+      //      
+      //      newIndex = oldIndex - 1;
+      //   }
+      //   else
+      //   {
+      //      if (oldIndex >= GetNumAssets () - 1)
+      //         return;
+      //      
+      //      newIndex = oldIndex + 1;
+      //   }
+      //   
+      //   AdjustAssetAppearanceOrder (moudleInstance, newIndex);
+      //   moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().AdjustAssetAppearanceOrder (moudleInstance.GetModuleInstaneForListingPeer (), newIndex);
+      //   
+      //   moudleInstance.GetModuleInstaneForListingPeer ().GetAssetImageModuleInstanceManagerForListing ().UpdateLayout (true);
+      //   
+      //   NotifyChangedForPanel ();
+      //}
    }
 }

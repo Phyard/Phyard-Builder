@@ -28,14 +28,19 @@ package com.tapirgames.util {
          if (sprite.contextMenu == null)
          {
             sprite.contextMenu = new ContextMenu ();
-            sprite.contextMenu.hideBuiltInItems ();
+            
+            if (sprite.contextMenu != null) // may be null on some devices
+               sprite.contextMenu.hideBuiltInItems ();
          }
          
          var menuItem:ContextMenuItem = new ContextMenuItem(caption, addSeperator);
          if (selectedListener != null)
             menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
-         if (sprite.contextMenu != null) // sometimes, null for air app
-            sprite.contextMenu.customItems.push (menuItem);
+         if (sprite.contextMenu != null) // may be null on some devices
+         {
+            if (sprite.contextMenu.customItems != null)
+               sprite.contextMenu.customItems.push (menuItem);
+         }
          
          return menuItem;
       }

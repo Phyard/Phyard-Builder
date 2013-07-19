@@ -55,6 +55,9 @@ package editor {
       [Embed("../res/create/event_on_game_deactivated.png")]
       public static const IconOnGameDeactivatedEvent:Class;
       
+      [Embed("../res/create/event_on_world_before_repainting.png")]
+      public static const IconOnWorldBeforeRepaintingEvent:Class;
+      
       // entity init / update / destroy
       
       [Embed("../res/create/event_on_entity_created.png")]
@@ -72,6 +75,11 @@ package editor {
       public static const IconOnJointReachLowerLimitEvent:Class;
       [Embed("../res/create/event_on_joint_reach_upper_limit.png")]
       public static const IconOnJointReachUpperLimitEvent:Class;
+      
+      // text changed
+      
+      [Embed("../res/create/event_on_text_changed.png")]
+      public static const IconOnTextChangedEvent:Class;
       
       // level init / update
       
@@ -152,6 +160,11 @@ package editor {
       [Embed("../res/create/event_on_mouse_gesture.png")]
       public static const IconOnMouseGesture:Class;
       
+      // system back
+      
+      [Embed("../res/create/event_on_system_back.png")]
+      public static const IconOnSystemBack:Class;
+      
    // event id -> icon
       
       private static var sEventId2IconClass:Dictionary = null;
@@ -165,6 +178,8 @@ package editor {
             sEventId2IconClass [CoreEventIds.ID_OnGameActivated  ] = IconOnGameActivatedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnGameDeactivated] = IconOnGameDeactivatedEvent;
             
+            sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeRepainting] = IconOnWorldBeforeRepaintingEvent;
+            
             sEventId2IconClass [CoreEventIds.ID_OnEntityCreated] = IconOnEntityCteatedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityInitialized] = IconOnEntityInitilizedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityUpdated    ] = IconOnEntityUpdatedEvent;
@@ -172,6 +187,8 @@ package editor {
             
             sEventId2IconClass [CoreEventIds.ID_OnJointReachLowerLimit] = IconOnJointReachLowerLimitEvent;
             sEventId2IconClass [CoreEventIds.ID_OnJointReachUpperLimit] = IconOnJointReachUpperLimitEvent;
+
+            sEventId2IconClass [CoreEventIds.ID_OnTextChanged] = IconOnTextChangedEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeInitializing] = IconOnBeforeLevelInitializingEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldAfterInitialized  ] = IconOnAfterLevelInitializedEvent;
@@ -207,6 +224,8 @@ package editor {
             sEventId2IconClass [CoreEventIds.ID_OnWorldTimer     ] = IconOnWorldTimerEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnMouseGesture   ] = IconOnMouseGesture;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnSystemBack   ] = IconOnSystemBack;
          }
          
          var iconClass:Class = sEventId2IconClass [eventId];
@@ -218,6 +237,10 @@ package editor {
       
       [Embed("../res/keyboard/keyboard.png")]
       public static const Keyboard:Class;
+
+      [Embed("../res/keyboard/key-escape-sel.png")]
+      public static const KeyEscape:Class;
+      
       [Embed("../res/keyboard/key-a-sel.png")]
       public static const KeyA:Class;
       [Embed("../res/keyboard/key-b-sel.png")]

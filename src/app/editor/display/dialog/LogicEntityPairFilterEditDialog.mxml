@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Entity Pair Filter Setting" width="600">
+    title="Entity Pair Filter Setting" width="700">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Code Snippet" borderStyle="solid" height="100%" width="100%"
@@ -56,7 +56,8 @@
 
          public function OnCodeSnippetSettingPanelCreationComplete ():void
          {
-            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
+            theCodeSnippetEditPanel.SetCodeSnippetAndCodeLibManager (mParams.mCodeSnippet, mParams.mCodeLibManager);
+            theCodeSnippetEditPanel.OnCodeLibManagerSwitched ();
          }
 
          public function GetValues (returnValues:Object):void
@@ -72,6 +73,8 @@
          {
             mParams.mRotationNonSense = true;
             mParams.mVisibleNonsense = true;
+            mParams.mScaleNonSense = true;
+            mParams.mFlippedNonSense = true;
             mParams.mEnabledNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }

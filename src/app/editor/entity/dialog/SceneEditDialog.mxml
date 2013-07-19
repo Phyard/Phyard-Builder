@@ -3,53 +3,90 @@
      The TitleWindowApp application displays this component.
      You cannot run it independently. -->
 
+<!--
 <container:ResizableTitleWindow xmlns:container="editor.display.container.*"
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:entity="editor.entity.dialog.*"
     xmlns:ccat="editor.ccat.dialog.*"
     xmlns:codelib="editor.codelib.dialog.*"
     title="Scene Manager"
-    width="816" height="656"
+    width="856" height="656"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="false"
+    creationComplete="OnInit ();"
     >
 
    <mx:VBox backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="100%"
             horizontalScrollPolicy="off" verticalScrollPolicy="off"
             horizontalGap="0" verticalGap="0" borderThickness="0"
             >
-      <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
-         <mx:Spacer width="2"/>
-         <!--mx:ComboBox width="150" change="OnSwitchScene ();"/>
-         <mx:Spacer width="2"/-->
-         <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
-         <mx:Spacer width="5"/>
-         <mx:Spacer width="100%"/>
-         <mx:Spacer width="5"/>
-         <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" click="OnClickCloneEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-clone.png')" disabledIcon="@Embed('../../../res/command/command-clone-disabled.png')" />
-         <mx:Button id="Button_Delete" toolTip="(D) Delete Selected(s)" click="OnClickDeleteEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
-         <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top" click="OnClickMoveEntityToTopButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-top.png')" disabledIcon="@Embed('../../../res/command/command-to-top-disabled.png')" />
-         <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom" click="OnClickMoveEntityToBottomButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-bottom.png')" disabledIcon="@Embed('../../../res/command/command-to-bottom-disabled.png')" />
-         <mx:Spacer width="10"/>
-         <mx:Button id="Button_Glue" toolTip="Attach Entities As Brothers" click="OnClickMakeEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-make.png')" disabledIcon="@Embed('../../../res/command/command-brothers-make-disabled.png')" />
-         <mx:Button id="Button_BreakApart" toolTip="Break Up Attached Entities (Brothers)" click="OnClickBreakApartEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-break.png')" disabledIcon="@Embed('../../../res/command/command-brothers-break-disabled.png')" />
-         <mx:Spacer width="10"/>
-         <mx:Button id="Button_EntitySettings" toolTip="Set Properties of The Selected" click="OnClickEntitySettingsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/command/command-setting.png')" disabledIcon="@Embed('../../../res/command/command-setting-disabled.png')" />
-         <mx:Spacer width="5"/>
-         <mx:Spacer width="100%"/>
-         <mx:Spacer width="5"/>
-         <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
-         <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
-         <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
-         <mx:Spacer width="10"/>
-         <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
-         <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
-         <mx:Spacer width="5"/>
-         <mx:Spacer width="100%"/>
-         <mx:Spacer width="5"/>
-         <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
-         <mx:Button id="Button_EditFunctions" toolTip="Edit Functions" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
-         <mx:Spacer width="2"/>
+-->
+<mx:VBox xmlns:container="editor.display.container.*"
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:entity="editor.entity.dialog.*"
+    xmlns:ccat="editor.ccat.dialog.*"
+    xmlns:codelib="editor.codelib.dialog.*"
+    backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="100%"
+    horizontalScrollPolicy="off" verticalScrollPolicy="off"
+    horizontalGap="0" verticalGap="0" borderThickness="0"
+    creationComplete="OnInit ();"
+    >
+
+      <mx:HBox backgroundColor="0xA0A0A0" width="100%" verticalAlign="middle" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
+         <mx:Spacer width="10" />
+         <mx:Button id="Button_WorldFile" toolTip="Load / Save ..." click="EditorContext.GetEditorApp ().OnClicWorldFileButton (Button_WorldFile);" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-world-file.png')" />
+         <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="EditorContext.GetEditorApp ().OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-info.png')" />
+         <mx:Spacer width="10" />
+         <mx:Button id="Button_ShowModuleEditDialog" toolTip="Edit Image Modules" click="EditorContext.GetEditorApp ().ShowAssetImageModuleListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-modules.png')" />
+         <mx:Button id="Button_ShowSoundEditDialog" toolTip="Edit Sounds" click="EditorContext.GetEditorApp ().ShowAssetSoundListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-sounds.png')" />
+         <!--
+         <mx:Button id="Button_ShowGlobalCodeLibEditDialog" toolTip="Edit Global Functions" click="EditorContext.GetEditorApp ().ShowGlobalCodeLibEditDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/big-world-global-functions.png')" />
+         -->
+         <mx:Spacer width="10" />
+         <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+            <mx:Spacer width="2"/>
+            <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-settings.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
+            <mx:Button id="Button_EditFunctions" toolTip="Edit Functions" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" click="OnClickCloneEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-clone.png')" disabledIcon="@Embed('../../../res/command/command-clone-disabled.png')" />
+            <mx:Button id="Button_Delete" toolTip="(D) Delete Selected(s)" click="OnClickDeleteEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
+            <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top" click="OnClickMoveEntityToTopButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-top.png')" disabledIcon="@Embed('../../../res/command/command-to-top-disabled.png')" />
+            <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom" click="OnClickMoveEntityToBottomButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-bottom.png')" disabledIcon="@Embed('../../../res/command/command-to-bottom-disabled.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_Glue" toolTip="Attach Entities As Brothers" click="OnClickMakeEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-make.png')" disabledIcon="@Embed('../../../res/command/command-brothers-make-disabled.png')" />
+            <mx:Button id="Button_BreakApart" toolTip="Break Up Attached Entities (Brothers)" click="OnClickBreakApartEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-break.png')" disabledIcon="@Embed('../../../res/command/command-brothers-break-disabled.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_EntitySettings" toolTip="Set Properties of The Selected" click="OnClickEntitySettingsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/command/command-setting.png')" disabledIcon="@Embed('../../../res/command/command-setting-disabled.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
+            <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_ShowEntityIDs" selected="false" toolTip="Show Entity IDs" click="OnClickShowEntityIDsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-ids.png')" selectedDownIcon="@Embed('../../../res/command/command-show-ids-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-ids-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-ids-sel.png')" />
+            <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
+            <mx:Button id="Button_ShowTransformRing" selected="true" toolTip="Show Transform Ring" click="OnClickShowTransformRingButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-ring.png')" selectedDownIcon="@Embed('../../../res/command/command-show-ring-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-ring-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-ring-sel.png')" />
+            <mx:Spacer width="10"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
+            <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
+            <!--
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="10"/>
+            <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-scenes.png')" selectedDownIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')" />
+            -->
+            <mx:Spacer width="2"/>
+         </mx:HBox>
+         <mx:Spacer width="10" />
+         <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-scenes.png')" selectedDownIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')" />
+         <mx:Spacer width="10" />
+         <mx:Button id="Button_Help" toolTip="Help" click="EditorContext.GetEditorApp ().OnClickOpenLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/editor/editor-about.png')" />
+         <mx:Spacer width="10" />
       </mx:HBox>
       <mx:HBox id="EntityDesignView" direction="horizontal" backgroundColor="0xE0E0E0"
              borderStyle="solid" height="100%" width="100%" 
@@ -58,7 +95,7 @@
             horizontalGap="0" verticalGap="0" borderThickness="0"
             >
          <mx:TabNavigator id="Box_CreateCommands" backgroundColor="0xE0E0E0" width="79" height="100%" creationPolicy="all" textAlign="center">
-            <mx:Box icon="@Embed('../../../res/create/create-panel-normal.png')" toolTip="General Components" direction="vertical" borderStyle="solid" width="100%" height="100%"
+            <mx:VBox icon="@Embed('../../../res/create/create-panel-normal.png')" toolTip="General Components" borderStyle="solid" width="100%" height="100%"
                      paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
                      horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
                <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="73" 
@@ -160,8 +197,8 @@
                   <mx:Button id="Button_CreateModuleShapeButton" click="OnClickCreateEntityButton (event, &quot;ImageModuleButton&quot;);" toolTip="Create Module Button" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/module-shape-button.png')" downIcon="@Embed('../../../res/create/module-shape-button-sel.png')" overIcon="@Embed('../../../res/create/module-shape-button.png')" selectedUpIcon="@Embed('../../../res/create/module-shape-button-sel.png')" selectedOverIcon="@Embed('../../../res/create/module-shape-button-sel.png')" selectedDownIcon="@Embed('../../../res/create/module-shape-button.png')"   />
                </mx:Tile>
                <mx:Spacer height="100%"/>
-            </mx:Box>
-            <mx:Box icon="@Embed('../../../res/create/create-panel-trigger.png')" toolTip="Trigger Components" direction="vertical" borderStyle="solid" width="83" height="100%"
+            </mx:VBox>
+            <mx:VBox icon="@Embed('../../../res/create/create-panel-trigger.png')" toolTip="Trigger Components" borderStyle="solid" width="83" height="100%"
                      paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
                      horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
                <mx:VBox verticalAlign="middle" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="none">
@@ -184,37 +221,44 @@
                   <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="369" 
                          horizontalGap="1" verticalGap="1" 
                          paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
-                     <mx:Button id="Button_CreateEventHandler0" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldBeforeInitializing});" toolTip="Event - Before Level Initializing" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_level_before_initilizing.png')" downIcon="@Embed('../../../res/create/event_on_level_before_initilizing-sel.png')" overIcon="@Embed('../../../res/create/event_on_level_before_initilizing.png')" selectedUpIcon="@Embed('../../../res/create/event_on_level_before_initilizing-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_level_before_initilizing-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_level_before_initilizing.png')"   />
-                     <mx:Button id="Button_CreateEventHandler1" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldAfterInitialized});" toolTip="Event - After Level Initialized" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_level_after_initilized.png')" downIcon="@Embed('../../../res/create/event_on_level_after_initilized-sel.png')" overIcon="@Embed('../../../res/create/event_on_level_after_initilized.png')" selectedUpIcon="@Embed('../../../res/create/event_on_level_after_initilized-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_level_after_initilized-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_level_after_initilized.png')"   />
-                     <mx:Button id="Button_CreateEventHandler2" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldBeforeUpdating});" toolTip="Event - Before Level Updating" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_level_before_updating.png')" downIcon="@Embed('../../../res/create/event_on_level_before_updating-sel.png')" overIcon="@Embed('../../../res/create/event_on_level_before_updating.png')" selectedUpIcon="@Embed('../../../res/create/event_on_level_before_updating-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_level_before_updating-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_level_before_updating.png')"   />
-                     <mx:Button id="Button_CreateEventHandler3" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldAfterUpdated});" toolTip="Event - After Level Updated" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_level_after_updated.png')" downIcon="@Embed('../../../res/create/event_on_level_after_updated-sel.png')" overIcon="@Embed('../../../res/create/event_on_level_after_updated.png')" selectedUpIcon="@Embed('../../../res/create/event_on_level_after_updated-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_level_after_updated-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_level_after_updated.png')"   />
-                     <mx:Button id="Button_CreateEventHandler8" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldMouseClick});" toolTip="Event - Mouse Event (World)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_world_mouse_clicked.png')" downIcon="@Embed('../../../res/create/event_on_world_mouse_clicked-sel.png')" overIcon="@Embed('../../../res/create/event_on_world_mouse_clicked.png')" selectedUpIcon="@Embed('../../../res/create/event_on_world_mouse_clicked-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_world_mouse_clicked-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_world_mouse_clicked.png')"   />
-                     <mx:Button id="Button_CreateEventHandler58" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityMouseClick});" toolTip="Event - Mouse Event (Shape)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked.png')" downIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked-sel.png')" overIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked.png')" selectedUpIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked.png')"   />
-                     <mx:Button id="Button_CreateEventHandler7" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldKeyDown});" toolTip="Event - Keyboard" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_key_down.png')" downIcon="@Embed('../../../res/create/event_on_key_down-sel.png')" overIcon="@Embed('../../../res/create/event_on_key_down.png')" selectedUpIcon="@Embed('../../../res/create/event_on_key_down-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_key_down-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_key_down.png')"   />
-                     <mx:Button id="Button_CreateEventHandler5" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnJointReachUpperLimit});" toolTip="Event - Joint Reaches Limit" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit.png')" downIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit-sel.png')" overIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit.png')" selectedUpIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnWorldBeforeInitializing" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldBeforeInitializing});" toolTip="Event - Before Level Initializing" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_level_before_initilizing.png')" downIcon="@Embed('../../../res/create/event_on_level_before_initilizing-sel.png')" overIcon="@Embed('../../../res/create/event_on_level_before_initilizing.png')" selectedUpIcon="@Embed('../../../res/create/event_on_level_before_initilizing-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_level_before_initilizing-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_level_before_initilizing.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnWorldAfterInitialized" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldAfterInitialized});" toolTip="Event - After Level Initialized" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_level_after_initilized.png')" downIcon="@Embed('../../../res/create/event_on_level_after_initilized-sel.png')" overIcon="@Embed('../../../res/create/event_on_level_after_initilized.png')" selectedUpIcon="@Embed('../../../res/create/event_on_level_after_initilized-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_level_after_initilized-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_level_after_initilized.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnWorldBeforeUpdating" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldBeforeUpdating});" toolTip="Event - Before Level Updating" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_level_before_updating.png')" downIcon="@Embed('../../../res/create/event_on_level_before_updating-sel.png')" overIcon="@Embed('../../../res/create/event_on_level_before_updating.png')" selectedUpIcon="@Embed('../../../res/create/event_on_level_before_updating-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_level_before_updating-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_level_before_updating.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnWorldAfterUpdated" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldAfterUpdated});" toolTip="Event - After Level Updated" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_level_after_updated.png')" downIcon="@Embed('../../../res/create/event_on_level_after_updated-sel.png')" overIcon="@Embed('../../../res/create/event_on_level_after_updated.png')" selectedUpIcon="@Embed('../../../res/create/event_on_level_after_updated-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_level_after_updated-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_level_after_updated.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnWorldMouseClick" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldMouseClick});" toolTip="Event - Mouse Event (World)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_world_mouse_clicked.png')" downIcon="@Embed('../../../res/create/event_on_world_mouse_clicked-sel.png')" overIcon="@Embed('../../../res/create/event_on_world_mouse_clicked.png')" selectedUpIcon="@Embed('../../../res/create/event_on_world_mouse_clicked-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_world_mouse_clicked-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_world_mouse_clicked.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnEntityMouseClick" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityMouseClick});" toolTip="Event - Mouse Event (Shape)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked.png')" downIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked-sel.png')" overIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked.png')" selectedUpIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_shape_mouse_clicked.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnWorldKeyDown" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldKeyDown});" toolTip="Event - Keyboard" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_key_down.png')" downIcon="@Embed('../../../res/create/event_on_key_down-sel.png')" overIcon="@Embed('../../../res/create/event_on_key_down.png')" selectedUpIcon="@Embed('../../../res/create/event_on_key_down-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_key_down-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_key_down.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnJointReachUpperLimit" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnJointReachUpperLimit});" toolTip="Event - Joint Reaches Limit" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit.png')" downIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit-sel.png')" overIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit.png')" selectedUpIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_joint_reach_upper_limit.png')"   />
    
-                     <mx:Button id="Button_CreateEventHandler59" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityCreated});" toolTip="Event - Entity Created" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_created.png')" downIcon="@Embed('../../../res/create/event_on_entity_created-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_created.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_created-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_created-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_created.png')"   />
-                     <mx:Button id="Button_CreateEventHandler50" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityInitialized});" toolTip="Event - Entity Initialized" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_initilized.png')" downIcon="@Embed('../../../res/create/event_on_entity_initilized-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_initilized.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_initilized-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_initilized-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_initilized.png')"   />
-                     <mx:Button id="Button_CreateEventHandler51" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityUpdated});" toolTip="Event - Entity Updated" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_updated.png')" downIcon="@Embed('../../../res/create/event_on_entity_updated-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_updated.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_updated-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_updated-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_updated.png')"   />
-                     <mx:Button id="Button_CreateEventHandler52" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityDestroyed});" toolTip="Event - Entity Destroyed" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_destroyed.png')" downIcon="@Embed('../../../res/create/event_on_entity_destroyed-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_destroyed.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_destroyed-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_destroyed-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_destroyed.png')"   />
-                     <mx:Button id="Button_CreateEventHandler53" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting});" toolTip="Event - 2 Physics Shapes Start Contacting" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_shape_start_contacting.png')" downIcon="@Embed('../../../res/create/event_on_shape_start_contacting-sel.png')" overIcon="@Embed('../../../res/create/event_on_shape_start_contacting.png')" selectedUpIcon="@Embed('../../../res/create/event_on_shape_start_contacting-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_shape_start_contacting-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_shape_start_contacting.png')"   />
-                     <mx:Button id="Button_CreateEventHandler6" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldTimer});" toolTip="Event - Timer (World)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_world_timer.png')" downIcon="@Embed('../../../res/create/event_on_world_timer-sel.png')" overIcon="@Embed('../../../res/create/event_on_world_timer.png')" selectedUpIcon="@Embed('../../../res/create/event_on_world_timer-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_world_timer-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_world_timer.png')"   />
-                     <mx:Button id="Button_CreateEventHandler57" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityTimer});" toolTip="Event - Timer (Entity)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_timer.png')" downIcon="@Embed('../../../res/create/event_on_entity_timer-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_timer.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_timer-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_timer-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_timer.png')"   />
-                     <mx:Button id="Button_CreateEventHandler56" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityPairTimer});" toolTip="Event - Timer (Entity Pair)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_pair_timer.png')" downIcon="@Embed('../../../res/create/event_on_entity_pair_timer-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_pair_timer.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_pair_timer-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_pair_timer-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_pair_timer.png')"   />
-                     <mx:Button id="Button_CreateEventHandler67" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnSequencedModuleLoopToEnd});" toolTip="Event - Animation Reaches Sequence End" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_module_loop_to_end.png')" downIcon="@Embed('../../../res/create/event_on_module_loop_to_end-sel.png')" overIcon="@Embed('../../../res/create/event_on_module_loop_to_end.png')" selectedUpIcon="@Embed('../../../res/create/event_on_module_loop_to_end-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_module_loop_to_end-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_module_loop_to_end.png')"   />
-                     <mx:Button id="Button_CreateEventHandler66" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnGameActivated});" toolTip="Event - Game Loses/Gains Focus" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_game_activated.png')" downIcon="@Embed('../../../res/create/event_on_game_activated-sel.png')" overIcon="@Embed('../../../res/create/event_on_game_activated.png')" selectedUpIcon="@Embed('../../../res/create/event_on_game_activated-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_game_activated-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_game_activated.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnEntityCreated" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityCreated});" toolTip="Event - Entity Created" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_created.png')" downIcon="@Embed('../../../res/create/event_on_entity_created-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_created.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_created-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_created-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_created.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnEntityInitialized" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityInitialized});" toolTip="Event - Entity Initialized" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_initilized.png')" downIcon="@Embed('../../../res/create/event_on_entity_initilized-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_initilized.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_initilized-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_initilized-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_initilized.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnEntityUpdated" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityUpdated});" toolTip="Event - Entity Updated" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_updated.png')" downIcon="@Embed('../../../res/create/event_on_entity_updated-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_updated.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_updated-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_updated-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_updated.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnEntityDestroyed" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityDestroyed});" toolTip="Event - Entity Destroyed" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_destroyed.png')" downIcon="@Embed('../../../res/create/event_on_entity_destroyed-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_destroyed.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_destroyed-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_destroyed-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_destroyed.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnTwoPhysicsShapesBeginContacting" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting});" toolTip="Event - 2 Physics Shapes Start Contacting" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_shape_start_contacting.png')" downIcon="@Embed('../../../res/create/event_on_shape_start_contacting-sel.png')" overIcon="@Embed('../../../res/create/event_on_shape_start_contacting.png')" selectedUpIcon="@Embed('../../../res/create/event_on_shape_start_contacting-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_shape_start_contacting-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_shape_start_contacting.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnWorldTimer" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnWorldTimer});" toolTip="Event - Timer (World)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_world_timer.png')" downIcon="@Embed('../../../res/create/event_on_world_timer-sel.png')" overIcon="@Embed('../../../res/create/event_on_world_timer.png')" selectedUpIcon="@Embed('../../../res/create/event_on_world_timer-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_world_timer-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_world_timer.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnEntityTimer" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityTimer});" toolTip="Event - Timer (Entity)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_timer.png')" downIcon="@Embed('../../../res/create/event_on_entity_timer-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_timer.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_timer-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_timer-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_timer.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnEntityPairTimer" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnEntityPairTimer});" toolTip="Event - Timer (Entity Pair)" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_entity_pair_timer.png')" downIcon="@Embed('../../../res/create/event_on_entity_pair_timer-sel.png')" overIcon="@Embed('../../../res/create/event_on_entity_pair_timer.png')" selectedUpIcon="@Embed('../../../res/create/event_on_entity_pair_timer-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_entity_pair_timer-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_entity_pair_timer.png')"   />
+                     <!--
+                     <mx:Button id="Button_CreateEventHandler_OnSequencedModuleLoopToEnd" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnSequencedModuleLoopToEnd});" toolTip="Event - Animation Reaches Sequence End" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_module_loop_to_end.png')" downIcon="@Embed('../../../res/create/event_on_module_loop_to_end-sel.png')" overIcon="@Embed('../../../res/create/event_on_module_loop_to_end.png')" selectedUpIcon="@Embed('../../../res/create/event_on_module_loop_to_end-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_module_loop_to_end-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_module_loop_to_end.png')"   />
+                     -->
+                     <mx:Button id="Button_CreateEventHandler_OnTextChanged" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnTextChanged});" toolTip="Event - Text Changed" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_text_changed.png')" downIcon="@Embed('../../../res/create/event_on_text_changed-sel.png')" overIcon="@Embed('../../../res/create/event_on_text_changed.png')" selectedUpIcon="@Embed('../../../res/create/event_on_text_changed-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_text_changed-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_text_changed.png')"   />
+                     <mx:Button id="Button_CreateEventHandler_OnGameActivated" click="OnClickCreateEntityButton (event, &quot;EventHandler&quot;, {mDefaultEventId: CoreEventIds.ID_OnGameActivated});" toolTip="Event - Game Loses/Gains Focus" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/create/event_on_game_activated.png')" downIcon="@Embed('../../../res/create/event_on_game_activated-sel.png')" overIcon="@Embed('../../../res/create/event_on_game_activated.png')" selectedUpIcon="@Embed('../../../res/create/event_on_game_activated-sel.png')" selectedOverIcon="@Embed('../../../res/create/event_on_game_activated-sel.png')" selectedDownIcon="@Embed('../../../res/create/event_on_game_activated.png')"   />
    
                   </mx:Tile>
                   <mx:Spacer height="10"/>
                </mx:VBox>
                
-            </mx:Box>
+            </mx:VBox>
          </mx:TabNavigator>
-
-         <mx:VDividedBox id="theDividedBox" liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
-            <mx:Box direction="vertical" borderStyle="solid" width="100%" height="100%"
+         
+         <mx:HBox backgroundColor="0xE0E0E0" borderStyle="solid" 
+                              height="100%" width="100%"
+                              paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
+                              horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
+                              horizontalGap="0" verticalGap="0" borderThickness="1">
+            <mx:VBox width="100%" height="100%"
                paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-               horizontalGap="0" verticalGap="0" borderThickness="0" clipContent="true">
+               horizontalGap="0" verticalGap="0" borderThickness="0">
                <mx:ViewStack id="ViewStack_Scenes" borderStyle="solid" creationPolicy="all"
                         height="100%" width="100%"
                         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
@@ -231,7 +275,7 @@
                         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                         horizontalScrollPolicy="off" verticalScrollPolicy="off"
                         horizontalGap="0" verticalGap="0" borderThickness="0">
-                  <mx:Box id="Box_StatusBarForEditing" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" 
+                  <mx:HBox id="Box_StatusBarForEditing" backgroundColor="0xE0E0E0" borderStyle="solid" 
                               height="100%" width="100%"
                               paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
@@ -245,7 +289,7 @@
                      <!--  focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);" -->
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Spacer width="2" />
-                     <mx:Label id="Label_GoToEntity" text="Select Entity#" />
+                     <mx:Label id="Label_GoToEntity" text="Select Entity#" click="OnClickSelectEntityLabel (event);"/>
                      <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnEnterEntityIDsToSelect ();"/>
                      <mx:Spacer width="2" />
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
@@ -257,13 +301,13 @@
                      <mx:Button id="Button_ZoomIn" click="OnClickZoomInButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/zoom-in.png')" disabledIcon="@Embed('../../../res/edit/zoom-in-disabled.png')" />
                      <mx:Label id="Label_ZoomScale" textAlign="center" text=" 1.00"/>
                      <mx:Button id="Button_ZoomOut" click="OnClickZoomOutButton ()" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/zoom-out.png')" disabledIcon="@Embed('../../../res/edit/zoom-out-disabled.png')" />
-                  </mx:Box>
-                  <mx:Box id="Box_StatusBarForPlaying" backgroundColor="0xE0E0E0" direction="horizontal" borderStyle="solid" 
+                  </mx:HBox>
+                  <mx:HBox id="Box_StatusBarForPlaying" backgroundColor="0xE0E0E0" borderStyle="solid" 
                               height="100%" width="100%"
                               paddingTop="2" paddingLeft="2" paddingRight="2" paddingBottom="2"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle"
                               horizontalGap="0" verticalGap="0" borderThickness="1">
-                     <mx:Label id="Label_RunningSteps" text="step: 100" minWidth="86"/>
+                     <mx:Label id="Label_RunningSteps" text="step: 0" minWidth="86"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Spacer width="2" />
                      <mx:Button id="Button_Stop" toolTip="Stop" click="OnClickStopCurrentSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-stop.png')" disabledIcon="@Embed('../../../res/play/play-stop-disabled.png')" />
@@ -289,27 +333,38 @@
                      <mx:Label id="Label_PlaySpeed" textAlign="center" text="Speed X2"/>
                      <mx:Button id="Button_PlayFaster" click="PlayFaster ();" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/play-faster.png')" disabledIcon="@Embed('../../../res/edit/play-faster-disabled.png')"/>
                      <mx:Spacer width="100%"/>
+                     <mx:Spacer width="20"/>
+                     <mx:Button id="Button_SimulateSystemBack" click="SimulateSystemBack ();" toolTip="Simulate System-Back Event" width="27" height="27" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('../../../res/edit/simulate-system-back.png')"/>
+                     <mx:Spacer width="20"/>
+                     <mx:Button id="Button_MaskViewerField" click="ToggleMaskPlayerField ();" toolTip="Toggle Masking Player Field" width="27" height="27" focusEnabled="false" fontSize="8" toggle="true" cornerRadius="0" upIcon="@Embed('../../../res/edit/mask-play-field.png')" downIcon="@Embed('../../../res/edit/mask-play-field-sel.png')" overIcon="@Embed('../../../res/edit/mask-play-field.png')" selectedUpIcon="@Embed('../../../res/edit/mask-play-field-sel.png')" selectedOverIcon="@Embed('../../../res/edit/mask-play-field-sel.png')" selectedDownIcon="@Embed('../../../res/edit/mask-play-field.png')"/>
                      <mx:Spacer width="2" />
-                     <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                     <mx:Label id="Label_MaskViewerField" text="Mask Player Field" click="ToggleMaskPlayerField ();" toolTip="Toggle Mask Player Field" focusEnabled="false" color="0x808080"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Label id="Label_MouseDisplayPositionForPlaying" text="" minWidth="100"/>
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Label id="Label_MousePhysicsPositionForPlaying" text="" minWidth="116"/>
-                  </mx:Box>
+                  </mx:HBox>
                </mx:ViewStack>
-            </mx:Box>
-            <!--mx:HDividedBox id="theBottomDividedBox" liveDragging="true" width="100%" height="256" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
-               <ccat:CollisionCategoryListDialog>
-               </ccat:CollisionCategoryListDialog>
-               <codelib:CodeLibListDialog>
-               </codelib:CodeLibListDialog>
-            </mx:HDividedBox-->
-         </mx:VDividedBox>
-         
+            </mx:VBox>
+            <mx:VBox id="Box_Scenes" width="0" height="100%"
+               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+               <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="2" paddingBottom="2" paddingLeft="3" paddingRight="3">
+                  <mx:Button id="Button_SetSceneAsEntry" click="OnSetCurrentSceneAsEntry ();" toolTip="Set As Entry Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movetotop.png')" disabledIcon="@Embed('../../../res/action/command_movetotop-disabled.png')" />
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_MoveUpScene" click="OnMoveUpScene ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
+                  <mx:Button id="Button_MoveDownScene" click="OnMoveDownScene ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_CloneScene" click="OnCloneSelectedScene ();" toolTip="Clone Selected Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/command-clone-scene.png')" />
+                  <mx:Button id="Button_CreateScene" click="OnCreateNewScene ();" toolTip="New Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
+               </mx:HBox>
+               <mx:List id="List_Scenes" width="100%" height="100%" change="OnCurrentSceneSwitched ();"  doubleClickEnabled="true" itemDoubleClick="OnSceneListDoubleClicked (event);" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false" />
+            </mx:VBox>
+         </mx:HBox>
       </mx:HBox>
+<!--      
    </mx:VBox>
-   
+-->
+
    <!-- Menu Item Attributes
    Attribute   Type     Description
    =======================================================================
@@ -334,44 +389,44 @@
                         The identifier that associates radio button items in a radio group.
    -->
    
-   <!--mx:XML id="ClearOrResetSceneMenuData">
+   <mx:XML id="SceneSettingsMenuData">
       <root>
-         <menuitem label="Create A New Scene" data="create_scene"/>
-         <menuitem type="separator"/>
+         <menuitem label="Change Current Scene Name ..." data="change_scene_name"/>
+         
+         <menuitem type="separator" data=""/>
+         
          <menuitem label="General Settings ..." data="general"/>
          <menuitem label="Simulation Settings ..." data="physics"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
          <menuitem label="Config World Appearance ..." data="appearance"/>
          <menuitem label="Config Viewport ..." data="viewport"/>
-         <menuitem type="separator"/>
-         <menuitem label="Clear All Entities In Current Scene" data="clear_all"/>
-         <menuitem label="Clear All Entities and Reset Current Scene" data="clear_all_and_reset"/>
-         <menuitem type="separator"/>
-         <menuitem label="Delete Current Scene" data="delete_scene"/>
-      </root>
-   </mx:XML-->
-   
-   <mx:XML id="ClearOrResetSceneMenuData">
-      <root>
-         <menuitem label="Clear All Entities" data="clear_all"/>
-         <menuitem label="Clear All Entities and Reset" data="clear_all_and_reset"/>
-         <menuitem type="separator"/>
-         <menuitem label="General Settings ..." data="general"/>
-         <menuitem label="Simulation Settings ..." data="physics"/>
-         <menuitem label="Config Coordinate System ..." data="coordinate"/>
-         <menuitem label="Config World Appearance ..." data="appearance"/>
-         <menuitem label="Config Viewport ..." data="viewport"/>
+         
+         <menuitem type="separator" data=""/>
+         
+         <menuitem label="Import (Merge The First Scene To Be Loaded) ..." data="import"/>
+         <menuitem label="Export Selected Entities To System Clipboard" data="export_selected_entities"/>
+         <!--menuitem label="Export All Functions To System Clipboard" data="export_all_functions"/-->
+         
+         <menuitem type="separator" data=""/>
+         
+         <menuitem label="Clear All Entities ..." data="clear_all"/>
+         <!--menuitem label="Reset Current Scene ..." data="reset_scene"/-->
+         
+         <menuitem type="separator" data=""/>
+         
+         <menuitem id="MenuItem_DeleteScene" label="Delete Current Scene" data="delete_current_scene" enabled="true"/>
       </root>
    </mx:XML>
 
   <mx:Script><![CDATA[
       
+      import flash.geom.Rectangle;
+      import flash.display.DisplayObject;
+      
       import flash.events.Event;
       import flash.events.MouseEvent;
       import flash.ui.ContextMenu;
       import flash.ui.ContextMenuItem;
-      
-      import flash.media.SoundMixer;
       
       import mx.containers.VBox;
       import mx.controls.Button;
@@ -380,21 +435,48 @@
       
       import com.tapirgames.util.DisplayObjectUtil;
       
+      import editor.undo.HistoryManager;
+      
+      import editor.display.dialog.NameSettingDialog;
+      import editor.display.sprite.EffectMessagePopup;
+      
       import editor.entity.dialog.SceneEditPanel;
       import editor.entity.dialog.ScenePlayPanel;
       import editor.entity.Scene;
       
+      import editor.world.World;
+      
       import editor.EditorContext;
       
       import common.trigger.CoreEventIds;
+      import common.WorldDefine;
+      import common.SceneDefine;
       import common.ValueAdjuster;
       import common.Define;
       import common.Version;
-   
+      
 //========================================================================================
 // 
 //========================================================================================
+      
+      public function OnInit ():void
+      {
+         DisplayObjectUtil.AppendContextMenuItem (Button_MaskViewerField, "Clear Game Save Data", ClearGameSaveData);
+      }
+      
+      private function ClearGameSaveData (event:ContextMenuEvent):void
+      {
+         if (mCurrentScenePlayPanel != null)
+         {
+            mCurrentScenePlayPanel.ClearGameSaveData (Define.GetDefaultWorldSavedDataFilename (EditorContext.GetEditorApp ().GetWorld ().GetKey ()));
+         }
+      }
    
+      public function SetAsFocus ():void
+      {
+         EditorContext.GetEditorApp ().stage.focus = mCurrentSceneEditPanel;
+      }
+      
    //========================================================================================
    // 
    //========================================================================================
@@ -406,13 +488,57 @@
          return mCurrentSceneEditPanel;
       }
       
+      public function GetCurrentSceneInEditing ():editor.entity.Scene
+      {
+         return mCurrentSceneEditPanel.GetScene ();
+      }
+      
       public function IsInEditingMode ():Boolean
       {
          return ViewStack_Scenes.selectedChild == Box_SceneEdit;
       }
       
-      public function SetScene (scene:editor.entity.Scene):void
+      public function OnWorldChanged (selectedSceneIndex:int = -1):void
       {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+         {
+            List_Scenes.dataProvider = null;
+            List_Scenes.selectedIndex = -1;
+         }
+         else
+         {
+            var oldSelectedIndex:int = List_Scenes.selectedIndex;
+            
+            var dataProvider:Array = world.GetSceneListDataProvider ();
+//trace ("newClonedSceneIndex = " + selectedSceneIndex + ", oldSelectedIndex = " + oldSelectedIndex + ", dataProvider.length = " + dataProvider.length);
+//trace (new Error ().getStackTrace ());
+            List_Scenes.dataProvider = dataProvider;
+            if (selectedSceneIndex < 0)
+               selectedSceneIndex = oldSelectedIndex;
+            if (selectedSceneIndex < 0 || selectedSceneIndex >= dataProvider.length)
+               selectedSceneIndex = 0;
+            
+            List_Scenes.selectedIndex = selectedSceneIndex;
+         }
+         
+         OnCurrentSceneSwitched ();
+      }
+      
+      public function OnCurrentSceneSwitched ():void
+      {
+         var scene:editor.entity.Scene = null;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var item:Object = List_Scenes.dataProvider.getItemAt (List_Scenes.selectedIndex);
+            
+            scene = item.mData as editor.entity.Scene;
+         }
+         
+         // ...
+         
          mCurrentSceneEditPanel.SetScene (scene);
          
          if (scene == null)
@@ -431,6 +557,45 @@
             SetCurrentSceneScale (scene.GetScale ());
             SetMousePosition (null);
          }
+         
+         UpdateSceneListInterface ();
+      }
+      
+      // ...
+      private function UpdateSceneListInterface ():void
+      {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         if (List_Scenes.dataProvider == null || List_Scenes.dataProvider.length == 0)
+            return;
+         
+//trace ("UpdateSceneListInterface: " + List_Scenes.selectedIndex);
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            //var rect:Rectangle = (List_Scenes.selectedItem as DisplayObject).getBounds (List_Scenes);
+            //if (rect.top < 0)
+            //   List_Scenes.verticalScrollPosition -= rect.top;
+            //if (rect.bottom > List_Scenes.height)
+            //   List_Scenes.verticalScrollPosition += (rect.bottom - List_Scenes.height);
+            
+            //List_Scenes.invalidateList ();
+            //List_Scenes.scrollToIndex (List_Scenes.selectedIndex);
+            // !!! scrollToIndex has bugs.
+            List_Scenes.selectedItem = world.GetSceneListDataProviderItem (List_Scenes.selectedIndex);
+            List_Scenes.scrollToIndex (List_Scenes.selectedIndex);
+               // scrollToIndex must put behind updating List_Scenes.selectedItem
+            
+            //List_Scenes.verticalScrollPosition = List_Scenes.selectedIndex * List_Scenes.rowHeight;
+         }
+
+         SceneSettingsMenuData.menuitem.(@data == "delete_current_scene").@enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;
+
+         Button_SetSceneAsEntry.enabled = world != null && List_Scenes.selectedIndex >= 1;
+         Button_MoveUpScene.enabled = world != null && List_Scenes.selectedIndex >= 1;
+         Button_MoveDownScene.enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.selectedIndex < List_Scenes.dataProvider.length - 1;
       }
 
    //========================================================================================
@@ -545,29 +710,197 @@
          
          Label_SelectedEntitiesInfos.text = selectionsInfo.mSelectedEntitiesInfos;
          
-         Button_Undo.enabled = EditorContext.GetEditorApp ().GetWorldSnapshotManager ().GetPrevWorldState () != null;
-         Button_Redo.enabled = EditorContext.GetEditorApp ().GetWorldSnapshotManager ().GetNextWorldState () != null;
+         //Button_Undo.enabled = EditorContext.GetEditorApp ().GetWorldSnapshotManager ().GetPrevHistoryState () != null;
+         //Button_Redo.enabled = EditorContext.GetEditorApp ().GetWorldSnapshotManager ().GetNextHistoryState () != null;
+         
+         var scene:editor.entity.Scene = GetCurrentSceneInEditing ();
+         var sceneSnapshotManager:HistoryManager = scene == null ? null : EditorContext.GetEditorApp ().GetSceneSnapshotManager (scene, false);
+         Button_Undo.enabled = sceneSnapshotManager != null && sceneSnapshotManager.GetPrevHistoryState () != null;
+         Button_Redo.enabled = sceneSnapshotManager != null && sceneSnapshotManager.GetNextHistoryState () != null;
+         
+         Button_ShowEntityIDs.selected = mCurrentSceneEditPanel.IsShowAllAssetIDs ();
+         Button_ShowAllEntityLinks.selected =  mCurrentSceneEditPanel.IsShowAllAssetLinks ();
+         Button_ShowTransformRing.selected =  mCurrentSceneEditPanel.IsShowScaleRotateFlipHandlers ();
       }
 
    //========================================================================================
    // event handlers, editing
    //========================================================================================
       
-      private function OnSwitchScene ():void
+      private function OnClickEditScenesButton ():void
       {
+         if (Box_Scenes.width == 0)
+         {
+            Box_Scenes.width = 200;
+            Button_EditScenes.selected = true;
+         }
+         else
+         {
+            Box_Scenes.width = 0;
+            Button_EditScenes.selected = false;
+         }
       }
       
       private function OnCreateNewScene ():void
       {
+         EditorContext.ShowModalDialog (NameSettingDialog, ConfirmCreateNewScene, {mName: "untitled"});
+      }
+      
+      private function ConfirmCreateNewScene (params:Object):void
+      {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         var newIndex:int = world.CreateNewScene (null, params.mName == null ? "untitled" : params.mName, List_Scenes.selectedIndex);
+         if (newIndex >= 0)
+         {
+            OnWorldChanged (newIndex);
+         }
+      }
+      
+      private function OnCloneSelectedScene ():void
+      {
+         var scene:editor.entity.Scene = null;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var item:Object = List_Scenes.dataProvider.getItemAt (List_Scenes.selectedIndex);
+            
+            scene = item.mData as editor.entity.Scene;
+         }
+         
+         if (scene != null)
+         {
+            //EditorContext.ShowModalDialog (NameSettingDialog, ConfirmCloneSelectedScene, {mName: "(cloned) " + scene.GetName ()});
+            
+            ConfirmCloneSelectedScene ({mName: "(cloned) " + scene.GetName ()});
+         }
+      }
+      
+      private function ConfirmCloneSelectedScene (params:Object):void
+      {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         try
+         {
+            var worldDefine:WorldDefine = EditorContext.GetEditorApp ().OfflineExportCurrentScene (true);
+            var sceneDefine:SceneDefine = worldDefine.mSceneDefines [worldDefine.mCurrentSceneId];
+            sceneDefine.mName = params.mName;
+            
+            var newScenes:Array = EditorContext.GetEditorApp ().OfflineImportScenes ({mWorldDefine : worldDefine}, true);
+            var newScene:editor.entity.Scene = newScenes [0] as editor.entity.Scene;
+            
+            var newClonedSceneIndex:int = world.ChangeSceneIndex (newScene.GetSceneIndex (), List_Scenes.selectedIndex + 1);
+            
+            OnWorldChanged (newClonedSceneIndex);
+         }
+         catch (error:Error)
+         {
+            GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Clone scene failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetSceneEditPanel ().GetPanelWidth ()));
+         }
+      }
+      
+      private function ChangeCurrentSceneName (params:Object):void
+      {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var newSelectedIndex:int = world.ChangeSceneNameByIndex (List_Scenes.selectedIndex, params.mName == null ? "untitled" : params.mName);
+            if (newSelectedIndex >= 0)
+            {
+               OnWorldChanged (newSelectedIndex);
+            }
+         }
       }
       
       private function OnDeleteCurrentScene ():void
       {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var newSelectedIndex:int = world.DeleteSceneByIndex (List_Scenes.selectedIndex);
+            if (newSelectedIndex >= 0)
+            {
+               OnWorldChanged (newSelectedIndex);
+            }
+         }
       }
       
-      private function OnClickSwitchSceneButton ():void
+      private function OnSetCurrentSceneAsEntry ():void
       {
+         ChangeCurrentSceneIndex (0);
       }
+      
+      private function OnMoveUpScene ():void
+      {
+         ChangeCurrentSceneIndex (-1);
+      }
+      
+      private function OnMoveDownScene ():void
+      {
+         ChangeCurrentSceneIndex (1);
+      }
+      
+      private function OnSceneListDoubleClicked (event:Event):void
+      {
+         EditorContext.ShowModalDialog (NameSettingDialog, ConfirmMoveSceneIndex, 
+                                    {mName: "" + List_Scenes.selectedIndex, 
+                                     mLabel: "Move To New Index",
+                                     mTitle: "Change Scene Order"});
+      }
+      
+      private function ConfirmMoveSceneIndex (params:Object):void
+      {
+         if (params == null || params.mName == null)
+            return;
+         
+         var newIndex:int = parseInt (params.mName);
+         if (isNaN (newIndex) || newIndex < 0)
+            return;
+         
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         ChangeCurrentSceneIndex (newIndex - List_Scenes.selectedIndex);
+      }
+      
+      private function ChangeCurrentSceneIndex (deltaInex:int):void
+      {
+         var world:World = EditorContext.GetEditorApp ().GetWorld ();
+         
+         if (world == null)
+            return;
+         
+         if (List_Scenes.selectedIndex >= 0)
+         {
+            var targetIndex:int = (deltaInex == 0 ? 0 : List_Scenes.selectedIndex + deltaInex);
+            if (targetIndex != List_Scenes.selectedIndex && targetIndex >=0 && targetIndex < List_Scenes.dataProvider.length)
+            {
+               var newSelectedIndex:int = world.ChangeSceneIndex (List_Scenes.selectedIndex, targetIndex);
+               if (newSelectedIndex >= 0)
+               {
+                  OnWorldChanged (newSelectedIndex);
+               }
+            }
+         }
+      }
+      
+      /// ....
       
       private function OnClickEditCCatsButton ():void
       {
@@ -583,12 +916,14 @@
       
       private function OnClickUndoSceneButton ():void
       {
-         EditorContext.GetEditorApp ().Undo ();
+         //EditorContext.GetEditorApp ().Undo ();
+         EditorContext.GetEditorApp ().UndoScene (GetSceneEditPanel ());
       }
       
       private function OnClickRedoSceneButton ():void
       {
-         EditorContext.GetEditorApp ().Redo ();
+         //EditorContext.GetEditorApp ().Redo ();
+         EditorContext.GetEditorApp ().RedoScene (GetSceneEditPanel ());
       }
       
       // 
@@ -598,7 +933,7 @@
       {
          if (mClearOrResetSceneMenu == null)
          {
-            mClearOrResetSceneMenu = Menu.createMenu(Button_SceneEditMenu, ClearOrResetSceneMenuData, false);
+            mClearOrResetSceneMenu = Menu.createMenu(Button_SceneEditMenu, SceneSettingsMenuData, false);
             mClearOrResetSceneMenu.labelField="@label";
             mClearOrResetSceneMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectClearOrResetSceneMenu);
          }
@@ -610,42 +945,63 @@
       
       private function OnSelectClearOrResetSceneMenu (event:MenuEvent):void
       {
-         if (event.item.@data == "create_scene")
+         var itemData:String = event.item.@data;
+         if (itemData == "clear_all")
          {
-            OnCreateNewScene ();
+            EditorContext.ShowAlert ("Clear All Entities", "Do you want to clear all entities?", true, mCurrentSceneEditPanel.ClearAllEntities);
          }
-         else if (event.item.@data == "delete_scene")
-         {
-            OnDeleteCurrentScene ();
-         }
-         else if (event.item.@data == "clear_all")
-         {
-            EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, mCurrentSceneEditPanel.ClearAllEntities);
-         }
-         else if (event.item.@data == "clear_all_and_reset")
-         {
-            EditorContext.ShowAlert ("Clear All", "Do you want to clear all objects?", true, EditorContext.GetEditorApp ().NewWorld);
-         }
-         else if (event.item.@data == "general")
+         //else if (itemData == "reset_scene")
+         //{
+         //   EditorContext.ShowAlert ("Reset Scene", "Do you want to reset current scene?", true, mCurrentSceneEditPanel.ResetScene);
+         //}
+         else if (itemData == "general")
          {
             mCurrentSceneEditPanel.ShowLevelRulesEditDialog ();
          }
-         else if (event.item.@data == "coordinate")
+         else if (itemData == "coordinate")
          {
             mCurrentSceneEditPanel.ShowLevelCoordinateSystemEditDialog ();
          }
-         else if (event.item.@data == "physics")
+         else if (itemData == "physics")
          {
             mCurrentSceneEditPanel.ShowLevelPhysicsEditDialog ();
          }
-         else if (event.item.@data == "appearance")
+         else if (itemData == "appearance")
          {
             mCurrentSceneEditPanel.ShowLevelAppearanceEditDialog ();
          }
-         else if (event.item.@data == "viewport")
+         else if (itemData == "viewport")
          {
             mCurrentSceneEditPanel.ShowLevelViewportEditDialog ();
          }
+         else if (itemData == "delete_current_scene")
+         {
+            EditorContext.ShowAlert ("Delete Current Scene", "This action is not restorable.\nDo you really want to delete current scene?", true, OnDeleteCurrentScene);
+         }
+         else if (itemData == "change_scene_name")
+         {
+            var scene:editor.entity.Scene = mCurrentSceneEditPanel.GetScene ();
+            if (scene != null)
+            {
+               EditorContext.ShowModalDialog (NameSettingDialog, ChangeCurrentSceneName, {mName: scene.GetName ()});
+            }
+         }
+         else if (itemData == "import")
+         {
+            EditorContext.GetEditorApp ().OnStartOfflineImporting ();
+         }
+         //else if (itemData == "import_functions")
+         //{
+         //   MainView.OpenImportSourceCodeDialog (true);
+         //}
+         else if (itemData == "export_selected_entities")
+         {
+            EditorContext.GetEditorApp ().OnStartOfflineExporting ();
+         }
+         //else if (itemData == "export_all_functions")
+         //{
+         //   MainView.ExportSelectedsToSystemMemory ();
+         //}
       }
       
       private function OnClickMoveSceneModeButton ():void
@@ -658,14 +1014,24 @@
          mCurrentSceneEditPanel.SetCookieSelectMode (Button_MouseCookieMode.selected);
       }
       
+      private function OnClickShowEntityIDsButton ():void
+      {
+         mCurrentSceneEditPanel.SetShowAllAssetIDs (Button_ShowEntityIDs.selected);
+      }
+      
       private function OnClickShowAllEntityLinksButton ():void
       {
          mCurrentSceneEditPanel.SetShowAllAssetLinks (Button_ShowAllEntityLinks.selected);
       }
       
+      private function OnClickShowTransformRingButton ():void
+      {
+         mCurrentSceneEditPanel.SetShowScaleRotateFlipHandlers (Button_ShowTransformRing.selected);
+      }   
+      
       // find entity
       
-      private function OnEnterEntityIDsToSelect ():void
+      private function SelectEntities (isAdd:Boolean, selectBrothers:Boolean):void
       {
          var text:String = Text_FindEntityId.text;
          
@@ -686,9 +1052,19 @@
          if (entityIds.length == 0)
             return;
                
-         mCurrentSceneEditPanel.SearchEntitiesByIDs (entityIds);
+         mCurrentSceneEditPanel.SearchEntitiesByIDs (entityIds, isAdd, selectBrothers);
          
          stage.focus = mCurrentSceneEditPanel;
+      }
+      
+      private function OnEnterEntityIDsToSelect ():void
+      {
+         SelectEntities (false, false);
+      }
+      
+      private function OnClickSelectEntityLabel (event:MouseEvent):void
+      {
+         SelectEntities (event.ctrlKey, event.shiftKey);
       }
       
       // zoom in / out
@@ -789,17 +1165,20 @@
       
       private function OnClickPlayCurrentSceneButton ():void
       {
+         EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ().StopAllSounds ();
+         
          ViewStack_Scenes.selectedChild = Box_ScenePlay;
          
-         Box_BasicToolbar.enabled = Box_CreateCommands.enabled = false;
+         Box_BasicToolbar.enabled = Box_CreateCommands.enabled = Box_Scenes.enabled = false;
          ViewStack_StatusBar.selectedChild = Box_StatusBarForPlaying;
+         Button_SimulateSystemBack.visible = false;
 
          //var scenePlayPanel:ScenePlayPanel = new ScenePlayPanel ();
          //scenePlayPanel.percentWidth = 100;
          //scenePlayPanel.percentHeight = 100;
          //Box_ScenePlay.addChild (scenePlayPanel);
 
-         mCurrentScenePlayPanel.SetWorldViewerParams (EditorContext.GetEditorApp ().GetWorldBinaryData (), mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 0xFFFFFF);            
+         mCurrentScenePlayPanel.SetWorldViewerParams (EditorContext.GetEditorApp ().GetWorldBinaryData (), GetCurrentSceneInEditing ().GetSceneIndex (), mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 0xFFFFFF, OnClickStopCurrentSceneButton);            
             
          mCurrentScenePlayPanel.SetDialogCallbacks ({
                                        UpdateInterface: UpdateInterfaceForPlaying, 
@@ -808,10 +1187,9 @@
          mCurrentScenePlayPanel.UpdateInterface (); 
       }
       
-      private function OnClickStopCurrentSceneButton ():void
+      // skin will call this with one param. (a bad design)
+      private function OnClickStopCurrentSceneButton (dummyParam:Object = null):void
       {
-         SoundMixer.stopAll ();
-         
          mCurrentScenePlayPanel.CloseViewer ();
          
          ViewStack_Scenes.selectedChild = Box_SceneEdit;
@@ -819,7 +1197,7 @@
             
          ViewStack_StatusBar.selectedChild = Box_StatusBarForEditing;
          
-         Box_BasicToolbar.enabled = Box_CreateCommands.enabled = true;
+         Box_BasicToolbar.enabled = Box_CreateCommands.enabled = Box_Scenes.enabled = true;
       }
 
    //========================================================================================
@@ -873,6 +1251,7 @@
          Button_PlayFaster.enabled = viewerStatusInfo.mSpeedX < 100;
          ViewStack_PlayResumePause.selectedChild = viewerStatusInfo.mIsPlaying ? Box_PlayPause : Box_PlayResume;
          Button_AdvanceOneFrame.enabled = ! viewerStatusInfo.mIsPlaying;
+         Button_SimulateSystemBack.visible = ! viewerStatusInfo.mShowPlayBar;
       }
 
    //========================================================================================
@@ -933,11 +1312,21 @@
          {
             mCurrentScenePlayPanel.SetMaskViewport (! mCurrentScenePlayPanel.IsMaskViewport ());
             mCurrentSceneEditPanel.SetMaskFieldInPlaying (mCurrentScenePlayPanel.IsMaskViewport ());
-            
-            Label_MaskViewerField.setStyle ("color", mCurrentScenePlayPanel.IsMaskViewport () ? "0x000000" : "0x808080");
+         }
+      }
+      
+      private function SimulateSystemBack ():void
+      {
+         if (mCurrentScenePlayPanel != null)
+         {
+            mCurrentScenePlayPanel.SimulateSystemBack ();
          }
       }
 
    ]]></mx:Script>
+
+</mx:VBox>
+<!--
 </container:ResizableTitleWindow>
+-->
 

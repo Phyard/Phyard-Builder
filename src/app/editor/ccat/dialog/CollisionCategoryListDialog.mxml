@@ -24,12 +24,11 @@
          <mx:Spacer width="20"/>
          <mx:Button id="Button_DeleteCollisionCategory" toolTip="Delete Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
          <mx:Spacer width="36"/>
-         <mx:HBox backgroundColor="0xFFFFFF" verticalAlign="middle"
-                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+         <mx:HBox verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
                   horizontalGap="0" verticalGap="0" borderThickness="0">
             <mx:Spacer width="3"/>
-            <mx:CheckBox id="CheckBox_CollisionCategory_HarmoniousCategory" label="Harmonious Category"/>
+            <mx:CheckBox id="CheckBox_CollisionCategory_CollideInternally" label="Collide Internally"/>
             <mx:Spacer width="6"/>
             <mx:CheckBox id="CheckBox_CollisionCategory_DefaultCategory" label="Default Category"/>
          </mx:HBox>
@@ -72,7 +71,8 @@
                PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
             }
             
-            EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetWorld ().GetCollisionCategoryManager ());
+            //EditorContext.GetSingleton ().SetHasSettingDialogOpened (true); // bug
+            EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCollisionCategoryManager ());
             
             if (OnCCatPicked != null)
             {
@@ -84,6 +84,7 @@
          
          public static function HideCollisionCategoryListDialog ():void
          {
+            //EditorContext.GetSingleton ().SetHasSettingDialogOpened (false);
             if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingMode)
             {
                EndPickingMode ();
@@ -141,11 +142,11 @@
             
             panelCollisionCategoryList.mButtonDelete = Button_DeleteCollisionCategory;
             
-            panelCollisionCategoryList.mCheckBoxHarmoniousCategory = CheckBox_CollisionCategory_HarmoniousCategory;
+            panelCollisionCategoryList.mCheckBoxCollideInternally = CheckBox_CollisionCategory_CollideInternally;
             panelCollisionCategoryList.mCheckBoxDefaultCategory = CheckBox_CollisionCategory_DefaultCategory;
             
             Button_DeleteCollisionCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
-            CheckBox_CollisionCategory_HarmoniousCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
+            CheckBox_CollisionCategory_CollideInternally.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
             CheckBox_CollisionCategory_DefaultCategory.addEventListener (MouseEvent.CLICK, panelCollisionCategoryList.OnEditButtonClick);
             
             panelCollisionCategoryList.mLabelName = Label_CollisionCategoryName;

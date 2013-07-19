@@ -55,6 +55,8 @@ package editor.ccat.dialog {
          }
          
          super.SetAssetManager (collisionCategoryManager);
+         
+         UpdateInterface ();
       }
       
 //============================================================================
@@ -83,18 +85,18 @@ package editor.ccat.dialog {
          
          mLabelName.enabled = numSelecteds == 1;
          mTextInputName.enabled = numSelecteds == 1;
-         mCheckBoxHarmoniousCategory.enabled = numSelecteds == 1;
+         mCheckBoxCollideInternally.enabled = numSelecteds == 1;
          mCheckBoxDefaultCategory.enabled = numSelecteds == 1;
          
          if (onlySelected != null)
          {
-            mCheckBoxHarmoniousCategory.selected = ! onlySelected.IsCollideInternally ();
+            mCheckBoxCollideInternally.selected = onlySelected.IsCollideInternally ();
             mCheckBoxDefaultCategory.selected = onlySelected.IsDefaultCategory ();
             mTextInputName.text = onlySelected.GetCategoryName ();
          }
          else
          {
-            mCheckBoxHarmoniousCategory.selected = false;
+            mCheckBoxCollideInternally.selected = false;
             mCheckBoxDefaultCategory.selected = false;
             mTextInputName.text = "";
          }
@@ -212,7 +214,7 @@ package editor.ccat.dialog {
          {
             case mButtonCreateCollisionCategory:
                SetCurrentIntent (new IntentPutAsset (
-                                 mCollisionCategoryManager.CreateCollisionCategory (null, true), 
+                                 mCollisionCategoryManager.CreateCollisionCategory (null, null, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
          // ...
@@ -224,7 +226,7 @@ package editor.ccat.dialog {
       }
       
       public var mButtonDelete:Button;
-      public var mCheckBoxHarmoniousCategory:CheckBox;
+      public var mCheckBoxCollideInternally:CheckBox;
       public var mCheckBoxDefaultCategory:CheckBox;
       
       public function OnEditButtonClick (event:MouseEvent):void
@@ -234,8 +236,8 @@ package editor.ccat.dialog {
             case mButtonDelete:
                DeleteSelectedAssets ();
                break;
-            case mCheckBoxHarmoniousCategory:
-               SetTheSelectedCategoryCollideInternally (! mCheckBoxHarmoniousCategory.selected);
+            case mCheckBoxCollideInternally:
+               SetTheSelectedCategoryCollideInternally (mCheckBoxCollideInternally.selected);
                break;
             case mCheckBoxDefaultCategory:
                SetTheSelectedCategoryDefaultCategory (mCheckBoxDefaultCategory.selected);

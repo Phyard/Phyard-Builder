@@ -9,9 +9,9 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      public function VariableSpaceSession (triggerEngine:TriggerEngine)
+      public function VariableSpaceSession  (/*triggerEngine:TriggerEngine*/)
       {
-         super(triggerEngine);
+         //super(triggerEngine);
       }
       
       override public function GetSpaceType ():int

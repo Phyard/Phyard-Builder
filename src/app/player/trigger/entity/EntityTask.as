@@ -19,9 +19,9 @@ package player.trigger.entity
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -35,7 +35,15 @@ package player.trigger.entity
                   for (var i:int = assignerEntityIndexes.length - 1; i >= 0; -- i)
                   {
                      // only support entities placed in editor
-                     newElement = new ListElement_EntitySelector (mWorld.GetEntityByCreateOrderId (int(assignerEntityIndexes [i]), false) as EntitySelector);
+                     //newElement = new ListElement_EntitySelector (mWorld.GetEntityByCreateOrderId (int(assignerEntityIndexes [i]), false) as EntitySelector);
+                     
+                     // from v2.02, merging scene is added
+                     var assignerEntityId:int = assignerEntityIndexes [i] as int;
+                     if (assignerEntityId >= 0)
+                        assignerEntityId = extraInfos.mEntityIdCorrectionTable [assignerEntityId];
+                     newElement = new ListElement_EntitySelector (mWorld.GetEntityByCreateOrderId (assignerEntityId, true) as EntitySelector);
+                                                                              // NOT only support entities placed in editor
+                     
                      newElement.mNextListElement = mFirstEntitySelector;
                      mFirstEntitySelector = newElement;
                   }

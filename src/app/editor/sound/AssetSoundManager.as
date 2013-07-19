@@ -16,11 +16,15 @@ package editor.sound {
    import flash.net.FileReference;
    import flash.net.FileFilter;
    
+   import flash.media.SoundMixer;
+   
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
+   
+   import editor.core.EditorObject;
    
    import editor.asset.AssetManager;
    
@@ -36,9 +40,9 @@ package editor.sound {
 // 
 //==========================================================      
       
-      public function CreateSound (insertBeforeSelectedThenSelectNew:Boolean = false):AssetSound
+      public function CreateSound (key:String, insertBeforeSelectedThenSelectNew:Boolean = false):AssetSound
       {
-         var soundAsset:AssetSound = new AssetSound (this);
+         var soundAsset:AssetSound = new AssetSound (this, ValidateAssetKey (key));
          soundAsset.UpdateAppearance ();
          soundAsset.UpdateSelectionProxy ();
          addChild (soundAsset);
@@ -72,9 +76,10 @@ package editor.sound {
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
+      
       private function OnContextMenuEvent_CreateSound (event:ContextMenuEvent):void
       {
-         CreateSound (true);
+         CreateSound (null, true);
       }
       
       private function OnContextMenuEvent_LocalSounds (event:ContextMenuEvent):void
@@ -98,6 +103,8 @@ package editor.sound {
          {
             (GetAssetByAppearanceId (i) as AssetSound).Stop ();
          }
+         
+         SoundMixer.stopAll ();
       }
      
 //=====================================================================
@@ -156,7 +163,7 @@ package editor.sound {
             fileReference.data.position = 0;
             clonedSoundData.writeBytes (fileReference.data, 0, fileReference.data.length);
             
-            var soundAsset:AssetSound = CreateSound (true);
+            var soundAsset:AssetSound = CreateSound (null, true);
             soundAsset.OnLoadLocalSoundFinished (clonedSoundData, fileReference.name);
          }
          catch (e:Error)

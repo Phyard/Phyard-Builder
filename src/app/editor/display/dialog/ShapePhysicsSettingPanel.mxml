@@ -118,6 +118,7 @@
                CheckBox_IsStatic.enabled = true;
                CheckBox_IsBullet.enabled = true;
                CheckBox_IsSensor.enabled = true;
+               CheckBox_Hollow.enabled = true;
                CheckBox_BuildBorder.enabled = true;
                CheckBox_AllowSleeping.enabled = true;
                CheckBox_FixRotation.enabled = true;
@@ -126,7 +127,7 @@
                //CheckBox_BuildBorder.enabled = mInputValues.mDisableBuildBorderEditing == null || (! mInputValues.mDisableBuildBorderEditing);
                CheckBox_Hollow.visible = mInputValues.mDisableHollowEditing == null || (! mInputValues.mDisableHollowEditing);
                CheckBox_BuildBorder.visible = mInputValues.mDisableBuildBorderEditing == null || (! mInputValues.mDisableBuildBorderEditing);
-                
+               
                Box_Bottom.enabled = true;
                Box_CollisionCategory.enabled = true;
                 
@@ -158,9 +159,7 @@
                CheckBox_AllowSleeping.enabled = false;
                CheckBox_FixRotation.enabled = false;
                
-               CheckBox_Hollow.enabled = false;
-               
-               Box_Bottom.enabled = false
+               Box_Bottom.enabled = false;
                Box_CollisionCategory.enabled = false;
             }
          }

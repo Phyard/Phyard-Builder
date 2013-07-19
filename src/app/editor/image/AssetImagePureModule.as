@@ -38,9 +38,9 @@ package editor.image {
       protected var mAssetImagePureModuleManager:AssetImagePureModuleManager;
       protected var mImageDivisionPeer:AssetImageDivision;
       
-      public function AssetImagePureModule (assetImagePureModuleManager:AssetImagePureModuleManager, imageDivision:AssetImageDivision)
+      public function AssetImagePureModule (assetImagePureModuleManager:AssetImagePureModuleManager, imageDivision:AssetImageDivision, key:String)
       {
-         super (assetImagePureModuleManager);
+         super (assetImagePureModuleManager, key);
          
          mAssetImagePureModuleManager = assetImagePureModuleManager;
          mImageDivisionPeer = imageDivision;

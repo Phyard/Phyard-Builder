@@ -50,8 +50,6 @@ package editor.image.dialog {
    import editor.image.AssetImageShapeModule;
    import editor.image.AssetImageNullModule;
    
-   import editor.display.sprite.CoordinateSprite;
-   
    import editor.core.EditorObject;
    import editor.core.ReferPair;
    
@@ -63,12 +61,11 @@ package editor.image.dialog {
    
    public class AssetImageCompositeModuleEditPanel extends AssetManagerPanel
    {
-      protected var mCoordinateSprite:CoordinateSprite = new CoordinateSprite ();
       protected var mAssetImageModuleInstanceManager:AssetImageModuleInstanceManager;
       
       public function AssetImageCompositeModuleEditPanel ()
       {
-         mBackgroundLayer.addChild (mCoordinateSprite);
+         SetGridCellSize (4, 4);
       }
       
       public function GetAssetImageModuleInstanceManager ():AssetImageModuleInstanceManager
@@ -81,6 +78,8 @@ package editor.image.dialog {
          super.SetAssetManager (amim);
          
          mAssetImageModuleInstanceManager = amim;
+         
+         SetGridShown (mAssetImageModuleInstanceManager != null);
          
          if (mAssetImageModuleInstanceManager != null)
          {
@@ -117,19 +116,23 @@ package editor.image.dialog {
          }
       }
       
-//=====================================================================
-//
-//=====================================================================
+//=============================================================
+//   grid
+//=============================================================
       
       override protected function UpdateInternal (dt:Number):void
       {
          if (mAssetImageModuleInstanceManager != null)
          {
-            mCoordinateSprite.UpdateAppearance (GetPanelWidth (), GetPanelHeight (), mAssetImageModuleInstanceManager.x, mAssetImageModuleInstanceManager.y, mAssetImageModuleInstanceManager.scaleX);
-            
             mManagerCameraCenter = PanelToManager (new Point (0.5 * GetPanelWidth (), 0.5 * GetPanelHeight ()));
+
+            UpdateGridSprite (false, 0xA0A0A0, true);
          }
       }
+      
+//=====================================================================
+//
+//=====================================================================
       
       override public function OnAssetSelectionsChanged (passively:Boolean = false):void
       {
@@ -187,6 +190,22 @@ package editor.image.dialog {
          
          return true;
       }
+      
+//====================================================================================
+//   
+//====================================================================================
+      
+      protected var mIsPlaying:Boolean = false;
+      
+      public function Play ():void
+      {
+         mIsPlaying = true;
+      }
+      
+      public function Pause ():void
+      {
+         mIsPlaying = false;
+      }
 
 //====================================================================================
 //   
@@ -204,22 +223,6 @@ package editor.image.dialog {
          {
             mAssetImageModuleInstanceListPanelPeer.GetAssetImageModuleInstanceManagerForListing ().DeleteSelectedAssets ();
          }
-      }
-      
-      public function MoveModuleInstanceUp ():void
-      {
-         if (mAssetImageModuleInstanceManager == null)
-            return;
-         
-         mAssetImageModuleInstanceManager.MoveUpDownTheOnlySelectedModuleInstance (true);
-      }
-      
-      public function MoveModuleInstanceDown ():void
-      {
-         if (mAssetImageModuleInstanceManager == null)
-            return;
-         
-         mAssetImageModuleInstanceManager.MoveUpDownTheOnlySelectedModuleInstance (false);
       }
       
       public function AlignTextureCenterWithShapeCenter ():void
@@ -418,16 +421,20 @@ package editor.image.dialog {
 //   
 //====================================================================================
       
-      protected var mIsPlaying:Boolean = false;
+      public var mCheckBoxSamePhysicsProxyForAllFrames:CheckBox;
       
-      public function Play ():void
+      public function OnModuleSettingsChanged (event:MouseEvent):void
       {
-         mIsPlaying = true;
-      }
-      
-      public function Pause ():void
-      {
-         mIsPlaying = false;
+         var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
+
+         switch (event.target)
+         {
+            case mCheckBoxSamePhysicsProxyForAllFrames:
+               if (compositeModule.IsSequenced ())
+                  compositeModule.SetConstantPhysicsGeom (mCheckBoxSamePhysicsProxyForAllFrames.selected);
+               
+               break;
+         }
       }
       
 //====================================================================================
@@ -477,7 +484,7 @@ package editor.image.dialog {
       
       
       private function UpdatePropertySettingComponents ():void
-      {         
+      {
          var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
 
          if (! compositeModule.IsSequenced ())
@@ -576,6 +583,8 @@ package editor.image.dialog {
             return;
          
          var compositeModule:AssetImageCompositeModule = mAssetImageModuleInstanceManager.GetAssetImageCompositeModule ();
+         
+         mCheckBoxSamePhysicsProxyForAllFrames.selected = compositeModule.IsConstantPhysicsGeom ();
          
          var numSelecteds:int = mAssetImageModuleInstanceManager.GetNumSelectedAssets ();
          

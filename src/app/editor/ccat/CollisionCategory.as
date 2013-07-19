@@ -33,8 +33,6 @@ package editor.ccat {
    import flash.events.ContextMenuEvent;
    
    import com.tapirgames.util.GraphicsUtil;
-   import com.tapirgames.util.ResourceLoader;
-   import com.tapirgames.util.ResourceLoadEvent;
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.TextUtil;
    import com.tapirgames.display.TextFieldEx;
@@ -63,9 +61,9 @@ package editor.ccat {
       private var mHalfTextWidth:Number;
       private var mHalfTextHeight:Number;
       
-      public function CollisionCategory (collisionCategoryManager:CollisionCategoryManager)
+      public function CollisionCategory (collisionCategoryManager:CollisionCategoryManager, key:String)
       {
-         super (collisionCategoryManager);
+         super (collisionCategoryManager, key);
          
          mCollisionCategoryManager = collisionCategoryManager;
          
@@ -103,6 +101,8 @@ package editor.ccat {
          {
             //mCategoryName = newName;
             SetName (newName);
+            
+            UpdateTimeModified ();
          }
       }
       
@@ -114,6 +114,8 @@ package editor.ccat {
       public function SetCollideInternally (collide:Boolean):void
       {
          mCollideInternally = collide;
+         
+         UpdateTimeModified ();
          
          mCollisionCategoryManager.SetChanged (true);
       }

@@ -26,6 +26,10 @@ package common.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnGameDeactivated,
                     null
                     );
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeRepainting,
+                    null
+                    );
 
       // ...
 
@@ -85,6 +89,13 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit,
+                    [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                    ]);
+
+      // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnTextChanged,
                     [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                     ]);
@@ -292,16 +303,24 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_String,       null],
                     ]);
 
+     // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnSystemBack,
+                    null,
+                    [
+                        [ValueTypeDefine.ValueType_Boolean,      false],
+                    ]);
+
 //===========================================================
 // util functions
 //===========================================================
 
-      private static function RegisterEventDeclatation (eventId:int, inputParamDefines:Array):void
+      private static function RegisterEventDeclatation (eventId:int, inputParamDefines:Array, outputParamDefines:Array = null):void
       {
          if (eventId < 0 || eventId >= IdPool.NumEventTypes)
             return;
 
-         var func_decl:FunctionDeclaration = new FunctionDeclaration (eventId, inputParamDefines);
+         var func_decl:FunctionDeclaration = new FunctionDeclaration (eventId, inputParamDefines, outputParamDefines);
 
          sEventHandlerDeclarations [eventId] = func_decl;
       }

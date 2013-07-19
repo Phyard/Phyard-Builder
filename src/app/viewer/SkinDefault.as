@@ -74,16 +74,21 @@ package viewer {
       }
       
       override public function Update (dt:Number):void
-      {
-         if (mDeactivated)
-         {
-            UpdateDeactivatedLayer ();
-            return;
-         }
-         
+      {  
          mFpsTime += dt; 
          ++ mFpsSteps;
-         if (mFpsSteps >= 30)
+         
+         if (mTotalSteps < 30)
+         {
+            ++ mTotalSteps;
+            mFps = mFpsSteps / mFpsTime;
+            
+            if (mInfosLayer.visible)
+            {
+               UpdateInfosPanel ();
+            }
+         }
+         else if (mFpsSteps >= 30)
          {
             mFps = mFpsSteps / mFpsTime;
             mFpsTime = 0.0;
@@ -95,7 +100,15 @@ package viewer {
             }
          }
          
-         var fadingSpeed:Number = 0.05;
+         if (mDeactivated)
+         {
+            UpdateDeactivatedLayer ();
+            return;
+         }
+         
+         var fadingSpeed:Number = dt;
+         if (fadingSpeed > 0.1)
+            fadingSpeed = 0.1;
          
          if (mLevelFinishedDialog != null)
          {
@@ -103,20 +116,20 @@ package viewer {
             {
                mLevelFinishedDialog.visible = true;
                
-               if (mLevelFinishedDialog.alpha < 1.0)
+               if (mLevelFinishedDialog.alpha < 0.9)
                   mLevelFinishedDialog.alpha += fadingSpeed;
-               if (mLevelFinishedDialog.alpha >= 1.0)
-                  mLevelFinishedDialog.alpha = 1.0;
+               if (mLevelFinishedDialog.alpha >= 0.9)
+                  mLevelFinishedDialog.alpha = 0.9;
             }
             else
             {
-               if (mLevelFinishedDialog.alpha > 0.0) 
-                  mLevelFinishedDialog.alpha -= fadingSpeed;
-               if (mLevelFinishedDialog.alpha <= 0.0)
-               {
-                  mLevelFinishedDialog.alpha = 0.0;
-                  mLevelFinishedDialog.visible = false;
-               }
+               // //if (mLevelFinishedDialog.alpha > 0.0) 
+               // //   mLevelFinishedDialog.alpha -= fadingSpeed;
+               // //if (mLevelFinishedDialog.alpha <= 0.0)
+               // //{
+               //   mLevelFinishedDialog.alpha = 0.0;
+               //   mLevelFinishedDialog.visible = false;
+               // //}
             }
          }
          
@@ -133,13 +146,13 @@ package viewer {
             }
             else
             {
-               if (mHelpDialog.alpha > 0.0)
-                  mHelpDialog.alpha -= fadingSpeed;
-               if (mHelpDialog.alpha <= 0.0)
-               {
-                  mHelpDialog.alpha = 0.0;
-                  mHelpDialog.visible = false;
-               }
+               // //if (mHelpDialog.alpha > 0.0)
+               // //   mHelpDialog.alpha -= fadingSpeed;
+               // //if (mHelpDialog.alpha <= 0.0)
+               // //{
+               //   mHelpDialog.alpha = 0.0;
+               //   mHelpDialog.visible = false;
+               // //}
             }
          }
          
@@ -199,6 +212,8 @@ package viewer {
          //RebuildLevelFinishedDialog ();
          CenterSpriteOnContentRegion (mLevelFinishedDialogLayer);
          CenterSpriteOnContentRegion (mHelpDialog);
+         
+         mFps = (stage == null ? 30 : stage.frameRate);
       }
 
       override protected function OnStartedChanged ():void
@@ -320,10 +335,14 @@ package viewer {
                mHelpDialog.alpha = 0.0;
             }
          }
-         //else
-         //{
-         //   mHelpDialog.visible = IsHelpDialogVisible ();
-         //}
+         else if (! IsHelpDialogVisible ())
+         {
+            if (mHelpDialog != null)
+            {
+               mHelpDialog.visible = false;
+               mHelpDialog.alpha = 0.0;
+            }
+         }
       }
       
       override protected function OnLevelFinishedDialogVisibleChanged ():void
@@ -344,10 +363,14 @@ package viewer {
                mLevelFinishedDialog.alpha = 0.0;
             }
          }
-         //else
-         //{
-         //   mLevelFinishedDialog.visible = IsLevelFinishedDialogVisible () && (! mHasLevelFinishedDialogEverOpened);
-         //}
+         else if (! IsLevelFinishedDialogVisible ())
+         {
+            if (mLevelFinishedDialog != null)
+            {
+               mLevelFinishedDialog.visible = IsLevelFinishedDialogVisible () && (! mHasLevelFinishedDialogEverOpened);
+               mLevelFinishedDialog.alpha = 0.0;
+            }
+         }
       }
       
       //private var mFirstTimeDeactived:Boolean = true;
@@ -490,8 +513,9 @@ package viewer {
       private var mPauseTimes:Array = new Array (0, 0, 0, 0, 0);
       private var mPausedIndex:int = 0;
       
-      private var mFpsTime:Number = 0.0; 
+      private var mTotalSteps:int = 0;
       private var mFpsSteps:int = 0;
+      private var mFpsTime:Number = 0.0; 
       private var mFps:Number = 0.0;
       
       private var mInfosPanel:Sprite = null;
@@ -803,7 +827,7 @@ package viewer {
                   {
                      buttonX = mViewerWidth - margin;
                      buttonY = mViewerHeight - margin;
-                     
+
                      if (params.mShowSoundController)
                      {
                         mSoundOnButton_Overlay = CreateButton (0, mSoundOnButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnClickSoundOn);
@@ -819,7 +843,7 @@ package viewer {
                      buttonX = margin;
                      buttonY = mViewerHeight - margin;
                
-                     mExitButton_Overlay = CreateButton (0, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, _OnExitLevel);
+                     mExitButton_Overlay = CreateButton (0, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, mIsOverlay, mIsTouchScreen, OnExitLevel);
                      mExitButton_Overlay.x = buttonX + 0.5 * mExitButton_Overlay.width;
                      mExitButton_Overlay.y = buttonY - 0.5 * mExitButton_Overlay.height;
                      mHudLayerForPause.addChild (mExitButton_Overlay);
@@ -934,7 +958,7 @@ package viewer {
                   mPlayBar.addChild (mHelpButton);
                }
                
-               mExitButton = CreateButton (1, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, _OnExitLevel);
+               mExitButton = CreateButton (1, mHasMainMenu ? mMenuButtonData : mBackButtonData, SkinDefault.DefaultButtonIconFilledColor, false, false, OnExitLevel);
                mExitButton.x = gap + 0.5 * mExitButton.width;
                mExitButton.y = 0.5 * PlayBarHeight;
                mPlayBar.addChild (mExitButton);
@@ -1701,6 +1725,8 @@ package viewer {
       
       private static function GetPreferredButtonSize (isOverlay:Boolean, isTocuhScreen:Boolean):Number
       {
+         // should be xonsitent with Game.as
+         
          if (isTocuhScreen)
             return Capabilities.screenDPI * 0.32; // 0.32 inches
          else if (isOverlay)

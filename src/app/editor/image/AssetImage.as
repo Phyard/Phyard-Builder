@@ -28,7 +28,6 @@ package editor.image {
    
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.ResourceLoader;
-   import com.tapirgames.util.ResourceLoadEvent;
    
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;
@@ -49,9 +48,9 @@ package editor.image {
       
       private var mBitmapData:BitmapData = null;
       
-      public function AssetImage (assetImageManager:AssetImageManager)
+      public function AssetImage (assetImageManager:AssetImageManager, key:String)
       {
-         super (assetImageManager);
+         super (assetImageManager, key);
          
          mAssetImageManager = assetImageManager;
          
@@ -89,9 +88,11 @@ package editor.image {
       
       override public function Destroy ():void
       {
+         //mAssetImageDivisionManager.DestroyAllAssets ();
+         mAssetImageDivisionManager.Destroy ();
+         
          super.Destroy ();
          
-         mAssetImageDivisionManager.DestroyAllAssets ();
          if (mAssetImageDivideDialog != null)
          {
             mAssetImageDivideDialog.Hide ();
@@ -132,20 +133,16 @@ package editor.image {
          
          if (fileData != null)
          {
-            var loader:ResourceLoader = new ResourceLoader ();
-            loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadImageError);
-            loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadImageError);
-            loader.addEventListener (ResourceLoadEvent.RESOURCE_LOADED, OnLoadImageComplete);
-            loader.loadImageFromByteArray (fileData);
+            var loader:ResourceLoader = new ResourceLoader (fileData, OnLoadImageComplete, OnLoadImageError);
+            loader.StartLoadingImage();
          }
       }
       
-      private function OnLoadImageComplete (event:Event):void
+      private function OnLoadImageComplete (bitmap:Bitmap):void
       {
-         //var newBitmap:Bitmap = event.target.content as Bitmap;
-         //var newBitmap:Bitmap = ((event.target.content.GetBitmap as Function) ()) as Bitmap;
-         var newBitmap:Bitmap = (event as ResourceLoadEvent).resource as Bitmap;
-         mBitmapData = newBitmap.bitmapData;
+         UpdateTimeModified ();
+         
+         mBitmapData = bitmap.bitmapData;
          
          mFileData = _FileData_Temp;
          _FileData_Temp = null;
@@ -155,8 +152,10 @@ package editor.image {
       
       // !!! This function is not triggered even if there are some errors in loading.
       // It seems flash doesn't trigger some errors.
-      private function OnLoadImageError (event:Object):void
+      private function OnLoadImageError (message:String):void
       {
+         trace ("OnLoadImageError: " + message);
+         
          _FileData_Temp = null;
          
          NotifyPixelsChanged ();
@@ -168,7 +167,7 @@ package editor.image {
       }
       
       protected function NotifyPixelsChanged ():void
-      {  
+      {
          UpdateAppearance ();
          
          mAssetImageDivisionManager.OnAssetImagePixelsChanged ();

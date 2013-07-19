@@ -12,10 +12,10 @@ package editor.trigger {
       
       public function FunctionDeclaration_EventHandler (id:int, name:String, description:String = null, 
                                                       poemCallingFormat:String = null, traditionalCallingFormat:String = null, 
-                                                      paramDefines:Array = null, 
+                                                      paramDefines:Array = null, returnDefinitions:Array = null,
                                                       showUpInApiMenu:Boolean = true)
       {
-         super (id, name, description, paramDefines, null, showUpInApiMenu);
+         super (id, name, description, paramDefines, returnDefinitions, showUpInApiMenu);
          
          ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
          

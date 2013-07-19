@@ -32,11 +32,11 @@ package player.entity {
          SetBorderColor (Define.ColorTextButtonBorder);
          SetBorderThickness (2);
          SetTextColor (Define.ColorTextButtonText);
-         SetTextAlign (TextUtil.TextAlign_Center);
+         SetTextAlign (TextUtil.TextAlign_Center | TextUtil.TextAlign_Middle);
          
          mAppearanceObjectsContainer.removeChild (mBackgroundShape); // added in rect
          mAppearanceObjectsContainer.removeChild (mBorderShape); // added in rect
-         mAppearanceObjectsContainer.removeChild (mTextBitmap); // added in text
+         //mAppearanceObjectsContainer.removeChild (mTextBitmap); // added in text
          mAppearanceObjectsContainer.addChild (mSimpleButton);
          
          mNormalSprite.addChild (mBackgroundShape);
@@ -64,12 +64,15 @@ package player.entity {
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
+            SetTextColor_MouseOver (GetTextColor ());
+            SetFontSize_MouseOver (GetFontSize ());
+            
             if (entityDefine.mUsingHandCursor != undefined)
                SetUsingHandCursor (entityDefine.mUsingHandCursor);
             
@@ -87,12 +90,22 @@ package player.entity {
                mTransparency_MouseOver = entityDefine.mBackgroundTransparency_MouseOver;
             if (entityDefine.mBorderTransparency_MouseOver != undefined)
                mBorderTransparency_MouseOver = entityDefine.mBorderTransparency_MouseOver;
+            
+            // not set in editor, set in Clone API
+            if (entityDefine.mTextColor_MouseOver != undefined)
+               SetTextColor_MouseOver (entityDefine.mTextColor_MouseOver);
+            if (entityDefine.mFontSize_MouseOver != undefined)
+               SetFontSize_MouseOver (entityDefine.mFontSize_MouseOver);
+
          }
       }
       
      override public function ToEntityDefine (entityDefine:Object):Object
      {
          super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mTextColor_MouseOver = GetTextColor_MouseOver ();
+         entityDefine.mFontSize_MouseOver = GetFontSize_MouseOver ();
          
          entityDefine.mUsingHandCursor = UsingHandCursor ();
          entityDefine.mDrawBorder_MouseOver = mDrawBorder_MouseOver;
@@ -156,6 +169,38 @@ package player.entity {
       private var mTransparency_MouseOver:uint = 100;
       private var mBorderTransparency_MouseOver:uint = 100;
       
+      // these are not defined in editor, they are changed by API
+      private var mTextColor_MouseOver:uint = 0x000000;
+      private var mFontSize_MouseOver:uint = 10;
+      
+      public function GetTextColor_MouseOver ():uint
+      {
+         return mTextColor_MouseOver;
+      }
+      
+      public function SetTextColor_MouseOver (color:uint):void
+      {
+         mTextColor_MouseOver = color;
+         
+         mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance ();
+      }
+      
+      public function GetFontSize_MouseOver ():uint
+      {
+         return mFontSize_MouseOver;
+      }
+      
+      public function SetFontSize_MouseOver (size:uint):void
+      {
+         mFontSize_MouseOver = size;
+         
+         mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance ();
+      }
+      
 //=============================================================
 //   appearance
 //=============================================================
@@ -174,29 +219,65 @@ package player.entity {
       protected var mBackgroundShape_MouseDown:Shape = new Shape ();
       protected var mBorderShape_MouseDown    :Shape = new Shape ();
       
-      
-      override protected function AdjustBackgroundSize ():void
+      override protected function PreUpdateTextAppearance ():void
       {
-         if (IsAdaptiveBackgroundSize ())
-         {
-            SetHalfWidth  (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.width + 15));
-            SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.height + 3));
-            
-            mNeedRebuildAppearanceObjects = true;
-         }
       }
       
-      override protected function RebuildTextBitmap ():void
+      override protected function PostUpdateTextAppearance ():void
       {
-         super.RebuildTextBitmap ();
+         //
+         var hAlign:int = mTextAlign & 0x0F;
+         var vAlign:int = mTextAlign & 0xF0;
+         var displayHalfWidth:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
+         var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
+         var halfDisplayBorderThickness:Number = 0.5 * mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
          
-         mTextBitmap_MouseOver.bitmapData = mTextBitmap.bitmapData;
-         mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap_MouseOver.width;
-         mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
+         AlignTextSprite (mTextBitmap, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         AlignTextSprite (mTextBitmap_MouseOver, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         AlignTextSprite (mTextBitmap_MouseDown, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         mTextBitmap_MouseDown.y += 1;
+      }
+      
+      // why override it?
+      //override protected function AdjustBackgroundSize ():void
+      //{
+      //   if (IsAdaptiveBackgroundSize ())
+      //   {
+      //      SetHalfWidth  (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.width + 15));
+      //      SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.height + 3));
+      //      
+      //      mNeedRebuildAppearanceObjects = true;
+      //   }
+      //}
+      
+      override protected function RebuildTextAppearance ():void
+      {
+         // create the over bitmap, some tricky here.
+         var textColor_Backup:uint = mTextColor;
+         var fontSize_Backup:uint = mFontSize;
+         try
+         {
+            mTextColor = mTextColor_MouseOver;
+            mFontSize = mFontSize_MouseOver;
+            
+            super.RebuildTextAppearance ();
+            
+            mTextBitmap_MouseOver.bitmapData = mTextBitmap.bitmapData;
+            //mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap_MouseOver.width;
+            //mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
+            
+            mTextBitmap_MouseDown.bitmapData = mTextBitmap.bitmapData;
+            //mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseOver.width;
+            //mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseOver.height + 1;
+         }
+         catch (error:Error)
+         {
+         }
          
-         mTextBitmap_MouseDown.bitmapData = mTextBitmap.bitmapData;
-         mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseOver.width;
-         mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseOver.height + 1;
+         // create the up bitmap
+         mTextColor = textColor_Backup;
+         mFontSize = fontSize_Backup;
+         super.RebuildTextAppearance ();
       }
       
       override protected function RebuildBackgroundAndBorder (displayHalfWidth:Number, displayHalfHeight:Number, displayBorderThickness:Number):void

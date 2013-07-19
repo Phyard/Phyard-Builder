@@ -33,8 +33,6 @@ package editor.codelib {
    import flash.events.ContextMenuEvent;
    
    import com.tapirgames.util.GraphicsUtil;
-   import com.tapirgames.util.ResourceLoader;
-   import com.tapirgames.util.ResourceLoadEvent;
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.TextUtil;
    import com.tapirgames.display.TextFieldEx;
@@ -47,9 +45,12 @@ package editor.codelib {
    
    import editor.trigger.FunctionDefinition;
    import editor.trigger.CodeSnippet;
-   import editor.trigger.TriggerEngine;
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.FunctionDeclaration_Custom;
+   
+   import editor.display.dialog.NameSettingDialog;
+   
+   import editor.EditorContext;
    
    import common.Define;
    
@@ -68,16 +69,18 @@ package editor.codelib {
       private var mHalfTextWidth:Number;
       private var mHalfTextHeight:Number;
       
-      public function AssetFunction (codeLibManager:CodeLibManager)
+      public function AssetFunction (codeLibManager:CodeLibManager, key:String)
       {
-         super (codeLibManager);
+         super (codeLibManager, key);
+         
+         doubleClickEnabled = true;
          
          mCodeLibManager = codeLibManager;
          
          mouseChildren = false;
          
          mFunctionDeclaration = new FunctionDeclaration_Custom (mName);
-         mFunctionDefinition = new FunctionDefinition (mCodeLibManager.mWorld.GetTriggerEngine (), mFunctionDeclaration, true);
+         mFunctionDefinition = new FunctionDefinition (/*mCodeLibManager.mWorld.GetTriggerEngine (), */mFunctionDeclaration, true);
          mCodeSnippet = new CodeSnippet (mFunctionDefinition);
       }
       
@@ -139,6 +142,39 @@ package editor.codelib {
             mFunctionDeclaration.SetName (newName);
             mFunctionDeclaration.ParseAllCallingTextSegments ();
          }
+      }
+      
+      public function Reset ():void
+      {  
+         mCodeSnippet.ClearFunctionCallings ();
+         //mCodeSnippet.GetOwnerFunctionDefinition ()
+         mFunctionDefinition.GetInputVariableSpace ().DestroyAllVariableInstances ();
+         mFunctionDefinition.GetOutputVariableSpace ().DestroyAllVariableInstances ();
+         mFunctionDefinition.GetLocalVariableSpace ().DestroyAllVariableInstances ();
+      }
+      
+      
+      private var mLastModifyTimesOfInputVariableSpace:int = 0;
+      private var mLastModifyTimesOfOutputVariableSpace:int = 0;
+      private var mLastModifyTimesOfLocalVariableSpace:int = 0;
+      override public function Update (escapedTime:Number):void
+      {
+         if (  mFunctionDefinition.GetInputVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfInputVariableSpace
+            || mFunctionDefinition.GetOutputVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfOutputVariableSpace
+            || mFunctionDefinition.GetLocalVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfLocalVariableSpace
+            )
+         {
+            UpdateTimeModified ();
+         }
+      }
+      
+      override public function SetTimeModified (time:Number):void
+      {
+         super.SetTimeModified (time);
+         
+         mLastModifyTimesOfInputVariableSpace = mFunctionDefinition.GetInputVariableSpace ().GetNumModifiedTimes ();
+         mLastModifyTimesOfOutputVariableSpace = mFunctionDefinition.GetOutputVariableSpace ().GetNumModifiedTimes ();
+         mLastModifyTimesOfLocalVariableSpace = mFunctionDefinition.GetLocalVariableSpace ().GetNumModifiedTimes ();
       }
       
 //=======================================================================================
@@ -236,20 +272,39 @@ package editor.codelib {
       
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         //var menuItemBreakAllLinks:ContextMenuItem = new ContextMenuItem("Break All Friend(s)");
-         //
-         //menuItemBreakAllLinks.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_BreakAllLinks);
-         //
-         //customMenuItemsStack.push (menuItemBreakAllLinks);
+         var menuItemChangeOrder:ContextMenuItem = new ContextMenuItem("Change Function Order ID ...");
+         
+         menuItemChangeOrder.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeOrderID);
+         
+         customMenuItemsStack.push (menuItemChangeOrder);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
          mCodeLibManager.BuildContextMenuInternal (customMenuItemsStack);
       }
       
-      //private function OnContextMenuEvent_BreakAllLinks (event:ContextMenuEvent):void
-      //{
-      //   mCollisionCategoryManager.BreakFriendLinks (this);
-      //}
+      private function OnContextMenuEvent_ChangeOrderID (event:ContextMenuEvent):void
+      {
+         EditorContext.ShowModalDialog (NameSettingDialog, ConfirmChangeOrderID, 
+                                    {mName: "" + GetFunctionIndex (), 
+                                     mLabel: "New Order ID",
+                                     mTitle: "Change Function Order ID"});
+      }
+      
+      private function ConfirmChangeOrderID (params:Object):void
+      {
+         if (params == null || params.mName == null)
+            return;
+         
+         var newIndex:int = parseInt (params.mName);
+         if (isNaN (newIndex) || newIndex < 0)
+            return;
+         
+         var codeLibManager:CodeLibManager = GetAssetManager () as CodeLibManager; 
+         //codeLibManager.MoveAssetsToIndex ([this], newIndex);
+         //codeLibManager.OnFunctionOrderIDsChanged ();
+         
+         codeLibManager.ChangeFunctionOrderIDs (GetFunctionIndex (), newIndex);
+      }
 
   }
 }

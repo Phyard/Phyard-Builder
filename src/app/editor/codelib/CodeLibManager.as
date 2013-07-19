@@ -24,11 +24,18 @@ package editor.codelib {
    import flash.events.ContextMenuEvent;
    
    import editor.world.World;
+   import editor.world.CoreFunctionDeclarationsForPlaying;
    
    import editor.asset.Asset; 
    import editor.asset.AssetManager;
    
+   import editor.entity.Scene;
+   
    import editor.trigger.FunctionMenuGroup;
+   import editor.trigger.FunctionDeclaration;
+   import editor.trigger.VariableSpaceSession;
+   import editor.trigger.VariableSpaceGlobal;
+   import editor.trigger.VariableSpaceEntityProperties;
    
    import editor.EditorContext;
    
@@ -39,11 +46,37 @@ package editor.codelib {
    
    public class CodeLibManager extends AssetManager
    {
-      internal  var mWorld:World; // todo: to remove
+      protected var mScene:Scene;
       
-      public function CodeLibManager (world:World)
+      public function CodeLibManager (scene:Scene)
       {
-         mWorld = world;
+         super ();
+         
+         mScene = scene;
+         
+         // session variable space
+         
+         mSessionVariableSpace = new VariableSpaceSession (/*this*/);
+         
+         // custom global variable space
+         
+         mGlobalVariableSpace = new VariableSpaceGlobal (/*this*/);
+         
+         // custom entity property space
+         
+         mEntityVariableSpace = new VariableSpaceEntityProperties (/*this*/);
+         
+         // register variables
+         // put in World now
+         
+         // memo: which packages and classes introduced later,
+         //       put them in seperated PacakgeManager and ClassManager.
+         //       3 manager layers: function layer, pacakge layer, class layer
+      }
+      
+      public function GetScene ():Scene
+      {
+         return mScene;
       }
       
       override public function SupportScaleRotateFlipTransforms ():Boolean
@@ -70,15 +103,60 @@ package editor.codelib {
          
          super.DestroyAsset (asset);
          
+         UpdateFunctionAppearances ();
+      }
+      
+      private function UpdateFunctionAppearances ():void
+      {
          // ids changed, maybe
          for (var i:int = 0; i < numChildren; ++ i)
          {
-            asset = getChildAt (i) as Asset;
+            var asset:Asset = getChildAt (i) as Asset;
             if (asset != null) // should be
             {
                asset.UpdateAppearance ();
             }
          }
+      }
+      
+      override public function DestroyAllAssets ():void
+      {
+         mSessionVariableSpace.DestroyAllVariableInstances ();
+         mGlobalVariableSpace.DestroyAllVariableInstances ();
+         mEntityVariableSpace.DestroyAllVariableInstances ();
+         
+         super.DestroyAllAssets ();
+      }
+      
+//==============================
+// 
+//==============================
+      
+      // session variables
+      private var mSessionVariableSpace:VariableSpaceSession;
+      
+      // custom global variables
+      private var mGlobalVariableSpace:VariableSpaceGlobal;
+      
+      // custom entity properties
+      private var mEntityVariableSpace:VariableSpaceEntityProperties;
+      
+      // register variables
+      // put in World now.
+      
+      public function GetSessionVariableSpace ():VariableSpaceSession
+      {
+         return mSessionVariableSpace;
+      }
+      
+      public function GetGlobalVariableSpace ():VariableSpaceGlobal
+      {
+         return mGlobalVariableSpace;
+      }
+      
+      public function GetEntityVariableSpace ():VariableSpaceEntityProperties
+      {
+         return mEntityVariableSpace;
       }
       
 //===============================
@@ -116,12 +194,12 @@ package editor.codelib {
          return mFunctionAssets [index] as AssetFunction;
       }
       
-      public function CreateFunction (funcName:String = null, designDependent:Boolean = false, selectIt:Boolean = false):AssetFunction
+      public function CreateFunction (key:String, funcName:String = null, designDependent:Boolean = false, selectIt:Boolean = false):AssetFunction
       {
          if (funcName == null)
             funcName = Define.FunctionDefaultName;
          
-         var aFunction:AssetFunction = new AssetFunction (this);
+         var aFunction:AssetFunction = new AssetFunction (this, ValidateAssetKey (key));
          addChild (aFunction);
          
          mFunctionAssets.push (aFunction);
@@ -177,12 +255,34 @@ package editor.codelib {
          SetChanged (true);
       }
       
-      private function UpdateFunctionIndexes ():void
+      public function UpdateFunctionIndexes ():void
       {
          for (var index:int = 0; index < mFunctionAssets.length; ++ index)
          {
             (mFunctionAssets [index] as AssetFunction).SetFunctionIndex (index);
          }
+      }
+      
+      public function ChangeFunctionOrderIDs (fromId:int, toId:int):void
+      {
+         if (fromId < 0 || fromId >= mFunctionAssets.length)
+            return;
+         if (toId < 0)
+            toId = 0;
+         if (toId >= mFunctionAssets.length)
+            toId = mFunctionAssets.length - 1;
+         
+         var aFunction:AssetFunction = mFunctionAssets [fromId] as AssetFunction;
+         mFunctionAssets.splice (fromId, 1);
+         mFunctionAssets.splice (toId, 0, aFunction);
+         
+         // ...
+         
+         UpdateFunctionIndexes ();
+         
+         SetChanged (true);
+         
+         UpdateFunctionAppearances ();
       }
       
 //=============================================
@@ -225,29 +325,140 @@ package editor.codelib {
 // menu
 //=============================================
       
-      private var mFunctionMenuGroup:FunctionMenuGroup;
-      
-      public function SetFunctionMenuGroup (menuGroup:FunctionMenuGroup):void
-      {
-         mFunctionMenuGroup = menuGroup;
-      }
-      
       public function UpdateFunctionMenu ():void
       {
-         if (mFunctionMenuGroup == null)
+         if (mCustomMenuGroup == null)
             return;
          
-         mFunctionMenuGroup.Clear ();
+         mCustomMenuGroup.Clear ();
          
-         // mFunctionMenuGroup.AddChildMenuGroup ();
-         // mFunctionMenuGroup.AddFunctionDeclaration ();
+         // mCustomMenuGroup.AddChildMenuGroup ();
+         // mCustomMenuGroup.AddFunctionDeclaration ();
          
-         for (var i:int = 0; i < mFunctionAssets.length; ++ i)
+         var i:int;
+         
+         if (mFunctionAssets.length > 16)
          {
-            mFunctionMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
+            var numGroups:int = Math.floor ((mFunctionAssets.length + 15) / 16);
+            for (var g:int = 0; g < numGroups; ++ g)
+            {
+               var fromId:int = g * 16;
+               var toId:int = fromId + 16;
+               if (toId > mFunctionAssets.length)
+                  toId = mFunctionAssets.length;
+               
+               var aMenuGroup:FunctionMenuGroup = new FunctionMenuGroup (fromId + " - " + (toId - 1));
+               mCustomMenuGroup.AddChildMenuGroup (aMenuGroup);
+               
+               for (i = fromId; i < toId; ++ i)
+               {
+                  aMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
+               }
+            }
+         }
+         else
+         {
+            for (i = 0; i < mFunctionAssets.length; ++ i)
+            {
+               mCustomMenuGroup.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
+            }
          }
          
-         EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
+         //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
+         UpdateCustomMenu ();
+      }
+
+      public function UpdateCustomMenu ():void
+      {
+         var parent:XML;
+
+         parent = mMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0].parent ();
+         delete mMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0];
+
+         ConvertMenuGroupToXML (mCustomMenuGroup, parent, null);
+
+         parent = mMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0].parent ();
+         delete mMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0];
+
+         ConvertMenuGroupToXML (mCustomMenuGroup, parent, null);
+      }
+      
+      //========================
+
+      private var mCustomMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Custom");
+
+      private var mMenuBarDataProvider_Shorter:XML = CreateXmlFromMenuGroups (CoreFunctionDeclarationsForPlaying.GetMenuGroupsForShorterMenuBar ().concat ([mCustomMenuGroup]));
+      private var mMenuBarDataProvider_Longer:XML = CreateXmlFromMenuGroups (CoreFunctionDeclarationsForPlaying.GetMenuGroupsForLongerMenuBar ().concat ([mCustomMenuGroup]));
+      
+      public function GetShorterMenuBarDataProvider ():XML
+      {
+         return mMenuBarDataProvider_Shorter;
+      }
+
+      public function GetLongerMenuBarDataProvider ():XML
+      {
+         return mMenuBarDataProvider_Longer;
+      }
+
+      // top level
+      private static function CreateXmlFromMenuGroups (packages:Array):XML
+      {
+         var xml:XML = <root />;
+
+         for each (var functionMenuGroup:FunctionMenuGroup in packages)
+         {
+            ConvertMenuGroupToXML (functionMenuGroup, xml, packages);
+         }
+
+         return xml;
+      }
+
+      private static function ConvertMenuGroupToXML (functionMenuGroup:FunctionMenuGroup, parentXml:XML, topMenuGroups:Array):void
+      {
+         var package_element:XML = <menuitem />;
+         package_element.@name = functionMenuGroup.GetName ();
+         parentXml.appendChild (package_element);
+
+         var num_items:int = 0;
+
+         var child_packages:Array = functionMenuGroup.GetChildMenuGroups ();
+         for (var i:int = 0; i < child_packages.length; ++ i)
+         {
+            if (topMenuGroups == null || topMenuGroups.indexOf (child_packages [i]) < 0)
+            {
+               ConvertMenuGroupToXML (child_packages [i] as FunctionMenuGroup, package_element, topMenuGroups);
+
+               ++ num_items;
+            }
+         }
+
+         var declarations:Array = functionMenuGroup.GetFunctionDeclarations ();
+         var declaration:FunctionDeclaration;
+         var function_element:XML;
+         for (var j:int = 0; j < declarations.length; ++ j)
+         {
+            declaration = declarations [j] as FunctionDeclaration;
+            if (declaration.IsShowUpInApiMenu ())
+            {
+               function_element = <menuitem />;
+               function_element.@name = declaration.GetName ();
+               function_element.@id = declaration.GetID ();
+               function_element.@type = declaration.GetType ();
+
+               package_element.appendChild (function_element);
+
+               ++ num_items;
+            }
+         }
+
+         if (num_items == 0)
+         {
+            function_element = <menuitem />;
+            function_element.@name = "[nothing]";
+            function_element.@id = -1;
+
+            package_element.appendChild (function_element);
+         }
       }
         
 //=====================================================================
@@ -257,15 +468,15 @@ package editor.codelib {
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          /*
-         var menuItemLoadLocalSoundss:ContextMenuItem = new ContextMenuItem("Load Local Sounds(s) ...", true);
+         var menuItemLoadLocalSounds:ContextMenuItem = new ContextMenuItem("Load Local Sounds(s) ...", true);
          //var menuItemCreateSound:ContextMenuItem = new ContextMenuItem("Create Blank Sound ...");
          var menuItemDeleteSelecteds:ContextMenuItem = new ContextMenuItem("Delete Selected(s) ...", true);
          
-         menuItemLoadLocalSoundss.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_LocalSounds);
+         menuItemLoadLocalSounds.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_LocalSounds);
          //menuItemCreateSound.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateSound);
          menuItemDeleteSelecteds.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_DeleteSelectedAssets);
 
-         customMenuItemsStack.push (menuItemLoadLocalSoundss);
+         customMenuItemsStack.push (menuItemLoadLocalSounds);
          //customMenuItemsStack.push (menuItemCreateSound);
          customMenuItemsStack.push (menuItemDeleteSelecteds);
          */

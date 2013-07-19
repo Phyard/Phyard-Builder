@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Text Setting" width="600">
+    title="Text Setting" width="700">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Text" borderStyle="solid" height="100%" width="100%"
@@ -12,14 +12,33 @@
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnBasicPanelCreationComplete()">
          <TextSettingPanel id="theTextSettingPanel" creationComplete="OnTextSettingPanelCreationComplete()"/>
+         <mx:Spacer height="50"/>
+         <mx:Spacer height="100%"/>
       </mx:VBox>
       <mx:VBox label="Background Appearance" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <ShapeAppearanceSettingPanel id="AppearanceSettingPanel" creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
-         <mx:Spacer width="100%"/>
+         <mx:Spacer height="100%"/>
       </mx:VBox>
+      <!--
+      <mx:VBox label="Text (Mouse Over)" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnBasicPanelCreationComplete()">
+         <TextSettingPanel id="theTextSettingPanel_MouseOver" creationComplete="OnTextSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+         <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
+         <mx:Spacer height="100%" />
+         <mx:HBox id="MouseOverSpecialSettingPanel" creationComplete="OnMouseOverSpecialSettingPanelCreationComplete()" width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_SameAsNormalState" label="Same As Normal State"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+      -->
       <mx:VBox label="Background Appearance (Mouse Over)" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
@@ -28,7 +47,7 @@
          <mx:Spacer height="100%" />
          <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
          <mx:Spacer height="100%" />
-         <mx:HBox id="MouseOverSpecialSettingPanel" creationComplete="OnMouseOverSpecialSettingPanelCreationComplete()" width="100%">
+         <mx:HBox id="MouseOverSpecialSettingPanel2" creationComplete="OnMouseOverSpecialSettingPanel2CreationComplete()" width="100%">
             <mx:Spacer width="100%"/>
             <mx:CheckBox id="CheckBox_UsingHandCursor" label="Use Hand Cursor"/>
             <mx:Spacer width="100%"/>
@@ -93,22 +112,31 @@
 
          private function OnTextSettingPanelCreationComplete ():void
          {
+            mParams.mDisableEditableEditing = true;
+            mParams.mDisableSelectableEditing = true;
             theTextSettingPanel.SetValues (mParams);
          }
 
          private function OnAppearanceSettingPanelCreationComplete ():void
          {
+            mParams.mDisableTextureEditing = true;
             mParams.mCiTypeSelectable = false;
             AppearanceSettingPanel.SetValues (mParams);
          }
 
          private function OnMouseOverAppearanceSettingPanelCreationComplete ():void
          {
+            mParams.mMouseOverValues.mDisableTextureEditing = true;
             mParams.mMouseOverValues.mCiTypeSelectable = false;
             AppearanceSettingPanel_MouseOver.SetValues (mParams.mMouseOverValues);
          }
 
-         private function OnMouseOverSpecialSettingPanelCreationComplete ():void
+         //private function OnMouseOverSpecialSettingPanelCreationComplete ():void
+         //{
+         //   CheckBox_SameAsNormalState.selected = mParams.mSameAsNormalState;
+         //}
+         
+         private function OnMouseOverSpecialSettingPanel2CreationComplete ():void
          {
             CheckBox_UsingHandCursor.selected = mParams.mUsingHandCursor;
          }
@@ -151,7 +179,7 @@
                AppearanceSettingPanel_MouseOver.GetValues (mParams.mMouseOverValues);
             }
 
-            if (MouseOverSpecialSettingPanel != null)
+            if (MouseOverSpecialSettingPanel2 != null)
             {
                mParams.mUsingHandCursor = CheckBox_UsingHandCursor.selected;
             }

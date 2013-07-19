@@ -52,9 +52,9 @@ package editor.image {
       
       protected var mImagePureModulePeer:AssetImagePureModule;
       
-      public function AssetImageDivision (assetImageDivisionManager:AssetImageDivisionManager)
+      public function AssetImageDivision (assetImageDivisionManager:AssetImageDivisionManager, key:String = null)
       {
-         super (assetImageDivisionManager);
+         super (assetImageDivisionManager, key);
          
          mAssetImageDivisionManager = assetImageDivisionManager;
          
@@ -100,6 +100,44 @@ package editor.image {
 //   
 //=============================================================
       
+      override public function GetKey ():String
+      {
+         if (mImagePureModulePeer == null) // for creation stage
+            return null;
+         
+         return mImagePureModulePeer.GetKey ();
+      }
+      
+      override public function SetKey (key:String):void
+      {
+         if (mImagePureModulePeer != null) // for creation stage
+            mImagePureModulePeer.SetKey (key);
+      }
+      
+      override public function GetTimeModified ():Number
+      {
+         if (mImagePureModulePeer == null) // for creation stage
+            return 0;
+         
+         return mImagePureModulePeer.GetTimeModified ();
+      }
+      
+      override public function SetTimeModified (time:Number):void
+      {
+         if (mImagePureModulePeer != null) // for creation stage
+            mImagePureModulePeer.SetTimeModified (time);
+      }
+      
+      override public function UpdateTimeModified ():void
+      {
+         if (mImagePureModulePeer != null)
+            mImagePureModulePeer.UpdateTimeModified ();
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       public function GetLeft ():int
       {
          return Math.round (mLeft);
@@ -130,6 +168,7 @@ package editor.image {
          var dy:Number = posY;
          
          SetRegion (mLeft + dx, mTop + dy, mRight + dx, mBottom + dy);
+         UpdateTimeModified ();
          
          UpdateAppearance ();
       }

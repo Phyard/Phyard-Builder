@@ -6,6 +6,7 @@ package editor.trigger {
    import mx.containers.HBox;
    
    import editor.world.World;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    import editor.ccat.CollisionCategory;
    
@@ -48,6 +49,8 @@ package editor.trigger {
                return ValidateValueObject_Module (value);
             case ValueTypeDefine.ValueType_Sound:
                return ValidateValueObject_Sound (value);
+            case ValueTypeDefine.ValueType_Scene:
+               return ValidateValueObject_Scene (value);
             case ValueTypeDefine.ValueType_Array:
                return ValidateValueObject_Array (value);
             default:
@@ -73,6 +76,8 @@ package editor.trigger {
                return "Module";
             case ValueTypeDefine.ValueType_Sound:
                return "Sound";
+            case ValueTypeDefine.ValueType_Scene:
+               return "Scene";
             case ValueTypeDefine.ValueType_Array:
                return "Array";
             default:
@@ -97,6 +102,8 @@ package editor.trigger {
             case ValueTypeDefine.ValueType_Module:
                return null;
             case ValueTypeDefine.ValueType_Sound:
+               return null;
+            case ValueTypeDefine.ValueType_Scene:
                return null;
             case ValueTypeDefine.ValueType_Array:
                return null;
@@ -123,11 +130,25 @@ package editor.trigger {
                return new VariableDefinitionModule (variableName);
             case ValueTypeDefine.ValueType_Sound:
                return new VariableDefinitionSound (variableName);
+            case ValueTypeDefine.ValueType_Scene:
+               return new VariableDefinitionScene (variableName);
             case ValueTypeDefine.ValueType_Array:
                return new VariableDefinitionArray (variableName);
             default:
                throw new Error ("unknown type in CreateVariableDefinition");
          }
+      }
+      
+      public static function ValidateValueObject_Scene (valueObject:Object):Object
+      {
+         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
+         
+         var scene:Scene = valueObject as Scene;
+         //if (scene != null && scene.GetWorld () != world)
+         if (scene != null && scene.GetSceneIndex () < 0)
+            scene = null;
+         
+         return scene;
       }
       
       public static function ValidateValueObject_Entity (valueObject:Object):Object
@@ -193,7 +214,8 @@ package editor.trigger {
       
       // options
       
-      private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
+      // cancelled to unref TriggerEngine
+      //private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
       
       public function VariableDefinition (valueType:int, name:String, description:String = null, options:Object = null)
       {
@@ -203,8 +225,8 @@ package editor.trigger {
          
          if (options != null)
          {
-            if (options.mDefaultSourceType != undefined)
-               mDefaultSourceType = int (options.mDefaultSourceType);
+            //if (options.mDefaultSourceType != undefined)
+            //   mDefaultSourceType = int (options.mDefaultSourceType);
          }
       }
       
@@ -353,13 +375,16 @@ package editor.trigger {
    // todo: property target
    //==============================================================================
       
-      public function GetDefaultPropertyValueTarget ():ValueTarget_Property
+      //public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpaceEntityProperties):ValueTarget_Property
+      // from v.202, scene common entity property space is added
+      public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpace):ValueTarget_Property
       {
          BuildPropertyVaribleDefinition ();
-         return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         //return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (entityVariableSpace));
       }
       
-      public function CreateControlForPropertyValueTarget (valueTargetProperty:ValueTarget_Property):UIComponent
+      public function CreateControlForPropertyValueTarget (scene:Scene, valueTargetProperty:ValueTarget_Property):UIComponent
       {
          BuildPropertyVaribleDefinition ();
          
@@ -369,7 +394,7 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct, false);
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {
@@ -391,7 +416,7 @@ package editor.trigger {
          return box;
       }
       
-      public function RetrievePropertyValueTargetFromControl (valueTargetProperty:ValueTarget_Property, control:UIComponent):void
+      public function RetrievePropertyValueTargetFromControl (scene:Scene, valueTargetProperty:ValueTarget_Property, control:UIComponent):void
       {
    	   if (control is HBox)
    	   {
@@ -405,7 +430,7 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {
@@ -425,16 +450,18 @@ package editor.trigger {
 // for value source
 //==============================================================================
    
-   public function GetDefaultValueSource (triggerEngine:TriggerEngine):ValueSource
+   public function GetDefaultValueSource (/*triggerEngine:TriggerEngine*/):ValueSource
    {
-      switch (mDefaultSourceType)
-      {
-         case ValueSourceTypeDefine.ValueSource_Variable:
-            return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (mValueType));
-         case ValueSourceTypeDefine.ValueSource_Direct:
-         default:
-            return GetDefaultDirectValueSource ();
-      }
+      //switch (mDefaultSourceType)
+      //{
+      //   //case ValueSourceTypeDefine.ValueSource_Variable:
+      //   //   return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (mValueType));
+      //   case ValueSourceTypeDefine.ValueSource_Direct:
+      //   default:
+      //      return GetDefaultDirectValueSource ();
+      //}
+      
+      return GetDefaultDirectValueSource ();
    }
    
    public function CreateControlForValueSource (valueSource:ValueSource):UIComponent
@@ -476,13 +503,13 @@ package editor.trigger {
          return null;
       }
       
-      public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          return null;
       }
       
       // return null for not changed
-      public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
+      public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          return null;
       }
@@ -572,6 +599,9 @@ package editor.trigger {
                case ValueTypeDefine.ValueType_Sound:
                   mPropertyVariableDefinition = new VariableDefinitionSound ("Sound Property");
                   break;
+               case ValueTypeDefine.ValueType_Scene:
+                  mPropertyVariableDefinition = new VariableDefinitionScene ("Scene Property");
+                  break;
                case ValueTypeDefine.ValueType_Array:
                   mPropertyVariableDefinition = new VariableDefinitionArray ("Array Property");
                   break;
@@ -583,13 +613,16 @@ package editor.trigger {
          }
       }
       
-      public function GetDefaultPropertyValueSource ():ValueSource_Property
+      //public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpaceEntityProperties):ValueSource_Property
+      // from v.202, scene common entity property space is added
+      public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpace):ValueSource_Property
       {
          BuildPropertyVaribleDefinition ();
-         return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         //return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (entityVariableSpace));
       }
       
-      public function CreateControlForPropertyValueSource (valueSourceProperty:ValueSource_Property):UIComponent
+      public function CreateControlForPropertyValueSource (scene:Scene, valueSourceProperty:ValueSource_Property):UIComponent
       {
          BuildPropertyVaribleDefinition ();
          
@@ -599,7 +632,7 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct, false);
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {
@@ -621,7 +654,7 @@ package editor.trigger {
          return box;
       }
       
-      public function RetrievePropertyValueSourceFromControl (valueSourceProperty:ValueSource_Property, control:UIComponent):void
+      public function RetrievePropertyValueSourceFromControl (scene:Scene, valueSourceProperty:ValueSource_Property, control:UIComponent):void
       {
    	   if (control is HBox)
    	   {
@@ -635,7 +668,7 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ());
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {

@@ -25,9 +25,9 @@ package player.trigger.entity
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 2)
          {
@@ -62,7 +62,7 @@ package player.trigger.entity
       // for judging if this handler is excuted already in current step.
       private var mLastHandlingStep:int = -1;
       
-      override public function HandleEvent (valueSourceList:Parameter):Boolean
+      override public function HandleEvent (valueSourceList:Parameter, valueTargetList:Parameter = null):Boolean
       {
          if (mEventId == CoreEventIds.ID_OnWorldKeyHold)
          {

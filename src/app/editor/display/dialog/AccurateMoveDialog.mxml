@@ -4,19 +4,25 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
-    title="Move ..." width="300"
+    title="Move Accurately" width="300"
     creationComplete="OnInitPanel ()">
 
    <mx:HBox width="100%">
-      <mx:Label id="Label_X" text="Move Offset X:" textAlign="right" width="100"/>
-      <mx:TextInput id="TextInput_MoveX" width="80" text="0"/>
-      <mx:Label text="px" textAlign="left" />
-   </mx:HBox>
+      <mx:Spacer width="100%" />
+      <mx:VBox>
+         <mx:HBox width="100%">
+            <mx:Label id="Label_X" text="Move Offset X:" textAlign="right" width="100"/>
+            <mx:TextInput id="TextInput_MoveX" width="80" text="0"/>
+            <mx:Label text="px" textAlign="left" />
+         </mx:HBox>
 
-   <mx:HBox width="100%">
-      <mx:Label id="Label_Y" text="Move Offset Y:" textAlign="right" width="100"/>
-      <mx:TextInput id="TextInput_MoveY" width="80" text="0"/>
-      <mx:Label text="px" textAlign="left" />
+         <mx:HBox width="100%">
+            <mx:Label id="Label_Y" text="Move Offset Y:" textAlign="right" width="100"/>
+            <mx:TextInput id="TextInput_MoveY" width="80" text="0"/>
+            <mx:Label text="px" textAlign="left" />
+         </mx:HBox>
+      </mx:VBox>
+      <mx:Spacer width="100%" />
    </mx:HBox>
 
    <mx:Spacer height="10"/>
@@ -41,13 +47,11 @@
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
 
-         private var mIsMoveTo:Boolean = false;
+         private var mInputValues:Object = null;
+         
          public function SetValues (initialValues:Object):void
          {
-            if (initialValues != null && initialValues.mIsMoveTo != null)
-            {
-               mIsMoveTo = initialValues.mIsMoveTo as Boolean;
-            }
+            mInputValues = initialValues;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -62,10 +66,24 @@
          
          private function OnInitPanel ():void
          {
-            if (mIsMoveTo)
+            //if (mIsMoveTo)
+            //{
+            //   Label_X.text = "Move Target X:";
+            //   Label_Y.text = "Move Target Y:";
+            //}
+            
+            if (mInputValues != null)
             {
-               Label_X.text = "Move Target X:";
-               Label_Y.text = "Move Target Y:";
+               if (mInputValues.mTitle != null)
+                  this.title = mInputValues.mTitle;
+               if (mInputValues.mLabelTextX != null)
+                  Label_X.text = mInputValues.mLabelTextX;
+               if (mInputValues.mLabelTextY != null)
+                  Label_Y.text = mInputValues.mLabelTextY;
+               if (mInputValues.mX != null)
+                  TextInput_MoveX.text = "" + mInputValues.mX;
+               if (mInputValues.mY != null)
+                  TextInput_MoveY.text = "" + mInputValues.mY;
             }
          }
          
@@ -83,16 +101,18 @@
             
             var params:Object = new Object ();
             
-            if (mIsMoveTo)
-            {
-               params.mTargetX = valueX;
-               params.mTargetY = valueY;
-            }
-            else
-            {
-               params.mOffsetX = valueX;
-               params.mOffsetY = valueY;
-            }
+            //if (mIsMoveTo)
+            //{
+            //   params.mTargetX = valueX;
+            //   params.mTargetY = valueY;
+            //}
+            //else
+            //{
+            //   params.mOffsetX = valueX;
+            //   params.mOffsetY = valueY;
+            //}
+            params.mX = valueX;
+            params.mY = valueY;
             
             if (OnClose != null)
                OnClose ();

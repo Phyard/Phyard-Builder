@@ -20,11 +20,10 @@
          >
    
    <mx:Style source="editor.css"/>
-
+   <!--
    <mx:ApplicationControlBar backgroundColor="0xA0A0A0" left="0" top="0" dock="false" paddingTop="8" paddingBottom="8" verticalAlign="bottom">
       <mx:VBox verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
-         <mx:Button id="Button_LoadWorld" toolTip="Open Design" click="OnClicLoadWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-open.png')" />
-         <mx:Button id="Button_SaveWorld" toolTip="Save Design" click="OnClicSaveWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-save.png')" />
+         <mx:Button id="Button_WorldFile" toolTip="Load / Save ..." click="OnClicWorldFileButton (Button_WorldFile);" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-world-file.png')" />
          <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="OnClickConfigWorldButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-info.png')" />
          <mx:Spacer height="10" />
          <mx:Button id="Button_ShowModuleEditDialog" toolTip="Edit Image Modules" click="ShowAssetImageModuleListDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/file/design-edit-modules.png')" />
@@ -33,26 +32,33 @@
          <mx:Button id="Button_Help" toolTip="Help" click="OnClickOpenLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../res/editor/editor-about.png')" />
       </mx:VBox>
    </mx:ApplicationControlBar>
+   -->
+   
+   <entity:SceneEditDialog id="mSceneEditDialog" width="100%" height="100%" />
 
-   <mx:XML id="SaveWorldMenuData">
+   <mx:XML id="WorldFileMenuData">
       <root>
          <menuitem label="Save Online ..." data="save_online" for_online="true"/>
          <menuitem label="Save Offline (xml) ..." data="save_offline"/>
+         <menuitem label="Export Current Scene To System Clipboard" data="export_current_scene"/>
          <!--menuitem label="Save Local ..." data="save_local"/-->
          <!--menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/-->
-         <menuitem label="Export Selected Entities to System Clipboard" data="export_selected_entities"/>
-         <!--menuitem label="Export All Functions to System Clipboard" data="export_all_functions"/-->
-      </root>
-   </mx:XML>
-
-   <mx:XML id="LoadWorldMenuData">
-      <root>
+         
+         <menuitem type="separator" data=""/>
+         
          <menuitem label="Load Online ..." data="load_online" for_online="true"/>
          <menuitem label="Load Offline (xml) ..." data="load_offline"/>
+         <menuitem label="Import Scenes (xml) ..." data="import_scenes"/>
          <!--menuitem label="Load Local ..." data="load_local"/-->
          <!--menuitem label="Quick Load ..." data="load_quick"/-->
-         <menuitem label="Import ..." data="import"/>
-         <!--menuitem label="Import Functions Only ..." data="import_functions"/-->
+         
+         <menuitem type="separator" data=""/>
+         
+         <menuitem label="Reset World ..." data="reset_world"/>
+         
+         <menuitem type="separator" data=""/>
+         
+         <menuitem label="About" data="about"/>
       </root>
    </mx:XML>
 
@@ -72,6 +78,8 @@
    import flash.net.URLLoader;
    import flash.net.URLRequestMethod;
    import flash.net.URLLoaderDataFormat;
+   
+   import flash.utils.Dictionary;
    
    import mx.containers.VBox;
    import mx.controls.Button;
@@ -103,7 +111,7 @@
    import common.DataFormat2;
    import common.DataFormat3;
    import common.WorldDefine;
-   
+   import common.SceneDefine;
    import common.trigger.CoreEventIds;
    import common.ValueAdjuster;
    import common.Define;
@@ -170,8 +178,8 @@
          
          // ...
          
-         PopUpManager.addPopUp (mSceneEditDialog, this, false);
-         PopUpManager.centerPopUp (mSceneEditDialog);
+         //PopUpManager.addPopUp (mSceneEditDialog, this, false);
+         //PopUpManager.centerPopUp (mSceneEditDialog);
          
          NewWorld ();
          
@@ -203,7 +211,7 @@
          
          if (IsOnlineEditing () && mAppParams.mAction != "create") // don't change this. If it is changed, old editor versions need rebuilt.
          {
-            OnlineLoad (true);
+            StartOnlineLoading (true);
          }
       }
       
@@ -240,19 +248,16 @@
       public function SetWorld (world:World):void
       {
          CloseWorld ();
-         
          EditorContext.sEditorContext = new EditorContext ();
          
          mWorld = world;
-         
-         mSceneEditDialog.SetScene (mWorld == null ? null : mWorld.GetEntityContainer ());
+         mSceneEditDialog.OnWorldChanged (0);
       }
       
       public function CloseWorld ():void
       {
-         mSceneEditDialog.SetScene (null);
-
          mWorld = null;
+         mSceneEditDialog.OnWorldChanged (0);
          
          if (EditorContext.sEditorContext != null)
             EditorContext.sEditorContext.Cleanup ();
@@ -262,9 +267,10 @@
    
       public function NewWorld ():void
       {
-         SetWorld (new World ());
+         SetWorld (new World (null));
          
-         CreateWorldSnapshot ("New world created");
+         //CreateWorldSnapshot ("New world created");
+         CreateSnapshotForCurrentScene ("New world created");
       }
       
       public function LoadWorld ():void
@@ -306,7 +312,7 @@
          }
       }
    
-      private function ShowAssetImageModuleListDialog ():void
+      public function ShowAssetImageModuleListDialog ():void
       {
          if (EditorContext.GetSingleton () != null)
          {
@@ -314,7 +320,7 @@
          }
       }
    
-      private function ShowAssetSoundListDialog ():void
+      public function ShowAssetSoundListDialog ():void
       {
          if (EditorContext.GetSingleton () != null)
          {
@@ -322,18 +328,26 @@
          }
       }
       
+      public function ShowGlobalCodeLibEditDialog ():void
+      {
+         if (EditorContext.GetSingleton () != null)
+         {
+            EditorContext.GetSingleton ().OnKeyDownDefault (Keyboard.F7);
+         }
+      }
+      
    //========================================================================================
    // load / save
    //========================================================================================
       
-      private var mLoadWorldMenu:Menu = null;
+      private var mWorldFileMenu:Menu = null;
       
-      private function OnClicLoadWorldButton ():void
+      public function OnClicWorldFileButton (button:Button):void
       {
-         if (mLoadWorldMenu == null)
+         if (mWorldFileMenu == null)
          {
             var xml:XML = <root />;
-            for each (var menuItem:Object in LoadWorldMenuData.menuitem)
+            for each (var menuItem:Object in WorldFileMenuData.menuitem)
             {
                if (IsOnlineEditing () || menuItem.@["for_online"] != "true")
                {
@@ -341,103 +355,95 @@
                }
             }
             
-            mLoadWorldMenu = Menu.createMenu(Button_LoadWorld, xml, false);
-            mLoadWorldMenu.labelField="@label";
-            mLoadWorldMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectLoadWorldMenu);
+            mWorldFileMenu = Menu.createMenu(button, xml, false);
+            mWorldFileMenu.labelField="@label";
+            mWorldFileMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectWorldFileMenu);
          }
          
-         var point:Point = Button_LoadWorld.localToGlobal (new Point (Button_LoadWorld.width, 0.5 * Button_LoadWorld.height));
+         //var point:Point = button.localToGlobal (new Point (button.width, 0.5 * button.height));
+         var point:Point = button.localToGlobal (new Point (0, button.height));
          
-         mLoadWorldMenu.show(point.x, point.y);
+         mWorldFileMenu.show (point.x, point.y);
       }
       
-      private function OnSelectLoadWorldMenu (event:MenuEvent):void
+      private function OnSelectWorldFileMenu (event:MenuEvent):void
       {
-         if (event.item.@data == "load_online")
+         var itemData:String = event.item.@data;
+         
+         if (itemData == "load_online")
          {
-            OnlineLoad ();
+            OnStartOnlineLoading ();
          }
-         else if (event.item.@data == "load_offline")
+         else if (itemData == "load_offline")
          {
             OnStartOfflineLoading ();
          }
-         //else if (event.item.@data == "load_local")
+         else if (itemData == "import_scenes")
+         {
+            OnImportScenes ();
+         }
+         //else if (itemData == "load_local")
          //{
          //}
-         //else if (event.item.@data == "load_quick")
+         //else if (itemData == "load_quick")
          //{
          //   MainView.QuickLoad ();
          //}
-         else if (event.item.@data == "import")
-         {
-            OnStartOfflineImporting ();
-         }
-         //else if (event.item.@data == "import_functions")
-         //{
-         //   MainView.OpenImportSourceCodeDialog (true);
-         //}
-      }
-      
-      private var mSaveWorldMenu:Menu = null;
-      
-      private function OnClicSaveWorldButton ():void
-      {
-         if (mSaveWorldMenu == null)
-         {
-            var xml:XML = <root />;
-            for each (var menuItem:Object in SaveWorldMenuData.menuitem)
-            {
-               if (IsOnlineEditing () || menuItem.@["for_online"] != "true")
-               {
-                  xml.appendChild (menuItem);
-               }
-            }
-            
-            mSaveWorldMenu = Menu.createMenu(Button_SaveWorld, xml, false);
-            mSaveWorldMenu.labelField="@label";
-            mSaveWorldMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectSaveWorldMenu);
-         }
          
-         var point:Point = Button_SaveWorld.localToGlobal (new Point (Button_SaveWorld.width, 0.5 * Button_SaveWorld.height));
-         
-         mSaveWorldMenu.show(point.x, point.y);
-      }
-      
-      private function OnSelectSaveWorldMenu (event:MenuEvent):void
-      {
-         if (event.item.@data == "save_online")
+         else if (itemData == "save_online")
          {
             OnStartOnlineSaving ();
          }
-         else if (event.item.@data == "save_offline")
+         else if (itemData == "save_offline")
          {
             OnStartOfflineSaving ();
          }
-         //else if (event.item.@data == "save_local")
+         else if (itemData == "export_current_scene")
+         {
+            OnExportCurrentScene ();
+         }
+         //else if (itemData == "save_local")
          //{
          //}
-         //else if (event.item.@data == "save_cookie")
+         //else if (itemData == "save_cookie")
          //{
          //   MainView.QuickSave ();
          //}
-         else if (event.item.@data == "export_selected_entities")
+         
+         else if (itemData == "reset_world")
          {
-            OnStartOfflineExporting ();
+            EditorContext.ShowAlert ("Reset World", "Do you want to reset world?", true, NewWorld);
          }
-         //else if (event.item.@data == "export_all_functions")
-         //{
-         //   MainView.ExportSelectedsToSystemMemory ();
-         //}
+         
+         else if (itemData == "about")
+         {
+            EditorContext.OnAbout ();
+         }
+      }
+      
+      private function OnStartOnlineLoading ():void
+      {
+         EditorContext.ShowAlert ("Confirm Online Loading", "All your current works will be lost. Continue?", true, StartOnlineLoading);
       }
       
       private function OnStartOfflineLoading ():void
       {
+         EditorContext.ShowAlert ("Confirm Offline Loading", "All your current works will be lost. Continue?", true, ConfirmOfflineLoading);
+      }
+      
+      private function ConfirmOfflineLoading ():void
+      {
          EditorContext.ShowModalDialog (WorldLoadingDialog, OfflineLoad);
       }
       
-      private function OnStartOfflineImporting ():void
+      public function OnStartOfflineImporting ():void
       {
          EditorContext.ShowModalDialog (WorldImportDialog, OfflineImport);
+      }
+      
+      public function OnImportScenes ():void
+      {
+         EditorContext.ShowModalDialog (WorldImportScenesDialog, OfflineImportScenes);
       }
       
       public function OnStartOnlineSaving ():void
@@ -456,10 +462,15 @@
       
       public function OnStartOfflineExporting ():void
       {
-         OfflineExport ();
+         OfflineExportSelecteds ();
       }
       
-      private function OnClickConfigWorldButton ():void
+      public function OnExportCurrentScene ():void
+      {
+         OfflineExportCurrentScene ();
+      }
+      
+      public function OnClickConfigWorldButton ():void
       {
          //EditorContext.ShowModalDialog (DesignInfoSettingDialog, SetWorldSettings, GetWorldSettings ());
          EditorContext.ShowModalDialog (WorldInfoSettingDialog, SetWorldSettings, GetWorldSettings ());
@@ -469,7 +480,7 @@
          // when WorldInfoSettingDialog is named DesignInfoSettingDialog.
       }
       
-      private function OnClickOpenLinksButton ():void
+      public function OnClickOpenLinksButton ():void
       {
          UrlUtil.PopupPage ("http://wiki.colorinfection.com");
       }
@@ -497,15 +508,15 @@
          mWorld.SetAuthorName (info.mAuthorName);
          mWorld.SetAuthorHomepage (info.mAuthorHomepage);
          
-         CreateWorldSnapshot ("Author info is modified");
+         //CreateWorldSnapshot ("Author info is modified");
       }
       
    //========================================================================================
    // online io
    //========================================================================================
       
-      // return: online or not
-      public function OnlineLoad (isFirstTime:Boolean = false):void
+      // default value for isFirstTime must be false
+      private function StartOnlineLoading (isFirstTime:Boolean = false):void
       {
          if (mOnlineLoadingPopup != null)
             return;
@@ -590,39 +601,79 @@
          {
             //Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
             mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            return;
          }
-         else
+         
+         var worldDefine:WorldDefine = null;
+         
+         try
          {
-            CloseWorld ();
+            var designDataForEditing:ByteArray = new ByteArray ();
             
-            try
-            {  
-               var designDataForEditing:ByteArray = new ByteArray ();
-               
-               data.readBytes (designDataForEditing);
-               designDataForEditing.uncompress ();
-                  
-               var newWorld:World = new World ();
-               SetWorld (newWorld);
-               DataFormat.WorldDefine2EditorWorld (true, newWorld, DataFormat2.ByteArray2WorldDefine (designDataForEditing));
-               
-               CreateWorldSnapshot ("Online loading is done");
-               
-               //Alert.show("Loading Succeeded!", "Succeeded");
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
-            }
-            catch (error:Error)
-            {
-               if (Capabilities.isDebugger)
-                  throw error;
-               
-               RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
-               
-               //Alert.show("Sorry, online loading error!", "Error");
-               
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
-            }
+            data.readBytes (designDataForEditing);
+            designDataForEditing.uncompress ();
+            
+            worldDefine = DataFormat2.ByteArray2WorldDefine (designDataForEditing);
          }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
+            
+            worldDefine = null;
+         }
+         
+         if (worldDefine == null)
+         {  
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online loading failed (data error)", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            return;
+         }
+
+         CloseWorld ();
+         
+         try
+         {     
+            var newWorld:World = new World (worldDefine.mKey);
+            SetWorld (newWorld);
+            var newLoadedScenes:Array = DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
+            
+            //CreateWorldSnapshot ("Online loading is done");
+            //CreateSnapshotsForAllScenes ("Online loading is done");
+            
+            var numSucceeds:int = 0;
+            var numFaileds :int = 0;
+            for each (var scene:editor.entity.Scene in newLoadedScenes)
+            {
+               if (scene == null)
+                  ++ numFaileds;
+               else
+               {
+                  ++ numSucceeds;
+                  
+                  CreateSceneSnapshot (scene, "Loaded", null, false);
+               }
+            }
+            
+            if (numSucceeds == 0)
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            else if (numFaileds == 0)
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) are loaded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            else  
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) succeeded and " + numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
+            
+            //RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ());
+            
+            //Alert.show("Sorry, online loading error!", "Error");
+            
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         }
+         
+         mSceneEditDialog.OnWorldChanged ();
       }
       
       public function OnlineSave (options:Object = null):void
@@ -660,10 +711,10 @@
          
          //>> from v1.07 (in fact, the code added in v0110 r003)
          var shareSourceCode:Boolean = mWorld.IsShareSourceCode ();
-         designDataAll.writeShort (mWorld.GetEntityContainer ().GetViewportWidth ()); // view width
-         designDataAll.writeShort (mWorld.GetEntityContainer ().GetViewportHeight ()); // view height
-         //designDataAll.writeByte  ((mWorld.GetEntityContainer ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
-         designDataAll.writeByte  ((mWorld.GetEntityContainer ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin ? 1 : 0);
+         designDataAll.writeShort (mWorld.GetEntryScene ().GetViewportWidth ()); // view width
+         designDataAll.writeShort (mWorld.GetEntryScene ().GetViewportHeight ()); // view height
+         //designDataAll.writeByte  ((mWorld.GetEntryScene ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
+         designDataAll.writeByte  ((mWorld.GetEntryScene ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin ? 1 : 0);
          designDataAll.writeByte  (shareSourceCode ? 1 : 0); // share source code?
          //<<
          
@@ -756,9 +807,9 @@
             
             //Alert.show("Sorry, online saving error! " + loader.data + " " + error, "Error");
             
-            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+            //RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ());
             
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Error in online saving", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
       }
       
@@ -769,13 +820,11 @@
       // load 
       public function OfflineLoad (params:Object):void
       {
-         CloseWorld ();
+         var worldDefine:WorldDefine = null;
          
          try
          {
             var codeString:String = params.mXmlString;
-            
-            var newWorldDefine:WorldDefine = null;
             
             if (codeString != null)
             {
@@ -784,29 +833,34 @@
                {
                   var Text_OldCodeStarting:String = "434F494E";
                   var offset:int = codeString.indexOf (Text_OldCodeStarting, Text_PlayCode.length);
-                  if (offset > 0) // old playcode
-                  {
-                     newWorldDefine = DataFormat2.HexString2WorldDefine (codeString.substring (offset));
+                  if (offset > 0) // old playcode 
+                  { // this judge is not very safe!!!
+                     worldDefine = DataFormat2.HexString2WorldDefine (codeString.substring (offset));
                   }
                   else // new base64 playcode
                   {
                      offset = Text_PlayCode.length;
                      var Text_CompressFormat:String = "compressformat=base64";
                      offset = codeString.indexOf (Text_CompressFormat, offset);
-                     if (offset > 0)
+                     if (offset < 0)
+                        throw new Error (Text_CompressFormat + " is not found.");
+                     
+                     offset += Text_CompressFormat.length;
+                     var Text_PlayCode2:String = "playcode=";
+                     offset = codeString.indexOf (Text_PlayCode2, offset);
+                     if (offset < 0)
+                        throw new Error (Text_PlayCode2 + " is not found.");
+                     
+                     offset += Text_PlayCode2.length;
+                     var offset2:int = codeString.indexOf ("@}", offset);
+                     if (offset2 < 0)
+                        throw new Error ("@} is not found.");
+                     
+                     worldDefine = DataFormat2.PlayCode2WorldDefine_Base64 (codeString.substring (offset, offset2));
+                     
+                     if (worldDefine == null)
                      {
-                        offset += Text_CompressFormat.length;
-                        var Text_PlayCode2:String = "playcode=";
-                        offset = codeString.indexOf (Text_PlayCode2, offset);
-                        if (offset > 0)
-                        {
-                           offset += Text_PlayCode2.length;
-                           var offset2:int = codeString.indexOf ("@}", offset);
-                           if (offset2 > 0)
-                           {
-                              newWorldDefine = DataFormat2.PlayCode2WorldDefine_Base64 (codeString.substring (offset, offset2));
-                           }
-                        }
+                        throw new Error ("base64 string has problems");
                      }
                   }
                }
@@ -814,22 +868,57 @@
                {
                   var xml:XML = new XML (codeString);
                   
-                  newWorldDefine = DataFormat.Xml2WorldDefine (xml);
+                  worldDefine = DataFormat.Xml2WorldDefine (xml);
+               }
+            }
+         }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
+            
+            worldDefine = null;
+         }
+         
+         if (worldDefine == null)
+         {  
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Offline loading failed (data error)", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            return;
+         }
+            
+         CloseWorld ();
+         
+         try
+         {
+            var newWorld:World = new World (worldDefine.mKey);
+            SetWorld (newWorld);
+            var newLoadedScenes:Array = DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
+            
+            //GetWorldSnapshotManager ().ClearHistories ();
+            
+            //CreateWorldSnapshot ("Offline loading is done");
+            //CreateSnapshotsForAllScenes ("Offline loading is done");
+            
+            var numSucceeds:int = 0;
+            var numFaileds :int = 0;
+            for each (var scene:editor.entity.Scene in newLoadedScenes)
+            {
+               if (scene == null)
+                  ++ numFaileds;
+               else
+               {
+                  ++ numSucceeds;
+                  
+                  CreateSceneSnapshot (scene, "Loaded", null, false);
                }
             }
             
-            if (newWorldDefine == null)
-               throw new Error ("newWorldDefine == null !!!");
-            
-            var newWorld:World = new World ();
-            SetWorld (newWorld);
-            DataFormat.WorldDefine2EditorWorld (true, newWorld, newWorldDefine);
-            
-            //mWorldHistoryManager.ClearHistories ();
-            
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Offline loading succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
-            
-            CreateWorldSnapshot ("Offline loading is done");
+            if (numSucceeds == 0)
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            else if (numFaileds == 0)
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) are loaded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            else  
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) succeeded and " + numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
          catch (error:Error)
          {
@@ -838,95 +927,117 @@
             
             //Alert.show ("Loading error: " + error + "\n " + error.getStackTrace ());
             
-            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+            //RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ());
             
             mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Offline loading failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
+         
+         mSceneEditDialog.OnWorldChanged ();
       }
       
       public function OfflineImport (params:Object):void
       {
-         ImportFromXmlString (params, true, true);
-      }
-      
-      private function ImportFromXmlString (params:Object, importEntities:Boolean, importFunctions:Boolean):void
-      {
-         var xmlString:String = params.mXmlString;
-         var mergeVariablesWithSameNames:Boolean = params.mMergeVariablesWithSameNames;
-         var centerNewEntitiesInScreen:Boolean = params.mCenterNewEntitiesInScreen;         
-         
-         var xml:XML = new XML (xmlString);
+         var worldDefine:WorldDefine = null;
          
          try
          {
-            var oldEntitiesCount:int = mWorld.GetEntityContainer ().GetNumAssets ();
-            var oldCategoriesCount:int = mWorld.GetCollisionCategoryManager ().GetNumCollisionCategories ();
+            var xmlString:String = params.mXmlString;    
             
-            var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
+            var xml:XML = new XML (xmlString);
             
-            if (oldEntitiesCount + worldDefine.mEntityDefines.length > Define.MaxEntitiesCount)
-               return;
+            worldDefine = DataFormat.Xml2WorldDefine (xml);
+         }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
             
-            if (oldCategoriesCount + worldDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
-               return;
+            worldDefine = null;
+         }
+         
+         if (worldDefine == null)
+         {  
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed (data error)", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            return;
+         }
+         
+         var oldEntitiesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ();
+         //var oldCategoriesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetCollisionCategoryManager ().GetNumCollisionCategories ();
+         //
+         //var sceneDefine:SceneDefine = worldDefine.mSceneDefines [0] as SceneDefine;
+         //
+         //if (oldEntitiesCount + sceneDefine.mEntityDefines.length > Define.MaxEntitiesCount)
+         //{
+         //   return;
+         //}
+         //
+         //if (oldCategoriesCount + sceneDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
+         //{
+         //   return;
+         //}
+           
+         try
+         {
+            var mergeVariablesWithSameNames:Boolean = params.mMergeVariablesWithSameNames;
+            var centerNewEntitiesInScreen:Boolean = params.mCenterNewEntitiesInScreen;
             
-            DataFormat.WorldDefine2EditorWorld (false, mWorld, worldDefine, true, mergeVariablesWithSameNames);
+            DataFormat.WorldDefine2EditorWorld (false, mWorld, worldDefine, /*false*/mSceneEditDialog.GetCurrentSceneInEditing (), true, mergeVariablesWithSameNames);
             
-            if (mWorld.GetCodeLibManager ().IsChanged ())
+            if (mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().IsChanged ())
             {
-               mWorld.GetCodeLibManager ().UpdateFunctionMenu ();
-               mWorld.GetCodeLibManager ().SetChanged (false);
+               mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().UpdateFunctionMenu ();
+               mSceneEditDialog.GetCurrentSceneInEditing ().GetCodeLibManager ().SetChanged (false);
             }
             
-            if (oldEntitiesCount == mWorld.GetEntityContainer ().GetNumAssets ())
-               return;
-            
-            mWorld.GetEntityContainer ().CancelAllAssetSelections ();
-            
-            var i:int;
-            var j:int;
-            var entity:Entity;
-            var entities:Array;
-            var centerX:Number = 0;
-            var centerY:Number = 0;
-            var numSelecteds:int = 0;
-            
-            var newEntitiesCount:int = mWorld.GetEntityContainer ().GetNumAssets ();
-            
-            var entitiesToSelect:Array = new Array ();
-            for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
+            if (oldEntitiesCount != mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ())
             {
-               entities = (mWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
+               mSceneEditDialog.GetCurrentSceneInEditing ().CancelAllAssetSelections ();
                
-               for (j = 0; j < entities.length; ++ j)
+               var i:int;
+               var j:int;
+               var entity:Entity;
+               var entities:Array;
+               var centerX:Number = 0;
+               var centerY:Number = 0;
+               var numSelecteds:int = 0;
+               
+               var newEntitiesCount:int = mSceneEditDialog.GetCurrentSceneInEditing ().GetNumAssets ();
+               
+               var entitiesToSelect:Array = new Array ();
+               for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
                {
-                  entity = entities [j] as Entity;
+                  entities = (mSceneEditDialog.GetCurrentSceneInEditing ().GetAssetByCreationId (i) as Entity).GetSelectableAssets ();
                   
-                  if (entitiesToSelect.indexOf (entity) < 0)
+                  for (j = 0; j < entities.length; ++ j)
                   {
-                     entitiesToSelect.push(entity);
+                     entity = entities [j] as Entity;
                      
-                     centerX += entity.GetPositionX ();
-                     centerY += entity.GetPositionY ();
-                     ++ numSelecteds;
+                     if (entitiesToSelect.indexOf (entity) < 0)
+                     {
+                        entitiesToSelect.push(entity);
+                        
+                        centerX += entity.GetPositionX ();
+                        centerY += entity.GetPositionY ();
+                        ++ numSelecteds;
+                     }
                   }
+               }
+               
+               mSceneEditDialog.GetCurrentSceneInEditing ().SetSelectedAssets (entitiesToSelect);
+   
+               if (centerNewEntitiesInScreen && numSelecteds > 0)
+               {
+                  centerX /= numSelecteds;
+                  centerY /= numSelecteds;
+                  
+                  var point:Point = mSceneEditDialog.GetSceneEditPanel ().GetPanelCenterWorldPoint ();
+                  mSceneEditDialog.GetSceneEditPanel ().MoveSelectedAssets (false, point.x - centerX, point.y - centerY, true);
                }
             }
             
-            mWorld.GetEntityContainer ().SetSelectedAssets (entitiesToSelect);
-
-            if (centerNewEntitiesInScreen && numSelecteds > 0)
-            {
-               centerX /= numSelecteds;
-               centerY /= numSelecteds;
-               
-               var point:Point = mSceneEditDialog.GetSceneEditPanel ().GetPanelCenterWorldPoint ();
-               mSceneEditDialog.GetSceneEditPanel ().MoveSelectedAssets (false, point.x - centerX, point.y - centerY, true);
-            }
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import scenes succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
             
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
-            
-            CreateWorldSnapshot ("Import");
+            CreateSnapshotForCurrentScene ("Import");
          }
          catch (error:Error)
          {
@@ -935,10 +1046,93 @@
             
             //Alert.show("Sorry, import error!", "Error");
             
-            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+            //RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ());
+            RollBackScene (mSceneEditDialog.GetSceneEditPanel ());
             
             mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
+      }
+      
+      public function OfflineImportScenes (params:Object, returnImportedScenes:Boolean = false):Array
+      {
+         var worldDefine:WorldDefine = null;
+         
+         try
+         {
+            if (params.mWorldDefine != null)
+               worldDefine = params.mWorldDefine;
+            else
+            {
+               var xmlString:String = params.mXmlString;    
+               
+               var xml:XML = new XML (xmlString);
+               
+               worldDefine = DataFormat.Xml2WorldDefine (xml);
+            }
+         }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
+            
+            worldDefine = null;
+         }
+         
+         if (worldDefine == null)
+         {
+            if (! returnImportedScenes)
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed (data error)", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            
+            return null;
+         }
+         
+         try
+         {
+            var newImportedScenes:Array = DataFormat.WorldDefine2EditorWorld (false, mWorld, worldDefine, /*false*/null, true, true);
+            mSceneEditDialog.OnWorldChanged ();
+            
+            var numSucceeds:int = 0;
+            var numFaileds :int = 0;
+            for each (var scene:editor.entity.Scene in newImportedScenes)
+            {
+               if (scene == null)
+                  ++ numFaileds;
+               else
+               {
+                  ++ numSucceeds;
+                  
+                  CreateSceneSnapshot (scene, "Loaded", null, false);
+               }
+            }
+            
+            if (! returnImportedScenes)
+            {
+               if (numSucceeds == 0)
+                  mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scenes failed to import", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               else if (numFaileds == 0)
+                  mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes are imported", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               else  
+                  mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scenes succeeded and " + numFaileds + " scenes failed to import", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            }
+            
+            //CreateWorldSnapshot ("Import Scenes");
+            
+            return newImportedScenes;
+         }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
+            
+            //RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ());
+            
+            if (! returnImportedScenes)
+            {
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            }
+         }
+         
+         return null;
       }
       
       public function GetOfflineSaveData ():Object
@@ -946,10 +1140,10 @@
          try
          {
             // ...
-            var width:int = mWorld.GetEntityContainer ().GetViewportWidth ();
-            var height:int = mWorld.GetEntityContainer ().GetViewportHeight ();
-            //var showPlayBar:Boolean = (mWorld.GetEntityContainer ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
-            var showPlayBar:Boolean = (mWorld.GetEntityContainer ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
+            var width:int = mWorld.GetEntryScene ().GetViewportWidth ();
+            var height:int = mWorld.GetEntryScene ().GetViewportHeight ();
+            //var showPlayBar:Boolean = (mWorld.GetEntryScene ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+            var showPlayBar:Boolean = (mWorld.GetEntryScene ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
             var heightWithPlayBar:int = (showPlayBar ? height + Define.DefaultPlayerSkinPlayBarHeight : height);
             
             var fileFormatVersionString:String = DataFormat3.GetVersionHexString (Version.VersionNumber);
@@ -958,7 +1152,7 @@
             
             //========== source code ========== 
          
-            values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mWorld));
+            values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mWorld)).toXMLString ();
             
             //=========== play code ========== 
          
@@ -1000,113 +1194,122 @@
          return null;
       }
       
-      public function OfflineExport ():void
+      public function OfflineExportSelecteds ():void
       {
          try
          {
-            var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld);
-            var newWorld:World = new World ();
-            newWorld = DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
+            var currentScene:editor.entity.Scene = mSceneEditDialog.GetCurrentSceneInEditing ();
+            //var sceneIndex:int = currentScene.GetSceneIndex ();
+            
+            var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld, currentScene);
+            var newWorld:World = new World (null); //worldDefine.mKey);
+            //newWorld = 
+            DataFormat.WorldDefine2EditorWorld (true, newWorld, worldDefine);
                // !!! here may be some bugs: somewhere will call EditorContext.GetCurrentWorld, which is not the newWorld
             
-            var selectedEntities:Array = mWorld.GetEntityContainer ().GetSelectedAssets ();
+            var newScene:editor.entity.Scene = newWorld.GetSceneByIndex (0);
             
-            if (selectedEntities.length == 0)
-               return;
-            
-            var numEntities:int = selectedEntities.length;
-            var i:int;
-            var index:int;
-            var entity:Entity;
-            for (i = 0; i < numEntities; ++ i)
-            {
-               //trace ("selectedEntities[i] = " + selectedEntities[i]);
-               //trace ("selectedEntities[i].parent = " + selectedEntities[i].parent);
-               
-               index = mWorld.GetEntityContainer ().GetAssetCreationId (selectedEntities[i]);
-               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (index) as Entity;
-               
-               entity = entity.GetMainAsset () as Entity;
-               newWorld.GetEntityContainer ().AddAssetSelection (entity);
-               newWorld.GetEntityContainer ().AddAssetSelections (entity.GetSelectableAssets ());
-            }
-            
-            i = 0;
-            //numEntities = newWorld.GetEntityContainer ().GetNumAssets (); // this is bug
-            while (i < newWorld.GetEntityContainer ().GetNumAssets ()) // numEntities)
-            {
-               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity;
-               if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
-               {
-                  ++ i;
-               }
-               else
-               {
-                  newWorld.GetEntityContainer ().DestroyAsset (entity);
-               }
-            }
-            
-            //var cm:CollisionCManager = newWorld.GetCollisionManager ();
-            //var ccId:int;
-            //numEntities = newWorld.GetEntityContainer ().GetNumAssets ();
-            //
-            //for (i = 0; i < numEntities; ++ i)
+            //if (onlyExportSelecteds)
             //{
-            //   entity = newWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity;
-            //   if (entity is EntityVectorShape)
-            //   {
-            //      ccId = (entity as EntityVectorShape).GetCollisionCategoryIndex ();
-            //      if (ccId >= 0)
-            //         cm.SelectEntity (cm.GetCollisionCategoryByIndex (ccId));
-            //   }
-            //}
-            //
-            //ccId = 0;
-            // //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
-            //while (ccId < cm.GetNumCollisionCategories ()) //numCats)
-            //{
-            //   entity = cm.GetCollisionCategoryByIndex (ccId);
-            //   if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
-            //   {
-            //      ++ ccId;
-            //   }
-            //   else
-            //   {
-            //      cm.DestroyEntity (entity);
-            //   }
-            //}
-            
-            var cm:CollisionCategoryManager = newWorld.GetCollisionCategoryManager ();
-            cm.CancelAllAssetSelections ();
-            var ccId:int;
-            numEntities = newWorld.GetEntityContainer ().GetNumAssets ();
-            
-            for (i = 0; i < numEntities; ++ i)
-            {
-               entity = newWorld.GetEntityContainer ().GetAssetByCreationId (i) as Entity;
-               if (entity is EntityShape)
+               var selectedEntities:Array = currentScene.GetSelectedAssets ();
+               if (selectedEntities.length == 0)
+                  return;
+               
+               var numEntities:int = selectedEntities.length;
+               var entity:Entity;
+               var i:int;
+               var index:int;
+   
+               for (i = 0; i < numEntities; ++ i)
                {
-                  ccId = (entity as EntityShape).GetCollisionCategoryIndex ();
-                  if (ccId >= 0)
-                     cm.AddAssetSelection (cm.GetCollisionCategoryByIndex (ccId));
+                  //trace ("selectedEntities[i] = " + selectedEntities[i]);
+                  //trace ("selectedEntities[i].parent = " + selectedEntities[i].parent);
+                  
+                  index = currentScene.GetAssetCreationId (selectedEntities[i]);
+                  entity = newScene.GetAssetByCreationId (index) as Entity;
+                  
+                  entity = entity.GetMainAsset () as Entity;
+                  newScene.AddAssetSelection (entity);
+                  newScene.AddAssetSelections (entity.GetSelectableAssets ());
                }
-            }
-            
-            var ccat:CollisionCategory;
-            ccId = 0;
-            //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
-            while (ccId < cm.GetNumCollisionCategories ()) //numCats)
-            {
-               ccat = cm.GetCollisionCategoryByIndex (ccId);
-               if ( ccat.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+               
+               i = 0;
+               //numEntities = newScene.GetNumAssets (); // this is bug
+               while (i < newScene.GetNumAssets ()) // numEntities)
                {
-                  ++ ccId;
+                  entity = newScene.GetAssetByCreationId (i) as Entity;
+                  if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+                  {
+                     ++ i;
+                  }
+                  else
+                  {
+                     newScene.DestroyAsset (entity);
+                  }
                }
-               else
+               
+               //var cm:CollisionCManager = newWorld.GetCollisionManager ();
+               //var ccId:int;
+               //numEntities = newScene.GetNumAssets ();
+               //
+               //for (i = 0; i < numEntities; ++ i)
+               //{
+               //   entity = newScene.GetAssetByCreationId (i) as Entity;
+               //   if (entity is EntityVectorShape)
+               //   {
+               //      ccId = (entity as EntityVectorShape).GetCollisionCategoryIndex ();
+               //      if (ccId >= 0)
+               //         cm.SelectEntity (cm.GetCollisionCategoryByIndex (ccId));
+               //   }
+               //}
+               //
+               //ccId = 0;
+               // //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
+               //while (ccId < cm.GetNumCollisionCategories ()) //numCats)
+               //{
+               //   entity = cm.GetCollisionCategoryByIndex (ccId);
+               //   if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+               //   {
+               //      ++ ccId;
+               //   }
+               //   else
+               //   {
+               //      cm.DestroyEntity (entity);
+               //   }
+               //}
+               
+               var cm:CollisionCategoryManager = newScene.GetCollisionCategoryManager ();
+               cm.CancelAllAssetSelections ();
+               var ccId:int;
+               numEntities = newScene.GetNumAssets ();
+               
+               for (i = 0; i < numEntities; ++ i)
                {
-                  cm.DestroyAsset (ccat);
+                  entity = newScene.GetAssetByCreationId (i) as Entity;
+                  if (entity is EntityShape)
+                  {
+                     ccId = (entity as EntityShape).GetCollisionCategoryIndex ();
+                     if (ccId >= 0)
+                        cm.AddAssetSelection (cm.GetCollisionCategoryByIndex (ccId));
+                  }
                }
-            }
+               
+               var ccat:CollisionCategory;
+               ccId = 0;
+               //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
+               while (ccId < cm.GetNumCollisionCategories ()) //numCats)
+               {
+                  ccat = cm.GetCollisionCategoryByIndex (ccId);
+                  if ( ccat.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+                  {
+                     ++ ccId;
+                  }
+                  else
+                  {
+                     cm.DestroyAsset (ccat);
+                  }
+               }
+            //} // onlyExportSelecteds
             
             System.setClipboard(DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (newWorld)));
             
@@ -1128,61 +1331,175 @@
          //}
       }
       
+      public function OfflineExportCurrentScene (toReturnWorldDefine:Boolean = false):WorldDefine
+      {
+         try
+         {
+            var currentScene:editor.entity.Scene = mSceneEditDialog.GetCurrentSceneInEditing ();
+            //var sceneIndex:int = currentScene.GetSceneIndex ();
+            
+            var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld, currentScene);
+            
+            if (toReturnWorldDefine)
+            {
+               return worldDefine;
+            }
+            
+            System.setClipboard(DataFormat2.WorldDefine2Xml (worldDefine));
+            
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Export succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         }
+         catch (error:Error)
+         {
+            //Alert.show("Sorry, export  error!", "Error");
+            
+            if (! toReturnWorldDefine)
+            {
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Export failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            }
+            
+            if (Capabilities.isDebugger)
+               throw error;
+         }
+         
+         return null;
+      }
+      
    //========================================================================================
    // undo / redo
    //========================================================================================
       
-      private var mWorldHistoryManager:WorldHistoryManager = new WorldHistoryManager ();
+      private var mWorldHistoryManager:HistoryManager = new HistoryManager ();
       
-      public function GetWorldSnapshotManager ():WorldHistoryManager
+      private var mHistoryManagersForScenes:Dictionary = new Dictionary ();
+      
+      public function GetWorldSnapshotManager ():HistoryManager
       {
          return mWorldHistoryManager;
       }
       
-      public function CreateWorldSnapshot (description:String, editActions:Array = null):void
+      //public function CreateWorldSnapshot (description:String, editActions:Array = null):void
+      //{
+      //   CreateSnapshot (null, description, editActions);
+      //}
+      
+      // assume scene != null
+      public function GetSceneSnapshotManager (scene:editor.entity.Scene, createIfNotExist:Boolean = false):HistoryManager
+      {
+         var historyManager:HistoryManager = mHistoryManagersForScenes [scene.GetKey ()];
+         
+         if (historyManager == null && createIfNotExist)
+         {
+            historyManager = new HistoryManager ();
+            mHistoryManagersForScenes [scene.GetKey ()] = historyManager;
+         }
+         
+         return historyManager;
+      }
+      
+      public function CreateSnapshotForCurrentScene (description:String):void
+      {
+         CreateSceneSnapshot (mSceneEditDialog.GetCurrentSceneInEditing (), description, null, true);
+      }
+      
+      //public function CreateSnapshotsForAllScenes (description:String):void
+      //{
+      //   if (mWorld == null)
+      //      return;
+      //   
+      //   for (var sceneId:int = 0; sceneId < mWorld.GetNumScenes (); ++ sceneId)
+      //   {
+      //      CreateSceneSnapshot (mWorld.GetSceneByIndex (sceneId), description, null, false);
+      //   }
+      //}
+      
+      public function CreateSceneSnapshot (scene:editor.entity.Scene, description:String, editActions:Array = null, createPopupMessage:Boolean = true):void
+      {
+          if (scene == null)
+            return;
+          
+          CreateSnapshot (scene, description, editActions, createPopupMessage);
+      }
+      
+      // scene == null means for the whole world
+      private function CreateSnapshot (scene:editor.entity.Scene, description:String, editActions:Array = null, createPopupMessage:Boolean = true):void
       {
          if (mWorld == null)
             return;
          
-         var worldState:WorldState = new WorldState (description, editActions);
+         var historyState:HistoryState = new HistoryState (description, editActions);
          
-         var object:Object = new Object ();
-         worldState.mUserData = object;
+         var userObject:Object = new Object ();
+         historyState.mUserData = userObject;
          
-         object.mWorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld);
+         if (scene == null)
+         {
+            GetWorldSnapshotManager ().AddHistory (historyState);
+            
+            userObject.mWorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld);
+            userObject.mCurrentSceneID = mSceneEditDialog.GetCurrentSceneInEditing ().GetSceneIndex (); // to use uuid instead
+            
+            var sceneEditingInfos:Array = new Array (mWorld.GetNumScenes ());
+            userObject.mSceneEditingInfos = sceneEditingInfos;
+            
+            for (var sceneId:int = 0; sceneId < mWorld.GetNumScenes (); ++ sceneId)
+            {
+               var aScene:editor.entity.Scene = mWorld.GetSceneByIndex (sceneId);
+               
+               sceneEditingInfos [sceneId] = GetSceneEditingInfo (aScene);
+            }
+         }
+         else
+         {
+            GetSceneSnapshotManager (scene, true).AddHistory (historyState);
+            
+            userObject.mWorldDefine = DataFormat.EditorWorld2WorldDefine (mWorld, scene, true);
+            
+            userObject.mSceneEditingInfo = GetSceneEditingInfo (scene);
+         }
          
-         var entityArray:Array = mWorld.GetEntityContainer ().GetSelectedAssets ();
+         if (createPopupMessage)
+         {
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Undo point created (" + description + ")", EffectMessagePopup.kBgColor_General, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         }
+      }
+      
+      private function GetSceneEditingInfo (scene:editor.entity.Scene):Object
+      {  
+         var sceneEditingInfo:Object = new Object ();
          
-         object.mSelectedEntityCreationIds = new Array (entityArray.length);
-         object.mMainSelectedEntityId = -1;
-         object.mSelectedVertexControllerId = -1;
+         var entityArray:Array = scene.GetSelectedAssets ();
+         
+         sceneEditingInfo.mZoomScale = scene.GetZoomScale ();
+         sceneEditingInfo.mSelectedEntityCreationIds = new Array (entityArray.length);
+         sceneEditingInfo.mMainSelectedEntityId = -1;
+         sceneEditingInfo.mSelectedVertexControllerId = -1;
          
          for (var i:int = 0; i < entityArray.length; ++ i)
          {
             var entity:Entity = entityArray [i] as Entity;
-            var entityId:int = mWorld.GetEntityContainer ().GetAssetCreationId (entity);
-            object.mSelectedEntityCreationIds [i] = entityId;
+            var entityId:int = scene.GetAssetCreationId (entity);
+            sceneEditingInfo.mSelectedEntityCreationIds [i] = entityId;
             if (entity.AreControlPointsVisible ())
             {
-               object.mMainSelectedEntityId = entityId;
+               sceneEditingInfo.mMainSelectedEntityId = entityId;
                
-               //var vertexControllerArray:Array = mWorld.GetEntityContainer ().GetSelectedVertexControllers ();
+               //var vertexControllerArray:Array = scene.GetSelectedVertexControllers ();
                //if (vertexControllerArray.length > 0)
-               //   object.mSelectedVertexControllerId = entity.GetVertexControllerIndex (vertexControllerArray [0]);
+               //   sceneEditingInfo.mSelectedVertexControllerId = entity.GetVertexControllerIndex (vertexControllerArray [0]);
             }
          }
          
-         mWorldHistoryManager.AddHistory (worldState);
-         
-         mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Undo point created (" + description + ")", EffectMessagePopup.kBgColor_General, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         return sceneEditingInfo;
       }
       
-      private function RestoreWorld (worldState:WorldState):void
+      /*
+      private function RestoreWorld (historyState:HistoryState):Boolean
       {
-         if (worldState == null)
+         if (historyState == null)
          {
             //OnCloseClearAllAndResetSceneAlert (null);
-            return;
+            return false;
          }
          
          CloseWorld ();
@@ -1195,90 +1512,257 @@
             
             mSceneEditDialog.GetSceneEditPanel ().CancelAllAssetSelections ();
             
-            var object:Object = worldState.mUserData;
+            var userObject:Object = historyState.mUserData;
             
             var newWorld:World = new World ();
             SetWorld (newWorld);
-            DataFormat.WorldDefine2EditorWorld (true, newWorld, object.mWorldDefine, false);
+            DataFormat.WorldDefine2EditorWorld (true, newWorld, userObject.mWorldDefine, null, false);
             
-            mSceneEditDialog.GetSceneEditPanel ().MoveManagerTo (currentSceneX, currentSceneY);
-            mSceneEditDialog.GetSceneEditPanel ().ScaleManagerTo (currentSceneScale);
+            mSceneEditDialog.OnWorldChanged (userObject.mCurrentSceneID);
+            //var currentScene:editor.entity.Scene = mWorld.GetSceneByIndex (userObject.mCurrentSceneID);
+            var currentScene:editor.entity.Scene = mSceneEditDialog.GetCurrentSceneInEditing ();
             
-            mWorld.GetEntityContainer ().SetZoomScale (mSceneEditDialog.GetSceneEditPanel ().GetCurrentManagerScale ());
+            var sceneEditingInfos:Array = userObject.mSceneEditingInfos;
             
-            var numEntities:int = mWorld.GetEntityContainer ().GetNumAssets ();
-            var entityId:int;
-            var entity:Entity;
-            
-            for (var i:int = 0; i < object.mSelectedEntityCreationIds.length; ++ i)
+            for (var sceneId:int = 0; sceneId < mWorld.GetNumScenes (); ++ sceneId)
             {
-               entityId = object.mSelectedEntityCreationIds [i];
-               if (entityId >= 0 && entityId < numEntities)
+               var scene:editor.entity.Scene = mWorld.GetSceneByIndex (sceneId);
+               
+               var sceneEditingInfo:Object = sceneEditingInfos [sceneId];
+               
+               if (scene != currentScene)
+                  scene.SetZoomScale (sceneEditingInfo.mZoomScale);
+               
+               var numEntities:int = scene.GetNumAssets ();
+               var entityId:int;
+               var entity:Entity;
+               
+               for (var i:int = 0; i < sceneEditingInfo.mSelectedEntityCreationIds.length; ++ i)
                {
-                  entity = mWorld.GetEntityContainer ().GetAssetByCreationId (entityId) as Entity;
-                  mWorld.GetEntityContainer ().AddAssetSelection (entity);
-                  
-                  if (entityId == object.mMainSelectedEntityId)
+                  entityId = sceneEditingInfo.mSelectedEntityCreationIds [i];
+                  if (entityId >= 0 && entityId < numEntities)
                   {
-                     entity.SetControlPointsVisible (true);
+                     entity = scene.GetAssetByCreationId (entityId) as Entity;
+                     scene.AddAssetSelection (entity);
                      
-                     //if (object.mSelectedVertexControllerId >= 0)
-                     //{
-                     //   var vertexController:VertexController = entity.GetVertexControllerByIndex (object.mSelectedVertexControllerId);
-                     //   if (vertexController != null)
-                     //      mWorld.GetEntityContainer ().SetSelectedVertexController (vertexController);
-                     //}
+                     if (entityId == sceneEditingInfo.mMainSelectedEntityId)
+                     {
+                        entity.SetControlPointsVisible (true);
+                        
+                        //if (sceneEditingInfo.mSelectedVertexControllerId >= 0)
+                        //{
+                        //   var vertexController:VertexController = entity.GetVertexControllerByIndex (sceneEditingInfo.mSelectedVertexControllerId);
+                        //   if (vertexController != null)
+                        //      scene.SetSelectedVertexController (vertexController);
+                        //}
+                     }
                   }
                }
             }
             
-            mSceneEditDialog.GetSceneEditPanel ().OnAssetSelectionsChanged ();
+            if (currentScene != null)
+            {
+               mSceneEditDialog.OnCurrentSceneSwitched ();
+               
+               mSceneEditDialog.GetSceneEditPanel ().MoveManagerTo (currentSceneX, currentSceneY);
+               mSceneEditDialog.GetSceneEditPanel ().ScaleManagerTo (currentSceneScale);
+                  
+               mSceneEditDialog.GetSceneEditPanel ().OnAssetSelectionsChanged ();
+            }
+            
+            return true;
          }
          catch (error:Error)
          {
             if (Capabilities.isDebugger)
                throw error;
             
-            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+            RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ()); // not very good
             
             //Alert.show("Sorry, online loading error!", "Error");
             
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            //mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
+
+         return false;
       }
       
       public function Undo ():void
       {
-         var worldState:WorldState = mWorldHistoryManager.UndoHistory ();
+         var currentHistoryState:HistoryState = sceneSnapshotManager.GetCurrentHistoryState ();
          
-         if (worldState == null)
+         var historyState:HistoryState = GetWorldSnapshotManager ().UndoHistory ();
+         
+         if (historyState == null)
          {
             mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("No undo points available", EffectMessagePopup.kBgColor_General, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
             return;
          }
          
-         RestoreWorld (worldState);
-         
-         worldState = worldState.GetNextWorldState ();
-         if (worldState != null) // should not
+         if (RestoreWorld (historyState))
          {
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Undo (" + worldState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (currentHistoryState == null ? "Undo" : "Undo (" + historyState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
          }
       }
       
       public function Redo ():void
       {
-         var worldState:WorldState = mWorldHistoryManager.RedoHistory ();
+         var historyState:HistoryState = GetWorldSnapshotManager ().RedoHistory ();
          
-         if (worldState == null)
+         if (historyState == null)
          {
             mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("No redo points available", EffectMessagePopup.kBgColor_General, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
             return;
          }
          
-         RestoreWorld (worldState);
+         if (RestoreWorld (historyState))
+         {
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Redo (" + historyState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         }
+      }
+      */
+      
+      private function RestoreScene (sceneEditPanel:SceneEditPanel, historyState:HistoryState, sceneSnapshotManager:HistoryManager):Boolean
+      {
+         if (historyState == null)
+         {
+            //OnCloseClearAllAndResetSceneAlert (null);
+            return false;
+         }
          
-         mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Redo (" + worldState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         var scene:editor.entity.Scene = sceneEditPanel.GetScene ();
+         if (scene == null)
+            return false;
+         
+         try
+         {  
+            //var currentSceneX:Number = sceneEditPanel.GetCurrentManagerX ();
+            //var currentSceneY:Number = sceneEditPanel.GetCurrentManagerY ();
+            //var currentSceneScale:Number = sceneEditPanel.GetCurrentManagerScale ();
+            
+            sceneEditPanel.CancelAllAssetSelections ();
+            
+            var userObject:Object = historyState.mUserData;
+            
+            scene.DestroyAllAssets ();
+
+            DataFormat.WorldDefine2EditorWorld (false, mWorld, userObject.mWorldDefine, 
+                                                scene, false, false);
+            
+            var sceneEditingInfo:Object = userObject.mSceneEditingInfo;
+               
+            //scene.SetZoomScale (sceneEditingInfo.mZoomScale);
+            
+            var numEntities:int = scene.GetNumAssets ();
+            var entityId:int;
+            var entity:Entity;
+            
+            for (var i:int = 0; i < sceneEditingInfo.mSelectedEntityCreationIds.length; ++ i)
+            {
+               entityId = sceneEditingInfo.mSelectedEntityCreationIds [i];
+               if (entityId >= 0 && entityId < numEntities)
+               {
+                  entity = scene.GetAssetByCreationId (entityId) as Entity;
+                  scene.AddAssetSelection (entity);
+                  
+                  if (entityId == sceneEditingInfo.mMainSelectedEntityId)
+                  {
+                     entity.SetControlPointsVisible (true);
+                     
+                     //if (sceneEditingInfo.mSelectedVertexControllerId >= 0)
+                     //{
+                     //   var vertexController:VertexController = entity.GetVertexControllerByIndex (sceneEditingInfo.mSelectedVertexControllerId);
+                     //   if (vertexController != null)
+                     //      scene.SetSelectedVertexController (vertexController);
+                     //}
+                  }
+               }
+            }
+            
+            //if (currentScene != null)
+            //{
+            //   mSceneEditDialog.OnCurrentSceneSwitched ();
+            //   
+            //   mSceneEditDialog.GetSceneEditPanel ().MoveManagerTo (currentSceneX, currentSceneY);
+            //   mSceneEditDialog.GetSceneEditPanel ().ScaleManagerTo (currentSceneScale);
+            //      
+            //   mSceneEditDialog.GetSceneEditPanel ().OnAssetSelectionsChanged ();
+            //}
+            
+            return true;
+         }
+         catch (error:Error)
+         {
+            if (Capabilities.isDebugger)
+               throw error;
+            
+            if (sceneSnapshotManager != null)
+               RestoreScene (sceneEditPanel, sceneSnapshotManager.GetCurrentHistoryState (), null); // not very good
+            
+            //Alert.show("Sorry, online loading error!", "Error");
+            
+            //mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         }
+
+         return false;
+      }
+      
+      public function RollBackScene (sceneEditPanel:SceneEditPanel):void
+      {
+         var sceneSnapshotManager:HistoryManager = GetSceneSnapshotManager (sceneEditPanel.GetScene (), false);
+         
+         if (sceneSnapshotManager == null)
+            return;
+         
+         var historyState:HistoryState = sceneSnapshotManager.GetCurrentHistoryState ();
+         if (historyState != null)
+         {
+            RestoreScene (sceneEditPanel, historyState, null)
+         }
+      }
+      
+      public function UndoScene (sceneEditPanel:SceneEditPanel):void
+      {
+         var sceneSnapshotManager:HistoryManager = GetSceneSnapshotManager (sceneEditPanel.GetScene (), false);
+         
+         if (sceneSnapshotManager == null)
+            return;
+         
+         var currentHistoryState:HistoryState = sceneSnapshotManager.GetCurrentHistoryState ();
+         
+         var historyState:HistoryState = sceneSnapshotManager.UndoHistory ();
+         
+         if (historyState == null)
+         {
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("No undo points available", EffectMessagePopup.kBgColor_General, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            return;
+         }
+         
+         if (RestoreScene (sceneEditPanel, historyState, sceneSnapshotManager))
+         {
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (currentHistoryState == null ? "Undo" : "Undo (" + currentHistoryState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         }
+      }
+      
+      public function RedoScene (sceneEditPanel:SceneEditPanel):void
+      {
+         var sceneSnapshotManager:HistoryManager = GetSceneSnapshotManager (sceneEditPanel.GetScene (), false);
+         
+         if (sceneSnapshotManager == null)
+            return;
+         
+         var historyState:HistoryState = sceneSnapshotManager.RedoHistory ();
+         
+         if (historyState == null)
+         {
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("No redo points available", EffectMessagePopup.kBgColor_General, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            return;
+         }
+         
+         if (RestoreScene (sceneEditPanel, historyState, sceneSnapshotManager))
+         {
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Redo (" + historyState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         }
       }
       
    //========================================================================================
@@ -1296,22 +1780,12 @@
          return byteArray;
       }
       
-//========================================================================================
-// !!!
-//========================================================================================
+   //========================================================================================
+   // scene edit dialog
+   //========================================================================================
       
-      import player.WorldPlugin;
-      
-      private function Dummy ():void
-      {
-         new WorldPlugin (); // to make mxmlc include WorldPlugin, so the all player.* package, ...
-      }
-      
-//========================================================================================
-// scene edit dialog
-//========================================================================================
-      
-      private var mSceneEditDialog:SceneEditDialog = new SceneEditDialog ();
+      //private var mSceneEditDialog:SceneEditDialog = new SceneEditDialog ();
+            // when open the comment, remember also open the 2 lines in OnAddedToStage
       
       public function GetSceneEditDialog ():SceneEditDialog
       {

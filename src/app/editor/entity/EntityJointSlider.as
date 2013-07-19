@@ -277,7 +277,7 @@ package editor.entity {
             mControlPointsContainer.parent.removeChild (mControlPointsContainer);
       }
 
-      override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):void
+      override public function MoveControlPoint (controlPoint:ControlPoint, dx:Number, dy:Number, done:Boolean):Boolean
       {
          var localDisplayment:Point = ManagerToAsset (new Point (dx, dy), false); 
          
@@ -303,6 +303,8 @@ package editor.entity {
          }
          
          UpdateAppearance ();
+         
+         return done;
       }
       
       

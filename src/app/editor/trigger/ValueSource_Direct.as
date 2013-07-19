@@ -4,9 +4,15 @@ package editor.trigger {
    import common.trigger.ValueSourceTypeDefine;
    import common.DataFormat2;
    
+   import editor.world.World;
+   
+   import editor.entity.Scene;
+   
    import editor.entity.Entity;
    //import editor.entity.EntityCollisionCategory;
    import editor.ccat.CollisionCategory;
+   
+   import editor.EditorContext;
    
    public class ValueSource_Direct implements ValueSource
    {
@@ -73,18 +79,51 @@ package editor.trigger {
          return mValueObject;
       }
       
-      public function CloneSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      public function CloneSource (scene:Scene, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
+         var valueType:int = callingFunctionDeclaration.GetInputParamValueType (paramIndex);
+         
          if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
          {
-            if (mValueObject is Entity)
+            //if (mValueObject is Entity)
+            //{
+            //   return new ValueSource_Direct (null);
+            //}
+            //else if (mValueObject is CollisionCategory)
+            //{
+            //   return new ValueSource_Direct (null);
+            //}
+            
+            if (valueType != ValueTypeDefine.ValueType_Number && valueType != ValueTypeDefine.ValueType_Boolean && valueType != ValueTypeDefine.ValueType_String && valueType != ValueTypeDefine.ValueType_Void)
             {
                return new ValueSource_Direct (null);
             }
-            else if (mValueObject is CollisionCategory)
+         }
+         
+         if (mValueObject is Entity)
+         {
+            if ((mValueObject as Entity).GetScene () != scene)
             {
                return new ValueSource_Direct (null);
             }
+         }
+         else if (mValueObject is CollisionCategory)
+         {
+            if ((mValueObject as CollisionCategory).GetCollisionCategoryManager ().GetScene () != scene)
+            {
+               return new ValueSource_Direct (null);
+            }
+         }
+         else if (mValueObject is Scene)
+         {
+            if ((mValueObject as Scene).GetWorld () != scene.GetWorld ())
+            {
+               return new ValueSource_Direct (null);
+            }
+         }
+         else
+         {
+          // todo: more type, such as sound, .... But in fact, when the Asset->Define->Asset implementation is applied, no need to do so.
          }
          
          return new ValueSource_Direct (mValueObject);

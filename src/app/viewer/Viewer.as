@@ -2,6 +2,7 @@
 package viewer {
 
    import flash.utils.ByteArray;
+   //import flash.utils.Dictionary;
 
    import flash.geom.Point;
    import flash.geom.Rectangle;
@@ -13,6 +14,7 @@ package viewer {
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.display.Stage;
+   import flash.display.StageQuality;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.ProgressEvent;
@@ -22,12 +24,15 @@ package viewer {
    import flash.system.System;
    import flash.system.ApplicationDomain;
    import flash.system.Capabilities;
+   import flash.utils.getTimer;
 
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
    import flash.events.ContextMenuEvent;
 
+   import flash.net.SharedObject;
+   import flash.net.SharedObjectFlushStatus;
    import flash.net.URLRequest;
    import flash.net.URLLoader;
    import flash.net.URLRequestMethod;
@@ -37,9 +42,11 @@ package viewer {
    import flash.display.LoaderInfo;
    import flash.system.LoaderContext;
    
-   import flash.system.Capabilities;
-   import flash.utils.getTimer;
-
+   import flash.media.Sound;
+   import flash.media.SoundChannel;
+   import flash.media.SoundMixer;
+   import flash.media.SoundTransform;
+   
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.UrlUtil;
@@ -51,6 +58,8 @@ package viewer {
    import com.tapirgames.gesture.GestureAnalyzer;
    import com.tapirgames.gesture.GesturePoint;
    import com.tapirgames.gesture.GestureSegment;
+   
+   import com.tapirgames.util.ResourceLoader;
 
    import common.DataFormat3;
    import common.Define;
@@ -58,7 +67,13 @@ package viewer {
 
    public class Viewer extends Sprite
    {
-
+      include "LibCapabilities.as";
+      include "LibGesture.as";
+      include "LibSound.as";
+      include "LibGraphics.as";
+      include "LibCookie.as";
+      include "LibServices.as";
+      
 //======================================================================
 //
 //======================================================================
@@ -96,6 +111,7 @@ package viewer {
          private var mShowSoundAdjustor:Boolean;
          private var mShowHelpButton:Boolean;
          private var mShowSoundController:Boolean;
+         private var mShowLevelFinishedDialog:Boolean;
          private var mAdaptiveViewportSize:Boolean;
          private var mPreferredViewportWidth:int;
          private var mPreferredViewportHeight:int;
@@ -115,6 +131,7 @@ package viewer {
       private var mForegroundLayer:Sprite = new Sprite ();
          private var mErrorMessageLayer:Sprite = new Sprite ();
          private var mGesturePaintLayer:Sprite = new Sprite ();
+      private var mFadingLayer:Sprite = new Sprite ();
 
 //======================================================================
 //
@@ -135,9 +152,11 @@ package viewer {
          addChild (mForegroundLayer);
             mForegroundLayer.addChild (mErrorMessageLayer);
             mForegroundLayer.addChild (mGesturePaintLayer);
+         addChild (mFadingLayer);
          
          mErrorMessageLayer.visible = false;
          mGesturePaintLayer.visible = false;
+         mFadingLayer.visible = false;
 
          mParamsFromUniViewer = params.mParamsFromUniViewer;
          if (mParamsFromUniViewer != null)
@@ -160,29 +179,62 @@ package viewer {
          ParseParams ();
          
          addEventListener (Event.ENTER_FRAME, Update);
-         addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
+         addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromStage);
          addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
          addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
          addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+         
+         //mGesturePaintLayer.mouseEnabled = false;
+         mGesturePaintLayer.mouseChildren = false;
+         mGesturePaintLayer.addEventListener (MouseEvent.CLICK, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.addEventListener (MouseEvent.MOUSE_DOWN, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.addEventListener (MouseEvent.MOUSE_MOVE, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.addEventListener (MouseEvent.MOUSE_UP, OnMouseEvent_GesturePaintLayer);
          
          stage.addEventListener (Event.ACTIVATE, OnActivated);
          stage.addEventListener (Event.DEACTIVATE, OnDeactivated);
          
          var containerSize:Point = mParamsFromContainer.GetViewportSize ();
-         ReapintBackground (containerSize.x, containerSize.y);
+         RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
+         
+         mDefaultRenderQuality = stage.quality;
       }
 
-      private function OnRemovedFromFrame (e:Event):void
+      private function OnRemovedFromStage (e:Event):void
       {
+         stage.quality = mDefaultRenderQuality;
+
          stage.removeEventListener (Event.ACTIVATE, OnActivated);
          stage.removeEventListener (Event.DEACTIVATE, OnDeactivated);
          
-         removeEventListener (Event.ENTER_FRAME, Update);
-         removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
-         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+         mGesturePaintLayer.removeEventListener (MouseEvent.CLICK, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseEvent_GesturePaintLayer);
+         mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseEvent_GesturePaintLayer);
+         
          removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
          removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
          removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+         removeEventListener (Event.ENTER_FRAME, Update);
+         removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromStage);
+         
+         //removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage); 
+               // this one don't need to be removed. Otherwise, 
+               // the game package optimization for 1-level will crash.
+         
+         // ...
+         
+         CloseAllSounds ();
+               // up to here, for one-level game package, mWorldDesignProperties.OnViewerDestroyed is not called.
+      }
+      
+      // from v2.02, called manually
+      public function Destroy ():void
+      {  
+         if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerDestroyed != null)
+         {
+            mWorldDesignProperties.OnViewerDestroyed ();
+         }
       }
 
 //======================================================================
@@ -194,6 +246,9 @@ package viewer {
       public function OnActivated (event:Event):void
       {
          mIsAppDeactivated = false;
+         
+         //SetSoundVolume (mSoundVolume);
+         UpdateSoundVolume ();
       }
       
       public function OnDeactivated (event:Event):void
@@ -247,7 +302,7 @@ package viewer {
             var screenX:int = Capabilities.screenResolutionX;
             var screenY:int = Capabilities.screenResolutionY;
             var diagonal:Number = Math.sqrt((screenX*screenX)+(screenY*screenY))/dpi;
-            // if diagonal is higher than 6, we will assume it is a tablet
+            // if diagonal is higher than 6, we will assume it is a tablet or PC
             mIsPhoneDevice = diagonal < 6;
 
             if (mIsPhoneDevice)
@@ -325,11 +380,6 @@ package viewer {
          catch (error:Error)
          {
             TraceError (error);
-         
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
          }
       }
       
@@ -379,6 +429,21 @@ package viewer {
          }
                   
          return "null";
+      }
+      
+      private function IsNativeApp ():Boolean
+      {
+         return mParamsFromContainer.mIsNativeApp != undefined && (mParamsFromContainer.mIsNativeApp as Boolean);
+      }
+      
+      private static function GetScreenResolution ():Point
+      {
+         return new Point (Capabilities.screenResolutionX, Capabilities.screenResolutionY);
+      }
+      
+      private static function GetScreenDPI ():Number
+      {
+         return Capabilities.screenDPI;
       }
 
 //======================================================================
@@ -440,7 +505,7 @@ package viewer {
          {
             mGestureAnalyzer = CreateGestureAnalyzer ();
             ClearGesturePaintLayer ();
-            mGesturePaintLayer.visible = true;
+            mGesturePaintLayer.visible = mDrawdMouseGesture;
             
             RegisterGesturePoint (event);
          }
@@ -485,7 +550,10 @@ package viewer {
       }
       
       private function RegisterGesturePoint (event:MouseEvent):void
-      {  
+      {
+         if (mStateId != StateId_Playing || mCurrentPlayingStatePhase != PlayingStatePhase_Stepping)
+            return;
+         
          if (mGestureAnalyzer == null)
             return;
          
@@ -512,17 +580,36 @@ package viewer {
       }
 
 //======================================================================
+// mouse event
+//======================================================================
+
+      // !!! this function is introduced from v2.00 to fix the missed event triggerings caused by gesture shape overlapping.
+      // ref: http://stackoverflow.com/questions/4924558/listen-to-click-event-on-overlapped-sprites
+      
+      private function OnMouseEvent_GesturePaintLayer (event:MouseEvent):void
+      {
+         //if (mPlayerWorld != null)
+         //{
+         //   var clonedEvent:MouseEvent = event.clone () as MouseEvent;
+         //   clonedEvent.delta = 0x7FFFFFFF; // indicate mPlayerWorld this event is sent from here
+         //   mPlayerWorld.dispatchEvent(clonedEvent);
+         //}
+         
+         if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerEvent != null)
+         {
+            var clonedEvent:MouseEvent = event.clone () as MouseEvent;
+            mWorldDesignProperties.OnViewerEvent (clonedEvent);
+         }
+      }
+
+//======================================================================
 //
 //======================================================================
 
       private static const StateId_Unknown:int = -1;
-      private static const StateId_ParsingError:int = 0;
-      private static const StateId_Loading:int = 1;
-      private static const StateId_LoadingError:int = 2;
-      private static const StateId_Building:int = 3;
-      private static const StateId_BuildingError:int = 4;
-      private static const StateId_Playing:int = 5;
-      private static const StateId_PlayingError:int = 6;
+      private static const StateId_Loading:int = 0;
+      private static const StateId_Playing:int = 1;
+      private static const StateId_Error:int = 2;
 
       private var mStateId:int = StateId_Unknown;
 
@@ -536,82 +623,109 @@ package viewer {
             case StateId_Loading:
                // Load progress on screen
                break;
-            case StateId_LoadingError:
-               // "Copy Error Message" and "Report Error" in Context Menu
-               break;
-            case StateId_Building:
-               // "Build ..." text on screen
-
-               var buildStatus:int = mWorldDesignProperties.GetBuildingStatus (); 
-               if (buildStatus > 0)
-               {
-                  SetErrorMessage (null);
-                  
-                  InitPlayerWorld ();
-                  
-                  ChangeState (StateId_Playing);
-               }
-               else if (buildStatus < 0)
-               {
-                  ChangeState (StateId_BuildingError);
-               }
-               
-               break;
-            case StateId_BuildingError:
-               // "Copy Error Message" and "Report Error" in Context Menu
-               break;
             case StateId_Playing:
-               Step (false);
+               UpdatePlaying ();
                break;
-            case StateId_PlayingError:
-               // "Copy Error Message" and "Report Error" in Context Menu
+            case StateId_Error:
+               ExitLevelIfBackKeyEverPressed ();
+               // todo: "Copy Error Message" and "Report Error" in Context Menu
                break;
-            case StateId_Unknown:
+            //case StateId_Unknown:
             default:
+               ExitLevelIfBackKeyEverPressed ();
                break;
          }
       }
 
       public function ChangeState (stateId:int):void
       {
-      //trace ("change state: " + stateId + "\n" + new Error ().getStackTrace ());
+         //trace ("change state: " + stateId + "\n" + new Error ().getStackTrace ());
+         
          mStateId = stateId;
-         switch (mStateId)
+         
+         //switch (mStateId)
+         //{
+         //   case StateId_Loading:
+         //      break;
+         //   case StateId_Playing:
+         //      break;
+         //   case StateId_Error:
+         //      //SetErrorMessage ("Runtime error!");
+         //      break;
+         //   //case StateId_Unknown:
+         //   default:
+         //      break;
+         //}
+      }
+      
+//======================================================================
+//
+//======================================================================
+      
+      private function OnError (errorTitle:String, error:Error):void
+      {
+         if (error == null)
+            SetErrorMessage ("Error: title=" + errorTitle);
+         else
+            SetErrorMessage ("Error: id=" + error.errorID + ", title=" + errorTitle 
+                           + "\nerror message: " + error.message 
+                           + "\n" + error.getStackTrace ()
+                           );
+
+         ChangeState (StateId_Error);
+         
+         TraceError (error);
+     }
+     
+     private static function TraceError (error:Error):void
+     {
+         if (Capabilities.isDebugger)
          {
-            case StateId_Loading:
-               break;
-            case StateId_LoadingError:
-               SetErrorMessage ("Loading error!");
-               break;
-            case StateId_Building:
-               if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
-               {
-                  mParamsFromUniViewer.SetLoadingText ("Building ...");
-               }
-               this.visible = false;
-               break;
-            case StateId_BuildingError:
-               SetErrorMessage ("Building error!");
-               break;
-            case StateId_Playing:
-               break;
-            case StateId_PlayingError:
-               SetErrorMessage ("Runtime error!");
-               break;
-            case StateId_Unknown:
-            default:
-               break;
+            trace (error.getStackTrace ());
+            throw error;
          }
       }
 
-      private static var mLastErrorInfo:String = null;
+      private var mErrorMessageText:TextFieldEx = null;
       
-      public static function TraceError (error:Error):void
-      {
-         if (Capabilities.isDebugger)
-            trace (error.getStackTrace ());
+      private function SetErrorMessage (errorMessage:String):void
+      {           
+         this.visible = true;
          
-         mLastErrorInfo = "Error: id=" + error.errorID + ", msg=" + error.message + "\n" + error.getStackTrace ();
+         if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
+         {
+            mParamsFromUniViewer.SetLoadingText (null);
+         }
+         
+         if (errorMessage == null)
+         {
+            mErrorMessageLayer.visible = false;
+            return;
+         }
+         
+         mErrorMessageLayer.visible = true;
+         
+         if (mErrorMessageText != null && mErrorMessageText.parent == mErrorMessageLayer)
+            mErrorMessageLayer.removeChild (mErrorMessageText);
+         
+         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage), true, 0xFFFFFF);
+         mErrorMessageLayer.addChild (mErrorMessageText);
+         
+//mErrorMessageText.scaleX=mErrorMessageText.scaleY=0.5;
+
+         CenterErrorMessageText ();
+      }
+//public static var debugInfo:String = "";
+      
+      private function CenterErrorMessageText ():void
+      {
+         if (mErrorMessageText != null)
+         {
+            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+            
+            mErrorMessageText.x = 0.5 * (containerSize.x - mErrorMessageText.width );
+            mErrorMessageText.y = 0.5 * (containerSize.y - mErrorMessageText.height);
+         }
       }
 
 //======================================================================
@@ -623,7 +737,7 @@ package viewer {
 
       private var mWorldPluginUrl:String;
       private var mLoadDataUrl:String;
-
+      
       public function ParseParams ():void
       {
          try
@@ -635,8 +749,8 @@ package viewer {
                mWorldBinaryData = mParamsFromContainer.mWorldBinaryData;
                mStartRightNow = mParamsFromContainer.mStartRightNow == undefined ? true : mParamsFromContainer.mStartRightNow;
                mWorldPluginDomain = mParamsFromContainer.mWorldDomain;
-
-               ReloadPlayerWorld ();
+               
+               ReloadPlayerWorld (mParamsFromEditor != null ? mParamsFromEditor.mCurrentSceneId : 0);
             }
             else if (mParamsFromUniViewer != null)
             {
@@ -708,40 +822,22 @@ package viewer {
                }
 
                //
+               
+               ChangeState (StateId_Loading);
+               
                if (mWorldPlayCode == null)
                {
-                  if (StartOnlineLoadingData ())
-                  {
-                     ChangeState (StateId_Loading);
-                  }
-                  else
-                  {
-                     ChangeState (StateId_LoadingError);
-                  }
+                  StartOnlineLoadingData ();
                }
                else
                {
-                  if (StartOnlineLoadingWorldPlugin ())
-                  {
-                     ChangeState (StateId_Loading);
-                  }
-                  else
-                  {
-                     ChangeState (StateId_LoadingError);
-                  }
+                  StartOnlineLoadingWorldPlugin ();
                }
             }
          }
          catch (error:Error)
          {
-            TraceError (error);
-            
-            ChangeState (StateId_ParsingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
+            OnError ("parsing error!", error);
          }
       }
 
@@ -782,11 +878,8 @@ package viewer {
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            if (Capabilities.isDebugger)
-               throw error;
-
+            OnError ("start loading error!", error);
+            
             return false;
          }
 
@@ -830,14 +923,7 @@ package viewer {
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            ChangeState (StateId_LoadingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
+            OnError ("online loading word data error!", error);
          }
       }
 
@@ -866,11 +952,8 @@ package viewer {
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            if (flash.system.Capabilities.isDebugger)
-               throw error;
-
+            OnError ("onlone loading world plugin error!", error);
+            
             return false;
          }
 
@@ -904,7 +987,7 @@ package viewer {
 
       private function RetrieveWorldPluginProperties ():void
       {
-         if (mWorldPluginDomain.hasDefinition ("Main")) // for uniplayer and gamepackage
+         if (mWorldPluginDomain.hasDefinition ("Main")) // for uniplayer and game package
          {
             mWorldPlugin = mWorldPluginDomain.getDefinition ("Main");
          }
@@ -922,28 +1005,37 @@ package viewer {
       {
          mWorldDesignProperties = mWorldPlugin.Call ("GetWorldProperties", {mWorld: mPlayerWorld});
 
-         if (mWorldDesignProperties.mIsPermitPublishing == undefined)        mWorldDesignProperties.mIsPermitPublishing = false;
-         if (mWorldDesignProperties.mIsShareSourceCode == undefined)         mWorldDesignProperties.mIsShareSourceCode = false;
-         if (mWorldDesignProperties.GetZoomScale == null)                    mWorldDesignProperties.GetZoomScale = DummyCallback_GetScale;
-         if (mWorldDesignProperties.SetZoomScale == null)                    mWorldDesignProperties.SetZoomScale = DummyCallback;
-         if (mWorldDesignProperties.GetViewportWidth == null)                mWorldDesignProperties.GetViewportWidth = DummyCallback_ViewSize;
-         if (mWorldDesignProperties.GetViewportHeight == null)               mWorldDesignProperties.GetViewportHeight = DummyCallback_ViewSize;
-         if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
-         if (mWorldDesignProperties.GetViewerUiFlags == null)                mWorldDesignProperties.GetViewerUiFlags = DummyCallback_UiFlags;
-         if (mWorldDesignProperties.GetPlayBarColor == null)                 mWorldDesignProperties.GetPlayBarColor = DummyCallback_PlayBarColor;
-         if (mWorldDesignProperties.Initialize == null)                      mWorldDesignProperties.Initialize = DummyCallback;
-         if (mWorldDesignProperties.SetSingleStepMode == null)               mWorldDesignProperties.SetSingleStepMode = DummyCallback;
-         if (mWorldDesignProperties.SetPaused == null)                       mWorldDesignProperties.SetPaused = DummyCallback;
-         if (mWorldDesignProperties.SetInteractiveEnabledWhenPaused == null) mWorldDesignProperties.SetInteractiveEnabledWhenPaused = DummyCallback;
-         if (mWorldDesignProperties.SetCacheSystemEvent == null)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
-         if (mWorldDesignProperties.GetBuildingStatus == null)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_BuildingStatus;
-         if (mWorldDesignProperties.SetRealViewportSize == null)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
-         if (mWorldDesignProperties.mHasSounds == undefined)                 mWorldDesignProperties.mHasSounds = false;
-         if (mWorldDesignProperties.mInitialSpeedX == undefined)             mWorldDesignProperties.mInitialSpeedX = 2;
-         if (mWorldDesignProperties.mInitialZoomScale == undefined)          mWorldDesignProperties.mInitialZoomScale = 1.0;
-         if (mWorldDesignProperties.GetPreferredFPS == undefined)                   mWorldDesignProperties.GetPreferredFPS = DummyCallback_GetFps;
+         if (mWorldDesignProperties.mIsPermitPublishing == undefined)             mWorldDesignProperties.mIsPermitPublishing = false;
+         if (mWorldDesignProperties.mIsShareSourceCode == undefined)              mWorldDesignProperties.mIsShareSourceCode = false;
+         if (mWorldDesignProperties.GetZoomScale == undefined)                    mWorldDesignProperties.GetZoomScale = DummyCallback_GetScale;
+         if (mWorldDesignProperties.SetZoomScale == undefined)                    mWorldDesignProperties.SetZoomScale = DummyCallback;
+         if (mWorldDesignProperties.GetViewportWidth == undefined)                mWorldDesignProperties.GetViewportWidth = DummyCallback_ViewSize;
+         if (mWorldDesignProperties.GetViewportHeight == undefined)               mWorldDesignProperties.GetViewportHeight = DummyCallback_ViewSize;
+         if (mWorldDesignProperties.SetRealViewportSize == undefined)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
+         if (mWorldDesignProperties.GetViewerUiFlags == undefined)                mWorldDesignProperties.GetViewerUiFlags = DummyCallback_UiFlags;
+         if (mWorldDesignProperties.GetPlayBarColor == undefined)                 mWorldDesignProperties.GetPlayBarColor = DummyCallback_PlayBarColor;
+         if (mWorldDesignProperties.GetBackgroundColor == undefined)              mWorldDesignProperties.GetBackgroundColor = DummyGetBackgroundColor;
+         if (mWorldDesignProperties.Initialize == undefined)                      mWorldDesignProperties.Initialize = DummyCallback;
+         if (mWorldDesignProperties.SetSingleStepMode == undefined)               mWorldDesignProperties.SetSingleStepMode = DummyCallback;
+         if (mWorldDesignProperties.SetPaused == undefined)                       mWorldDesignProperties.SetPaused = DummyCallback;
+         if (mWorldDesignProperties.SetInteractiveEnabledWhenPaused == undefined) mWorldDesignProperties.SetInteractiveEnabledWhenPaused = DummyCallback;
+         if (mWorldDesignProperties.SetCacheSystemEvent == undefined)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
+         if (mWorldDesignProperties.GetBuildingStatus == undefined)               mWorldDesignProperties.GetBuildingStatus = DummyCallback_GetBuildingStatus;
+         if (mWorldDesignProperties.SetRealViewportSize == undefined)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
+         if (mWorldDesignProperties.mInitialSpeedX == undefined)                  mWorldDesignProperties.mInitialSpeedX = 2;
+         if (mWorldDesignProperties.mInitialZoomScale == undefined)               mWorldDesignProperties.mInitialZoomScale = 1.0;
+         if (mWorldDesignProperties.mHasSounds == undefined)                      mWorldDesignProperties.mHasSounds = false;
+         if (mWorldDesignProperties.mInitialSoundEnabled == undefined)            mWorldDesignProperties.mInitialSoundEnabled = true;
+         if (mWorldDesignProperties.SetSoundEnabled == undefined)                 mWorldDesignProperties.SetSoundEnabled = DummyCallback;
+         if (mWorldDesignProperties.GetPreferredFPS == undefined)                 mWorldDesignProperties.GetPreferredFPS = DummyCallback_GetFps;
          if (mWorldDesignProperties.GetPauseOnFocusLost == undefined)             mWorldDesignProperties.GetPauseOnFocusLost = DummyCallback_ReturnFalse;
-         if (mWorldDesignProperties.RegisterGestureEvent == undefined)       mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
+         if (mWorldDesignProperties.RegisterGestureEvent == undefined)            mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
+         if (mWorldDesignProperties.OnViewerEvent == undefined)                   mWorldDesignProperties.OnViewerEvent = DummyCallback;
+         if (mWorldDesignProperties.OnViewerDestroyed == undefined)               mWorldDesignProperties.OnViewerDestroyed = DummyCallback;
+         if (mWorldDesignProperties.OnSystemBackEvent == undefined)               mWorldDesignProperties.OnSystemBackEvent = DummyOnSystemBackEvent;      
+         if (mWorldDesignProperties.HasRestartLevelRequest == undefined)          mWorldDesignProperties.HasRestartLevelRequest = DummyCallback_ReturnFalse;      
+         if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)        mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;
+         if (mWorldDesignProperties.GetSceneSwitchingStyle == undefined)          mWorldDesignProperties.GetSceneSwitchingStyle = DummyGetSceneSwitchingStyle;      
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -953,6 +1045,7 @@ package viewer {
          mShowSoundController = (mWorldDesignProperties.mHasSounds) && 
                               (mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSoundController) != 0));
          mShowHelpButton = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
+         mShowLevelFinishedDialog = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseCustomLevelFinishedDialog) == 0);
          mAdaptiveViewportSize = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_AdaptiveViewportSize) != 0);
          mPreferredViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
          mPreferredViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
@@ -1007,27 +1100,73 @@ package viewer {
       // =0 - loading
       // >0 - succeeded
       // <0 - failed
-      private function DummyCallback_BuildingStatus ():int
+      private function DummyCallback_GetBuildingStatus ():int
       {
          return 1;
+      }
+      
+      // from v2.02
+      private function DummyOnSystemBackEvent ():int
+      {
+         return 0;
+      }
+      
+      // from v2.03
+      private function DummyGetSceneIndex ():int
+      {
+         return -1;
+      }
+      
+      // from v2.04
+      private function DummyGetSceneSwitchingStyle ():int
+      {
+         return SceneSwitchingStyle_FadingIn; // before v2.04
+      }
+      
+      private function DummyGetBackgroundColor ():uint
+      {
+         return mParamsFromContainer.mBackgroundColor;
       }
 
 //======================================================================
 //
 //======================================================================
+      
+      private var mFirstTimePlaying:Boolean = true;
+      
+      private var mLastPreferredFPS:Number = 30;
+      
+      private var mCurrentSceneID:int = 0;
+      
+      private var mWorldDefine:Object = null;
 
-      private function ReloadPlayerWorld (restartLevel:Boolean = false):void
+      private function ReloadPlayerWorld (sceneId:int = 0, forRestartLevel:Boolean = false, dontReloadGlobalAssets:Boolean = false):void
       {
       trace ("ReloadPlayerWorld");
          
-         // reset gesture shapes
-         SetMouseGestureSupported (false, false);
+         try
+         {
+            // reset gesture shapes
+            SetMouseGestureSupported (false, false);
+            
+            StopAllInLevelSounds ();
+            if (! dontReloadGlobalAssets)
+            {
+               StopCrossLevelsSound (null);
+            }
+         }
+         catch (error:Error)
+         {
+            // do nothing
+         }
          
          //var isFirstTime:Boolean = (mPlayerWorld == null);
          mFirstTimePlaying = (mPlayerWorld == null);
 
          try
          {
+            mCurrentSceneID = sceneId;
+               
             if (mFirstTimePlaying)
             {
                RetrieveWorldPluginProperties ();
@@ -1047,40 +1186,106 @@ package viewer {
                   }
                }
             }
+            //else
+            //{
+            //   mWorldDesignProperties.Destroy ();
+            //
+            //   if (mWorldLayer.contains (mPlayerWorld as Sprite))
+            //      mWorldLayer.removeChild (mPlayerWorld as Sprite);
+            //
+            //   mPlayerWorld = null;
+            //}
             else
             {
-               mWorldDesignProperties.Destroy ();
+               // delay to remove old data for scene switching
+               mOldWorldDesignProperties = mWorldDesignProperties;
+               mOldPlayerWorld = mPlayerWorld;
 
-               if (mWorldLayer.contains (mPlayerWorld as Sprite))
-                  mWorldLayer.removeChild (mPlayerWorld as Sprite);
-
+               // .
                mPlayerWorld = null;
             }
 
-            mWorldBinaryData.position = 0;
-            var worldDefine:Object = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
-            if (worldDefine != null)
+            var worldDefine:Object;
+            if (mWorldDefine == null)
             {
-               if (worldDefine.hasOwnProperty ("mForRestartLevel"))
+               mWorldBinaryData.position = 0;
+               worldDefine = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
+               
+               if (mWorldPluginProperties.mWorldVersion >= 0x0200)
                {
-                  worldDefine.mForRestartLevel = restartLevel;
-               }
-               if (worldDefine.hasOwnProperty ("mViewerParams"))
-               {
-                  worldDefine.mViewerParams = {
-                     mLibCapabilities : {
-                                 IsAccelerometerSupported: IsAccelerometerSupported,
-                                 GetAcceleration: GetAcceleration
-                     },
-                     GetDebugString: GetDebugString,
-                     SetMouseGestureSupported: SetMouseGestureSupported
-                  };
+                  // !!! this optimazation is added from v2.01. v2.00 design is also played with v2.01 world plugin.
+                  // for world plugins with version earlier than v2.00, this optimazation is not available
+                  mWorldDefine = worldDefine;
                }
             }
+            else
+            {
+               worldDefine = mWorldDefine;
+            }
+            
+            if (worldDefine == null)
+               throw new Error ("Fails to create worldDefine");
+
+            if (worldDefine.hasOwnProperty ("mForRestartLevel"))
+            {
+               worldDefine.mForRestartLevel = forRestartLevel;
+            }
+            if (worldDefine.hasOwnProperty ("mCurrentSceneId"))
+            {
+               worldDefine.mCurrentSceneId = sceneId;
+            }
+            if (worldDefine.hasOwnProperty ("mDontReloadGlobalAssets"))
+            {
+               worldDefine.mDontReloadGlobalAssets = dontReloadGlobalAssets;
+            }
+            if (worldDefine.hasOwnProperty ("mViewerParams"))
+            {
+               worldDefine.mViewerParams = {
+                  //Viewer
+                  OnLoadScene : OnLoadScene,
+                  mLibCapabilities : {
+                              IsAccelerometerSupported: IsAccelerometerSupported,
+                              GetAcceleration: GetAcceleration,
+                              GetScreenResolution : GetScreenResolution,
+                              GetScreenDPI : GetScreenDPI
+                  },
+                  GetDebugString: GetDebugString,
+                  SetMouseGestureSupported: SetMouseGestureSupported,
+                  mLibSound : {
+                              LoadSoundFromBytes : LoadSoundFromBytes, 
+                              PlaySound: PlaySound,
+                              StopAllInLevelSounds: StopAllInLevelSounds,
+                              StopCrossLevelsSound: StopCrossLevelsSound
+                             
+                              // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
+                  },
+                  mLibGraphics : {
+                              LoadImageFromBytes : LoadImageFromBytes,
+                              SetRenderQuality : SetRenderQuality
+                  },
+                  mLibApp : {
+                              IsNativeApp: IsNativeApp,
+                              OnExitApp : ExitLevel,
+                              OpenURL : UrlUtil.PopupPage,
+                              GetRealtimeFps : GetRealtimeFps
+                  },
+                  mLibCookie : {
+                              LoadCookie : LoadCookie,
+                              WriteCookie : WriteCookie,
+                              ClearCookie : ClearCookie
+                  },
+                  mLibService : {
+                              SubmitKeyValue: SubmitKeyValue
+                  }
+               };
+            }
+            
             mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);
 
             if (mPlayerWorld == null)
                throw new Error ("Fails to create world");
+
+            mPlayerWorld.visible = false;
 
             RetrieveWorldDesignProperties ();
 
@@ -1091,21 +1296,26 @@ package viewer {
 
             if (mFirstTimePlaying)
             {
-               BuildSkin ();
-
                BuildContextMenu ();
             }
             
-            mSkin.SetSoundEnabled (mIsSoundEnabled); // will call OnSoundControlChanged ()
+            RebuildSkin ();
+
+            mSkin.SetStarted (false);
+            
+            //mSkin.SetLevelFinishedDialogVisible (false);
+            //mSkin.SetHelpDialogVisible (false);
+            mSkin.CloseAllVisibleDialogs ();
+
+            mSkin.SetSoundEnabled (IsSoundEnabled ()); // will call OnSoundControlChanged ()
             mSkin.SetPlayingSpeedX (mWorldDesignProperties.mInitialSpeedX);
             mSkin.SetZoomScale (mWorldDesignProperties.mInitialZoomScale, false);
-
-            mSkin.SetLevelFinishedDialogVisible (false);
-            mSkin.SetHelpDialogVisible (false);
 
             // from v1.5
             mWorldPlugin.Call ("SetUiParams", {
                mWorld : mPlayerWorld,
+               
+               //UI 
                OnClickRestart : mSkin.Restart,
                IsPlaying : mSkin.IsPlaying,
                SetPlaying : mSkin.SetPlaying,
@@ -1114,7 +1324,9 @@ package viewer {
                GetZoomScale : mSkin.GetZoomScale,
                SetZoomScale : mSkin.SetZoomScale,
                IsSoundEnabled : mSkin.IsSoundEnabled,
-               SetSoundEnabled : mSkin.SetSoundEnabled
+               SetSoundEnabled : mSkin.SetSoundEnabled,
+               GetSoundVolume : GetSoundVolume,
+               SetSoundVolume : SetSoundVolume
             });
 
             // ...
@@ -1125,22 +1337,33 @@ package viewer {
             mLastPreferredFPS = mWorldDesignProperties.GetPreferredFPS ();
             stage.frameRate = mLastPreferredFPS;
             
-            ChangeState (StateId_Building);
+            // avoid flashing
+            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+            RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
+            
+            if (mOldPlayerWorld == null) // first loading
+            {
+               mSceneSwitchingStyle = SceneSwitchingStyle_FadingIn;
+               mFadingLayer.visible = true;
+            }
+            else
+            {
+               mFadingLayer.visible = false;
+            }
+            
+            // ...
+            ChangeState (StateId_Playing);
+            
+            if (CheckBuildingStatus ())
+            {
+               mCurrentPlayingStatePhase = PlayingStatePhase_Building;
+            }
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            ChangeState (StateId_LoadingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
+            OnError ("building error!", error);
          }
       }
-
-      private var mFirstTimePlaying:Boolean = true;
       
       private var mLastPreferredFPS:Number = 30;
       
@@ -1149,55 +1372,276 @@ package viewer {
       //trace ("InitPlayerWorld");
          try
          {
-            mWorldDesignProperties.Initialize ();
+            var worldPluginProperties:Object = mWorldDesignProperties;
 
+            mWorldDesignProperties.Initialize (); // may Load New Scene so that mWorldDesignProperties is changed.
+            
+            // current, call LoadScene API is forbidded in world.Initialize
+            //if (worldPluginProperties != mWorldDesignProperties)
+            //   return;
+            
             // special handling, before v1.02 (not include v1.02), to make world center in viewer
             // (edit) ??? seems before v1.06 (including v1.06)
             // maybe it is better to put this in mWorldDesignProperties.Initialize ()
             //if (mWorldPluginProperties.mWorldVersion < 0x0102)
+            
             if (mWorldPluginProperties.mWorldVersion <= 0x0106)
             {
-               mWorldDesignProperties.Update (0, 1);
-            }
-
-            if (mFirstTimePlaying)
-            {
-               if (mStartRightNow) mSkin.SetPlaying (true);
+               mWorldDesignProperties.Update (0, 1); 
+               
+               // not essential, for LoadScene API is added since v2.00
+               
+               // may Load New Scene so that mWorldDesignProperties is changed.
+               //if (worldPluginProperties != mWorldDesignProperties)
+               //   return;
             }
             
             // ...
+
+            mSkin.SetPlaying (mStartRightNow);
+            
+            mStartRightNow = true; // for following restarts
+            
+            // ...
+            
             if (mParamsFromUniViewer != null && mFirstTimePlaying)
             {
                mSkin.OnDeactivate ();
             }
+            
+            UpdateSoundVolume ();
          }
          catch (error:Error)
          {
-            TraceError (error);
-
-            ChangeState (StateId_BuildingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
-         }
+            OnError ("initing error!", error);
+         }         
       }
 
 //======================================================================
 //
 //======================================================================
 
+      private var PlayingStatePhase_Building:int = 0;
+      private var PlayingStatePhase_Switching:int = 1;
+      private var PlayingStatePhase_Stepping:int = 2;
+      
+      private var mCurrentPlayingStatePhase:int;
+     
       private var mStepTimeSpan:TimeSpan = new TimeSpan ();
-
-      public function Step (singleStepMode:Boolean = false):void
+      
+      public function UpdatePlaying ():void
       {
+         mStepTimeSpan.End ();
+         mStepTimeSpan.Start ();
+         
          if (mErrorMessageLayer.visible)
+         {
+            ExitLevelIfBackKeyEverPressed ();
             return;
+         }
          
          if (mPlayerWorld == null)
+         {
+            ExitLevelIfBackKeyEverPressed ();
             return;
+         }
+         
+         if (TryToSwitchScene ())
+         {
+            return;
+         }
+         
+         // ...
+         
+         if (mCurrentPlayingStatePhase == PlayingStatePhase_Stepping)
+         {
+            UpdateFrame (false);
+         }
+         else if (mCurrentPlayingStatePhase == PlayingStatePhase_Switching)
+         {
+            UpdateSceneSwitching (false);
+         }
+         else if (mCurrentPlayingStatePhase == PlayingStatePhase_Building)
+         {
+            CheckBuildingStatus ();
+         }
+      }
+      
+      // return if still in building
+      private function CheckBuildingStatus ():Boolean
+      {
+         var buildStatus:int = mWorldDesignProperties.GetBuildingStatus (); 
+         if (buildStatus > 0)
+         {
+            InitPlayerWorld ();
+            
+            SetErrorMessage (null); // will call this.visible = true
+            
+            UpdateSceneSwitching (true);
+         }
+         else if (buildStatus < 0)
+         {
+            OnError ("error in building.", null);
+         }
+         else
+         {
+            return true;
+         }
+         
+         return false;
+      }
+      
+      // DON'T change these const values. They muse be same as the values in player.World.
+      private static const SceneSwitchingStyle_None:int = 0;
+      private static const SceneSwitchingStyle_FadingIn:int = 1;
+      private static const SceneSwitchingStyle_FadingOut:int = 2;
+      private static const SceneSwitchingStyle_FadingOutThenFadingIn:int = 3;
+      private static const SceneSwitchingStyle_Blend:int = 4;
+      
+      private var mSceneSwitchingStyle:int = SceneSwitchingStyle_None;
+      
+      private var mOldWorldDesignProperties:Object = null;
+      private var mOldPlayerWorld:Object = null;
+      
+      private function UpdateSceneSwitching (isInit:Boolean):void
+      {
+         var nextPlayingStatePhase:int = -1;
+         var toDestroyOldWorld:Boolean = false;
+         
+         if (isInit)
+            nextPlayingStatePhase = PlayingStatePhase_Switching;
+         
+         var fadingSpeed:Number = 2.0 * mStepTimeSpan.GetLastSpan ();
+         if ((mParamsFromEditor != null || mParamsFromUniViewer != null) && mFirstTimePlaying)
+            fadingSpeed *= 3.0;
+         
+         switch (mSceneSwitchingStyle)
+         {
+            case SceneSwitchingStyle_FadingOutThenFadingIn:
+            case SceneSwitchingStyle_FadingOut:
+               if (isInit)
+               {
+                  mFadingLayer.visible = true;
+                  mFadingLayer.alpha = 0.0;
+               }
+               else
+               {
+                  mFadingLayer.alpha += fadingSpeed;
+                  if (mFadingLayer.alpha >= 0.99)
+                  {  
+                     if (mSceneSwitchingStyle == SceneSwitchingStyle_FadingOutThenFadingIn)
+                     {
+                        mSceneSwitchingStyle = SceneSwitchingStyle_FadingIn;
+                        UpdateSceneSwitching (true);
+                     }
+                     else // if (mSceneSwitchingStyle == SceneSwitchingStyle_FadingOut)
+                     {
+                        mFadingLayer.alpha = 1.0;
+                        mFadingLayer.visible = false;
+                        toDestroyOldWorld = true;
+                        mPlayerWorld.visible = true;
+                        
+                        nextPlayingStatePhase = PlayingStatePhase_Stepping;
+                     }
+                  }
+               }
+               break;
+            case SceneSwitchingStyle_FadingIn:
+               if (isInit)
+               {
+                  toDestroyOldWorld = true;
+                  mPlayerWorld.visible = true; 
+                  mFadingLayer.visible = true;
+                  mFadingLayer.alpha = 1.0;
+               }
+               else
+               {
+                  mFadingLayer.alpha -= fadingSpeed;
+                  if (mFadingLayer.alpha <= 0.1)
+                  {
+                     mFadingLayer.alpha = 0.0;
+                     mFadingLayer.visible = false;
+                     nextPlayingStatePhase = PlayingStatePhase_Stepping;
+                  }
+               }
+               break;
+            case SceneSwitchingStyle_Blend:
+               if (isInit)
+               {
+                  mPlayerWorld.visible = true;
+                  mFadingLayer.visible = false;
+                  mOldPlayerWorld.alpha = 1.0;
+                  mPlayerWorld.alpha = 0.0;
+               }
+               else
+               {
+                  fadingSpeed *= 0.3;
+                  
+                  //mOldPlayerWorld.alpha -= fadingSpeed;
+                  mPlayerWorld.alpha += fadingSpeed;
+                  if (mPlayerWorld.alpha >= 0.95)
+                  {
+                     toDestroyOldWorld = true;
+                     nextPlayingStatePhase = PlayingStatePhase_Stepping;
+                  }
+               }
+               break;
+            case SceneSwitchingStyle_None:
+            default:
+            {
+               if (isInit)
+                  nextPlayingStatePhase = PlayingStatePhase_Stepping;
+               
+               toDestroyOldWorld = true;
+               mFadingLayer.visible = false;
+               mPlayerWorld.visible = true;
+               
+               break;
+            }
+         }
+         
+         if (nextPlayingStatePhase >= 0)
+            mCurrentPlayingStatePhase = nextPlayingStatePhase;
 
+         if (toDestroyOldWorld)
+         {
+            if (mOldPlayerWorld != null)
+            {
+               if (mWorldLayer.contains (mOldPlayerWorld as Sprite))
+                  mWorldLayer.removeChild (mOldPlayerWorld as Sprite);
+               
+               mOldWorldDesignProperties.Destroy ();
+               mOldPlayerWorld = null;
+            }
+         }
+      }
+      
+      private function TryToSwitchScene ():Boolean
+      {
+         //>>>>>>>>>>>>>>>>>>>> moved from player.World.Update () from v2.03
+         if (mWorldDesignProperties.HasRestartLevelRequest ())
+         {
+            //mSceneSwitchingStyle = SceneSwitchingStyle_FadingIn;
+            mSceneSwitchingStyle = mWorldDesignProperties.GetSceneSwitchingStyle ();
+            mSkin.Restart ();
+            return true;
+         }
+         
+         var delayToLoadSceneIndex:int = mWorldDesignProperties.GetDelayToLoadSceneIndex ();
+         if (delayToLoadSceneIndex >= 0)
+         {
+            mSceneSwitchingStyle = mWorldDesignProperties.GetSceneSwitchingStyle ();
+            OnLoadScene (delayToLoadSceneIndex);
+            return true;
+         }
+         
+         return false;
+         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      }
+
+      public function UpdateFrame (singleStepMode:Boolean = false):void
+      {  
+         
          UpdateGesturePaintLayer ();
 
          // ...
@@ -1207,8 +1651,48 @@ package viewer {
             mLastPreferredFPS = mWorldDesignProperties.GetPreferredFPS ();
             stage.frameRate = mLastPreferredFPS;
          }
-
+         
+         // assert (mSkin != null);
+         
+         if (mBackKeyEverPressed)
+         {
+            if (mSkin.AreSomeDialogsVisible ())
+            {
+               mSkin.CloseAllVisibleDialogs ();
+            }
+            else if (mSkin.IsShowPlayBar ())
+            {
+               if (mSkin.IsPlaying ())
+                  mSkin.SetPlaying (false);
+               else
+               {
+                  ExitLevel ();
+                  return;
+               }
+            }
+            else
+            {
+               if (! mSkin.IsPlaying ())
+                  mSkin.SetPlaying (true);
+               
+               if (mWorldDesignProperties.OnSystemBackEvent () == 0)
+               {
+                  ExitLevel ();
+                  return;
+               }
+               //else
+               //{
+               //   // already custom handled
+               //}
+            }
+            
+            // ...
+            
+            mBackKeyEverPressed = false;
+         }
+                  
          // update scale
+         
          if (mWorldDesignProperties.GetZoomScale () != mPlayerWorldZoomScale)
          {
             var newScale:Number;
@@ -1242,9 +1726,7 @@ package viewer {
             }
          }
 
-         //
-         mStepTimeSpan.End ();
-         mStepTimeSpan.Start ();
+         // ...
 
          var paused:Boolean = (! IsPlaying ()) || mSkin.IsHelpDialogVisible ();
 
@@ -1255,44 +1737,52 @@ package viewer {
          {
             try
             {
-               mWorldDesignProperties.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+               var worldPluginProperties:Object = mWorldDesignProperties;
+               mWorldDesignProperties.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ()); // may Load New Scene so that mWorldDesignProperties is changed.
+               if (worldPluginProperties != mWorldDesignProperties)
+                  return;
             }
             catch (error:Error)
             {
-               TraceError (error);
+               OnError ("playing error", error);
 
                // todo show dialog: "stop" or "continue";
                // write log of send message to server
-
-               ChangeState (StateId_PlayingError);
-
-               if (Capabilities.isDebugger)
-               {
-                  throw error;
-               }
+               
+               return;
             }
 
-            mSkin.NotifyStarted ();
+            mSkin.SetStarted (true);
          }
 
          var levelSucceeded:Boolean = mWorldDesignProperties.IsLevelSuccessed ();
-         mSkin.SetLevelFinishedDialogVisible (levelSucceeded);
+
+         mSkin.SetLevelFinishedDialogVisible (mShowLevelFinishedDialog && levelSucceeded);
+         
          mSkin.Update (mStepTimeSpan.GetLastSpan ());
          
+         // for multiple-levels game package
          if (levelSucceeded && mParamsFromContainer.OnLevelFinished)
          {
             mParamsFromContainer.OnLevelFinished ();
          }
       }
-
+      
 //======================================================================
 // skin and background
 //======================================================================
 
       private var mSkin:Skin = null;
 
-      private function BuildSkin ():void
+      private function RebuildSkin ():void
       {
+         // remove old
+         
+         if (mSkin != null)
+            mSkinLayer.removeChild (mSkin);
+         
+         // build new
+         
          var useOverlaySkinForcely:Boolean = (mParamsFromContainer.skin != null && mParamsFromContainer.skin.toLowerCase () == "overlay");
          
          // fot testing
@@ -1313,7 +1803,7 @@ package viewer {
                   OnSoundControlChanged: OnSoundControlChanged,
                   
                   mHasMainMenu: mParamsFromContainer.mHasMainMenu,
-                  OnExitLevel: mParamsFromContainer.OnExitLevel,
+                  OnExitLevel: mParamsFromGamePackage == null ? null : mParamsFromContainer.OnExitLevel,
                   OnNextLevel: mParamsFromContainer.OnNextLevel,
                   mHasNextLevel: mParamsFromContainer.mHasNextLevel,
                   OnGoToPhyard: mParamsFromContainer.OnGoToPhyard
@@ -1337,7 +1827,7 @@ package viewer {
          var containerWidth :Number = containerSize.x;
          var containerHeight:Number = containerSize.y;
          
-         ReapintBackground (containerWidth, containerHeight);
+         RepaintFullScreenLayersWithBackgroundColor (containerWidth, containerHeight);
          
          try
          {
@@ -1449,15 +1939,8 @@ package viewer {
          }
          catch (error:Error)
          {
-            TraceError (error);
-            
-            ChangeState (StateId_PlayingError);
-
-            if (Capabilities.isDebugger)
-            {
-               throw error;
-            }
-            
+            OnError ("resizing error", error);
+                        
             return;
          }
          
@@ -1467,52 +1950,12 @@ package viewer {
          }
       }
       
-      private function ReapintBackground (newWidth:Number, newHeight:Number):void
+      private function RepaintFullScreenLayersWithBackgroundColor (newWidth:Number, newHeight:Number):void
       {
-         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, mParamsFromContainer.mBackgroundColor);
-      }
-
-//======================================================================
-//
-//======================================================================
-      
-      private var mErrorMessageText:TextFieldEx = null;
-      
-      private function SetErrorMessage (errorMessage:String):void
-      {           
-         this.visible = true;
-         
-         if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
-         {
-            mParamsFromUniViewer.SetLoadingText (null);
-         }
-         
-         if (errorMessage == null)
-         {
-            mErrorMessageLayer.visible = false;
-            return;
-         }
-         
-         mErrorMessageLayer.visible = true;
-         
-         if (mErrorMessageText != null && mErrorMessageText.parent == mErrorMessageLayer)
-            mErrorMessageLayer.removeChild (mErrorMessageText);
-         
-         mErrorMessageText = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (errorMessage) + "<br>" + mLastErrorInfo, true, 0xFFFFFF);
-         mErrorMessageLayer.addChild (mErrorMessageText);
-         
-         CenterErrorMessageText ();
-      }
-      
-      private function CenterErrorMessageText ():void
-      {
-         if (mErrorMessageText != null)
-         {
-            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
-            
-            mErrorMessageText.x = 0.5 * (containerSize.x - mErrorMessageText.width );
-            mErrorMessageText.y = 0.5 * (containerSize.y - mErrorMessageText.height);
-         }
+         var faddingColor:uint = mWorldDesignProperties == null ? mParamsFromContainer.mBackgroundColor : mWorldDesignProperties.GetBackgroundColor ();
+         var bgColor:uint = (mParamsFromEditor == null ? faddingColor : 0xFFFFFF);
+         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, bgColor);
+         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, faddingColor);
       }
 
 //======================================================================
@@ -1532,9 +1975,9 @@ package viewer {
          if (theContextMenu.customItems == null) // possible null in air app
             return;
 
-         var restartCodeMenuItem:ContextMenuItem = new ContextMenuItem("Restart", false);
+         var restartCodeMenuItem:ContextMenuItem = new ContextMenuItem("Restart Game", false);
          theContextMenu.customItems.push (restartCodeMenuItem);
-         restartCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnRestart);
+         restartCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnRestartGame);
 
          var addSeperaorBeforeVersion:Boolean = true;
          var addSeperaorForSelf:Boolean = true;
@@ -1605,7 +2048,14 @@ package viewer {
       {
          if (mWorldSourceCode != null)
          {
-            System.setClipboard(mWorldSourceCode);
+            try
+            {
+               System.setClipboard(mWorldSourceCode);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
       }
 
@@ -1657,7 +2107,14 @@ package viewer {
                //"</object>"
                ;
 
-            System.setClipboard(embedCode);
+            try
+            {
+               System.setClipboard(embedCode);
+            }
+            catch (error:Error)
+            {
+               trace (error.getStackTrace ());
+            }
          }
       }
 
@@ -1741,7 +2198,14 @@ package viewer {
 
             if (forumEmbedCode != null)
             {
-               System.setClipboard (forumEmbedCode);
+               try
+               {
+                  System.setClipboard (forumEmbedCode);
+               }
+               catch (error:Error)
+               {
+                  trace (error.getStackTrace ());
+               }
             }
          }
       }
@@ -1779,25 +2243,39 @@ package viewer {
 //
 //======================================================================
 
-      public function IsPlaying ():Boolean
+      // restart current scene/level
+      //private function OnRestartGame (data:Object = null):void
+      //{
+      //   mCurrentSceneID = 0;
+      //   
+      //   if (mSkin != null)
+      //      mSkin.Restart ();
+      //   else
+      //      OnRestart ();
+      //}
+      
+      // also used for context menu
+      public function OnRestartGame (data:Object = null):void
       {
-         if(mSkin == null)
-            return false;
-
-         return mSkin.IsPlaying ();
+         mSceneSwitchingStyle = SceneSwitchingStyle_None;
+         
+         OnLoadScene (0);
       }
 
-      public function GetPlayingSpeedX ():int
+      private function OnLoadScene (sceneId:int):void
       {
-         if (mSkin == null)
-            return 2;
+         ReloadPlayerWorld (sceneId, false, true);
 
-         return mSkin.GetPlayingSpeedX ();
+         if (_onPlayStatusChanged != null)
+            _onPlayStatusChanged ();
       }
 
+      // restart current scene/level
       private function OnRestart (data:Object = null):void
       {
-         ReloadPlayerWorld (true);
+         mSceneSwitchingStyle = SceneSwitchingStyle_None;
+         
+         ReloadPlayerWorld (mCurrentSceneID, true, true);
 
          if (_onPlayStatusChanged != null)
             _onPlayStatusChanged ();
@@ -1813,6 +2291,38 @@ package viewer {
       {
          if (_onPlayStatusChanged != null)
             _onPlayStatusChanged ();
+      }
+
+      public function IsPlaying ():Boolean
+      {
+         if(mSkin == null)
+            return false;
+
+         return mSkin.IsPlaying ();
+      }
+
+      public function GetPlayingSpeedX ():int
+      {
+         if (mSkin == null)
+            return 2;
+
+         return mSkin.GetPlayingSpeedX ();
+      }
+      
+      public function GetRealtimeFps ():Number
+      {
+         if (mSkin == null)
+            return 0;
+
+         return mSkin.GetFPS ();
+      }
+      
+      public function IsShowPlayBar ():Boolean
+      {
+         if (mSkin == null)
+            return false;
+
+         return mSkin.IsShowPlayBar ();
       }
 
       private function OnSpeedChanged (data:Object = null):void
@@ -1848,26 +2358,86 @@ package viewer {
          if (mSkin == null)
             return;
 
-         mIsSoundEnabled = mSkin.IsSoundEnabled ();
+         SetSoundEnabled (mSkin.IsSoundEnabled ());
+         //SetSoundVolume (mSkin.GetSoundVolume ()); // to add
          
-         mWorldDesignProperties.SetSoundEnabled (mSkin.IsSoundEnabled ());
+         // from v2.02, sound status info is stored in Viewer instead of world plugin
+         //mWorldDesignProperties.SetSoundEnabled (mSkin.IsSoundEnabled ());
       }
 
 //===========================================================================
 // interfaces for game template
 //===========================================================================
-
-      // return: need game tempalte to continue handling or not
-      public function OnBackKeyDown ():Boolean
+      
+      
+      private var mBackKeyEverPressed:Boolean = false;
+      
+      public function OnBackKeyDown ():void
       {
+         mBackKeyEverPressed = true;
+      }
+      
+      private function ExitLevel ():void
+      {
+         if (mParamsFromContainer.OnExitLevel != null)
+         {
+            mParamsFromContainer.OnExitLevel ();
+         }
+      }
+      
+      private function ExitLevelIfBackKeyEverPressed ():void
+      {
+         if (mBackKeyEverPressed)
+         {
+            mBackKeyEverPressed = false;
+
+            ExitLevel ();
+         }
+      }
+         
+      //{
+         /* mWorldDesignProperties.HasSystemBackEventHandlers mWorldDesignProperties.OnSystemBackEvent
+         if (skin != null)
+         {
+            if (skin is visible)
+            {
+               if (is playing)
+                  pause;
+               else if (mParamsFromContainer.OnExitLevel != null)
+                  ...
+            }
+            else if (world.OnExternalEscapeDown ())
+            {
+               // do nothing
+            }
+            else if (mParamsFromContainer.OnExitLevel != null)
+            {
+               ...
+            }
+         }
+         
+         return ! mErrorMessageLayer.visible;
+         */
+         /////////////////////
+         
+         /*
          if (mSkin != null)
          {
             if (mSkin.AreSomeDialogsVisible ())
                mSkin.CloseAllVisibleDialogs ();
             else if (mSkin.IsPlaying ())
             {
-               mSkin.SetPlaying (false);
-               // disable sounds
+               if (mSkin.IsShowPlayBar ())
+               {
+                  mSkin.SetPlaying (false);
+                  // disable sounds
+               }
+               else
+               {
+                  // check if the level has implemented an OnBackKeyPressed event handler, 
+                  // if not, mParamsFromContainer.OnExitLevel (),
+                  // else, trigger mWorld.OnKeyPressed (BackKey)
+               }
             }
             else if (mParamsFromContainer.OnExitLevel != null)
             {
@@ -1875,27 +2445,16 @@ package viewer {
                // close sounds
             }
             else
+            {
                return false;
+            }
             
             return true;
          }
          
-         return false;
-      }
-      
-      // sound
-      
-      private static var mIsSoundEnabled:Boolean = true; // to record and init sound setting
-
-      public static function SetSoundEnabled (soundOn:Boolean):void
-      {
-         mIsSoundEnabled = soundOn;
-      }
-      
-      public static function IsSoundEnabled ():Boolean
-      {
-         return mIsSoundEnabled;
-      }
+         return ! mErrorMessageLayer.visible;
+         */
+      //}
       
       //
 
@@ -1962,7 +2521,7 @@ package viewer {
 
       public function UpdateSingleFrame ():void
       {
-         Step (true);
+         UpdateFrame (true);
       }
       
       public function GetFPS ():Number

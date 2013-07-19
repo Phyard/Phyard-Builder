@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+    title="Import Scene(s)" width="600">
+
+   <mx:HBox width="100%">
+      <mx:Label id="Label_SourceCode" text="Please paste the XML source code in the text area:"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="top">
+      <mx:TextArea id="TextArea_SourceCode" width="100%" height="250" editable="true" wordWrap="false">
+         <mx:text>
+         </mx:text>
+      </mx:TextArea>
+   </mx:HBox>
+   <!--mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:VBox>
+         <mx:Label text="How To Handle Conflicts Of Image Module and Sound Assets?" />
+         <mx:RadioButtonGroup id="RadioButtonGroup_ConflictsHandleMethod"/>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:RadioButton groupName="RadioButtonGroup_ConflictsHandleMethod" id="CheckBox_ConfilictsUseNewer" label="Use Most Recent Modified" selected="true"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:RadioButton groupName="RadioButtonGroup_ConflictsHandleMethod" id="CheckBox_ConfilictsUseCurrent" label="Keep Current (Discard Loaded)"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:RadioButton groupName="RadioButtonGroup_ConflictsHandleMethod" id="CheckBox_ConfilictsUseLoaded" label="Override Current (Use Loaded)"/>
+         </mx:HBox>
+      </mx:VBox>
+      <mx:Spacer width="100%"/>
+   </mx:HBox-->
+   
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="Import Scenes" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   
+   <mx:Script>
+     <![CDATA[       
+         import mx.managers.PopUpManager;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            PopUpManager.removePopUp(this);
+            
+            var params:Object = new Object ();
+            
+            params.mXmlString = TextArea_SourceCode.text;
+            
+            if (OnClose != null)
+               OnClose ();
+            
+            if (OnConfirm != null)
+               OnConfirm (params);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         
+     ]]>
+   </mx:Script>
+   
+   
+
+</mx:TitleWindow>

@@ -189,7 +189,7 @@ package player.entity {
       //      displayPoint.y =  mWorld.GetCoordinateSystem ().P2D_LinearDeltaY (localPhysicsY);
       //   }
       //   
-      //   mNeedRebuildAppearanceObjects = true;
+      //   // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
       //   DelayUpdateAppearance ();
       //}
       //
@@ -201,13 +201,13 @@ package player.entity {
       //   mLocalPoints.splice (vertexIndex, 1);
       //   mLocalDisplayPoints.splice (vertexIndex, 1);
       //   
-      //   mNeedRebuildAppearanceObjects = true;
+      //   // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
       //   DelayUpdateAppearance ();
       //}
       
       protected function CreateVertexArrays (vertexCount:int):void
       {  
-         mNeedRebuildAppearanceObjects = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
          
          if (vertexCount < 0)

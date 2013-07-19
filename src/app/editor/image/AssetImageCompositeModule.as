@@ -37,6 +37,10 @@ package editor.image {
    
    import editor.image.dialog.AssetImageCompositeModuleEditDialog;
    
+   import editor.EditorContext;
+   
+   import common.DataFormat;
+   
    import common.Transform2D;
    
    import common.Define;
@@ -49,9 +53,9 @@ package editor.image {
       protected var mModuleInstanceManager:AssetImageModuleInstanceManager; // for internal module parts editing
       protected var mModuleInstanceManagerForListing:AssetImageModuleInstanceManagerForListing; // for internal module parts listing
       
-      public function AssetImageCompositeModule (assetImageCompositeModuleManager:AssetImageCompositeModuleManager, sequenced:Boolean)
+      public function AssetImageCompositeModule (assetImageCompositeModuleManager:AssetImageCompositeModuleManager, sequenced:Boolean, key:String)
       {
-         super (assetImageCompositeModuleManager);
+         super (assetImageCompositeModuleManager, key);
          
          mAssetImageCompositeModuleManager = assetImageCompositeModuleManager;
          SetSequenced (sequenced);
@@ -116,6 +120,9 @@ package editor.image {
       
       override public function Destroy ():void
       {
+         mModuleInstanceManager.Destroy ();
+         mModuleInstanceManagerForListing.Destroy ();
+         
          super.Destroy ();
          
          if (mAssetImageCompositeModuleEditDialog != null)
@@ -212,7 +219,6 @@ package editor.image {
 //=============================================================
 
       protected var mIsSequenced:Boolean = false;
-      protected var mIsLooped:Boolean = true; // only valid for sequenced modules
       
       // false for assembled
       public function IsSequenced ():Boolean
@@ -225,24 +231,47 @@ package editor.image {
          mIsSequenced = sequenced;
       }
       
-      public function IsLooped ():Boolean
-      {
-         return mIsLooped;
-      }
-      
-      public function SetLooped (looped:Boolean):void
-      {
-         mIsLooped = looped;
-      }
-      
       public function GetNumFrames ():Number
       {
          return IsSequenced () ? mModuleInstanceManager.GetNumAssets () : 1;
       }
       
-//=============================================================
-//   
-//=============================================================
+      protected var mSettingFlags:int = 0; 
+         // only low 16 bits are used.
+         // now, only for sequenced modules
+      
+      public function GetSettingFlags ():int
+      {
+         return mSettingFlags & 0xFFFF;
+      }
+      
+      public function SetSettingFlags (flags:int):void
+      {
+         mSettingFlags = flags & 0xFFFF;
+      }
+      
+      //public function IsLooped ():Boolean
+      //{
+      //   return mIsLooped; SequencedModule_StopAtLastFrame
+      //}
+      //
+      //public function SetLooped (looped:Boolean):void
+      //{
+      //   mIsLooped = looped;
+      //}
+      
+      public function IsConstantPhysicsGeom ():Boolean
+      {
+         return (mSettingFlags & Define.SequencedModule_ConstantPhysicsGeomForAllFrames) == Define.SequencedModule_ConstantPhysicsGeomForAllFrames;
+      }
+      
+      public function SetConstantPhysicsGeom (constant:Boolean):void
+      {
+         if (constant)
+            mSettingFlags |= Define.SequencedModule_ConstantPhysicsGeomForAllFrames;
+         else
+            mSettingFlags &= (~Define.SequencedModule_ConstantPhysicsGeomForAllFrames);
+      }
       
 //=============================================================
 //   
@@ -279,6 +308,19 @@ package editor.image {
          
          mModuleInstanceManagerForListing.SetSelectedAssets (moduleInstanceForListingToSelect);
       }
+      
+      public function SynchronizePartAppearanceOrdersFromListingToEditing ():void
+      {
+         while (mModuleInstanceManager.numChildren > 0)
+            mModuleInstanceManager.removeChildAt (0);
+         
+         var count:int = mModuleInstanceManagerForListing.numChildren;
+         for (var i:int = 0; i < count; ++ i)
+         {
+            var peer:AssetImageModuleInstanceForListing = mModuleInstanceManagerForListing.getChildAt (i) as AssetImageModuleInstanceForListing;
+            mModuleInstanceManager.addChild (peer.GetModuleInstaneForEditingPeer ());
+         }
+      }
 
 //=============================================================
 //   context menu
@@ -290,12 +332,15 @@ package editor.image {
       }
       
       protected var mMenuItemEditModule:ContextMenuItem = new ContextMenuItem("Edit ...");
+      protected var mMenuItemCloneModule:ContextMenuItem = new ContextMenuItem("Clone");
       
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
          mMenuItemEditModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_EditModule);
+         mMenuItemCloneModule.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CloneModule);
          
          customMenuItemsStack.push (mMenuItemEditModule);
+         customMenuItemsStack.push (mMenuItemCloneModule);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
@@ -303,6 +348,34 @@ package editor.image {
       private function OnContextMenuEvent_EditModule (event:ContextMenuEvent):void
       {
          AssetImageCompositeModuleEditDialog.ShowAssetImageCompositeModuleEditDialog (this);
+      }
+      
+      private function OnContextMenuEvent_CloneModule (event:ContextMenuEvent):void
+      {
+         try
+         {
+            var newMoudle:AssetImageCompositeModule = GetAssetImageCompositeModuleManager ().CreateImageCompositeModule (null, true, false);
+            
+            var modulePartDefines:Array = DataFormat.ModuleInstances2Define (EditorContext.GetEditorApp ().GetWorld (), GetModuleInstanceManager (), GetAssetImageCompositeModuleManager ().IsSequencedModuleManager ());
+            
+            var numImageModules:int = EditorContext.GetEditorApp ().GetWorld ().GetNumImageModules ();
+            var imageModuleRefIndex_CorrectionTable:Array = new Array (numImageModules);
+            for (var i:int = 0; i < numImageModules; ++ i)
+               imageModuleRefIndex_CorrectionTable [i] = i;
+            
+            DataFormat.ModuleInstanceDefinesToModuleInstances (modulePartDefines, imageModuleRefIndex_CorrectionTable, EditorContext.GetEditorApp ().GetWorld (), newMoudle.GetModuleInstanceManager (), newMoudle.GetAssetImageCompositeModuleManager ().IsSequencedModuleManager ());
+            
+            GetAssetImageCompositeModuleManager ().MoveSelectedAssetsToIndex (GetAssetImageCompositeModuleManager ().getChildIndex (this) + 1);
+            
+            newMoudle.UpdateTimeModified ();
+            newMoudle.UpdateAppearance ();
+            
+            GetAssetImageCompositeModuleManager ().UpdateLayout (true);
+         }
+         catch (error:Error)
+         {
+            trace (error.getStackTrace ());
+         }
       }
       
 //=============================================================

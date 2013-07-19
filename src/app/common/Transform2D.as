@@ -11,6 +11,11 @@ package common {
       {
          if (combined == null)
             combined = new Transform2D ();
+         else
+         {
+            combined.mOffsetX = 0;
+            combined.mOffsetY = 0;
+         }
          
       // offset
       
@@ -35,9 +40,6 @@ package common {
       
       public static function CombineInverseTransformAndTransform (invTransform1:Transform2D, transform2:Transform2D, combined:Transform2D = null):Transform2D
       {
-         if (combined == null)
-            combined = new Transform2D ();
-         
          return CombineTransforms (invTransform1.GetInverse (), transform2, combined);
       }
       

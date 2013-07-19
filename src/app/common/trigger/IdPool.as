@@ -12,6 +12,7 @@ package common.trigger {
       public static const EventId_2:int = 2;
       public static const EventId_3:int = 3;
 
+      public static const EventId_5:int = 5;
       public static const EventId_6:int = 6;
       public static const EventId_7:int = 7;
 
@@ -40,6 +41,8 @@ package common.trigger {
 
       public static const EventId_111:int = 111;
       public static const EventId_112:int = 112;
+      
+      public static const EventId_120:int = 120;
 
       //public static const EventId_130:int = 130;
       public static const EventId_131:int = 131;
@@ -48,6 +51,8 @@ package common.trigger {
 
       public static const EventId_150:int = 150;
 
+      public static const EventId_189:int = 189;
+      
       public static const EventId_190:int = 190;
 
       public static const EventId_200:int = 200;
@@ -120,7 +125,7 @@ package common.trigger {
       public static const CoreApiId_75:int = 75; //
       public static const CoreApiId_76:int = 76; //
       public static const CoreApiId_77:int = 77; //
-
+      public static const CoreApiId_78:int = 78; //
       public static const CoreApiId_79:int = 79; //
       public static const CoreApiId_80:int = 80; //
       public static const CoreApiId_81:int = 81; //
@@ -147,6 +152,18 @@ package common.trigger {
       public static const CoreApiId_102:int = 102; //
       public static const CoreApiId_103:int = 103; //
       public static const CoreApiId_104:int = 104; //
+      public static const CoreApiId_105:int = 105; //
+      public static const CoreApiId_106:int = 106; //
+      public static const CoreApiId_107:int = 107; //
+      public static const CoreApiId_108:int = 108; //
+      public static const CoreApiId_109:int = 109 //
+      public static const CoreApiId_110:int = 110; //
+      public static const CoreApiId_111:int = 111; //
+      public static const CoreApiId_112:int = 112; //
+      public static const CoreApiId_113:int = 113; //
+      public static const CoreApiId_114:int = 114; //
+      public static const CoreApiId_115:int = 115; //
+      public static const CoreApiId_116:int = 116; //
 
       public static const CoreApiId_120:int = 120; //
       public static const CoreApiId_121:int = 121; //
@@ -162,6 +179,7 @@ package common.trigger {
       public static const CoreApiId_131:int = 131; //
       public static const CoreApiId_132:int = 132; //
       public static const CoreApiId_133:int = 133; //
+      public static const CoreApiId_134:int = 134; //
 
       public static const CoreApiId_150:int = 150; //
       public static const CoreApiId_151:int = 151; //
@@ -258,6 +276,23 @@ package common.trigger {
       public static const CoreApiId_530:int = 530; //
       public static const CoreApiId_531:int = 531; //
 
+      public static const CoreApiId_576:int = 576; // design
+      public static const CoreApiId_577:int = 577; // design
+      public static const CoreApiId_578:int = 578; // design
+      public static const CoreApiId_579:int = 579; // design
+      public static const CoreApiId_580:int = 580; // design
+      public static const CoreApiId_581:int = 581; // design
+      public static const CoreApiId_582:int = 582; // design
+      public static const CoreApiId_583:int = 583; // design
+      public static const CoreApiId_584:int = 584; // design
+      public static const CoreApiId_585:int = 585; // design
+      public static const CoreApiId_586:int = 586; // design
+      public static const CoreApiId_587:int = 587; // design
+      public static const CoreApiId_588:int = 588; // design
+      public static const CoreApiId_589:int = 589; // design
+      public static const CoreApiId_590:int = 590; // design
+      public static const CoreApiId_591:int = 591; // design
+      public static const CoreApiId_592:int = 592 // design
       public static const CoreApiId_593:int = 593; // design
       public static const CoreApiId_594:int = 594; // design
       public static const CoreApiId_595:int = 595; // design
@@ -265,7 +300,6 @@ package common.trigger {
       public static const CoreApiId_597:int = 597; // design
       public static const CoreApiId_598:int = 598; // design
       public static const CoreApiId_599:int = 599; // design
-
       public static const CoreApiId_600:int = 600; // design
       public static const CoreApiId_601:int = 601; // design
       public static const CoreApiId_602:int = 602; // design
@@ -274,9 +308,22 @@ package common.trigger {
 
       public static const CoreApiId_609:int = 609; // design
       public static const CoreApiId_610:int = 610; // design
+      
       public static const CoreApiId_612:int = 612; // design
+      
       public static const CoreApiId_614:int = 614; // design
       public static const CoreApiId_615:int = 615; // gesture
+      public static const CoreApiId_616:int = 616; // 
+      public static const CoreApiId_617:int = 617; // 
+      public static const CoreApiId_618:int = 618; // 
+      public static const CoreApiId_619:int = 619; // 
+      public static const CoreApiId_620:int = 620; // 
+      public static const CoreApiId_621:int = 621; // 
+      public static const CoreApiId_622:int = 622; // 
+      public static const CoreApiId_623:int = 623; // 
+      public static const CoreApiId_624:int = 624; // 
+      public static const CoreApiId_625:int = 625; // 
+      public static const CoreApiId_626:int = 626; // 
 
       public static const CoreApiId_700:int = 700; // world
 
@@ -284,9 +331,9 @@ package common.trigger {
       public static const CoreApiId_711:int = 711; // world
       public static const CoreApiId_712:int = 712; // world
       public static const CoreApiId_713:int = 713; // world
-
+      public static const CoreApiId_714:int = 714; // world
       public static const CoreApiId_715:int = 715; // world
-
+      public static const CoreApiId_716:int = 716; // world
       public static const CoreApiId_717:int = 717; // world
       public static const CoreApiId_718:int = 718; // world
       public static const CoreApiId_719:int = 719; // world
@@ -295,11 +342,15 @@ package common.trigger {
       public static const CoreApiId_722:int = 722; // world
       public static const CoreApiId_723:int = 723; // world
       public static const CoreApiId_725:int = 725; // world
+      public static const CoreApiId_726:int = 726; // world.physics. 
+      public static const CoreApiId_727:int = 727; // world.physics. 
 
       public static const CoreApiId_730:int = 730; // world
       public static const CoreApiId_731:int = 731; // world
       public static const CoreApiId_732:int = 732; // world
       public static const CoreApiId_733:int = 733; // world
+      public static const CoreApiId_734:int = 734; // world
+      public static const CoreApiId_735:int = 735; // world
 
       public static const CoreApiId_750:int = 750; // world
       public static const CoreApiId_751:int = 751; // world
@@ -312,14 +363,20 @@ package common.trigger {
 
       public static const CoreApiId_800:int = 800; // world
       public static const CoreApiId_801:int = 801; // world
+      public static const CoreApiId_802:int = 802; // world
+      public static const CoreApiId_803:int = 803; // world
+      public static const CoreApiId_804:int = 804; // world
+      public static const CoreApiId_805:int = 805; // world
+      public static const CoreApiId_806:int = 806; // world
 
       public static const CoreApiId_850:int = 850; // CCat
       public static const CoreApiId_851:int = 851; // CCat
       public static const CoreApiId_852:int = 852; // CCat
       public static const CoreApiId_853:int = 853; // CCat
-
+      public static const CoreApiId_854:int = 854; // module
       public static const CoreApiId_855:int = 855; // CCat
       public static const CoreApiId_856:int = 856; // CCat
+      public static const CoreApiId_857:int = 857; // module
 
       public static const CoreApiId_900:int = 900; // entity
       public static const CoreApiId_901:int = 901; // entity
@@ -409,7 +466,8 @@ package common.trigger {
       public static const CoreApiId_1125:int = 1125; // entity.shape
       public static const CoreApiId_1126:int = 1126; // entity.shape
       public static const CoreApiId_1127:int = 1127; // entity.shape
-
+      public static const CoreApiId_1128:int = 1128; // entity.shape
+      public static const CoreApiId_1129:int = 1129; // entity.shape
       public static const CoreApiId_1130:int = 1130; // entity.shape physics
       public static const CoreApiId_1131:int = 1131; // entity.shape physics
       public static const CoreApiId_1132:int = 1132; // entity.shape physics
@@ -420,6 +478,7 @@ package common.trigger {
       public static const CoreApiId_1137:int = 1137; // entity.shape physics
       public static const CoreApiId_1138:int = 1138; // entity.shape physics
       public static const CoreApiId_1139:int = 1139; // entity.shape physics
+      public static const CoreApiId_1140:int = 1140; // entity.shape physics
 
       public static const CoreApiId_1150:int = 1150; // entity.shape physics
       //public static const CoreApiId_1151:int = 1151; // entity.shape physics
@@ -427,7 +486,7 @@ package common.trigger {
       public static const CoreApiId_1153:int = 1153; // entity.shape physics
       //public static const CoreApiId_1154:int = 1154; // entity.shape physics
       public static const CoreApiId_1155:int = 1155; // entity.shape physics
-      //public static const CoreApiId_1156:int = 1156; // entity.shape physics
+      public static const CoreApiId_1156:int = 1156; // entity.shape physics
       public static const CoreApiId_1157:int = 1157; // entity.shape physics
       public static const CoreApiId_1158:int = 1158; // entity.shape physics
       //public static const CoreApiId_1159:int = 1159; // entity.shape physics
@@ -436,6 +495,8 @@ package common.trigger {
       public static const CoreApiId_1162:int = 1162; // entity.shape physics
       public static const CoreApiId_1163:int = 1163; // entity.shape physics
       public static const CoreApiId_1164:int = 1164; // entity.shape physics
+      public static const CoreApiId_1165:int = 1165; // entity.shape physics
+      public static const CoreApiId_1166:int = 1166; // entity.shape physics
 
       public static const CoreApiId_1220:int = 1220;
       public static const CoreApiId_1221:int = 1221;
@@ -478,13 +539,15 @@ package common.trigger {
       public static const CoreApiId_1403:int = 1403; // entity.shape
       public static const CoreApiId_1404:int = 1404; // entity.shape
       public static const CoreApiId_1405:int = 1405; // entity.shape
-
+      public static const CoreApiId_1406:int = 1406; // entity.shape
+      public static const CoreApiId_1407:int = 1407; // entity.shape
+      public static const CoreApiId_1408:int = 1408; // entity.shape
+      public static const CoreApiId_1409:int = 1409; // entity.shape
 
       public static const CoreApiId_1550:int = 1550; // entity.shape.text
       public static const CoreApiId_1551:int = 1551; // entity.shape.text
       public static const CoreApiId_1552:int = 1552; // entity.shape.text
       public static const CoreApiId_1553:int = 1553; // entity.shape.text
-
       public static const CoreApiId_1554:int = 1554; // entity.shape.circle
       public static const CoreApiId_1555:int = 1555; // entity.shape.circle
       public static const CoreApiId_1556:int = 1556; // entity.shape.rectangle
@@ -501,13 +564,26 @@ package common.trigger {
       public static const CoreApiId_1567:int = 1567; // entity.shape.poly
       public static const CoreApiId_1568:int = 1568; // entity.shape.poly
       public static const CoreApiId_1569:int = 1569; // entity.shape.poly
-
       public static const CoreApiId_1570:int = 1570; // entity.shape.text
       public static const CoreApiId_1571:int = 1571; // entity.shape.text
       public static const CoreApiId_1572:int = 1572; // entity.shape.text
+      public static const CoreApiId_1573:int = 1573; // entity.shape.text
+      public static const CoreApiId_1574:int = 1574; // entity.shape.text
+      public static const CoreApiId_1575:int = 1575; // entity.shape.text
+      public static const CoreApiId_1576:int = 1576; // entity.shape.text
+      public static const CoreApiId_1577:int = 1577; // entity.shape.text
+      public static const CoreApiId_1578:int = 1578; // entity.shape.text
+      public static const CoreApiId_1579:int = 1579; // entity.shape.text
+      public static const CoreApiId_1580:int = 1580; // entity.shape.module
+      public static const CoreApiId_1581:int = 1581; // entity.shape.module
+      public static const CoreApiId_1582:int = 1582; // entity.shape.module.button
+      public static const CoreApiId_1583:int = 1583; // entity.shape.module.button
+      public static const CoreApiId_1584:int = 1584; // entity.shape.module.button
+      public static const CoreApiId_1585:int = 1585; // entity.shape.module.button
+      public static const CoreApiId_1586:int = 1586; // entity.shape.text
+      public static const CoreApiId_1587:int = 1587; // entity.shape.text
 
-      //public static const CoreApiId_1580:int = 1580; // entity.shape.text
-      public static const CoreApiId_1581:int = 1581; // entity.shape.text
+      public static const CoreApiId_1989:int = 1989; // joint
 
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint

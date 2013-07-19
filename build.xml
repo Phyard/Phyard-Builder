@@ -36,12 +36,51 @@
    <condition property="program.as3compiler.nosuffix" value="${dir.flexsdk}/bin/amxmlc" else="${dir.flexsdk}/bin/mxmlc">
       <isset property="ForAir"/>
    </condition>
-   <condition property="program.as3compiler" value="${program.as3compiler.nosuffix}.exe" else="${program.as3compiler.nosuffix}">
-      <os family="windows" />
+   <condition property="program.as3compiler" value="${program.as3compiler.nosuffix}">
+      <not>
+         <os family="windows" />
+      </not>
+   </condition>
+   <condition property="program.as3compiler" value="${program.as3compiler.nosuffix}.bat">
+      <and>
+         <isset property="ForAir"/>
+         <os family="windows" />
+      </and>
+   </condition>
+   <condition property="program.as3compiler" value="${program.as3compiler.nosuffix}.exe">
+      <and>
+         <not>
+            <isset property="ForAir"/>
+         </not>
+         <os family="windows" />
+      </and>
    </condition>
 
-   <property name="program.secureSWF.nosuffix"        value="${dir.secureswf}/ssCLI" />
-   <condition property="program.secureSWF" value="${program.secureSWF.nosuffix}.exe" else="${program.secureSWF.nosuffix}">
+   <condition property="program.compcompiler.nosuffix" value="${dir.flexsdk}/bin/acompc" else="${dir.flexsdk}/bin/compc">
+      <isset property="ForAir"/>
+   </condition>
+   <condition property="program.compcompiler" value="${program.compcompiler.nosuffix}">
+      <not>
+         <os family="windows" />
+      </not>
+   </condition>
+   <condition property="program.compcompiler" value="${program.compcompiler.nosuffix}.bat">
+      <and>
+         <isset property="ForAir"/>
+         <os family="windows" />
+      </and>
+   </condition>
+   <condition property="program.compcompiler" value="${program.compcompiler.nosuffix}.exe">
+      <and>
+         <not>
+            <isset property="ForAir"/>
+         </not>
+         <os family="windows" />
+      </and>
+   </condition>
+
+   <property name="program.secureSWF"        value="${dir.secureswf}/ssCLI" />
+   <condition property="program.secureSWF" value="${program.secureSWF}.exe">
       <os family="windows" />
    </condition>
 
@@ -469,6 +508,78 @@
       </antcall>
    </target>
 
+   <!-- ============================================= libraries =========================================================== -->
+
+   <target name="--compile-library">
+      <delete dir="${dir.release}.library.${--library-name}" quiet="true" />
+      <mkdir dir="${dir.release}.library.${--library-name}" />
+
+      <antcall target="--pre-compile" />
+
+      <copy todir="${dir.build.src}" overwrite="true">
+         <fileset dir="${dir.src}/libraries/${--library-name}">
+            <exclude name="**/.svn/**"/>
+         </fileset>
+      </copy>
+
+      <condition property="is-debugging" value="true" else="false">
+         <istrue value="${--debug}"/>
+      </condition>
+
+      <exec dir="${dir.build.src}" executable="${program.compcompiler}">
+         <arg line="-debug=${--debug}"/>
+         <arg line="-source-path=${dir.build.src}" />
+         <arg line="-include-classes=Main" />
+         <arg line="-output=${dir.release}.library.${library-name}/${library-name}_unsecure.swc"/>
+         <arg line="-optimize=true" />
+         <arg line="--target-player=10.0.0" />
+         <arg line="-use-network" />
+         <arg line="-locale=en_US" />
+      </exec>
+   </target>
+
+   <target name="debug-library">
+      <antcall target="--compile-library">
+         <param name="--debug" value="true" />
+         <param name="--library-name" value="${library-name}" />
+      </antcall>
+   </target>
+
+   <target name="release-library" depends="compile-resource">
+      <antcall target="--compile-library">
+         <param name="--debug" value="false" />
+         <param name="--library-name" value="${library-name}" />
+      </antcall>
+
+      <mkdir dir="${dir.release}" />
+      <delete file="${dir.release}/${library-name}.swc" quiet="true" />
+
+      <exec dir="${dir.release}.library.${library-name}" executable="${dir.secureswf}/ssCLI">
+         <arg line="${dir.release}.library.${library-name}/${library-name}_unsecure.swc"/> <!-- here must inlcude the path on linux -->
+         <arg line="${dir.release}/${library-name}"/>
+         <arg line="-wrap:0"/>
+         <arg line="-controlflow:0"/>
+         <arg line="-optimize:off"/>
+         <arg line="-slr:off"/>
+         <arg line="-rename:off"/>
+         <arg line="-safe:off"/>
+      </exec>
+
+      <move file="${dir.release}.library.${library-name}/${library-name}_unsecure.swc" tofile="${dir.release}/${library-name}.swc"/>
+   </target>
+
+   <target name="debug-library-ViewerWorld">
+      <antcall target="debug-library">
+         <param name="library-name" value="ViewerWorld" />
+      </antcall>
+   </target>
+
+   <target name="release-library-ViewerWorld">
+      <antcall target="release-library">
+         <param name="library-name" value="ViewerWorld" />
+      </antcall>
+   </target>
+   
    <!-- ============================================= tests =========================================================== -->
 
    <target name="--compile-test">

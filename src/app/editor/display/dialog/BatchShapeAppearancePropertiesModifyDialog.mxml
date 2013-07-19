@@ -3,8 +3,8 @@
      The TitleWindowApp application displays this component.
      You cannot run it independently. -->
 
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Batch Shape Appearance Setting" width="600"
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"  xmlns:ctl="editor.display.control.*"
+    title="Batch Shape Appearance Setting" width="700"
     creationComplete="OnInitPanel()"
     >
 
@@ -37,6 +37,15 @@
             <mx:CheckBox id="CheckBox_BackgroundColor_Modify" label="" click="Label_BackgroundColor.enabled=CheckBox_BackgroundColor_Modify.selected;ColorPicker_BackgroundColor.enabled=CheckBox_BackgroundColor_Modify.selected;"/>
             <mx:Label id="Label_BackgroundColor" enabled="false" text="Filled Color:" textAlign="right"/>
             <mx:ColorPicker id="ColorPicker_BackgroundColor" enabled="false" showTextField="true" selectedColor="0xFFFFFF"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:Spacer width="60"/>
+            <mx:CheckBox label="" visible="false"/>
+            <mx:Spacer width="22%"/>
+            <mx:CheckBox id="CheckBox_BodyTexture_Modify" label="" click="Label_BodyTexture.enabled=CheckBox_BodyTexture_Modify.selected;Button_PickBodyTexture.enabled=CheckBox_BodyTexture_Modify.selected;"/>
+            <mx:Label id="Label_BodyTexture" enabled="false" text="Or Use Texture: " textAlign="right"/>
+            <ctl:ModulePickButton id="Button_PickBodyTexture" enabled="false" label="Null" width="128" />
          </mx:HBox>
 
          <mx:HBox width="100%">
@@ -92,7 +101,8 @@
          import mx.managers.PopUpManager;
          import mx.controls.Menu;
 
-         import editor.trigger.Lists;
+         import editor.util.DataUtil;
+         import editor.world.Lists;
 
          import common.Define;
 
@@ -108,7 +118,7 @@
 
          private function OnInitPanel ():void
          {
-            SelectList_AiType.dataProvider = Lists.GetListWithDataInLabel (Lists.mAiTypeList);
+            SelectList_AiType.dataProvider = DataUtil.GetListWithDataInLabel (Lists.mAiTypeList);
          }
 
          public function GetValues (returnValues:Object):void
@@ -128,6 +138,9 @@
             returnValues.mToModifyBackgroundColor = CheckBox_BackgroundColor_Modify.selected;
             if (returnValues.mToModifyBackgroundColor)
                returnValues.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
+            returnValues.mToModifyBodyTexture = CheckBox_BodyTexture_Modify.selected;
+            if (returnValues.mToModifyBodyTexture)
+               returnValues.mBodyTextureModule = Button_PickBodyTexture.GetPickedModule ();
 
             returnValues.mToModifyDrawBorder = CheckBox_DrawBorder_Modify.selected;
             if (returnValues.mToModifyDrawBorder)

@@ -55,12 +55,20 @@ package editor.image.dialog {
          {
             mAssetImageModuleManager = assetImageModuleManager;
             
-            if (mAssetImageModuleManager != null)
+            if (mAssetImageModuleManager != null && mAssetImageModuleManager.GetLayout () == null)
             {
                mAssetImageModuleManager.SetLayout (new AssetManagerArrayLayout (mAssetImageModuleManager, mAssetImageModuleManager.GetModuleIconSize () + 16));
-               mAssetImageModuleManager.UpdateLayout (true);
+               mAssetImageModuleManager.UpdateLayout (true, true);
             }
          }
+      }
+      
+      override public function GetMouseWheelFunction (ctrlDown:Boolean, shiftDown:Boolean):int
+      {
+         if (ctrlDown || shiftDown)
+            return kMouseWheelFunction_Zoom;
+         
+         return kMouseWheelFunction_Scroll;
       }
       
    }

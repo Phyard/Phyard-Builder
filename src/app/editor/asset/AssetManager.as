@@ -33,7 +33,7 @@ package editor.asset {
       
       public function AssetManager ()
       {
-         mCoordinateSystem = Define.kDefaultCoordinateSystem;
+         mCoordinateSystem = CoordinateSystem.kDefaultCoordinateSystem;
          
          mSelectionEngine = new SelectionEngine ();
          
@@ -88,11 +88,11 @@ package editor.asset {
          mAssetManagerLayout = layout;
       }
       
-      public function UpdateLayout (forcely:Boolean = false):void
+      public function UpdateLayout (forcely:Boolean = false, alsoUpdateAssetAppearance:Boolean = false):void
       {
          if (mAssetManagerLayout != null)
          {
-            mAssetManagerLayout.DoLayout (forcely);
+            mAssetManagerLayout.DoLayout (forcely, alsoUpdateAssetAppearance);
          }
       }
 
@@ -194,6 +194,82 @@ package editor.asset {
       }
       
 //=================================================================================
+//   
+//=================================================================================
+      
+      private var mAccAssetId:int = 0; // used to create key
+      
+      final public function GetAccAssetId ():int
+      {
+         return mAccAssetId;
+      }
+      
+      protected function ValidateAssetKey (key:String):String
+      {  
+         if (key != null && key.length == 0)
+            key = null;
+         
+         while (key == null || mLookupTableByKey [key] != null)
+         {
+            key = EditorObject.BuildKey (GetAccAssetId ());
+         }
+         
+         return key;
+      }
+      
+      final public function OnAssetCreated (asset:Asset):void
+      {
+         if (asset.GetKey () != null)
+         {
+            //>> generally, this will not happen
+            var oldAsset:Asset = mLookupTableByKey [asset.GetKey ()];
+            if (oldAsset != null)
+            {
+               DestroyAsset (oldAsset);
+            }
+            //<<
+            
+            mLookupTableByKey [asset.GetKey ()] = asset;
+         }
+         
+         // ...
+         
+         ++ mAccAssetId; // never decrease
+         
+         // ...
+         
+         mNeedToCorrectAssetCreationIds = true;
+         
+         if (mIsCreationArrayOpened)
+         {
+            if (mAssetsSortedByCreationId.indexOf (asset) < 0)
+               mAssetsSortedByCreationId.push (asset);
+         }
+      }
+      
+      final public function OnAssetDestroyed (asset:Asset):void
+      {
+         if (asset.GetKey () != null)
+         {
+            delete mLookupTableByKey [asset.GetKey ()];
+         }
+         
+         // ...
+         
+         mNeedToCorrectAssetCreationIds = true;
+         
+         if (mIsCreationArrayOpened)
+         {
+            var index:int = mAssetsSortedByCreationId.indexOf (asset);
+            if (index >= 0)
+            {
+               mAssetsSortedByCreationId.splice (index, 1);
+               asset.SetCreationOrderId (-1);
+            }
+         }
+      }
+      
+//=================================================================================
 //   destroy assets
 //=================================================================================
       
@@ -202,6 +278,8 @@ package editor.asset {
          DestroyAllAssets ();
          
          mSelectionEngine.Destroy ();
+         
+         NotifyDestroyedForReferers ();
       }
       
       public function DestroyAllAssets ():void
@@ -361,6 +439,12 @@ package editor.asset {
 //=================================================================================
 //   selection list
 //=================================================================================
+      
+      public function OnAssetSelectionsChanged ():void
+      {
+         // called by Panel
+         // to override
+      }
       
       //============= 3 basic ones
       
@@ -740,9 +824,17 @@ package editor.asset {
          return count > 0;
       }
       
+      public function GetMoveSelectedAssetsStyle ():int
+      {
+         if (mAssetManagerLayout == null)
+            return AssetManagerPanel.kMoveSelectedAssetsStyle_Smooth;
+            
+         return mAssetManagerLayout.GetMoveSelectedAssetsStyle ();
+      }
+      
       public function MoveSelectedAssets (moveBodyTexture:Boolean, offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
       {
-         if (mAssetManagerLayout != null && (! mAssetManagerLayout.SupportMoveSelectedAssets ()) && (! moveBodyTexture))
+         if ((GetMoveSelectedAssetsStyle () != AssetManagerPanel.kMoveSelectedAssetsStyle_Smooth) && (! moveBodyTexture))
             return;
          
          var assetArray:Array = GetSelectedAssets ();
@@ -883,6 +975,72 @@ package editor.asset {
             if (updateSelectionProxy)
             {
                asset.OnTransformIntentDone ();
+            }
+         }
+         
+         if (assetArray.length > 0)
+         {
+            NotifyModifiedForReferers ();
+         }
+      }
+      
+      //public function AdjustAssetAppearanceOrder (asset:Asset, newIndex:int):void
+      //{
+      //   if (newIndex < 0 || newIndex >= GetNumAssets ())
+      //      return;
+      //   
+      //   if (asset == null || asset.GetAssetManager () != this)
+      //      return;
+      //   
+      //   var currentIndex:int = asset.GetAppearanceLayerId ();
+      //   if (currentIndex == newIndex)
+      //      return;
+      //   
+      //   removeChild (asset);
+      //   addChildAt (asset, newIndex);
+      //   
+      //   NotifyModifiedForReferers ();
+      //}
+      
+      public function MoveSelectedAssetsToIndex (aCurrentIndex:int):void
+      {
+         MoveAssetsToIndex (GetSelectedAssets (), aCurrentIndex);
+      }
+      
+      public function MoveAssetsToIndex (assetArray:Array, aCurrentIndex:int):void
+      {
+         if (assetArray == null)
+            return;
+         
+         assetArray.sortOn("appearanceLayerId", Array.NUMERIC);
+         
+         var count:int = numChildren;
+         
+         if (count == assetArray.length)
+            return;
+         
+         var beforeAsset:Asset = null;
+         
+         var asset:Asset;
+         var i:int;
+         for (i = aCurrentIndex; i < count; ++ i)
+         {
+            asset = getChildAt (i) as Asset;
+            if ((! asset.IsSelected ()) && contains (asset))
+            {
+               beforeAsset = asset;
+               break;
+            }
+         }
+         
+         for (i = 0; i < assetArray.length; ++ i)
+         {
+            asset = assetArray [i] as Asset;
+            
+            if ( asset != null && contains (asset) )
+            {
+               removeChild (asset);
+               addChildAt (asset, beforeAsset == null ? count - 1 : getChildIndex (beforeAsset));
             }
          }
          
@@ -1139,6 +1297,51 @@ package editor.asset {
          return false;
       }
       
+      public function AlignControlPoints (horizontally:Boolean):Boolean
+      {
+         var primaryCP:ControlPoint = null;
+         var secondaryCP:ControlPoint = null;
+         
+         for (var i:int = mCurrentShownControlPoints.length - 1; i >= 0; -- i)
+         {
+            var cp:ControlPoint = mCurrentShownControlPoints [i] as ControlPoint;
+            if (cp.GetSelectedLevel () == ControlPoint.SelectedLevel_Primary)
+            {
+               primaryCP = cp;
+            }
+            else if (cp.GetSelectedLevel () == ControlPoint.SelectedLevel_Secondary)
+            {
+               secondaryCP = cp;
+            }
+         }
+         
+         if (primaryCP != null && secondaryCP != null)
+         {
+            if (horizontally)
+            {
+               if (cp.GetOwnerAsset ().AlignControlPointsHorizontally (primaryCP, secondaryCP))
+                  return true;
+            }
+            else
+            {
+               if (cp.GetOwnerAsset ().AlignControlPointsVertically (primaryCP, secondaryCP))
+                  return true;
+            }
+         }
+         
+         return false;
+      }
+      
+      public function AlignControlPointsHorizontally ():Boolean
+      {
+         return AlignControlPoints (true);
+      }
+      
+      public function AlignControlPointsVertically ():Boolean
+      {
+         return AlignControlPoints (false);
+      }
+      
 //=================================================================================
 // appearance and creation order
 //=================================================================================
@@ -1238,50 +1441,6 @@ package editor.asset {
          return getChildAt (appearanceId) as Asset;
       }
       
-      public function AdjustAssetAppearanceOrder (asset:Asset, newIndex:int):void
-      {
-         if (newIndex < 0 || newIndex >= GetNumAssets ())
-            return;
-         
-         if (asset == null || asset.GetAssetManager () != this)
-            return;
-         
-         var currentIndex:int = asset.GetAppearanceLayerId ();
-         if (currentIndex == newIndex)
-            return;
-         
-         removeChild (asset);
-         addChildAt (asset, newIndex);
-         
-         NotifyModifiedForReferers ();
-      }
-      
-      public function OnAssetCreated (asset:Asset):void
-      {
-         mNeedToCorrectAssetCreationIds = true;
-         
-         if (mIsCreationArrayOpened)
-         {
-            if (mAssetsSortedByCreationId.indexOf (asset) < 0)
-               mAssetsSortedByCreationId.push (asset);
-         }
-      }
-      
-      final public function OnAssetDestroyed (asset:Asset):void
-      {
-         mNeedToCorrectAssetCreationIds = true;
-         
-         if (mIsCreationArrayOpened)
-         {
-            var index:int = mAssetsSortedByCreationId.indexOf (asset);
-            if (index >= 0)
-            {
-               mAssetsSortedByCreationId.splice (index, 1);
-               asset.SetCreationOrderId (-1);
-            }
-         }
-      }
-      
       private var mNeedToCorrectAssetCreationIds:Boolean = false;
       
       public function CorrectAssetCreationIds ():void
@@ -1322,6 +1481,19 @@ package editor.asset {
          if (mIsCreationArrayOpened)
             mAssetsSortedByCreationId.push (asset);
       }
+      
+//============================================================================
+// lookup tables
+//============================================================================
+      
+      private var mLookupTableByKey:Dictionary = new Dictionary ();
+      
+      public function GetAssetByKey (key:String):Asset
+      {
+         return mLookupTableByKey [key] as Asset;
+      }
+      
+      // todo: lookup table by name
       
 //============================================================================
 // utils
@@ -1446,7 +1618,7 @@ package editor.asset {
          // to override
       }
       
-      public function DrawAssetIds (canvasSprite:Sprite):void
+      public function UpdateAssetIdTexts (canvasSprite:Sprite):void
       {
          var asset:Asset;
          var i:int;
@@ -1456,7 +1628,7 @@ package editor.asset {
             asset = GetAssetByCreationId (i) as Asset;
             if (asset != null)
             {
-               asset.DrawAssetId (canvasSprite);
+               asset.UpdateAssetIdText (canvasSprite);
             }
          }
       }

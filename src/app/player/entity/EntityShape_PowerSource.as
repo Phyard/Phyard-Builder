@@ -58,9 +58,9 @@ package player.entity {
 //   create
 //=============================================================
       
-      override public function Create (createStageId:int, entityDefine:Object):void
+      override public function Create (createStageId:int, entityDefine:Object, extraInfos:Object):void
       {
-         super.Create (createStageId, entityDefine);
+         super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
          {
@@ -70,7 +70,8 @@ package player.entity {
                mPowerMagnitude = entityDefine.mPowerMagnitude;
                
                var eventHandlerDefine:Object = new Object ();
-               entityDefine.mEventHandlerDefine = eventHandlerDefine;
+               //entityDefine.mEventHandlerDefine = eventHandlerDefine;
+               entityDefine.mLoadingTimeInfos.mEventHandlerDefine = eventHandlerDefine;
                
                var functionDefine:FunctionDefine = new FunctionDefine ();
                eventHandlerDefine.mFunctionDefine = functionDefine;
@@ -162,14 +163,16 @@ package player.entity {
                }
                
                mEventHandler.SetEnabled (IsEnabled ());
-               mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               //mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine, extraInfos);
+               mEventHandler.Create (createStageId, entityDefine.mLoadingTimeInfos.mEventHandlerDefine, extraInfos);
             }
          }
          else if (createStageId == 1) 
          {
             if (mEventHandler != null)
             {
-               mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               //mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine, extraInfos);
+               mEventHandler.Create (createStageId, entityDefine.mLoadingTimeInfos.mEventHandlerDefine, extraInfos);
                this.RegisterEventHandler (mEventHandler.GetEventId (), mEventHandler);
             }
          }
@@ -177,7 +180,8 @@ package player.entity {
          {
             if (mEventHandler != null)
             {
-               mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               //mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine, extraInfos);
+               mEventHandler.Create (createStageId, entityDefine.mLoadingTimeInfos.mEventHandlerDefine, extraInfos);
             }
          }
       }

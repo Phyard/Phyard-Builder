@@ -4,6 +4,7 @@ package editor.trigger {
    import mx.controls.ComboBox;
    
    import editor.world.World;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    import editor.entity.Scene;
    
@@ -166,10 +167,9 @@ package editor.trigger {
          return new ValueSource_Direct (null);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
+      override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
-         var world:World = EditorContext.GetEditorApp ().GetWorld ();
-         var entity_list:Array = world.GetEntityContainer ().GetEntitySelectListDataProviderByFilter (IsValidEntity, mGroundSelectable, null, isForPureCustomFunction);
+         var entity_list:Array = scene.GetEntitySelectListDataProviderByFilter (IsValidEntity, mGroundSelectable, null, isForPureCustomFunction);
          
          var entity:Entity = valueSourceDirect.GetValueObject () as Entity;
          var sel_index:int = -1;
@@ -198,7 +198,7 @@ package editor.trigger {
          return combo_box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
          if (control is ComboBox)
          {
@@ -208,7 +208,6 @@ package editor.trigger {
                valueSourceDirect.SetValueObject (null);
             else
             {
-               var world:World = EditorContext.GetEditorApp ().GetWorld ();
                var entity_index:int = combo_box.selectedItem.mEntityIndex;
                if (entity_index < 0)
                {
@@ -219,7 +218,7 @@ package editor.trigger {
                }
                else
                {
-                  valueSourceDirect.SetValueObject (world.GetEntityContainer ().GetAssetByCreationId (entity_index));
+                  valueSourceDirect.SetValueObject (scene.GetAssetByCreationId (entity_index));
                }
             }
          }

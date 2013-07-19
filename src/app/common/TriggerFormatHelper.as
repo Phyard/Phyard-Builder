@@ -4,6 +4,7 @@ package common {
    import flash.utils.ByteArray;
    
    import editor.world.World;
+   import editor.entity.Scene;
    import editor.entity.Entity;
    //import editor.entity.EntityCollisionCategory;
    import editor.ccat.CollisionCategory;
@@ -16,7 +17,7 @@ package common {
    //import editor.trigger.entity.EntityFunction;
    import editor.codelib.AssetFunction;
    
-   import editor.trigger.TriggerEngine;
+   //import editor.trigger.TriggerEngine;
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.FunctionDeclaration_Core;
@@ -42,6 +43,7 @@ package common {
    import editor.trigger.VariableDefinitionBoolean;
    import editor.trigger.VariableDefinitionNumber;
    import editor.trigger.VariableDefinitionString;
+   import editor.trigger.VariableDefinitionScene;
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.VariableDefinitionCollisionCategory;
    import editor.trigger.VariableDefinitionArray;
@@ -79,7 +81,7 @@ package common {
 // editor world -> define
 //==============================================================================================
       
-      public static function ConditionAndTargetValueArray2EntityDefineProperties (editorWorld:World, conditionAndTargetValueArray:Array, entityDefine:Object):void
+      public static function ConditionAndTargetValueArray2EntityDefineProperties (scene:Scene, conditionAndTargetValueArray:Array, entityDefine:Object):void
       {
          if (conditionAndTargetValueArray == null)
          {
@@ -98,7 +100,7 @@ package common {
             {
                conditionAndValue = conditionAndTargetValueArray [i] as ConditionAndTargetValue;
                
-               indexes [i] = editorWorld.GetEntityContainer ().GetAssetCreationId (conditionAndValue.mConditionEntity as Entity);
+               indexes [i] = scene.GetAssetCreationId (conditionAndValue.mConditionEntity as Entity);
                values [i] = conditionAndValue.mTargetValue;
             }
             
@@ -108,7 +110,7 @@ package common {
          }
       }
       
-      public static function Function2FunctionDefine (editorWorld:World, codeSnippet:CodeSnippet, createLocalVariableDefines:Boolean = true):FunctionDefine
+      public static function Function2FunctionDefine (scene:Scene, codeSnippet:CodeSnippet, createLocalVariableDefines:Boolean = true):FunctionDefine
       {
          var functionDefine:FunctionDefine = new FunctionDefine ();
          
@@ -118,33 +120,33 @@ package common {
          if (functionDefinition.GetFunctionDeclaration () is FunctionDeclaration_Custom)
          {
             functionDefine.mInputVariableDefines = new Array ();
-            VariableSpace2VariableDefines (editorWorld, functionDefinition.GetInputVariableSpace (), functionDefine.mInputVariableDefines, true);
+            VariableSpace2VariableDefines (scene, functionDefinition.GetInputVariableSpace (), functionDefine.mInputVariableDefines, true, false);
             
             functionDefine.mOutputVariableDefines = new Array ();
-            VariableSpace2VariableDefines (editorWorld, functionDefinition.GetOutputVariableSpace (), functionDefine.mOutputVariableDefines, false);
+            VariableSpace2VariableDefines (scene, functionDefinition.GetOutputVariableSpace (), functionDefine.mOutputVariableDefines, false, false);
          }
          
          if (createLocalVariableDefines)
          {
             //>>from v1.56
             functionDefine.mLocalVariableDefines = new Array ();
-            VariableSpace2VariableDefines (editorWorld, functionDefinition.GetLocalVariableSpace (), functionDefine.mLocalVariableDefines, false);
+            VariableSpace2VariableDefines (scene, functionDefinition.GetLocalVariableSpace (), functionDefine.mLocalVariableDefines, false, false);
             //<<
          }
          //<<
          
-         functionDefine.mCodeSnippetDefine = CodeSnippet2CodeSnippetDefine (editorWorld, codeSnippet);
+         functionDefine.mCodeSnippetDefine = CodeSnippet2CodeSnippetDefine (scene, codeSnippet);
          
          return functionDefine;
       }
       
-      public static function CodeSnippet2CodeSnippetDefine (editorWorld:World, codeSnippet:CodeSnippet):CodeSnippetDefine
+      public static function CodeSnippet2CodeSnippetDefine (scene:Scene, codeSnippet:CodeSnippet):CodeSnippetDefine
       {
          var num:int = codeSnippet.GetNumFunctionCallings ();
          var func_calling_defines:Array = new Array (num);
          
          for (var i:int = 0; i < num; ++ i)
-            func_calling_defines [i] = FunctionCalling2FunctionCallingDefine (editorWorld, codeSnippet.GetFunctionCallingAt (i));
+            func_calling_defines [i] = FunctionCalling2FunctionCallingDefine (scene, codeSnippet.GetFunctionCallingAt (i));
          
          var code_snippet_define:CodeSnippetDefine = new CodeSnippetDefine ();
          
@@ -155,7 +157,7 @@ package common {
          return code_snippet_define;
       }
       
-      public static function FunctionCalling2FunctionCallingDefine (editorWorld:World, funcCalling:FunctionCalling):FunctionCallingDefine
+      public static function FunctionCalling2FunctionCallingDefine (scene:Scene, funcCalling:FunctionCalling):FunctionCallingDefine
       {
          var func_declaration:FunctionDeclaration = funcCalling.GetFunctionDeclaration ();
          var num_inputs:int = func_declaration.GetNumInputs ();
@@ -164,11 +166,11 @@ package common {
          
          var value_source_defines:Array = new Array (num_inputs);
          for (i = 0; i < num_inputs; ++ i)
-            value_source_defines [i] = ValueSource2ValueSourceDefine (editorWorld, funcCalling.GetInputValueSource (i), func_declaration.GetInputParamValueType (i));
+            value_source_defines [i] = ValueSource2ValueSourceDefine (scene, funcCalling.GetInputValueSource (i), func_declaration.GetInputParamValueType (i));
          
          var value_target_defines:Array = new Array (num_outputs);
          for (i = 0; i < num_outputs; ++ i)
-            value_target_defines [i] = ValueTarget2ValueTargetDefine (editorWorld, funcCalling.GetOutputValueTarget (i), func_declaration.GetInputParamValueType (i));
+            value_target_defines [i] = ValueTarget2ValueTargetDefine (scene, funcCalling.GetOutputValueTarget (i), func_declaration.GetInputParamValueType (i));
          
          var func_calling_define:FunctionCallingDefine = new FunctionCallingDefine ();
          func_calling_define.mFunctionType = func_declaration.GetType ();
@@ -181,7 +183,7 @@ package common {
          return func_calling_define;
       }
       
-      public static function ValueSource2ValueSourceDefine (editorWorld:World, valueSource:ValueSource, valueType:int):ValueSourceDefine
+      public static function ValueSource2ValueSourceDefine (scene:Scene, valueSource:ValueSource, valueType:int):ValueSourceDefine
       {
          var value_source_define:ValueSourceDefine = null;
          
@@ -193,7 +195,7 @@ package common {
             
             try
             {
-               value_source_define = new ValueSourceDefine_Direct (valueType, ValidateDirectValueObject_Object2Define (editorWorld, valueType, direct_source.GetValueObject ()));
+               value_source_define = new ValueSourceDefine_Direct (valueType, ValidateDirectValueObject_Object2Define (scene, valueType, direct_source.GetValueObject ()));
             }
             catch (err:Error)
             {
@@ -210,9 +212,12 @@ package common {
          {
             var property_source:ValueSource_Property = valueSource as ValueSource_Property;
             
-            
-            value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (editorWorld, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
-                                            , 0, property_source.GetPropertyVariableIndex ());
+            // before v2.03
+            //value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+            //                                , 0, property_source.GetPropertyVariableIndex ());
+            // from v2.03
+            value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+                                            , property_source.GetPropertyVariableSpaceType (), property_source.GetPropertyVariableIndex ());
          }
          
          if (value_source_define == null)
@@ -225,7 +230,7 @@ package common {
          return value_source_define;
       }
       
-      public static function ValueTarget2ValueTargetDefine (editorWorld:World, valueTarget:ValueTarget, valueType:int):ValueTargetDefine
+      public static function ValueTarget2ValueTargetDefine (scene:Scene, valueTarget:ValueTarget, valueType:int):ValueTargetDefine
       {
          var value_target_define:ValueTargetDefine = null;
          
@@ -241,8 +246,12 @@ package common {
          {
             var property_target:ValueTarget_Property = valueTarget as ValueTarget_Property;
             
-            value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (editorWorld, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
-                                            , 0, property_target.GetPropertyVariableIndex ());
+            // before v2.03
+            //value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+            //                                , 0, property_target.GetPropertyVariableIndex ());
+            // from v2.03
+            value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+                                            , property_target.GetPropertyVariableSpaceType (), property_target.GetPropertyVariableIndex ());
          }
          
          if (value_target_define == null)
@@ -253,7 +262,8 @@ package common {
          return value_target_define;
       }
       
-      private static function ValidateDirectValueObject_Object2Define (editorWorld:World, valueType:int, valueObject:Object):Object
+      // scene may be null for Scene Common variable spaces
+      private static function ValidateDirectValueObject_Object2Define (scene:Scene, valueType:int, valueObject:Object):Object
       {
          switch (valueType)
          {
@@ -276,22 +286,43 @@ package common {
                }
                else
                {
-                  return editorWorld.GetEntityContainer ().GetAssetCreationId (entity);
+                  if (scene == null)
+                     return Define.EntityId_None;
+                  
+                  return scene.GetAssetCreationId (entity);
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryIndex (valueObject as CollisionCategory);
+            {
+               var ccat:CollisionCategory = valueObject as CollisionCategory;
+               if (ccat == null || scene == null)
+                  return -1;
+               
+               return scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (ccat);
+            }
             case ValueTypeDefine.ValueType_Module:
             {
                var module:AssetImageModule = valueObject as AssetImageModule;
+               if (module == null || scene == null)
+                  return -1;
                
-               return editorWorld.GetImageModuleIndex (module);
+               return scene.GetWorld ().GetImageModuleIndex (module);
             }
             case ValueTypeDefine.ValueType_Sound:
             {
                var sound:AssetSound = valueObject as AssetSound;
+               if (sound == null || scene == null)
+                  return -1;
                
-               return editorWorld.GetSoundIndex (sound);
+               return scene.GetWorld ().GetSoundIndex (sound);
+            }
+            case ValueTypeDefine.ValueType_Scene:
+            {
+               var sceneValue:Scene = valueObject as Scene;
+               if (sceneValue == null || scene == null)
+                  return -1;
+               
+               return scene.GetWorld ().GetSceneIndex (sceneValue);
             }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
@@ -309,7 +340,7 @@ package common {
          }
       }
       
-      public static function VariableSpace2VariableDefines (editorWorld:World, variableSpace:VariableSpace, outputVariableDefines:Array, supportInitalValues:Boolean):void
+      public static function VariableSpace2VariableDefines (scene:Scene, variableSpace:VariableSpace, outputVariableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean = false):void
       {
          var numVariables:int = variableSpace.GetNumVariableInstances ();
          
@@ -322,13 +353,18 @@ package common {
          //spaceDefine.mVariableDefines = new Array (numVariables);
          //<<
          
+         if (variablesHaveKey != variableSpace.IsVariableKeySupported ())
+            throw new Error ();
+         
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
             var variableInstance:VariableInstance = variableSpace.GetVariableInstanceAt (variableId);
             
             var variableInstanceDefine:VariableInstanceDefine = new VariableInstanceDefine ();
+            if (variablesHaveKey)
+               variableInstanceDefine.mKey = variableInstance.GetKey ();
             variableInstanceDefine.mName = variableInstance.GetName ();
-            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), ValidateDirectValueObject_Object2Define (editorWorld, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : ValueTypeDefine.GetDefaultDirectDefineValue (variableInstance.GetValueType ())));
+            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), ValidateDirectValueObject_Object2Define (scene, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : ValueTypeDefine.GetDefaultDirectDefineValue (variableInstance.GetValueType ())));
             
             //spaceDefine.mVariableDefines [variableId] = variableInstanceDefine; // 1.52 only
             
@@ -342,21 +378,21 @@ package common {
 // define -> definition (editor)
 //==============================================================================================
       
-      public static function FunctionDefine2FunctionDefinition (editorWorld:World, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true, localVariableSpace:VariableSpaceLocal = null):void
+      public static function FunctionDefine2FunctionDefinition (scene:Scene, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true, localVariableSpace:VariableSpaceLocal = null):void
       {
          if (createVariables)
          {
             //>> from v`1.53
             if (functionDefinition.GetFunctionDeclaration () is FunctionDeclaration_Custom)
             {
-               VariableDefines2VariableSpace (editorWorld, functionDefine.mInputVariableDefines, functionDefinition.GetInputVariableSpace (), true);
+               VariableDefines2VariableSpace (scene, functionDefine.mInputVariableDefines, functionDefinition.GetInputVariableSpace (), true, false);
                
-               VariableDefines2VariableSpace (editorWorld, functionDefine.mOutputVariableDefines, functionDefinition.GetOutputVariableSpace (), false);
+               VariableDefines2VariableSpace (scene, functionDefine.mOutputVariableDefines, functionDefinition.GetOutputVariableSpace (), false, false);
             }
             
             if (localVariableSpace == null)
             {
-               VariableDefines2VariableSpace (editorWorld, functionDefine.mLocalVariableDefines, functionDefinition.GetLocalVariableSpace (), false);
+               VariableDefines2VariableSpace (scene, functionDefine.mLocalVariableDefines, functionDefinition.GetLocalVariableSpace (), false, false);
             }
             //>> from v1.56
             else
@@ -368,11 +404,11 @@ package common {
          
          if (createCodeSnippet)
          {
-            LoadCodeSnippetFromCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, codeSnippet);
+            LoadCodeSnippetFromCodeSnippetDefine (scene, functionDefine.mCodeSnippetDefine, codeSnippet);
          }
       }
       
-      public static function LoadCodeSnippetFromCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, codeSnippet:CodeSnippet):void
+      public static function LoadCodeSnippetFromCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, codeSnippet:CodeSnippet):void
       {
          var function_definition:FunctionDefinition = codeSnippet.GetOwnerFunctionDefinition ();
          
@@ -380,13 +416,13 @@ package common {
          var num:int = codeSnippetDefine.mNumCallings;
          var func_callings:Array = new Array (num);
          for (var i:int = 0; i < num; ++ i)
-            func_callings [i] = FunctionCallingDefine2FunctionCalling (editorWorld,func_calling_defines [i], function_definition);
+            func_callings [i] = FunctionCallingDefine2FunctionCalling (scene,func_calling_defines [i], function_definition);
          
          codeSnippet.SetName (codeSnippetDefine.mName);
          codeSnippet.AssignFunctionCallings (func_callings);
       }
       
-      public static function FunctionCallingDefine2FunctionCalling (editorWorld:World, funcCallingDefine:FunctionCallingDefine, functionDefinition:FunctionDefinition):FunctionCalling
+      public static function FunctionCallingDefine2FunctionCalling (scene:Scene, funcCallingDefine:FunctionCallingDefine, functionDefinition:FunctionDefinition):FunctionCalling
       {
          var func_type:int = funcCallingDefine.mFunctionType;
          var func_id:int = funcCallingDefine.mFunctionId;
@@ -396,22 +432,22 @@ package common {
          var func_declaration:FunctionDeclaration;
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
-            func_declaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
+            func_declaration = World.GetPlayerCoreFunctionDeclarationById (func_id);
             
             if (func_declaration != null)
             {
-               func_calling = new FunctionCalling_Core (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Core, false)
+               func_calling = new FunctionCalling_Core (/*editorWorld.GetTriggerEngine (), */func_declaration as FunctionDeclaration_Core, false)
             }
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
-            var functionAsset:AssetFunction = editorWorld.GetCodeLibManager ().GetFunctionByIndex (func_id) as AssetFunction;
+            var functionAsset:AssetFunction = scene.GetCodeLibManager ().GetFunctionByIndex (func_id) as AssetFunction;
             
             if (functionAsset != null)
             {
                func_declaration = functionAsset.GetFunctionDeclaration ();
                
-               func_calling = new FunctionCalling_Custom (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Custom, false);
+               func_calling = new FunctionCalling_Custom (/*editorWorld.GetTriggerEngine (), */func_declaration as FunctionDeclaration_Custom, false);
             }
          }
          else if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
@@ -424,7 +460,7 @@ package common {
          
          if (func_calling == null)
          {
-            func_calling = new FunctionCalling_Core (editorWorld.GetTriggerEngine (), TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Blank), false)
+            func_calling = new FunctionCalling_Core (/*editorWorld.GetTriggerEngine (), */World.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Blank), false)
             
             value_sources = new Array ();
             value_targets = new Array ();
@@ -443,9 +479,9 @@ package common {
             for (i = 0; i < real_num_inputs; ++ i)
             {
                if (i >= funcCallingDefine.mNumInputs)
-                  value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (editorWorld.GetTriggerEngine ());
+                  value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (/*editorWorld.GetTriggerEngine ()*/);
                else
-                  value_sources [i] = ValueSourceDefine2ValueSource (editorWorld, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
+                  value_sources [i] = ValueSourceDefine2ValueSource (scene, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
             }
             
             value_targets = new Array (funcCallingDefine.mNumOutputs);
@@ -454,7 +490,7 @@ package common {
                if (i >= funcCallingDefine.mNumOutputs)
                   value_targets [i] = func_declaration.GetOutputParamDefinitionAt (i).GetDefaultValueTarget ();
                else
-                  value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
+                  value_targets [i] = ValueTargetDefine2ValueTarget (scene, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
             }
          }
          
@@ -464,7 +500,7 @@ package common {
          return func_calling;
       }
       
-      public static function ValueSourceDefine2ValueSource (editorWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int, functionDefinition:FunctionDefinition):ValueSource
+      public static function ValueSourceDefine2ValueSource (scene:Scene, valueSourceDefine:ValueSourceDefine, valueType:int, functionDefinition:FunctionDefinition):ValueSource
       {
          var value_source:ValueSource = null;
          
@@ -476,7 +512,7 @@ package common {
             
             try
             {
-               value_source = new ValueSource_Direct (ValidateDirectValueObject_Define2Object (editorWorld, valueType, direct_source_define.mValueObject));
+               value_source = new ValueSource_Direct (ValidateDirectValueObject_Define2Object (scene, valueType, direct_source_define.mValueObject));
             }
             catch (err:Error)
             {
@@ -493,14 +529,23 @@ package common {
             
             switch (variable_source_define.mSpaceType)
             {
+               case ValueSpaceTypeDefine.ValueSpace_World:
+                  variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                  variable_instance = scene.GetWorld ().GetGameSaveVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
-                  variable_instance = editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                  variable_instance = scene.GetWorld ().GetCommonSceneGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
+               case ValueSpaceTypeDefine.ValueSpace_Register:
+                  var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
                      variable_instance = variable_space.GetVariableInstanceAt (variable_index);
@@ -530,8 +575,19 @@ package common {
          {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
-            value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (editorWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
-                                                   , new ValueSource_Variable (editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+            switch (property_source_define.mSpacePackageId)
+            {
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueSource_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+               case 0: // for compability
+               default:
+                  value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueSource_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+                  break;
+            }
          }
          
          if (value_source == null)
@@ -544,7 +600,7 @@ package common {
          return value_source;
       }
       
-      public static function ValueTargetDefine2ValueTarget (editorWorld:World, valueTargetDefine:ValueTargetDefine, valueType:int, functionDefinition:FunctionDefinition):ValueTarget
+      public static function ValueTargetDefine2ValueTarget (scene:Scene, valueTargetDefine:ValueTargetDefine, valueType:int, functionDefinition:FunctionDefinition):ValueTarget
       {
          var value_target:ValueTarget = null;
          
@@ -560,14 +616,23 @@ package common {
             
             switch (variable_target_define.mSpaceType)
             {
+               case ValueSpaceTypeDefine.ValueSpace_World:
+                  variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                  variable_instance = scene.GetWorld ().GetGameSaveVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
-                  variable_instance = editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetCodeLibManager ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                  variable_instance = scene.GetWorld ().GetCommonSceneGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
+               case ValueSpaceTypeDefine.ValueSpace_Register:
+                  var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
                      variable_instance = variable_space.GetVariableInstanceAt (variable_index);
@@ -592,12 +657,23 @@ package common {
                value_target = new ValueTarget_Variable (variable_instance);
             }
          }
-         else  if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
          {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             
-            value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (editorWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
-                                                   , new ValueTarget_Variable (editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+            switch (property_target_define.mSpacePackageId)
+            {
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueTarget_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+               case 0: // for compability
+               default:
+                  value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueTarget_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+                  break;
+            }
          }
          
          if (value_target == null)
@@ -608,7 +684,8 @@ package common {
          return value_target;
       }
       
-      private static function ValidateDirectValueObject_Define2Object (editorWorld:World, valueType:int, valueObject:Object):Object
+      // scene may be null for Scene Common Variable Spaces
+      private static function ValidateDirectValueObject_Define2Object (scene:Scene, valueType:int, valueObject:Object):Object
       {
          switch (valueType)
          {
@@ -625,34 +702,56 @@ package common {
                return text;
             case ValueTypeDefine.ValueType_Entity:
             {
+               if (scene == null) // for Scene Common Variable Spaces
+                  return null;
+
                var entityIndex:int = valueObject as int;
                if (entityIndex < 0)
                {
                   if (entityIndex == Define.EntityId_Ground)
                   {
-                     return editorWorld;
+                     return scene.GetWorld ();
                   }
-                  else if (entityIndex == Define.EntityId_None)
+                  else // if (entityIndex == Define.EntityId_None)
                   {
                      return null;
                   }
                }
                else
                {
-                  return editorWorld.GetEntityContainer ().GetAssetByCreationId (entityIndex);
+                  return scene.GetAssetByCreationId (entityIndex);
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return editorWorld.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (valueObject as int);
+            {
+               if (scene == null)
+                  return null;
+               
+               return scene.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (valueObject as int);
+            }
             case ValueTypeDefine.ValueType_Module:
             {
+               if (scene == null)
+                  return null;
+               
                var moduleIndex:int = valueObject as int;
-               return editorWorld.GetImageModuleByIndex (moduleIndex);
+               return scene.GetWorld ().GetImageModuleByIndex (moduleIndex);
             }
             case ValueTypeDefine.ValueType_Sound:
             {
+               if (scene == null)
+                  return null;
+               
                var soundIndex:int = valueObject as int;
-               return editorWorld.GetSoundByIndex (soundIndex);
+               return scene.GetWorld ().GetSoundByIndex (soundIndex);
+            }
+            case ValueTypeDefine.ValueType_Scene:
+            {
+               if (scene == null)
+                  return null;
+               
+               var sceneIndex:int = valueObject as int;
+               return scene.GetWorld ().GetSceneByIndex (sceneIndex);
             }
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null)
@@ -670,8 +769,9 @@ package common {
          }
       }
       
-      //public static function VariableSpaceDefine2VariableSpace (editorWorld:World, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void // v1.52 only
-      public static function VariableDefines2VariableSpace (editorWorld:World, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean):void
+      //public static function VariableSpaceDefine2VariableSpace (scene:Scene, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void // v1.52 only
+      // since v1.53, return a variableIndex_CorrectionTable
+      public static function VariableDefines2VariableSpace (scene:Scene, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false, overrideValueOnExisting:Boolean = true):Array
       {
          //>> v1.52 only
          //var numVariables:int = spaceDefine.mVariableDefines.length;
@@ -681,23 +781,32 @@ package common {
          //spaceDefine.mParentPackageId = -1;
          //<<
          
+         if (variablesHaveKey != variableSpace.IsVariableKeySupported ())
+            throw new Error ();
+         
          var numVariables:int = variableDefines.length;
+         
+         var variableIndex_CorrectionTable:Array = new Array (numVariables);
          
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
             //var variableInstanceDefine:VariableInstanceDefine = spaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
             var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
 
-            VariableDefine2VariableInstance (editorWorld, variableInstanceDefine, variableSpace, supportInitalValues);
+            var vi:VariableInstance = VariableDefine2VariableInstance (scene, variableInstanceDefine, variableSpace, supportInitalValues, avoidNameConflicting, variablesHaveKey, overrideValueOnExisting);
+            
+            variableIndex_CorrectionTable [variableId] = (vi == null ? - 1 : vi.GetIndex ());
          }
+         
+         return variableIndex_CorrectionTable;
       }
       
-      public static function VariableDefine2VariableInstance (editorWorld:World, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean):VariableInstance
+      public static function VariableDefine2VariableInstance (scene:Scene, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false, overrideValueOnExisting:Boolean = true):VariableInstance
       {
          var directValueSourceDefine:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
          
          var variableDefinition:VariableDefinition = null;
-         var valueObject:Object = supportInitalValue ? ValidateDirectValueObject_Define2Object (editorWorld, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject) : null;
+         var valueObject:Object = supportInitalValue ? ValidateDirectValueObject_Define2Object (scene, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject) : null;
          
          switch (directValueSourceDefine.mValueType)
          {
@@ -722,6 +831,9 @@ package common {
             case ValueTypeDefine.ValueType_Sound:
                variableDefinition = new VariableDefinitionSound (variableInstanceDefine.mName);
                break;
+            case ValueTypeDefine.ValueType_Scene:
+               variableDefinition = new VariableDefinitionScene (variableInstanceDefine.mName);
+               break;
             case ValueTypeDefine.ValueType_Array:
                variableDefinition = new VariableDefinitionArray (variableInstanceDefine.mName);
                break;
@@ -734,8 +846,13 @@ package common {
          
          if (variableDefinition != null)
          {
-            var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variableDefinition);
-            vi.SetValueObject (valueObject);
+            var oldNum:int = variableSpace.GetNumVariableInstances ();
+            var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variablesHaveKey ? variableInstanceDefine.mKey : null, variableDefinition, avoidNameConflicting);
+
+            if (oldNum != variableSpace.GetNumVariableInstances () || overrideValueOnExisting)
+            {
+               vi.SetValueObject (valueObject);
+            }
              
             return vi;
          }
@@ -745,13 +862,13 @@ package common {
       
       // for ConvertRegisterVariablesToGlobalVariables
       
-      public static function RegisterVariable2GlobalVariable (editorWorld:World, registerVariableInstance:VariableInstance):VariableInstance
+      public static function RegisterVariable2GlobalVariable (scene:Scene, registerVariableInstance:VariableInstance):VariableInstance
       {
          // assert (registerVariableInstance != null);
-         // assert (registerVariableInstance.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+         // assert (registerVariableInstance.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Register);
          
          if (registerVariableInstance.GetIndex () < 0)
-            return editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNullVariableInstance ();
+            return scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetNullVariableInstance ();
          
          if (registerVariableInstance.mCorrespondingGlobalVariable != null && registerVariableInstance.mCorrespondingGlobalVariable.GetIndex () < 0)
             registerVariableInstance.mCorrespondingGlobalVariable = null;
@@ -763,16 +880,16 @@ package common {
             variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
                                        registerVariableInstance.GetValueType (), 
                                        ValidateDirectValueObject_Object2Define (
-                                             editorWorld, registerVariableInstance.GetValueType (), 
+                                             scene, registerVariableInstance.GetValueType (), 
                                              ValueTypeDefine.GetDefaultDirectDefineValue (registerVariableInstance.GetValueType ())
                                        )
                                     );
             
             var newGlobalVariableInstance:VariableInstance = VariableDefine2VariableInstance (
-                                                                     editorWorld, variableInstanceDefine, 
-                                                                     editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), true);
+                                                                     scene, variableInstanceDefine, 
+                                                                     scene.GetCodeLibManager ().GetGlobalVariableSpace (), true, false);
             if (newGlobalVariableInstance == null)
-               registerVariableInstance.mCorrespondingGlobalVariable = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNullVariableInstance ();
+               registerVariableInstance.mCorrespondingGlobalVariable = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetNullVariableInstance ();
             else
             {
                registerVariableInstance.mCorrespondingGlobalVariable = newGlobalVariableInstance;
@@ -792,14 +909,14 @@ package common {
          {
             if (hasParams)
             {
-               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mInputVariableDefines, true);
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mInputVariableDefines, true, false);
                
-               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mOutputVariableDefines, false);
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mOutputVariableDefines, false, false);
             }
             
             if (writeLocalVariables)
             {
-               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mLocalVariableDefines, false);
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mLocalVariableDefines, false, false);
             }
          }
          
@@ -838,7 +955,7 @@ package common {
          
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
+            var func_declaration:FunctionDeclaration = World.GetPlayerCoreFunctionDeclarationById (func_id);
             
             for (i = 0; i < num_inputs; ++ i)
                WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
@@ -886,7 +1003,11 @@ package common {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
             WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double); // ValueTypeDefine.NumberTypeDetail_Double is useless
-            binFile.writeShort (property_source_define.mSpacePackageId);
+            //binFile.writeShort (property_source_define.mSpacePackageId); // before v2.03
+            //>> from v2.03
+            binFile.writeByte (0);
+            binFile.writeByte (property_source_define.mSpacePackageId);
+            //<<
             binFile.writeShort (property_source_define.mPropertyId);
          }
       }
@@ -909,7 +1030,11 @@ package common {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             
             WriteValueSourceDefinIntoBinFile (binFile, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double); // ValueTypeDefine.NumberTypeDetail_Double is useless
-            binFile.writeShort (property_target_define.mSpacePackageId);
+            //binFile.writeShort (property_target_define.mSpacePackageId); // before v2.03
+            //>> from v2.03
+            binFile.writeByte (0);
+            binFile.writeByte (property_target_define.mSpacePackageId);
+            //<<
             binFile.writeShort (property_target_define.mPropertyId);
          }
       }
@@ -952,6 +1077,9 @@ package common {
             case ValueTypeDefine.ValueType_Sound:
                binFile.writeInt (valueObject as int); // short is ok, in fact
                break;
+            case ValueTypeDefine.ValueType_Scene:
+               binFile.writeInt (valueObject as int); // short is ok, in fact
+               break;
             case ValueTypeDefine.ValueType_Array:
                //if (valueObject == null) 
                //{
@@ -977,7 +1105,7 @@ package common {
       }
       
       //public static function WriteVariableSpaceDefineIntoBinFile (binFile:ByteArray, variableSpaceDefine:VariableSpaceDefine):void // v1.52 only
-      public static function WriteVariableDefinesIntoBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean):void
+      public static function WriteVariableDefinesIntoBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
       {
          //>> v1.52 only
          //binFile.writeUTF (variableSpaceDefine.mName);
@@ -993,6 +1121,8 @@ package common {
             //var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i]; // v1.52 only
             var viDefine:VariableInstanceDefine = variableDefines [i];
             
+            if (variablesHaveKey)
+               binFile.writeUTF (viDefine.mKey == null ? "" : viDefine.mKey);
             binFile.writeUTF (viDefine.mName);
             binFile.writeShort (viDefine.mDirectValueSourceDefine.mValueType);
             
@@ -1032,14 +1162,14 @@ package common {
          {
             if (parseParams)
             {
-               VariablesXml2Define (functionElement.InputParameters [0], functionDefine.mInputVariableDefines, true);
+               VariablesXml2Define (functionElement.InputParameters [0], functionDefine.mInputVariableDefines, true, false);
                
-               VariablesXml2Define (functionElement.OutputParameters [0], functionDefine.mOutputVariableDefines, false);
+               VariablesXml2Define (functionElement.OutputParameters [0], functionDefine.mOutputVariableDefines, false, false);
             }
             
             if (convertLocalVariables)
             {
-               VariablesXml2Define (functionElement.LocalVariables [0], functionDefine.mLocalVariableDefines, false);
+               VariablesXml2Define (functionElement.LocalVariables [0], functionDefine.mLocalVariableDefines, false, false);
             }
          }
          
@@ -1073,7 +1203,7 @@ package common {
          var func_type:int = parseInt (funcCallingElement.@function_type);
          var func_id  :int = parseInt (funcCallingElement.@function_id);
          
-         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
+         var func_declaration:FunctionDeclaration = World.GetPlayerCoreFunctionDeclarationById (func_id);
          
          var i:int;
          var value_source_defines:Array = new Array ();
@@ -1210,6 +1340,8 @@ package common {
                return parseInt (String (direct_value));
             case ValueTypeDefine.ValueType_Sound:
                return parseInt (String (direct_value));
+            case ValueTypeDefine.ValueType_Scene:
+               return parseInt (String (direct_value));
             case ValueTypeDefine.ValueType_Array:
                //if (direct_value == null) 
                //{
@@ -1227,7 +1359,7 @@ package common {
       }
       
       //public static function VariableSpaceXml2Define (elementVariablePackage:XML):VariableSpaceDefine // v1.52 only
-      public static function VariablesXml2Define (elementVariablePackage:XML, outputVariableDefines:Array, supportInitalValues:Boolean):void
+      public static function VariablesXml2Define (elementVariablePackage:XML, outputVariableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
       {
          //>> v1.52 only
          //var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
@@ -1244,6 +1376,8 @@ package common {
             
             var valueType:int = parseInt (element.@value_type);
             
+            if (variablesHaveKey)
+               viDefine.mKey = element.@key;
             viDefine.mName = element.@name;
             viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (valueType, supportInitalValues ? ValidateDirectValueObject_Xml2Define (valueType, element.@initial_value) : ValueTypeDefine.GetDefaultDirectDefineValue (valueType));
             
@@ -1264,7 +1398,7 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftReferenceIndexesInCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, correctionTables:Object):void // entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, functionRefIndex_CorrectionTable:Array, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
 
          var funcCallingDefine:FunctionCallingDefine;
@@ -1282,32 +1416,35 @@ package common {
             var funcDclaration:FunctionDeclaration;
             if (func_type == FunctionTypeDefine.FunctionType_Core)
             {
-               funcDclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (functionId);
+               funcDclaration = World.GetPlayerCoreFunctionDeclarationById (functionId);
             }
             else // if (func_type == FunctionTypeDefine.FunctionType_Custom)
             {
-               functionId += beginningCustomFunctionIndex;
+               //functionId += beginningCustomFunctionIndex;
+               functionId = correctionTables.mFunctionRefIndex_CorrectionTable [functionId];
                funcCallingDefine.mFunctionId = functionId;
-               funcDclaration = editorWorld.GetCodeLibManager ().GetFunctionByIndex (functionId).GetFunctionDeclaration ();
+               funcDclaration = scene.GetCodeLibManager ().GetFunctionByIndex (functionId).GetFunctionDeclaration ();
             }
             
-            if (isCustomCodeSnippet)
-            {
-            }
-            else // only apply for main scene code snippets
+            //>>>>>, commented off from v2.03. Why do this, for pure functions?
+            //if (isCustomCodeSnippet)
+            //{
+            //}
+            //else // only apply for main scene code snippets
+            //<<<<<
             {
                //if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
                //{
                   var numInputs:int = funcCallingDefine.mNumInputs;
                   for (j = 0; j < numInputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue);
+                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   }
                   
                   var numOutputs:int = funcCallingDefine.mNumOutputs;
                   for (j = 0; j < numOutputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue);
+                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   }
                //}
                //else
@@ -1317,7 +1454,7 @@ package common {
          }
       }
       
-      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int):void
+      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, correctionTables:Object):void // entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
          var valueSourceType:int = sourceDefine.GetValueSourceType ();
          
@@ -1329,51 +1466,73 @@ package common {
             {
                var entityIndex:int = int (directSourceDefine.mValueObject);
                
-               if (entityIndex >= 0)
-                  directSourceDefine.mValueObject = entityIndex + entityIdShiftedValue;
+               if (entityIndex >= 0 && entityIndex < correctionTables.mEntityIndex_CorrectionTable.length)
+                  directSourceDefine.mValueObject = correctionTables.mEntityIndex_CorrectionTable [entityIndex]; // + entityIdShiftedValue;
+               else
+                  directSourceDefine.mValueObject = Define.EntityId_None;
             }
             else if (valueType == ValueTypeDefine.ValueType_CollisionCategory)
             {
                var ccatIndex:int = int (directSourceDefine.mValueObject);
                
-               if (ccatIndex >= 0)
-                  directSourceDefine.mValueObject = ccatIndex + ccatIdShiftedValue;
+               if (ccatIndex >= 0 && ccatIndex < correctionTables.mCcatRefIndex_CorrectionTable)
+                  directSourceDefine.mValueObject = correctionTables.mCcatRefIndex_CorrectionTable [ccatIndex];
+               else
+                  ccatIndex = Define.CCatId_Hidden;
             }
             else if (valueType == ValueTypeDefine.ValueType_Module)
             {
                var moduleIndex:int = int (directSourceDefine.mValueObject);
                
-               if (ccatIndex >= 0 && ccatIndex < imageModuleRefIndex_CorrectionTable.length)
-                  directSourceDefine.mValueObject = imageModuleRefIndex_CorrectionTable [moduleIndex];
+               if (ccatIndex >= 0 && ccatIndex < correctionTables.mImageModuleRefIndex_CorrectionTable.length)
+                  directSourceDefine.mValueObject = correctionTables.mImageModuleRefIndex_CorrectionTable [moduleIndex];
+               else
+                  directSourceDefine.mValueObject = -1;
             }
             else if (valueType == ValueTypeDefine.ValueType_Sound)
             {
                var soundIndex:int = int (directSourceDefine.mValueObject);
                
-               if (soundIndex >= 0)
-                  directSourceDefine.mValueObject = soundIndex + soundIndexShiftedValue;
+               if (soundIndex >= 0 && soundIndex < correctionTables.mSoundRefIndex_CorrectionTable.length)
+                  directSourceDefine.mValueObject = correctionTables.mSoundRefIndex_CorrectionTable [soundIndex];
+               else
+                  directSourceDefine.mValueObject = -1;
+            }
+            else if (valueType == ValueTypeDefine.ValueType_Scene)
+            {
+               var sceneIndex:int = int (directSourceDefine.mValueObject);
+               
+               if (sceneIndex >= 0 && sceneIndex < correctionTables.mSceneRefIndex_CorrectionTable.length)
+                  directSourceDefine.mValueObject = correctionTables.mSceneRefIndex_CorrectionTable [sceneIndex];
+               else
+                  directSourceDefine.mValueObject = -1;
             }
          }
          else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Variable)
          {
             var variableSourceDefine:ValueSourceDefine_Variable = sourceDefine as ValueSourceDefine_Variable;
             
-            var variableIndex:int;
-            
-            if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+            var variableIndex:int = variableSourceDefine.mVariableIndex;
+            if (variableIndex >= 0)
             {
-               variableIndex = variableSourceDefine.mVariableIndex;
-               
-               if (variableIndex >= 0)
-                  variableSourceDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
-            }
-            
-            if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
-            {
-               variableIndex = variableSourceDefine.mVariableIndex;
-               
-               if (variableIndex >= 0)
-                  variableSourceDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
+               switch (variableSourceDefine.mSpaceType)
+               {
+                  case ValueSpaceTypeDefine.ValueSpace_World:
+                     variableSourceDefine.mVariableIndex = correctionTables.mWorldVariableIndex_CorrectionTable [variableIndex]; // + worldVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                     variableSourceDefine.mVariableIndex = correctionTables.mGameSaveVariableIndex_CorrectionTable [variableIndex]; // + saveDataVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_Session:
+                     variableSourceDefine.mVariableIndex = correctionTables.mSessionVariableIndex_CorrectionTable [variableIndex]; // + sessionVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_Global:
+                     variableSourceDefine.mVariableIndex = correctionTables.mGlobalVariableIndex_CorrectionTable [variableIndex]; // + globalVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                     variableSourceDefine.mVariableIndex = correctionTables.mCommonGlobalVariableIndex_CorrectionTable [variableIndex]; // + commonGlobalVariableShiftIndex;
+                     break;
+               }
             }
          }
          else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Property)
@@ -1382,13 +1541,22 @@ package common {
             
             var propertyId:int = propertySourceDefine.mPropertyId;
             if (propertyId >= 0)
-               propertySourceDefine.mPropertyId = propertyId + entityVariableShiftIndex;
+            {
+               if (propertySourceDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               {
+                  propertySourceDefine.mPropertyId = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
+               }
+               else // if (propertySourceDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               {
+                  propertySourceDefine.mPropertyId = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
+               }
+            }
             
-            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue);
+            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
          }
       }
       
-      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundIndexShiftedValue:int):void
+      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, correctionTables:Object):void // entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
          var valueTargetType:int = targetDefine.GetValueTargetType ();
          
@@ -1396,22 +1564,27 @@ package common {
          {
             var variableTargetDefine:ValueTargetDefine_Variable = targetDefine as ValueTargetDefine_Variable;
             
-            var variableIndex:int;
-            
-            if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+            var variableIndex:int = variableTargetDefine.mVariableIndex;
+            if (variableIndex >= 0)
             {
-               variableIndex = variableTargetDefine.mVariableIndex;
-               
-               if (variableIndex >= 0)
-                  variableTargetDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
-            }
-            
-            if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
-            {
-               variableIndex = variableTargetDefine.mVariableIndex;
-               
-               if (variableIndex >= 0)
-                  variableTargetDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
+               switch (variableTargetDefine.mSpaceType)
+               {
+                  case ValueSpaceTypeDefine.ValueSpace_World:
+                     variableTargetDefine.mVariableIndex = correctionTables.mWorldVariableIndex_CorrectionTable [variableIndex]; // + worldVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_GameSave:
+                     variableTargetDefine.mVariableIndex = correctionTables.mGameSaveVariableIndex_CorrectionTable [variableIndex]; // + saveDataVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_Session:
+                     variableTargetDefine.mVariableIndex = correctionTables.mSessionVariableIndex_CorrectionTable [variableIndex]; // + sessionVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_Global:
+                     variableTargetDefine.mVariableIndex = correctionTables.mGlobalVariableIndex_CorrectionTable [variableIndex]; // + globalVariableShiftIndex;
+                     break;
+                  case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
+                     variableTargetDefine.mVariableIndex = correctionTables.mCommonGlobalVariableIndex_CorrectionTable [variableIndex]; // + commonGlobalVariableShiftIndex;
+                     break;
+               }
             }
          }
          else if (valueTargetType == ValueTargetTypeDefine.ValueTarget_Property)
@@ -1420,9 +1593,18 @@ package common {
             
             var propertyId:int = propertyTargetDefine.mPropertyId;
             if (propertyId >= 0)
-               propertyTargetDefine.mPropertyId = propertyId + entityVariableShiftIndex;
+            {
+               if (propertyTargetDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               {
+                  propertyTargetDefine.mPropertyId = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
+               }
+               else // if (propertyTargetDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               {
+                  propertyTargetDefine.mPropertyId = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
+               }
+            }
             
-            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundIndexShiftedValue);
+            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
          }
       }
    }

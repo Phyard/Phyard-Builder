@@ -70,9 +70,9 @@ package player.trigger
       }
       //<<
       
-      public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
+      public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine, extraInfos:Object):void
       {
-         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, Global.GetCurrentWorld (), codeSnippetDefine);
+         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, Global.GetCurrentWorld (), codeSnippetDefine, extraInfos);
          mPrimaryFunctionInstance.SetAsCurrent ();
       }
       
@@ -122,6 +122,9 @@ package player.trigger
             mCurrentFunctionInstance = mPrimaryFunctionInstance;
             
             mCurrentFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+            //>> fixed in v2.04
+            mPrimaryFunctionInstance.mOutputVariableSpace.GetValuesFromParameters (outputParamList); // set default values. (output parameters are also input parameters)
+            //<<
             mCodeSnippet.Excute ();
             mCurrentFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
             
@@ -138,6 +141,9 @@ package player.trigger
             
             mCurrentFunctionInstance = mCurrentFunctionInstance.mNextFunctionInstance;
             mCurrentFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+            //>> fixed in v2.04
+            mPrimaryFunctionInstance.mOutputVariableSpace.GetValuesFromParameters (outputParamList); // set default values. (output parameters are also input parameters)
+            //<<
             mCurrentFunctionInstance.SetAsCurrent ();
             
             mCodeSnippet.Excute ();
@@ -151,38 +157,20 @@ package player.trigger
       // special for event handlers, a little faster than DoCall. Maybe it is not worthy to create this function.
       // NOTICE: DON'T call this function in iteration functions
       // as event handler, no returns
-      public function ExcuteEventHandler (inputParamList:Parameter):void
+      public function ExcuteEventHandler (inputParamList:Parameter, outputParamList:Parameter = null):void
       {
          mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
          
+         //>> fixed in v2.04
+         mPrimaryFunctionInstance.mOutputVariableSpace.GetValuesFromParameters (outputParamList); // set default values. (output parameters are also input parameters)
+         //<<
+         
          mCodeSnippet.Excute ();
          
-         // no returns
-         //mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+         if (outputParamList != null)
+         {
+            mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+         }
       }
-      
-      // EvaluateCondition and ExcuteAction are disabled now for it is wrong to call them in CallScript API, which may can these functions in iteration functions
-      // 
-      //// as condition component, no inputs
-      //public function EvaluateCondition (outputParamList:Parameter):void
-      //{
-      //   // no inputs
-      //   //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
-      //   
-      //   mCodeSnippet.Excute ();
-      //   
-      //   mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
-      //}
-      //
-      //// as action, no inputs, returns
-      //public function ExcuteAction ():void
-      //{
-      //   //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
-      //   
-      //   mCodeSnippet.Excute ();
-      //   
-      //   // no returns
-      //   //mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
-      //}
    }
 }

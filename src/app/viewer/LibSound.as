@@ -1,6 +1,7 @@
       
       private static var mIsSoundEnabled:Boolean = true; // to record and init sound setting
-      private static var mSoundVolume:Number = -1;
+      private static var mSoundVolume:Number = 0.5;
+      //private static var mSoundVolume:Number = -1;
       
       public static function IsSoundEnabled ():Boolean
       {
@@ -23,10 +24,12 @@
       }
       
       public static function GetSoundVolume ():Number
-      {  
-         if (mSoundVolume < 0)
-            mSoundVolume = ValidateVolume (SoundMixer.soundTransform.volume);
-         
+      {
+         //if (mSoundVolume < 0)
+         //{
+         //   mSoundVolume = ValidateVolume (SoundMixer.soundTransform.volume);
+         //}
+
          return mSoundVolume;
       }
       
@@ -53,10 +56,12 @@
          //transform.volume = mIsSoundEnabled ? mSoundVolume : 0.0;
          //SoundMixer.soundTransform = transform;
          
-         if (mSoundVolume < 0)
-            mSoundVolume = SoundMixer.soundTransform.volume;
+         //if (mSoundVolume < 0)
+         //   mSoundVolume = SoundMixer.soundTransform.volume;
+         //GetSoundVolume (); // needed! To backup the old value.
 
-         SoundMixer.soundTransform.volume = mIsSoundEnabled ? GetSoundVolume () : 0.0;
+         var newTransform:SoundTransform = new SoundTransform (mIsSoundEnabled ? mSoundVolume : 0.0);
+         SoundMixer.soundTransform = newTransform;
       }
       
       private function LoadSoundFromBytes (soundFileData:ByteArray, onComplete:Function, onError:Function, soundProperties:Object):void

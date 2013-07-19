@@ -247,7 +247,8 @@ package viewer {
       {
          mIsAppDeactivated = false;
          
-         SetSoundVolume (mSoundVolume);
+         //SetSoundVolume (mSoundVolume);
+         UpdateSoundVolume ();
       }
       
       public function OnDeactivated (event:Event):void
@@ -1405,6 +1406,8 @@ package viewer {
             {
                mSkin.OnDeactivate ();
             }
+            
+            UpdateSoundVolume ();
          }
          catch (error:Error)
          {
@@ -1572,7 +1575,7 @@ package viewer {
                {
                   fadingSpeed *= 0.3;
                   
-                  mOldPlayerWorld.alpha -= fadingSpeed;
+                  //mOldPlayerWorld.alpha -= fadingSpeed;
                   mPlayerWorld.alpha += fadingSpeed;
                   if (mPlayerWorld.alpha >= 0.95)
                   {

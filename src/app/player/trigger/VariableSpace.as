@@ -1,12 +1,15 @@
 
 package player.trigger
 {
+   import flash.utils.Dictionary;
    
    public class VariableSpace
    {
       private var mFirstVariableInstance:VariableInstance = null; // the link list is for input and output parameter spaces
       
       private var mVariableInstances:Array = null;
+      
+      private var mVariableKeyMappings:Dictionary = null;
       
       public function VariableSpace (numVariables:int = 0)
       {
@@ -123,6 +126,22 @@ package player.trigger
             return null;
          
          return mVariableInstances [index];
+      }
+      
+      public function RegisterKeyValue (key:String, value:VariableInstance):void
+      {
+         if (mVariableKeyMappings == null)
+            mVariableKeyMappings = new Dictionary ();
+         
+         mVariableKeyMappings [key] = value;
+      }
+      
+      public function GetVariableByKey (key:String):VariableInstance
+      {
+         if (mVariableKeyMappings == null)
+            return null;
+         
+         return mVariableKeyMappings [key];
       }
       
       public function GetValuesFromParameters (inputParamList:Parameter):void

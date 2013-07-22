@@ -7,6 +7,7 @@ package player.trigger
       public var mNextVariableInstanceInSpace:VariableInstance; // for efficiency
       
       private var mKey:String;
+      private var mIndex:int;
       
       private var mValueType:int = ValueTypeDefine.ValueType_Void;
       
@@ -17,6 +18,16 @@ package player.trigger
       public function VariableInstance (value:Object = null)
       {
          mValueObject = value;
+      }
+      
+      public function SetIndex (index:int):void
+      {
+         mIndex = index;
+      }
+      
+      public function GetIndex ():int
+      {
+         return mIndex;
       }
       
       public function SetKey (key:String):void

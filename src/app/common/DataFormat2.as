@@ -441,14 +441,17 @@ package common {
          }
          
          // these are the default values for isLoaingFromStretch and cloning shape, not for isMergingScene
+         extraInfos.mSessionVariableIdMappingTable = null;
          extraInfos.mBeinningSessionVariableIndex = 0;
          extraInfos.mBeinningGlobalVariableIndex = 0;
          extraInfos.mBeinningCustomEntityVariableIndex = 0;
                
-         if (isLoaingFromStretch || isMergingScene) // isMergingScene must be false
+         if (isLoaingFromStretch || isMergingScene)
          {
             if (isMergingScene)
             {
+               if (worldDefine.mForRestartLevel)
+                  extraInfos.mSessionVariableIdMappingTable = new Array (sceneDefine.mSessionVariableDefines.length);
                extraInfos.mBeinningSessionVariableIndex = Global.GetSessionVariableSpace ().GetNumVariables ();
                extraInfos.mBeinningGlobalVariableIndex = Global.GetGlobalVariableSpace ().GetNumVariables ();
                extraInfos.mBeinningCustomEntityVariableIndex = Global.GetCustomEntityVariableSpace ().GetNumVariables ();
@@ -456,9 +459,11 @@ package common {
             
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines); // before v2.00
-            Global.InitSceneCustomVariables (sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
+            extraInfos.mSessionVariableMappingTable = Global.InitSceneCustomVariables (
+                                        sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
                                         sceneDefine.mEntityPropertyDefines, worldDefine.mCommonEntityPropertyDefines, 
-                                        sceneDefine.mSessionVariableDefines, isMergingScene);
+                                        sceneDefine.mSessionVariableDefines, extraInfos.mSessionVariableIdMappingTable,
+                                        isMergingScene);
             
             // append the missed new custom variables for old entities
             // (merged with foloowing "init entity custom properties" block)
@@ -498,7 +503,16 @@ package common {
          //      }
          //   }
          //}
-
+         
+         if (extraInfos.mSessionVariableIdMappingTable == null)
+         {
+            extraInfos.mSessionVariableIdMappingTable = new Array (sceneDefine.mSessionVariableDefines.length);
+            for (var variableIndex:int = sceneDefine.mSessionVariableDefines.length - 1; variableIndex >= 0; -- variableIndex)
+            {
+               extraInfos.mSessionVariableIdMappingTable [variableIndex] = variableIndex + extraInfos.mBeinningSessionVariableIndex;
+            }
+         }
+         
       // init entity custom properties
          //for (createId = 0; createId < numEntities; ++ createId)
          //{
@@ -2007,12 +2021,12 @@ package common {
             var numScenes:int = byteArray.readShort ();
             for (var sceneId:int = 0; sceneId < numScenes; ++ sceneId)
             {  
-               worldDefine.mSceneDefines.push (ByteArray2SceneDefine (byteArray, worldDefine));
+               worldDefine.mSceneDefines.push (ByteArray2SceneDefine (byteArray, worldDefine, sceneId));
             }
          }
          else
          {
-            worldDefine.mSceneDefines.push (ByteArray2SceneDefine (byteArray, worldDefine));
+            worldDefine.mSceneDefines.push (ByteArray2SceneDefine (byteArray, worldDefine, 0));
          }
                   
          // scene common variables
@@ -2163,7 +2177,7 @@ package common {
          return (v1 * 0x10000 + v2) * 0x10000 + v3;
       }
       
-      public static function ByteArray2SceneDefine (byteArray:ByteArray, worldDefine:WorldDefine):SceneDefine
+      public static function ByteArray2SceneDefine (byteArray:ByteArray, worldDefine:WorldDefine, sceneIndex:int):SceneDefine
       {
          var sceneDefine:SceneDefine = new SceneDefine ();
          
@@ -2800,7 +2814,7 @@ package common {
          {
             if (worldDefine.mVersion >= 0x0157)
             {
-               TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mSessionVariableDefines, true, false);
+               TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mSessionVariableDefines, true, false, "/session/" + sceneIndex);
             }
             
             //var numSpaces:int;
@@ -3956,8 +3970,8 @@ package common {
                      functionDefine.mDesignDependent = true;
                   }
                }
-            }
-         }
+            } // functions
+         } // scene
       }
       
 

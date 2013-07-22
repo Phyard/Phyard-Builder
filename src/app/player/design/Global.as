@@ -598,7 +598,7 @@ package player.design
          }
          else // switch/restart level
          {
-            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mWorldVariableSpace, worldVarialbeSpaceDefines, false);            
+            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mWorldVariableSpace, worldVarialbeSpaceDefines, true, false);            
          }
          
          if (mGameSaveVariableSpace == null)
@@ -608,12 +608,13 @@ package player.design
          }
          else // switch/restart level
          {
-            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mGameSaveVariableSpace, gameSaveVarialbeSpaceDefines, false);
+            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mGameSaveVariableSpace, gameSaveVarialbeSpaceDefines, true, false);
          }
       }
       
       //public static function InitSceneCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
-      public static function InitSceneCustomVariables (globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, sessionVariableDefines:Array, isMerging:Boolean = false):void // sessionVariableDefines added from v1.57
+      public static function InitSceneCustomVariables (globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, 
+                                                      sessionVariableDefines:Array, sessionVariableIndexMappingTable:Array, isMerging:Boolean/* = false*/):void // sessionVariableDefines added from v1.57
       {
          //>> v1.52 only
          //var numSpaces:int;
@@ -637,13 +638,14 @@ package player.design
          
          if (mSessionVariableSpace == null) // load from stretch
          {
-            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, null);
+            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, null, true);
          }
          else // restart level or merge level
          {
             if (isMerging)
             {
-               mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, mSessionVariableSpace);
+               // todo: for session, should use the CreatePnlyOnNotExist policy.
+               mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, mSessionVariableSpace, true, sessionVariableIndexMappingTable);
             }
             else
             {
@@ -651,7 +653,7 @@ package player.design
                // nullify non-placed-in-editor entities and ccats
                // potiential decision: discard session variables since a later version, use Game_Data_Save API alikes instead. 
    
-               TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mSessionVariableSpace, sessionVariableDefines, true);
+               TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mSessionVariableSpace, sessionVariableDefines, false, true);
             }
          }
          

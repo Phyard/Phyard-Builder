@@ -538,7 +538,10 @@ package common {
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   if (variable_index >= 0)
-                     variable_index += extraInfos.mBeinningSessionVariableIndex;
+                  {
+                     //variable_index += extraInfos.mBeinningSessionVariableIndex;
+                     variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
+                  }
                   variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableAt (variable_index);
                   if (variable_instance != null)
                      value_source = new Parameter_Variable (variable_instance);
@@ -646,7 +649,10 @@ package common {
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   if (variable_index >= 0)
-                     variable_index += extraInfos.mBeinningSessionVariableIndex;
+                  {
+                     //variable_index += extraInfos.mBeinningSessionVariableIndex;
+                     variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
+                  }
                   variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableAt (variable_index);
                   if (variable_instance != null)
                      value_target = new Parameter_Variable (variable_instance);
@@ -787,8 +793,10 @@ package common {
       
       //public static function VariableSpaceDefine2VariableSpace (playerWorld:World, variableSpaceDefine:VariableSpaceDefine):VariableSpace // v1.52 only
       // if variableSpace is not null, append new one into it and return it.
-      public static function VariableDefines2VariableSpace (playerWorld:World, variableDefines:Array, variableSpace:VariableSpace):VariableSpace // supportInitalValues parameter:is not essential
+      public static function VariableDefines2VariableSpace (playerWorld:World, variableDefines:Array, variableSpace:VariableSpace, supportKeymapping:Boolean = false, varialbeIdMappingTable:Array = null):VariableSpace // supportInitalValues parameter:is not essential
       {
+         var useIdMappingTable:Boolean = false;
+         
          //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
          var numNewVariables:int = variableDefines.length;
          var numOldVariables:int;
@@ -800,20 +808,60 @@ package common {
          else
          {
             numOldVariables = variableSpace.GetNumVariables ();
-            variableSpace.SetNumVariables (numOldVariables + numNewVariables);
+            
+            if (varialbeIdMappingTable == null)
+            {  
+               variableSpace.SetNumVariables (numOldVariables + numNewVariables);
+            }
+            else
+            {
+               useIdMappingTable = true;
+            }
          }
          
+         var newVariableIndexInSpace:int = numOldVariables;
          for (var variableId:int = 0; variableId < numNewVariables; ++ variableId)
          {
             //var variableInstanceDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
             var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
+            var variableInstance:VariableInstance;
+            
+            if (useIdMappingTable)
+            {
+               variableInstance = variableSpace.GetVariableByKey (variableInstanceDefine.mKey);
+
+               if (variableInstance != null)
+               {
+                  varialbeIdMappingTable [variableId] = variableInstance.GetIndex ();
+                  continue;
+               }
+            }
+            
             var direct_source_define:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
             
-            var variableInstance:VariableInstance = variableSpace.GetVariableAt (variableId + numOldVariables);
+            if (useIdMappingTable)
+            {
+               variableSpace.SetNumVariables (newVariableIndexInSpace + 1);
+            }
+            
+            variableInstance = variableSpace.GetVariableAt (newVariableIndexInSpace);
+            variableInstance.SetIndex (newVariableIndexInSpace);
             variableInstance.SetKey (variableInstanceDefine.mKey);
             variableInstance.SetName (variableInstanceDefine.mName);
             variableInstance.SetValueType (direct_source_define.mValueType);
             variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
+            
+            if (useIdMappingTable)
+            {
+               varialbeIdMappingTable [variableId] = variableInstance.GetIndex ();
+            }
+            
+            if (supportKeymapping)
+            {
+               variableSpace.RegisterKeyValue (variableInstanceDefine.mKey, variableInstance);
+            }
+
+            ++ newVariableIndexInSpace;
          }
          
          return variableSpace;
@@ -821,9 +869,9 @@ package common {
       
       // this function is for validating entity and ccat session variables when restarting a level
       // if variableDefines is not null, the lenght of variableSpace will be adjusted to variableDefines.length
-      public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableSpace:VariableSpace, variableDefines:Array, tryToReSceneDependentVariables:Boolean):void
+      public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableSpace:VariableSpace, variableDefines:Array, trimSpace:Boolean, tryToReSceneDependentVariables:Boolean):void
       {
-         if (variableDefines != null)
+         if (variableDefines != null && trimSpace)
             variableSpace.SetNumVariables (variableDefines.length);
          
          // ...
@@ -1093,7 +1141,7 @@ package common {
       }
       
       //public static function  LoadVariableSpaceDefineFromBinFile (binFile:ByteArray):VariableSpaceDefine // v1.52 only
-      public static function  LoadVariableDefinesFromBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
+      public static function  LoadVariableDefinesFromBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean, keyPostfix:String = null):void
       {
          //>> only v1.52
          //var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
@@ -1111,7 +1159,13 @@ package common {
             var viDefine:VariableInstanceDefine = new VariableInstanceDefine ();
             
             if (variablesHaveKey)
+            {
                viDefine.mKey = binFile.readUTF ();
+            }
+            else if (keyPostfix != null)
+            {
+               viDefine.mKey = i + keyPostfix;
+            }
             viDefine.mName = binFile.readUTF ();
             valueType = binFile.readShort ();
             viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (

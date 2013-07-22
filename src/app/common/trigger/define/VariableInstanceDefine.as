@@ -2,7 +2,8 @@ package common.trigger.define
 {
    public class VariableInstanceDefine
    {
-      public var mKey:String = null; // from v2.03
+      public var mKey:String = null; // from v2.03, for game save only
+                                     // from v2.04, use (sceneId << 16) | sessionVarialbeId as the key of a session variable
       
       public var mName:String;
       

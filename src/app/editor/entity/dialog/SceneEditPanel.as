@@ -311,7 +311,7 @@ package editor.entity.dialog {
 // undo point
 //=====================================================================
 
-      override protected function CreateUndoPoint (undoPointName:String):void
+      override public function CreateUndoPoint (undoPointName:String):void
       {
          //EditorContext.GetEditorApp ().CreateWorldSnapshot (undoPointName);
          EditorContext.GetEditorApp ().CreateSceneSnapshot (mScene, undoPointName);

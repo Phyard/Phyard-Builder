@@ -1706,7 +1706,7 @@ package editor.asset {
 // undo point
 //=====================================================================
 
-      protected function CreateUndoPoint (undoPointName:String):void
+      public function CreateUndoPoint (undoPointName:String):void
       {
       }
 

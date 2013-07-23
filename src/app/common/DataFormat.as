@@ -184,7 +184,7 @@ package common {
          //<<
          
          // ...
-         worldDefine.mSimpleGlobalAssetDefines = forSceneUndoPoint; // from v2.01
+         worldDefine.mAreSimpleGlobalAssetDefines = forSceneUndoPoint; // from v2.01
          
          //>>from v1.58
          // image modules
@@ -1448,7 +1448,7 @@ package common {
                                                       policyOnConflictingSceneAssets:int = 0   // 0: determined by modified time. 1: keep current. 2: override. 3: create new
                                                       ):Array
       {
-         if (! worldDefine.mSimpleGlobalAssetDefines) // from v2.01, many fields may be missed.
+         if (! worldDefine.mAreSimpleGlobalAssetDefines) // from v2.01, many fields may be missed.
          {
             // from v1,03
             DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
@@ -1526,7 +1526,7 @@ package common {
 
                imageAsset = assetImageManager.GetAssetByKey (imageDefine.mKey) as AssetImage;
                
-               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               if (worldDefine.mAreSimpleGlobalAssetDefines) // from v2.01 for undo scene
                {
                   toUseNewData = false;
                }
@@ -1585,7 +1585,7 @@ package common {
                   
                   pureModule = pureModuleManager.GetAssetByKey (divisionDefine.mKey) as AssetImagePureModule;
                   
-                  if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+                  if (worldDefine.mAreSimpleGlobalAssetDefines) // from v2.01 for undo scene
                   {
                      toUseNewData = false;
                   }
@@ -1648,7 +1648,7 @@ package common {
 
                assembledModule = assembledModuleManager.GetAssetByKey (assembledModuleDefine.mKey) as AssetImageCompositeModule;
                
-               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               if (worldDefine.mAreSimpleGlobalAssetDefines) // from v2.01 for undo scene
                {
                   toUseNewData = false;
                }
@@ -1700,7 +1700,7 @@ package common {
 
                sequencedModule = sequencedModuleManager.GetAssetByKey (sequencedModuleDefine.mKey) as AssetImageCompositeModule;
                
-               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               if (worldDefine.mAreSimpleGlobalAssetDefines) // from v2.01 for undo scene
                {
                   toUseNewData = false;
                }
@@ -1805,7 +1805,7 @@ package common {
 
                var soundAsset:AssetSound = assetSoundManager.GetAssetByKey (soundDefine.mKey) as AssetSound;
                
-               if (worldDefine.mSimpleGlobalAssetDefines) // from v2.01 for undo scene
+               if (worldDefine.mAreSimpleGlobalAssetDefines) // from v2.01 for undo scene
                {
                   toUseNewData = false;
                }
@@ -1923,8 +1923,8 @@ package common {
             //sceneDefine = worldDefine.mSceneDefines [0];
             sceneDefine = worldDefine.mSceneDefines [worldDefine.mCurrentSceneId];
 
-            // worldDefine.mSimpleGlobalAssetDefines == true means uodo scene
-            SceneDefine2Scene (editorWorld, sceneDefine, worldDefine.mSimpleGlobalAssetDefines, scene, mergeVariablesWithSameNames, policyOnConflictingSceneAssets, 
+            // worldDefine.mAreSimpleGlobalAssetDefines == true means uodo scene
+            SceneDefine2Scene (editorWorld, sceneDefine, worldDefine.mAreSimpleGlobalAssetDefines, scene, mergeVariablesWithSameNames, policyOnConflictingSceneAssets, 
                                imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable, // here editorWorld.GetNumScenes () will make the scene references as null
                                //beginningWorldVariableIndex, beginningGameSaveVariableIndex,
                                //beginningCommonGlobalVariableIndex, beginningCommonEntityVariableIndex

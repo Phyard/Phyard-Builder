@@ -39,7 +39,7 @@ package editor.ccat {
       
       // ...
       
-      private var mLookupTable:Dictionary = new Dictionary ();
+      //private var mNameLookupTable:Dictionary = new Dictionary ();
       private var mCollisionGroupFriendPairs:Array = new Array ();
       
       private var mDefaultCategory:CollisionCategory = null;
@@ -93,20 +93,20 @@ package editor.ccat {
          SetChanged (true);
       }
       
-      private function GetRecommendName (groupName:String):String
-      {
-         var n:int = 1;
-         var groupNameN:String = groupName;
-         while (true)
-         {
-            if (mLookupTable [groupNameN] == null)
-               return groupNameN;
-            
-            groupNameN = groupName + " " + (n ++);
-         }
-         
-         return null;
-      }
+      //private function GetRecommendName (groupName:String):String
+      //{
+      //   var n:int = 1;
+      //   var groupNameN:String = groupName;
+      //   while (true)
+      //   {
+      //      if (mNameLookupTable [groupNameN] == null)
+      //         return groupNameN;
+      //      
+      //      groupNameN = groupName + " " + (n ++);
+      //   }
+      //   
+      //   return null;
+      //}
       
       public function GetCollisionCategoryFriendPairs ():Array
       {
@@ -140,12 +140,12 @@ package editor.ccat {
          if (ccName == null)
             ccName = Define.DefaultCCatName;
          
-         var category:CollisionCategory = new CollisionCategory (this, ValidateAssetKey (key));
+         var category:CollisionCategory = new CollisionCategory (this, ValidateAssetKey (key), GetRecommendAssetName (ccName));
          addChild (category);
          
-         category.SetCategoryName ( GetRecommendName (ccName), false );
+         //category.SetCategoryName ( GetRecommendName (ccName), false ); // moved to above.
          
-         mLookupTable [category.GetCategoryName ()] = category;
+         //mNameLookupTable [category.GetCategoryName ()] = category;
          
          if (selectIt)
          {
@@ -158,38 +158,38 @@ package editor.ccat {
          return category;
       }
       
-      public function ChangeCollisionCategoryName (newName:String, oldName:String):void
-      {
-         if (oldName == null)
-            return;
-         if (newName == null)
-            return;
-         if (newName.length < Define.MinEntityNameLength)
-            return;
-         
-         var category:CollisionCategory = mLookupTable [oldName];
-         
-         if (category == null)
-            return;
-         
-         delete mLookupTable [oldName];
-         
-         if (newName.length > Define.MaxEntityNameLength)
-            newName = newName.substr (0, Define.MaxEntityNameLength);
-         
-         newName = GetRecommendName (newName);
-         
-         mLookupTable [newName] = category;
-         
-         if (newName == oldName)
-         {
-            return;
-         }
-         
-         category.SetCategoryName (newName, false);
-         
-         SetChanged (true);
-      }
+      //public function ChangeCollisionCategoryName (newName:String, oldName:String):void
+      //{
+      //   if (oldName == null)
+      //      return;
+      //   if (newName == null)
+      //      return;
+      //   if (newName.length < Define.MinEntityNameLength)
+      //      return;
+      //   
+      //   var category:CollisionCategory = mNameLookupTable [oldName];
+      //   
+      //   if (category == null)
+      //      return;
+      //   
+      //   delete mNameLookupTable [oldName];
+      //   
+      //   if (newName.length > Define.MaxEntityNameLength)
+      //      newName = newName.substr (0, Define.MaxEntityNameLength);
+      //   
+      //   newName = GetRecommendName (newName);
+      //   
+      //   mNameLookupTable [newName] = category;
+      //   
+      //   if (newName == oldName)
+      //   {
+      //      return;
+      //   }
+      //   
+      //   category.SetCategoryName (newName, false);
+      //   
+      //   SetChanged (true);
+      //}
       
       public function CreateCollisionCategoryFriendLink (category1:CollisionCategory, category2:CollisionCategory):void
       {
@@ -226,7 +226,7 @@ package editor.ccat {
          {
             BreakFriendLinks (asset as CollisionCategory);
             
-            delete mLookupTable[ (asset as CollisionCategory).GetCategoryName () ];
+            //delete mNameLookupTable[ (asset as CollisionCategory).GetCategoryName () ];
          }
          
          SetChanged (true);

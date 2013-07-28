@@ -204,25 +204,14 @@ package editor.asset {
          return mAccAssetId;
       }
       
-      protected function ValidateAssetKey (key:String):String
-      {  
-         if (key != null && key.length == 0)
-            key = null;
-         
-         while (key == null || mLookupTableByKey [key] != null)
-         {
-            key = EditorObject.BuildKey (GetAccAssetId ());
-         }
-         
-         return key;
-      }
-      
       final public function OnAssetCreated (asset:Asset):void
       {
+         var oldAsset:Asset;
+         
          if (asset.GetKey () != null)
          {
             //>> generally, this will not happen
-            var oldAsset:Asset = mLookupTableByKey [asset.GetKey ()];
+            oldAsset = mLookupTableByKey [asset.GetKey ()];
             if (oldAsset != null)
             {
                DestroyAsset (oldAsset);
@@ -230,6 +219,19 @@ package editor.asset {
             //<<
             
             mLookupTableByKey [asset.GetKey ()] = asset;
+         }
+         
+         if (asset.GetName () != null)
+         {
+            //>> generally, this will not happen
+            oldAsset = mLookupTableByName [asset.GetName ()];
+            if (oldAsset != null)
+            {
+               DestroyAsset (oldAsset);
+            }
+            //<<
+            
+            mLookupTableByName [asset.GetName ()] = asset;
          }
          
          // ...
@@ -252,6 +254,11 @@ package editor.asset {
          if (asset.GetKey () != null)
          {
             delete mLookupTableByKey [asset.GetKey ()];
+         }
+         
+         if (asset.GetName () != null)
+         {
+            delete mLookupTableByName [asset.GetName ()];
          }
          
          // ...
@@ -1493,7 +1500,73 @@ package editor.asset {
          return mLookupTableByKey [key] as Asset;
       }
       
-      // todo: lookup table by name
+      protected function ValidateAssetKey (key:String):String
+      {  
+         if (key != null && key.length == 0)
+            key = null;
+         
+         while (key == null || mLookupTableByKey [key] != null)
+         {
+            key = EditorObject.BuildKey (GetAccAssetId ());
+         }
+         
+         return key;
+      }
+      
+      //----------
+      
+      private var mLookupTableByName:Dictionary = new Dictionary ();
+      
+      public function GetAssetByName (name:String):Asset
+      {
+         return mLookupTableByName [name] as Asset;
+      }
+      
+      protected function GetRecommendAssetName (aName:String):String
+      {
+         if (aName == null)
+            return null;
+         
+         var n:int = 1;
+         var aNameN:String = aName;
+         while (true)
+         {
+            if (mLookupTableByName [aNameN] == null)
+               return aNameN;
+            
+            aNameN = aName + " " + (n ++);
+         }
+         
+         return null;
+      }
+      
+      internal function ChangeAssetName (newName:String, oldName:String):void
+      {
+         if (oldName == null)
+            return;
+         if (newName == null)
+            return;
+         if (newName.length < Define.MinEntityNameLength)
+            return;
+         
+         var asset:Asset = mLookupTableByName [oldName];
+         
+         if (asset == null)
+            return;
+         
+         if (newName.length > Define.MaxEntityNameLength)
+            newName = newName.substr (0, Define.MaxEntityNameLength);
+         
+         newName = GetRecommendAssetName (newName);
+         
+         if (newName == oldName)
+            return;
+         
+         delete mLookupTableByName [oldName];
+         mLookupTableByName [newName] = asset;
+         
+         asset.SetName (newName, false);
+      }
       
 //============================================================================
 // utils

@@ -219,8 +219,10 @@ package editor.codelib.dialog {
             
             if (asset is AssetFunction)
             {
-               (asset as AssetFunction).SetFunctionName (mTextInputName.text);
+               //(asset as AssetFunction).SetFunctionName (mTextInputName.text);
+               (asset as AssetFunction).SetName (mTextInputName.text);
                (asset as AssetFunction).UpdateTimeModified ();
+               mCodeLibManager.SetChanged (true);
             }
             
             asset.UpdateAppearance ();

@@ -53,10 +53,11 @@ package editor.asset {
       private var mAlpha:Number = 1.0;
       private var mIsVisible:Boolean = true;
       
-      public function Asset (assetManager:AssetManager, key:String = null)
+      public function Asset (assetManager:AssetManager, key:String = null, name:String = null)
       {
          mAssetManager = assetManager;
          SetKey (key);
+         SetName (name);
          
          if (mAssetManager != null) // at some special cases, mAssetManager is null
             mAssetManager.OnAssetCreated (this);
@@ -70,11 +71,9 @@ package editor.asset {
          //
          // found it: for AssetImageShapeModule, the mAssetManager is really null.
          
-         //SetName (null);
-         
          mouseChildren = false;
          
-         addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+         addEventListener (Event.ADDED_TO_STAGE, OnAddedToStage);
       }
       
       public function GetAssetManager ():AssetManager
@@ -256,12 +255,30 @@ package editor.asset {
 // name, position
 //======================================================
       
-      public function SetName (name:String):void
+      //public function SetName (name:String):void
+      //{
+      //   mName = name;
+      //}
+      
+      public function SetName (newName:String, checkValidity:Boolean = true):void
       {
-         //if (name == null)
-         //   name = GetDefaultName ();
-         
-         mName = name;
+         if (checkValidity)
+         {
+            mAssetManager.ChangeAssetName (newName, GetName ());
+         }
+         else
+         {
+            mName = name;
+            
+            //UpdateTimeModified (); // bug: shouldn't in loading. 
+            
+            OnNameChanged ();
+         }
+      }
+      
+      protected function OnNameChanged ():void
+      {
+         // to overrdie
       }
       
       public function GetName ():String

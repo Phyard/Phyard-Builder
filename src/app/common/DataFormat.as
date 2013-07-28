@@ -2841,13 +2841,13 @@ package common {
             {
                toUseNewData = true;
                
-               functionAsset = codelibManager.CreateFunction (functionDefine.mKey);
+               functionAsset = codelibManager.CreateFunction (functionDefine.mKey, functionDefine.mName, functionDefine.mDesignDependent);
             }
             else if (policyOnConflictingSceneAssets == 3) // always create new 
             {
                toUseNewData = true;
                
-               functionAsset = codelibManager.CreateFunction (null);
+               functionAsset = codelibManager.CreateFunction (null, functionDefine.mName, functionDefine.mDesignDependent);
             }
             else if (policyOnConflictingSceneAssets == 2) // override
             {
@@ -2873,7 +2873,7 @@ package common {
             if (functionDefine.mToLoadNewData)
             {
                //>>added from v1.56, become meaningless from v2.00 
-               functionAsset.SetDesignDependent (functionDefine.mDesignDependent);
+               //functionAsset.SetDesignDependent (functionDefine.mDesignDependent); // move to above CreateXXX
                //<<
             
                TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
@@ -2911,7 +2911,7 @@ package common {
                //functionAsset = scene.GetCodeLibManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
                functionAsset = codelibManager.GetAssetByKey (functionDefine.mKey) as AssetFunction;
                
-               functionAsset.SetFunctionName (functionDefine.mName);
+               //functionAsset.SetFunctionName (functionDefine.mName); // move to above CreateXXX
                functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
                
                functionAsset.UpdateAppearance ();

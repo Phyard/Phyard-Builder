@@ -91,7 +91,7 @@ package editor.codelib {
             var index:int = mFunctionAssets.indexOf (asset);
             if (index >= 0) // must be
             {
-               delete mFunctionLookupTable[ (asset as AssetFunction).GetFunctionName () ];
+               //delete mNameLookupTable[ (asset as AssetFunction).GetFunctionName () ];
                (asset as AssetFunction).SetFunctionIndex (-1);
                mFunctionAssets.splice (index, 1);
                
@@ -160,31 +160,41 @@ package editor.codelib {
       }
       
 //===============================
+// function / type / package lists
+//===============================
+      
+      protected var mFunctions:Array = new Array ();
+      
+      protected var mTypes:Array = new Array ();
+      
+      protected var mPackages:Array = new Array ();
+      
+//===============================
 // functions
 //===============================
       
       private var mFunctionAssets:Array = new Array ();
-      private var mFunctionLookupTable:Dictionary = new Dictionary ();
+      //private var mNameLookupTable:Dictionary = new Dictionary ();
       
       public function GetNumFunctions ():int
       {
          return mFunctionAssets.length;
       }
       
-      private function GetFunctionRecommendName (functionName:String):String
-      {
-         var n:int = 1;
-         var functionNameN:String = functionName;
-         while (true)
-         {
-            if (mFunctionLookupTable [functionNameN] == null)
-               return functionNameN;
-            
-            functionNameN = functionName + " " + (n ++);
-         }
-         
-         return null;
-      }
+      //private function GetFunctionRecommendName (functionName:String):String
+      //{
+      //   var n:int = 1;
+      //   var functionNameN:String = functionName;
+      //   while (true)
+      //   {
+      //      if (mNameLookupTable [functionNameN] == null)
+      //         return functionNameN;
+      //      
+      //      functionNameN = functionName + " " + (n ++);
+      //   }
+      //   
+      //   return null;
+      //}
       
       public function GetFunctionByIndex (index:int):AssetFunction
       {
@@ -199,15 +209,15 @@ package editor.codelib {
          if (funcName == null)
             funcName = Define.FunctionDefaultName;
          
-         var aFunction:AssetFunction = new AssetFunction (this, ValidateAssetKey (key));
+         var aFunction:AssetFunction = new AssetFunction (this, ValidateAssetKey (key), GetRecommendAssetName (funcName));
          addChild (aFunction);
          
          mFunctionAssets.push (aFunction);
          
-         aFunction.SetFunctionName (GetFunctionRecommendName (funcName), false);
+         //aFunction.SetFunctionName (GetFunctionRecommendName (funcName), false); // moved to above
          aFunction.SetDesignDependent (designDependent);
          
-         mFunctionLookupTable [aFunction.GetFunctionName ()] = aFunction;
+         //mNameLookupTable [aFunction.GetFunctionName ()] = aFunction;
          
          UpdateFunctionIndexes ();
          
@@ -222,38 +232,38 @@ package editor.codelib {
          return aFunction;
       }
       
-      public function ChangeFunctionName (newName:String, oldName:String):void
-      {
-         if (oldName == null)
-            return;
-         if (newName == null)
-            return;
-         if (newName.length < Define.MinEntityNameLength)
-            return;
-         
-         var aFunction:AssetFunction = mFunctionLookupTable [oldName];
-         
-         if (aFunction == null)
-            return;
-         
-         delete mFunctionLookupTable [oldName];
-         
-         if (newName.length > Define.MaxEntityNameLength)
-            newName = newName.substr (0, Define.MaxEntityNameLength);
-         
-         newName = GetFunctionRecommendName (newName);
-         
-         mFunctionLookupTable [newName] = aFunction;
-         
-         if (newName == oldName)
-         {
-            return;
-         }
-         
-         aFunction.SetFunctionName (newName, false);
-         
-         SetChanged (true);
-      }
+      //public function ChangeFunctionName (newName:String, oldName:String):void
+      //{
+      //   if (oldName == null)
+      //      return;
+      //   if (newName == null)
+      //      return;
+      //   if (newName.length < Define.MinEntityNameLength)
+      //      return;
+      //   
+      //   var aFunction:AssetFunction = mNameLookupTable [oldName];
+      //   
+      //   if (aFunction == null)
+      //      return;
+      //   
+      //   delete mNameLookupTable [oldName];
+      //   
+      //   if (newName.length > Define.MaxEntityNameLength)
+      //      newName = newName.substr (0, Define.MaxEntityNameLength);
+      //   
+      //   newName = GetFunctionRecommendName (newName);
+      //   
+      //   mNameLookupTable [newName] = aFunction;
+      //   
+      //   if (newName == oldName)
+      //   {
+      //      return;
+      //   }
+      //   
+      //   aFunction.SetFunctionName (newName, false);
+      //   
+      //   SetChanged (true);
+      //}
       
       public function UpdateFunctionIndexes ():void
       {

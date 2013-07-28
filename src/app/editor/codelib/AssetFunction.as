@@ -69,9 +69,9 @@ package editor.codelib {
       private var mHalfTextWidth:Number;
       private var mHalfTextHeight:Number;
       
-      public function AssetFunction (codeLibManager:CodeLibManager, key:String)
+      public function AssetFunction (codeLibManager:CodeLibManager, key:String, name:String)
       {
-         super (codeLibManager, key);
+         super (codeLibManager, key, name);
          
          doubleClickEnabled = true;
          
@@ -129,19 +129,25 @@ package editor.codelib {
          return GetName ();
       }
       
-      public function SetFunctionName (newName:String, checkValidity:Boolean = true):void
-      {
-         if (checkValidity)
-         {
-            mCodeLibManager.ChangeFunctionName (newName, GetName ());
-         }
-         else
-         {
-            SetName (newName);
-            
-            mFunctionDeclaration.SetName (newName);
+      //public function SetFunctionName (newName:String, checkValidity:Boolean = true):void
+      //{
+      //   if (checkValidity)
+      //   {
+      //      mCodeLibManager.ChangeFunctionName (newName, GetName ());
+      //   }
+      //   else
+      //   {
+      //      SetName (newName);
+      //      
+      //      mFunctionDeclaration.SetName (newName);
+      //      mFunctionDeclaration.ParseAllCallingTextSegments ();
+      //   }
+      //}
+      
+      override protected function OnNameChanged ():void
+      {     
+            mFunctionDeclaration.SetName (GetName ());
             mFunctionDeclaration.ParseAllCallingTextSegments ();
-         }
       }
       
       public function Reset ():void

@@ -39,11 +39,6 @@ package editor.entity {
          return false;
       }
       
-      override public function GetDefaultName ():String
-      {
-         return GetTypeName ();
-      }
-      
       override public function ToCodeString ():String
       {
          return "Entity#" + GetCreationOrderId ();

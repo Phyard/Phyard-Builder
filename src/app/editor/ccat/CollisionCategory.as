@@ -85,11 +85,11 @@ package editor.ccat {
          return "Collision Category";
       }
       
-      public function GetCategoryName ():String
-      {
-         //return mCategoryName;
-         return GetName ();
-      }
+      //public function GetCategoryName ():String
+      //{
+      //   //return mCategoryName;
+      //   return GetName ();
+      //}
       
       //public function SetCategoryName (newName:String, checkValidity:Boolean = true):void
       //{

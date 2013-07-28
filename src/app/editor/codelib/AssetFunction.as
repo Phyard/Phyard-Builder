@@ -124,10 +124,10 @@ package editor.codelib {
          return "Function";
       }
       
-      public function GetFunctionName ():String
-      {
-         return GetName ();
-      }
+      //public function GetFunctionName ():String
+      //{
+      //   return GetName ();
+      //}
       
       //public function SetFunctionName (newName:String, checkValidity:Boolean = true):void
       //{
@@ -145,9 +145,12 @@ package editor.codelib {
       //}
       
       override protected function OnNameChanged ():void
-      {     
+      {
+         if (mFunctionDeclaration != null)
+         {
             mFunctionDeclaration.SetName (GetName ());
             mFunctionDeclaration.ParseAllCallingTextSegments ();
+         }
       }
       
       public function Reset ():void
@@ -226,11 +229,11 @@ package editor.codelib {
          while (numChildren > 0)
             removeChildAt (0);
          
-         var ccName:String = GetName ();
+         var funcName:String = GetName ();
          
-         ccName = TextUtil.GetHtmlEscapedText (ccName);
+         funcName = TextUtil.GetHtmlEscapedText (funcName);
          
-         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>&lt;" + GetFunctionIndex () + "&gt; " + ccName + "</font>", false, 0xFFFFFF, 0x0);
+         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>&lt;" + GetFunctionIndex () + "&gt; " + funcName + "</font>", false, 0xFFFFFF, 0x0);
             
          addChild (textField);
          

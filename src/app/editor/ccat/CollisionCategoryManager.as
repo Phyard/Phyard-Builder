@@ -322,7 +322,8 @@ package editor.ccat {
                category = GetCollisionCategoryByIndex (i);
 
                var item:Object = new Object ();
-               item.label = i + ": " + category.GetCategoryName ();
+               //item.label = i + ": " + category.GetCategoryName ();
+               item.label = i + ": " + category.GetName ();
                item.mCategoryIndex = category.GetAppearanceLayerId ();
                list.push (item);
             }

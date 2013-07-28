@@ -223,17 +223,19 @@ package editor.asset {
          
          if (asset.GetName () != null)
          {
-            //>> generally, this will not happen
             oldAsset = mLookupTableByName [asset.GetName ()];
-            if (oldAsset != null)
+            if (oldAsset != asset) // always normally
             {
-               DestroyAsset (oldAsset);
+               //>> generally, this will not happen
+               if (oldAsset != null)
+               {
+                  DestroyAsset (oldAsset);
+               }
+               //<<
+               
+               mLookupTableByName [asset.GetName ()] = asset;
             }
-            //<<
-            
-            mLookupTableByName [asset.GetName ()] = asset;
          }
-         
          // ...
          
          ++ mAccAssetId; // never decrease
@@ -1540,32 +1542,34 @@ package editor.asset {
          return null;
       }
       
-      internal function ChangeAssetName (newName:String, oldName:String):void
+      internal function ChangeAssetName (childAsset:Asset, newName:String):void
       {
-         if (oldName == null)
-            return;
-         if (newName == null)
-            return;
-         if (newName.length < Define.MinEntityNameLength)
-            return;
+         var oldName:String = childAsset.GetName ();
          
-         var asset:Asset = mLookupTableByName [oldName];
-         
-         if (asset == null)
-            return;
-         
-         if (newName.length > Define.MaxEntityNameLength)
-            newName = newName.substr (0, Define.MaxEntityNameLength);
-         
-         newName = GetRecommendAssetName (newName);
-         
+         if (newName != null)
+         {
+            if (newName.length < Define.MinEntityNameLength)
+               newName = childAsset.GetDefaultName ();
+            else if (newName.length > Define.MaxEntityNameLength)
+               newName = newName.substr (0, Define.MaxEntityNameLength);
+         }
+
          if (newName == oldName)
             return;
          
-         delete mLookupTableByName [oldName];
-         mLookupTableByName [newName] = asset;
+         if (oldName != null)
+         {
+            //assert mLookupTableByName [oldName] == childAsset
+            delete mLookupTableByName [oldName];
+         }
          
-         asset.SetName (newName, false);
+         if (newName != null)
+         {
+            newName = GetRecommendAssetName (newName);
+            mLookupTableByName [newName] = childAsset;
+         }
+         
+         childAsset.SetName (newName, false);
       }
       
 //============================================================================

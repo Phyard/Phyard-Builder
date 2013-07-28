@@ -1009,7 +1009,8 @@ package common {
                ccDefine.mTimeModified = collisionCategory.GetTimeModified ();
                //<<
                
-               ccDefine.mName = collisionCategory.GetCategoryName ();
+               //ccDefine.mName = collisionCategory.GetCategoryName ();
+               ccDefine.mName = collisionCategory.GetName ();
                ccDefine.mCollideInternally = collisionCategory.IsCollideInternally ();
                ccDefine.mPosX = collisionCategory.GetPositionX ();
                ccDefine.mPosY = collisionCategory.GetPositionY ();

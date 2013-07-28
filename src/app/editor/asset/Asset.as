@@ -39,7 +39,7 @@ package editor.asset {
             
       protected var mSelectionProxy:SelectionProxy = null;
       
-      protected var mName:String = "";
+      protected var mName:String = null;
       
       protected var mTransform:Transform2D = new Transform2D (); // don't change it directly
       
@@ -59,7 +59,7 @@ package editor.asset {
          SetKey (key);
          SetName (name);
          
-         if (mAssetManager != null) // at some special cases, mAssetManager is null
+         if (mAssetManager != null) // at some special cases, mAssetManager is null (ex. AssetImageShapeModule).
             mAssetManager.OnAssetCreated (this);
 
          // really allow mAssetManager == null? seems it is a historical issue.
@@ -264,11 +264,15 @@ package editor.asset {
       {
          if (checkValidity)
          {
-            mAssetManager.ChangeAssetName (newName, GetName ());
+            if (mAssetManager != null) // !!!
+            {
+               mAssetManager.ChangeAssetName (this, newName);
+            }
          }
          else
          {
-            mName = name;
+            //mName = name; // no compiling error!! big bug!! (== DisplayObject.name)
+            mName = newName;
             
             //UpdateTimeModified (); // bug: shouldn't in loading. 
             

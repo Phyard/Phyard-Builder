@@ -92,7 +92,8 @@ package editor.ccat.dialog {
          {
             mCheckBoxCollideInternally.selected = onlySelected.IsCollideInternally ();
             mCheckBoxDefaultCategory.selected = onlySelected.IsDefaultCategory ();
-            mTextInputName.text = onlySelected.GetCategoryName ();
+            //mTextInputName.text = onlySelected.GetCategoryName ();
+            mTextInputName.text = onlySelected.GetName ();
          }
          else
          {

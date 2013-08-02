@@ -417,7 +417,7 @@ package editor.trigger.entity {
 //   entity links
 //====================================================================
       
-      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          ValidateEntityLinks ();
          

@@ -368,8 +368,8 @@ package common {
       public static const CodingFormat_Poem:int = 2;
       
       public static const FunctionDefaultName:String = "Function";
-      public static const PackageDefaultName:String = "Package";
       public static const ClassDefaultName:String = "Type";
+      public static const PackageDefaultName:String = "Package";
       
 //===========================================================================
 // colors

@@ -340,7 +340,7 @@ package editor.trigger.entity {
       }
       
 //====================================================================
-//   entity links
+//   draw links
 //====================================================================
       
       override public function GetDrawLinksOrder ():int
@@ -348,7 +348,7 @@ package editor.trigger.entity {
          return DrawLinksOrder_EventHandler;
       }
       
-      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          ValidateEntityLinks ();
          
@@ -376,7 +376,7 @@ package editor.trigger.entity {
                
                if ((! forceDraw) && IsSelected ())
                {
-                  entity.DrawEntityLinks (canvasSprite, false, true);
+                  entity.DrawAssetLinks (canvasSprite, false, true);
                }
             }
          }

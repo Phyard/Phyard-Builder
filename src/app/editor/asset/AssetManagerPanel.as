@@ -1772,7 +1772,52 @@ package editor.asset {
       
       public function CreateOrBreakAssetLink (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):void
       {
-         // ...
+         // to override, generally call CreateOrBreakAssetLink_Default
+      }
+      
+      protected function CreateOrBreakAssetLink_Default (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):Boolean
+      {
+         var created:Boolean = false;
+         
+         // first round
+         var assetArray:Array = mAssetManager.GetAssetsAtPoint (endManagerX, endManagerY);
+         var asset:Asset;
+         var linkable:Linkable;
+         var i:int;
+         for (i = 0; !created && i < assetArray.length; ++ i)
+         {
+            asset = assetArray [i] as Asset;
+            if (asset is Linkable)
+            {
+               linkable = asset as Linkable;
+               created = startLinkable.TryToCreateLink (mStartManagerX, mStartManagerY, asset, endManagerX, endManagerY);
+               if (! created && startLinkable is Asset)
+                  created = linkable.TryToCreateLink (endManagerX, endManagerY, startLinkable as Asset, mStartManagerX, mStartManagerY);
+            }
+         }
+         
+         // second round, link general entity with a linkable
+         
+         for (i = 0; i < assetArray.length; ++ i)
+         {
+            asset = (assetArray [i] as Asset).GetMainAsset () as Asset;
+            if (! (asset is Linkable) )
+            {
+               created = startLinkable.TryToCreateLink (mStartManagerX, mStartManagerY, asset, endManagerX, endManagerY);
+               if (created)
+                  break;
+            }
+         }
+         
+trace ("111 created = " + created);
+         if (created)
+         {
+            RepaintAllAssetLinks ();
+            
+            return true;
+         }
+         
+         return false;
       }
       
       private var mAssetLinksNeedRepaint:Boolean = false;
@@ -1803,6 +1848,7 @@ package editor.asset {
          
          if (mAssetLinksNeedRepaint)
          {
+trace ("222 UpdateAssetLinkLines ");
             mAssetLinksNeedRepaint = false;
             
             mAssetLinksLayer.graphics.clear ();

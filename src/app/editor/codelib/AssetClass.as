@@ -44,10 +44,7 @@ package editor.codelib {
    import editor.asset.Asset;
    import editor.asset.Linkable;
    
-   import editor.trigger.FunctionDefinition;
-   import editor.trigger.CodeSnippet;
-   import editor.trigger.FunctionDeclaration;
-   import editor.trigger.FunctionDeclaration_Custom;
+   import editor.trigger.VariableSpaceClassInstance;
    
    import editor.display.dialog.NameSettingDialog;
    
@@ -55,16 +52,14 @@ package editor.codelib {
    
    import common.Define;
    
-   public class AssetFunction extends Asset implements Linkable
+   public class AssetClass extends Asset implements Linkable
    {
       protected var mCodeLibManager:CodeLibManager;
-      protected var mFunctionId:int = -1;
+      protected var mClassId:int = -1;
       
       protected var mPackage:AssetPackage = null;
       
-      protected var mCodeSnippet:CodeSnippet;
-      protected var mFunctionDeclaration:FunctionDeclaration_Custom;
-      protected var mFunctionDefinition:FunctionDefinition;
+      protected var mProperties:VariableSpaceClassInstance;
       
       private var mHalfWidth:Number;
       private var mHalfHeight:Number;
@@ -72,7 +67,7 @@ package editor.codelib {
       private var mHalfTextWidth:Number;
       private var mHalfTextHeight:Number;
       
-      public function AssetFunction (codeLibManager:CodeLibManager, key:String, name:String)
+      public function AssetClass (codeLibManager:CodeLibManager, key:String, name:String)
       {
          super (codeLibManager, key, name);
          
@@ -82,29 +77,17 @@ package editor.codelib {
          
          mouseChildren = false;
          
-         mFunctionDeclaration = new FunctionDeclaration_Custom (mName);
-         mFunctionDefinition = new FunctionDefinition (/*mCodeLibManager.mWorld.GetTriggerEngine (), */mFunctionDeclaration, true);
-         mCodeSnippet = new CodeSnippet (mFunctionDefinition);
+         mProperties = new VariableSpaceClassInstance (GetName ());
       }
       
-      override public function Destroy ():void
+      public function SetClassIndex (classId:int):void
       {
-         mFunctionDeclaration.SetID (-1);
-         mFunctionDeclaration.NotifyRemoved ();
-         
-         super.Destroy ();
+         mClassId = classId;
       }
       
-      public function SetFunctionIndex (functionId:int):void
+      public function GetClassIndex ():int
       {
-         mFunctionId = functionId;
-         
-         mFunctionDeclaration.SetID (mFunctionId);
-      }
-      
-      public function GetFunctionIndex ():int
-      {
-         return mFunctionId;
+         return mClassId;
       }
       
       public function SetPackage (thePacakge:AssetPackage):void
@@ -120,120 +103,27 @@ package editor.codelib {
          return mPackage;
       }
       
-      public function IsDesignDependent ():Boolean
-      {
-         return mFunctionDefinition.IsDesignDependent ();
-      }
-      
-      public function SetDesignDependent (designDependent:Boolean):void
-      {
-         mFunctionDefinition.SetDesignDependent (designDependent);
-      }
-      
       override public function ToCodeString ():String
       {
-         return "Function#" + GetFunctionIndex ();
+         return "Type#" + GetClassIndex ();
       }
       
       override public function GetTypeName ():String
       {
-         return "Function";
+         return "Type";
       }
       
-      //public function GetFunctionName ():String
-      //{
-      //   return GetName ();
-      //}
-      
-      //public function SetFunctionName (newName:String, checkValidity:Boolean = true):void
-      //{
-      //   if (checkValidity)
-      //   {
-      //      mCodeLibManager.ChangeFunctionName (newName, GetName ());
-      //   }
-      //   else
-      //   {
-      //      SetName (newName);
-      //      
-      //      mFunctionDeclaration.SetName (newName);
-      //      mFunctionDeclaration.ParseAllCallingTextSegments ();
-      //   }
-      //}
+      public function GetPropertyVariableSpace ():VariableSpaceClassInstance
+      {
+         return mProperties;
+      }
       
       override protected function OnNameChanged ():void
       {
-         if (mFunctionDeclaration != null)
+         if (mProperties != null)
          {
-            mFunctionDeclaration.SetName (GetName ());
-            mFunctionDeclaration.ParseAllCallingTextSegments ();
+            mProperties.SetSpaceName (GetName ());
          }
-      }
-      
-      public function Reset ():void
-      {  
-         mCodeSnippet.ClearFunctionCallings ();
-         //mCodeSnippet.GetOwnerFunctionDefinition ()
-         mFunctionDefinition.GetInputVariableSpace ().DestroyAllVariableInstances ();
-         mFunctionDefinition.GetOutputVariableSpace ().DestroyAllVariableInstances ();
-         mFunctionDefinition.GetLocalVariableSpace ().DestroyAllVariableInstances ();
-      }
-      
-      
-      private var mLastModifyTimesOfInputVariableSpace:int = 0;
-      private var mLastModifyTimesOfOutputVariableSpace:int = 0;
-      private var mLastModifyTimesOfLocalVariableSpace:int = 0;
-      override public function Update (escapedTime:Number):void
-      {
-         if (  mFunctionDefinition.GetInputVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfInputVariableSpace
-            || mFunctionDefinition.GetOutputVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfOutputVariableSpace
-            || mFunctionDefinition.GetLocalVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfLocalVariableSpace
-            )
-         {
-            UpdateTimeModified ();
-         }
-      }
-      
-      override public function SetTimeModified (time:Number):void
-      {
-         super.SetTimeModified (time);
-         
-         mLastModifyTimesOfInputVariableSpace = mFunctionDefinition.GetInputVariableSpace ().GetNumModifiedTimes ();
-         mLastModifyTimesOfOutputVariableSpace = mFunctionDefinition.GetOutputVariableSpace ().GetNumModifiedTimes ();
-         mLastModifyTimesOfLocalVariableSpace = mFunctionDefinition.GetLocalVariableSpace ().GetNumModifiedTimes ();
-      }
-      
-//=======================================================================================
-// code snippet
-//=======================================================================================
-      
-      public function GetCodeSnippetName ():String
-      {
-         return mCodeSnippet.GetName ();
-      }
-      
-      public function SetCodeSnippetName (name:String):void
-      {
-         mCodeSnippet.SetName (name);
-      }
-      
-      public function GetCodeSnippet ():CodeSnippet
-      {
-         return mCodeSnippet;
-      }
-      
-      public function ValidateEntityLinks ():void
-      {
-         //mCodeSnippet.ValidateValueSourcesAndTargets ();
-      }
-      
-      public function GetFunctionDeclaration ():FunctionDeclaration_Custom
-      {
-         return mFunctionDeclaration;
-      }
-      
-      public function GetFunctionDefinition ():FunctionDefinition
-      {
-         return mFunctionDefinition;
       }
       
 //=============================================================
@@ -257,11 +147,11 @@ package editor.codelib {
          while (numChildren > 0)
             removeChildAt (0);
          
-         var funcName:String = GetName ();
+         var className:String = GetName ();
          
-         funcName = TextUtil.GetHtmlEscapedText (funcName);
+         className = TextUtil.GetHtmlEscapedText (className);
          
-         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>&lt;" + GetFunctionIndex () + "&gt; " + funcName + "</font>", false, 0xFFFFFF, 0x0);
+         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>&lt;" + GetClassIndex () + "&gt; " + className + "</font>", false, 0xFFFFFF, 0x0);
             
          addChild (textField);
          
@@ -289,7 +179,7 @@ package editor.codelib {
          mHalfWidth = mHalfTextWidth + (kDragLinkHandlerWidth >> 1);
          mHalfHeight = mHalfTextHeight;
          
-         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, -1, true, IsDesignDependent () ? 0xFFC20E : 0xC0FFC0);
+         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, -1, true, 0xFD8A7D);
          GraphicsUtil.DrawRect (this, - mHalfWidth, - mHalfHeight, kDragLinkHandlerWidth, mHalfHeight + mHalfHeight, 0x0, 1, true, 0xB08888);
          GraphicsUtil.DrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false);
       }
@@ -311,7 +201,7 @@ package editor.codelib {
       
       override protected function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         var menuItemChangeOrder:ContextMenuItem = new ContextMenuItem("Change Function Order ID ...");
+         var menuItemChangeOrder:ContextMenuItem = new ContextMenuItem("Change Type Order ID ...");
          
          menuItemChangeOrder.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_ChangeOrderID);
          
@@ -324,9 +214,9 @@ package editor.codelib {
       private function OnContextMenuEvent_ChangeOrderID (event:ContextMenuEvent):void
       {
          EditorContext.ShowModalDialog (NameSettingDialog, ConfirmChangeOrderID, 
-                                    {mName: "" + GetFunctionIndex (), 
+                                    {mName: "" + GetClassIndex (), 
                                      mLabel: "New Order ID",
-                                     mTitle: "Change Function Order ID"});
+                                     mTitle: "Change Type Order ID"});
       }
       
       private function ConfirmChangeOrderID (params:Object):void
@@ -342,7 +232,7 @@ package editor.codelib {
          //codeLibManager.MoveAssetsToIndex ([this], newIndex);
          //codeLibManager.OnFunctionOrderIDsChanged ();
          
-         codeLibManager.ChangeFunctionOrderIDs (GetFunctionIndex (), newIndex);
+         codeLibManager.ChangeClassOrderIDs (GetClassIndex (), newIndex);
       }
       
 //====================================================================
@@ -389,6 +279,6 @@ package editor.codelib {
             GraphicsUtil.DrawLine (canvasSprite, thisPoint.x, thisPoint.y, parentPoint.x, parentPoint.y, 0x0, 0);
          }
       }
-
-  }
+      
+   }
 }

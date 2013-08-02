@@ -754,7 +754,7 @@ package editor.trigger.entity {
          return false;
       }
       
-      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          ValidateEntityLinks ();
          
@@ -798,11 +798,11 @@ package editor.trigger.entity {
             for (i = 0; i < mInputEntities1.length; ++ i)
             {
                if (mInputEntities1 [i] != null && mInputEntitySelectors [index] != null)
-                  (mInputEntitySelectors [index] as InputEntitySelector_Single).DrawEntityLinkLine (canvasSprite, mInputEntities1 [i]);
+                  (mInputEntitySelectors [index] as InputEntitySelector_Single).DrawLink (canvasSprite, mInputEntities1 [i]);
                ++ index;
                
                if (mInputEntities2 [i] != null && mInputEntitySelectors [index] != null)
-                  (mInputEntitySelectors [index] as InputEntitySelector_Single).DrawEntityLinkLine (canvasSprite, mInputEntities2 [i]);
+                  (mInputEntitySelectors [index] as InputEntitySelector_Single).DrawLink (canvasSprite, mInputEntities2 [i]);
                ++ index;
             }
          }
@@ -810,12 +810,12 @@ package editor.trigger.entity {
          {
             if (mInputEntities1 != null && mInputEntities1.length > 0)
             {
-               (mInputEntitySelectors [0] as InputEntitySelector_Many).DrawEntityLinks (canvasSprite, mInputEntities1);
+               (mInputEntitySelectors [0] as InputEntitySelector_Many).DrawLinks (canvasSprite, mInputEntities1);
             }
             
             if (mInputEntities2 != null && mInputEntities2.length > 0)
             {
-               (mInputEntitySelectors [1] as InputEntitySelector_Many).DrawEntityLinks (canvasSprite, mInputEntities2);
+               (mInputEntitySelectors [1] as InputEntitySelector_Many).DrawLinks (canvasSprite, mInputEntities2);
             }
          }
       }

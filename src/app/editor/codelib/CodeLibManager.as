@@ -86,9 +86,11 @@ package editor.codelib {
       
       override public function DestroyAsset (asset:Asset):void
       {
+         var index:int;
+         
          if (asset is AssetFunction)
          {
-            var index:int = mFunctionAssets.indexOf (asset);
+            index = mFunctionAssets.indexOf (asset);
             if (index >= 0) // must be
             {
                //delete mNameLookupTable[ (asset as AssetFunction).GetFunctionName () ];
@@ -96,27 +98,41 @@ package editor.codelib {
                mFunctionAssets.splice (index, 1);
                
                UpdateFunctionIndexes ();
+               UpdateFunctionAppearances ();
+            }
+         }
+         
+         if (asset is AssetClass)
+         {
+            index = mClassAssets.indexOf (asset);
+            if (index >= 0) // must be
+            {
+               //delete mNameLookupTable[ (asset as AssetFunction).GetFunctionName () ];
+               (asset as AssetClass).SetClassIndex (-1);
+               mClassAssets.splice (index, 1);
+               
+               UpdateClassIndexes ();
+               UpdateClassAppearances ();
+            }
+         }
+         
+         if (asset is AssetPackage)
+         {
+            index = mPackageAssets.indexOf (asset);
+            if (index >= 0) // must be
+            {
+               //delete mNameLookupTable[ (asset as AssetFunction).GetFunctionName () ];
+               (asset as AssetPackage).SetPackageIndex (-1);
+               mPackageAssets.splice (index, 1);
+               
+               UpdatePackageIndexes ();
+               UpdatePackageAppearances ();
             }
          }
          
          SetChanged (true);
          
          super.DestroyAsset (asset);
-         
-         UpdateFunctionAppearances ();
-      }
-      
-      private function UpdateFunctionAppearances ():void
-      {
-         // ids changed, maybe
-         for (var i:int = 0; i < numChildren; ++ i)
-         {
-            var asset:Asset = getChildAt (i) as Asset;
-            if (asset != null) // should be
-            {
-               asset.UpdateAppearance ();
-            }
-         }
       }
       
       override public function DestroyAllAssets ():void
@@ -124,6 +140,10 @@ package editor.codelib {
          mSessionVariableSpace.DestroyAllVariableInstances ();
          mGlobalVariableSpace.DestroyAllVariableInstances ();
          mEntityVariableSpace.DestroyAllVariableInstances ();
+         
+         mFunctionAssets.splice (0, mFunctionAssets.length);
+         mClassAssets.splice (0, mClassAssets.length);
+         mPackageAssets.splice (0, mPackageAssets.length);
          
          super.DestroyAllAssets ();
       }
@@ -163,38 +183,24 @@ package editor.codelib {
 // function / type / package lists
 //===============================
       
-      protected var mFunctions:Array = new Array ();
-      
-      protected var mTypes:Array = new Array ();
-      
-      protected var mPackages:Array = new Array ();
-      
-//===============================
-// functions
-//===============================
-      
       private var mFunctionAssets:Array = new Array ();
-      //private var mNameLookupTable:Dictionary = new Dictionary ();
+      private var mClassAssets:Array = new Array ();
+      private var mPackageAssets:Array = new Array ();
       
       public function GetNumFunctions ():int
       {
          return mFunctionAssets.length;
       }
       
-      //private function GetFunctionRecommendName (functionName:String):String
-      //{
-      //   var n:int = 1;
-      //   var functionNameN:String = functionName;
-      //   while (true)
-      //   {
-      //      if (mNameLookupTable [functionNameN] == null)
-      //         return functionNameN;
-      //      
-      //      functionNameN = functionName + " " + (n ++);
-      //   }
-      //   
-      //   return null;
-      //}
+      public function GetNumTypes ():int
+      {
+         return mClassAssets.length;
+      }
+      
+      public function GetNumPackages ():int
+      {
+         return mPackageAssets.length;
+      }
       
       public function GetFunctionByIndex (index:int):AssetFunction
       {
@@ -202,6 +208,46 @@ package editor.codelib {
             return null;
          
          return mFunctionAssets [index] as AssetFunction;
+      }
+      
+      public function GetTypeByIndex (index:int):AssetClass
+      {
+         if (index < 0 || index >= mClassAssets.length)
+            return null;
+         
+         return mClassAssets [index] as AssetClass;
+      }
+      
+      public function GetPackageByIndex (index:int):AssetPackage
+      {
+         if (index < 0 || index >= mPackageAssets.length)
+            return null;
+         
+         return mPackageAssets [index] as AssetPackage;
+      }
+      
+      public function UpdateFunctionIndexes ():void
+      {
+         for (var index:int = 0; index < mFunctionAssets.length; ++ index)
+         {
+            (mFunctionAssets [index] as AssetFunction).SetFunctionIndex (index);
+         }
+      }
+      
+      public function UpdateClassIndexes ():void
+      {
+         for (var index:int = 0; index < mClassAssets.length; ++ index)
+         {
+            (mClassAssets [index] as AssetClass).SetClassIndex (index);
+         }
+      }
+      
+      public function UpdatePackageIndexes ():void
+      {
+         for (var index:int = 0; index < mPackageAssets.length; ++ index)
+         {
+            (mPackageAssets [index] as AssetPackage).SetPackageIndex (index);
+         }
       }
       
       public function CreateFunction (key:String, funcName:String = null, designDependent:Boolean = false, selectIt:Boolean = false):AssetFunction
@@ -231,6 +277,170 @@ package editor.codelib {
          
          return aFunction;
       }
+      
+      public function CreateClass (key:String, typeName:String = null, designDependent:Boolean = false, selectIt:Boolean = false):AssetClass
+      {
+         if (typeName == null)
+            typeName = Define.ClassDefaultName;
+         
+         var aClass:AssetClass = new AssetClass (this, ValidateAssetKey (key), GetRecommendAssetName (typeName));
+         addChild (aClass);
+         
+         mClassAssets.push (aClass);
+         
+         //aFunction.SetFunctionName (GetFunctionRecommendName (funcName), false); // moved to above
+         
+         //mNameLookupTable [aFunction.GetFunctionName ()] = aFunction;
+         
+         UpdateClassIndexes ();
+         
+         if (selectIt)
+         {
+            aClass.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (aClass);
+         }
+         
+         SetChanged (true);
+         
+         return aClass;
+      }
+      
+      public function CreatePackage (key:String, typeName:String = null, designDependent:Boolean = false, selectIt:Boolean = false):AssetPackage
+      {
+         if (typeName == null)
+            typeName = Define.PackageDefaultName;
+         
+         var aPackage:AssetPackage = new AssetPackage (this, ValidateAssetKey (key), GetRecommendAssetName (typeName));
+         addChild (aPackage);
+         
+         mPackageAssets.push (aPackage);
+         
+         //aFunction.SetFunctionName (GetFunctionRecommendName (funcName), false); // moved to above
+         
+         //mNameLookupTable [aFunction.GetFunctionName ()] = aFunction;
+         
+         UpdatePackageIndexes ();
+         
+         if (selectIt)
+         {
+            aPackage.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (aPackage);
+         }
+         
+         SetChanged (true);
+         
+         return aPackage;
+      }
+      
+      public function ChangeFunctionOrderIDs (fromId:int, toId:int):void
+      {
+         if (fromId < 0 || fromId >= mFunctionAssets.length)
+            return;
+         if (toId < 0)
+            toId = 0;
+         if (toId >= mFunctionAssets.length)
+            toId = mFunctionAssets.length - 1;
+         
+         var aFunction:AssetFunction = mFunctionAssets [fromId] as AssetFunction;
+         mFunctionAssets.splice (fromId, 1);
+         mFunctionAssets.splice (toId, 0, aFunction);
+         
+         // ...
+         
+         UpdateFunctionIndexes ();
+         
+         SetChanged (true);
+         
+         UpdateFunctionAppearances ();
+      }
+      
+      public function ChangeClassOrderIDs (fromId:int, toId:int):void
+      {
+         if (fromId < 0 || fromId >= mClassAssets.length)
+            return;
+         if (toId < 0)
+            toId = 0;
+         if (toId >= mClassAssets.length)
+            toId = mClassAssets.length - 1;
+         
+         var aClass:AssetClass = mClassAssets [fromId] as AssetClass;
+         mClassAssets.splice (fromId, 1);
+         mClassAssets.splice (toId, 0, aClass);
+         
+         // ...
+         
+         UpdateClassIndexes ();
+         
+         SetChanged (true);
+         
+         UpdateClassAppearances ();
+      }
+      
+      public function ChangePackageOrderIDs (fromId:int, toId:int):void
+      {
+         if (fromId < 0 || fromId >= mPackageAssets.length)
+            return;
+         if (toId < 0)
+            toId = 0;
+         if (toId >= mPackageAssets.length)
+            toId = mPackageAssets.length - 1;
+         
+         var aPackage:AssetPackage = mPackageAssets [fromId] as AssetPackage;
+         mPackageAssets.splice (fromId, 1);
+         mPackageAssets.splice (toId, 0, aPackage);
+         
+         // ...
+         
+         UpdatePackageIndexes ();
+         
+         SetChanged (true);
+         
+         UpdatePackageAppearances ();
+      }
+      
+      private function UpdateFunctionAppearances ():void
+      {
+         // ids changed, maybe
+         for each (var aFunction:AssetFunction in mFunctionAssets)
+         {
+            aFunction.UpdateAppearance ();
+         }
+      }
+      
+      private function UpdateClassAppearances ():void
+      {
+         // ids changed, maybe
+         for each (var aClass:AssetClass in mClassAssets)
+         {
+            aClass.UpdateAppearance ();
+         }
+      }
+      
+      private function UpdatePackageAppearances ():void
+      {
+         // ids changed, maybe
+         for each (var aPackage:AssetPackage in mPackageAssets)
+         {
+            aPackage.UpdateAppearance ();
+         }
+      }
+      
+      //private var mNameLookupTable:Dictionary = new Dictionary ();
+      
+      //private function GetFunctionRecommendName (functionName:String):String
+      //{
+      //   var n:int = 1;
+      //   var functionNameN:String = functionName;
+      //   while (true)
+      //   {
+      //      if (mNameLookupTable [functionNameN] == null)
+      //         return functionNameN;
+      //      
+      //      functionNameN = functionName + " " + (n ++);
+      //   }
+      //   
+      //   return null;
+      //}
       
       //public function ChangeFunctionName (newName:String, oldName:String):void
       //{
@@ -265,42 +475,13 @@ package editor.codelib {
       //   SetChanged (true);
       //}
       
-      public function UpdateFunctionIndexes ():void
-      {
-         for (var index:int = 0; index < mFunctionAssets.length; ++ index)
-         {
-            (mFunctionAssets [index] as AssetFunction).SetFunctionIndex (index);
-         }
-      }
-      
-      public function ChangeFunctionOrderIDs (fromId:int, toId:int):void
-      {
-         if (fromId < 0 || fromId >= mFunctionAssets.length)
-            return;
-         if (toId < 0)
-            toId = 0;
-         if (toId >= mFunctionAssets.length)
-            toId = mFunctionAssets.length - 1;
-         
-         var aFunction:AssetFunction = mFunctionAssets [fromId] as AssetFunction;
-         mFunctionAssets.splice (fromId, 1);
-         mFunctionAssets.splice (toId, 0, aFunction);
-         
-         // ...
-         
-         UpdateFunctionIndexes ();
-         
-         SetChanged (true);
-         
-         UpdateFunctionAppearances ();
-      }
-      
 //=============================================
-// for undo point
+// draw links
 //=============================================
       
-      public function SetEntityLinksChangedCallback (callback:AssetFunction):void
+      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean):void
       {
+         DrawAssetsLinks_Default (canvasSprite, forceDraw);
       }
       
 //=============================================
@@ -493,23 +674,6 @@ package editor.codelib {
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
-      
-      /*
-      private function OnContextMenuEvent_CreateSound (event:ContextMenuEvent):void
-      {
-         CreateSound (true);
-      }
-      
-      private function OnContextMenuEvent_LocalSounds (event:ContextMenuEvent):void
-      {
-         OpenLocalSoundFileDialog ();
-      }
-      
-      private function OnContextMenuEvent_DeleteSelectedAssets (event:ContextMenuEvent):void
-      {
-         DeleteSelectedAssets ();
-      }
-      */
       
    }
 }

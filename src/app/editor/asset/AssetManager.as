@@ -1692,7 +1692,38 @@ package editor.asset {
       
       public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean):void
       {
-         // to override
+         // to override, generally call DrawEntityLinks_Default
+      }
+
+      protected function DrawAssetsLinks_Default (canvasSprite:Sprite, forceDraw:Boolean):void
+      {
+         var assetArray:Array = mAssetsSortedByCreationId.concat ();
+         assetArray.sort (SortAssetsByDrawLinksOrder);
+
+         var asset:Asset;
+         var i:int;
+         var numAssets:int = assetArray.length;
+         for (i = 0; i < numAssets; ++ i)
+         {
+            asset = assetArray [i] as Asset;
+            if (asset != null)
+            {
+               asset.DrawAssetLinks (canvasSprite, forceDraw);
+            }
+         }
+      }
+
+      private static function SortAssetsByDrawLinksOrder (asset1:Asset, asset2:Asset):int
+      {
+         var drawLinksOrder1:int = asset1.GetDrawLinksOrder ();
+         var drawLinksOrder2:int = asset2.GetDrawLinksOrder ();
+
+         if (drawLinksOrder1 < drawLinksOrder2)
+            return -1;
+         else if (drawLinksOrder1 > drawLinksOrder2)
+            return 1;
+         else
+            return 0;
       }
       
       public function UpdateAssetIdTexts (canvasSprite:Sprite):void

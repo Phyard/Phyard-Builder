@@ -217,7 +217,7 @@ package editor.trigger.entity {
          return DrawLinksOrder_Task;
       }
       
-      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          if (mEntityAssignerList.length > 0)
          {
@@ -236,7 +236,7 @@ package editor.trigger.entity {
                
                if ((! forceDraw) && IsSelected ())
                {
-                  entity.DrawEntityLinks (canvasSprite, false, true);
+                  entity.DrawAssetLinks (canvasSprite, false, true);
                }
             }
          }

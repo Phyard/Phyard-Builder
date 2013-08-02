@@ -798,10 +798,25 @@ package editor.asset {
       {
          // to override
       }
-      
+            
 //====================================================================
 //   draw entity links
 //====================================================================
+      
+      public static const DrawLinksOrder_Normal:int = 10;
+      public static const DrawLinksOrder_Logic:int = 20;
+      public static const DrawLinksOrder_Task:int = 30;
+      public static const DrawLinksOrder_EventHandler:int = 50;
+      
+      public function GetDrawLinksOrder ():int
+      {
+         return DrawLinksOrder_Normal;
+      }
+      
+      public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      {
+         // to override
+      }
       
       public function GetLinkPointX ():Number
       {
@@ -811,11 +826,6 @@ package editor.asset {
       public function GetLinkPointY ():Number
       {
          return mTransform.mOffsetY;
-      }
-      
-      public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
-      {
-         // to override
       }
       
 //====================================================================

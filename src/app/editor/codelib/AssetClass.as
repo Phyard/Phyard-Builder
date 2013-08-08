@@ -83,6 +83,10 @@ package editor.codelib {
       public function SetClassIndex (classId:int):void
       {
          mClassId = classId;
+         if (mProperties != null)
+         {
+            mProperties.SetId (mClassId);
+         }
       }
       
       public function GetClassIndex ():int
@@ -113,7 +117,7 @@ package editor.codelib {
          return "Type";
       }
       
-      public function GetPropertyVariableSpace ():VariableSpaceClassInstance
+      public function GetPropertiesVariableSpace ():VariableSpaceClassInstance
       {
          return mProperties;
       }

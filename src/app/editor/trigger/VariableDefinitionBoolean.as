@@ -6,11 +6,13 @@ package editor.trigger {
    import mx.controls.RadioButtonGroup;
    import mx.controls.RadioButton;
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
-   public class VariableDefinitionBoolean extends VariableDefinition
+   public class VariableDefinitionBoolean extends VariableDefinition_Core
    {
       
    //========================================================================================================
@@ -21,7 +23,7 @@ package editor.trigger {
       
       public function VariableDefinitionBoolean (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Boolean, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Boolean), name, description, options);
          
          if (options != null)
          {

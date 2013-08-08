@@ -25,7 +25,6 @@ package player.trigger {
 
    import com.tapirgames.util.RandomNumberGenerator;
 
-   import common.trigger.ValueTypeDefine;
    import common.trigger.CoreFunctionIds;
    import common.trigger.FunctionDeclaration;
    import common.trigger.CoreFunctionDeclarations;

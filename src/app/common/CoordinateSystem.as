@@ -2,7 +2,7 @@ package common
 {
    import flash.geom.Point;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
    public class CoordinateSystem
    {
@@ -582,102 +582,102 @@ package common
       {
          switch (numberUsage)
          {
-            case ValueTypeDefine.NumberTypeUsage_PositionX:
+            case CoreClassIds.NumberTypeUsage_PositionX:
                directValue = P2D_PositionX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_PositionY:
+            case CoreClassIds.NumberTypeUsage_PositionY:
                directValue = P2D_PositionY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_RotationRadians:
+            case CoreClassIds.NumberTypeUsage_RotationRadians:
                directValue = P2D_RotationRadians (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_RotationDegrees:
+            case CoreClassIds.NumberTypeUsage_RotationDegrees:
                directValue = P2D_RotationDegrees (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Length:
+            case CoreClassIds.NumberTypeUsage_Length:
                directValue = P2D_Length (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Area:
+            case CoreClassIds.NumberTypeUsage_Area:
                directValue = P2D_Area (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearVelocityX:
+            case CoreClassIds.NumberTypeUsage_LinearVelocityX:
                directValue = P2D_LinearVelocityX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearVelocityY:
+            case CoreClassIds.NumberTypeUsage_LinearVelocityY:
                directValue = P2D_LinearVelocityY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude:
+            case CoreClassIds.NumberTypeUsage_LinearVelocityMagnitude:
                directValue = P2D_LinearVelocityMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_AngularVelocity:
+            case CoreClassIds.NumberTypeUsage_AngularVelocity:
                directValue = P2D_AngularVelocity (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearAccelerationX:
+            case CoreClassIds.NumberTypeUsage_LinearAccelerationX:
                directValue = P2D_LinearAccelerationX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearAccelerationY:
+            case CoreClassIds.NumberTypeUsage_LinearAccelerationY:
                directValue = P2D_LinearAccelerationY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearAccelerationMagnitude:
+            case CoreClassIds.NumberTypeUsage_LinearAccelerationMagnitude:
                directValue = P2D_LinearAccelerationMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_AngularAcceleration:
+            case CoreClassIds.NumberTypeUsage_AngularAcceleration:
                directValue = P2D_AngularAcceleration (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Mass:
+            case CoreClassIds.NumberTypeUsage_Mass:
                directValue = P2D_Mass (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Inertia:
+            case CoreClassIds.NumberTypeUsage_Inertia:
                directValue = P2D_Interia (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ForceX:
+            case CoreClassIds.NumberTypeUsage_ForceX:
                directValue = P2D_ForceX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ForceY:
+            case CoreClassIds.NumberTypeUsage_ForceY:
                directValue = P2D_ForceY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ForceMagnitude:
+            case CoreClassIds.NumberTypeUsage_ForceMagnitude:
                directValue = P2D_ForceMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Torque:
+            case CoreClassIds.NumberTypeUsage_Torque:
                directValue = P2D_Torque (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_MomentumX:
+            case CoreClassIds.NumberTypeUsage_MomentumX:
                directValue = P2D_MomentumX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_MomentumY:
+            case CoreClassIds.NumberTypeUsage_MomentumY:
                directValue = P2D_MomentumY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_MomentumMagnitude:
+            case CoreClassIds.NumberTypeUsage_MomentumMagnitude:
                directValue = P2D_MomentumMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_AngularMomentum:
+            case CoreClassIds.NumberTypeUsage_AngularMomentum:
                directValue = P2D_AngularMomentum (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ImpulseX:
+            case CoreClassIds.NumberTypeUsage_ImpulseX:
                directValue = P2D_ImpulseX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ImpulseY:
+            case CoreClassIds.NumberTypeUsage_ImpulseY:
                directValue = P2D_ImpulseY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ImpulseMagnitude:
+            case CoreClassIds.NumberTypeUsage_ImpulseMagnitude:
                directValue = P2D_ImpulseMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_AngularImpulse:
+            case CoreClassIds.NumberTypeUsage_AngularImpulse:
                directValue = P2D_AngularImpulse (directValue);
                break;
                
-            case ValueTypeDefine.NumberTypeUsage_LinearDeltaX:
+            case CoreClassIds.NumberTypeUsage_LinearDeltaX:
                directValue = P2D_LinearDeltaX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearDeltaY:
+            case CoreClassIds.NumberTypeUsage_LinearDeltaY:
                directValue = P2D_LinearDeltaY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearDyDx:
+            case CoreClassIds.NumberTypeUsage_LinearDyDx:
                directValue = P2D_DeltaY2DeltaX (directValue);
                break;
                
-            case ValueTypeDefine.NumberTypeUsage_General:
+            case CoreClassIds.NumberTypeUsage_General:
             default:
                break;
          }
@@ -689,101 +689,101 @@ package common
       {
          switch (numberUsage)
          {
-            case ValueTypeDefine.NumberTypeUsage_PositionX:
+            case CoreClassIds.NumberTypeUsage_PositionX:
                directValue = D2P_PositionX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_PositionY:
+            case CoreClassIds.NumberTypeUsage_PositionY:
                directValue = D2P_PositionY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_RotationRadians:
+            case CoreClassIds.NumberTypeUsage_RotationRadians:
                directValue = D2P_RotationRadians (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_RotationDegrees:
+            case CoreClassIds.NumberTypeUsage_RotationDegrees:
                directValue = D2P_RotationDegrees (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Length:
+            case CoreClassIds.NumberTypeUsage_Length:
                directValue = D2P_Length (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Area:
+            case CoreClassIds.NumberTypeUsage_Area:
                directValue = D2P_Area (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearVelocityX:
+            case CoreClassIds.NumberTypeUsage_LinearVelocityX:
                directValue = D2P_LinearVelocityX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearVelocityY:
+            case CoreClassIds.NumberTypeUsage_LinearVelocityY:
                directValue = D2P_LinearVelocityY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude:
+            case CoreClassIds.NumberTypeUsage_LinearVelocityMagnitude:
                directValue = D2P_LinearVelocityMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_AngularVelocity:
+            case CoreClassIds.NumberTypeUsage_AngularVelocity:
                directValue = D2P_AngularVelocity (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearAccelerationX:
+            case CoreClassIds.NumberTypeUsage_LinearAccelerationX:
                directValue = D2P_LinearAccelerationX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearAccelerationY:
+            case CoreClassIds.NumberTypeUsage_LinearAccelerationY:
                directValue = D2P_LinearAccelerationY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearAccelerationMagnitude:
+            case CoreClassIds.NumberTypeUsage_LinearAccelerationMagnitude:
                directValue = D2P_LinearAccelerationMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_AngularAcceleration:
+            case CoreClassIds.NumberTypeUsage_AngularAcceleration:
                directValue = D2P_AngularAcceleration (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Mass:
+            case CoreClassIds.NumberTypeUsage_Mass:
                directValue = D2P_Mass (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Inertia:
+            case CoreClassIds.NumberTypeUsage_Inertia:
                directValue = D2P_Interia (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ForceX:
+            case CoreClassIds.NumberTypeUsage_ForceX:
                directValue = D2P_ForceX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ForceY:
+            case CoreClassIds.NumberTypeUsage_ForceY:
                directValue = D2P_ForceY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ForceMagnitude:
+            case CoreClassIds.NumberTypeUsage_ForceMagnitude:
                directValue = D2P_ForceMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_Torque:
+            case CoreClassIds.NumberTypeUsage_Torque:
                directValue = D2P_Torque (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_MomentumX:
+            case CoreClassIds.NumberTypeUsage_MomentumX:
                directValue = D2P_MomentumX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_MomentumY:
+            case CoreClassIds.NumberTypeUsage_MomentumY:
                directValue = D2P_MomentumY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_MomentumMagnitude:
+            case CoreClassIds.NumberTypeUsage_MomentumMagnitude:
                directValue = D2P_MomentumMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_AngularMomentum:
+            case CoreClassIds.NumberTypeUsage_AngularMomentum:
                directValue = D2P_AngularMomentum (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ImpulseX:
+            case CoreClassIds.NumberTypeUsage_ImpulseX:
                directValue = D2P_ImpulseX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ImpulseY:
+            case CoreClassIds.NumberTypeUsage_ImpulseY:
                directValue = D2P_ImpulseY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_ImpulseMagnitude:
+            case CoreClassIds.NumberTypeUsage_ImpulseMagnitude:
                directValue = D2P_ImpulseMagnitude (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_AngularImpulse:
+            case CoreClassIds.NumberTypeUsage_AngularImpulse:
                directValue = D2P_AngularImpulse (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearDeltaX:
+            case CoreClassIds.NumberTypeUsage_LinearDeltaX:
                directValue = D2P_LinearDeltaX (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearDeltaY:
+            case CoreClassIds.NumberTypeUsage_LinearDeltaY:
                directValue = D2P_LinearDeltaY (directValue);
                break;
-            case ValueTypeDefine.NumberTypeUsage_LinearDyDx:
+            case CoreClassIds.NumberTypeUsage_LinearDyDx:
                directValue = D2P_DeltaY2DeltaX (directValue);
                break;
                
-            case ValueTypeDefine.NumberTypeUsage_General:
+            case CoreClassIds.NumberTypeUsage_General:
             default:
                break;
          }

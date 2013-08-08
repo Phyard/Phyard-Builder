@@ -11,23 +11,15 @@ package editor.trigger {
    
    import common.Define;
    
-   public class VariableDefinitionArray extends VariableDefinition_Core
+   public class VariableDefinitionVoid extends VariableDefinition_Core
    {
    //========================================================================================================
    //
    //========================================================================================================
       
-      protected var mNullValueEnabled:Boolean = true;
-      
-      public function VariableDefinitionArray (name:String, description:String = null, options:Object = null)
+      public function VariableDefinitionVoid (name:String, description:String = null, options:Object = null)
       {
-         super (World.GetCoreClassById (CoreClassIds.ValueType_Array), name, description, options);
-         
-         if (options != null)
-         {
-            if (options.mNullValueEnabled != undefined)
-               mNullValueEnabled = Boolean (options.mNullValueEnabled);
-         }
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Void), name, description, options);
       }
       
 //==============================================================================
@@ -36,10 +28,9 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var arrayVariableDefinition:VariableDefinitionArray = new VariableDefinitionArray (mName, mDescription);
-         arrayVariableDefinition.mNullValueEnabled = mNullValueEnabled;
+         var voidVariableDefinition:VariableDefinitionVoid = new VariableDefinitionVoid (mName, mDescription);
          
-         return arrayVariableDefinition;
+         return voidVariableDefinition;
       }
 
 //==============================================================================
@@ -48,8 +39,7 @@ package editor.trigger {
       
       override public function ValidateDirectValueObject (valueObject:Object):Object
       {
-         //return valueObject as Array;
-         return null; // current, direct array value is not supported. 
+         return undefined;
       }
       
 //==============================================================================
@@ -58,13 +48,13 @@ package editor.trigger {
       
       override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         return new ValueSource_Direct (null);
+         return new ValueSource_Direct (undefined);
       }
       
       override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var label:Label = new Label ();
-         label.text = "null"; // currently, direct array value is not supported
+         label.text = "undefined"; // currently, direct array value is not supported
          
          return label;
       }

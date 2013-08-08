@@ -2,7 +2,7 @@ package editor.trigger {
    
    import flash.utils.ByteArray;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.FunctionTypeDefine;
    
    public class FunctionDefinition
@@ -188,7 +188,7 @@ package editor.trigger {
       public function GetInputParamValueType (inputId:int):int
       {
          if (mFunctionDeclaration == null)
-            return ValueTypeDefine.ValueType_Void;;
+            return CoreClassIds.ValueType_Void;;
          
          return mFunctionDeclaration.GetInputParamValueType (inputId);
       }
@@ -228,7 +228,7 @@ package editor.trigger {
       public function GetOutputParamValueType (outputId:int):int
       {
          if (mFunctionDeclaration == null)
-            return ValueTypeDefine.ValueType_Void;;
+            return CoreClassIds.ValueType_Void;;
          
          return mFunctionDeclaration.GetOutputParamValueType (outputId);
       }
@@ -262,7 +262,7 @@ package editor.trigger {
       public function GetLocalVariableValueType (localId:int):int
       {
          if (mLocalVariableSpace == null)
-            return ValueTypeDefine.ValueType_Void;
+            return CoreClassIds.ValueType_Void;
          
          var vi:VariableInstance = mLocalVariableSpace.GetVariableInstanceAt (localId);
          

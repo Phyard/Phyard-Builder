@@ -84,7 +84,6 @@
 
          import common.Define;
          import common.trigger.CoreFunctionIds;
-         import common.trigger.ValueTypeDefine;
          import common.trigger.ValueSpaceTypeDefine;
          import common.trigger.ValueSourceTypeDefine;
          import common.trigger.FunctionTypeDefine;
@@ -2374,7 +2373,7 @@
       
          private function OnEditWorldVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), OnWorldVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), OnWorldVariablesEditingDialogClosed, mCodeLibManager);
          }
          
          private var mLastModifyTimesOfWorldVariables:int = -1;
@@ -2395,7 +2394,7 @@
       
          private function OnEditGameSaveVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this,  EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), OnGameSaveVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this,  EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), OnGameSaveVariablesEditingDialogClosed, mCodeLibManager);
          }
          
          private var mLastModifyTimesOfGameSaveVariables:int = -1;
@@ -2416,7 +2415,7 @@
       
          private function OnEditCommonGlobalVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), OnCommonGlobalVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), OnCommonGlobalVariablesEditingDialogClosed, mCodeLibManager);
          }
          
          private var mLastModifyTimesOfCommonGlobalVariables:int = -1;
@@ -2437,7 +2436,7 @@
       
          private function OnEditCommonEntityVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), OnCommonEntityVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), OnCommonEntityVariablesEditingDialogClosed, mCodeLibManager);
          }
          
          private var mLastModifyTimesOfCommonEntityVariables:int = -1;
@@ -2459,7 +2458,7 @@
          private function OnEditSessionVariables (event:Event = null):void
          {
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowSessionVariablesEditDialog (this);
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetSessionVariableSpace (), OnSessionVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetSessionVariableSpace (), OnSessionVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfSessionVariableSpace:int = -1;
@@ -2481,7 +2480,7 @@
          private function OnEditGlobalVariables ():void
          {
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowGlobalVariablesEditDialog (this);
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetGlobalVariableSpace (), OnGlobalVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetGlobalVariableSpace (), OnGlobalVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfGlobalVariableSpace:int = -1;
@@ -2503,7 +2502,7 @@
          private function OnEditEntityVariables ():void
          {
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowEntityVariablesEditDialog (this);
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetEntityVariableSpace (), OnEntityVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetEntityVariableSpace (), OnEntityVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfEntityVariableSpace:int = -1;
@@ -2526,7 +2525,7 @@
          {
             mLastModifyTimesOfLocalVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ().GetNumModifiedTimes ();
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ());
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace (), OnLocalVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace (), OnLocalVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfLocalVariableSpace:int = -1;
@@ -2549,7 +2548,7 @@
          {
             mLastModifyTimesOfInputVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ().GetNumModifiedTimes ();
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowInputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ());
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace (), OnInputVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace (), OnInputVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfInputVariableSpace:int = -1;
@@ -2579,7 +2578,7 @@
          {
             mLastModifyTimesOfOutputVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ().GetNumModifiedTimes ();
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowOutputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ());
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace (), OnOutputVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace (), OnOutputVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfOutputVariableSpace:int = -1;

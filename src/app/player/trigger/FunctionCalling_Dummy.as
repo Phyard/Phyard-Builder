@@ -1,6 +1,5 @@
 package player.trigger
 {
-   import common.trigger.ValueTypeDefine;
    import common.trigger.FunctionDeclaration;
    import common.CoordinateSystem;
    

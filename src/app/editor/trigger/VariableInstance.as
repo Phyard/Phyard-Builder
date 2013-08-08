@@ -2,7 +2,9 @@ package editor.trigger {
    
    import mx.core.UIComponent;
    
-   import common.trigger.ValueTypeDefine;
+   import editor.world.World;
+   
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueTargetTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
@@ -33,12 +35,12 @@ package editor.trigger {
       private var mVariableDefinition:VariableDefinition;
       
    // only valid when mVariableDefinition == null
-      private var mValuetype:int = ValueTypeDefine.ValueType_Void;
+      private var mValuetype:int = CoreClassIds.ValueType_Void;
       private var mName:String = null;
       
       // used in VariableSpace.CreateVariableInstance () and GetNullVariableInstance ()
       public function VariableInstance (variableSpace:VariableSpace, id:int, variableDefinition:VariableDefinition, 
-                        valueType:int=0, /*ValueTypeDefine.ValueType_Void,*/ // shit, mxmlc bug 
+                        valueType:int=0, /*CoreClassIds.ValueType_Void,*/ // shit, mxmlc bug 
                         variableName:String = null, intialValue:Object = null)
       {
          mVariableSpace = variableSpace;
@@ -66,7 +68,7 @@ package editor.trigger {
          mVariableDefinition = variableDefinition;
          if (mVariableDefinition == null) // generally, shouldn't
          {
-            mValuetype = ValueTypeDefine.ValueType_Void;
+            mValuetype = CoreClassIds.ValueType_Void;
             return;
          }
          
@@ -76,7 +78,8 @@ package editor.trigger {
       
       public function ToVariableDefinitionString ():String
       {
-         return ValueTypeDefine.GetTypeName (GetValueType ()) + " " + GetName ();
+         //return VariableDefinition.GetValueTypeName (GetValueType ()) + " " + GetName ();
+         return World.GetCoreClassById (GetValueType ()).GetName () + " " + GetName ();
       }
       
       private function ToCodeStringForSourceOrTarget (forTarget:Boolean):String
@@ -157,15 +160,15 @@ package editor.trigger {
       }
       
       // should not call this
-      public function Clone():VariableInstance
-      {
-         //var vi:VariableInstance = mVariableSpace.Create ... //new VariableInstance (mVariableSpace, mIndex, mVariableDefinition);
-         //vi.AssignValue (this);
-         //
-         //return vi;
-         
-         return null;
-      }
+      //public function Clone():VariableInstance
+      //{
+      //   //var vi:VariableInstance = mVariableSpace.Create ... //new VariableInstance (mVariableSpace, mIndex, mVariableDefinition);
+      //   //vi.AssignValue (this);
+      //   //
+      //   //return vi;
+      //   
+      //   return null;
+      //}
       
       public function SetValueObject (valueObject:Object):void
       {

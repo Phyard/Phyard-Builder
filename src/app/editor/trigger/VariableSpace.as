@@ -2,9 +2,11 @@ package editor.trigger {
    
    import flash.utils.Dictionary;
    
+   import editor.world.World;
+   
    import editor.core.EditorObject;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSpaceTypeDefine;
    
    public class VariableSpace
@@ -25,7 +27,12 @@ package editor.trigger {
       {
          //mTriggerEngine = triggerEngine;
          
-         mNullVariableInstance = new VariableInstance (this, -1, null, ValueTypeDefine.ValueType_Void, "(null)", null);
+         //mNullVariableInstance = new VariableInstance (this, -1, null, CoreClassIds.ValueType_Void, "(null)", null);
+         mNullVariableInstance = new VariableInstance (this, -1, 
+                                    new VariableDefinitionVoid (
+                                                World.GetCoreClassById (CoreClassIds.ValueType_Void).GetDefaultInstanceName (), 
+                                                null)
+                                 );
       }
       
       //public function GetTriggerEngine ():TriggerEngine
@@ -260,7 +267,8 @@ package editor.trigger {
          {
             var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);
             var newVi:VariableInstance = CreateVariableInstanceFromDefinition (null, variableDefinition);
-            newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
+            //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
+            newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
             
             return newVi;
          }
@@ -283,7 +291,8 @@ package editor.trigger {
             {
                var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);
                var newVi:VariableInstance = CreateVariableInstanceFromDefinition (variableKey, variableDefinition);
-               newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
+               //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
+               newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
                
                return newVi;
             }
@@ -363,41 +372,41 @@ package editor.trigger {
          return vi;
       }
       
-      public function CreateVariableInstanceByTypeNameValue (/*key:String, */valueType:int, variableName:String, intialValue:Object):VariableInstance
-      {
-         // it seems this function is only for create register variables
-         // VariableSpaceRegister has overridden this function
-         // 
-         // the key (uuid) of register variables is not important.
-         // so keys will not be created for register variables.
-         
-         throw new Error ();
-      
-         //if (mVariableIdMapTable != null) // in importing
-         //{
-         //   var vi:VariableInstance = GetVariableInstanceByTypeAndName (valueType, variableName);
-         //   if (vi!= null && vi != mNullVariableInstance)
-         //   {
-         //      mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
-         //      return vi;
-         //   }
-         //}
-         //
-         //var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, null, valueType, variableName, intialValue);
-         //
-         //mVariableInstances.push (variable_instance);
-         //
-         //++ mAccVariableInstanceId;
-         //
-         ////>> bug fix: this line added from v2.03
-         //if (mVariableIdMapTable != null)
-         //   mVariableIdMapTable [mVirualVariablesCount++] = variable_instance.GetIndex ();
-         ////<<
-         //
-         //NotifyModified ();
-         //
-         //return variable_instance;
-      }
+      //public function CreateVariableInstanceByTypeNameValue (/*key:String, */valueType:int, variableName:String, intialValue:Object):VariableInstance
+      //{
+      //   // it seems this function is only for create register variables
+      //   // VariableSpaceRegister has overridden this function
+      //   // 
+      //   // the key (uuid) of register variables is not important.
+      //   // so keys will not be created for register variables.
+      //   
+      //   throw new Error ();
+      //
+      //   //if (mVariableIdMapTable != null) // in importing
+      //   //{
+      //   //   var vi:VariableInstance = GetVariableInstanceByTypeAndName (valueType, variableName);
+      //   //   if (vi!= null && vi != mNullVariableInstance)
+      //   //   {
+      //   //      mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
+      //   //      return vi;
+      //   //   }
+      //   //}
+      //   //
+      //   //var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, null, valueType, variableName, intialValue);
+      //   //
+      //   //mVariableInstances.push (variable_instance);
+      //   //
+      //   //++ mAccVariableInstanceId;
+      //   //
+      //   ////>> bug fix: this line added from v2.03
+      //   //if (mVariableIdMapTable != null)
+      //   //   mVariableIdMapTable [mVirualVariablesCount++] = variable_instance.GetIndex ();
+      //   ////<<
+      //   //
+      //   //NotifyModified ();
+      //   //
+      //   //return variable_instance;
+      //}
       
 //============================================================================
 // lookup tables 

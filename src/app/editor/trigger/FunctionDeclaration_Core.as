@@ -3,7 +3,6 @@ package editor.trigger {
    import flash.utils.ByteArray;
    //import flash.utils.Dictionary;
    
-   import common.trigger.ValueTypeDefine;
    import common.trigger.FunctionTypeDefine;
    import common.trigger.FunctionDeclaration;
    import common.trigger.CoreFunctionDeclarations;

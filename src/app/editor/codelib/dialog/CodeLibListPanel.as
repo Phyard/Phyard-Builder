@@ -281,7 +281,7 @@ package editor.codelib.dialog {
          {
             var aClass:AssetClass = asset as AssetClass;
             
-            EditorContext.ShowVariableSpaceEditDialog (this, aClass.GetPropertyVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, aClass.GetPropertiesVariableSpace (), null, mCodeLibManager, "Edit Custom Type: ");
          }
       }
       

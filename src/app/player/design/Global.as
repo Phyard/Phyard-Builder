@@ -23,7 +23,7 @@ package player.design
    import com.tapirgames.util.RandomNumberGenerator;
    import com.tapirgames.util.MersenneTwisterRNG;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.define.FunctionDefine;
    
@@ -255,16 +255,16 @@ package player.design
    {
       switch (type)
       {
-         case ValueTypeDefine.ValueType_Boolean:
-            binData.writeShort (ValueTypeDefine.ValueType_Boolean);
+         case CoreClassIds.ValueType_Boolean:
+            binData.writeShort (CoreClassIds.ValueType_Boolean);
             binData.writeByte (Boolean (value) ? 1 : 0);
             break;
-         case ValueTypeDefine.ValueType_Number:
-            binData.writeShort (ValueTypeDefine.ValueType_Number);
+         case CoreClassIds.ValueType_Number:
+            binData.writeShort (CoreClassIds.ValueType_Number);
             binData.writeDouble (Number (value));
             break;
-         case ValueTypeDefine.ValueType_String:
-            binData.writeShort (ValueTypeDefine.ValueType_String);
+         case CoreClassIds.ValueType_String:
+            binData.writeShort (CoreClassIds.ValueType_String);
             var text:String = value as String;
             binData.writeInt (text == null ? -1 : text.length);
             if (text != null)
@@ -272,17 +272,17 @@ package player.design
                binData.writeUTFBytes (text);
             }
             break;
-         case ValueTypeDefine.ValueType_Array:
+         case CoreClassIds.ValueType_Array:
             var valuesArray:Array = value as Array;
             if (alreadySavedArrayLookupTable [valuesArray] == true)
             {
-               binData.writeShort (ValueTypeDefine.ValueType_Void);
+               binData.writeShort (CoreClassIds.ValueType_Void);
             }
             else
             {
                alreadySavedArrayLookupTable [valuesArray] = true;
 
-               binData.writeShort (ValueTypeDefine.ValueType_Array);
+               binData.writeShort (CoreClassIds.ValueType_Array);
                binData.writeInt (valuesArray == null ? -1 : valuesArray.length);
                if (valuesArray != null)
                {
@@ -293,23 +293,23 @@ package player.design
                      
                      if (arrValue is Boolean)
                      {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Boolean, arrValue, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, CoreClassIds.ValueType_Boolean, arrValue, alreadySavedArrayLookupTable);
                      }
                      else if (arrValue is Number)
                      {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Number, arrValue, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, CoreClassIds.ValueType_Number, arrValue, alreadySavedArrayLookupTable);
                      }
                      else if (arrValue is String)
                      {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_String, arrValue, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, CoreClassIds.ValueType_String, arrValue, alreadySavedArrayLookupTable);
                      }
                      else if (arrValue is Array)
                      {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Array, arrValue, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, CoreClassIds.ValueType_Array, arrValue, alreadySavedArrayLookupTable);
                      }
                      else
                      {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Void, null, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, CoreClassIds.ValueType_Void, null, alreadySavedArrayLookupTable);
                      }
                   }
                }
@@ -317,7 +317,7 @@ package player.design
             break;
          default:
          {
-            binData.writeShort (ValueTypeDefine.ValueType_Void);
+            binData.writeShort (CoreClassIds.ValueType_Void);
             break;
          }
       }      
@@ -389,11 +389,11 @@ package player.design
 
       switch (type)
       {
-         case ValueTypeDefine.ValueType_Boolean:
+         case CoreClassIds.ValueType_Boolean:
             return savedData.readByte () != 0;
-         case ValueTypeDefine.ValueType_Number:
+         case CoreClassIds.ValueType_Number:
             return savedData.readDouble ();
-         case ValueTypeDefine.ValueType_String:
+         case CoreClassIds.ValueType_String:
             var strLen:int = savedData.readInt ();
             if (strLen < 0)
                return null;
@@ -401,7 +401,7 @@ package player.design
             {
                return savedData.readUTFBytes (strLen);
             }
-         case ValueTypeDefine.ValueType_Array:
+         case CoreClassIds.ValueType_Array:
             var arrLen:int = savedData.readInt ();
             if (arrLen < 0)
                return null;
@@ -573,17 +573,17 @@ package player.design
       {
          switch (valueType)
          {
-            case ValueTypeDefine.ValueType_Boolean:
+            case CoreClassIds.ValueType_Boolean:
                return mRegisterVariableSpace_Boolean;
-            case ValueTypeDefine.ValueType_String:
+            case CoreClassIds.ValueType_String:
                return mRegisterVariableSpace_String;
-            case ValueTypeDefine.ValueType_Number:
+            case CoreClassIds.ValueType_Number:
                return mRegisterVariableSpace_Number;
-            case ValueTypeDefine.ValueType_Entity:
+            case CoreClassIds.ValueType_Entity:
                return mRegisterVariableSpace_Entity;
-            case ValueTypeDefine.ValueType_CollisionCategory:
+            case CoreClassIds.ValueType_CollisionCategory:
                return mRegisterVariableSpace_CollisionCategory;
-            case ValueTypeDefine.ValueType_Array:
+            case CoreClassIds.ValueType_Array:
                return mRegisterVariableSpace_Array;
             default:
                return null;

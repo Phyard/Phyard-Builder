@@ -3,7 +3,6 @@ package editor.world {
    import editor.trigger.*;
 
    import common.trigger.CoreFunctionIds;
-   import common.trigger.ValueTypeDefine;
 
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.IdPool;

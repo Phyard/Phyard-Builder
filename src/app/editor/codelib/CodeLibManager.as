@@ -24,6 +24,7 @@ package editor.codelib {
    import flash.events.ContextMenuEvent;
    
    import editor.world.World;
+   import editor.world.CoreClasses;
    import editor.world.CoreFunctionDeclarationsForPlaying;
    
    import editor.asset.Asset; 
@@ -31,6 +32,7 @@ package editor.codelib {
    
    import editor.entity.Scene;
    
+   import editor.trigger.CoreClass;
    import editor.trigger.FunctionMenuGroup;
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.VariableSpaceSession;
@@ -38,6 +40,9 @@ package editor.codelib {
    import editor.trigger.VariableSpaceEntityProperties;
    
    import editor.EditorContext;
+   
+   import common.trigger.CoreClassIds;
+   import common.trigger.ClassTypeDefine;
    
    import common.CoordinateSystem;
    
@@ -192,7 +197,7 @@ package editor.codelib {
          return mFunctionAssets.length;
       }
       
-      public function GetNumTypes ():int
+      public function GetNumClasses ():int
       {
          return mClassAssets.length;
       }
@@ -210,7 +215,7 @@ package editor.codelib {
          return mFunctionAssets [index] as AssetFunction;
       }
       
-      public function GetTypeByIndex (index:int):AssetClass
+      public function GetClassByIndex (index:int):AssetClass
       {
          if (index < 0 || index >= mClassAssets.length)
             return null;
@@ -576,10 +581,65 @@ package editor.codelib {
       
       //========================
 
+      private static var kCoreTypesDataProvider:XML = null;
+
+      public static function GetCoreTypesDataProvider ():XML
+      {
+         if (kCoreTypesDataProvider != null)
+            return kCoreTypesDataProvider;
+         
+         kCoreTypesDataProvider = <menuitem />;
+         kCoreTypesDataProvider.@label = "Core Types";
+         
+         var type_element:XML;
+         for (var classId:int = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
+         {
+            var coreClass:CoreClass = World.GetCoreClassById (classId);
+            
+            if (coreClass.GetID () != CoreClassIds.ValueType_Void)
+            {
+               type_element = <menuitem />;
+               type_element.@label = coreClass.GetName ();
+               type_element.@id = classId;
+               type_element.@type = ClassTypeDefine.ClassType_Core;
+               type_element.@scene_data_dependent = coreClass.IsSceneDataDependent ();
+   
+               kCoreTypesDataProvider.appendChild (type_element);
+            }
+         }
+         
+         return kCoreTypesDataProvider;
+      }
+
+      public function GetCustomTypesDataProvider ():XML
+      {
+         if (mClassAssets.length == 0)
+            return null;
+         
+         var top_element:XML = <menuitem />;
+         top_element.@label = "Custom Types";
+         
+         var aClass:AssetClass;
+         var type_element:XML;
+         for (var typeId:int = 0; typeId < mClassAssets.length; ++ typeId)
+         {
+            aClass = mClassAssets [typeId] as AssetClass;
+            
+            type_element = <menuitem />;
+            type_element.@label = aClass.GetName ();
+            type_element.@id = typeId;
+            type_element.@type = ClassTypeDefine.ClassType_Custom;
+
+            top_element.appendChild (type_element);
+         }
+         
+         return top_element;
+      }
+      
       private var mCustomMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Custom");
 
       private var mMenuBarDataProvider_Shorter:XML = CreateXmlFromMenuGroups (CoreFunctionDeclarationsForPlaying.GetMenuGroupsForShorterMenuBar ().concat ([mCustomMenuGroup]));
-      private var mMenuBarDataProvider_Longer:XML = CreateXmlFromMenuGroups (CoreFunctionDeclarationsForPlaying.GetMenuGroupsForLongerMenuBar ().concat ([mCustomMenuGroup]));
+      private var mMenuBarDataProvider_Longer :XML = CreateXmlFromMenuGroups (CoreFunctionDeclarationsForPlaying.GetMenuGroupsForLongerMenuBar ().concat ([mCustomMenuGroup]));
       
       public function GetShorterMenuBarDataProvider ():XML
       {

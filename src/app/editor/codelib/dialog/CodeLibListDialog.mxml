@@ -193,37 +193,37 @@
 
          private function OnEditSessionVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetSessionVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetSessionVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
          private function OnEditGlobalVariables ():void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetGlobalVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetGlobalVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
 
          private function OnEditEntityVariables ():void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetEntityVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetEntityVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
          private function OnEditCommonGlobalVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
 
          private function OnEditCommonEntityVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
          private function OnEditWorldVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
 
          private function OnEditGameSaveVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
      ]]>

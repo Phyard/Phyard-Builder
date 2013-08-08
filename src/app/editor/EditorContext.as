@@ -188,14 +188,14 @@ package editor {
    // variable space edit dialog
    //=====================================================================
       
-      public static function ShowVariableSpaceEditDialog (parent:DisplayObject, variableSpace:VariableSpace, onCloseFunc:Function):void
+      public static function ShowVariableSpaceEditDialog (parent:DisplayObject, variableSpace:VariableSpace, onCloseFunc:Function, codeLibManager:CodeLibManager = null, titlePrefix:String = null):void
       {
          if (GetSingleton ().mVariablesEditDialog == null)
          {
             GetSingleton ().mVariablesEditDialog = new VariablesEditDialog ();
          }
          
-         GetSingleton ().mVariablesEditDialog.SetTitle (variableSpace.GetSpaceName ());
+         GetSingleton ().mVariablesEditDialog.SetTitle (titlePrefix == null ? variableSpace.GetSpaceName () : titlePrefix + variableSpace.GetSpaceName ());
          GetSingleton ().mVariablesEditDialog.SetCloseFunc (onCloseFunc);
          //GetSingleton ().mVariablesEditDialog.visible = false; // useless, when change to true first time, show-event will not triggered
          
@@ -210,6 +210,7 @@ package editor {
          //GetSingleton ().mVariablesEditDialog.NotifyVariableSpaceModified ();
          
          GetSingleton ().mVariablesEditDialog.UpdateVariableSpace (variableSpace);
+         GetSingleton ().mVariablesEditDialog.SetCodeLibManager (codeLibManager);
       }
       
 //=====================================================================

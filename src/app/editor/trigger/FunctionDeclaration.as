@@ -5,7 +5,7 @@ package editor.trigger {
    
    import editor.EditorContext;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.FunctionTypeDefine;
    
    public class FunctionDeclaration
@@ -106,7 +106,7 @@ package editor.trigger {
          var vd:VariableDefinition = GetOutputParamDefinitionAt (returnId);
          
          if (vd == null)
-            return ValueTypeDefine.ValueType_Void;
+            return CoreClassIds.ValueType_Void;
          
          return vd.GetValueType ();
       }
@@ -135,7 +135,7 @@ package editor.trigger {
          var vd:VariableDefinition = GetInputParamDefinitionAt (inputId);
          
          if (vd == null)
-            return ValueTypeDefine.ValueType_Void;
+            return CoreClassIds.ValueType_Void;
          
          return vd.GetValueType ();
       }
@@ -234,12 +234,12 @@ package editor.trigger {
       
       public function GetInputNumberTypeDetail (inputId:int):int
       {
-         return ValueTypeDefine.NumberTypeDetail_Double;
+         return CoreClassIds.NumberTypeDetail_Double;
       }
       
       public function GetInputNumberTypeUsage (inputId:int):int
       {
-         return ValueTypeDefine.NumberTypeUsage_General;
+         return CoreClassIds.NumberTypeUsage_General;
       }
       
 //=================================================================

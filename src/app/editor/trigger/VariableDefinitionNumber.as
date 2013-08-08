@@ -4,15 +4,17 @@ package editor.trigger {
    import mx.controls.TextInput;
    import mx.controls.ComboBox;
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
    
    import com.tapirgames.util.TextUtil;
    
    import editor.util.DataUtil;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
-   public class VariableDefinitionNumber extends VariableDefinition
+   public class VariableDefinitionNumber extends VariableDefinition_Core
    {
       
    //========================================================================================================
@@ -29,7 +31,7 @@ package editor.trigger {
       
       public function VariableDefinitionNumber (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Number, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Number), name, description, options);
          
          if (options != null)
          {
@@ -190,7 +192,7 @@ package editor.trigger {
                //   }
                //   else
                //   {
-               //      var vi:VariableInstance = triggerEngine.GetRegisterVariableSpace (ValueTypeDefine.ValueType_Number).GetVariableInstanceAt (value);
+               //      var vi:VariableInstance = triggerEngine.GetRegisterVariableSpace (CoreClassIds.ValueType_Number).GetVariableInstanceAt (value);
                //      return new ValueSource_Variable (vi);
                //   }
                //}

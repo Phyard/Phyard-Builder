@@ -7,7 +7,6 @@ package editor.world {
    import common.Define;
    import common.KeyCodes;
    import common.trigger.ValueDefine;
-   import common.trigger.ValueTypeDefine;
    
    public class Lists
    {

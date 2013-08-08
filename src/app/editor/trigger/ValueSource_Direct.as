@@ -1,6 +1,6 @@
 package editor.trigger {
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    import common.DataFormat2;
    
@@ -94,7 +94,7 @@ package editor.trigger {
             //   return new ValueSource_Direct (null);
             //}
             
-            if (valueType != ValueTypeDefine.ValueType_Number && valueType != ValueTypeDefine.ValueType_Boolean && valueType != ValueTypeDefine.ValueType_String && valueType != ValueTypeDefine.ValueType_Void)
+            if (valueType != CoreClassIds.ValueType_Number && valueType != CoreClassIds.ValueType_Boolean && valueType != CoreClassIds.ValueType_String && valueType != CoreClassIds.ValueType_Void)
             {
                return new ValueSource_Direct (null);
             }

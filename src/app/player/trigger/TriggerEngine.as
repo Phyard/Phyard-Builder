@@ -7,7 +7,6 @@ package player.trigger
    import common.trigger.CoreEventIds;
    import common.trigger.CoreFunctionDeclarations;
    import common.trigger.CoreEventDeclarations;
-   import common.trigger.ValueTypeDefine;
    import common.trigger.IdPool;
    
    public class TriggerEngine

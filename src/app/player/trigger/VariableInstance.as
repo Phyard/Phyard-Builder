@@ -1,6 +1,6 @@
 package player.trigger
 {
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
    public class VariableInstance
    {
@@ -9,7 +9,7 @@ package player.trigger
       private var mKey:String;
       private var mIndex:int;
       
-      private var mValueType:int = ValueTypeDefine.ValueType_Void;
+      private var mValueType:int = CoreClassIds.ValueType_Void;
       
       public var mName:String = null; // for debug usage only
       

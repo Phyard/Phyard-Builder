@@ -16,7 +16,8 @@ package editor.trigger {
    
    import editor.EditorContext;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.ClassTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    
    public class VariableDefinition
@@ -35,104 +36,131 @@ package editor.trigger {
       {
          switch (valueType)
          {
-            case ValueTypeDefine.ValueType_Boolean:
+            case CoreClassIds.ValueType_Boolean:
                return Boolean (value);
-            case ValueTypeDefine.ValueType_String:
+            case CoreClassIds.ValueType_String:
                return String (value);
-            case ValueTypeDefine.ValueType_Number:
+            case CoreClassIds.ValueType_Number:
                return Number (value);
-            case ValueTypeDefine.ValueType_Entity:
+            case CoreClassIds.ValueType_Entity:
                return ValidateValueObject_Entity (value);
-            case ValueTypeDefine.ValueType_CollisionCategory:
+            case CoreClassIds.ValueType_CollisionCategory:
                return ValidateValueObject_CollisiontCategory (value);
-            case ValueTypeDefine.ValueType_Module:
+            case CoreClassIds.ValueType_Module:
                return ValidateValueObject_Module (value);
-            case ValueTypeDefine.ValueType_Sound:
+            case CoreClassIds.ValueType_Sound:
                return ValidateValueObject_Sound (value);
-            case ValueTypeDefine.ValueType_Scene:
+            case CoreClassIds.ValueType_Scene:
                return ValidateValueObject_Scene (value);
-            case ValueTypeDefine.ValueType_Array:
+            case CoreClassIds.ValueType_Array:
                return ValidateValueObject_Array (value);
             default:
                return value;
          }
       }
       
-      public static function GetValueTypeName (valueType:int):String
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return "Bool";
-            case ValueTypeDefine.ValueType_String:
-               return "Text";
-            case ValueTypeDefine.ValueType_Number:
-               return "Number";
-            case ValueTypeDefine.ValueType_Entity:
-               return "Entity";
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               return "CCat";
-            case ValueTypeDefine.ValueType_Module:
-               return "Module";
-            case ValueTypeDefine.ValueType_Sound:
-               return "Sound";
-            case ValueTypeDefine.ValueType_Scene:
-               return "Scene";
-            case ValueTypeDefine.ValueType_Array:
-               return "Array";
-            default:
-               return "void";
-         }
-      }
+      //public static function GetValueTypeName (valueType:int):String
+      //{
+      //   switch (valueType)
+      //   {
+      //      case CoreClassIds.ValueType_Boolean:
+      //         return "Bool";
+      //      case CoreClassIds.ValueType_String:
+      //         return "Text";
+      //      case CoreClassIds.ValueType_Number:
+      //         return "Number";
+      //      case CoreClassIds.ValueType_Entity:
+      //         return "Entity";
+      //      case CoreClassIds.ValueType_CollisionCategory:
+      //         return "CCat";
+      //      case CoreClassIds.ValueType_Module:
+      //         return "Module";
+      //      case CoreClassIds.ValueType_Sound:
+      //         return "Sound";
+      //      case CoreClassIds.ValueType_Scene:
+      //         return "Scene";
+      //      case CoreClassIds.ValueType_Array:
+      //         return "Array";
+      //      default:
+      //         return "void";
+      //   }
+      //}
       
-      public static function GetDefaultInitialValueByType (valueType:int):Object
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return false;
-            case ValueTypeDefine.ValueType_String:
-               return "";
-            case ValueTypeDefine.ValueType_Number:
-               return 0;
-            case ValueTypeDefine.ValueType_Entity:
-               return null;
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               return null;
-            case ValueTypeDefine.ValueType_Module:
-               return null;
-            case ValueTypeDefine.ValueType_Sound:
-               return null;
-            case ValueTypeDefine.ValueType_Scene:
-               return null;
-            case ValueTypeDefine.ValueType_Array:
-               return null;
-            default:
-               return undefined;
-         }
-      }
+      //public static function GetValueTypeInstanceName (valueType:int):String
+      //{
+      //   switch (valueType)
+      //   {
+      //      case CoreClassIds.ValueType_Boolean:
+      //         return "aBool";
+      //      case CoreClassIds.ValueType_String:
+      //         return "aText";
+      //      case CoreClassIds.ValueType_Number:
+      //         return "aNumber";
+      //      case CoreClassIds.ValueType_Entity:
+      //         return "anEntity";
+      //      case CoreClassIds.ValueType_CollisionCategory:
+      //         return "aCCat";
+      //      case CoreClassIds.ValueType_Module:
+      //         return "aModule";
+      //      case CoreClassIds.ValueType_Sound:
+      //         return "aSound";
+      //      case CoreClassIds.ValueType_Scene:
+      //         return "aScene";
+      //      case CoreClassIds.ValueType_Array:
+      //         return "anArray";
+      //      default:
+      //         return "void";
+      //   }
+      //}
+      
+      //public static function GetDefaultInitialValueByType (valueType:int):Object
+      //{
+      //   switch (valueType)
+      //   {
+      //      case CoreClassIds.ValueType_Boolean:
+      //         return false;
+      //      case CoreClassIds.ValueType_String:
+      //         return "";
+      //      case CoreClassIds.ValueType_Number:
+      //         return 0;
+      //      case CoreClassIds.ValueType_Entity:
+      //         return null;
+      //      case CoreClassIds.ValueType_CollisionCategory:
+      //         return null;
+      //      case CoreClassIds.ValueType_Module:
+      //         return null;
+      //      case CoreClassIds.ValueType_Sound:
+      //         return null;
+      //      case CoreClassIds.ValueType_Scene:
+      //         return null;
+      //      case CoreClassIds.ValueType_Array:
+      //         return null;
+      //      default:
+      //         return undefined;
+      //   }
+      //}
       
       public static function CreateVariableDefinition (valueType:int, variableName:String):VariableDefinition
       {
          switch (valueType)
          {
-            case ValueTypeDefine.ValueType_Boolean:
+            case CoreClassIds.ValueType_Boolean:
                return new VariableDefinitionBoolean (variableName);
-            case ValueTypeDefine.ValueType_String:
+            case CoreClassIds.ValueType_String:
                return new VariableDefinitionString (variableName);
-            case ValueTypeDefine.ValueType_Number:
+            case CoreClassIds.ValueType_Number:
                return new VariableDefinitionNumber (variableName);
-            case ValueTypeDefine.ValueType_Entity:
+            case CoreClassIds.ValueType_Entity:
                return new VariableDefinitionEntity (variableName);
-            case ValueTypeDefine.ValueType_CollisionCategory:
+            case CoreClassIds.ValueType_CollisionCategory:
                return new VariableDefinitionCollisionCategory (variableName);
-            case ValueTypeDefine.ValueType_Module:
+            case CoreClassIds.ValueType_Module:
                return new VariableDefinitionModule (variableName);
-            case ValueTypeDefine.ValueType_Sound:
+            case CoreClassIds.ValueType_Sound:
                return new VariableDefinitionSound (variableName);
-            case ValueTypeDefine.ValueType_Scene:
+            case CoreClassIds.ValueType_Scene:
                return new VariableDefinitionScene (variableName);
-            case ValueTypeDefine.ValueType_Array:
+            case CoreClassIds.ValueType_Array:
                return new VariableDefinitionArray (variableName);
             default:
                throw new Error ("unknown type in CreateVariableDefinition");
@@ -205,29 +233,33 @@ package editor.trigger {
    //
    //========================================================================================================
       
+      // the 2 all are moved into sub classes.
+      //public var mTypeType:int;
+      //public var mValueType:int;
+      
       public var mName:String;
-      public var mValueType:int;
+      public var mDescription:String = null;
       
       //public var mIsReference:Boolean = false;
-      
-      public var mDescription:String = null;
       
       // options
       
       // cancelled to unref TriggerEngine
       //private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
       
-      public function VariableDefinition (valueType:int, name:String, description:String = null, options:Object = null)
+      public function VariableDefinition (/*typeType:int, valueType:int, */name:String, description:String = null/*, options:Object = null*/)
       {
-         mValueType = valueType;
+         //mTypeType = typeType;
+         //mValueType = valueType;
+         
          mName = name;
          mDescription = description;
          
-         if (options != null)
-         {
-            //if (options.mDefaultSourceType != undefined)
-            //   mDefaultSourceType = int (options.mDefaultSourceType);
-         }
+         //if (options != null)
+         //{
+         //   //if (options.mDefaultSourceType != undefined)
+         //   //   mDefaultSourceType = int (options.mDefaultSourceType);
+         //}
       }
       
       public function GetName ():String
@@ -240,24 +272,32 @@ package editor.trigger {
          mName= name;
       }
       
-      public function GetValueType ():int
-      {
-         return mValueType;
-      }
-      
       public function GetDescription ():String
       {
          return mDescription;
       }
       
-      public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
+      //@todo: rename -> GetValueClassType
+      public function GetTypeType ():int
       {
-         return mValueType == variableDefinition.GetValueType ();
+         return ClassTypeDefine.ClassType_Unknown; // to overide
+      }
+      
+      //@todo: rename -> GetValueClassId
+      public function GetValueType ():int
+      {
+         //return mValueType;
+         return -1; // to override
       }
       
       public function SetDefaultValue (valueObject:Object):void
       {
          // to override
+      }
+      
+      public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
+      {
+         return GetTypeType () == variableDefinition.GetTypeType () && GetValueType () == variableDefinition.GetValueType ();
       }
       
 //==============================================================================
@@ -343,7 +383,7 @@ package editor.trigger {
          var currentVariable:VariableInstance = valueTargetVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
-         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType, validVariableIndexes);
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetValueType (), validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
@@ -455,7 +495,7 @@ package editor.trigger {
       //switch (mDefaultSourceType)
       //{
       //   //case ValueSourceTypeDefine.ValueSource_Variable:
-      //   //   return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (mValueType));
+      //   //   return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (GetValueType ()));
       //   case ValueSourceTypeDefine.ValueSource_Direct:
       //   default:
       //      return GetDefaultDirectValueSource ();
@@ -528,7 +568,7 @@ package editor.trigger {
          var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
-         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType, validVariableIndexes);
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetValueType (), validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
@@ -576,33 +616,33 @@ package editor.trigger {
          
          if (mPropertyVariableDefinition == null)
          {
-            switch (mValueType)
+            switch (GetValueType ())
             {
-               case ValueTypeDefine.ValueType_Boolean:
+               case CoreClassIds.ValueType_Boolean:
                   mPropertyVariableDefinition = new VariableDefinitionBoolean ("Boolean Property");
                   break;
-               case ValueTypeDefine.ValueType_String:
+               case CoreClassIds.ValueType_String:
                   mPropertyVariableDefinition = new VariableDefinitionString ("String Property");
                   break;
-               case ValueTypeDefine.ValueType_Number:
+               case CoreClassIds.ValueType_Number:
                   mPropertyVariableDefinition = new VariableDefinitionNumber ("Number Property");
                   break;
-               case ValueTypeDefine.ValueType_Entity:
+               case CoreClassIds.ValueType_Entity:
                   mPropertyVariableDefinition = new VariableDefinitionEntity ("Entity Property");
                   break;
-               case ValueTypeDefine.ValueType_CollisionCategory:
+               case CoreClassIds.ValueType_CollisionCategory:
                   mPropertyVariableDefinition = new VariableDefinitionCollisionCategory ("CCat Property");
                   break;
-               case ValueTypeDefine.ValueType_Module:
+               case CoreClassIds.ValueType_Module:
                   mPropertyVariableDefinition = new VariableDefinitionModule ("Module Property");
                   break;
-               case ValueTypeDefine.ValueType_Sound:
+               case CoreClassIds.ValueType_Sound:
                   mPropertyVariableDefinition = new VariableDefinitionSound ("Sound Property");
                   break;
-               case ValueTypeDefine.ValueType_Scene:
+               case CoreClassIds.ValueType_Scene:
                   mPropertyVariableDefinition = new VariableDefinitionScene ("Scene Property");
                   break;
-               case ValueTypeDefine.ValueType_Array:
+               case CoreClassIds.ValueType_Array:
                   mPropertyVariableDefinition = new VariableDefinitionArray ("Array Property");
                   break;
                default:

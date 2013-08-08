@@ -10,11 +10,11 @@ package editor.trigger {
    
    import editor.EditorContext;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
    import common.Define;
    
-   public class VariableDefinitionEntity extends VariableDefinition
+   public class VariableDefinitionEntity extends VariableDefinition_Core
    {
    //========================================================================================================
    //
@@ -28,7 +28,7 @@ package editor.trigger {
       
       public function VariableDefinitionEntity (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Entity, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Entity), name, description, options);
          
          if (options != null)
          {

@@ -50,31 +50,31 @@ package common.trigger
             return mInputParamDefines.ValueType_Void;
          
          if (inputId < 0 || inputId >= mInputParamDefines.length)
-            return ValueTypeDefine.ValueType_Void;
+            return CoreClassIds.ValueType_Void;
          
-         return mInputParamDefines [inputId][Index_ValueType] & ValueTypeDefine.NumberTypeMask_Basic;
+         return mInputParamDefines [inputId][Index_ValueType] & CoreClassIds.NumberTypeMask_Basic;
       }
       
       public function GetInputNumberTypeDetail (inputId:int):int
       {
          if (mInputParamDefines == null)
-            return ValueTypeDefine.NumberTypeDetail_Double;
+            return CoreClassIds.NumberTypeDetail_Double;
          
          if (inputId < 0 || inputId >= mInputParamDefines.length)
-            return ValueTypeDefine.NumberTypeDetail_Double;
+            return CoreClassIds.NumberTypeDetail_Double;
          
-         return  mInputParamDefines [inputId][Index_ValueType] & ValueTypeDefine.NumberTypeMask_Detail;
+         return  mInputParamDefines [inputId][Index_ValueType] & CoreClassIds.NumberTypeMask_Detail;
       }
       
       public function GetInputNumberTypeUsage (inputId:int):int
       {
          if (mInputParamDefines == null)
-            return ValueTypeDefine.NumberTypeUsage_General;
+            return CoreClassIds.NumberTypeUsage_General;
          
          if (inputId < 0 || inputId >= mInputParamDefines.length)
-            return ValueTypeDefine.NumberTypeUsage_General;
+            return CoreClassIds.NumberTypeUsage_General;
          
-         return mInputParamDefines [inputId][Index_ValueType] & ValueTypeDefine.NumberTypeMask_Usage;
+         return mInputParamDefines [inputId][Index_ValueType] & CoreClassIds.NumberTypeMask_Usage;
       }
       
       public function GetNumOutputs ():int
@@ -88,12 +88,12 @@ package common.trigger
       public function GetOutputParamValueType (returnId:int):int
       {
          if (mOutputParamDefines == null)
-            return ValueTypeDefine.ValueType_Void;
+            return CoreClassIds.ValueType_Void;
          
          if (returnId < 0 || returnId >= mOutputParamDefines.length)
-            return ValueTypeDefine.ValueType_Void;
+            return CoreClassIds.ValueType_Void;
          
-         return mOutputParamDefines [returnId][Index_ValueType] & ValueTypeDefine.NumberTypeMask_Basic;
+         return mOutputParamDefines [returnId][Index_ValueType] & CoreClassIds.NumberTypeMask_Basic;
       }
       
 //=====================================================================

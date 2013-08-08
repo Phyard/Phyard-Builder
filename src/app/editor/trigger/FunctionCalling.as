@@ -7,7 +7,7 @@ package editor.trigger {
    
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.CoreFunctionIds;
    import common.ValueAdjuster;
    import common.CoordinateSystem;
@@ -226,7 +226,7 @@ package editor.trigger {
             valueType = mFunctionDeclaration.GetInputParamValueType (i);
             source = mInputValueSources [i] as ValueSource;
             
-            if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
+            if (valueType == CoreClassIds.ValueType_Number && source is ValueSource_Direct)
             {
                directSource = source as ValueSource_Direct;
                directValue = Number (directSource.GetValueObject ());
@@ -251,7 +251,7 @@ package editor.trigger {
             valueType = mFunctionDeclaration.GetInputParamValueType (i);
             source = mInputValueSources [i] as ValueSource;
             
-            if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
+            if (valueType == CoreClassIds.ValueType_Number && source is ValueSource_Direct)
             {
                directSource = source as ValueSource_Direct;
                directValue = Number (directSource.GetValueObject ());
@@ -276,7 +276,7 @@ package editor.trigger {
             source = mInputValueSources [i] as ValueSource;
             valueType = mFunctionDeclaration.GetInputParamValueType (i);
             
-            if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
+            if (valueType == CoreClassIds.ValueType_Number && source is ValueSource_Direct)
             {
                directSource = source as ValueSource_Direct;
                directValue = Number (directSource.GetValueObject ());
@@ -284,13 +284,13 @@ package editor.trigger {
                
                switch (numberDetail)
                {
-                  case ValueTypeDefine.NumberTypeDetail_Single:
+                  case CoreClassIds.NumberTypeDetail_Single:
                      directValue = ValueAdjuster.Number2Precision (directValue, 6);
                      break;
-                  case ValueTypeDefine.NumberTypeDetail_Integer:
+                  case CoreClassIds.NumberTypeDetail_Integer:
                      directValue = Math.round (directValue);
                      break;
-                  case ValueTypeDefine.NumberTypeDetail_Double:
+                  case CoreClassIds.NumberTypeDetail_Double:
                   default:
                      directValue = ValueAdjuster.Number2Precision (directValue, 12);
                      break;

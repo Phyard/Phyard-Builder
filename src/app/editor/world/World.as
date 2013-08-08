@@ -21,6 +21,8 @@ package editor.world {
    
    import editor.entity.Scene;
    
+   import editor.trigger.CoreClass;
+
    import editor.trigger.VariableSpaceRegister;
    import editor.trigger.VariableSpaceCommonGlobal;
    import editor.trigger.VariableSpaceCommonEntityProperties;
@@ -36,7 +38,7 @@ package editor.world {
    import common.trigger.CoreFunctionDeclarations;
    import common.trigger.CoreEventDeclarations;
    import common.trigger.CoreFunctionIds;
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
 
    import common.Define;
    import common.ValueAdjuster;
@@ -68,15 +70,15 @@ package editor.world {
          
          // register variable spaces
          
-         mRegisterVariableSpace_Boolean           = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Boolean);
-         mRegisterVariableSpace_String            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_String);
-         mRegisterVariableSpace_Number            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Number);
-         mRegisterVariableSpace_Entity            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Entity);
-         mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_CollisionCategory);
-         mRegisterVariableSpace_Module            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Module);
-         mRegisterVariableSpace_Sound            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Sound);
-         mRegisterVariableSpace_Scene            = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Scene); // useless in fact.
-         mRegisterVariableSpace_Array             = new VariableSpaceRegister (/*this, */ValueTypeDefine.ValueType_Array);
+         mRegisterVariableSpace_Boolean           = new VariableSpaceRegister (/*this, */CoreClassIds.ValueType_Boolean);
+         mRegisterVariableSpace_String            = new VariableSpaceRegister (/*this, */CoreClassIds.ValueType_String);
+         mRegisterVariableSpace_Number            = new VariableSpaceRegister (/*this, */CoreClassIds.ValueType_Number);
+         mRegisterVariableSpace_Entity            = new VariableSpaceRegister (/*this, */CoreClassIds.ValueType_Entity);
+         mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (/*this, */CoreClassIds.ValueType_CollisionCategory);
+         mRegisterVariableSpace_Module            = new VariableSpaceRegister (/*this, */CoreClassIds.ValueType_Module);
+         mRegisterVariableSpace_Sound            = new VariableSpaceRegister (/*this, */CoreClassIds.ValueType_Sound);
+         mRegisterVariableSpace_Scene            = new VariableSpaceRegister (/*this, */CoreClassIds.ValueType_Scene); // useless in fact.
+         mRegisterVariableSpace_Array             = new VariableSpaceRegister (/*this, */CoreClassIds.ValueType_Array);
          
          // scene common variable spaces
          
@@ -581,6 +583,15 @@ package editor.world {
       }
       
 //=================================================================================
+//   core classes 
+//=================================================================================      
+      
+      public static function GetCoreClassById (classId:int):CoreClass
+      {
+         return CoreClasses.GetCoreClassById (classId);
+      }
+      
+//=================================================================================
 //   function/event declarations
 //=================================================================================
       
@@ -660,23 +671,23 @@ package editor.world {
       {
          switch (valueType)
          {
-            case ValueTypeDefine.ValueType_Boolean:
+            case CoreClassIds.ValueType_Boolean:
                return mRegisterVariableSpace_Boolean;
-            case ValueTypeDefine.ValueType_String:
+            case CoreClassIds.ValueType_String:
                return mRegisterVariableSpace_String;
-            case ValueTypeDefine.ValueType_Number:
+            case CoreClassIds.ValueType_Number:
                return mRegisterVariableSpace_Number;
-            case ValueTypeDefine.ValueType_Entity:
+            case CoreClassIds.ValueType_Entity:
                return mRegisterVariableSpace_Entity;
-            case ValueTypeDefine.ValueType_CollisionCategory:
+            case CoreClassIds.ValueType_CollisionCategory:
                return mRegisterVariableSpace_CollisionCategory;
-            case ValueTypeDefine.ValueType_Module:
+            case CoreClassIds.ValueType_Module:
                return mRegisterVariableSpace_Module;
-            case ValueTypeDefine.ValueType_Sound:
+            case CoreClassIds.ValueType_Sound:
                return mRegisterVariableSpace_Sound;
-            case ValueTypeDefine.ValueType_Scene:
+            case CoreClassIds.ValueType_Scene:
                return mRegisterVariableSpace_Scene;
-            case ValueTypeDefine.ValueType_Array:
+            case CoreClassIds.ValueType_Array:
                return mRegisterVariableSpace_Array;
             default:
                return null;

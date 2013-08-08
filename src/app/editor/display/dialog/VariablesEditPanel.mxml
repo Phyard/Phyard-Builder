@@ -2,19 +2,16 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
       width="100%" height="100%"
       >
-   <mx:HBox height="100%" width="100%">
-      <mx:VBox width="168" height="100%">
-         <mx:HBox id="Box_Toolbar" width="100%" borderStyle="solid" borderThickness="1">
-            <mx:Button id="Button_AddCommmand" click="OnCreateNewVariable ();" toolTip="New Variable" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_add_with_drop_menu.png')" />
-            <mx:Spacer width="100%" />
-            <mx:Button id="Button_MoveUpCommmand" click="OnMoveUpVariable ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
-            <mx:Button id="Button_MoveDownCommmand" click="OnMoveDownVariable ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
-            <mx:Spacer width="100%" />
-            <mx:Button id="Button_DeleteCommmand" click="OnDeleteVariable ();" toolTip="Delete Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
-         </mx:HBox>
-         <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" width="100%" height="100%" change="OnChangeVariable ()"  labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false"/>
-      </mx:VBox>
-      <mx:ViewStack id="ViewStack_VariableProperties" creationPolicy="all" width="100%" height="100%" borderStyle="solid" borderThickness="1">
+      <mx:HBox id="Box_Toolbar" width="100%" borderStyle="solid" borderThickness="0">
+         <mx:Button id="Button_AddCommmand" click="OnCreateNewVariable ();" toolTip="New Variable" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_add_with_drop_menu.png')" />
+         <mx:Spacer width="16" />
+         <mx:Button id="Button_DeleteCommmand" click="OnDeleteVariable ();" toolTip="Delete Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
+         <mx:Spacer width="100%" />
+         <mx:Button id="Button_MoveUpCommmand" click="OnMoveUpVariable ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
+         <mx:Button id="Button_MoveDownCommmand" click="OnMoveDownVariable ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
+      </mx:HBox>
+      <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" width="100%" height="100%" change="OnChangeVariable ()"  labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false"/>
+      <mx:ViewStack id="ViewStack_VariableProperties" creationPolicy="all" width="100%" height="77" borderStyle="solid" borderThickness="1">
          <mx:VBox id="Box_BlankPanel" width="100%" height="100%">
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="3" />
@@ -123,21 +120,22 @@
             </mx:ViewStack>
          </mx:VBox>
       </mx:ViewStack>
-   </mx:HBox>
 
+   <!--
    <mx:XML id="CreateNewMenuData">
       <root>
-         <menuitem label="New Boolean Variable" data="Boolean"/>
-         <menuitem label="New Number Variable" data="Number"/>
-         <menuitem label="New String Variable" data="String"/>
-         <menuitem label="New Collision Category Variable" data="CCat" scene_data_dependent="true"/>
-         <menuitem label="New Entity Variable" data="Entity" scene_data_dependent="true"/>
-         <menuitem label="New Module Variable" data="Module" scene_data_dependent="true"/>
-         <menuitem label="New Sound Variable" data="Sound" scene_data_dependent="true"/>
-         <menuitem label="New Scene Variable" data="Scene" scene_data_dependent="true"/>
-         <menuitem label="New Array Variable" data="Array"/>
+         <menuitem label="New Boolean Variable" id="Boolean"/>
+         <menuitem label="New Number Variable" id="Number"/>
+         <menuitem label="New String Variable" id="String"/>
+         <menuitem label="New CCat Variable" id="CCat" scene_data_dependent="true"/>
+         <menuitem label="New Entity Variable" id="Entity" scene_data_dependent="true"/>
+         <menuitem label="New Module Variable" id="Module" scene_data_dependent="true"/>
+         <menuitem label="New Sound Variable" id="Sound" scene_data_dependent="true"/>
+         <menuitem label="New Scene Variable" id="Scene" scene_data_dependent="true"/>
+         <menuitem label="New Array Variable" id="Array"/>
       </root>
    </mx:XML>
+   -->
 
    <mx:Script>
         <![CDATA[
@@ -148,11 +146,18 @@
 
             import mx.controls.Menu;
             import mx.events.MenuEvent;
+            
+            import editor.world.World;
+            
+            import editor.codelib.CodeLibManager;
 
             import editor.trigger.VariableSpace;
+            import editor.trigger.VariableSpaceClassInstance;
 
             import editor.trigger.VariableInstance;
+            
             import editor.trigger.VariableDefinition;
+            import editor.trigger.VariableDefinition_Custom;
             import editor.trigger.VariableDefinitionBoolean;
             import editor.trigger.VariableDefinitionNumber;
             import editor.trigger.VariableDefinitionString;
@@ -164,13 +169,20 @@
             import editor.trigger.VariableDefinitionArray;
             
             import common.trigger.ValueSpaceTypeDefine;
-            import common.trigger.ValueTypeDefine;
+            import common.trigger.ClassTypeDefine;
 
             [Bindable]
             private var mVariableListDataProvider:Object = [];
 
             private function OnInitPanel ():void
             {
+            }
+
+            private var mCodeLibManager:CodeLibManager = null;
+            
+            public function SetCodeLibManager (codeLibManager:CodeLibManager):void
+            {
+               mCodeLibManager = codeLibManager;
             }
 
             private var mVariableSpace:VariableSpace = null;
@@ -262,14 +274,35 @@
                                         ;
 
                   var xml:XML = <root />;
-                  for each (var menuItem:Object in CreateNewMenuData.menuitem)
+
+                  // custom Types
+                  if (isSceneDataDependent)
                   {
-                     if (isSceneDataDependent || menuItem.@["scene_data_dependent"] != "true")
+                     var customTypesMenu:XML = mCodeLibManager.GetCustomTypesDataProvider ();
+                     if (customTypesMenu != null)
+                     {
+                        xml.appendChild (customTypesMenu);
+                      }
+                  }
+                  
+                  // ...
+                  //for each (var menuItem:Object in CreateNewMenuData.menuitem)
+                  //{
+                  //   if (isSceneDataDependent || menuItem.@["scene_data_dependent"] != "true")
+                  //   {
+                  //      xml.appendChild (menuItem);
+                  //   }
+                  //}
+                  var coreClassesMenuData:XML = CodeLibManager.GetCoreTypesDataProvider ();
+                  for each (var menuItem:Object in coreClassesMenuData.menuitem)
+                  {
+                     if (isSceneDataDependent || menuItem.@["scene_data_dependent"])
                      {
                         xml.appendChild (menuItem);
                      }
                   }
                   
+                  //...
                   mCreateNewVariableMenu = Menu.createMenu(Button_AddCommmand, xml, false);
                   mCreateNewVariableMenu.labelField="@label";
                   mCreateNewVariableMenu.addEventListener(MenuEvent.ITEM_CLICK, OnNewVariable);
@@ -287,41 +320,55 @@
 
                var variableDefinition:VariableDefinition = null;
 
-               if (event.item.@data == "Boolean")
+               var typeId:int = event.item.@id;
+               if (event.item.@type == ClassTypeDefine.ClassType_Custom)
                {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Boolean, "aBoolean")
+                  // assert mCodeLibManager != null
+                  var properties:VariableSpaceClassInstance = mCodeLibManager.GetClassByIndex (typeId).GetPropertiesVariableSpace ();
+                  variableDefinition = new VariableDefinition_Custom (properties, properties.GetSpaceName ().toLowerCase ());
                }
-               else if (event.item.@data == "Number")
+               else
                {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Number, "aNumber");
-               }
-               else if (event.item.@data == "String")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_String, "aString");
-               }
-               else if (event.item.@data == "CCat")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_CollisionCategory, "aCCat");
-               }
-               else if (event.item.@data == "Entity")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Entity, "anEntity");
-               }
-               else if (event.item.@data == "Module")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Module, "aModule");
-               }
-               else if (event.item.@data == "Sound")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Sound, "aSound");
-               }
-               else if (event.item.@data == "Scene")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Scene, "aScene");
-               }
-               else if (event.item.@data == "Array")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Array, "anArray");
+                  //var initName:String = VariableDefinition.GetValueTypeInstanceName (typeId);
+                  var initName:String = World.GetCoreClassById (typeId).GetDefaultInstanceName ();
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (typeId, initName);
+                  
+                  //if (event.item.@data == "Boolean")
+                  //{
+                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Boolean, "aBoolean")
+                  //}
+                  //else if (event.item.@data == "Number")
+                  //{
+                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Number, "aNumber");
+                  //}
+                  //else if (event.item.@data == "String")
+                  //{
+                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_String, "aString");
+                  //}
+                  //else if (event.item.@data == "CCat")
+                  //{
+                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_CollisionCategory, "aCCat");
+                  //}
+                  //else if (event.item.@data == "Entity")
+                  //{
+                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Entity, "anEntity");
+                  //}
+                  //else if (event.item.@data == "Module")
+                  //{
+                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Module, "aModule");
+                  //}
+                  //else if (event.item.@data == "Sound")
+                  //{
+                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Sound, "aSound");
+                  //}
+                  //else if (event.item.@data == "Scene")
+                  //{
+                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Scene, "aScene");
+                  //}
+                  //else if (event.item.@data == "Array")
+                  //{
+                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Array, "anArray");
+                  //}
                }
 
                if (variableDefinition != null)

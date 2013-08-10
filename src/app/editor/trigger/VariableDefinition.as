@@ -237,6 +237,8 @@ package editor.trigger {
       //public var mTypeType:int;
       //public var mValueType:int;
       
+      protected var mClass:ClassBase;
+      
       public var mName:String;
       public var mDescription:String = null;
       
@@ -247,10 +249,13 @@ package editor.trigger {
       // cancelled to unref TriggerEngine
       //private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
       
-      public function VariableDefinition (/*typeType:int, valueType:int, */name:String, description:String = null/*, options:Object = null*/)
+      //public function VariableDefinition (/*typeType:int, valueType:int, */name:String, description:String = null/*, options:Object = null*/)
+      public function VariableDefinition (aClass:ClassBase, name:String, description:String = null/*, options:Object = null*/)
       {
          //mTypeType = typeType;
          //mValueType = valueType;
+         
+         mClass = aClass;
          
          mName = name;
          mDescription = description;
@@ -260,6 +265,26 @@ package editor.trigger {
          //   //if (options.mDefaultSourceType != undefined)
          //   //   mDefaultSourceType = int (options.mDefaultSourceType);
          //}
+      }
+      
+      public function GetClass ():ClassBase
+      {
+         return mClass;
+      }
+      
+      public function GetTypeType ():int
+      {
+         return mClass.GetClassType ();
+      }
+      
+      public function GetValueType ():int
+      {
+         return mClass.GetID ();
+      }
+      
+      public function GetTypeName ():String
+      {
+         return mClass.GetName ();
       }
       
       public function GetName ():String
@@ -277,19 +302,6 @@ package editor.trigger {
          return mDescription;
       }
       
-      //@todo: rename -> GetValueClassType
-      public function GetTypeType ():int
-      {
-         return ClassTypeDefine.ClassType_Unknown; // to overide
-      }
-      
-      //@todo: rename -> GetValueClassId
-      public function GetValueType ():int
-      {
-         //return mValueType;
-         return -1; // to override
-      }
-      
       public function SetDefaultValue (valueObject:Object):void
       {
          // to override
@@ -299,6 +311,7 @@ package editor.trigger {
       {
          return GetTypeType () == variableDefinition.GetTypeType () && GetValueType () == variableDefinition.GetValueType ();
       }
+      
       
 //==============================================================================
 // clone
@@ -383,7 +396,8 @@ package editor.trigger {
          var currentVariable:VariableInstance = valueTargetVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
-         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetValueType (), validVariableIndexes);
+         //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetTypeType (), GetValueType (), validVariableIndexes);
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
@@ -568,7 +582,8 @@ package editor.trigger {
          var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
-         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetValueType (), validVariableIndexes);
+         //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetTypeType (), GetValueType (), validVariableIndexes);
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
@@ -616,40 +631,42 @@ package editor.trigger {
          
          if (mPropertyVariableDefinition == null)
          {
-            switch (GetValueType ())
-            {
-               case CoreClassIds.ValueType_Boolean:
-                  mPropertyVariableDefinition = new VariableDefinitionBoolean ("Boolean Property");
-                  break;
-               case CoreClassIds.ValueType_String:
-                  mPropertyVariableDefinition = new VariableDefinitionString ("String Property");
-                  break;
-               case CoreClassIds.ValueType_Number:
-                  mPropertyVariableDefinition = new VariableDefinitionNumber ("Number Property");
-                  break;
-               case CoreClassIds.ValueType_Entity:
-                  mPropertyVariableDefinition = new VariableDefinitionEntity ("Entity Property");
-                  break;
-               case CoreClassIds.ValueType_CollisionCategory:
-                  mPropertyVariableDefinition = new VariableDefinitionCollisionCategory ("CCat Property");
-                  break;
-               case CoreClassIds.ValueType_Module:
-                  mPropertyVariableDefinition = new VariableDefinitionModule ("Module Property");
-                  break;
-               case CoreClassIds.ValueType_Sound:
-                  mPropertyVariableDefinition = new VariableDefinitionSound ("Sound Property");
-                  break;
-               case CoreClassIds.ValueType_Scene:
-                  mPropertyVariableDefinition = new VariableDefinitionScene ("Scene Property");
-                  break;
-               case CoreClassIds.ValueType_Array:
-                  mPropertyVariableDefinition = new VariableDefinitionArray ("Array Property");
-                  break;
-               default:
-               {
-                  trace ("unknown mValueType in BuildPropertyVaribleDefinition");
-               }
-            }
+            mPropertyVariableDefinition = CreateVariableDefinition (GetValueType (), World.GetCoreClassById (GetValueType ()).GetName () + " Property");
+            
+            //switch (GetValueType ())
+            //{
+            //   case CoreClassIds.ValueType_Boolean:
+            //      mPropertyVariableDefinition = new VariableDefinitionBoolean ("Boolean Property");
+            //      break;
+            //   case CoreClassIds.ValueType_String:
+            //      mPropertyVariableDefinition = new VariableDefinitionString ("String Property");
+            //      break;
+            //   case CoreClassIds.ValueType_Number:
+            //      mPropertyVariableDefinition = new VariableDefinitionNumber ("Number Property");
+            //      break;
+            //   case CoreClassIds.ValueType_Entity:
+            //      mPropertyVariableDefinition = new VariableDefinitionEntity ("Entity Property");
+            //      break;
+            //   case CoreClassIds.ValueType_CollisionCategory:
+            //      mPropertyVariableDefinition = new VariableDefinitionCollisionCategory ("CCat Property");
+            //      break;
+            //   case CoreClassIds.ValueType_Module:
+            //      mPropertyVariableDefinition = new VariableDefinitionModule ("Module Property");
+            //      break;
+            //   case CoreClassIds.ValueType_Sound:
+            //      mPropertyVariableDefinition = new VariableDefinitionSound ("Sound Property");
+            //      break;
+            //   case CoreClassIds.ValueType_Scene:
+            //      mPropertyVariableDefinition = new VariableDefinitionScene ("Scene Property");
+            //      break;
+            //   case CoreClassIds.ValueType_Array:
+            //      mPropertyVariableDefinition = new VariableDefinitionArray ("Array Property");
+            //      break;
+            //   default:
+            //   {
+            //      trace ("unknown mValueType in BuildPropertyVaribleDefinition");
+            //   }
+            //}
          }
       }
       

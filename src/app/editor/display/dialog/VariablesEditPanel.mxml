@@ -20,8 +20,8 @@
          </mx:VBox>
          <mx:VBox id="Box_VariableProperties" width="100%" height="100%">
             <mx:Spacer height="3" />
-            <mx:RadioButtonGroup id="VariableType" enabled="false"/>
-            <!--mx:HBox width="100%" borderStyle="none" borderThickness="0">
+            <!--mx:RadioButtonGroup id="VariableType" enabled="false"/>
+            <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="16" />
                <mx:HBox width="67%" borderStyle="none" borderThickness="0">
                   <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_BooleanType" value="Booelan" label="Boolean" />
@@ -69,6 +69,7 @@
                      <mx:Spacer width="3" />
                   </mx:HBox>
                </mx:VBox>
+               <!--
                <mx:VBox id="Box_CCatVariableSettingPanel" width="100%" height="100%">
                   <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                      <mx:Spacer width="3" />
@@ -117,6 +118,15 @@
                      <mx:Spacer width="3" />
                   </mx:HBox>
                </mx:VBox>
+               -->
+               <mx:VBox id="Box_NullValuePanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:Label width="65%" text="null" textAlign="left" />
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
             </mx:ViewStack>
          </mx:VBox>
       </mx:ViewStack>
@@ -150,6 +160,8 @@
             import editor.world.World;
             
             import editor.codelib.CodeLibManager;
+
+            import editor.trigger.ClassCustom;
 
             import editor.trigger.VariableSpace;
             import editor.trigger.VariableSpaceClassInstance;
@@ -296,7 +308,7 @@
                   var coreClassesMenuData:XML = CodeLibManager.GetCoreTypesDataProvider ();
                   for each (var menuItem:Object in coreClassesMenuData.menuitem)
                   {
-                     if (isSceneDataDependent || menuItem.@["scene_data_dependent"])
+                     if (isSceneDataDependent || menuItem.@["scene_data_dependent"] == false)
                      {
                         xml.appendChild (menuItem);
                      }
@@ -324,8 +336,8 @@
                if (event.item.@type == ClassTypeDefine.ClassType_Custom)
                {
                   // assert mCodeLibManager != null
-                  var properties:VariableSpaceClassInstance = mCodeLibManager.GetClassByIndex (typeId).GetPropertiesVariableSpace ();
-                  variableDefinition = new VariableDefinition_Custom (properties, properties.GetSpaceName ().toLowerCase ());
+                  var customClass:ClassCustom = mCodeLibManager.GetClassByIndex (typeId).GetCustomClass ();
+                  variableDefinition = new VariableDefinition_Custom (customClass, customClass.GetDefaultInstanceName ());
                }
                else
                {
@@ -454,7 +466,7 @@
 
                if (mVariableSpace == null || selectedIndex < 0)
                {
-                  VariableType.selectedValue = null;
+                  //VariableType.selectedValue = null;
                   ViewStack_VariableProperties.selectedChild = Box_BlankPanel;
                }
                else
@@ -485,6 +497,7 @@
                      Text_DefaultStringValue.text = (variableInstance.GetValueObject () as String);
                      ViewStack_VariableSetting.selectedChild = Box_StringVariableSettingPanel;
                   }
+                  /*
                   else if (variableDefinition is VariableDefinitionCollisionCategory)
                   {
                      //RadioButton_CCatType.selected = true;
@@ -515,10 +528,11 @@
                      //RadioButton_ArrayType.selected = true;
                      ViewStack_VariableSetting.selectedChild = Box_EntityArraySettingPanel;
                   }
+                  */
                   else
                   {
-                     VariableType.selectedValue = null;
-                     ViewStack_VariableProperties.selectedChild = Box_BlankPanel;
+                     //VariableType.selectedValue = null;
+                     ViewStack_VariableSetting.selectedChild = Box_NullValuePanel;
                   }
                }
 

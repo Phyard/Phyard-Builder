@@ -1274,19 +1274,19 @@
 
                //AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Register);
 
-               if (mCodeLibManager.GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               if (mCodeLibManager.GetSessionVariableSpace ().HasVariablesSatisfiedBy (variableDefinition, false))
                   AppendContextMenuItem (sprite, "from Session Entity Variable", isForTarget ? OnSelectValueSource_SessionVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_SessionVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Session);
 
-               if (mCodeLibManager.GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               if (mCodeLibManager.GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition, false))
                   AppendContextMenuItem (sprite, "from Global Entity Variable", isForTarget ? OnSelectValueSource_GlobalVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_GlobalVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
 
-               if (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               if (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition, false))
                   AppendContextMenuItem (sprite, "from Global Entity Variable (Scene Common)", isForTarget ? OnSelectValueSource_CommonGlobalVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_CommonGlobalVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonGlobal);
 
-               if (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               if (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ().HasVariablesSatisfiedBy (variableDefinition, false))
                   AppendContextMenuItem (sprite, "from World Variable", isForTarget ? OnSelectValueSource_WorldVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_WorldVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_World);
 
-               if (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               if (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ().HasVariablesSatisfiedBy (variableDefinition, false))
                   AppendContextMenuItem (sprite, "from Game Save Variable", isForTarget ? OnSelectValueSource_GameSaveVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_GameSaveVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_GameSave);
             }
             else
@@ -1299,12 +1299,15 @@
                if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Input Variable", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
 
+               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from Local Variable", OnSelectValueSource_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
+
                if (! mIsDesignIndependentCustomFunction)
                {
-                  if (mCodeLibManager.GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  if (mCodeLibManager.GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition, false))
                      AppendContextMenuItem (sprite, "from Entity Custom Property", OnSelectValueSource_EntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_EntityProperties);
 
-                  if (mCodeLibManager.GetScene ().GetWorld ().GetCommonCustomEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  if (mCodeLibManager.GetScene ().GetWorld ().GetCommonCustomEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition, false))
                      AppendContextMenuItem (sprite, "from Entity Custom Property (Scene Common)", OnSelectValueSource_CommonEntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties);
 
                   //AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Register);
@@ -1324,9 +1327,6 @@
                   if (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Game Save Variable", OnSelectValueSource_GameSaveVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GameSave);
                }
-
-               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "from Local Variable", OnSelectValueSource_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             }
          }
 
@@ -2016,13 +2016,16 @@
             if (ownerFuncDefinition.HasOutputsSatisfiedBy (variableDefinition))
                AppendContextMenuItem (sprite, "to Output Variables", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Output);
 
+            if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+               AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
+
             if (! mIsDesignIndependentCustomFunction)
             {
-               if (mCodeLibManager.GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "to Custom Entity Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_EntityProperties);
+               if (mCodeLibManager.GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition, false))
+                  AppendContextMenuItem (sprite, "toEntity  Custom Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_EntityProperties);
 
-               if (mCodeLibManager.GetScene ().GetWorld ().GetCommonCustomEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "to Custom Entity Property (Scene Common)", OnSelectValueTarget_CommonCustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties);
+               if (mCodeLibManager.GetScene ().GetWorld ().GetCommonCustomEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition, false))
+                  AppendContextMenuItem (sprite, "toEntity  Custom Property (Scene Common)", OnSelectValueTarget_CommonCustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties);
 
                //AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Register);
 
@@ -2041,9 +2044,6 @@
                if (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Game Save Variable", OnSelectValueTarget_GameSaveVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GameSave);
             }
-
-            if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
-               AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
          }
 
          private function OnResetValueTarget (event:ContextMenuEvent):void

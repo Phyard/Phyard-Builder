@@ -4,6 +4,7 @@ package editor.trigger {
    
    import editor.world.World;
    
+   import common.trigger.ClassTypeDefine;
    import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueTargetTypeDefine;
@@ -79,7 +80,11 @@ package editor.trigger {
       public function ToVariableDefinitionString ():String
       {
          //return VariableDefinition.GetValueTypeName (GetValueType ()) + " " + GetName ();
-         return World.GetCoreClassById (GetValueType ()).GetName () + " " + GetName ();
+         //return World.GetCoreClassById (GetValueType ()).GetName () + " " + GetName ();
+         if (mVariableDefinition != null)
+            return mVariableDefinition.GetTypeName () + " : " + GetName ();
+         
+         return "null";
       }
       
       private function ToCodeStringForSourceOrTarget (forTarget:Boolean):String
@@ -149,6 +154,14 @@ package editor.trigger {
       public function GetLongName ():String
       {
          return mVariableSpace.GetShortName () + " [" + mIndex + "] " + GetName ();
+      }
+      
+      public function GetTypeType ():int
+      {
+         if (mVariableDefinition == null) // never
+            return ClassTypeDefine.ClassType_Unknown;
+         
+         return mVariableDefinition.GetTypeType ();
       }
       
       public function GetValueType ():int

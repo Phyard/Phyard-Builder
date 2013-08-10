@@ -4,28 +4,18 @@ package editor.trigger {
    
    public class VariableDefinition_Core extends VariableDefinition
    {
-      protected var mCoreClass:CoreClass;
-      
-      public function VariableDefinition_Core (coreClass:CoreClass, name:String, description:String = null, options:Object = null)
+      public function VariableDefinition_Core (coreClass:ClassCore, name:String, description:String = null, options:Object = null)
       {
          //super (ClassTypeDefine.ClassType_Core, classId, name, description, options);
-         super (name, description);
+         super (coreClass, name, description);
          
-         mCoreClass = coreClass;
-         
-         SetDefaultValue (mCoreClass.GetInitialInstacneValue ()); // may be changed by other classes.
-      }
-
-      override public function GetTypeType ():int
-      {
-         return ClassTypeDefine.ClassType_Core;
+         SetDefaultValue (GetCoreClass ().GetInitialInstacneValue ()); // may be changed by other classes.
       }
       
-      override public function GetValueType ():int
+      public function GetCoreClass ():ClassCore
       {
-         return mCoreClass.GetID ();
+         return mClass as ClassCore;
       }
-      
    }
 }
 

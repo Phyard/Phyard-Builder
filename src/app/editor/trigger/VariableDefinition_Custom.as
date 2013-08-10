@@ -11,24 +11,21 @@ package editor.trigger {
    
    public class VariableDefinition_Custom extends VariableDefinition
    {
-      protected var mProperties:VariableSpaceClassInstance;
-      
-      public function VariableDefinition_Custom (properties:VariableSpaceClassInstance, name:String, description:String = null, options:Object = null)
+      public function VariableDefinition_Custom (customClass:ClassCustom, name:String, description:String = null, options:Object = null)
       {
          //super (ClassTypeDefine.ClassType_Custom, classId, name, description, options);
          
-         super (name, description);
-         mProperties = properties;
-      }
-            
-      override public function GetTypeType ():int
-      {
-         return ClassTypeDefine.ClassType_Custom;
+         super (customClass, name, description);
       }
       
-      override public function GetValueType ():int
+      public function GeCustomClass ():ClassCustom
       {
-         return mProperties.GetId ();
+         return mClass as ClassCustom;
+      }
+      
+      public function GetCustomProperties ():VariableSpaceClassInstance
+      {
+         return GeCustomClass ().GetPropertyDefinitionSpace ();
       }
       
 //==============================================================================
@@ -37,7 +34,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var customVariableDefinition:VariableDefinition_Custom = new VariableDefinition_Custom (mProperties, mName, mDescription);
+         var customVariableDefinition:VariableDefinition_Custom = new VariableDefinition_Custom (GeCustomClass (), mName, mDescription);
          
          return customVariableDefinition;
       }

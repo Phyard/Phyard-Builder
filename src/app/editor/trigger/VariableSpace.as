@@ -171,71 +171,116 @@ package editor.trigger {
          NotifyModified ();
       }
       
-      public function HasVariablesWithValueType (valueType:int):Boolean
-      {
-         var vi:VariableInstance;
-         
-         for (var i:int = 0; i < mVariableInstances.length; ++ i)
-         {
-            vi = mVariableInstances [i] as VariableInstance;
-            
-            if (vi.GetValueType () == valueType)
-               return true;
-         }
-         
-         return false;
-      }
+      //public function HasVariablesWithValueType (valueType:int):Boolean
+      //{
+      //   var vi:VariableInstance;
+      //   
+      //   for (var i:int = 0; i < mVariableInstances.length; ++ i)
+      //   {
+      //      vi = mVariableInstances [i] as VariableInstance;
+      //      
+      //      if (vi.GetValueType () == valueType)
+      //         return true;
+      //   }
+      //   
+      //   return false;
+      //}
       
-      public function HasVariablesSatisfiedBy (variableDefinition:VariableDefinition):Boolean
+      public function HasVariablesSatisfiedBy (variableDefinition:VariableDefinition, deepIntoCustomClass:Boolean = true):Boolean
       {
          var viDef:VariableDefinition;
          var count:int = GetNumVariableInstances ();
          for (var i:int = 0; i < count; ++ i)
          {
             viDef = GetVariableInstanceAt (i).GetVariableDefinition ();
-            if (viDef != null)
+            if (viDef != null) // always
             {
                if (variableDefinition.IsCompatibleWith (viDef))
                   return true;
+               
+               if (deepIntoCustomClass && viDef is VariableDefinition_Custom)
+               {
+                  if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false))
+                     return true;
+               }
             }
          }
          
          return false;
       }
       
-      public function GetVariableSelectListDataProviderByValueType (valueType:int, validVariableIndexes:Array = null):Array
+      //public function GetVariableSelectListDataProviderByValueType (typeType:int, valueType:int, validVariableIndexes:Array = null):Array
+      public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition, validVariableIndexes:Array = null, deepIntoCustomClass:Boolean = true, 
+                                                                             deepLevel:int = 0, lastLevelName:String = null, dataList:Array = null):Array
       {
-         var entity_list:Array = new Array ();
+         var item:Object;
          
-         var item:Object = new Object ();
-         item.label = "(null)"; // mNullVariableInstance.GetLongName ();
-         item.mVariableInstance = null;
-         
-         entity_list.push (item);
+         if (dataList == null)
+         {
+            dataList = new Array ();
+            
+            item = new Object ();
+            item.label = "(null)"; // mNullVariableInstance.GetLongName ();
+            item.mVariableInstance = null;
+            
+            dataList.push (item);
+         }
          
          var vi:VariableInstance;
+         var viDef:VariableDefinition;
+         var label:String;
          
          for (var i:int = 0; i < mVariableInstances.length; ++ i)
-         {
-            vi = mVariableInstances [i] as VariableInstance;
-            
-            if (vi.GetValueType () != valueType)
-               continue;
-            
+         {  
             if (validVariableIndexes != null)
             {
                if (validVariableIndexes.indexOf (i) < 0)
                   continue;
             }
             
-            item = new Object ();
-            item.label = vi.GetLongName ();
-            item.mVariableInstance = vi;
+            vi = mVariableInstances [i] as VariableInstance;
+            viDef = GetVariableInstanceAt (i).GetVariableDefinition ();
             
-            entity_list.push (item);
+            if (viDef != null) // always
+            {
+               if (variableDefinition.IsCompatibleWith (viDef))
+               {
+                  item = new Object ();
+                  item.mVariableInstance = vi;
+                  
+                  if (lastLevelName == null) // or deepLevel > 0
+                  {
+                     label = vi.GetLongName ();
+                  }
+                  else
+                  {
+                     label = lastLevelName + "[" + i + "] " + vi.GetName ();
+                     for (var j:int = 0; j < deepLevel; ++ j)
+                        label = "\t\t" + label;
+                  }
+                  item.label = label;
+                  
+                  dataList.push (item);
+               }
+               
+               if (deepIntoCustomClass && viDef is VariableDefinition_Custom)
+               {
+                  if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false))
+                  {
+                     item = new Object ();
+                     item.mVariableInstance = vi;
+                     label = vi.GetLongName ();
+                     item.label = label;
+                     
+                     dataList.push (item);
+                     
+                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProviderByVariableDefinition (variableDefinition, null, false, deepLevel + 1, vi.GetName (), dataList);
+                  }
+               }
+            }
          }
          
-         return entity_list;
+         return dataList;
       }
       
       

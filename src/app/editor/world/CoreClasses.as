@@ -1,6 +1,7 @@
 package editor.world {
 
-   import editor.trigger.CoreClass;
+   import editor.trigger.ClassCore;
+   import editor.trigger.CodePackage;
 
    import common.trigger.CoreClassIds;
    import common.trigger.ClassDeclaration;
@@ -10,8 +11,15 @@ package editor.world {
 
    public class CoreClasses
    {
-      public static var sVoidClass:CoreClass = null;
+      public static var sVoidClass:ClassCore = null;
       public static var mCoreClasses:Array = new Array (CoreClassIds.NumCoreClasses);
+      
+      private static const sCoreCodePackage:CodePackage = new CodePackage ("Core");
+
+      public static function GetCoreClassPackage ():CodePackage
+      {
+         return sCoreCodePackage
+      }
 
       private static var mInitialized:Boolean = false;
 
@@ -24,61 +32,71 @@ package editor.world {
 
       // ...
                                    
-         RegisterCoreClass (CoreClassIds.ValueType_Void, 
+         RegisterCoreClass (null, //sCoreCodePackage,
+                            CoreClassIds.ValueType_Void, 
                             "Void", // Class Name
                             "aVoid",
                             undefined
                             ).SetSceneDataDependent (false);
          
-         RegisterCoreClass (CoreClassIds.ValueType_Boolean, 
-                            "Bool", // Class Name
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_Boolean, 
+                            "Boolean", // Class Name
                             "aBool",
                             false
                             ).SetSceneDataDependent (false);
                                    
-         RegisterCoreClass (CoreClassIds.ValueType_Number, 
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_Number, 
                             "Number", // Class Name
                             "aNumber",
                             0
                             ).SetSceneDataDependent (false);
                                    
-         RegisterCoreClass (CoreClassIds.ValueType_String, 
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_String, 
                             "Text", // Class Name
                             "aText",
                             ""
                             ).SetSceneDataDependent (false);
                                    
-         RegisterCoreClass (CoreClassIds.ValueType_CollisionCategory, 
-                            "CCat", // Class Name
-                            "aCCat",
-                            null
-                            ).SetSceneDataDependent (true);
-                                   
-         RegisterCoreClass (CoreClassIds.ValueType_Entity,            
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_Entity,            
                             "Entity", // Class Name
                             "anEntity",
                             null
                             ).SetSceneDataDependent (true);
                                    
-         RegisterCoreClass (CoreClassIds.ValueType_Module, 
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_CollisionCategory, 
+                            "CCat", // Class Name
+                            "aCCat",
+                            null
+                            ).SetSceneDataDependent (true);
+                                   
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_Module, 
                             "Module", // Class Name
                             "aModule",
                             null
                             ).SetSceneDataDependent (true);
                                    
-         RegisterCoreClass (CoreClassIds.ValueType_Sound, 
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_Sound, 
                             "Sound", // Class Name
                             "aSound",
                             null
                             ).SetSceneDataDependent (true);
                                    
-         RegisterCoreClass (CoreClassIds.ValueType_Scene, 
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_Scene, 
                             "Scene", // Class Name
                             "aScene",
                             null
                             ).SetSceneDataDependent (true);
                                    
-         RegisterCoreClass (CoreClassIds.ValueType_Array, 
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_Array, 
                             "Array", // Class Name
                             "anArray",
                             null
@@ -93,11 +111,11 @@ package editor.world {
 // util functions
 //===========================================================
 
-      private static function RegisterCoreClass (classId:int, typeName:String, defaultInstanceName:String, initialInitialValue:Object, valueValidateFunc:Function = null):CoreClass
+      private static function RegisterCoreClass (codePacakge:CodePackage, classId:int, typeName:String, defaultInstanceName:String, initialInitialValue:Object, valueValidateFunc:Function = null):ClassCore
       {
          var coreDecl:ClassDeclaration = CoreClassDeclarations.GetCoreClassDeclarationById (classId);
 
-         var coreClass:CoreClass = new CoreClass (coreDecl, 
+         var coreClass:ClassCore = new ClassCore (coreDecl, 
                                                   typeName, 
                                                   defaultInstanceName, 
                                                   initialInitialValue, 
@@ -106,10 +124,15 @@ package editor.world {
          
          mCoreClasses [coreDecl.GetID ()] = coreClass;
          
+         if (codePacakge != null)
+         {
+            codePacakge.AddClass (coreClass);
+         }
+         
          return coreClass;
       }
 
-      public static function GetCoreClassById (classId:int):CoreClass
+      public static function GetCoreClassById (classId:int):ClassCore
       {
          if (! mInitialized)
             Initialize ();
@@ -117,7 +140,7 @@ package editor.world {
          if (classId < 0 || classId >= CoreClassIds.NumCoreClasses)
             return sVoidClass;
 
-         var coreClass:CoreClass = mCoreClasses [classId];
+         var coreClass:ClassCore = mCoreClasses [classId];
          
          return coreClass == null ? sVoidClass : coreClass;
       }

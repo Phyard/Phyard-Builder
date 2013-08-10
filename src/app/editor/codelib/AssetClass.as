@@ -44,6 +44,7 @@ package editor.codelib {
    import editor.asset.Asset;
    import editor.asset.Linkable;
    
+   import editor.trigger.ClassCustom;
    import editor.trigger.VariableSpaceClassInstance;
    
    import editor.display.dialog.NameSettingDialog;
@@ -59,7 +60,7 @@ package editor.codelib {
       
       protected var mPackage:AssetPackage = null;
       
-      protected var mProperties:VariableSpaceClassInstance;
+      protected var mCustomClass:ClassCustom;
       
       private var mHalfWidth:Number;
       private var mHalfHeight:Number;
@@ -77,15 +78,15 @@ package editor.codelib {
          
          mouseChildren = false;
          
-         mProperties = new VariableSpaceClassInstance (GetName ());
+         mCustomClass = new ClassCustom (GetName ());
       }
       
       public function SetClassIndex (classId:int):void
       {
          mClassId = classId;
-         if (mProperties != null)
+         if (mCustomClass != null)
          {
-            mProperties.SetId (mClassId);
+            mCustomClass.SetID (mClassId);
          }
       }
       
@@ -107,6 +108,11 @@ package editor.codelib {
          return mPackage;
       }
       
+      public function GetCustomClass ():ClassCustom
+      {
+         return mCustomClass;
+      }
+      
       override public function ToCodeString ():String
       {
          return "Type#" + GetClassIndex ();
@@ -117,16 +123,11 @@ package editor.codelib {
          return "Type";
       }
       
-      public function GetPropertiesVariableSpace ():VariableSpaceClassInstance
-      {
-         return mProperties;
-      }
-      
       override protected function OnNameChanged ():void
       {
-         if (mProperties != null)
+         if (mCustomClass != null)
          {
-            mProperties.SetSpaceName (GetName ());
+            mCustomClass.SetName (GetName ());
          }
       }
       

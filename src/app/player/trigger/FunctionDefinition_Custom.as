@@ -25,9 +25,11 @@ package player.trigger
       internal var mOutputVariableRefList:VariableReference;
       internal var mLocalVariableRefList:VariableReference;
       
-      public function FunctionDefinition_Custom (inputValueSourceDefines:Array, ouputParamValueTypes:Array, numLocalVariables:int)
+      //public function FunctionDefinition_Custom (inputValueSourceDefines:Array, ouputParamValueTypes:Array, numLocalVariables:int)
+      public function FunctionDefinition_Custom (inputVariableSpace:VariableSpace, outputVariableSpace:VariableSpace, numLocalVariables:int)
       {
-         super (inputValueSourceDefines, ouputParamValueTypes);
+         //super (inputValueSourceDefines, ouputParamValueTypes);
+         super (inputVariableSpace, outputVariableSpace);
          
          mNumLocalVariables = numLocalVariables;
          

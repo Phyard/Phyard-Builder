@@ -140,7 +140,7 @@ package editor.trigger {
       //   }
       //}
       
-      public static function CreateVariableDefinition (valueType:int, variableName:String):VariableDefinition
+      public static function CreateCoreVariableDefinition (valueType:int, variableName:String):VariableDefinition
       {
          switch (valueType)
          {
@@ -163,7 +163,7 @@ package editor.trigger {
             case CoreClassIds.ValueType_Array:
                return new VariableDefinitionArray (variableName);
             default:
-               throw new Error ("unknown type in CreateVariableDefinition");
+               throw new Error ("unknown type in CreateCoreVariableDefinition");
          }
       }
       
@@ -631,42 +631,7 @@ package editor.trigger {
          
          if (mPropertyVariableDefinition == null)
          {
-            mPropertyVariableDefinition = CreateVariableDefinition (GetValueType (), World.GetCoreClassById (GetValueType ()).GetName () + " Property");
-            
-            //switch (GetValueType ())
-            //{
-            //   case CoreClassIds.ValueType_Boolean:
-            //      mPropertyVariableDefinition = new VariableDefinitionBoolean ("Boolean Property");
-            //      break;
-            //   case CoreClassIds.ValueType_String:
-            //      mPropertyVariableDefinition = new VariableDefinitionString ("String Property");
-            //      break;
-            //   case CoreClassIds.ValueType_Number:
-            //      mPropertyVariableDefinition = new VariableDefinitionNumber ("Number Property");
-            //      break;
-            //   case CoreClassIds.ValueType_Entity:
-            //      mPropertyVariableDefinition = new VariableDefinitionEntity ("Entity Property");
-            //      break;
-            //   case CoreClassIds.ValueType_CollisionCategory:
-            //      mPropertyVariableDefinition = new VariableDefinitionCollisionCategory ("CCat Property");
-            //      break;
-            //   case CoreClassIds.ValueType_Module:
-            //      mPropertyVariableDefinition = new VariableDefinitionModule ("Module Property");
-            //      break;
-            //   case CoreClassIds.ValueType_Sound:
-            //      mPropertyVariableDefinition = new VariableDefinitionSound ("Sound Property");
-            //      break;
-            //   case CoreClassIds.ValueType_Scene:
-            //      mPropertyVariableDefinition = new VariableDefinitionScene ("Scene Property");
-            //      break;
-            //   case CoreClassIds.ValueType_Array:
-            //      mPropertyVariableDefinition = new VariableDefinitionArray ("Array Property");
-            //      break;
-            //   default:
-            //   {
-            //      trace ("unknown mValueType in BuildPropertyVaribleDefinition");
-            //   }
-            //}
+            mPropertyVariableDefinition = CreateCoreVariableDefinition (GetValueType (), World.GetCoreClassById (GetValueType ()).GetName () + " Property");
          }
       }
       

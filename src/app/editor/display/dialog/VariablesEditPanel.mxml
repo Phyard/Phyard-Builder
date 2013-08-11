@@ -343,44 +343,7 @@
                {
                   //var initName:String = VariableDefinition.GetValueTypeInstanceName (typeId);
                   var initName:String = World.GetCoreClassById (typeId).GetDefaultInstanceName ();
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (typeId, initName);
-                  
-                  //if (event.item.@data == "Boolean")
-                  //{
-                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Boolean, "aBoolean")
-                  //}
-                  //else if (event.item.@data == "Number")
-                  //{
-                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Number, "aNumber");
-                  //}
-                  //else if (event.item.@data == "String")
-                  //{
-                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_String, "aString");
-                  //}
-                  //else if (event.item.@data == "CCat")
-                  //{
-                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_CollisionCategory, "aCCat");
-                  //}
-                  //else if (event.item.@data == "Entity")
-                  //{
-                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Entity, "anEntity");
-                  //}
-                  //else if (event.item.@data == "Module")
-                  //{
-                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Module, "aModule");
-                  //}
-                  //else if (event.item.@data == "Sound")
-                  //{
-                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Sound, "aSound");
-                  //}
-                  //else if (event.item.@data == "Scene")
-                  //{
-                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Scene, "aScene");
-                  //}
-                  //else if (event.item.@data == "Array")
-                  //{
-                  //   variableDefinition = VariableDefinition.CreateVariableDefinition (CoreClassIds.ValueType_Array, "anArray");
-                  //}
+                  variableDefinition = VariableDefinition.CreateCoreVariableDefinition (typeId, initName);
                }
 
                if (variableDefinition != null)

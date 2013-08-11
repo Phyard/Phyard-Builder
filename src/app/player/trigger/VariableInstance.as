@@ -1,5 +1,6 @@
 package player.trigger
 {
+   import common.trigger.ClassTypeDefine;
    import common.trigger.CoreClassIds;
    
    public class VariableInstance
@@ -9,9 +10,10 @@ package player.trigger
       private var mKey:String;
       private var mIndex:int;
       
-      private var mValueType:int = CoreClassIds.ValueType_Void;
-      
       public var mName:String = null; // for debug usage only
+      
+      private var mClsssType:int = ClassTypeDefine.ClassType_Unknown;  // since v2.05
+      private var mValueType:int = CoreClassIds.ValueType_Void;
       
       public var mValueObject:Object = null;
       
@@ -38,6 +40,16 @@ package player.trigger
       public function GetKey ():String
       {
          return mKey;
+      }
+      
+      public function SetClsssType (type:int):void
+      {
+         mClsssType = type;
+      }
+      
+      public function GetClsssType ():int
+      {
+         return mClsssType;
       }
       
       public function SetValueType (type:int):void

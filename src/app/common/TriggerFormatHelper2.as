@@ -54,7 +54,7 @@ package common {
    import common.trigger.define.ValueTargetDefine_Property;
    
    //import common.trigger.define.VariableSpaceDefine;
-   import common.trigger.define.VariableInstanceDefine;
+   import common.trigger.define.VariableDefine;
    
    import common.trigger.parse.CodeSnippetParser;
    
@@ -66,86 +66,122 @@ package common {
    
    public class TriggerFormatHelper2
    {
-      
-      public static function BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration:FunctionDeclaration, forInputParams:Boolean):Array
+      public static function BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration:FunctionDeclaration, forInputParams:Boolean):VariableSpace
       {
-         var paramDefines:Array = null;
+         var variableSpace:VariableSpace;
          
+         var variableInstance:VariableInstance;
          var i:int;
          
          if (forInputParams)
          {
             var numInputs:int = functionDeclaration.GetNumInputs ();
-            if (numInputs > 0)
+            variableSpace = new VariableSpace (numInputs);
+            for (i =  0; i < numInputs; ++ i)
             {
-               paramDefines = new Array (numInputs);
-               
-               for (i =  0; i < numInputs; ++ i)
-               {
-                  paramDefines [i] = new ValueSourceDefine_Direct (functionDeclaration.GetInputParamValueType (i), functionDeclaration.GetInputParamDefaultValue (i));
-               }
+               variableInstance = variableSpace.GetVariableAt (i);
+                  
+               variableInstance.SetIndex (i);
+               variableInstance.SetValueType (functionDeclaration.GetInputParamValueType (i));
+               variableInstance.SetValueObject (functionDeclaration.GetInputParamDefaultValue (i));
             }
          }
          else
          {
             var numOutputs:int = functionDeclaration.GetNumOutputs ();
-            if (numOutputs > 0)
+            variableSpace = new VariableSpace (numOutputs);
+            for (i =  0; i < numOutputs; ++ i)
             {
-               paramDefines = new Array (numOutputs);
-               
-               for (i =  0; i < numOutputs; ++ i)
-               {
-                  paramDefines [i] = functionDeclaration.GetOutputParamValueType (i);
-               }
+               variableInstance = variableSpace.GetVariableAt (i);
+                  
+               variableInstance.SetIndex (i);
+               variableInstance.SetValueType (functionDeclaration.GetOutputParamValueType (i));
+               variableInstance.SetValueObject (functionDeclaration.GetOutputParamDefaultValue (i));
             }
          }
          
-         return paramDefines;
+         return variableSpace;
       }
       
-      public static function BuildParamDefinesFormVariableDefines (inputVariableDefines:Array, forInputParams:Boolean):Array
-      {
-         var paramDefines:Array = null;
-         
-         var i:int;
-         var variableInstanceDefine:VariableInstanceDefine;
-         var direct_source_define:ValueSourceDefine_Direct;
-         
-         if (forInputParams)
-         {
-            var numInputs:int = inputVariableDefines.length;
-            if (numInputs > 0)
-            {
-               paramDefines = new Array (numInputs);
-               
-               for (i =  0; i < numInputs; ++ i)
-               {
-                  variableInstanceDefine = inputVariableDefines [i] as VariableInstanceDefine;
-                  direct_source_define = variableInstanceDefine.mDirectValueSourceDefine;
-                  
-                  paramDefines [i] = new ValueSourceDefine_Direct (direct_source_define.mValueType, direct_source_define.mValueObject);
-               }
-            }
-         }
-         else
-         {
-            var numOutputs:int = inputVariableDefines.length;
-            if (numOutputs > 0)
-            {
-               paramDefines = new Array (numOutputs);
-               
-               for (i =  0; i < numOutputs; ++ i)
-               {
-                  variableInstanceDefine = inputVariableDefines [i] as VariableInstanceDefine;
-                  direct_source_define = variableInstanceDefine.mDirectValueSourceDefine;
-                  
-                  paramDefines [i] = direct_source_define.mValueType;
-               }
-            }
-         }
-         
-         return paramDefines;
-      }
+      //public static function BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration:FunctionDeclaration, forInputParams:Boolean):Array
+      //{
+      //   var paramDefines:Array = null;
+      //   
+      //   var i:int;
+      //   
+      //   if (forInputParams)
+      //   {
+      //      var numInputs:int = functionDeclaration.GetNumInputs ();
+      //      if (numInputs > 0)
+      //      {
+      //         paramDefines = new Array (numInputs);
+      //         
+      //         for (i =  0; i < numInputs; ++ i)
+      //         {
+      //            paramDefines [i] = new ValueSourceDefine_Direct (/*functionDeclaration.GetInputParamValueType (i), */functionDeclaration.GetInputParamDefaultValue (i));
+      //         }
+      //      }
+      //   }
+      //   else
+      //   {
+      //      var numOutputs:int = functionDeclaration.GetNumOutputs ();
+      //      if (numOutputs > 0)
+      //      {
+      //         paramDefines = new Array (numOutputs);
+      //         
+      //         for (i =  0; i < numOutputs; ++ i)
+      //         {
+      //            paramDefines [i] = functionDeclaration.GetOutputParamValueType (i);
+      //         }
+      //      }
+      //   }
+      //   
+      //   return paramDefines;
+      //}
+      
+      //public static function BuildParamDefinesFormVariableDefines (inputVariableDefines:Array, forInputParams:Boolean):Array
+      //{
+      //   var paramDefines:Array = null;
+      //   
+      //   var i:int;
+      //   var variableDefine:VariableDefine;
+      //   var direct_source_define:ValueSourceDefine_Direct;
+      //   
+      //   if (forInputParams)
+      //   {
+      //      var numInputs:int = inputVariableDefines.length;
+      //      if (numInputs > 0)
+      //      {
+      //         paramDefines = new Array (numInputs);
+      //         
+      //         for (i =  0; i < numInputs; ++ i)
+      //         {
+      //            variableDefine = inputVariableDefines [i] as VariableDefine;
+      //            //direct_source_define = variableDefine.mDirectValueSourceDefine;
+      //            //paramDefines [i] = new ValueSourceDefine_Direct (direct_source_define.mValueType, direct_source_define.mValueObject);
+      //            paramDefines [i] = new ValueSourceDefine_Direct (/*variableDefine.mValueType, */variableDefine.mValueObject);
+      //         }
+      //      }
+      //   }
+      //   else
+      //   {
+      //      var numOutputs:int = inputVariableDefines.length;
+      //      if (numOutputs > 0)
+      //      {
+      //         paramDefines = new Array (numOutputs);
+      //         
+      //         for (i =  0; i < numOutputs; ++ i)
+      //         {
+      //            variableDefine = inputVariableDefines [i] as VariableDefine;
+      //            //direct_source_define = variableDefine.mDirectValueSourceDefine;
+      //            //paramDefines [i] = direct_source_define.mValueType;
+      //            paramDefines [i] = variableDefine.mValueType;
+      //         }
+      //      }
+      //   }
+      //   
+      //   return paramDefines;
+      //}
       
       public static function CreateCoreFunctionDefinition (functionDeclaration:FunctionDeclaration, callback:Function):FunctionDefinition_Core
       {
@@ -159,16 +195,24 @@ package common {
       // for functionDefine and functionDeclaration, at least one is not null
       public static function FunctionDefine2FunctionDefinition (functionDefine:FunctionDefine, functionDeclaration:FunctionDeclaration):FunctionDefinition_Custom
       {
+         var inputVariableSpace:VariableSpace;
+         var outputVariableSpace:VariableSpace;
          var numLocals:int = functionDefine.mLocalVariableDefines == null ? 0 : functionDefine.mLocalVariableDefines.length;
-         var costomFunction:FunctionDefinition_Custom;
-         if (functionDeclaration != null)
+         
+         if (functionDeclaration != null) // should be a care function declaration
          {
-            costomFunction = new FunctionDefinition_Custom (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), numLocals);
+            //costomFunction = new FunctionDefinition_Custom (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), numLocals);
+            inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true);
+            outputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false);
          }
          else
          {
-            costomFunction = new FunctionDefinition_Custom (BuildParamDefinesFormVariableDefines (functionDefine.mInputVariableDefines, true), BuildParamDefinesFormVariableDefines (functionDefine.mOutputVariableDefines, false), numLocals);
+            //costomFunction = new FunctionDefinition_Custom (BuildParamDefinesFormVariableDefines (functionDefine.mInputVariableDefines, true), BuildParamDefinesFormVariableDefines (functionDefine.mOutputVariableDefines, false), numLocals);
+            inputVariableSpace = VariableDefines2VariableSpace (null, functionDefine.mInputVariableDefines, null);
+            outputVariableSpace = VariableDefines2VariableSpace (null, functionDefine.mOutputVariableDefines, null);
          }
+         
+         var costomFunction:FunctionDefinition_Custom = new FunctionDefinition_Custom (inputVariableSpace, outputVariableSpace, numLocals);
          
          return costomFunction;
       }
@@ -428,23 +472,32 @@ package common {
          // assert (func_definition != null)
          
          var real_num_input_params:int = func_definition.GetNumInputParameters ();
-         var dafault_value_source_define:ValueSourceDefine_Direct;
+         var dafault_value_source_define:ValueSourceDefine_Direct = new ValueSourceDefine_Direct (null);
          
          var real_num_output_params:int = func_definition.GetNumOutputParameters ();
-         var dafault_value_target_define:ValueSourceDefine_Direct;
          
+         var vi:VariableInstance;
          var i:int;
          
          var value_source_list:Parameter = null;
          var value_source:Parameter;
          for (i = real_num_input_params - 1; i >= 0; -- i)
          {
-            dafault_value_source_define = func_definition.GetDefaultInputValueSourceDefine (i);
+            vi = func_definition.GetInputParameter (i);
+
+            //dafault_value_source_define = func_definition.GetDefaultInputValueSourceDefine (i);
+            dafault_value_source_define.mValueObject = vi.GetValueObject ();
             
             if (i >= funcCallingDefine.mNumInputs) // fill the missed parameters
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
+            {
+               //value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, vi.GetValueType (), vi.GetValueObject (), extraInfos);
+            }
             else                                   // use the value set by designer
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
+            {
+               //value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], vi.GetValueType (), vi.GetValueObject (), extraInfos);
+            }
                
             value_source.mNextParameter = value_source_list;
             value_source_list = value_source;
@@ -457,7 +510,11 @@ package common {
             if (i >= funcCallingDefine.mNumOutputs) // fill the missed parameters
                value_target = new Parameter ();
             else
-               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], func_definition.GetOutputParamValueType (i), extraInfos);
+            {
+               //value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], func_definition.GetOutputParamValueType (i), extraInfos);
+               vi = func_definition.GetOutputParameter (i);
+               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], vi.GetValueType (), extraInfos);
+            }
             
             value_target.mNextParameter = value_target_list;
             value_target_list = value_target;
@@ -792,6 +849,8 @@ package common {
          }
       }
       
+      // supportInitalValues:Boolean param is not essential, for default value object is already set in LoadFromBinFile
+      
       //public static function VariableSpaceDefine2VariableSpace (playerWorld:World, variableSpaceDefine:VariableSpaceDefine):VariableSpace // v1.52 only
       // if variableSpace is not null, append new one into it and return it.
       public static function VariableDefines2VariableSpace (playerWorld:World, variableDefines:Array, variableSpace:VariableSpace, supportKeymapping:Boolean = false, varialbeIdMappingTable:Array = null):VariableSpace // supportInitalValues parameter:is not essential
@@ -823,13 +882,13 @@ package common {
          var newVariableIndexInSpace:int = numOldVariables;
          for (var variableId:int = 0; variableId < numNewVariables; ++ variableId)
          {
-            //var variableInstanceDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
-            var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
+            //var variableDefine:VariableDefine = variableSpaceDefine.mVariableDefines [variableId] as VariableDefine; // v1.52 only
+            var variableDefine:VariableDefine = variableDefines [variableId] as VariableDefine;
             var variableInstance:VariableInstance;
             
             if (useIdMappingTable)
             {
-               variableInstance = variableSpace.GetVariableByKey (variableInstanceDefine.mKey);
+               variableInstance = variableSpace.GetVariableByKey (variableDefine.mKey);
 
                if (variableInstance != null)
                {
@@ -838,7 +897,7 @@ package common {
                }
             }
             
-            var direct_source_define:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
+            //var direct_source_define:ValueSourceDefine_Direct = variableDefine.mDirectValueSourceDefine;
             
             if (useIdMappingTable)
             {
@@ -847,10 +906,15 @@ package common {
             
             variableInstance = variableSpace.GetVariableAt (newVariableIndexInSpace);
             variableInstance.SetIndex (newVariableIndexInSpace);
-            variableInstance.SetKey (variableInstanceDefine.mKey);
-            variableInstance.SetName (variableInstanceDefine.mName);
-            variableInstance.SetValueType (direct_source_define.mValueType);
-            variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
+            variableInstance.SetKey (variableDefine.mKey);
+            variableInstance.SetName (variableDefine.mName);
+            //variableInstance.SetValueType (direct_source_define.mValueType);
+            variableInstance.SetValueType (variableDefine.mValueType);
+            if (playerWorld != null)
+            {
+               //variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
+               variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, variableDefine.mValueType, variableDefine.mValueObject));
+            }
             
             if (useIdMappingTable)
             {
@@ -859,7 +923,7 @@ package common {
             
             if (supportKeymapping)
             {
-               variableSpace.RegisterKeyValue (variableInstanceDefine.mKey, variableInstance);
+               variableSpace.RegisterKeyValue (variableDefine.mKey, variableInstance);
             }
 
             ++ newVariableIndexInSpace;
@@ -976,7 +1040,7 @@ package common {
          return codeSnippetDefine;
       }
       
-      public static function  LoadFunctionCallingDefineFromBinFile (binFile:ByteArray, customFunctionDefines:Array):FunctionCallingDefine
+      public static function LoadFunctionCallingDefineFromBinFile (binFile:ByteArray, customFunctionDefines:Array):FunctionCallingDefine
       {
          var funcCallingDefine:FunctionCallingDefine = new FunctionCallingDefine ();
          
@@ -1010,7 +1074,10 @@ package common {
             var calledInputVariableDefines:Array = (customFunctionDefines [func_id] as FunctionDefine).mInputVariableDefines;
             
             for (i = 0; i < num_inputs; ++ i)
-               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableInstanceDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetail_Double);
+            {
+               //inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetail_Double);
+               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableDefine).mValueType, CoreClassIds.NumberTypeDetail_Double);
+            }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
          {
@@ -1031,7 +1098,7 @@ package common {
          
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
-            valueSourceDefine = new ValueSourceDefine_Direct (valueType, LoadDirectValueObjectFromBinFile (binFile, valueType, numberDetail));
+            valueSourceDefine = new ValueSourceDefine_Direct (/*valueType, */LoadDirectValueObjectFromBinFile (binFile, valueType, numberDetail));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -1157,25 +1224,27 @@ package common {
          
          for (var i:int = 0; i < numVariables; ++ i)
          {
-            var viDefine:VariableInstanceDefine = new VariableInstanceDefine ();
+            var variableDefine:VariableDefine = new VariableDefine ();
             
             if (variablesHaveKey)
             {
-               viDefine.mKey = binFile.readUTF ();
+               variableDefine.mKey = binFile.readUTF ();
             }
             else if (keyPostfix != null)
             {
-               viDefine.mKey = i + keyPostfix;
+               variableDefine.mKey = i + keyPostfix;
             }
-            viDefine.mName = binFile.readUTF ();
+            variableDefine.mName = binFile.readUTF ();
             valueType = binFile.readShort ();
-            viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
-                                                            valueType,
-                                                            supportInitalValues ? LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
-                                                            );
+            //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
+            //                                                valueType,
+            //                                                supportInitalValues ? LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
+            //                                                );
+            variableDefine.mValueType = valueType;
+            variableDefine.mValueObject = supportInitalValues ? LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
             
-            //variableSpaceDefine.mVariableDefines [i] = viDefine; // v1.52 only
-            variableDefines.push (viDefine);
+            //variableSpaceDefine.mVariableDefines [i] = variableDefine; // v1.52 only
+            variableDefines.push (variableDefine);
          }
          
          //return variableSpaceDefine; // v1.52 only
@@ -1259,7 +1328,10 @@ package common {
             var calledInputVariableDefines:Array = (customFunctionDefines [func_id] as FunctionDefine).mInputVariableDefines;
             
             for (i = 0; i < num_inputs; ++ i)
-               elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], (calledInputVariableDefines [i] as VariableInstanceDefine).mDirectValueSourceDefine.mValueType));
+            {
+               //elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], (calledInputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType));
+               elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], (calledInputVariableDefines [i] as VariableDefine).mValueType));
+            }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
          {
@@ -1280,7 +1352,10 @@ package common {
             var calledOutputVariableDefines:Array = (customFunctionDefines [func_id] as FunctionDefine).mOutputVariableDefines;
             
             for (i = 0; i < num_outputs; ++ i)
-               elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], (calledOutputVariableDefines [i] as VariableInstanceDefine).mDirectValueSourceDefine.mValueType));
+            {
+               //elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], (calledOutputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType));
+               elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], (calledOutputVariableDefines [i] as VariableDefine).mValueType));
+            }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
          {
@@ -1418,25 +1493,27 @@ package common {
          //elementVariablePackage.@parent_package_id = variableSpaceDefine.mParentPackageId;
          //<<
          
-         var viDefine:VariableInstanceDefine;
+         var variableDefine:VariableDefine;
          var element:Object;;
          
          //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
          var numVariables:int = variableDefines.length;
          for (var variableIndex:int = 0; variableIndex < numVariables; ++ variableIndex)
          {
-            //viDefine = variableSpaceDefine.mVariableDefines [variableIndex] as VariableInstanceDefine; // v1.52 only
-            viDefine = variableDefines [variableIndex] as VariableInstanceDefine;
+            //variableDefine = variableSpaceDefine.mVariableDefines [variableIndex] as VariableDefine; // v1.52 only
+            variableDefine = variableDefines [variableIndex] as VariableDefine;
             
             element = <Variable />;
             if (variablesHaveKey)
-               element.@key = viDefine.mKey;
-            element.@name = viDefine.mName;
-            element.@value_type = viDefine.mDirectValueSourceDefine.mValueType;
+               element.@key = variableDefine.mKey;
+            element.@name = variableDefine.mName;
+            //element.@value_type = variableDefine.mDirectValueSourceDefine.mValueType;
+            element.@value_type = variableDefine.mValueType;
             
             if (supportInitalValues)
             {
-               var directValue:Object = ValidateDirectValueObject_Define2Xml (viDefine.mDirectValueSourceDefine.mValueType, viDefine.mDirectValueSourceDefine.mValueObject);
+               //var directValue:Object = ValidateDirectValueObject_Define2Xml (variableDefine.mDirectValueSourceDefine.mValueType, variableDefine.mDirectValueSourceDefine.mValueObject);
+               var directValue:Object = ValidateDirectValueObject_Define2Xml (variableDefine.mValueType, variableDefine.mValueObject);
                if (directValue != null)
                {
                   element.@initial_value = directValue;
@@ -1533,13 +1610,18 @@ package common {
          var directNumber:Number;
          for (var i:int = 0; i < numVariables; ++ i)
          {
-            //var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i] as VariableInstanceDefine; // v1.52 only
-            var viDefine:VariableInstanceDefine = variableDefines [i] as VariableInstanceDefine;
+            //var variableDefine:VariableDefine = variableSpaceDefine.mVariableDefines [i] as VariableDefine; // v1.52 only
+            var variableDefine:VariableDefine = variableDefines [i] as VariableDefine;
             
-            if (viDefine.mDirectValueSourceDefine.mValueType == CoreClassIds.ValueType_Number)
+            //if (variableDefine.mDirectValueSourceDefine.mValueType == CoreClassIds.ValueType_Number)
+            //{
+            //   directNumber = Number (variableDefine.mDirectValueSourceDefine.mValueObject);
+            //   variableDefine.mDirectValueSourceDefine.mValueObject = ValueAdjuster.Number2Precision (directNumber, 12);
+            //}
+            if (variableDefine.mValueType == CoreClassIds.ValueType_Number)
             {
-               directNumber = Number (viDefine.mDirectValueSourceDefine.mValueObject);
-               viDefine.mDirectValueSourceDefine.mValueObject = ValueAdjuster.Number2Precision (directNumber, 12);
+               directNumber = Number (variableDefine.mValueObject);
+               variableDefine.mValueObject = ValueAdjuster.Number2Precision (directNumber, 12);
             }
          }
       }

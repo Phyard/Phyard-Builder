@@ -96,6 +96,17 @@ package common.trigger
          return mOutputParamDefines [returnId][Index_ValueType] & CoreClassIds.NumberTypeMask_Basic;
       }
       
+      public function GetOutputParamDefaultValue (outputId:int):Object
+      {
+         if (mOutputParamDefines == null)
+            return undefined;
+         
+         if (outputId < 0 || outputId >= mOutputParamDefines.length)
+            return undefined;
+         
+         return mOutputParamDefines [outputId][Index_DevaultValue];
+      }
+      
 //=====================================================================
 //
 //=====================================================================

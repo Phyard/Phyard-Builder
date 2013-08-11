@@ -32,13 +32,7 @@ package editor.codelib {
    
    import editor.entity.Scene;
    
-   import editor.trigger.ClassBase;
-   import editor.trigger.ClassCore;
-   import editor.trigger.CodePackage;
-   import editor.trigger.FunctionDeclaration;
-   import editor.trigger.VariableSpaceSession;
-   import editor.trigger.VariableSpaceGlobal;
-   import editor.trigger.VariableSpaceEntityProperties;
+   import editor.trigger.*;
    
    import editor.EditorContext;
    
@@ -749,6 +743,27 @@ package editor.codelib {
          }
       }
         
+//=====================================================================
+// custom variable definition
+//=====================================================================
+
+      // variableName == nul means default name
+      public function CreateCustomVariableDefinition (classId:int, variableName:String = null):VariableDefinition
+      {
+         var classAsset:AssetClass = GetClassByIndex (classId);
+         if (classAsset != null)
+         {
+            var customClass:ClassCustom = classAsset.GetCustomClass ();
+            
+            if (variableName == null)
+               variableName = customClass.GetDefaultInstanceName ();
+            
+            return new VariableDefinition_Custom (customClass, variableName);
+         }
+         
+         throw new Error ("unknown class in CreateCustomVariableDefinition");
+      }
+
 //=====================================================================
 // context menu
 //=====================================================================

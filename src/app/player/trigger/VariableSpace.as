@@ -148,6 +148,7 @@ package player.trigger
       {
          var vi:VariableInstance = mFirstVariableInstance;
          
+         // "vi != null" == "inputParamList != null"
          while (vi != null) // && inputParamList != null) // the missed value sources should be appended at init process.
          {
             vi.SetValueObject (inputParamList.EvaluateValueObject ());

@@ -28,7 +28,7 @@ package editor.trigger {
          {
             //CreateVariableInstanceByTypeNameValue (mValueType, "", init_value);
             
-            CreateVariableInstanceFromDefinition (null, VariableDefinition.CreateVariableDefinition (mValueType, ""));
+            CreateVariableInstanceFromDefinition (null, VariableDefinition.CreateCoreVariableDefinition (mValueType, ""));
          }
       }
       

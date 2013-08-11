@@ -243,6 +243,8 @@ package editor.trigger {
             
             if (viDef != null) // always
             {
+               var added:Boolean = false;
+               
                if (variableDefinition.IsCompatibleWith (viDef))
                {
                   item = new Object ();
@@ -261,18 +263,23 @@ package editor.trigger {
                   item.label = label;
                   
                   dataList.push (item);
+                  
+                  added = true;
                }
                
                if (deepIntoCustomClass && viDef is VariableDefinition_Custom)
                {
                   if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false))
                   {
-                     item = new Object ();
-                     item.mVariableInstance = vi;
-                     label = vi.GetLongName ();
-                     item.label = label;
-                     
-                     dataList.push (item);
+                     if (! added)
+                     {
+                        item = new Object ();
+                        item.mVariableInstance = vi;
+                        label = vi.GetLongName ();
+                        item.label = label;
+                        
+                        dataList.push (item);
+                     }
                      
                      (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProviderByVariableDefinition (variableDefinition, null, false, deepLevel + 1, vi.GetName (), dataList);
                   }
@@ -310,7 +317,7 @@ package editor.trigger {
        
          if (createIfNotExist)
          {
-            var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);
+            var variableDefinition:VariableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
             var newVi:VariableInstance = CreateVariableInstanceFromDefinition (null, variableDefinition);
             //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
             newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
@@ -334,7 +341,7 @@ package editor.trigger {
             
             if (createIfNotExist)
             {
-               var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);
+               var variableDefinition:VariableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
                var newVi:VariableInstance = CreateVariableInstanceFromDefinition (variableKey, variableDefinition);
                //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
                newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());

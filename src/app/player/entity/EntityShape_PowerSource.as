@@ -94,28 +94,28 @@ package player.entity {
                      //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_Torque (entityDefine.mPowerMagnitude));
                      functionDecalaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepTorque);
                      callingDefine.mInputValueSourceDefines = [
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Entity, mCreationId), 
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, entityDefine.mPowerMagnitude)
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Entity, */mCreationId), 
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */entityDefine.mPowerMagnitude)
                         ];
                      break;
                   case Define.PowerSource_LinearImpusle:
                      //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_ImpulseMagnitude (entityDefine.mPowerMagnitude));
                      functionDecalaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint);
                      callingDefine.mInputValueSourceDefines = [
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Entity, mCreationId), 
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, entityDefine.mPowerMagnitude),
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, 0.0),
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Boolean, true),
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, 0.0),
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, 0.0),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Entity, */mCreationId), 
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */entityDefine.mPowerMagnitude),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */0.0),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Boolean, */true),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */0.0),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */0.0),
                         ];
                      break;
                   case Define.PowerSource_AngularImpulse:
                      //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_AngularImpulse (entityDefine.mPowerMagnitude));
                      functionDecalaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse);
                      callingDefine.mInputValueSourceDefines = [
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Entity, mCreationId), 
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, entityDefine.mPowerMagnitude)
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Entity, */mCreationId), 
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */entityDefine.mPowerMagnitude)
                         ];
                      break;
                   case Define.PowerSource_AngularAcceleration:
@@ -129,12 +129,12 @@ package player.entity {
                      //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_ForceMagnitude (entityDefine.mPowerMagnitude));
                      functionDecalaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint);
                      callingDefine.mInputValueSourceDefines = [
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Entity, mCreationId), 
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, entityDefine.mPowerMagnitude),
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, 0.0),
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Boolean, true),
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, 0.0),
-                              new ValueSourceDefine_Direct (CoreClassIds.ValueType_Number, 0.0),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Entity, */mCreationId), 
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */entityDefine.mPowerMagnitude),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */0.0),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Boolean, */true),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */0.0),
+                              new ValueSourceDefine_Direct (/*CoreClassIds.ValueType_Number, */0.0),
                         ];
                      break;
                }

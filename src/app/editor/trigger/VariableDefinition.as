@@ -309,7 +309,7 @@ package editor.trigger {
       
       public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
       {
-         return GetTypeType () == variableDefinition.GetTypeType () && GetValueType () == variableDefinition.GetValueType ();
+         return (GetTypeType () == variableDefinition.GetTypeType ()) && (GetValueType () == variableDefinition.GetValueType ());
       }
       
       
@@ -434,8 +434,8 @@ package editor.trigger {
       public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpace):ValueTarget_Property
       {
          BuildPropertyVaribleDefinition ();
-         //return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
-         return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (entityVariableSpace));
+         //return new ValueTarget_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         return new ValueTarget_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), this.GetDefaultVariableValueTarget (entityVariableSpace));
       }
       
       public function CreateControlForPropertyValueTarget (scene:Scene, valueTargetProperty:ValueTarget_Property):UIComponent
@@ -448,18 +448,19 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
          }
          else
          {
             trace ("unknown value source type in CreateControlForPropertyValueSource");
          }
          
-         var propertyValueTargetTontrol:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueTarget (propertyValueTarget, null);
+         //var propertyValueTargetTontrol:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueTarget (propertyValueTarget, null);
+         var propertyValueTargetTontrol:UIComponent = this.CreateControlForVariableValueTarget (propertyValueTarget, null);
          
          var box:HBox = new HBox ();
          entityValueSourceControl.percentWidth = 50;
@@ -484,11 +485,11 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
+               mPropertyOwnerDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {
-               mEntityVariableDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
+               mPropertyOwnerDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
             }
             else
             {
@@ -496,7 +497,8 @@ package editor.trigger {
             }
             
             var propertyValueTargetControl:UIComponent = box.getChildAt (1) as UIComponent;
-            mPropertyVariableDefinition.RetrieveVariableValueTargetFromControl (propertyValueTarget, propertyValueTargetControl);
+            //mPropertyVariableDefinition.RetrieveVariableValueTargetFromControl (propertyValueTarget, propertyValueTargetControl);
+            this.RetrieveVariableValueTargetFromControl (propertyValueTarget, propertyValueTargetControl);
    	   }
       }
       
@@ -614,25 +616,26 @@ package editor.trigger {
 // to do: property source
 //==============================================================================
       
-      private var mEntityVariableDefinition:VariableDefinitionEntity = null;
-      private var mPropertyVariableDefinition:VariableDefinition = null;
+      private var mPropertyOwnerDefinition:VariableDefinitionEntity = null;
+      //private var mPropertyVariableDefinition:VariableDefinition = null; // use "this" now.
       
       public function GetVariableDefinitionForEntityParameter ():VariableDefinitionEntity
       {
-         return mEntityVariableDefinition;
+         return mPropertyOwnerDefinition;
       }
       
       private function BuildPropertyVaribleDefinition ():void
       {
-         if (mEntityVariableDefinition == null)
+         if (mPropertyOwnerDefinition == null)
          {
-            mEntityVariableDefinition = new VariableDefinitionEntity ("Property Owner", null, null);
+            mPropertyOwnerDefinition = new VariableDefinitionEntity ("Property Owner", null, null);
          }
          
-         if (mPropertyVariableDefinition == null)
-         {
-            mPropertyVariableDefinition = CreateCoreVariableDefinition (GetValueType (), World.GetCoreClassById (GetValueType ()).GetName () + " Property");
-         }
+         //if (mPropertyVariableDefinition == null)
+         //{
+         //   // clone is better
+         //   mPropertyVariableDefinition = CreateCoreVariableDefinition (GetValueType (), World.GetCoreClassById (GetValueType ()).GetName () + " Property");
+         //}
       }
       
       //public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpaceEntityProperties):ValueSource_Property
@@ -640,8 +643,9 @@ package editor.trigger {
       public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpace):ValueSource_Property
       {
          BuildPropertyVaribleDefinition ();
-         //return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
-         return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (entityVariableSpace));
+         //return new ValueSource_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         //return new ValueSource_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (entityVariableSpace));
+         return new ValueSource_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), this.GetDefaultVariableValueSource (entityVariableSpace));
       }
       
       public function CreateControlForPropertyValueSource (scene:Scene, valueSourceProperty:ValueSource_Property):UIComponent
@@ -654,18 +658,19 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
          }
          else
          {
             trace ("unknown value source type in CreateControlForPropertyValueSource");
          }
          
-         var propertyValueSourceControl:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueSource (propertyValueSource, null);
+         //var propertyValueSourceControl:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueSource (propertyValueSource, null);
+         var propertyValueSourceControl:UIComponent = this.CreateControlForVariableValueSource (propertyValueSource, null);
          
          var box:HBox = new HBox ();
          entityValueSourceControl.percentWidth = 50;
@@ -690,11 +695,11 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
+               mPropertyOwnerDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {
-               mEntityVariableDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
+               mPropertyOwnerDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
             }
             else
             {
@@ -702,7 +707,8 @@ package editor.trigger {
             }
             
             var propertyValueSourceControl:UIComponent = box.getChildAt (1) as UIComponent;
-            mPropertyVariableDefinition.RetrieveVariableValueSourceFromControl (propertyValueSource, propertyValueSourceControl);
+            //mPropertyVariableDefinition.RetrieveVariableValueSourceFromControl (propertyValueSource, propertyValueSourceControl);
+            this.RetrieveVariableValueSourceFromControl (propertyValueSource, propertyValueSourceControl);
    	   }
       }
       

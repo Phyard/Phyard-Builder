@@ -244,8 +244,9 @@ package editor.trigger {
             if (viDef != null) // always
             {
                var added:Boolean = false;
-               
-               if (variableDefinition.IsCompatibleWith (viDef))
+
+               var campatible:Boolean = variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition);
+               if (campatible)
                {
                   item = new Object ();
                   item.mVariableInstance = vi;

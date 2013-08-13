@@ -168,6 +168,8 @@ package editor.trigger {
          return false;
       }
       
+      // edit at v2.05: why this function? Maybe for sometimes, the variable definitions in Declaration adn Definition are not synchronized.
+      //                so under the later new implementation, this function may be not essential.
       public function GetInputVariableIndexesSatisfy (variableDefinition:VariableDefinition):Array
       {
          var indexes:Array = new Array ();
@@ -177,7 +179,9 @@ package editor.trigger {
             for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
             {
                if (GetInputParamDefinitionAt (i).IsCompatibleWith (variableDefinition) || variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
+               {
                   indexes.push (i);
+               }
             }
          }
          

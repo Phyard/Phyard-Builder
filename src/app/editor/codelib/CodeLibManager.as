@@ -107,7 +107,7 @@ package editor.codelib {
             index = mClassAssets.indexOf (asset);
             if (index >= 0) // must be
             {
-               //delete mNameLookupTable[ (asset as AssetFunction).GetFunctionName () ];
+               //delete mNameLookupTable[(asset as AssetFunction).GetFunctionName ()];
                (asset as AssetClass).SetClassIndex (-1);
                mClassAssets.splice (index, 1);
                

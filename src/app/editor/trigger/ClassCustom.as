@@ -10,9 +10,10 @@ package editor.trigger {
       
       private var mId:int = -1;
         
-      public function ClassCustom (typeName:String)
+      public function ClassCustom (typeName:String, validateValueFunc:Function)
       {
-         super (typeName, typeName.toLowerCase ());
+         super (typeName, typeName.toLowerCase (), null, validateValueFunc);
+         SetSceneDataDependent (true);
          
          mPropertyDefinitionSpace = new VariableSpaceClassInstance (GetName ());
       }

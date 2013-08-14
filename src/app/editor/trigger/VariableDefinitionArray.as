@@ -36,22 +36,9 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var arrayVariableDefinition:VariableDefinitionArray = new VariableDefinitionArray (mName, mDescription);
-         arrayVariableDefinition.mNullValueEnabled = mNullValueEnabled;
-         
-         return arrayVariableDefinition;
+         return new VariableDefinitionArray (mName, mDescription);
       }
 
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         //return valueObject as Array;
-         return null; // current, direct array value is not supported. 
-      }
-      
 //==============================================================================
 // to override
 //==============================================================================

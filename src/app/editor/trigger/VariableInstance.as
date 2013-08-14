@@ -187,12 +187,13 @@ package editor.trigger {
       {
          if (mVariableDefinition != null)
          {
-            valueObject = mVariableDefinition.ValidateDirectValueObject (valueObject);
-            mVariableDefinition.SetDefaultValue (valueObject);
+            //valueObject = mVariableDefinition.ValidateDirectValueObject (valueObject);
+            mVariableDefinition.SetDefaultValue (valueObject); // will call ValidateDirectValueObject now
          }
          else
          {
-            valueObject = VariableDefinition.ValidateValueByType (valueObject, mValuetype);
+            //valueObject = VariableDefinition.ValidateValueByType (valueObject, mValuetype);
+            throw new Error ("mVariableDefinition can't be null!"); // todo: merge this class into VariableDefinition
          }
          
           mValueObject = valueObject;

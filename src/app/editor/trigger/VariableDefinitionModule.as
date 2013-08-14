@@ -41,18 +41,7 @@ package editor.trigger {
 
       override public function Clone ():VariableDefinition
       {
-         var moduleVariableDefinition:VariableDefinitionModule = new VariableDefinitionModule (mName, mDescription);
-
-         return moduleVariableDefinition;
-      }
-
-//==============================================================================
-// to override
-//==============================================================================
-
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_Module (valueObject);
+         return new VariableDefinitionModule (mName, mDescription, mOptions);
       }
 
 //==============================================================================

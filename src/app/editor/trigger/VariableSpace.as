@@ -45,14 +45,14 @@ package editor.trigger {
          return true;
       }
       
-      public function GetSpaceType ():int
-      {
-         return -1;
-      }
-      
       public function IsVariableKeySupported ():Boolean
       {
          return false;
+      }
+      
+      public function GetSpaceType ():int
+      {
+         return -1;
       }
       
       public function GetSpaceName ():String

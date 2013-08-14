@@ -14,6 +14,7 @@ package common {
    import player.trigger.FunctionDefinition_Custom;
    
    import player.trigger.TriggerEngine;
+   import player.trigger.CoreClasses;
    import player.trigger.FunctionDefinition;
    import player.trigger.FunctionDefinition_Custom;
    import player.trigger.CodeSnippet;
@@ -567,7 +568,7 @@ package common {
             
             //assert (valueType == direct_source_define.mValueType);
             
-            value_source = new Parameter_Direct (ValidateDirectValueObject_Define2Object (playerWorld, valueType, direct_source_define.mValueObject, extraInfos));
+            value_source = new Parameter_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, valueType, direct_source_define.mValueObject, extraInfos));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -664,7 +665,7 @@ package common {
          
          if (value_source == null)
          {
-            value_source = new Parameter_Direct (ValidateDirectValueObject_Define2Object (playerWorld, valueType, defaultDirectValue, extraInfos));
+            value_source = new Parameter_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, valueType, defaultDirectValue, extraInfos));
          }
          
          return value_source;
@@ -780,75 +781,6 @@ package common {
          return value_target;
       }
       
-      private static function ValidateDirectValueObject_Define2Object (playerWorld:World, valueType:int, valueObject:Object, extraInfos:Object = null):Object
-      {
-         switch (valueType)
-         {
-            case CoreClassIds.ValueType_Boolean:
-               return valueObject as Boolean;
-            case CoreClassIds.ValueType_Number:
-               return valueObject as Number;
-            case CoreClassIds.ValueType_String:
-               return valueObject as String;
-            case CoreClassIds.ValueType_Entity:
-            {
-               var entityIndex:int = valueObject as int;
-               if (entityIndex < 0)
-               {
-                  if (entityIndex == Define.EntityId_Ground)
-                     return playerWorld;
-                  else // if (entityIndex == Define.EntityId_None)
-                     return null;
-               }
-               else
-               {
-                  if (extraInfos != null)
-                     entityIndex = extraInfos.mEntityIdCorrectionTable [entityIndex];
-                  //return playerWorld.GetEntityByCreateOrderId (entityIndex, false); // must be an entity placed in editor (before v2.02)
-                  return playerWorld.GetEntityByCreateOrderId (entityIndex, true); // may be an entity runtime created (from v2.02, merging scene is added)
-               }
-            }
-            case CoreClassIds.ValueType_CollisionCategory:
-            {
-               var ccatIndex:int = valueObject as int;
-               if (ccatIndex >= 0 && extraInfos != null)
-                  ccatIndex += extraInfos.mBeinningCCatIndex;
-               return playerWorld.GetCollisionCategoryById (ccatIndex);
-            }
-            case CoreClassIds.ValueType_Module:
-            {
-               var moduleIndex:int = valueObject as int;
-               //return Global.GetImageModuleByGlobalIndex (moduleIndex);
-               return moduleIndex;
-            }
-            case CoreClassIds.ValueType_Sound:
-            {
-               var soundIndex:int = valueObject as int;
-               //return Global.GetSoundByIndex (soundIndex);
-               return soundIndex;
-            }
-            case CoreClassIds.ValueType_Scene:
-            {
-               var sceneIndex:int = valueObject as int;
-               //return Global.GetSceneByIndex (sceneIndex);
-               return sceneIndex;
-            }
-            case CoreClassIds.ValueType_Array:
-               //if (valueObject == null)
-               //{
-                  return null;
-               //}
-               //else
-               //{
-               //   
-               //}
-            default:
-            {
-               return null;
-            }
-         }
-      }
-      
       // supportInitalValues:Boolean param is not essential, for default value object is already set in LoadFromBinFile
       
       //public static function VariableSpaceDefine2VariableSpace (playerWorld:World, variableSpaceDefine:VariableSpaceDefine):VariableSpace // v1.52 only
@@ -912,8 +844,8 @@ package common {
             variableInstance.SetValueType (variableDefine.mValueType);
             if (playerWorld != null)
             {
-               //variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
-               variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, variableDefine.mValueType, variableDefine.mValueObject));
+               //variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
+               variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, variableDefine.mValueType, variableDefine.mValueObject));
             }
             
             if (useIdMappingTable)
@@ -960,7 +892,7 @@ package common {
             var entity:Entity = valueObject as Entity;
             if (entity != null && tryToReSceneDependentVariables)
             {
-               return ValidateDirectValueObject_Define2Object (playerWorld, CoreClassIds.ValueType_Entity, entity.GetCreationId ());
+               return CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, CoreClassIds.ValueType_Entity, entity.GetCreationId ());
             }
          }
          else if (valueObject is CollisionCategory)
@@ -968,7 +900,7 @@ package common {
             var ccat:CollisionCategory = valueObject as CollisionCategory;
             if (ccat != null && tryToReSceneDependentVariables)
             {
-               return ValidateDirectValueObject_Define2Object (playerWorld, CoreClassIds.ValueType_CollisionCategory, ccat.GetIndexInEditor ());
+               return CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, CoreClassIds.ValueType_CollisionCategory, ccat.GetIndexInEditor ());
             }
          }
          // sound
@@ -1098,7 +1030,7 @@ package common {
          
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
-            valueSourceDefine = new ValueSourceDefine_Direct (/*valueType, */LoadDirectValueObjectFromBinFile (binFile, valueType, numberDetail));
+            valueSourceDefine = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, numberDetail));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -1156,58 +1088,6 @@ package common {
          return valueTargetDefine;
       }
       
-      private static function LoadDirectValueObjectFromBinFile (binFile:ByteArray, valueType:int, numberDetail:int):Object
-      {
-         switch (valueType)
-         {
-            case CoreClassIds.ValueType_Boolean:
-               return binFile.readByte () != 0;
-            case CoreClassIds.ValueType_Number:
-               switch (numberDetail)
-               {
-                  case CoreClassIds.NumberTypeDetail_Single:
-                     return binFile.readFloat ();
-                  case CoreClassIds.NumberTypeDetail_Integer:
-                     return binFile.readInt ();
-                  case CoreClassIds.NumberTypeDetail_Double:
-                  default:
-                     return binFile.readDouble ();
-               }
-            case CoreClassIds.ValueType_String:
-               return binFile.readUTF ();
-            case CoreClassIds.ValueType_Entity:
-               return binFile.readInt ();
-            case CoreClassIds.ValueType_CollisionCategory:
-               return binFile.readInt (); // in fact, short is ok
-            case CoreClassIds.ValueType_Module:
-               return binFile.readInt (); // in fact, short is ok
-            case CoreClassIds.ValueType_Sound:
-               return binFile.readInt (); // in fact, short is ok
-            case CoreClassIds.ValueType_Scene:
-               return binFile.readInt (); // in fact, short is ok
-            case CoreClassIds.ValueType_Array:
-               var nullArray:Boolean = binFile.readByte () == 0;
-               //if (nullArray == null) 
-               //{
-                  return null;
-               //}
-               //else
-               //{
-               //   var values:Array = valueObject as Array;
-               //   if (values.length > 1024)
-               //      throw new Error ("array i too length: " + values.length);
-               //   
-               //   binFile.writeShort (values.length);
-               //}
-               
-               break;
-            default:
-            {
-               throw new Error ("! bad value");
-            }
-         }
-      }
-      
       //public static function LoadVariableSpaceDefineFromBinFile (binFile:ByteArray):VariableSpaceDefine // v1.52 only
       public static function LoadVariableDefinesFromBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean, keyPostfix:String = null):void
       {
@@ -1238,10 +1118,10 @@ package common {
             valueType = binFile.readShort ();
             //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
             //                                                valueType,
-            //                                                supportInitalValues ? LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
+            //                                                supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
             //                                                );
             variableDefine.mValueType = valueType;
-            variableDefine.mValueObject = supportInitalValues ? LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
+            variableDefine.mValueObject = supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
             
             //variableSpaceDefine.mVariableDefines [i] = variableDefine; // v1.52 only
             variableDefines.push (variableDefine);
@@ -1384,7 +1264,7 @@ package common {
             
             try
             {
-               var directValue:Object = ValidateDirectValueObject_Define2Xml (valueType, direct_source_define.mValueObject);
+               var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (valueType, direct_source_define.mValueObject);
                if (directValue != null)
                {
                   elementValueSource.@direct_value = directValue;
@@ -1443,45 +1323,6 @@ package common {
          return elementValueTarget;
       }
       
-      private static function ValidateDirectValueObject_Define2Xml (valueType:int, valueObject:Object):Object
-      {
-         switch (valueType)
-         {
-            case CoreClassIds.ValueType_Boolean:
-               return (valueObject as Boolean) ? 1 : 0;
-            case CoreClassIds.ValueType_Number:
-               return valueObject as Number;
-            case CoreClassIds.ValueType_String:
-               var text:String = valueObject as String;
-               if (text == null)
-                  text = "";
-               return text;
-            case CoreClassIds.ValueType_Entity:
-               return valueObject as int;
-            case CoreClassIds.ValueType_CollisionCategory:
-               return valueObject as int;
-            case CoreClassIds.ValueType_Module:
-               return valueObject as int;
-            case CoreClassIds.ValueType_Sound:
-               return valueObject as int;
-            case CoreClassIds.ValueType_Scene:
-               return valueObject as int;
-            case CoreClassIds.ValueType_Array:
-               //if (valueObject == null) 
-               //{
-                  return null;
-               //}
-               //else 
-               //{
-               //   
-               //}
-            default:
-            {
-               throw new Error ("! wrong value");
-            }
-         }
-      }
-      
       //public static function VariableSpaceDefine2Xml (variableSpaceDefine:VariableSpaceDefine):XML // v1.52 only
       public static function VariablesDefine2Xml (variableDefines:Array, elementVariablePackage:XML, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
       {
@@ -1512,8 +1353,8 @@ package common {
             
             if (supportInitalValues)
             {
-               //var directValue:Object = ValidateDirectValueObject_Define2Xml (variableDefine.mDirectValueSourceDefine.mValueType, variableDefine.mDirectValueSourceDefine.mValueObject);
-               var directValue:Object = ValidateDirectValueObject_Define2Xml (variableDefine.mValueType, variableDefine.mValueObject);
+               //var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (variableDefine.mDirectValueSourceDefine.mValueType, variableDefine.mDirectValueSourceDefine.mValueObject);
+               var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (variableDefine.mValueType, variableDefine.mValueObject);
                if (directValue != null)
                {
                   element.@initial_value = directValue;

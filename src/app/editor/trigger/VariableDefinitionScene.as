@@ -39,20 +39,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var sceneVariableDefinition:VariableDefinitionScene = new VariableDefinitionScene (mName, mDescription);
-         
-         sceneVariableDefinition.mDefaultValue = mDefaultValue;
-         
-         return sceneVariableDefinition;
-      }
-      
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_Scene (valueObject);
+         return new VariableDefinitionScene (mName, mDescription, mOptions);
       }
       
 //==============================================================================

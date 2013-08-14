@@ -6,10 +6,8 @@ package editor.trigger {
    {
       public function VariableDefinition_Core (coreClass:ClassCore, name:String, description:String = null, options:Object = null)
       {
-         //super (ClassTypeDefine.ClassType_Core, classId, name, description, options);
-         super (coreClass, name, description);
-         
-         SetDefaultValue (GetCoreClass ().GetInitialInstacneValue ()); // may be changed by other classes.
+         //super (ClassTypeDefine.ClassType_Core, classId, name, description);
+         super (coreClass, name, description, options);
       }
       
       public function GetCoreClass ():ClassCore

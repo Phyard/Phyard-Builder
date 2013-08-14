@@ -8,18 +8,17 @@ package editor.trigger {
    public class ClassCore extends ClassBase
    {
       private var mCoreClassDeclaration:ClassDeclaration;
-      public var mInitialInstacneValue:Object;
-      public var mInstanceValueValidateFunc:Function;
-      
-      private var mSceneDataDependent:Boolean;
       
       public function ClassCore (coreDecl:ClassDeclaration, typeName:String, defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
       {
-         super (typeName, defalutInstanceName);
+         super (typeName, defalutInstanceName, initialInitialValue, validateValueFunc);
          
          mCoreClassDeclaration = coreDecl;
-         mInitialInstacneValue = initialInitialValue;
-         mInstanceValueValidateFunc = validateValueFunc;
+      }
+      
+      public function GetCoreClassDeclaration ():ClassDeclaration
+      {
+         return mCoreClassDeclaration;
       }
       
       override public function GetClassType ():int
@@ -30,26 +29,6 @@ package editor.trigger {
       override public function GetID ():int
       {
          return mCoreClassDeclaration.GetID ();
-      }
-      
-      override public function IsSceneDataDependent ():Boolean
-      {
-         return mSceneDataDependent;
-      }
-      
-      public function SetSceneDataDependent (dependent:Boolean):void
-      {
-         mSceneDataDependent = dependent;
-      }
-      
-      public function GetCoreClassDeclaration ():ClassDeclaration
-      {
-         return mCoreClassDeclaration;
-      }
-      
-      public function GetInitialInstacneValue ():Object
-      {
-         return mInitialInstacneValue;
       }
    }
 }

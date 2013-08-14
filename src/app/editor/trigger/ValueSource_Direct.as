@@ -53,7 +53,7 @@ package editor.trigger {
          else if (vd is VariableDefinitionNumber)
          {
             var vdn:VariableDefinitionNumber = vd as VariableDefinitionNumber;
-            if (vdn.mIsColorValue)
+            if (vdn.IsColorValue ())
             {
                return DataFormat2.UInt2ColorString (uint (mValueObject));
             }
@@ -62,7 +62,7 @@ package editor.trigger {
          if (mValueObject.hasOwnProperty ("ToCodeString"))
             return mValueObject.ToCodeString ();
          
-         return  mValueObject.toString ();
+         return mValueObject.toString ();
       }
       
 //=============================================================

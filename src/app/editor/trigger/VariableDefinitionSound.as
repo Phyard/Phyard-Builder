@@ -36,18 +36,7 @@ package editor.trigger {
 
       override public function Clone ():VariableDefinition
       {
-         var soundVariableDefinition:VariableDefinitionSound = new VariableDefinitionSound (mName, mDescription);
-
-         return soundVariableDefinition;
-      }
-
-//==============================================================================
-// to override
-//==============================================================================
-
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_Sound (valueObject);
+         return new VariableDefinitionSound (mName, mDescription, mOptions);
       }
 
 //==============================================================================

@@ -124,14 +124,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var entityVariableDefinition:VariableDefinitionEntity = new VariableDefinitionEntity (mName, mDescription);
-         entityVariableDefinition.mValidClasses = mValidClasses;
-         entityVariableDefinition.mExceptClasses = mExceptClasses;
-         entityVariableDefinition.mNullValueEnabled = mNullValueEnabled;
-         entityVariableDefinition.mMultiValuesEnabled = mMultiValuesEnabled;
-         entityVariableDefinition.mGroundSelectable = mGroundSelectable;
-         
-         return entityVariableDefinition;
+         return new VariableDefinitionEntity (mName, mDescription, mOptions);
       }
       
 //==============================================================================
@@ -151,11 +144,6 @@ package editor.trigger {
          }
          
          return false;
-      }
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_Entity (valueObject);
       }
       
 //==============================================================================

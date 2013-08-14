@@ -41,6 +41,8 @@ package editor.codelib {
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;
    
+   import editor.world.CoreClasses;
+
    import editor.asset.Asset;
    import editor.asset.Linkable;
    
@@ -78,7 +80,7 @@ package editor.codelib {
          
          mouseChildren = false;
          
-         mCustomClass = new ClassCustom (GetName ());
+         mCustomClass = new ClassCustom (GetName (), CoreClasses.ValidateValueObject_ArrayAndCustomObject);
       }
       
       public function SetClassIndex (classId:int):void

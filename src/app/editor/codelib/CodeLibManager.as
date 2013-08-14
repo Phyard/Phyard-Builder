@@ -648,7 +648,7 @@ package editor.codelib {
             return null;
          
          var top_element:XML = <menuitem />;
-         top_element.@label = "Custom Types";
+         top_element.@label = "Custom";
          
          var aClass:AssetClass;
          var type_element:XML;

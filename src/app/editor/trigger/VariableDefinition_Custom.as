@@ -14,8 +14,7 @@ package editor.trigger {
       public function VariableDefinition_Custom (customClass:ClassCustom, name:String, description:String = null, options:Object = null)
       {
          //super (ClassTypeDefine.ClassType_Custom, classId, name, description, options);
-         
-         super (customClass, name, description);
+         super (customClass, name, description, options);
       }
       
       public function GeCustomClass ():ClassCustom
@@ -37,16 +36,6 @@ package editor.trigger {
          var customVariableDefinition:VariableDefinition_Custom = new VariableDefinition_Custom (GeCustomClass (), mName, mDescription);
          
          return customVariableDefinition;
-      }
-
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         //return valueObject as Array;
-         return null; // current, direct array value is not supported. 
       }
       
 //==============================================================================

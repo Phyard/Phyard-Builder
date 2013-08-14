@@ -33,20 +33,9 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var ccatVariableDefinition:VariableDefinitionCollisionCategory = new VariableDefinitionCollisionCategory (mName, mDescription);
+         return new VariableDefinitionCollisionCategory (mName, mDescription, mOptions);
+      }
          
-         return ccatVariableDefinition;
-      }
-      
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_CollisiontCategory (valueObject);
-      }
-      
 //==============================================================================
 // to override
 //==============================================================================

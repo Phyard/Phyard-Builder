@@ -5,14 +5,7 @@ package editor.trigger {
    import mx.controls.Label;
    import mx.containers.HBox;
    
-   import editor.world.World;
    import editor.entity.Scene;
-   import editor.entity.Entity;
-   import editor.ccat.CollisionCategory;
-   
-   import editor.image.AssetImageModule;
-   
-   import editor.sound.AssetSound;
    
    import editor.EditorContext;
    
@@ -32,32 +25,32 @@ package editor.trigger {
       //   }
       //}
       
-      public static function ValidateValueByType (value:Object, valueType:int):Object
-      {
-         switch (valueType)
-         {
-            case CoreClassIds.ValueType_Boolean:
-               return Boolean (value);
-            case CoreClassIds.ValueType_String:
-               return String (value);
-            case CoreClassIds.ValueType_Number:
-               return Number (value);
-            case CoreClassIds.ValueType_Entity:
-               return ValidateValueObject_Entity (value);
-            case CoreClassIds.ValueType_CollisionCategory:
-               return ValidateValueObject_CollisiontCategory (value);
-            case CoreClassIds.ValueType_Module:
-               return ValidateValueObject_Module (value);
-            case CoreClassIds.ValueType_Sound:
-               return ValidateValueObject_Sound (value);
-            case CoreClassIds.ValueType_Scene:
-               return ValidateValueObject_Scene (value);
-            case CoreClassIds.ValueType_Array:
-               return ValidateValueObject_Array (value);
-            default:
-               return value;
-         }
-      }
+      //public static function ValidateValueByType (value:Object, valueType:int):Object
+      //{
+      //   switch (valueType)
+      //   {
+      //      case CoreClassIds.ValueType_Boolean:
+      //         return Boolean (value);
+      //      case CoreClassIds.ValueType_String:
+      //         return String (value);
+      //      case CoreClassIds.ValueType_Number:
+      //         return Number (value);
+      //      case CoreClassIds.ValueType_Entity:
+      //         return ValidateValueObject_Entity (value);
+      //      case CoreClassIds.ValueType_CollisionCategory:
+      //         return ValidateValueObject_CollisiontCategory (value);
+      //      case CoreClassIds.ValueType_Module:
+      //         return ValidateValueObject_Module (value);
+      //      case CoreClassIds.ValueType_Sound:
+      //         return ValidateValueObject_Sound (value);
+      //      case CoreClassIds.ValueType_Scene:
+      //         return ValidateValueObject_Scene (value);
+      //      case CoreClassIds.ValueType_Array:
+      //         return ValidateValueObject_Array (value);
+      //      default:
+      //         return value;
+      //   }
+      //}
       
       //public static function GetValueTypeName (valueType:int):String
       //{
@@ -166,68 +159,7 @@ package editor.trigger {
                throw new Error ("unknown type in CreateCoreVariableDefinition");
          }
       }
-      
-      public static function ValidateValueObject_Scene (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var scene:Scene = valueObject as Scene;
-         //if (scene != null && scene.GetWorld () != world)
-         if (scene != null && scene.GetSceneIndex () < 0)
-            scene = null;
-         
-         return scene;
-      }
-      
-      public static function ValidateValueObject_Entity (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var entity:Entity = valueObject as Entity;
-         //if (entity != null && (entity.GetWorld () != world || entity.GetCreationOrderId () < 0))
-         if (entity != null && entity.GetCreationOrderId () < 0)
-            entity = null;
-         
-         return entity;
-      }
-      
-      public static function ValidateValueObject_CollisiontCategory (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var category:CollisionCategory = valueObject as CollisionCategory;
-         if (category != null && category.GetAppearanceLayerId () < 0)
-            category = null;
-         
-         return category;
-      }
-      
-      public static function ValidateValueObject_Module (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var module:AssetImageModule = valueObject as AssetImageModule;
-         if (module != null && module.GetAppearanceLayerId () < 0)
-            module = null;
-         
-         return module;
-      }
-      
-      public static function ValidateValueObject_Sound (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var sound:AssetSound = valueObject as AssetSound;
-         if (sound != null && sound.GetAppearanceLayerId () < 0)
-            sound = null;
-         
-         return sound;
-      }
-      
-      public static function ValidateValueObject_Array (valueObject:Object):Object
-      {
-         return null; // currently
-      }
+
       
    //========================================================================================================
    //
@@ -239,26 +171,40 @@ package editor.trigger {
       
       protected var mClass:ClassBase;
       
-      public var mName:String;
-      public var mDescription:String = null;
+      protected var mName:String;
+      protected var mDescription:String = null;
+
+      protected var mDefaultValueObject:Object;
+      
+      protected var mOptions:Object;
       
       //public var mIsReference:Boolean = false;
-      
-      // options
       
       // cancelled to unref TriggerEngine
       //private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
       
       //public function VariableDefinition (/*typeType:int, valueType:int, */name:String, description:String = null/*, options:Object = null*/)
-      public function VariableDefinition (aClass:ClassBase, name:String, description:String = null/*, options:Object = null*/)
+      public function VariableDefinition (aClass:ClassBase, name:String, description:String = null, options:Object = null)
       {
          //mTypeType = typeType;
          //mValueType = valueType;
          
          mClass = aClass;
+         mDefaultValueObject = mClass.GetInitialInstacneValue (); // may be changed by options or sub or other classes.
          
          mName = name;
          mDescription = description;
+         
+         mOptions = options;
+         if (mOptions == null)
+            mOptions = new Object ();
+         
+         if (mOptions.mDefaultValue != undefined)
+         {
+            mDefaultValueObject = mOptions.mDefaultValue;
+         }
+         
+         SetDefaultValue (mDefaultValueObject); // to call ValidateDirectValueObject (mDefaultValueObject) and update mOptions.mDefaultValue
          
          //if (options != null)
          //{
@@ -304,7 +250,8 @@ package editor.trigger {
       
       public function SetDefaultValue (valueObject:Object):void
       {
-         // to override
+         mDefaultValueObject = ValidateDirectValueObject (valueObject);
+         mOptions.mDefaultValue = mDefaultValueObject;
       }
       
       public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
@@ -533,7 +480,7 @@ package editor.trigger {
 // direct source
 //==============================================================================
       
-      public function ValidateDirectValueSource (valueSourceDirect:ValueSource_Direct):void
+      final public function ValidateDirectValueSource (valueSourceDirect:ValueSource_Direct):void
       {
          if (valueSourceDirect == null)
             return;
@@ -547,7 +494,7 @@ package editor.trigger {
       
       public function ValidateDirectValueObject (valueObject:Object):Object
       {
-         return valueObject;
+         return mClass.ValidateValueObject (valueObject, mOptions);
       }
       
    //==============================================================================

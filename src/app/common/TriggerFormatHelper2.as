@@ -30,8 +30,9 @@ package common {
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
    
+   import common.trigger.ClassTypeDefine;
    import common.trigger.CoreFunctionIds;
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.FunctionCoreBasicDefine;
    import common.trigger.CoreFunctionDeclarations;
    
    import common.trigger.FunctionTypeDefine;
@@ -67,7 +68,7 @@ package common {
    
    public class TriggerFormatHelper2
    {
-      public static function BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration:FunctionDeclaration, forInputParams:Boolean):VariableSpace
+      public static function BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):VariableSpace
       {
          var variableSpace:VariableSpace;
          
@@ -104,7 +105,7 @@ package common {
          return variableSpace;
       }
       
-      //public static function BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration:FunctionDeclaration, forInputParams:Boolean):Array
+      //public static function BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):Array
       //{
       //   var paramDefines:Array = null;
       //   
@@ -184,7 +185,7 @@ package common {
       //   return paramDefines;
       //}
       
-      public static function CreateCoreFunctionDefinition (functionDeclaration:FunctionDeclaration, callback:Function):FunctionDefinition_Core
+      public static function CreateCoreFunctionDefinition (functionDeclaration:FunctionCoreBasicDefine, callback:Function):FunctionDefinition_Core
       {
          return new FunctionDefinition_Core (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), callback);
       }
@@ -194,7 +195,7 @@ package common {
 //==============================================================================================
       
       // for functionDefine and functionDeclaration, at least one is not null
-      public static function FunctionDefine2FunctionDefinition (functionDefine:FunctionDefine, functionDeclaration:FunctionDeclaration):FunctionDefinition_Custom
+      public static function FunctionDefine2FunctionDefinition (functionDefine:FunctionDefine, functionDeclaration:FunctionCoreBasicDefine):FunctionDefinition_Custom
       {
          var inputVariableSpace:VariableSpace;
          var outputVariableSpace:VariableSpace;
@@ -492,12 +493,12 @@ package common {
             if (i >= funcCallingDefine.mNumInputs) // fill the missed parameters
             {
                //value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, vi.GetValueType (), vi.GetValueObject (), extraInfos);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, vi.GetClassType (), vi.GetValueType (), vi.GetValueObject (), extraInfos);
             }
             else                                   // use the value set by designer
             {
                //value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], vi.GetValueType (), vi.GetValueObject (), extraInfos);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], vi.GetValueType (), vi.GetClassType (), vi.GetValueObject (), extraInfos);
             }
                
             value_source.mNextParameter = value_source_list;
@@ -556,7 +557,7 @@ package common {
          return calling;
       }
       
-      public static function ValueSourceDefine2InputValueSource (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int, defaultDirectValue:Object, extraInfos:Object):Parameter
+      public static function ValueSourceDefine2InputValueSource (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, defaultDirectValue:Object, extraInfos:Object):Parameter
       {
          var value_source:Parameter = null;
          
@@ -568,7 +569,7 @@ package common {
             
             //assert (valueType == direct_source_define.mValueType);
             
-            value_source = new Parameter_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, valueType, direct_source_define.mValueObject, extraInfos));
+            value_source = new Parameter_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -659,13 +660,13 @@ package common {
                }
             }
             
-            value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, CoreClassIds.ValueType_Entity, null, extraInfos)
+            value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, null, extraInfos)
                                                       , property_source_define.mSpacePackageId, customPropertyId);
          }
          
          if (value_source == null)
          {
-            value_source = new Parameter_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, valueType, defaultDirectValue, extraInfos));
+            value_source = new Parameter_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos));
          }
          
          return value_source;
@@ -767,7 +768,7 @@ package common {
                   customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
                }
             }
-            value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, CoreClassIds.ValueType_Entity, null, extraInfos)
+            value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, null, extraInfos)
                                                       , property_target_define.mSpacePackageId, customPropertyId);
          }
          
@@ -845,7 +846,7 @@ package common {
             if (playerWorld != null)
             {
                //variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
-               variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, variableDefine.mValueType, variableDefine.mValueObject));
+               variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, variableDefine.mClassType, variableDefine.mValueType, variableDefine.mValueObject));
             }
             
             if (useIdMappingTable)
@@ -892,7 +893,7 @@ package common {
             var entity:Entity = valueObject as Entity;
             if (entity != null && tryToReSceneDependentVariables)
             {
-               return CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, CoreClassIds.ValueType_Entity, entity.GetCreationId ());
+               return CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Unknown, CoreClassIds.ValueType_Entity, entity.GetCreationId ());
             }
          }
          else if (valueObject is CollisionCategory)
@@ -900,7 +901,7 @@ package common {
             var ccat:CollisionCategory = valueObject as CollisionCategory;
             if (ccat != null && tryToReSceneDependentVariables)
             {
-               return CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, CoreClassIds.ValueType_CollisionCategory, ccat.GetIndexInEditor ());
+               return CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Unknown, CoreClassIds.ValueType_CollisionCategory, ccat.GetIndexInEditor ());
             }
          }
          // sound
@@ -931,25 +932,26 @@ package common {
 // byte array -> define
 //==============================================================================================
       
-      public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, loadVariables:Boolean, customFunctionDefines:Array, loadLocalVariables:Boolean = true):FunctionDefine
+      //public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, loadVariables:Boolean, customFunctionDefines:Array, loadLocalVariables:Boolean = true):FunctionDefine
+      public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, loadParams:Boolean, loadLocalVariables:Boolean, customFunctionDefines:Array, supportCustomClasses:Boolean, customClassDefines:Array):FunctionDefine
       {
          if (functionDefine == null)
             functionDefine = new FunctionDefine ();
          
-         if (loadVariables)
-         {
-            if (hasParams)
+         //if (loadVariables)
+         //{
+            if (loadParams)
             {
-               LoadVariableDefinesFromBinFile (binFile, functionDefine.mInputVariableDefines, true, false);
+               LoadVariableDefinesFromBinFile (binFile, functionDefine.mInputVariableDefines, true, false, null, supportCustomClasses);
                
-               LoadVariableDefinesFromBinFile (binFile, functionDefine.mOutputVariableDefines, false, false);
+               LoadVariableDefinesFromBinFile (binFile, functionDefine.mOutputVariableDefines, false, false, null, supportCustomClasses);
             }
             
             if (loadLocalVariables)
             {
-               LoadVariableDefinesFromBinFile (binFile, functionDefine.mLocalVariableDefines, false, false);
+               LoadVariableDefinesFromBinFile (binFile, functionDefine.mLocalVariableDefines, false, false, null, supportCustomClasses);
             }
-         }
+         //}
          
          if (customFunctionDefines != null)
          {
@@ -984,6 +986,7 @@ package common {
          var num_outputs:int;
          var inputValueSourceDefines:Array;
          var outputValueTargetDefines:Array;
+         var vd:VariableDefine;
          
          funcCallingDefine.mFunctionType = func_type = binFile.readByte ();
          funcCallingDefine.mFunctionId = func_id = binFile.readShort ();
@@ -996,10 +999,10 @@ package common {
          
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
-            var func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id);
+            var func_declaration:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id);
             
             for (i = 0; i < num_inputs; ++ i)
-               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
+               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
@@ -1008,7 +1011,8 @@ package common {
             for (i = 0; i < num_inputs; ++ i)
             {
                //inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetail_Double);
-               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableDefine).mValueType, CoreClassIds.NumberTypeDetail_Double);
+               vd = calledInputVariableDefines [i] as VariableDefine;
+               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, vd.mClassType, vd.mValueType, CoreClassIds.NumberTypeDetail_Double);
             }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
@@ -1022,7 +1026,7 @@ package common {
          return funcCallingDefine;
       }
       
-      public static function LoadValueSourceDefineFromBinFile (binFile:ByteArray, valueType:int, numberDetail:int):ValueSourceDefine
+      public static function LoadValueSourceDefineFromBinFile (binFile:ByteArray, classType:int, valueType:int, numberDetail:int):ValueSourceDefine
       {
          var valueSourceDefine:ValueSourceDefine = null;
          
@@ -1030,7 +1034,7 @@ package common {
          
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
-            valueSourceDefine = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, numberDetail));
+            valueSourceDefine = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, numberDetail));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -1042,7 +1046,7 @@ package common {
          else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
          {
             valueSourceDefine = new ValueSourceDefine_Property (
-                  LoadValueSourceDefineFromBinFile (binFile, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
                   //binFile.readShort (), // before v2.03
                   (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
                   binFile.readShort ()
@@ -1073,7 +1077,7 @@ package common {
          else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
          {
             valueTargetDefine = new ValueTargetDefine_Property (
-                  LoadValueSourceDefineFromBinFile (binFile, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
                   //binFile.readShort (), // before v2.03
                   (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
                   binFile.readShort ()
@@ -1089,7 +1093,7 @@ package common {
       }
       
       //public static function LoadVariableSpaceDefineFromBinFile (binFile:ByteArray):VariableSpaceDefine // v1.52 only
-      public static function LoadVariableDefinesFromBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean, keyPostfix:String = null):void
+      public static function LoadVariableDefinesFromBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean, keyPostfix:String, supportCustomClasses:Boolean):void
       {
          //>> only v1.52
          //var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
@@ -1100,6 +1104,7 @@ package common {
          
          var numVariables:int = binFile.readShort ();
          //variableSpaceDefine.mVariableDefines = new Array (numVariables); // v1.52 only
+         var classType:int;
          var valueType:int;
          
          for (var i:int = 0; i < numVariables; ++ i)
@@ -1112,16 +1117,21 @@ package common {
             }
             else if (keyPostfix != null)
             {
-               variableDefine.mKey = i + keyPostfix;
+               variableDefine.mKey = i + keyPostfix; // for session variables in runtime playing
             }
             variableDefine.mName = binFile.readUTF ();
+            if (supportCustomClasses)
+               classType = binFile.readByte ();
+            else
+               classType = ClassTypeDefine.ClassType_Core;
+            
             valueType = binFile.readShort ();
             //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
             //                                                valueType,
             //                                                supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
             //                                                );
             variableDefine.mValueType = valueType;
-            variableDefine.mValueObject = supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
+            variableDefine.mValueObject = supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
             
             //variableSpaceDefine.mVariableDefines [i] = variableDefine; // v1.52 only
             variableDefines.push (variableDefine);
@@ -1134,25 +1144,26 @@ package common {
 // define -> xml
 //==============================================================================================
       
-      public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, hasParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array, convertLocalVariables:Boolean = true, codeSnippetElement:XML = null):void
+      //public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, hasParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array, convertLocalVariables:Boolean = true, codeSnippetElement:XML = null):void
+      public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, convertParams:Boolean, convertLocalVariables:Boolean, customFunctionDefines:Array, codeSnippetElement:XML, supportCustomClasses:Boolean, customClassDefines:Array):void
       {
-         if (convertVariables)
-         {
-            if (hasParams)
+         //if (convertVariables)
+         //{
+            if (convertParams)
             {
                functionElement.InputParameters = <InputParameters/>;
-               VariablesDefine2Xml (functionDefine.mInputVariableDefines, functionElement.InputParameters [0], true, false);
+               VariablesDefine2Xml (functionDefine.mInputVariableDefines, functionElement.InputParameters [0], true, false, supportCustomClasses);
                
                functionElement.OutputParameters = <OutputParameters/>;
-               VariablesDefine2Xml (functionDefine.mOutputVariableDefines, functionElement.OutputParameters [0], false, false);
+               VariablesDefine2Xml (functionDefine.mOutputVariableDefines, functionElement.OutputParameters [0], false, false, supportCustomClasses);
             }
             
             if (convertLocalVariables)
             {
                functionElement.LocalVariables = <LocalVariables/>;
-               VariablesDefine2Xml (functionDefine.mLocalVariableDefines, functionElement.LocalVariables [0], false, false);
+               VariablesDefine2Xml (functionDefine.mLocalVariableDefines, functionElement.LocalVariables [0], false, false, supportCustomClasses);
             }
-         }
+         //}
          
          if (customFunctionDefines != null)
          {
@@ -1185,7 +1196,7 @@ package common {
       {
          var func_type:int = funcCallingDefine.mFunctionType;
          var func_id:int = funcCallingDefine.mFunctionId;
-         var func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id)
+         var func_declaration:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id)
          
          var elementFunctionCalling:XML = <FunctionCalling />;
          
@@ -1193,15 +1204,16 @@ package common {
          elementFunctionCalling.@function_id = funcCallingDefine.mFunctionId;
          
          var i:int;
-         
+         var vd:VariableDefine;
          var num_inputs:int = funcCallingDefine.mNumInputs;
          var inputValueSourceDefines:Array = funcCallingDefine.mInputValueSourceDefines;
+         
          elementFunctionCalling.InputValueSources = <InputValueSources />;
          
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
             for (i = 0; i < num_inputs; ++ i)
-               elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i)));
+               elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i)));
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
@@ -1210,7 +1222,8 @@ package common {
             for (i = 0; i < num_inputs; ++ i)
             {
                //elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], (calledInputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType));
-               elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], (calledInputVariableDefines [i] as VariableDefine).mValueType));
+               vd = calledInputVariableDefines [i] as VariableDefine;
+               elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], vd.mClassType, vd.mValueType));
             }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
@@ -1245,7 +1258,7 @@ package common {
          return elementFunctionCalling;
       }
       
-      public static function ValueSourceDefine2Xml (valueSourceDefine:ValueSourceDefine, valueType:int, isForProperyOwner:Boolean = false):XML
+      public static function ValueSourceDefine2Xml (valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, isForProperyOwner:Boolean = false):XML
       {
          var elementValueSource:XML;
          
@@ -1264,8 +1277,8 @@ package common {
             
             try
             {
-               var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (valueType, direct_source_define.mValueObject);
-               if (directValue != null)
+               var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (classType, valueType, direct_source_define.mValueObject);
+               if (directValue != null)// now, for Array and custom classes.
                {
                   elementValueSource.@direct_value = directValue;
                }
@@ -1289,7 +1302,7 @@ package common {
             elementValueSource.@property_package_id = property_source_define.mSpacePackageId;
             elementValueSource.@property_id = property_source_define.mPropertyId;
             
-            elementValueSource.appendChild (ValueSourceDefine2Xml (property_source_define.mEntityValueSourceDefine, CoreClassIds.ValueType_Entity, true));
+            elementValueSource.appendChild (ValueSourceDefine2Xml (property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, true));
          }
          
          return elementValueSource;
@@ -1317,14 +1330,14 @@ package common {
             elementValueTarget.@property_package_id = property_target_define.mSpacePackageId;
             elementValueTarget.@property_id = property_target_define.mPropertyId;
             
-            elementValueTarget.appendChild (ValueSourceDefine2Xml (property_target_define.mEntityValueSourceDefine, CoreClassIds.ValueType_Entity, true));
+            elementValueTarget.appendChild (ValueSourceDefine2Xml (property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, true));
          }
          
          return elementValueTarget;
       }
       
       //public static function VariableSpaceDefine2Xml (variableSpaceDefine:VariableSpaceDefine):XML // v1.52 only
-      public static function VariablesDefine2Xml (variableDefines:Array, elementVariablePackage:XML, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
+      public static function VariablesDefine2Xml (variableDefines:Array, elementVariablePackage:XML, supportInitalValues:Boolean, variablesHaveKey:Boolean, supportCustomClasses:Boolean):void
       {
          //>> v1.52 only
          //var elementVariablePackage:XML = <VariablePackage />;
@@ -1349,12 +1362,14 @@ package common {
                element.@key = variableDefine.mKey;
             element.@name = variableDefine.mName;
             //element.@value_type = variableDefine.mDirectValueSourceDefine.mValueType;
+            if (supportCustomClasses)
+               element.@class_type = variableDefine.mClassType;
             element.@value_type = variableDefine.mValueType;
             
             if (supportInitalValues)
             {
                //var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (variableDefine.mDirectValueSourceDefine.mValueType, variableDefine.mDirectValueSourceDefine.mValueObject);
-               var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (variableDefine.mValueType, variableDefine.mValueObject);
+               var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (variableDefine.mClassType, variableDefine.mValueType, variableDefine.mValueObject);
                if (directValue != null)
                {
                   element.@initial_value = directValue;
@@ -1392,7 +1407,7 @@ package common {
             if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
             {
                var functionId:int = funcCallingDefine.mFunctionId;
-               var funcDclaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
+               var funcDclaration:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
                
                var sourceDefine:ValueSourceDefine;
                var direcSourceDefine:ValueSourceDefine_Direct;

@@ -320,12 +320,10 @@ package common.trigger {
          if (eventId < 0 || eventId >= IdPool.NumEventTypes)
             return;
 
-         var func_decl:FunctionDeclaration = new FunctionDeclaration (eventId, inputParamDefines, outputParamDefines);
-
-         sEventHandlerDeclarations [eventId] = func_decl;
+         sEventHandlerDeclarations [eventId] = new FunctionCoreBasicDefine (eventId, inputParamDefines, outputParamDefines);
       }
 
-      public static function GetCoreEventHandlerDeclarationById (eventId:int):FunctionDeclaration
+      public static function GetCoreEventHandlerDeclarationById (eventId:int):FunctionCoreBasicDefine
       {
          if (eventId < 0 || eventId >= IdPool.NumEventTypes)
             return null;

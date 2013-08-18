@@ -218,7 +218,7 @@ package editor.trigger {
          return mClass;
       }
       
-      public function GetTypeType ():int
+      public function GetClassType ():int
       {
          return mClass.GetClassType ();
       }
@@ -256,7 +256,7 @@ package editor.trigger {
       
       public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
       {
-         return (GetTypeType () == variableDefinition.GetTypeType ()) && (GetValueType () == variableDefinition.GetValueType ());
+         return (GetClassType () == variableDefinition.GetClassType ()) && (GetValueType () == variableDefinition.GetValueType ());
       }
       
       
@@ -343,7 +343,7 @@ package editor.trigger {
          var currentVariable:VariableInstance = valueTargetVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
-         //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetTypeType (), GetValueType (), validVariableIndexes);
+         //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetClassType (), GetValueType (), validVariableIndexes);
          var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
@@ -531,7 +531,7 @@ package editor.trigger {
          var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
-         //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetTypeType (), GetValueType (), validVariableIndexes);
+         //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetClassType (), GetValueType (), validVariableIndexes);
          var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();

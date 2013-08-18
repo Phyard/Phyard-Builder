@@ -26,7 +26,7 @@ package player.trigger {
    import com.tapirgames.util.RandomNumberGenerator;
 
    import common.trigger.CoreFunctionIds;
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.FunctionCoreBasicDefine;
    import common.trigger.CoreFunctionDeclarations;
 
    import common.trigger.ValueDefine;
@@ -624,7 +624,7 @@ package player.trigger {
          if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return;
 
-         var func_decl:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
+         var func_decl:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
 
          sCoreFunctionDefinitions [functionId] = TriggerFormatHelper2.CreateCoreFunctionDefinition (func_decl, callback);
       }

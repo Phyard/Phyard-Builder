@@ -28,6 +28,8 @@ package common {
       public var mEntityPropertyDefines:Array = new Array ();
       
       public var mFunctionDefines:Array = new Array ();
+      
+      public var mClassDefines:Array = new Array (); // since v2.05
    }
 }
 

@@ -243,9 +243,7 @@ package editor.trigger {
             
             if (viDef != null) // always
             {
-               var added:Boolean = false;
-
-               var campatible:Boolean = variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition);
+               var campatible:Boolean = variableDefinition.IsCompatibleWith (viDef); // || viDef.IsCompatibleWith (variableDefinition);
                if (campatible)
                {
                   item = new Object ();
@@ -264,23 +262,18 @@ package editor.trigger {
                   item.label = label;
                   
                   dataList.push (item);
-                  
-                  added = true;
                }
                
                if (deepIntoCustomClass && viDef is VariableDefinition_Custom)
                {
                   if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false))
                   {
-                     if (! added)
-                     {
                         item = new Object ();
                         item.mVariableInstance = vi;
                         label = vi.GetLongName ();
                         item.label = label;
                         
                         dataList.push (item);
-                     }
                      
                      (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProviderByVariableDefinition (variableDefinition, null, false, deepLevel + 1, vi.GetName (), dataList);
                   }

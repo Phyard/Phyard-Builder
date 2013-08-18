@@ -278,7 +278,7 @@ package editor.codelib {
          return aFunction;
       }
       
-      public function CreateClass (key:String, typeName:String = null, designDependent:Boolean = false, selectIt:Boolean = false):AssetClass
+      public function CreateClass (key:String, typeName:String = null/*, designDependent:Boolean = false*/, selectIt:Boolean = false):AssetClass
       {
          if (typeName == null)
             typeName = Define.ClassDefaultName;
@@ -305,7 +305,7 @@ package editor.codelib {
          return aClass;
       }
       
-      public function CreatePackage (key:String, typeName:String = null, designDependent:Boolean = false, selectIt:Boolean = false):AssetPackage
+      public function CreatePackage (key:String, typeName:String = null/*, designDependent:Boolean = false*/, selectIt:Boolean = false):AssetPackage
       {
          if (typeName == null)
             typeName = Define.PackageDefaultName;

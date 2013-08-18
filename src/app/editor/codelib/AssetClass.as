@@ -133,6 +133,14 @@ package editor.codelib {
          }
       }
       
+      public function Reset ():void
+      {
+         if (mCustomClass != null)
+         {
+            mCustomClass.GetPropertyDefinitionSpace ().DestroyAllVariableInstances ();
+         }
+      }
+      
 //=============================================================
 //   
 //=============================================================

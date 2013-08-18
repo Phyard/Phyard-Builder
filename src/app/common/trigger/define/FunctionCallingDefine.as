@@ -1,6 +1,6 @@
 package common.trigger.define
 {
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.FunctionCoreBasicDefine;
    import common.trigger.CoreFunctionDeclarations;
    
    import common.trigger.CoreClassIds;
@@ -57,7 +57,7 @@ package common.trigger.define
       {
          if (mFunctionType == FunctionTypeDefine.FunctionType_Core)
          {
-            var functionDeclaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (mFunctionId);
+            var functionDeclaration:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (mFunctionId);
             
             var sourceDefine:ValueSourceDefine;
             var directSourceDefine:ValueSourceDefine_Direct;
@@ -86,7 +86,7 @@ package common.trigger.define
       {
          if (mFunctionType == FunctionTypeDefine.FunctionType_Core)
          {
-            var functionDeclaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (mFunctionId);
+            var functionDeclaration:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (mFunctionId);
             
             var sourceDefine:ValueSourceDefine;
             var directSourceDefine:ValueSourceDefine_Direct;

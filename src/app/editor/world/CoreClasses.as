@@ -11,6 +11,7 @@ package editor.world {
    import editor.trigger.ClassCore;
    import editor.trigger.CodePackage;
 
+   import common.trigger.ClassTypeDefine;
    import common.trigger.CoreClassIds;
    import common.trigger.ClassDeclaration;
    import common.trigger.CoreClassDeclarations;
@@ -284,8 +285,11 @@ package editor.world {
 //===========================================================
       
       // scene may be null for Scene Common variable spaces
-      public static function ValidateDirectValueObject_Object2Define (scene:Scene, valueType:int, valueObject:Object):Object
+      public static function ValidateDirectValueObject_Object2Define (scene:Scene, classType:int, valueType:int, valueObject:Object):Object
       {
+         if (classType != ClassTypeDefine.ClassType_Core)
+            return null;
+         
          switch (valueType)
          {
             case CoreClassIds.ValueType_Boolean:
@@ -362,8 +366,11 @@ package editor.world {
       }
       
       // scene may be null for Scene Common Variable Spaces
-      public static function ValidateDirectValueObject_Define2Object (scene:Scene, valueType:int, valueObject:Object):Object
+      public static function ValidateDirectValueObject_Define2Object (scene:Scene, classType:int, valueType:int, valueObject:Object):Object
       {
+         if (classType != ClassTypeDefine.ClassType_Core)
+            return null;
+         
          switch (valueType)
          {
             case CoreClassIds.ValueType_Boolean:
@@ -446,8 +453,11 @@ package editor.world {
          }
       }
       
-      public static function ValidateDirectValueObject_Xml2Define (valueType:int, direct_value:String):Object
+      public static function ValidateDirectValueObject_Xml2Define (classType:int, valueType:int, direct_value:String):Object
       {
+         if (classType != ClassTypeDefine.ClassType_Core)
+            return null;
+         
          switch (valueType)
          {
             case CoreClassIds.ValueType_Boolean:
@@ -485,8 +495,11 @@ package editor.world {
          }
       }
       
-      public static function WriteDirectValueObjectIntoBinFile (binFile:ByteArray, valueType:int,  numberDetail:int, valueObject:Object):void
+      public static function WriteDirectValueObjectIntoBinFile (binFile:ByteArray, classType:int, valueType:int,  numberDetail:int, valueObject:Object):void
       {
+         if (classType != ClassTypeDefine.ClassType_Core)
+            return;
+         
          switch (valueType)
          {
             case CoreClassIds.ValueType_Boolean:

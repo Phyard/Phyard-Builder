@@ -1848,7 +1848,6 @@ trace ("111 created = " + created);
          
          if (mAssetLinksNeedRepaint)
          {
-trace ("222 UpdateAssetLinkLines ");
             mAssetLinksNeedRepaint = false;
             
             mAssetLinksLayer.graphics.clear ();

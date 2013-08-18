@@ -1,5 +1,7 @@
 package common.trigger.define
 {
+   import common.trigger.ClassTypeDefine;
+   
    public class VariableDefine
    {
       public var mKey:String = null; // from v2.03, for game save only
@@ -10,7 +12,7 @@ package common.trigger.define
       // for output prams, only the mValueType in ValueSourceDefine_Direct is valid
       //public var mDirectValueSourceDefine:ValueSourceDefine_Direct;
                // use the belows now
-      public var mClassType:int; // since v2.05
+      public var mClassType:int = ClassTypeDefine.ClassType_Core; // since v2.05
       public var mValueType:int;
       public var mValueObject:Object;
       

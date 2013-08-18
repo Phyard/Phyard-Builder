@@ -2,7 +2,7 @@ package player.trigger
 {
    import flash.utils.getTimer;
    
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.FunctionCoreBasicDefine;
    import common.trigger.CoreFunctionIds;
    import common.trigger.CoreEventIds;
    import common.trigger.CoreFunctionDeclarations;
@@ -56,22 +56,22 @@ package player.trigger
          return CoreFunctionDefinitions.sCoreFunctionDefinitions [functionId];
       }
       
-      public static function GetVoidFunctionDeclaration ():FunctionDeclaration
+      public static function GetVoidFunctionDeclaration ():FunctionCoreBasicDefine
       {
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_Void];
       }
       
-      public static function GetBoolFunctionDeclaration ():FunctionDeclaration
+      public static function GetBoolFunctionDeclaration ():FunctionCoreBasicDefine
       {
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_Bool];
       }
       
-      public static function GetEntityFilterFunctionDeclaration ():FunctionDeclaration
+      public static function GetEntityFilterFunctionDeclaration ():FunctionCoreBasicDefine
       {
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_EntityFilter];
       }
       
-      public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration
+      public static function GetEntityPairFilterFunctionDeclaration ():FunctionCoreBasicDefine
       {
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_EntityPairFilter];
       }

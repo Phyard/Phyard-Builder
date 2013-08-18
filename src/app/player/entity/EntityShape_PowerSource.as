@@ -10,7 +10,7 @@ package player.entity {
    
    import common.trigger.CoreFunctionIds;
    import common.trigger.CoreEventIds;
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.FunctionCoreBasicDefine;
    import common.trigger.CoreFunctionDeclarations;
    
    import common.trigger.FunctionTypeDefine;
@@ -87,7 +87,7 @@ package player.entity {
                
                callingDefine.mFunctionType = FunctionTypeDefine.FunctionType_Core;
                
-               var functionDecalaration: FunctionDeclaration = null;
+               var functionDecalaration:FunctionCoreBasicDefine = null;
                switch (mPowerSourceType)
                {
                   case Define.PowerSource_Torque:

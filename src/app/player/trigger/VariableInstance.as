@@ -42,12 +42,12 @@ package player.trigger
          return mKey;
       }
       
-      public function SetClsssType (type:int):void
+      public function SetClassType (type:int):void
       {
          mClsssType = type;
       }
       
-      public function GetClsssType ():int
+      public function GetClassType ():int
       {
          return mClsssType;
       }

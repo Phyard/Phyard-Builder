@@ -156,12 +156,12 @@ package editor.trigger {
          return mVariableSpace.GetShortName () + " [" + mIndex + "] " + GetName ();
       }
       
-      public function GetTypeType ():int
+      public function GetClassType ():int
       {
          if (mVariableDefinition == null) // never
             return ClassTypeDefine.ClassType_Unknown;
          
-         return mVariableDefinition.GetTypeType ();
+         return mVariableDefinition.GetClassType ();
       }
       
       public function GetValueType ():int

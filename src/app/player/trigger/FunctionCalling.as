@@ -1,8 +1,5 @@
 package player.trigger
-{
-   import common.trigger.FunctionDeclaration;
-   import common.CoordinateSystem;
-   
+{  
    public class FunctionCalling
    {
       internal var mNextFunctionCalling:FunctionCalling = null;

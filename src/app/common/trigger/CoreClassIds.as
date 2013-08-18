@@ -74,23 +74,6 @@ package common.trigger {
       //}
       
 //=============================================================================
-// 
-//=============================================================================
-      
-      public static const NumberTypeMask_Basic:uint = 0xFFFF;
-      
-      public static const NumberTypeMask_Detail:uint = 0x000F0000;
-      
-      public static const NumberTypeMask_Usage:uint = 0x0FF00000;
-      
-      public static const NumberTypeMask_Modifier:uint = 0xF0000000;
-         public static const NumberTypeMask_Static:uint = 0x10000000;
-         public static const NumberTypeMask_Final:uint = 0x20000000;
-         public static const NumberTypeMask_Public:uint = 0x40000000;
-         public static const NumberTypeMask_Private:uint = 0x80000000;
-         public static const NumberTypeMask_Protected:uint = 0xC0000000;
-      
-//=============================================================================
 // basic types 
 //=============================================================================
       
@@ -119,7 +102,24 @@ package common.trigger {
       public static const ValueType_Scene:int            = 100;
       
       public static const NumCoreClasses:int            = 128;
-
+      
+//=============================================================================
+// 
+//=============================================================================
+      
+      public static const NumberTypeMask_Basic:uint = 0xFFFF;
+      
+      public static const NumberTypeMask_Detail:uint = 0x000F0000;
+      
+      public static const NumberTypeMask_Usage:uint = 0x0FF00000;
+      
+      public static const NumberTypeMask_Modifier:uint = 0xF0000000;
+         public static const NumberTypeMask_Static:uint = 0x10000000;
+         public static const NumberTypeMask_Final:uint = 0x20000000;
+         public static const NumberTypeMask_Public:uint = 0x40000000;
+         public static const NumberTypeMask_Private:uint = 0x80000000;
+         public static const NumberTypeMask_Protected:uint = 0xC0000000;
+      
 //=============================================================================
 // number value type hints, generally, the hints are only useful for saving input parameters
 //=============================================================================

@@ -4,12 +4,12 @@ package editor.trigger {
    //import flash.utils.Dictionary;
    
    import common.trigger.FunctionTypeDefine;
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.FunctionCoreBasicDefine;
    import common.trigger.CoreFunctionDeclarations;
    
    public class FunctionDeclaration_Core extends editor.trigger.FunctionDeclaration
    {
-      protected var mFunctionDeclaration_Common :common.trigger.FunctionDeclaration;
+      protected var mFunctionDeclaration_Common:FunctionCoreBasicDefine;
       
       public function FunctionDeclaration_Core (id:int, name:String, description:String = null, 
                                                 poemCallingFormat:String = null, traditionalCallingFormat:String = null, 

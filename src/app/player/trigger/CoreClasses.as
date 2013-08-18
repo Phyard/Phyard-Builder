@@ -4,6 +4,7 @@ package player.trigger {
 
    import player.world.World;
 
+   import common.trigger.ClassTypeDefine;
    import common.trigger.CoreClassIds;
    import common.trigger.ClassDeclaration;
    import common.trigger.CoreClassDeclarations;
@@ -15,8 +16,11 @@ package player.trigger {
       
       // define -> instance
       
-      public static function ValidateDirectValueObject_Define2Object (playerWorld:World, valueType:int, valueObject:Object, extraInfos:Object = null):Object
+      public static function ValidateDirectValueObject_Define2Object (playerWorld:World, classType:int, valueType:int, valueObject:Object, extraInfos:Object = null):Object
       {
+         if (classType != ClassTypeDefine.ClassType_Core)
+            return null;
+         
          switch (valueType)
          {
             case CoreClassIds.ValueType_Boolean:
@@ -86,8 +90,11 @@ package player.trigger {
       
       // define -> xml
       
-      public static function ValidateDirectValueObject_Define2Xml (valueType:int, valueObject:Object):Object
+      public static function ValidateDirectValueObject_Define2Xml (classType:int, valueType:int, valueObject:Object):Object
       {
+         if (classType != ClassTypeDefine.ClassType_Core)
+            return null;
+         
          switch (valueType)
          {
             case CoreClassIds.ValueType_Boolean:
@@ -125,8 +132,11 @@ package player.trigger {
          }
       }
       
-      public static function LoadDirectValueObjectFromBinFile (binFile:ByteArray, valueType:int, numberDetail:int):Object
+      public static function LoadDirectValueObjectFromBinFile (binFile:ByteArray, classType:int, valueType:int, numberDetail:int):Object
       {
+         if (classType != ClassTypeDefine.ClassType_Core)
+            return null;
+         
          switch (valueType)
          {
             case CoreClassIds.ValueType_Boolean:

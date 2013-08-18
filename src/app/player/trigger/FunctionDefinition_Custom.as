@@ -3,7 +3,6 @@ package player.trigger
    import player.design.Global;
    
    import common.trigger.ValueSpaceTypeDefine;
-   import common.trigger.FunctionDeclaration;
    import common.trigger.define.CodeSnippetDefine;
    import common.TriggerFormatHelper2;
    

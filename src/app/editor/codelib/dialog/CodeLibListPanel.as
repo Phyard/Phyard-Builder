@@ -190,12 +190,12 @@ package editor.codelib.dialog {
                break;
             case mButtonCreateType:
                SetCurrentIntent (new IntentPutAsset (
-                                 mCodeLibManager.CreateClass (null, null, false, true), 
+                                 mCodeLibManager.CreateClass (null, null/*, false*/, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
             case mButtonCreatePackage:
                SetCurrentIntent (new IntentPutAsset (
-                                 mCodeLibManager.CreatePackage (null, null, false, true), 
+                                 mCodeLibManager.CreatePackage (null, null/*, false*/, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
             default:

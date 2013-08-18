@@ -3676,10 +3676,10 @@ package common.trigger {
          if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return;
 
-         sCoreFunctionDeclarations [functionId] = new FunctionDeclaration (functionId, inputParamDefines, outputParamDefines);
+         sCoreFunctionDeclarations [functionId] = new FunctionCoreBasicDefine (functionId, inputParamDefines, outputParamDefines);
       }
 
-      public static function GetCoreFunctionDeclaration (functionId:int):FunctionDeclaration
+      public static function GetCoreFunctionDeclaration (functionId:int):FunctionCoreBasicDefine
       {
          if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return null;

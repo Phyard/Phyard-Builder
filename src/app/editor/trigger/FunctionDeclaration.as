@@ -5,8 +5,10 @@ package editor.trigger {
    
    import editor.EditorContext;
    
+   import common.trigger.ClassTypeDefine;
    import common.trigger.CoreClassIds;
    import common.trigger.FunctionTypeDefine;
+   import common.trigger.FunctionCoreBasicDefine;
    
    public class FunctionDeclaration
    {
@@ -101,6 +103,16 @@ package editor.trigger {
          return mOutputParamDefinitions [returnId];
       }
       
+      public function GetOutputParamClassType (returnId:int):int
+      {
+         var vd:VariableDefinition = GetOutputParamDefinitionAt (returnId);
+         
+         if (vd == null)
+            return ClassTypeDefine.ClassType_Unknown;
+         
+         return vd.GetClassType ();
+      }
+      
       public function GetOutputParamValueType (returnId:int):int
       {
          var vd:VariableDefinition = GetOutputParamDefinitionAt (returnId);
@@ -128,6 +140,16 @@ package editor.trigger {
             return null;
          
          return mInputParamDefinitions [inputId];
+      }
+      
+      public function GetInputParamClassType (inputId:int):int
+      {
+         var vd:VariableDefinition = GetInputParamDefinitionAt (inputId);
+         
+         if (vd == null)
+            return ClassTypeDefine.ClassType_Unknown;
+         
+         return vd.GetClassType ();
       }
       
       public function GetInputParamValueType (inputId:int):int
@@ -170,6 +192,8 @@ package editor.trigger {
       
       // edit at v2.05: why this function? Maybe for sometimes, the variable definitions in Declaration adn Definition are not synchronized.
       //                so under the later new implementation, this function may be not essential.
+      // or, it is for the variable definition in declaration is more detail than the spaces in function definition?
+      //                seems this claim is not valid now. So it is safe the remvoe this function?
       public function GetInputVariableIndexesSatisfy (variableDefinition:VariableDefinition):Array
       {
          var indexes:Array = new Array ();
@@ -250,7 +274,7 @@ package editor.trigger {
 //
 //=================================================================
       
-      protected function CheckConsistent (coreDelcaration:common.trigger.FunctionDeclaration):String
+      protected function CheckConsistent (coreDelcaration:FunctionCoreBasicDefine):String
       {
          if (coreDelcaration == null)
             return "delc is null";

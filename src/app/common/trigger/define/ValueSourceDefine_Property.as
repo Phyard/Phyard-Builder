@@ -15,7 +15,7 @@ package common.trigger.define
       
       public function ValueSourceDefine_Property (entityValueSourceDefine:ValueSourceDefine, spaceId:int, propertyId:int)
       {
-         super (ValueSourceTypeDefine.ValueSource_Property);
+         super (ValueSourceTypeDefine.ValueSource_EntityProperty);
          
          mEntityValueSourceDefine = entityValueSourceDefine;
          mSpacePackageId = spaceId;

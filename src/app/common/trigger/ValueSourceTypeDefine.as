@@ -10,7 +10,8 @@ package common.trigger {
       public static const ValueSource_Null:int = 0x0;
       public static const ValueSource_Direct:int = 0x1;
       public static const ValueSource_Variable:int = 0x2;
-      public static const ValueSource_Property:int = 0x3;
+      public static const ValueSource_EntityProperty:int = 0x3;
+      public static const ValueSource_ObjectProperty:int = 0x4;
       
 //=========================================================
 // used in files, 

@@ -218,6 +218,12 @@ package editor.codelib {
          return mClassAssets [index] as AssetClass;
       }
       
+      public function GetCustomClass (index:int):ClassCustom
+      {
+         var classAsset:AssetClass = GetClassByIndex (index);
+         return classAsset == null ? null : classAsset.GetCustomClass ();
+      }
+      
       public function GetPackageByIndex (index:int):AssetPackage
       {
          if (index < 0 || index >= mPackageAssets.length)
@@ -762,6 +768,28 @@ package editor.codelib {
          }
          
          throw new Error ("unknown class in CreateCustomVariableDefinition");
+      }
+
+      // scene can be null if classType is core.
+      public static function CreateVariableDefinition (codelibManager:CodeLibManager, classType:int, valueType:int, variableName:String = null):VariableDefinition
+      {
+         var variableDefinition:VariableDefinition;
+         
+         if (classType == ClassTypeDefine.ClassType_Custom)
+         {
+            if (codelibManager == null)
+               throw new Error ("codelibManager can't be null.");
+            
+            return codelibManager.CreateCustomVariableDefinition (valueType, variableName);
+         }
+         else
+         {
+            if (variableName == null)
+               variableName = World.GetCoreClassById (valueType).GetDefaultInstanceName ();
+            variableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
+         }
+         
+         return variableDefinition;
       }
 
 //=====================================================================

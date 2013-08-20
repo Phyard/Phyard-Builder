@@ -259,7 +259,6 @@ package editor.trigger {
          return (GetClassType () == variableDefinition.GetClassType ()) && (GetValueType () == variableDefinition.GetValueType ());
       }
       
-      
 //==============================================================================
 // clone
 //==============================================================================
@@ -269,25 +268,6 @@ package editor.trigger {
          throw new Error ("need override");
          
          return null; // to override
-      }
-      
-//==============================================================================
-// common used for value target and value source
-//==============================================================================
-      
-      public static function VariableIndex2SelectListSelectedIndex (variableIndex:int, selectListDataProvider:Array):int
-      {
-         var vi:VariableInstance;
-         var index:int;
-         for (var i:int = 0; i < selectListDataProvider.length; ++ i)
-         {
-            vi = selectListDataProvider[i].mVariableInstance as VariableInstance;
-            index = vi == null ? -1 : vi.GetIndex ();
-            if (variableIndex == index)
-               return i;
-         }
-         
-         return -1;
       }
       
 //==============================================================================
@@ -350,7 +330,7 @@ package editor.trigger {
          combo_box.dataProvider = variable_list;
          combo_box.rowCount = 11;
          
-         combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);;
+         combo_box.selectedIndex = VariableSpace.VariableIndex2SelectListSelectedIndex (variable_list, valueTargetVariable.GetVariableIndex(), valueTargetVariable.GetPropertyIndex());
          
          return combo_box;
       }
@@ -364,11 +344,13 @@ package editor.trigger {
             var currentVariable:VariableInstance = valueTargetVariable.GetVariableInstance ();
             var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
             
-            var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
-            if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
-               valueTargetVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
-            else
-               valueTargetVariable.SetVariableInstance (vi);
+            //var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
+            //if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
+            //   valueTargetVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            //else
+            //   valueTargetVariable.SetVariableInstance (vi);
+            
+            variable_space.RetrieveValueForVariableValueTarget (valueTargetVariable, combo_box.selectedItem);
          }
       }
       
@@ -376,16 +358,16 @@ package editor.trigger {
    // todo: property target
    //==============================================================================
       
-      //public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpaceEntityProperties):ValueTarget_Property
+      //public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpaceEntityProperties):ValueTarget_EntityProperty
       // from v.202, scene common entity property space is added
-      public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpace):ValueTarget_Property
+      public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpace):ValueTarget_EntityProperty
       {
          BuildPropertyVaribleDefinition ();
-         //return new ValueTarget_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
-         return new ValueTarget_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), this.GetDefaultVariableValueTarget (entityVariableSpace));
+         //return new ValueTarget_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         return new ValueTarget_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), this.GetDefaultVariableValueTarget (entityVariableSpace));
       }
       
-      public function CreateControlForPropertyValueTarget (scene:Scene, valueTargetProperty:ValueTarget_Property):UIComponent
+      public function CreateControlForPropertyValueTarget (scene:Scene, valueTargetProperty:ValueTarget_EntityProperty):UIComponent
       {
          BuildPropertyVaribleDefinition ();
          
@@ -418,7 +400,7 @@ package editor.trigger {
          return box;
       }
       
-      public function RetrievePropertyValueTargetFromControl (scene:Scene, valueTargetProperty:ValueTarget_Property, control:UIComponent):void
+      public function RetrievePropertyValueTargetFromControl (scene:Scene, valueTargetProperty:ValueTarget_EntityProperty, control:UIComponent):void
       {
    	   if (control is HBox)
    	   {
@@ -530,13 +512,13 @@ package editor.trigger {
       {
          var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
-         
+
          //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetClassType (), GetValueType (), validVariableIndexes);
          var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
-         combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);
+         combo_box.selectedIndex = VariableSpace.VariableIndex2SelectListSelectedIndex (variable_list, valueSourceVariable.GetVariableIndex(), valueSourceVariable.GetPropertyIndex());
          combo_box.rowCount = 11;
          
          return combo_box;
@@ -551,11 +533,13 @@ package editor.trigger {
             var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
             var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
             
-            var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
-            if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
-               valueSourceVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
-            else
-               valueSourceVariable.SetVariableInstance (vi);
+            //var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.value;
+            //if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
+            //   valueSourceVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            //else
+            //   valueSourceVariable.SetVariableInstance (vi);
+            
+            variable_space.RetrieveValueForVariableValueSource (valueSourceVariable, combo_box.selectedItem);
          }
       }
       
@@ -585,17 +569,17 @@ package editor.trigger {
          //}
       }
       
-      //public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpaceEntityProperties):ValueSource_Property
+      //public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpaceEntityProperties):ValueSource_EntityProperty
       // from v.202, scene common entity property space is added
-      public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpace):ValueSource_Property
+      public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpace):ValueSource_EntityProperty
       {
          BuildPropertyVaribleDefinition ();
-         //return new ValueSource_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
-         //return new ValueSource_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (entityVariableSpace));
-         return new ValueSource_Property (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), this.GetDefaultVariableValueSource (entityVariableSpace));
+         //return new ValueSource_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         //return new ValueSource_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (entityVariableSpace));
+         return new ValueSource_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), this.GetDefaultVariableValueSource (entityVariableSpace));
       }
       
-      public function CreateControlForPropertyValueSource (scene:Scene, valueSourceProperty:ValueSource_Property):UIComponent
+      public function CreateControlForPropertyValueSource (scene:Scene, valueSourceProperty:ValueSource_EntityProperty):UIComponent
       {
          BuildPropertyVaribleDefinition ();
          
@@ -628,7 +612,7 @@ package editor.trigger {
          return box;
       }
       
-      public function RetrievePropertyValueSourceFromControl (scene:Scene, valueSourceProperty:ValueSource_Property, control:UIComponent):void
+      public function RetrievePropertyValueSourceFromControl (scene:Scene, valueSourceProperty:ValueSource_EntityProperty, control:UIComponent):void
       {
    	   if (control is HBox)
    	   {

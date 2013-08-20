@@ -641,7 +641,7 @@ package common {
                   break;
             }
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
@@ -751,7 +751,7 @@ package common {
                   break;
             }
          }
-         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             
@@ -1043,7 +1043,7 @@ package common {
                   binFile.readShort ()
                );
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
             valueSourceDefine = new ValueSourceDefine_Property (
                   LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
@@ -1074,7 +1074,7 @@ package common {
                   binFile.readShort ()
                );
          }
-         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
             valueTargetDefine = new ValueTargetDefine_Property (
                   LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
@@ -1295,7 +1295,7 @@ package common {
             elementValueSource.@variable_space = variable_source_define.mSpaceType;
             elementValueSource.@variable_index = variable_source_define.mVariableIndex;
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
@@ -1323,7 +1323,7 @@ package common {
             elementValueTarget.@variable_space = variable_target_define.mSpaceType;
             elementValueTarget.@variable_index = variable_target_define.mVariableIndex;
          }
-         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             

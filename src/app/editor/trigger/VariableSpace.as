@@ -3,6 +3,8 @@ package editor.trigger {
    import flash.utils.Dictionary;
    
    import editor.world.World;
+   import editor.entity.Scene;
+   import editor.codelib.CodeLibManager;
    
    import editor.core.EditorObject;
    
@@ -209,9 +211,14 @@ package editor.trigger {
          return false;
       }
       
+      // labelPrefix and dataList are both null or non-null
       //public function GetVariableSelectListDataProviderByValueType (typeType:int, valueType:int, validVariableIndexes:Array = null):Array
-      public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition, validVariableIndexes:Array = null, deepIntoCustomClass:Boolean = true, 
-                                                                             deepLevel:int = 0, lastLevelName:String = null, dataList:Array = null):Array
+      public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition, 
+                                                                             validVariableIndexes:Array = null,
+                                                                             labelPrefix:String = null, 
+                                                                             propertyOwnerIndex:int = -1,
+                                                                             dataList:Array = null
+                                                                          ):Array
       {
          var item:Object;
          
@@ -221,14 +228,14 @@ package editor.trigger {
             
             item = new Object ();
             item.label = "(null)"; // mNullVariableInstance.GetLongName ();
-            item.mVariableInstance = null;
+            item.mIndex = -1;
+            item.mProperty = -1;
             
             dataList.push (item);
          }
          
          var vi:VariableInstance;
          var viDef:VariableDefinition;
-         var label:String;
          
          for (var i:int = 0; i < mVariableInstances.length; ++ i)
          {  
@@ -243,39 +250,41 @@ package editor.trigger {
             
             if (viDef != null) // always
             {
+               var toDeepInto:Boolean =   labelPrefix == null 
+                                       && viDef is VariableDefinition_Custom
+                                       && (viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false)
+                                       ;
+               
+               var generalLabel:String = null;
+               if (toDeepInto)
+                  generalLabel = vi.GetLongName ();
+               
                var campatible:Boolean = variableDefinition.IsCompatibleWith (viDef); // || viDef.IsCompatibleWith (variableDefinition);
                if (campatible)
                {
                   item = new Object ();
-                  item.mVariableInstance = vi;
                   
-                  if (lastLevelName == null) // or deepLevel > 0
+                  if (labelPrefix == null)
                   {
-                     label = vi.GetLongName ();
+                     item.label = generalLabel == null ? vi.GetLongName () : generalLabel;
+                     item.mIndex = i;
+                     item.mProperty = -1;
                   }
                   else
                   {
-                     label = lastLevelName + "[" + i + "] " + vi.GetName ();
-                     for (var j:int = 0; j < deepLevel; ++ j)
-                        label = "\t\t" + label;
+                     item.label = labelPrefix + " [" + i + "] " + vi.GetName ();
+                     item.mIndex = propertyOwnerIndex;
+                     item.mProperty = i;
                   }
-                  item.label = label;
                   
                   dataList.push (item);
                }
                
-               if (deepIntoCustomClass && viDef is VariableDefinition_Custom)
+               if (toDeepInto)
                {
                   if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false))
                   {
-                        item = new Object ();
-                        item.mVariableInstance = vi;
-                        label = vi.GetLongName ();
-                        item.label = label;
-                        
-                        dataList.push (item);
-                     
-                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProviderByVariableDefinition (variableDefinition, null, false, deepLevel + 1, vi.GetName (), dataList);
+                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProviderByVariableDefinition (variableDefinition, null, generalLabel, i, dataList);
                   }
                }
             }
@@ -284,6 +293,86 @@ package editor.trigger {
          return dataList;
       }
       
+      public static function VariableIndex2SelectListSelectedIndex (selectListDataProvider:Array, variableInstanceIndex:int, propertyIndex:int = -1):int
+      {
+         for (var i:int = 0; i < selectListDataProvider.length; ++ i)
+         {
+            var item:Object = selectListDataProvider[i];
+            if (item.mIndex == variableInstanceIndex && item.mProperty == propertyIndex)
+               return i;
+         }
+         
+         return 0; // null
+      }
+      
+      public function RetrieveValueForVariableValueSource (variableValueSource:ValueSource_Variable, selectItem:Object):void
+      {
+         var currentVariable:VariableInstance = variableValueSource.GetVariableInstance ();
+         var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
+         
+         var viIndex:int = selectItem.mIndex;
+         if (viIndex < 0)
+         {
+            variableValueSource.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            variableValueSource.SetPropertyVariableInstance (null);
+            return;
+         }
+         
+         var vi:VariableInstance = variable_space.GetVariableInstanceAt (viIndex);
+         variableValueSource.SetVariableInstance (vi);
+         
+         var viDef:VariableDefinition_Custom = vi.GetVariableDefinition () as VariableDefinition_Custom;
+         
+         var propertyIndex:int = selectItem.mProperty;
+         if (propertyIndex < 0 || viDef == null)
+         {
+            variableValueSource.SetPropertyVariableInstance (null);
+            return;
+         }
+         
+         var property_space:VariableSpaceClassInstance = viDef.GetCustomProperties ();
+         variableValueSource.SetPropertyVariableInstance (property_space.GetVariableInstanceAt (propertyIndex));
+      }
+      
+      public function RetrieveValueForVariableValueTarget (variableValueTarget:ValueTarget_Variable, selectItem:Object):void
+      {
+         var currentVariable:VariableInstance = variableValueTarget.GetVariableInstance ();
+         var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
+         
+         var viIndex:int = selectItem.mIndex;
+         if (viIndex < 0)
+         {
+            variableValueTarget.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            variableValueTarget.SetPropertyVariableInstance (null);
+            return;
+         }
+         
+         var vi:VariableInstance = variable_space.GetVariableInstanceAt (viIndex);
+         variableValueTarget.SetVariableInstance (vi);
+         
+         var viDef:VariableDefinition_Custom = vi.GetVariableDefinition () as VariableDefinition_Custom;
+         
+         var propertyIndex:int = selectItem.mProperty;
+         if (propertyIndex < 0 || viDef == null)
+         {
+            variableValueTarget.SetPropertyVariableInstance (null);
+            return;
+         }
+         
+         var property_space:VariableSpaceClassInstance = viDef.GetCustomProperties ();
+         variableValueTarget.SetPropertyVariableInstance (property_space.GetVariableInstanceAt (propertyIndex));
+      }
+      
+      //public static function CreateSelectionListItemValue (variableInstanceIndex:int, propertyVariableInstanceIndex:int = -1):int
+      //{
+      //   if (variableInstanceIndex < 0 || variableInstanceIndex > 0xFFFF)
+      //      return -1;
+      //   
+      //   if (propertyVariableInstanceIndex < 0)
+      //      return variableInstanceIndex;
+      //   else
+      //      return (propertyVariableInstanceIndex << 16) | variableInstanceIndex;
+      //}
       
       public function NotifyModified ():void
       {
@@ -300,21 +389,23 @@ package editor.trigger {
 //============================================================================
       
       // this function is slow if the number of variables is large.
-      public function GetVariableInstanceByTypeAndName (valueType:int, variableName:String, createIfNotExist:Boolean = false):VariableInstance
+      // if createIfNotExist is false or classType is core, scene can be null.
+      public function GetVariableInstanceByTypeAndName (scene:Scene, classType:int, valueType:int, variableName:String, createIfNotExist:Boolean = false):VariableInstance
       {
          for (var variableId:int = mVariableInstances.length - 1; variableId >= 0; -- variableId)
          {
             var variable_instance:VariableInstance = mVariableInstances [variableId];
-            if (variable_instance.GetValueType () == valueType && variable_instance.GetName () == variableName)
+            if (variable_instance.GetClassType () == classType && variable_instance.GetValueType () == valueType && variable_instance.GetName () == variableName)
                return variable_instance;
          }
        
          if (createIfNotExist)
          {
-            var variableDefinition:VariableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
+            //var variableDefinition:VariableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
+            var variableDefinition:VariableDefinition = CodeLibManager.CreateVariableDefinition (scene.GetCodeLibManager (), classType, valueType, variableName);
             var newVi:VariableInstance = CreateVariableInstanceFromDefinition (null, variableDefinition);
             //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
-            newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
+            //newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
             
             return newVi;
          }
@@ -322,23 +413,24 @@ package editor.trigger {
          return mNullVariableInstance;
       }
       
-      public function GetVariableInstanceByTypeAndKey (valueType:int, variableKey:String, variableName:String, createIfNotExist:Boolean = false):VariableInstance
+      //public function GetVariableInstanceByTypeAndKey (valueType:int, variableKey:String, variableName:String, createIfNotExist:Boolean = false):VariableInstance
+      public function GetVariableInstanceByDefinitionAndKey (variableDefinition:VariableDefinition, variableKey:String, createIfNotExist:Boolean = false):VariableInstance
       {
          if (IsVariableKeySupported ())
          {
             if (variableKey != null && variableKey.length > 0)
             {
                var variable_instance:VariableInstance = mLookupTableByKey [variableKey];
-               if (variable_instance != null && variable_instance.GetValueType () == valueType)
+               if (variable_instance != null && variable_instance.GetClassType () == variableDefinition.GetClassType () && variable_instance.GetValueType () == variableDefinition.GetValueType ())
                   return variable_instance;
             }
             
             if (createIfNotExist)
             {
-               var variableDefinition:VariableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
+               //var variableDefinition:VariableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
                var newVi:VariableInstance = CreateVariableInstanceFromDefinition (variableKey, variableDefinition);
                //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
-               newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
+               //newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
                
                return newVi;
             }
@@ -380,7 +472,7 @@ package editor.trigger {
          {
             if (IsVariableKeySupported () && key != null && key.length > 0)
             {
-               vi = GetVariableInstanceByTypeAndKey (variableDefinition.GetValueType (), key, variableDefinition.GetName ());
+               vi = GetVariableInstanceByDefinitionAndKey (variableDefinition, key);
                if (vi != null && vi != mNullVariableInstance)
                {
                   return vi;
@@ -388,7 +480,7 @@ package editor.trigger {
             }
             else
             {
-               vi = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
+               vi = GetVariableInstanceByTypeAndName (null, variableDefinition.GetClassType (), variableDefinition.GetValueType (), variableDefinition.GetName ());
                if (vi != null && vi != mNullVariableInstance)
                {
                   return vi;
@@ -397,6 +489,7 @@ package editor.trigger {
          }
          
          vi = new VariableInstance (this, mVariableInstances.length, variableDefinition);
+         vi.SetValueObject (variableDefinition.GetClass ().GetInitialInstacneValue ());
          
          mVariableInstances.push (vi);
          

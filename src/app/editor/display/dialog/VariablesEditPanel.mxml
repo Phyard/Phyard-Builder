@@ -158,7 +158,7 @@
             import mx.events.MenuEvent;
             
             import editor.world.World;
-            
+
             import editor.codelib.CodeLibManager;
 
             import editor.trigger.ClassCustom;
@@ -332,20 +332,11 @@
 
                var variableDefinition:VariableDefinition = null;
 
-               var typeId:int = event.item.@id;
-               if (event.item.@type == ClassTypeDefine.ClassType_Custom)
-               {
-                  // assert mCodeLibManager != null
-                  var customClass:ClassCustom = mCodeLibManager.GetClassByIndex (typeId).GetCustomClass ();
-                  variableDefinition = new VariableDefinition_Custom (customClass, customClass.GetDefaultInstanceName ());
-               }
-               else
-               {
-                  //var initName:String = VariableDefinition.GetValueTypeInstanceName (typeId);
-                  var initName:String = World.GetCoreClassById (typeId).GetDefaultInstanceName ();
-                  variableDefinition = VariableDefinition.CreateCoreVariableDefinition (typeId, initName);
-               }
-
+               var classType:int = event.item.@type;
+               var valueType:int = event.item.@id;
+               
+               variableDefinition = CodeLibManager.CreateVariableDefinition (mCodeLibManager, classType, valueType);
+               
                if (variableDefinition != null)
                {
                   var insert_index:int = List_Variables.selectedIndex + 1;

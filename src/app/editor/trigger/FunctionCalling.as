@@ -319,15 +319,15 @@ package editor.trigger {
             {
                ConvertRegisterVariablesForValueSource (scene, source as ValueSource_Variable);
             }
-            else if (source is ValueSource_Property)
+            else if (source is ValueSource_EntityProperty)
             {
-               entityValueSource = (source as ValueSource_Property).GetEntityValueSource ();
+               entityValueSource = (source as ValueSource_EntityProperty).GetEntityValueSource ();
                if (entityValueSource is ValueSource_Variable)
                {
                   ConvertRegisterVariablesForValueSource (scene, entityValueSource as ValueSource_Variable);
                }
                
-               var propertyValueSource:ValueSource = (source as ValueSource_Property).GetPropertyValueSource ();
+               var propertyValueSource:ValueSource = (source as ValueSource_EntityProperty).GetPropertyValueSource ();
                if (propertyValueSource is ValueSource_Variable)
                {
                   ConvertRegisterVariablesForValueSource (scene, propertyValueSource as ValueSource_Variable);
@@ -344,15 +344,15 @@ package editor.trigger {
             {
                ConvertRegisterVariablesForValueTarget (scene, target as ValueTarget_Variable);
             }
-            else if (target is ValueTarget_Property)
+            else if (target is ValueTarget_EntityProperty)
             {
-               entityValueSource = (target as ValueTarget_Property).GetEntityValueSource ();
+               entityValueSource = (target as ValueTarget_EntityProperty).GetEntityValueSource ();
                if (entityValueSource is ValueSource_Variable)
                {
                   ConvertRegisterVariablesForValueSource (scene, entityValueSource as ValueSource_Variable);
                }
                
-               var propertyValueTarget:ValueTarget = (target as ValueTarget_Property).GetPropertyValueTarget ();
+               var propertyValueTarget:ValueTarget = (target as ValueTarget_EntityProperty).GetPropertyValueTarget ();
                if (propertyValueTarget is ValueTarget_Variable)
                {
                   ConvertRegisterVariablesForValueTarget (scene, propertyValueTarget as ValueTarget_Variable);

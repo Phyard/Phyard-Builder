@@ -120,11 +120,11 @@
          import editor.trigger.ValueSource;
          import editor.trigger.ValueSource_Direct;
          import editor.trigger.ValueSource_Variable;
-         import editor.trigger.ValueSource_Property;
+         import editor.trigger.ValueSource_EntityProperty;
          import editor.trigger.ValueTarget;
          import editor.trigger.ValueTarget_Null;
          import editor.trigger.ValueTarget_Variable;
-         import editor.trigger.ValueTarget_Property;
+         import editor.trigger.ValueTarget_EntityProperty;
 
          //private var mInputValues:Object;
 
@@ -1018,9 +1018,9 @@
 
                value_control = variable_def.CreateControlForVariableValueSource (value_source as ValueSource_Variable, validVariableIndexes)
             }
-            else if (value_source is ValueSource_Property)
+            else if (value_source is ValueSource_EntityProperty)
             {
-               value_control = variable_def.CreateControlForPropertyValueSource (mCodeLibManager.GetScene (), value_source as ValueSource_Property);
+               value_control = variable_def.CreateControlForPropertyValueSource (mCodeLibManager.GetScene (), value_source as ValueSource_EntityProperty);
             }
 
             if (value_control != null)
@@ -1068,9 +1068,9 @@
 
                value_control = variable_def.CreateControlForVariableValueTarget (value_target as ValueTarget_Variable, validVariableIndexes);
             }
-            else if (value_target is ValueTarget_Property)
+            else if (value_target is ValueTarget_EntityProperty)
             {
-               value_control = variable_def.CreateControlForPropertyValueTarget (mCodeLibManager.GetScene (), value_target as ValueTarget_Property);
+               value_control = variable_def.CreateControlForPropertyValueTarget (mCodeLibManager.GetScene (), value_target as ValueTarget_EntityProperty);
             }
 
             if (value_control != null)
@@ -1122,9 +1122,9 @@
                {
                   variable_def.RetrieveVariableValueSourceFromControl (value_source as ValueSource_Variable, source_control);
                }
-               else if (value_source is ValueSource_Property)
+               else if (value_source is ValueSource_EntityProperty)
                {
-                  variable_def.RetrievePropertyValueSourceFromControl (mCodeLibManager.GetScene (), value_source as ValueSource_Property, source_control);
+                  variable_def.RetrievePropertyValueSourceFromControl (mCodeLibManager.GetScene (), value_source as ValueSource_EntityProperty, source_control);
 
                   if (clearContextMenus)
                   {
@@ -1160,9 +1160,9 @@
                {
                   variable_def.RetrieveVariableValueTargetFromControl (value_target as ValueTarget_Variable, target_control);
                }
-               else if (value_target is ValueTarget_Property)
+               else if (value_target is ValueTarget_EntityProperty)
                {
-                  variable_def.RetrievePropertyValueTargetFromControl (mCodeLibManager.GetScene (), value_target as ValueTarget_Property, target_control);
+                  variable_def.RetrievePropertyValueTargetFromControl (mCodeLibManager.GetScene (), value_target as ValueTarget_EntityProperty, target_control);
 
                   if (clearContextMenus)
                   {
@@ -1241,15 +1241,15 @@
 
             var value_type:int = variableDefinition.GetValueType ();
             var space_type:int;
-            if (valueSource is ValueSource_Property)
+            if (valueSource is ValueSource_EntityProperty)
             {
                //space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
-               space_type = ((valueSource as ValueSource_Property).GetPropertyValueSource () as ValueSource_Variable).GetVariableInstance ().GetSpaceType ();
+               space_type = ((valueSource as ValueSource_EntityProperty).GetPropertyValueSource () as ValueSource_Variable).GetVariableInstance ().GetSpaceType ();
 
                BuildContextMenuForValueSource (
                               (((sprite as Container).getChildAt (0) as Container).getChildAt (0)) as InteractiveObject,
                               variableDefinition.GetVariableDefinitionForEntityParameter (),
-                              (valueSource as ValueSource_Property).GetEntityValueSource (),
+                              (valueSource as ValueSource_EntityProperty).GetEntityValueSource (),
                               true
                               );
             }
@@ -1410,7 +1410,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultDirectValueSource ());
 
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
@@ -1419,7 +1419,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultDirectValueSource ());
 
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
@@ -1474,7 +1474,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (ownerFuncDefinition.GetInputVariableSpace ()));
 
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
@@ -1483,7 +1483,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (ownerFuncDefinition.GetInputVariableSpace ()));
 
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
@@ -1536,7 +1536,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetRegisterVariableSpace (variable_def.GetVariableDefinitionForEntityParameter ().GetValueType())));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1544,7 +1544,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetRegisterVariableSpace (variable_def.GetVariableDefinitionForEntityParameter ().GetValueType())));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1596,7 +1596,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1604,7 +1604,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1656,7 +1656,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1664,7 +1664,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1716,7 +1716,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1724,7 +1724,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1776,7 +1776,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetSessionVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1784,7 +1784,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetSessionVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1836,7 +1836,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetGlobalVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1844,7 +1844,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetGlobalVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1896,7 +1896,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1904,7 +1904,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1987,15 +1987,15 @@
 
             var value_type:int = variableDefinition.GetValueType ();
             var space_type:int;
-            if (valueTarget is ValueTarget_Property)
+            if (valueTarget is ValueTarget_EntityProperty)
             {
                //space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
-               space_type = ((valueTarget as ValueTarget_Property).GetPropertyValueTarget () as ValueTarget_Variable).GetVariableInstance ().GetSpaceType ();
+               space_type = ((valueTarget as ValueTarget_EntityProperty).GetPropertyValueTarget () as ValueTarget_Variable).GetVariableInstance ().GetSpaceType ();
 
                BuildContextMenuForValueSource (
                               (((sprite as Container).getChildAt (0) as Container).getChildAt (0)) as InteractiveObject,
                               variableDefinition.GetVariableDefinitionForEntityParameter (),
-                              (valueTarget as ValueTarget_Property).GetEntityValueSource (),
+                              (valueTarget as ValueTarget_EntityProperty).GetEntityValueSource (),
                               true,
                               true
                               );

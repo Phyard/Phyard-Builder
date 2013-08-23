@@ -120,6 +120,15 @@ package editor.codelib {
          return mPackage;
       }
       
+      public function SetPackageIndices (indexes:Array):void
+      {
+      }
+      
+      public function GetPackageIndices ():Array
+      {
+         return null;
+      }
+      
       public function IsDesignDependent ():Boolean
       {
          return mFunctionDefinition.IsDesignDependent ();

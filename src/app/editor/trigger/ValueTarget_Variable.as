@@ -12,15 +12,13 @@ package editor.trigger {
    {
       private var mVariableInstance:VariableInstance;
       
-      private var mPropertyVariableInstance:VariableInstance;
+      private var mPropertyVariableInstance:VariableInstance = null;
             // null for general variables
             // non-null for object properties, in this case, mVariableInstance is the property owner
       
-      public function ValueTarget_Variable (vi:VariableInstance, propertyVariableInstance:VariableInstance = null)
+      public function ValueTarget_Variable (vi:VariableInstance)
       {
          SetVariableInstance (vi);
-         
-         SetPropertyVariableInstance (propertyVariableInstance);
       }
       
       public function TargetToCodeString (vd:VariableDefinition):String
@@ -36,6 +34,12 @@ package editor.trigger {
       
       public function GetVariableIndex ():int
       {
+         if (mPropertyVariableInstance != null && GetPropertyIndex () < 0)
+         {
+            mPropertyVariableInstance = null;
+            mVariableInstance = mVariableInstance.GetVariableSpace ().GetNullVariableInstance ();
+         }
+         
          return mVariableInstance.GetIndex ();
       }
       
@@ -56,19 +60,63 @@ package editor.trigger {
       
       //---------- 
       
+      private function GetPropertyVariableInstanceAt (propertyIndex:int):VariableInstance
+      {
+         if (propertyIndex < 0)
+            return null;
+         
+         var viDef:VariableDefinition_Custom = mVariableInstance.GetVariableDefinition () as VariableDefinition_Custom;
+         if (viDef == null)
+            return null;
+         
+         var customClass:ClassCustom = viDef.GeCustomClass ();
+         //assert customClass != null
+         if (customClass.GetID () < 0)
+            return null;
+         
+         var propertySpace:VariableSpaceClassInstance = customClass.GetPropertyDefinitionSpace ();
+         //assert propertySpace != null
+         
+         var vi:VariableInstance = propertySpace.GetVariableInstanceAt (propertyIndex);
+         if (vi.GetIndex () < 0)
+            return null;
+         
+         return vi;
+      }
+      
+      private function ValidateProeprty ():void
+      {
+         if (mPropertyVariableInstance != null)
+         {
+            mPropertyVariableInstance = GetPropertyVariableInstanceAt (mPropertyVariableInstance.GetIndex ());
+            if (mPropertyVariableInstance == null)
+            {
+               mVariableInstance = mVariableInstance.GetVariableSpace ().GetNullVariableInstance ();
+            }
+         }
+      }
+      
       public function GetPropertyIndex ():int
       {
+         ValidateProeprty ();
+         
          return mPropertyVariableInstance == null ? -1: mPropertyVariableInstance.GetIndex ();
       }
       
-      public function GetPropertyVariableInstance ():VariableInstance
+      // call this function if really try to set a valid property.
+      // To clear the property, call ClearProperty 
+      public function SetPropertyIndex (proeprtyIndex:int):void
       {
-         return mPropertyVariableInstance;
+         mPropertyVariableInstance = GetPropertyVariableInstanceAt (proeprtyIndex);
+         if (mPropertyVariableInstance == null)
+         {
+            mVariableInstance = mVariableInstance.GetVariableSpace ().GetNullVariableInstance ();
+         }
       }
       
-      public function SetPropertyVariableInstance (ownerVariableInstance:VariableInstance):void
+      public function ClearProperty ():void
       {
-         mPropertyVariableInstance = ownerVariableInstance;
+         mPropertyVariableInstance = null;
       }
       
 //======================================================
@@ -77,7 +125,7 @@ package editor.trigger {
       
       public function GetValueTargetType ():int
       {
-         return mPropertyVariableInstance != null ? ValueTargetTypeDefine.ValueTarget_ObjectProperty : ValueTargetTypeDefine.ValueTarget_Variable;
+         return GetPropertyIndex () >= 0 ? ValueTargetTypeDefine.ValueTarget_ObjectProperty : ValueTargetTypeDefine.ValueTarget_Variable;
       }
       
       //public function AssignValue (source:ValueSource):void
@@ -98,29 +146,36 @@ package editor.trigger {
          if (vi == null)
             return defaultValueTarget;
          
-         if (mPropertyVariableInstance == null)
-            return new ValueTarget_Variable (vi);
-
-         // assert vi.GetClassType () == Custom
-         if (vi.GetClassType () != ClassTypeDefine.ClassType_Custom)
-            return defaultValueTarget;
-
-         var customClass:ClassCustom = scene.GetCodeLibManager ().GetCustomClass (vi.GetValueType ());
-         if (customClass == null)
-            return defaultValueTarget;
+         var clonedTarget:ValueTarget_Variable = new ValueTarget_Variable (vi);
          
-         var propertySpace:VariableSpaceClassInstance = customClass.GetPropertyDefinitionSpace ();
+         if (mPropertyVariableInstance != null)
+            clonedTarget.SetPropertyIndex (mPropertyVariableInstance.GetIndex ());
          
-         var propertyVariableInstance:VariableInstance;
-         if (mPropertyVariableInstance.GetIndex () < 0)
-            propertyVariableInstance = propertySpace.GetNullVariableInstance ();
-         else
-         {
-            propertyVariableInstance = propertySpace.GetVariableInstanceByTypeAndName (scene, mPropertyVariableInstance.GetClassType (), mPropertyVariableInstance.GetValueType (), mPropertyVariableInstance.GetName (), targetFunctionDefinition.IsCustom ());
-            propertyVariableInstance.SetValueObject (mPropertyVariableInstance.GetValueObject ());
-         }
+         return clonedTarget;
          
-         return new ValueTarget_Variable (vi, propertyVariableInstance);
+         //if (mPropertyVariableInstance == null)
+         //   return new ValueTarget_Variable (vi);
+         //
+         //// assert vi.GetClassType () == Custom
+         //if (vi.GetClassType () != ClassTypeDefine.ClassType_Custom)
+         //   return defaultValueTarget;
+         //
+         //var customClass:ClassCustom = scene.GetCodeLibManager ().GetCustomClass (vi.GetValueType ());
+         //if (customClass == null)
+         //   return defaultValueTarget;
+         //
+         //var propertySpace:VariableSpaceClassInstance = customClass.GetPropertyDefinitionSpace ();
+         //
+         //var propertyVariableInstance:VariableInstance;
+         //if (mPropertyVariableInstance.GetIndex () < 0)
+         //   propertyVariableInstance = propertySpace.GetNullVariableInstance ();
+         //else
+         //{
+         //   propertyVariableInstance = propertySpace.GetVariableInstanceByTypeAndName (scene, mPropertyVariableInstance.GetClassType (), mPropertyVariableInstance.GetValueType (), mPropertyVariableInstance.GetName (), targetFunctionDefinition.IsCustom ());
+         //   propertyVariableInstance.SetValueObject (mPropertyVariableInstance.GetValueObject ());
+         //}
+         //
+         //return new ValueTarget_Variable (vi, propertyVariableInstance);
       }
       
       private static function GetVariableInstanceFrom (fromVariableInstance:VariableInstance, scene:Scene, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):VariableInstance

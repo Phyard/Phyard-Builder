@@ -1116,6 +1116,9 @@ package common {
                element.@name = classDefine.mName;
                element.@x = classDefine.mPosX;
                element.@y = classDefine.mPosY;
+               
+               element.@package_indices = IntegerArray2IndicesString (classDefine.mPackageIndices);
+               element.@parent_indices = IntegerArray2IndicesString (classDefine.mParentClassIndices);
 
                xml.CustomClasses.appendChild (element);
             }
@@ -1142,6 +1145,10 @@ package common {
                if (worldDefine.mVersion >= 0x0156)
                {
                   element.@design_dependent = functionDefine.mDesignDependent ? 1 : 0;
+               }
+               if (worldDefine.mVersion >= 0x0205)
+               {
+                  element.@package_indices = IntegerArray2IndicesString (functionDefine.mPackageIndices);
                }
 
                xml.CustomFunctions.appendChild (element);
@@ -2348,6 +2355,11 @@ package common {
                classDefine.mName = byteArray.readUTF ();
                classDefine.mPosX = byteArray.readFloat ();
                classDefine.mPosY = byteArray.readFloat ();
+               
+               classDefine.mPackageIndices = ReadShortArrayFromBinFile (byteArray);
+               classDefine.mParentClassIndices = ReadShortArrayFromBinFile (byteArray);
+               
+               sceneDefine.mClassDefines.push (classDefine);
             }
          }
          
@@ -2385,6 +2397,10 @@ package common {
                if (worldDefine.mVersion >= 0x0156)
                {
                   functionDefine.mDesignDependent = byteArray.readByte () != 0;
+               }
+               if (worldDefine.mVersion >= 0x0205)
+               {
+                  functionDefine.mPackageIndices = ReadShortArrayFromBinFile (byteArray);
                }
 
                TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);

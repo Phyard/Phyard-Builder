@@ -66,11 +66,13 @@ package common {
    import common.trigger.define.ValueSourceDefine_Null;
    import common.trigger.define.ValueSourceDefine_Direct;
    import common.trigger.define.ValueSourceDefine_Variable;
-   import common.trigger.define.ValueSourceDefine_Property;
+   import common.trigger.define.ValueSourceDefine_ObjectProperty;
+   import common.trigger.define.ValueSourceDefine_EntityProperty;
    import common.trigger.define.ValueTargetDefine;
    import common.trigger.define.ValueTargetDefine_Null;
    import common.trigger.define.ValueTargetDefine_Variable;
-   import common.trigger.define.ValueTargetDefine_Property;
+   import common.trigger.define.ValueTargetDefine_ObjectProperty;
+   import common.trigger.define.ValueTargetDefine_EntityProperty;
    
    //import common.trigger.define.VariableSpaceDefine;
    import common.trigger.define.VariableDefine;
@@ -173,7 +175,7 @@ package common {
          
          var value_target_defines:Array = new Array (num_outputs);
          for (i = 0; i < num_outputs; ++ i)
-            value_target_defines [i] = ValueTarget2ValueTargetDefine (scene, funcCalling.GetOutputValueTarget (i), func_declaration.GetInputParamValueType (i));
+            value_target_defines [i] = ValueTarget2ValueTargetDefine (scene, funcCalling.GetOutputValueTarget (i));//, func_declaration.GetInputParamValueType (i));
          
          var func_calling_define:FunctionCallingDefine = new FunctionCallingDefine ();
          func_calling_define.mFunctionType = func_declaration.GetType ();
@@ -205,22 +207,29 @@ package common {
                trace (err.getStackTrace ());
             }
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variable_source:ValueSource_Variable = valueSource as ValueSource_Variable;
             
-            value_source_define = new ValueSourceDefine_Variable (variable_source.GetVariableSpaceType (), variable_source.GetVariableIndex ());
+            if (variable_source.GetPropertyIndex () < 0)
+               value_source_define = new ValueSourceDefine_Variable (variable_source.GetVariableSpaceType (), variable_source.GetVariableIndex ());
+            else
+               value_source_define = new ValueSourceDefine_ObjectProperty (variable_source.GetVariableSpaceType (), variable_source.GetVariableIndex (), variable_source.GetPropertyIndex ());
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
             var property_source:ValueSource_EntityProperty = valueSource as ValueSource_EntityProperty;
             
             // before v2.03
-            //value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), CoreClassIds.ValueType_Entity)
+            //value_source_define = new ValueSourceDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), CoreClassIds.ValueType_Entity)
             //                                , 0, property_source.GetPropertyVariableIndex ());
             // from v2.03
-            value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
-                                            , property_source.GetPropertyVariableSpaceType (), property_source.GetPropertyVariableIndex ());
+            //value_source_define = new ValueSourceDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+            //                                , property_source.GetPropertyVariableSpaceType (), property_source.GetPropertyVariableIndex ());
+            // from v2.05
+            value_source_define = new ValueSourceDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+                                                                      , ValueSource2ValueSourceDefine (scene, property_source.GetPropertyValueSource (), classType, valueType) as ValueSourceDefine_Variable
+                                                                     );
          }
          
          if (value_source_define == null)
@@ -233,28 +242,35 @@ package common {
          return value_source_define;
       }
       
-      public static function ValueTarget2ValueTargetDefine (scene:Scene, valueTarget:ValueTarget, valueType:int):ValueTargetDefine
+      public static function ValueTarget2ValueTargetDefine (scene:Scene, valueTarget:ValueTarget):ValueTargetDefine
       {
          var value_target_define:ValueTargetDefine = null;
          
          var target_type:int = valueTarget.GetValueTargetType ();
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variable_target:ValueTarget_Variable = valueTarget as ValueTarget_Variable;
             
-            value_target_define = new ValueTargetDefine_Variable (variable_target.GetVariableSpaceType (), variable_target.GetVariableIndex ());
+            if (variable_target.GetPropertyIndex () < 0)
+               value_target_define = new ValueTargetDefine_Variable (variable_target.GetVariableSpaceType (), variable_target.GetVariableIndex ());
+            else
+               value_target_define = new ValueTargetDefine_ObjectProperty (variable_target.GetVariableSpaceType (), variable_target.GetVariableIndex (), variable_target.GetPropertyIndex ());
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
             var property_target:ValueTarget_EntityProperty = valueTarget as ValueTarget_EntityProperty;
             
             // before v2.03
-            //value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), CoreClassIds.ValueType_Entity)
+            //value_target_define = new ValueTargetDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), CoreClassIds.ValueType_Entity)
             //                                , 0, property_target.GetPropertyVariableIndex ());
             // from v2.03
-            value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
-                                            , property_target.GetPropertyVariableSpaceType (), property_target.GetPropertyVariableIndex ());
+            //value_target_define = new ValueTargetDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+            //                                , property_target.GetPropertyVariableSpaceType (), property_target.GetPropertyVariableIndex ());
+            // since v2.05
+            value_target_define = new ValueTargetDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+                                                                      , ValueTarget2ValueTargetDefine (scene, property_target.GetPropertyValueTarget ()) as ValueTargetDefine_Variable
+                                                                    );
          }
          
          if (value_target_define == null)
@@ -418,7 +434,7 @@ package common {
                if (i >= funcCallingDefine.mNumOutputs)
                   value_targets [i] = func_declaration.GetOutputParamDefinitionAt (i).GetDefaultValueTarget ();
                else
-                  value_targets [i] = ValueTargetDefine2ValueTarget (scene, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
+                  value_targets [i] = ValueTargetDefine2ValueTarget (scene, outputValueTargetDefines [i], func_declaration.GetInputParamClassType (i), func_declaration.GetOutputParamValueType (i), functionDefinition);
             }
          }
          
@@ -428,7 +444,7 @@ package common {
          return func_calling;
       }
       
-      public static function ValueSourceDefine2ValueSource (scene:Scene, valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, functionDefinition:FunctionDefinition):ValueSource
+      public static function ValueSourceDefine2ValueSource (scene:Scene, valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, functionDefinition:FunctionDefinition, forPropertyOfEntity:Boolean = false):ValueSource
       {
          var value_source:ValueSource = null;
          
@@ -447,7 +463,7 @@ package common {
                trace (err.getStackTrace ());
             }
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variable_source_define:ValueSourceDefine_Variable = valueSourceDefine as ValueSourceDefine_Variable;
             
@@ -455,7 +471,16 @@ package common {
             
             var variable_index:int = variable_source_define.mVariableIndex;
             
-            switch (variable_source_define.mSpaceType)
+            var variable_space_type:int = variable_source_define.mSpaceType;
+            
+            if (forPropertyOfEntity)
+            {
+               // ! important. In history, the value may be 0 for ValueSpaceTypeDefine.ValueSpace_EntityProperties
+               if (variable_space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+                  variable_space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+            }
+            
+            switch (variable_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
@@ -473,10 +498,13 @@ package common {
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
-                  var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
-                  if (variable_space != null)
+                  if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     variable_instance = variable_space.GetVariableInstanceAt (variable_index);
+                     var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
+                     if (variable_space != null)
+                     {
+                        variable_instance = variable_space.GetVariableInstanceAt (variable_index);
+                     }
                   }
                   
                   break;
@@ -489,33 +517,54 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Local:
                   variable_instance = functionDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
+               //>>> from v2.05
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  variable_instance = scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+                  variable_instance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               //<<<
                default:
                   break;
             }
             
-            
             if (variable_instance != null)
             {
+               value_source = new ValueSource_Variable (variable_instance);
+               if (source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
+               {
+                  (value_source as ValueSource_Variable).SetPropertyIndex ((variable_source_define as ValueSourceDefine_ObjectProperty).mPropertyIndex);
+               }
+            }
+            else if (forPropertyOfEntity)
+            {
+               // make sure it is not null Variable source for property of entity
+               variable_instance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetNullVariableInstance ();
                value_source = new ValueSource_Variable (variable_instance);
             }
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
+            var property_source_define:ValueSourceDefine_EntityProperty = valueSourceDefine as ValueSourceDefine_EntityProperty;
             
-            switch (property_source_define.mSpacePackageId)
-            {
-               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
-                  value_source = new ValueSource_EntityProperty (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
-                                                   , new ValueSource_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
-                  break;
-               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
-               case 0: // for compability, old versions use this value for ValueSpaceTypeDefine.ValueSpace_EntityProperties
-               default:
-                  value_source = new ValueSource_EntityProperty (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
-                                                   , new ValueSource_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
-                  break;
-            }
+            //switch (property_source_define.mSpacePackageId)
+            //{
+            //   case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+            //      value_source = new ValueSource_EntityProperty (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+            //                                       , new ValueSource_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+            //      break;
+            //   case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+            //   case 0: // for compability, old versions use this value for ValueSpaceTypeDefine.ValueSpace_EntityProperties
+            //   default:
+            //      value_source = new ValueSource_EntityProperty (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+            //                                       , new ValueSource_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+            //      break;
+            //}
+            
+            value_source = new ValueSource_EntityProperty (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+                                                         , ValueSourceDefine2ValueSource (scene, property_source_define.mPropertyValueSourceDefine, classType, valueType, null, true) as ValueSource_Variable
+                                                      );
          }
          
          if (value_source == null)
@@ -528,13 +577,13 @@ package common {
          return value_source;
       }
       
-      public static function ValueTargetDefine2ValueTarget (scene:Scene, valueTargetDefine:ValueTargetDefine, valueType:int, functionDefinition:FunctionDefinition):ValueTarget
+      public static function ValueTargetDefine2ValueTarget (scene:Scene, valueTargetDefine:ValueTargetDefine, classType:int, valueType:int, functionDefinition:FunctionDefinition, forPropertyOfEntity:Boolean = false):ValueTarget
       {
          var value_target:ValueTarget = null;
          
          var target_type:int = valueTargetDefine.GetValueTargetType ();
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variable_target_define:ValueTargetDefine_Variable = valueTargetDefine as ValueTargetDefine_Variable;
             
@@ -542,7 +591,16 @@ package common {
             
             var variable_index:int = variable_target_define.mVariableIndex;
             
-            switch (variable_target_define.mSpaceType)
+            var variable_space_type:int = variable_target_define.mSpaceType;
+            
+            if (forPropertyOfEntity)
+            {
+               // ! important. In history, the value may be 0 for ValueSpaceTypeDefine.ValueSpace_EntityProperties
+               if (variable_space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+                  variable_space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+            }
+            
+            switch (variable_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
@@ -560,10 +618,13 @@ package common {
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
-                  var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
-                  if (variable_space != null)
+                  if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     variable_instance = variable_space.GetVariableInstanceAt (variable_index);
+                     var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
+                     if (variable_space != null)
+                     {
+                        variable_instance = variable_space.GetVariableInstanceAt (variable_index);
+                     }
                   }
                   
                   break;
@@ -576,6 +637,14 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Local:
                   variable_instance = functionDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
+               //>>> from v2.05
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  variable_instance = scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+                  variable_instance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               //<<<
                default:
                   break;
             }
@@ -583,25 +652,39 @@ package common {
             if (variable_instance != null)
             {
                value_target = new ValueTarget_Variable (variable_instance);
+               if (target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
+               {
+                  (value_target as ValueTarget_Variable).SetPropertyIndex ((variable_target_define as ValueTargetDefine_ObjectProperty).mPropertyIndex);
+               }
+            }
+            else if (forPropertyOfEntity)
+            {
+               // make sure it is not null Variable source for property of entity
+               variable_instance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetNullVariableInstance ();
+               value_target = new ValueTarget_Variable (variable_instance);
             }
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
+            var property_target_define:ValueTargetDefine_EntityProperty = valueTargetDefine as ValueTargetDefine_EntityProperty;
             
-            switch (property_target_define.mSpacePackageId)
-            {
-               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
-                  value_target = new ValueTarget_EntityProperty (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
-                                                   , new ValueTarget_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
-                  break;
-               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
-               case 0: // for compability
-               default:
-                  value_target = new ValueTarget_EntityProperty (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
-                                                   , new ValueTarget_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
-                  break;
-            }
+            //switch (property_target_define.mSpacePackageId)
+            //{
+            //   case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+            //      value_target = new ValueTarget_EntityProperty (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+            //                                       , new ValueTarget_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+            //      break;
+            //   case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+            //   case 0: // for compability
+            //   default:
+            //      value_target = new ValueTarget_EntityProperty (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+            //                                       , new ValueTarget_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+            //      break;
+            //}
+
+            value_target = new ValueTarget_EntityProperty (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+                                                         , ValueTargetDefine2ValueTarget (scene, property_target_define.mPropertyValueTargetDefine, classType, valueType, null, true) as ValueTarget_Variable
+                                                       );
          }
          
          if (value_target == null)
@@ -806,11 +889,20 @@ package common {
             WriteValueTargetDefinIntoBinFile (binFile, outputValueTargetDefines [i]);
       }
       
-      public static function WriteValueSourceDefinIntoBinFile (binFile:ByteArray, valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, numberDetail:int):void
+      public static function WriteValueSourceDefinIntoBinFile (binFile:ByteArray, valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, numberDetail:int, forPropertyOfEntity:Boolean = false):void
       {
          // ValueSourceDefine_Direct.mValueType will not packed
          
          var source_type:int = valueSourceDefine.GetValueSourceType ();
+         
+         //>>from v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   if (source_type == 0) // or source_type != ValueSourceTypeDefine.ValueSource_ObjectProperty, only 2 possibilities
+         //      source_type = ValueSourceTypeDefine.ValueSource_Variable; // in history, source_type forPropertyOfEntity is alwasy 0. 
+         //}
+         //<<
          
          binFile.writeByte (source_type);
          
@@ -821,51 +913,82 @@ package common {
             
             CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, classType, valueType, numberDetail, direct_source_define.mValueObject);
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variable_source_define:ValueSourceDefine_Variable = valueSourceDefine as ValueSourceDefine_Variable;
             
             binFile.writeByte (variable_source_define.mSpaceType);
             binFile.writeShort (variable_source_define.mVariableIndex);
+            //>> from v2.05
+            if (source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
+            {
+               binFile.writeShort ((valueSourceDefine as ValueSourceDefine_ObjectProperty).mPropertyIndex);
+            }
+            //<<
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
+            var property_source_define:ValueSourceDefine_EntityProperty = valueSourceDefine as ValueSourceDefine_EntityProperty;
             
             WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double); // CoreClassIds.NumberTypeDetail_Double is useless
-            //binFile.writeShort (property_source_define.mSpacePackageId); // before v2.03
-            //>> from v2.03
-            binFile.writeByte (0);
-            binFile.writeByte (property_source_define.mSpacePackageId);
+            
+            //>> before v2.05
+            ////binFile.writeShort (property_source_define.mSpacePackageId); // before v2.03
+            ////>> from v2.03
+            //binFile.writeByte (0);
+            //binFile.writeByte (property_source_define.mSpacePackageId);
+            ////<<
+            //binFile.writeShort (property_source_define.mPropertyId);
             //<<
-            binFile.writeShort (property_source_define.mPropertyId);
+            
+            //>>since v2.05
+            WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mPropertyValueSourceDefine, classType, valueType, CoreClassIds.NumberTypeDetail_Double, true); // CoreClassIds.NumberTypeDetail_Double is useless
+            //<<
          }
       }
       
-      public static function WriteValueTargetDefinIntoBinFile (binFile:ByteArray, valueTargetDefine:ValueTargetDefine):void
+      public static function WriteValueTargetDefinIntoBinFile (binFile:ByteArray, valueTargetDefine:ValueTargetDefine, forPropertyOfEntity:Boolean = false):void
       {
          var target_type:int = valueTargetDefine.GetValueTargetType ();
          
+         //>>from v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   if (target_type == 0) // or target_type != ValueTargetTypeDefine.ValueTarget_ObjectProperty, only 2 possibilities
+         //      target_type = ValueTargetTypeDefine.ValueTarget_Variable; // in history, target_type forPropertyOfEntity is alwasy 0. 
+         //}
+         //<<
+         
          binFile.writeByte (target_type);
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variable_target_define:ValueTargetDefine_Variable = valueTargetDefine as ValueTargetDefine_Variable;
             
             binFile.writeByte (variable_target_define.mSpaceType);
             binFile.writeShort (variable_target_define.mVariableIndex);
+            //>> from v2.05
+            if (target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
+            {
+               binFile.writeShort ((valueTargetDefine as ValueTargetDefine_ObjectProperty).mPropertyIndex);
+            }
+            //<<
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
+            var property_target_define:ValueTargetDefine_EntityProperty = valueTargetDefine as ValueTargetDefine_EntityProperty;
             
             WriteValueSourceDefinIntoBinFile (binFile, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double); // CoreClassIds.NumberTypeDetail_Double is useless
-            //binFile.writeShort (property_target_define.mSpacePackageId); // before v2.03
-            //>> from v2.03
-            binFile.writeByte (0);
-            binFile.writeByte (property_target_define.mSpacePackageId);
-            //<<
-            binFile.writeShort (property_target_define.mPropertyId);
+            
+            ////binFile.writeShort (property_target_define.mSpacePackageId); // before v2.03
+            ////>> from v2.03
+            //binFile.writeByte (0);
+            //binFile.writeByte (property_target_define.mSpacePackageId);
+            ////<<
+            //binFile.writeShort (property_target_define.mPropertyId);
+            
+            WriteValueTargetDefinIntoBinFile (binFile, property_target_define.mPropertyValueTargetDefine, true);
          }
       }
       
@@ -1007,7 +1130,10 @@ package common {
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
             for each (elementValueTarget in funcCallingElement.OutputValueTargets.ValueTarget)
-               value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget, func_declaration.GetOutputParamValueType (i ++)));
+            {
+               value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget));//, func_declaration.GetOutputParamValueType (i)));
+               ++ i;
+            }
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
@@ -1016,7 +1142,8 @@ package common {
             for each (elementValueTarget in funcCallingElement.OutputValueTargets.ValueTarget)
             {
                //value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget, (calledOutputVariableDefines [i ++] as VariableDefine).mDirectValueSourceDefine.mValueType));
-               value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget, (calledOutputVariableDefines [i ++] as VariableDefine).mValueType));
+               value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget));//, (calledOutputVariableDefines [i] as VariableDefine).mValueType));
+               ++ i;
             }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
@@ -1036,11 +1163,20 @@ package common {
          return func_calling_define;
       }
       
-      public static function Xml2ValueSourceDefine (valueSourceElement:XML, classType:int, valueType:int):ValueSourceDefine
+      public static function Xml2ValueSourceDefine (valueSourceElement:XML, classType:int, valueType:int, forPropertyOfEntity:Boolean = false):ValueSourceDefine
       {
          var value_source_define:ValueSourceDefine = null;
          
          var source_type:int = parseInt (valueSourceElement.@type);
+         
+         //>>from v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   //if (source_type == 0)
+         //   source_type = ValueSourceTypeDefine.ValueSource_ObjectProperty; // the only possible
+         //}
+         //<<
          
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
@@ -1053,14 +1189,37 @@ package common {
                trace (err.getStackTrace ());
             }
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
-            value_source_define = new ValueSourceDefine_Variable (parseInt (valueSourceElement.@variable_space), parseInt (valueSourceElement.@variable_index));
+            if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+               value_source_define = new ValueSourceDefine_Variable (parseInt (valueSourceElement.@variable_space), parseInt (valueSourceElement.@variable_index));
+            else
+               value_source_define = new ValueSourceDefine_ObjectProperty (parseInt (valueSourceElement.@variable_space), parseInt (valueSourceElement.@variable_index), parseInt (valueSourceElement.@object_property_index));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            value_source_define = new ValueSourceDefine_Property (Xml2ValueSourceDefine (valueSourceElement.PropertyOwnerValueSource[0], ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
-                                                                  , parseInt (valueSourceElement.@property_package_id), parseInt (valueSourceElement.@property_id));
+            //>> before v2.05
+            //value_source_define = new ValueSourceDefine_EntityProperty (Xml2ValueSourceDefine (valueSourceElement.PropertyOwnerValueSource[0], ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+            //                                                      , parseInt (valueSourceElement.@property_package_id), parseInt (valueSourceElement.@property_id));
+            //<<
+            
+            var propertyVariableValueSource:ValueSourceDefine_Variable;
+            
+            // for compability, non-object-property source still uses the old style
+            if (valueSourceElement.PropertyVariableValueSource == null || valueSourceElement.PropertyVariableValueSource.length () == 0)
+            {
+               //>> before v2.05
+               propertyVariableValueSource = new ValueSourceDefine_Variable (parseInt (valueSourceElement.@property_package_id), parseInt (valueSourceElement.@property_id));
+               //<<
+            }
+            else // new style for object property since c2.05
+            {
+               propertyVariableValueSource = Xml2ValueSourceDefine (valueSourceElement.PropertyVariableValueSource [0], classType, valueType, true) as ValueSourceDefine_Variable;
+            }
+            
+            value_source_define = new ValueSourceDefine_EntityProperty (Xml2ValueSourceDefine (valueSourceElement.PropertyOwnerValueSource[0], ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+                                                                      , propertyVariableValueSource
+                                                                   );
          }
          
          if (value_source_define == null)
@@ -1073,21 +1232,51 @@ package common {
          return value_source_define;
       }
       
-      public static function Xml2ValueTargetDefine (valueTargetElement:XML, valueType:int):ValueTargetDefine
+      public static function Xml2ValueTargetDefine (valueTargetElement:XML, forPropertyOfEntity:Boolean = false):ValueTargetDefine
       {
          var value_target_define:ValueTargetDefine = null;
          
          var target_type:int = parseInt (valueTargetElement.@type);
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         //>>from v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   //if (target_type == 0)
+         //   target_type = ValueTargetTypeDefine.ValueTarget_ObjectProperty; // the only possible
+         //}
+         //<<
+         
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
-            value_target_define = new ValueTargetDefine_Variable (parseInt (valueTargetElement.@variable_space), parseInt (valueTargetElement.@variable_index));
+            if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+               value_target_define = new ValueTargetDefine_Variable (parseInt (valueTargetElement.@variable_space), parseInt (valueTargetElement.@variable_index));
+            else
+               value_target_define = new ValueTargetDefine_ObjectProperty (parseInt (valueTargetElement.@variable_space), parseInt (valueTargetElement.@variable_index), parseInt (valueTargetElement.@object_property_index));
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            value_target_define = new ValueTargetDefine_Property (Xml2ValueSourceDefine (valueTargetElement.PropertyOwnerValueSource[0],
-                                                                      ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity),
-                                                                  parseInt (valueTargetElement.@property_package_id), parseInt (valueTargetElement.@property_id));
+            //value_target_define = new ValueTargetDefine_EntityProperty (Xml2ValueSourceDefine (valueTargetElement.PropertyOwnerValueSource[0],
+            //                                                          ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity),
+            //                                                      parseInt (valueTargetElement.@property_package_id), parseInt (valueTargetElement.@property_id));
+
+            var propertyVariableValueTarget:ValueTargetDefine_Variable;
+            
+            // for compability, non-object-property source still uses the old style
+            if (valueTargetElement.PropertyVariableValueTarget == null || valueTargetElement.PropertyVariableValueTarget.length () == 0)
+            {
+               //>> before v2.05
+               propertyVariableValueTarget = new ValueTargetDefine_Variable (parseInt (valueTargetElement.@property_package_id), parseInt (valueTargetElement.@property_id));
+               //<<
+            }
+            else // new style for object property since c2.05
+            {
+               propertyVariableValueTarget = Xml2ValueTargetDefine (valueTargetElement.PropertyVariableValueTarget [0], true) as ValueTargetDefine_Variable;
+            }
+
+            value_target_define = new ValueTargetDefine_EntityProperty (Xml2ValueSourceDefine (valueTargetElement.PropertyOwnerValueSource[0], ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+                                                                      , propertyVariableValueTarget
+                                                                    );
          }
          
          if (value_target_define == null)
@@ -1254,7 +1443,7 @@ package common {
                }
             }
          }
-         else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Variable || valueSourceType == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variableSourceDefine:ValueSourceDefine_Variable = sourceDefine as ValueSourceDefine_Variable;
             
@@ -1283,18 +1472,18 @@ package common {
          }
          else if (valueSourceType == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            var propertySourceDefine:ValueSourceDefine_Property = sourceDefine as ValueSourceDefine_Property;
+            var propertySourceDefine:ValueSourceDefine_EntityProperty = sourceDefine as ValueSourceDefine_EntityProperty;
             
-            var propertyId:int = propertySourceDefine.mPropertyId;
+            var propertyId:int = propertySourceDefine.mPropertyValueSourceDefine.mVariableIndex;
             if (propertyId >= 0)
             {
-               if (propertySourceDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               if (propertySourceDefine.mPropertyValueSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
                {
-                  propertySourceDefine.mPropertyId = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
+                  propertySourceDefine.mPropertyValueSourceDefine.mVariableIndex = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
                }
-               else // if (propertySourceDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               else // if (propertySourceDefine.mPropertyValueSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
                {
-                  propertySourceDefine.mPropertyId = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
+                  propertySourceDefine.mPropertyValueSourceDefine.mVariableIndex = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
                }
             }
             
@@ -1306,7 +1495,7 @@ package common {
       {
          var valueTargetType:int = targetDefine.GetValueTargetType ();
          
-         if (valueTargetType == ValueTargetTypeDefine.ValueTarget_Variable)
+         if (valueTargetType == ValueTargetTypeDefine.ValueTarget_Variable || valueTargetType == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variableTargetDefine:ValueTargetDefine_Variable = targetDefine as ValueTargetDefine_Variable;
             
@@ -1335,18 +1524,18 @@ package common {
          }
          else if (valueTargetType == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            var propertyTargetDefine:ValueTargetDefine_Property = targetDefine as ValueTargetDefine_Property;
+            var propertyTargetDefine:ValueTargetDefine_EntityProperty = targetDefine as ValueTargetDefine_EntityProperty;
             
-            var propertyId:int = propertyTargetDefine.mPropertyId;
+            var propertyId:int = propertyTargetDefine.mPropertyValueTargetDefine.mVariableIndex;
             if (propertyId >= 0)
             {
-               if (propertyTargetDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               if (propertyTargetDefine.mPropertyValueTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
                {
-                  propertyTargetDefine.mPropertyId = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
+                  propertyTargetDefine.mPropertyValueTargetDefine.mVariableIndex = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
                }
-               else // if (propertyTargetDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               else // if (propertyTargetDefine.mPropertyValueTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
                {
-                  propertyTargetDefine.mPropertyId = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
+                  propertyTargetDefine.mPropertyValueTargetDefine.mVariableIndex = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
                }
             }
             

@@ -49,11 +49,13 @@ package common {
    import common.trigger.define.ValueSourceDefine_Null;
    import common.trigger.define.ValueSourceDefine_Direct;
    import common.trigger.define.ValueSourceDefine_Variable;
-   import common.trigger.define.ValueSourceDefine_Property;
+   import common.trigger.define.ValueSourceDefine_ObjectProperty;
+   import common.trigger.define.ValueSourceDefine_EntityProperty;
    import common.trigger.define.ValueTargetDefine;
    import common.trigger.define.ValueTargetDefine_Null;
    import common.trigger.define.ValueTargetDefine_Variable;
-   import common.trigger.define.ValueTargetDefine_Property;
+   import common.trigger.define.ValueTargetDefine_ObjectProperty;
+   import common.trigger.define.ValueTargetDefine_EntityProperty;
    
    //import common.trigger.define.VariableSpaceDefine;
    import common.trigger.define.VariableDefine;
@@ -515,7 +517,7 @@ package common {
             {
                //value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], func_definition.GetOutputParamValueType (i), extraInfos);
                vi = func_definition.GetOutputParameter (i);
-               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], vi.GetValueType (), extraInfos);
+               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], vi.GetClassType (), vi.GetValueType (), extraInfos);
             }
             
             value_target.mNextParameter = value_target_list;
@@ -643,25 +645,26 @@ package common {
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
+            var property_source_define:ValueSourceDefine_EntityProperty = valueSourceDefine as ValueSourceDefine_EntityProperty;
             
-            // here, assume property_source_define.mSpacePackageId is always 0.
-            var customPropertyId:int = property_source_define.mPropertyId as int;
+            // property_source_define.mPropertyValueSourceDefine.mSpacePackageId == 0 means ValueSpace_EntityProperties
+            var customPropertyId:int = property_source_define.mPropertyValueSourceDefine.mVariableIndex as int;
             
             if (customPropertyId >= 0)
             {
-               if (property_source_define.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               if (property_source_define.mPropertyValueSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
                {
                   // do nothing
                }
-               else // if (property_source_define.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               else // if (property_source_define.mPropertyValueSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
                {
                   customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
                }
             }
             
             value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, null, extraInfos)
-                                                      , property_source_define.mSpacePackageId, customPropertyId);
+                                                      , property_source_define.mPropertyValueSourceDefine.mSpaceType
+                                                      , customPropertyId);
          }
          
          if (value_source == null)
@@ -672,7 +675,7 @@ package common {
          return value_source;
       }
       
-      public static function ValueTargetDefine2ReturnValueTarget (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueTargetDefine:ValueTargetDefine, valueType:int, extraInfos:Object):Parameter
+      public static function ValueTargetDefine2ReturnValueTarget (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueTargetDefine:ValueTargetDefine, classType:int, valueType:int, extraInfos:Object):Parameter
       {
          var value_target:Parameter = null;
          
@@ -682,7 +685,7 @@ package common {
          {
             value_target = new Parameter ();
          }
-         else if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variable_target_define:ValueTargetDefine_Variable = valueTargetDefine as ValueTargetDefine_Variable;
             
@@ -733,12 +736,15 @@ package common {
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
-                  var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
-                  if (variable_space != null)
+                  if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     variable_instance = variable_space.GetVariableAt (variable_index);
-                     if (variable_instance != null)
-                        value_target = new Parameter_Variable (variable_instance);
+                     var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
+                     if (variable_space != null)
+                     {
+                        variable_instance = variable_space.GetVariableAt (variable_index);
+                        if (variable_instance != null)
+                           value_target = new Parameter_Variable (variable_instance);
+                     }
                   }
                   
                   break;
@@ -753,23 +759,25 @@ package common {
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
+            var property_target_define:ValueTargetDefine_EntityProperty = valueTargetDefine as ValueTargetDefine_EntityProperty;
             
             // here, assume property_source_define.mSpacePackageId is always 0.
-            var customPropertyId:int = property_target_define.mPropertyId as int;
+            //var customPropertyId:int = property_target_define.mPropertyId as int;
+            var customPropertyId:int = property_target_define.mPropertyValueTargetDefine.mVariableIndex as int;
+            
             if (customPropertyId >= 0)
             {
-               if (property_target_define.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               if (property_target_define.mPropertyValueTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
                {
                   // do nothing
                }
-               else // if (property_target_define.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               else // if (property_target_define.mPropertyValueTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
                {
                   customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
                }
             }
             value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, null, extraInfos)
-                                                      , property_target_define.mSpacePackageId, customPropertyId);
+                                                      , property_target_define.mPropertyValueTargetDefine.mSpaceType, customPropertyId);
          }
          
          if (value_target == null)
@@ -1026,31 +1034,60 @@ package common {
          return funcCallingDefine;
       }
       
-      public static function LoadValueSourceDefineFromBinFile (binFile:ByteArray, classType:int, valueType:int, numberDetail:int):ValueSourceDefine
+      public static function LoadValueSourceDefineFromBinFile (binFile:ByteArray, classType:int, valueType:int, numberDetail:int, forPropertyOfEntity:Boolean = false):ValueSourceDefine
       {
          var valueSourceDefine:ValueSourceDefine = null;
          
          var source_type:int = binFile.readByte ();
          
+         //>>from v2.05
+         // ! important
+         if (forPropertyOfEntity)
+         {
+            if (source_type == 0) // or source_type != ValueSourceTypeDefine.ValueSource_ObjectProperty, only 2 possibilities
+               source_type = ValueSourceTypeDefine.ValueSource_Variable; // in history, source_type for PropertyOfEntity is alwasy 0. 
+         }
+         //<<
+         
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
             valueSourceDefine = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, numberDetail));
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
-            valueSourceDefine = new ValueSourceDefine_Variable (
-                  binFile.readByte (),
-                  binFile.readShort ()
-               );
+            if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+            {
+               valueSourceDefine = new ValueSourceDefine_Variable (
+                     binFile.readByte (),
+                     binFile.readShort ()
+                  );
+            }
+            else
+            {
+               valueSourceDefine = new ValueSourceDefine_ObjectProperty (
+                     binFile.readByte (),
+                     binFile.readShort (),
+                     binFile.readShort ()
+                  );
+            }
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            valueSourceDefine = new ValueSourceDefine_Property (
+            //>> before v2.05
+            //valueSourceDefine = new ValueSourceDefine_EntityProperty (
+            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+            //      //binFile.readShort (), // before v2.03
+            //      (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
+            //      binFile.readShort ()
+            //   );
+            //<<
+            
+            //sine v2.05
+            valueSourceDefine = new ValueSourceDefine_EntityProperty (
                   LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
-                  //binFile.readShort (), // before v2.03
-                  (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
-                  binFile.readShort ()
+                  LoadValueSourceDefineFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetail_Double, true) as ValueSourceDefine_Variable
                );
+            //<<
          }
          
          if (valueSourceDefine == null)
@@ -1061,27 +1098,56 @@ package common {
          return valueSourceDefine;
       }
       
-      public static function  LoadValueTargetDefineFromBinFile (binFile:ByteArray):ValueTargetDefine
+      public static function LoadValueTargetDefineFromBinFile (binFile:ByteArray, forPropertyOfEntity:Boolean = false):ValueTargetDefine
       {
          var valueTargetDefine:ValueTargetDefine = null;
          
          var target_type:int = binFile.readByte ();
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         //>>from v2.05
+         // ! important
+         if (forPropertyOfEntity)
          {
-            valueTargetDefine = new ValueTargetDefine_Variable (
-                  binFile.readByte (),
-                  binFile.readShort ()
-               );
+            if (target_type == 0) // or source_type != ValueTargetTypeDefine.ValueTarget_ObjectProperty, only 2 possibilities
+               target_type = ValueTargetTypeDefine.ValueTarget_Variable; // in history, target_type for PropertyOfEntity is alwasy 0. 
+         }
+         //<<
+         
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
+         {
+            if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+            {
+               valueTargetDefine = new ValueTargetDefine_Variable (
+                     binFile.readByte (),
+                     binFile.readShort ()
+                  );
+            }
+            else
+            {
+               valueTargetDefine = new ValueTargetDefine_ObjectProperty (
+                     binFile.readByte (),
+                     binFile.readShort (),
+                     binFile.readShort ()
+                  );
+            }
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            valueTargetDefine = new ValueTargetDefine_Property (
+            //>> before v2.05
+            //valueTargetDefine = new ValueTargetDefine_EntityProperty (
+            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+            //      //binFile.readShort (), // before v2.03
+            //      (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
+            //      binFile.readShort ()
+            //   );
+            //<<
+            
+            //sine v2.05
+            valueTargetDefine = new ValueTargetDefine_EntityProperty (
                   LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
-                  //binFile.readShort (), // before v2.03
-                  (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
-                  binFile.readShort ()
+                  LoadValueTargetDefineFromBinFile (binFile, true) as ValueTargetDefine_Variable
                );
+            //<<
          }
          
          if (valueTargetDefine == null)
@@ -1238,7 +1304,7 @@ package common {
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
             for (i = 0; i < num_outputs; ++ i)
-               elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i)));
+               elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetDefine2Xml (outputValueTargetDefines [i]));//, func_declaration.GetOutputParamValueType (i)));
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
@@ -1246,8 +1312,8 @@ package common {
             
             for (i = 0; i < num_outputs; ++ i)
             {
-               //elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], (calledOutputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType));
-               elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], (calledOutputVariableDefines [i] as VariableDefine).mValueType));
+               //elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetDefine2Xml (outputValueTargetDefines [i], (calledOutputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType));
+               elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetDefine2Xml (outputValueTargetDefines [i]));//, (calledOutputVariableDefines [i] as VariableDefine).mValueType));
             }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
@@ -1258,11 +1324,13 @@ package common {
          return elementFunctionCalling;
       }
       
-      public static function ValueSourceDefine2Xml (valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, isForProperyOwner:Boolean = false):XML
+      public static function ValueSourceDefine2Xml (valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, isForProperyOwner:Boolean = false, forPropertyOfEntity:Boolean = false):XML
       {
          var elementValueSource:XML;
          
-         if (isForProperyOwner)
+         if (forPropertyOfEntity)
+            elementValueSource = <PropertyVariableValueSource />;
+         else if (isForProperyOwner)
             elementValueSource = <PropertyOwnerValueSource />;
          else
             elementValueSource = <ValueSource />;
@@ -1270,6 +1338,15 @@ package common {
          var source_type:int = valueSourceDefine.GetValueSourceType ();
          
          elementValueSource.@type = source_type;
+         
+         //>> sine v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   //if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
+         //   source_type = ValueSourceTypeDefine.ValueSource_ObjectProperty; // the only possibility
+         //}
+         //<<
          
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
@@ -1288,49 +1365,102 @@ package common {
                trace (err.getStackTrace ());
             }
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variable_source_define:ValueSourceDefine_Variable = valueSourceDefine as ValueSourceDefine_Variable;
             
             elementValueSource.@variable_space = variable_source_define.mSpaceType;
             elementValueSource.@variable_index = variable_source_define.mVariableIndex;
+            
+            if (source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
+            {
+               elementValueSource.@object_property_index = (variable_source_define as ValueSourceDefine_ObjectProperty).mPropertyIndex;
+            }
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
+            var property_source_define:ValueSourceDefine_EntityProperty = valueSourceDefine as ValueSourceDefine_EntityProperty;
             
-            elementValueSource.@property_package_id = property_source_define.mSpacePackageId;
-            elementValueSource.@property_id = property_source_define.mPropertyId;
-            
-            elementValueSource.appendChild (ValueSourceDefine2Xml (property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, true));
+            elementValueSource.appendChild (ValueSourceDefine2Xml (property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, true, false));
+
+            // for compability, non-object-property source still uses the old style
+            if (property_source_define.mPropertyValueSourceDefine.GetValueSourceType () == ValueSourceTypeDefine.ValueSource_Variable)
+            {
+               //>>before v2.05
+               //elementValueSource.@property_package_id = property_source_define.mSpacePackageId;
+               //elementValueSource.@property_id = property_source_define.mPropertyId;
+               elementValueSource.@property_package_id = property_source_define.mPropertyValueSourceDefine.mSpaceType;
+               elementValueSource.@property_id = property_source_define.mPropertyValueSourceDefine.mVariableIndex;
+               //<<
+            }
+            else // ValueSourceTypeDefine.ValueSource_ObjectProperty, new style for object property since c2.05
+            {
+               //from v2.05
+               elementValueSource.appendChild (ValueSourceDefine2Xml (property_source_define.mPropertyValueSourceDefine, classType, valueType, false, true));
+               //<<
+            }
          }
          
          return elementValueSource;
       }
       
-      public static function ValueTargetefine2Xml (valueTargetDefine:ValueTargetDefine, valueType:int):XML
+      public static function ValueTargetDefine2Xml (valueTargetDefine:ValueTargetDefine, forPropertyOfEntity:Boolean = false):XML
       {
-         var elementValueTarget:XML = <ValueTarget />;
+         var elementValueTarget:XML;
+         
+         if (forPropertyOfEntity)
+            elementValueTarget = <PropertyVariableValueTarget />;
+         else
+            elementValueTarget = <ValueTarget />;
          
          var target_type:int = valueTargetDefine.GetValueTargetType ();
          
+         //>> sine v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   //if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
+         //   target_type = ValueTargetTypeDefine.ValueTarget_ObjectProperty; // the only possibility
+         //}
+         //<<
+         
          elementValueTarget.@type = target_type;
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variable_target_define:ValueTargetDefine_Variable = valueTargetDefine as ValueTargetDefine_Variable;
             
             elementValueTarget.@variable_space = variable_target_define.mSpaceType;
             elementValueTarget.@variable_index = variable_target_define.mVariableIndex;
+            
+            if (target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
+            {
+               elementValueTarget.@object_property_index = (variable_target_define as ValueTargetDefine_ObjectProperty).mPropertyIndex;
+            }
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
+            var property_target_define:ValueTargetDefine_EntityProperty = valueTargetDefine as ValueTargetDefine_EntityProperty;
             
-            elementValueTarget.@property_package_id = property_target_define.mSpacePackageId;
-            elementValueTarget.@property_id = property_target_define.mPropertyId;
+            elementValueTarget.appendChild (ValueSourceDefine2Xml (property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, true, false));
             
-            elementValueTarget.appendChild (ValueSourceDefine2Xml (property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, true));
+
+            // for compability, non-object-property source still uses the old style
+            if (property_target_define.mPropertyValueTargetDefine.GetValueTargetType () == ValueTargetTypeDefine.ValueTarget_Variable)
+            {
+               //>>before v2.05
+               //elementValueTarget.@property_package_id = property_target_define.mSpacePackageId;
+               //elementValueTarget.@property_id = property_target_define.mPropertyId;
+               elementValueTarget.@property_package_id = property_target_define.mPropertyValueTargetDefine.mSpaceType;
+               elementValueTarget.@property_id = property_target_define.mPropertyValueTargetDefine.mVariableIndex;
+               //<<
+            }
+            else // ValueTargetTypeDefine.ValueTarget_ObjectProperty, new style for object property since c2.05
+            {
+               //from v2.05
+               elementValueTarget.appendChild (ValueTargetDefine2Xml (property_target_define.mPropertyValueTargetDefine, true));
+               //<<
+            }
          }
          
          return elementValueTarget;

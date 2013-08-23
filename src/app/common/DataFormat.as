@@ -1075,6 +1075,9 @@ package common {
                
                TriggerFormatHelper.VariableSpace2VariableDefines (scene, classAsset.GetCustomClass ().GetPropertyDefinitionSpace (), classDefine.mPropertyVariableDefines, true, false);
                
+               classDefine.mPackageIndices = classAsset.GetPackageIndices ();
+               classDefine.mParentClassIndices = classAsset.GetParentClassIndices ();
+               
                sceneDefine.mClassDefines.push (classDefine);
             }
             //<<
@@ -1100,6 +1103,10 @@ package common {
                
                //>>v1.56
                functionDefine.mDesignDependent = functionAsset.IsDesignDependent ();
+               //<<
+               
+               //>>2.05
+               functionDefine.mPackageIndices = functionAsset.GetPackageIndices ();
                //<<
                
                sceneDefine.mFunctionDefines.push (functionDefine);
@@ -2882,6 +2889,9 @@ package common {
 
                classAsset.SetPosition (classDefine.mPosX, classDefine.mPosY);
                
+               classAsset.SetPackageIndices (classDefine.mPackageIndices);
+               classAsset.SetParentClassIndices (classDefine.mParentClassIndices);
+               
                classAsset.UpdateAppearance ();
                classAsset.UpdateSelectionProxy ();
                
@@ -3022,6 +3032,10 @@ package common {
                
                //functionAsset.SetFunctionName (functionDefine.mName); // move to above CreateXXX
                functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
+               
+               //>>2.05
+               functionAsset.SetPackageIndices (functionDefine.mPackageIndices);
+               //<<
                
                functionAsset.UpdateAppearance ();
                functionAsset.UpdateSelectionProxy ();
@@ -3656,6 +3670,9 @@ package common {
                classDefine.mName = element.@name;
                classDefine.mPosX = parseFloat (element.@x);
                classDefine.mPosY = parseFloat (element.@y);
+               
+               classDefine.mPackageIndices = IndicesString2IntegerArray (element.@package_indices);
+               classDefine.mParentClassIndices  = IndicesString2IntegerArray (element.@parent_indices);
             }
          }
          
@@ -3697,6 +3714,10 @@ package common {
                if (worldDefine.mVersion >= 0x0156)
                {
                   functionDefine.mDesignDependent = parseInt (element.@design_dependent) != 0;
+               }
+               if (worldDefine.mVersion >= 0x0205)
+               {
+                  functionDefine.mPackageIndices = IndicesString2IntegerArray (element.@package_indices);
                }
             }
          }
@@ -4817,6 +4838,9 @@ package common {
                byteArray.writeUTF (classDefine.mName);
                byteArray.writeFloat (classDefine.mPosX);
                byteArray.writeFloat (classDefine.mPosY);
+               
+               WriteShortArrayIntoBinFile (classDefine.mPackageIndices, byteArray);
+               WriteShortArrayIntoBinFile (classDefine.mParentClassIndices, byteArray);
             }
          }
          
@@ -4853,6 +4877,10 @@ package common {
                if (worldDefine.mVersion >= 0x0156)
                {
                   byteArray.writeByte (functionDefine.mDesignDependent ? 1 : 0);
+               }
+               if (worldDefine.mVersion >= 0x0205)
+               {
+                  WriteShortArrayIntoBinFile (functionDefine.mPackageIndices, byteArray);
                }
                
                TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);

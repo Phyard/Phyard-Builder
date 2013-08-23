@@ -12,6 +12,9 @@ package common.trigger.define
       //public var mDesignDependent:Boolean; 
       
       public var mPropertyVariableDefines:Array = new Array ();  
+      
+      public var mPackageIndices:Array = null;
+      public var mParentClassIndices:Array = null;
    }
    
 }

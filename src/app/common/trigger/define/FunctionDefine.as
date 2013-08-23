@@ -21,6 +21,8 @@ package common.trigger.define
                // the above comment is invalide now, mValueType is moved from ValueSourceDefine_Direct to VariableDefine
       
       public var mCodeSnippetDefine:CodeSnippetDefine = null;
+      
+      public var mPackageIndices:Array = null;
    }
    
 }

@@ -97,6 +97,11 @@ package editor.codelib {
          return mClassId;
       }
       
+      public function GetCustomClass ():ClassCustom
+      {
+         return mCustomClass;
+      }
+      
       public function SetPackage (thePacakge:AssetPackage):void
       {
          mPackage = thePacakge;
@@ -110,9 +115,22 @@ package editor.codelib {
          return mPackage;
       }
       
-      public function GetCustomClass ():ClassCustom
+      public function SetPackageIndices (indexes:Array):void
       {
-         return mCustomClass;
+      }
+      
+      public function GetPackageIndices ():Array
+      {
+         return null;
+      }
+      
+      public function SetParentClassIndices (indexes:Array):void
+      {
+      }
+      
+      public function GetParentClassIndices ():Array
+      {
+         return null;
       }
       
       override public function ToCodeString ():String

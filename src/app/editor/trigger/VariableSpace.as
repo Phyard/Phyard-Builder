@@ -197,7 +197,7 @@ package editor.trigger {
             viDef = GetVariableInstanceAt (i).GetVariableDefinition ();
             if (viDef != null) // always
             {
-               if (variableDefinition.IsCompatibleWith (viDef))
+               if (variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition))
                   return true;
                
                if (deepIntoCustomClass && viDef is VariableDefinition_Custom)
@@ -259,7 +259,7 @@ package editor.trigger {
                if (toDeepInto)
                   generalLabel = vi.GetLongName ();
                
-               var campatible:Boolean = variableDefinition.IsCompatibleWith (viDef); // || viDef.IsCompatibleWith (variableDefinition);
+               var campatible:Boolean = variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition);
                if (campatible)
                {
                   item = new Object ();
@@ -310,28 +310,22 @@ package editor.trigger {
          var currentVariable:VariableInstance = variableValueSource.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
+         variableValueSource.ClearProperty ();
+         
          var viIndex:int = selectItem.mIndex;
          if (viIndex < 0)
          {
             variableValueSource.SetVariableInstance (variable_space.GetNullVariableInstance ());
-            variableValueSource.SetPropertyVariableInstance (null);
             return;
          }
          
          var vi:VariableInstance = variable_space.GetVariableInstanceAt (viIndex);
          variableValueSource.SetVariableInstance (vi);
          
-         var viDef:VariableDefinition_Custom = vi.GetVariableDefinition () as VariableDefinition_Custom;
-         
-         var propertyIndex:int = selectItem.mProperty;
-         if (propertyIndex < 0 || viDef == null)
+         if (selectItem.mProperty >= 0)
          {
-            variableValueSource.SetPropertyVariableInstance (null);
-            return;
+            variableValueSource.SetPropertyIndex (selectItem.mProperty);
          }
-         
-         var property_space:VariableSpaceClassInstance = viDef.GetCustomProperties ();
-         variableValueSource.SetPropertyVariableInstance (property_space.GetVariableInstanceAt (propertyIndex));
       }
       
       public function RetrieveValueForVariableValueTarget (variableValueTarget:ValueTarget_Variable, selectItem:Object):void
@@ -339,28 +333,22 @@ package editor.trigger {
          var currentVariable:VariableInstance = variableValueTarget.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
+         variableValueTarget.ClearProperty ();
+         
          var viIndex:int = selectItem.mIndex;
          if (viIndex < 0)
          {
             variableValueTarget.SetVariableInstance (variable_space.GetNullVariableInstance ());
-            variableValueTarget.SetPropertyVariableInstance (null);
             return;
          }
          
          var vi:VariableInstance = variable_space.GetVariableInstanceAt (viIndex);
          variableValueTarget.SetVariableInstance (vi);
          
-         var viDef:VariableDefinition_Custom = vi.GetVariableDefinition () as VariableDefinition_Custom;
-         
-         var propertyIndex:int = selectItem.mProperty;
-         if (propertyIndex < 0 || viDef == null)
+         if (selectItem.mProperty >= 0)
          {
-            variableValueTarget.SetPropertyVariableInstance (null);
-            return;
+            variableValueTarget.SetPropertyIndex (selectItem.mProperty);
          }
-         
-         var property_space:VariableSpaceClassInstance = viDef.GetCustomProperties ();
-         variableValueTarget.SetPropertyVariableInstance (property_space.GetVariableInstanceAt (propertyIndex));
       }
       
       //public static function CreateSelectionListItemValue (variableInstanceIndex:int, propertyVariableInstanceIndex:int = -1):int

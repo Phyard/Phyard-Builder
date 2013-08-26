@@ -17,7 +17,7 @@ package common.trigger {
       public static const ID_EntityFilter:int                = IdPool.CoreApiId_12; //
       public static const ID_EntityPairFilter:int            = IdPool.CoreApiId_13; //
 
-   // global
+   // code flow
 
       public static const ID_Return:int                       = IdPool.CoreApiId_20; //
       public static const ID_ReturnIfTrue:int                 = IdPool.CoreApiId_21; //
@@ -45,6 +45,16 @@ package common.trigger {
       public static const ID_EndWhile:int                     = IdPool.CoreApiId_39; //
       //public static const ID_StartDoWhile:int                   = IdPool.CoreApiId_40; //
       //public static const ID_EndDoWhile:int                     = IdPool.CoreApiId_41; //
+      
+   // class common
+      
+      public static const ID_CommonAssign:int                   = IdPool.CoreApiId_50; //
+      public static const ID_CommonEquals:int                   = IdPool.CoreApiId_51; //
+      
+      //public static const ID_CommonToString:int                   = IdPool.CoreApiId_53; // used to debug. Also, add a API is better. Also need a Number () API.
+      //public static const ID_CommonToBoolean:int                   = IdPool.CoreApiId_54; // not a good idea. Add a Boolean () API is bug.
+      
+      public static const ID_CommonNewInstance:int              = IdPool.CoreApiId_56; //
       
    // system
 

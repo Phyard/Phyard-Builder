@@ -39,7 +39,8 @@ package editor.world {
       // packages
       //================================================
 
-         var basic_package:CodePackage = new CodePackage ("Code Flow Control", sGlobalCodePackage);
+         var class_common_package:CodePackage = new CodePackage ("Type Common", sGlobalCodePackage);
+         var code_flow_package:CodePackage = new CodePackage ("Code Flow Control", sGlobalCodePackage);
          var bool_package:CodePackage   = new CodePackage ("Boolean", sGlobalCodePackage);
          var number_package:CodePackage   = new CodePackage ("Number", sGlobalCodePackage);
             var numbe_general_package:CodePackage         = new CodePackage ("General", number_package);
@@ -162,39 +163,39 @@ package editor.world {
 
       // global
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Return, basic_package, "Return", "Return", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Return, code_flow_package, "Return", "Return", null,
                      null,
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ReturnIfTrue, basic_package, "Return If True", "@Return if $0 is true", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ReturnIfTrue, code_flow_package, "Return If True", "@Return if $0 is true", null,
                      [
                              new VariableDefinitionBoolean ("Bool Value"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ReturnIfFalse, basic_package, "Return If False", "@Return if $0 is false", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ReturnIfFalse, code_flow_package, "Return If False", "@Return if $0 is false", null,
                      [
                              new VariableDefinitionBoolean ("Bool Value"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Comment, basic_package, "Comment Line", "@// $0", "@// $0",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Comment, code_flow_package, "Comment Line", "@// $0", "@// $0",
                      [
                              new VariableDefinitionString ("Comment Text"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Blank, basic_package, "Blank Line", "@", "@",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Blank, code_flow_package, "Blank Line", "@", "@",
                      null,
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Removed, basic_package, "Removed Warning", "@(This function is removed)", "@(This function is removed)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Removed, code_flow_package, "Removed Warning", "@(This function is removed)", "@(This function is removed)",
                      null,
                      null,
                      false
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartIf, basic_package, "If", "@If ($0 == $1)", "@If ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartIf, code_flow_package, "If", "@If ($0 == $1)", "@If ($0 == $1)",
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
                              new VariableDefinitionBoolean ("Comparer"),
@@ -202,17 +203,17 @@ package editor.world {
                      null,
                      true
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Else, basic_package, "Else", "@Else", "@Else",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Else, code_flow_package, "Else", "@Else", "@Else",
                      null,
                      null,
                      true
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EndIf, basic_package, "End If", "@End If", "@End If",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EndIf, code_flow_package, "End If", "@End If", "@End If",
                      null,
                      null,
                      true
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartWhile, basic_package, "While", "@While ($0 == $1)", "@While ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartWhile, code_flow_package, "While", "@While ($0 == $1)", "@While ($0 == $1)",
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
                              new VariableDefinitionBoolean ("Comparer"),
@@ -220,19 +221,41 @@ package editor.world {
                      null,
                      true
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Break, basic_package, "Break", "Break", "Break",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Break, code_flow_package, "Break", "Break", "Break",
                      null,
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Continue, basic_package, "Continue", "Continue", "Continue",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Continue, code_flow_package, "Continue", "Continue", "Continue",
                      null,
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EndWhile, basic_package, "End While", "@End While", "@End While",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EndWhile, code_flow_package, "End While", "@End While", "@End While",
                      null,
                      null,
                      true
                   );
+
+       // class common
+
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_NewInstance, class_common_package, "New", "@#0 = New", "@#0 <- New",
+                     null,
+                     [
+                             new VariableDefinitionBoolean ("Target Variable"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_NewInstance, class_common_package, "New", "@#0 = New", "@#0 <- New",
+                     null,
+                     [
+                             new VariableDefinitionBoolean ("Target Variable"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_NewInstance, class_common_package, "New", "@#0 = New", "@#0 <- New",
+                     null,
+                     [
+                             new VariableDefinitionBoolean ("Target Variable"),
+                     ]
+                  );
+
 
       // system
 

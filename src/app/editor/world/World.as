@@ -21,7 +21,7 @@ package editor.world {
    
    import editor.entity.Scene;
    
-   import editor.trigger.ClassCore;
+   import editor.trigger.ClassDefinition_Core;
 
    import editor.trigger.VariableSpaceRegister;
    import editor.trigger.VariableSpaceCommonGlobal;
@@ -586,7 +586,7 @@ package editor.world {
 //   core classes 
 //=================================================================================      
       
-      public static function GetCoreClassById (classId:int):ClassCore
+      public static function GetCoreClassById (classId:int):ClassDefinition_Core
       {
          return CoreClasses.GetCoreClassById (classId);
       }

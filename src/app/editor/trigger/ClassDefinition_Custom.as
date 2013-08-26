@@ -4,13 +4,13 @@ package editor.trigger {
    
    import common.trigger.ClassTypeDefine;
    
-   public class ClassCustom extends ClassBase
+   public class ClassDefinition_Custom extends ClassDefinition
    {
       private var mPropertyDefinitionSpace:VariableSpaceClassInstance;
       
       private var mId:int = -1;
         
-      public function ClassCustom (typeName:String, validateValueFunc:Function)
+      public function ClassDefinition_Custom (typeName:String, validateValueFunc:Function)
       {
          super (typeName, typeName.toLowerCase (), null, validateValueFunc);
          SetSceneDataDependent (true);

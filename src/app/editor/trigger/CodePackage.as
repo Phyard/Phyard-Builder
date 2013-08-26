@@ -39,7 +39,7 @@ package editor.trigger {
          mFunctionDeclarations.push (funcDeclaration);
       }
       
-      public function AddClass (aClass:ClassBase):void
+      public function AddClass (aClass:ClassDefinition):void
       {
          mClasses.push (aClass);
       }

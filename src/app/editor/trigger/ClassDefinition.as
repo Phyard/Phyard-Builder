@@ -5,7 +5,7 @@ package editor.trigger {
    import common.trigger.ClassDeclaration;
    import common.trigger.ClassTypeDefine;
    
-   public class ClassBase
+   public class ClassDefinition
    {
       public var mClassName:String;
       public var mDefaultInstanceName:String;
@@ -15,7 +15,7 @@ package editor.trigger {
       
       private var mSceneDataDependent:Boolean;
       
-      public function ClassBase (typeName:String, defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
+      public function ClassDefinition (typeName:String, defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
       {
          mClassName = typeName;
          mDefaultInstanceName = defalutInstanceName;

@@ -1,21 +1,16 @@
 package player.trigger
 {
-   import common.trigger.FunctionDeclaration;
-   
-   // instance of custom functions
    public class ClassInstance
    {
-      public var mNextFreeClassInstance:ClassInstance = null;
+      internal var mClassDefinition:ClassDefinition;
       
-      //
-      protected var mClassDefinition:ClassDefinition;
+      public var mValueObject:Object;
       
-      // to reduce the number of function callings, set the variable public
-      public var mMemberVariableSpace:VariableSpace;
-      
-      public function ClassInstance (classDefinition:ClassDefinition)
+      public function ClassInstance (classDefinition:ClassDefinition, valueObject:Object)
       {
          mClassDefinition = classDefinition;
+         
+         mValueObject = valueObject;
       }
    }
 }

@@ -5,11 +5,11 @@ package editor.trigger {
    import common.trigger.ClassDeclaration;
    import common.trigger.ClassTypeDefine;
    
-   public class ClassCore extends ClassBase
+   public class ClassDefinition_Core extends ClassDefinition
    {
       private var mCoreClassDeclaration:ClassDeclaration;
       
-      public function ClassCore (coreDecl:ClassDeclaration, typeName:String, defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
+      public function ClassDefinition_Core (coreDecl:ClassDeclaration, typeName:String, defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
       {
          super (typeName, defalutInstanceName, initialInitialValue, validateValueFunc);
          

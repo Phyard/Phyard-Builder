@@ -169,7 +169,7 @@ package editor.trigger {
       //public var mTypeType:int;
       //public var mValueType:int;
       
-      protected var mClass:ClassBase;
+      protected var mClass:ClassDefinition;
       
       protected var mName:String;
       protected var mDescription:String = null;
@@ -184,7 +184,7 @@ package editor.trigger {
       //private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
       
       //public function VariableDefinition (/*typeType:int, valueType:int, */name:String, description:String = null/*, options:Object = null*/)
-      public function VariableDefinition (aClass:ClassBase, name:String, description:String = null, options:Object = null)
+      public function VariableDefinition (aClass:ClassDefinition, name:String, description:String = null, options:Object = null)
       {
          //mTypeType = typeType;
          //mValueType = valueType;
@@ -213,7 +213,7 @@ package editor.trigger {
          //}
       }
       
-      public function GetClass ():ClassBase
+      public function GetClass ():ClassDefinition
       {
          return mClass;
       }

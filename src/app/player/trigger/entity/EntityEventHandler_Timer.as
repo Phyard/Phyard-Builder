@@ -55,7 +55,7 @@ package player.trigger.entity
                   var preCodeSnippetDefine:CodeSnippetDefine = ((entityDefine.mPreFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                   preCodeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
    
-                  mPreEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mPreFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
+                  mPreEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mPreFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
                   mPreEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
                   mPreEventHandlerDefinition.SetCodeSnippetDefine (preCodeSnippetDefine, extraInfos);
                }
@@ -66,7 +66,7 @@ package player.trigger.entity
                   var postCodeSnippetDefine:CodeSnippetDefine = ((entityDefine.mPostFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                   postCodeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
    
-                  mPostEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mPostFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
+                  mPostEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mPostFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
                   mPostEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
                   mPostEventHandlerDefinition.SetCodeSnippetDefine (postCodeSnippetDefine, extraInfos);
                }

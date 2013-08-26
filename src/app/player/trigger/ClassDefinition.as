@@ -1,14 +1,22 @@
 package player.trigger
 {
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.ClassTypeDefine;
    
-   // instance of custom functions
    public class ClassDefinition
    {
-      protected var mFunctionDefinitions:Array;
-      
-      public function ClassDefinition (/*classDecl:classDeclaration*/)
+      public function GetID ():int
       {
+         return 0; // to override
+      }
+      
+      public function GetClassType ():int
+      {
+         return ClassTypeDefine.ClassType_Unknown;
+      }
+      
+      public function CreateInstance ():ClassInstance
+      {
+         return null;
       }
    }
 }

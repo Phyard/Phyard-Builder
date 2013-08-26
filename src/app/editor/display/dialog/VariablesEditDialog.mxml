@@ -105,13 +105,14 @@
             PopUpManager.removePopUp (this);
             
             //SetVariableSpace (null);
+            SetCodeLibManager (null);
             
             if (OnClose != null)
             {
                OnClose ();
             }
-            ;
-             OnClose = null;
+            
+            OnClose = null;
          }
 
        ]]>

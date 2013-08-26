@@ -115,7 +115,15 @@ package common.trigger {
       public static const CoreApiId_40:int = 40; //
       public static const CoreApiId_41:int = 41; //
 
-      public static const CoreApiId_59:int = 59; // end of block callings
+      public static const CoreApiId_50:int = 50; // assign
+      public static const CoreApiId_51:int = 51; // equals
+      
+      //public static const CoreApiId_53:int = 53; // to string
+      //public static const CoreApiId_54:int = 54; // to Boolean
+      
+      public static const CoreApiId_56:int = 56; // new
+
+      //public static const CoreApiId_59:int = 59; // end of block callings
 
       public static const CoreApiId_70:int = 70; //
       public static const CoreApiId_71:int = 71; //

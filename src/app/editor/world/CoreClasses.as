@@ -8,7 +8,7 @@ package editor.world {
    import editor.image.AssetImageModule;
    import editor.sound.AssetSound;
 
-   import editor.trigger.ClassCore;
+   import editor.trigger.ClassDefinition_Core;
    import editor.trigger.CodePackage;
 
    import common.trigger.ClassTypeDefine;
@@ -20,7 +20,7 @@ package editor.world {
 
    public class CoreClasses
    {
-      public static var sVoidClass:ClassCore = null;
+      public static var sVoidClass:ClassDefinition_Core = null;
       public static var mCoreClasses:Array = new Array (CoreClassIds.NumCoreClasses);
       
       private static const sCoreCodePackage:CodePackage = new CodePackage ("Core");
@@ -246,11 +246,11 @@ package editor.world {
 // util functions
 //===========================================================
 
-      private static function RegisterCoreClass (codePacakge:CodePackage, classId:int, typeName:String, defaultInstanceName:String, initialInitialValue:Object, valueValidateFunc:Function = null):ClassCore
+      private static function RegisterCoreClass (codePacakge:CodePackage, classId:int, typeName:String, defaultInstanceName:String, initialInitialValue:Object, valueValidateFunc:Function = null):ClassDefinition_Core
       {
          var coreDecl:ClassDeclaration = CoreClassDeclarations.GetCoreClassDeclarationById (classId);
 
-         var coreClass:ClassCore = new ClassCore (coreDecl, 
+         var coreClass:ClassDefinition_Core = new ClassDefinition_Core (coreDecl, 
                                                   typeName, 
                                                   defaultInstanceName, 
                                                   initialInitialValue, 
@@ -267,7 +267,7 @@ package editor.world {
          return coreClass;
       }
 
-      public static function GetCoreClassById (classId:int):ClassCore
+      public static function GetCoreClassById (classId:int):ClassDefinition_Core
       {
          if (! mInitialized)
             Initialize ();
@@ -275,7 +275,7 @@ package editor.world {
          if (classId < 0 || classId >= CoreClassIds.NumCoreClasses)
             return sVoidClass;
 
-         var coreClass:ClassCore = mCoreClasses [classId];
+         var coreClass:ClassDefinition_Core = mCoreClasses [classId];
          
          return coreClass == null ? sVoidClass : coreClass;
       }

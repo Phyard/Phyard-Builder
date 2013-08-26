@@ -6,11 +6,14 @@ package player.design
    import flash.system.Capabilities;
    
    import player.world.World;
-   import player.world.EntityList
+   import player.world.EntityList;
    
    import player.trigger.TriggerEngine;
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
+   import player.trigger.CoreClasses;
+   import player.trigger.ClassDefinition;
+   import player.trigger.ClassDefinition_Custom;
    import player.trigger.FunctionDefinition_Custom;
 
    import player.entity.Entity;
@@ -23,8 +26,11 @@ package player.design
    import com.tapirgames.util.RandomNumberGenerator;
    import com.tapirgames.util.MersenneTwisterRNG;
    
-   import common.trigger.CoreClassIds;
    import common.trigger.ValueSpaceTypeDefine;
+
+   import common.trigger.CoreClassIds;
+   
+   import common.trigger.define.ClassDefine;
    import common.trigger.define.FunctionDefine;
    
    import common.TriggerFormatHelper2;
@@ -75,6 +81,8 @@ package player.design
       //public static var mEntityVariableSpaces:Array;
       public static var mEntityVariableSpace:VariableSpace;
       public static var mCommonEntityVariableSpace:VariableSpace;
+      
+      public static var mCustomClassDefinitions:Array;
       
       public static var mCustomFunctionDefinitions:Array;
       
@@ -151,6 +159,8 @@ package player.design
       mCommonGlobalVariableSpace = null;
       mEntityVariableSpace = null;
       mCommonEntityVariableSpace = null;
+      
+      mCustomClassDefinitions = null;
       
       mCustomFunctionDefinitions = null;
       
@@ -495,6 +505,8 @@ package player.design
          mEntityVariableSpace = null;
          mCommonEntityVariableSpace = null;
          
+         mCustomClassDefinitions = null;
+         
          mCustomFunctionDefinitions = null;
          
          //
@@ -594,7 +606,7 @@ package player.design
       {
          if (mWorldVariableSpace == null)
          {
-            mWorldVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, worldVarialbeSpaceDefines, null);
+            mWorldVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/null, worldVarialbeSpaceDefines, null, 0); // 0 is meaningless
          }
          else // switch/restart level
          {
@@ -603,7 +615,7 @@ package player.design
          
          if (mGameSaveVariableSpace == null)
          {
-            mGameSaveVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, gameSaveVarialbeSpaceDefines, null);
+            mGameSaveVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/null, gameSaveVarialbeSpaceDefines, null, 0); // 0 is meaningless
             mGameSaveVariableSpace_WithInitialValues = mGameSaveVariableSpace.CloneSpace ();
          }
          else // switch/restart level
@@ -614,7 +626,9 @@ package player.design
       
       //public static function InitSceneCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
       public static function InitSceneCustomVariables (globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, 
-                                                      sessionVariableDefines:Array, sessionVariableIndexMappingTable:Array, isMerging:Boolean/* = false*/):void // sessionVariableDefines added from v1.57
+                                                      sessionVariableDefines:Array, sessionVariableIndexMappingTable:Array,  // sessionVariableDefines added from v1.57
+                                                      isMerging:Boolean/* = false*/,
+                                                      customClassIdShiftOffset:int):void // customClassIdShiftOffset added from v2.05
       {
          //>> v1.52 only
          //var numSpaces:int;
@@ -638,14 +652,14 @@ package player.design
          
          if (mSessionVariableSpace == null) // load from stretch
          {
-            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, null, true);
+            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, null, customClassIdShiftOffset, true);
          }
          else // restart level or merge level
          {
             if (isMerging)
             {
                // todo: for session, should use the CreatePnlyOnNotExist policy.
-               mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, mSessionVariableSpace, true, sessionVariableIndexMappingTable);
+               mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, mSessionVariableSpace, customClassIdShiftOffset, true, sessionVariableIndexMappingTable);
             }
             else
             {
@@ -657,12 +671,12 @@ package player.design
             }
          }
          
-         mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines, isMerging ? mGlobalVariableSpace : null);
-         mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines, isMerging ? mEntityVariableSpace : null);
+         mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines, isMerging ? mGlobalVariableSpace : null, customClassIdShiftOffset);
+         mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines, isMerging ? mEntityVariableSpace : null, customClassIdShiftOffset);
          if (! isMerging)
          {
-            mCommonGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonGlobalVarialbeDefines, null);
-            mCommonEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonEntityVarialbeDefines, null);
+            mCommonGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonGlobalVarialbeDefines, null, customClassIdShiftOffset);
+            mCommonEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonEntityVarialbeDefines, null, customClassIdShiftOffset);
          }
       }
       
@@ -747,7 +761,55 @@ package player.design
          return vi == null ? null : vi.GetValueObject ();
       }
       
-      public static function CreateCustomFunctionDefinitions (functionDefines:Array, isMerging:Boolean):void
+      // custom classes
+      
+      public static function InitCustomClassDefinitions (classDefines:Array, isMerging:Boolean):void
+      {
+         var numNewClasses:int = classDefines.length;
+         var numOldClasses:int = mCustomClassDefinitions == null ? 0 : mCustomClassDefinitions.length;
+         if (isMerging)
+         {
+            mCustomClassDefinitions.length = numOldClasses + numNewClasses;
+         }
+         else
+         {
+            mCustomClassDefinitions = new Array (numNewClasses);
+         }
+         
+         var classId:int;
+         var newClassId:int;
+         for (classId = 0; classId < numNewClasses; ++ classId)
+         {
+            newClassId = numOldClasses + classId;
+            mCustomClassDefinitions [newClassId] = new ClassDefinition_Custom (newClassId);
+         }
+
+         for (classId = 0; classId < numNewClasses; ++ classId)
+         {
+            var classDefine:ClassDefine = classDefines [classId] as ClassDefine;
+            
+            newClassId = numOldClasses + classId;
+            var customClass:ClassDefinition_Custom = Global.GetCustomClassDefinition (newClassId);
+            customClass.SetPropertyVariableSpaceTemplate (TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, classDefine.mPropertyVariableDefines, null, numOldClasses));
+         }
+      }
+      
+      public static function GetNumCustomClasses ():int
+      {
+         return mCustomClassDefinitions == null ? 0 : mCustomClassDefinitions.length;
+      }
+      
+      public static function GetCustomClassDefinition (classId:int):ClassDefinition_Custom
+      {
+         if (classId < 0 || mCustomClassDefinitions == null || classId >= mCustomClassDefinitions.length)
+            return null;
+         
+         return mCustomClassDefinitions [classId] as ClassDefinition_Custom;
+      }
+      
+      // custom functions
+      
+      public static function CreateCustomFunctionDefinitions (functionDefines:Array, isMerging:Boolean, customClassIdShiftOffset:int):void
       {
          var numOldFunctions:int = mCustomFunctionDefinitions == null ? 0 : mCustomFunctionDefinitions.length;
          var numNewFunctions:int = functionDefines.length;
@@ -762,7 +824,7 @@ package player.design
          
          for (var functionId:int = 0; functionId < numNewFunctions; ++ functionId)
          {
-            mCustomFunctionDefinitions [numOldFunctions + functionId] = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (functionDefines [functionId] as FunctionDefine, null);
+            mCustomFunctionDefinitions [numOldFunctions + functionId] = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mCurrentWorld, functionDefines [functionId] as FunctionDefine, null, customClassIdShiftOffset);
          }
       }
       

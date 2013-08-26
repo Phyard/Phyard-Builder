@@ -57,7 +57,9 @@ package common {
    import player.trigger.entity.EntityEventHandler_Gesture;
 
    import player.trigger.data.ListElement_EventHandler;
-
+   
+   import player.trigger.CoreClasses;
+   import player.trigger.ClassDefinition_Custom;
    import player.trigger.FunctionDefinition_Custom;
 
    import common.trigger.define.ClassDefine;
@@ -434,6 +436,24 @@ package common {
             }
          }
 
+      // custom classes (and core classes)
+         
+         extraInfos.mBeginningCustomClassIndex = 0;
+
+         if (isLoaingFromStretch || isMergingScene)
+         {
+            CoreClasses.InitCoreClassDefinitions ();
+         
+            var oldNumCustomClasses:int = Global.GetNumCustomClasses ();
+            
+            if (isMergingScene)
+            {
+               extraInfos.mBeginningCustomClassIndex = oldNumCustomClasses;
+            }
+
+            Global.InitCustomClassDefinitions (sceneDefine.mClassDefines, isMergingScene);
+         }
+
       // init custom variables / correct entity refernce ids
 
          if (isLoaingFromStretch) // the following half is drawing feet for snakes // && (! worldDefine.mDontReloadGlobalAssets))
@@ -464,7 +484,7 @@ package common {
                                         sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
                                         sceneDefine.mEntityPropertyDefines, worldDefine.mCommonEntityPropertyDefines, 
                                         sceneDefine.mSessionVariableDefines, extraInfos.mSessionVariableIdMappingTable,
-                                        isMergingScene);
+                                        isMergingScene, extraInfos.mBeginningCustomClassIndex);
             
             // append the missed new custom variables for old entities
             // (merged with foloowing "init entity custom properties" block)
@@ -515,6 +535,7 @@ package common {
          }
          
       // init entity custom properties
+      
          //for (createId = 0; createId < numEntities; ++ createId)
          //{
          //   entityDefine = entityDefineArray [createId];
@@ -543,7 +564,7 @@ package common {
                extraInfos.mBeginningCustomFunctionIndex = oldNumCustomFunctions;
             }
 
-            Global.CreateCustomFunctionDefinitions (sceneDefine.mFunctionDefines, isMergingScene);
+            Global.CreateCustomFunctionDefinitions (sceneDefine.mFunctionDefines, isMergingScene, extraInfos.mBeginningCustomClassIndex);
 
             var numFunctions:int = sceneDefine.mFunctionDefines.length;
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)

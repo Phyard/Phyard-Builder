@@ -11,15 +11,15 @@ package editor.trigger {
    
    public class VariableDefinition_Custom extends VariableDefinition
    {
-      public function VariableDefinition_Custom (customClass:ClassCustom, name:String, description:String = null, options:Object = null)
+      public function VariableDefinition_Custom (customClass:ClassDefinition_Custom, name:String, description:String = null, options:Object = null)
       {
          //super (ClassTypeDefine.ClassType_Custom, classId, name, description, options);
          super (customClass, name, description, options);
       }
       
-      public function GeCustomClass ():ClassCustom
+      public function GeCustomClass ():ClassDefinition_Custom
       {
-         return mClass as ClassCustom;
+         return mClass as ClassDefinition_Custom;
       }
       
       public function GetCustomProperties ():VariableSpaceClassInstance

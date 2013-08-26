@@ -9,14 +9,14 @@ package common {
    import player.entity.Entity;
    import player.world.CollisionCategory;
    
+   import player.trigger.ClassDefinition;
+   import player.trigger.CoreClasses;
+      
    import player.trigger.FunctionDefinition;
    import player.trigger.FunctionDefinition_Core;
    import player.trigger.FunctionDefinition_Custom;
    
    import player.trigger.TriggerEngine;
-   import player.trigger.CoreClasses;
-   import player.trigger.FunctionDefinition;
-   import player.trigger.FunctionDefinition_Custom;
    import player.trigger.CodeSnippet;
    import player.trigger.FunctionCalling;
    import player.trigger.FunctionCalling_Condition;
@@ -86,7 +86,9 @@ package common {
                variableInstance = variableSpace.GetVariableAt (i);
                   
                variableInstance.SetIndex (i);
-               variableInstance.SetValueType (functionDeclaration.GetInputParamValueType (i));
+               //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
+               //variableInstance.SetValueType (functionDeclaration.GetInputParamValueType (i));
+               variableInstance.SetClassDefinition (CoreClasses.GetCoreClassDefinition (functionDeclaration.GetInputParamValueType (i)));
                variableInstance.SetValueObject (functionDeclaration.GetInputParamDefaultValue (i));
             }
          }
@@ -99,7 +101,9 @@ package common {
                variableInstance = variableSpace.GetVariableAt (i);
                   
                variableInstance.SetIndex (i);
-               variableInstance.SetValueType (functionDeclaration.GetOutputParamValueType (i));
+               //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
+               //variableInstance.SetValueType (functionDeclaration.GetOutputParamValueType (i));
+               variableInstance.SetClassDefinition (CoreClasses.GetCoreClassDefinition (functionDeclaration.GetOutputParamValueType (i)));
                variableInstance.SetValueObject (functionDeclaration.GetOutputParamDefaultValue (i));
             }
          }
@@ -196,14 +200,15 @@ package common {
 // define -> definition (player)
 //==============================================================================================
       
-      // for functionDefine and functionDeclaration, at least one is not null
-      public static function FunctionDefine2FunctionDefinition (functionDefine:FunctionDefine, functionDeclaration:FunctionCoreBasicDefine):FunctionDefinition_Custom
+      // functionDefine must be null, functionDeclaration may be null (custom function) or non-null (predefined function, which is not core).
+      // customClassIdShiftOffset is used for custom functions.
+      public static function FunctionDefine2FunctionDefinition (playerWorld:World, functionDefine:FunctionDefine, functionDeclaration:FunctionCoreBasicDefine, customClassIdShiftOffset:int = 0):FunctionDefinition_Custom
       {
          var inputVariableSpace:VariableSpace;
          var outputVariableSpace:VariableSpace;
          var numLocals:int = functionDefine.mLocalVariableDefines == null ? 0 : functionDefine.mLocalVariableDefines.length;
          
-         if (functionDeclaration != null) // should be a care function declaration
+         if (functionDeclaration != null) // should be a core function declaration
          {
             //costomFunction = new FunctionDefinition_Custom (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), numLocals);
             inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true);
@@ -212,8 +217,8 @@ package common {
          else
          {
             //costomFunction = new FunctionDefinition_Custom (BuildParamDefinesFormVariableDefines (functionDefine.mInputVariableDefines, true), BuildParamDefinesFormVariableDefines (functionDefine.mOutputVariableDefines, false), numLocals);
-            inputVariableSpace = VariableDefines2VariableSpace (null, functionDefine.mInputVariableDefines, null);
-            outputVariableSpace = VariableDefines2VariableSpace (null, functionDefine.mOutputVariableDefines, null);
+            inputVariableSpace = VariableDefines2VariableSpace (playerWorld, functionDefine.mInputVariableDefines, null, customClassIdShiftOffset);
+            outputVariableSpace = VariableDefines2VariableSpace (playerWorld, functionDefine.mOutputVariableDefines, null, customClassIdShiftOffset);
          }
          
          var costomFunction:FunctionDefinition_Custom = new FunctionDefinition_Custom (inputVariableSpace, outputVariableSpace, numLocals);
@@ -571,7 +576,7 @@ package common {
             
             //assert (valueType == direct_source_define.mValueType);
             
-            value_source = new Parameter_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos));
+            value_source = new Parameter_Direct (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -669,7 +674,7 @@ package common {
          
          if (value_source == null)
          {
-            value_source = new Parameter_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos));
+            value_source = new Parameter_Direct (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos));
          }
          
          return value_source;
@@ -794,7 +799,8 @@ package common {
       
       //public static function VariableSpaceDefine2VariableSpace (playerWorld:World, variableSpaceDefine:VariableSpaceDefine):VariableSpace // v1.52 only
       // if variableSpace is not null, append new one into it and return it.
-      public static function VariableDefines2VariableSpace (playerWorld:World, variableDefines:Array, variableSpace:VariableSpace, supportKeymapping:Boolean = false, varialbeIdMappingTable:Array = null):VariableSpace // supportInitalValues parameter:is not essential
+      // playerWorld and customClassIdShiftOffset is meaningless for world scope variable spaces.
+      public static function VariableDefines2VariableSpace (playerWorld:World, variableDefines:Array, variableSpace:VariableSpace, customClassIdShiftOffset:int, supportKeymapping:Boolean = false, varialbeIdMappingTable:Array = null):VariableSpace // supportInitalValues parameter:is not essential
       {
          var useIdMappingTable:Boolean = false;
          
@@ -849,13 +855,31 @@ package common {
             variableInstance.SetIndex (newVariableIndexInSpace);
             variableInstance.SetKey (variableDefine.mKey);
             variableInstance.SetName (variableDefine.mName);
+            
             //variableInstance.SetValueType (direct_source_define.mValueType);
-            variableInstance.SetValueType (variableDefine.mValueType);
-            if (playerWorld != null)
+            if (variableDefine.mClassType == ClassTypeDefine.ClassType_Custom) // since v2.05
             {
-               //variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
-               variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, variableDefine.mClassType, variableDefine.mValueType, variableDefine.mValueObject));
+               var classDefinition:ClassDefinition = null;
+               if (playerWorld != null)
+               {
+                  classDefinition = Global.GetCustomClassDefinition (variableDefine.mValueType + customClassIdShiftOffset);
+               }
+               
+               if (classDefinition == null)
+                  classDefinition = CoreClasses.kVoidClassDefinition;
+                                 
+               variableInstance.SetClassDefinition (classDefinition);
             }
+            else
+            {
+               variableInstance.SetClassDefinition (CoreClasses.GetCoreClassDefinition (variableDefine.mValueType));
+            }
+            
+            //if (playerWorld != null)
+            //{
+               //variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
+               variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, variableInstance.GetClassType (), variableInstance.GetValueType (), variableDefine.mValueObject));
+            //}
             
             if (useIdMappingTable)
             {
@@ -874,7 +898,7 @@ package common {
       }
       
       // this function is for validating entity and ccat session variables when restarting a level
-      // if variableDefines is not null, the lenght of variableSpace will be adjusted to variableDefines.length
+      // if variableDefines is not null, the length of variableSpace will be adjusted to variableDefines.length
       public static function ValidateVariableSpaceInitialValues (playerWorld:World, variableSpace:VariableSpace, variableDefines:Array, trimSpace:Boolean, tryToReSceneDependentVariables:Boolean):void
       {
          if (variableDefines != null && trimSpace)
@@ -899,17 +923,23 @@ package common {
          if (valueObject is Entity)
          {
             var entity:Entity = valueObject as Entity;
-            if (entity != null && tryToReSceneDependentVariables)
+            if (entity != null)
             {
-               return CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Unknown, CoreClassIds.ValueType_Entity, entity.GetCreationId ());
+               if (tryToReSceneDependentVariables)
+                  return CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, entity.GetCreationId ());
+               else
+                  return null;
             }
          }
          else if (valueObject is CollisionCategory)
          {
             var ccat:CollisionCategory = valueObject as CollisionCategory;
-            if (ccat != null && tryToReSceneDependentVariables)
+            if (ccat != null)
             {
-               return CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Unknown, CoreClassIds.ValueType_CollisionCategory, ccat.GetIndexInEditor ());
+               if (tryToReSceneDependentVariables)
+                  return CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_CollisionCategory, ccat.GetIndexInEditor ());
+               else
+                  return null;
             }
          }
          // sound

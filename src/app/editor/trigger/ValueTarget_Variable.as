@@ -69,7 +69,7 @@ package editor.trigger {
          if (viDef == null)
             return null;
          
-         var customClass:ClassCustom = viDef.GeCustomClass ();
+         var customClass:ClassDefinition_Custom = viDef.GeCustomClass ();
          //assert customClass != null
          if (customClass.GetID () < 0)
             return null;
@@ -160,7 +160,7 @@ package editor.trigger {
          //if (vi.GetClassType () != ClassTypeDefine.ClassType_Custom)
          //   return defaultValueTarget;
          //
-         //var customClass:ClassCustom = scene.GetCodeLibManager ().GetCustomClass (vi.GetValueType ());
+         //var customClass:ClassDefinition_Custom = scene.GetCodeLibManager ().GetCustomClass (vi.GetValueType ());
          //if (customClass == null)
          //   return defaultValueTarget;
          //

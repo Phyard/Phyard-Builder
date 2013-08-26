@@ -65,10 +65,6 @@ package editor.entity {
    //import editor.trigger.entity.EntityFunction;
    
    import editor.trigger.CodeSnippet;
-   import editor.trigger.VariableDefinition;
-   import editor.trigger.VariableDefinition_Core;
-   import editor.trigger.VariableDefinition_Custom;
-   import editor.trigger.ClassCustom;
    
    import editor.selection.SelectionEngine;
    

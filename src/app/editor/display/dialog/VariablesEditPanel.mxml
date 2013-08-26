@@ -161,8 +161,6 @@
 
             import editor.codelib.CodeLibManager;
 
-            import editor.trigger.ClassCustom;
-
             import editor.trigger.VariableSpace;
             import editor.trigger.VariableSpaceClassInstance;
 
@@ -277,24 +275,35 @@
             private var mCreateNewVariableMenu:Menu = null;
             private function OnCreateNewVariable ():void
             {
+               if (mVariableSpace == null)
+                  return;
+               
                if (mCreateNewVariableMenu == null)
                {
-                  var isSceneDataDependent:Boolean = mVariableSpace != null
-                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_Session
-                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_World
-                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GameSave
-                                        ;
+                  var isAnySceneDataIndependent:Boolean = (
+                                           mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Session
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_World
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GameSave
+                                        );
+                  var isCurrentSceneDataDependent:Boolean = mCodeLibManager != null && (
+                                           mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Global
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Input
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Local
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Output
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_EntityProperties
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_CustomType
+                                        );
 
                   var xml:XML = <root />;
 
                   // custom Types
-                  if (isSceneDataDependent)
+                  if (isCurrentSceneDataDependent)
                   {
                      var customTypesMenu:XML = mCodeLibManager.GetCustomTypesDataProvider ();
                      if (customTypesMenu != null)
                      {
                         xml.appendChild (customTypesMenu);
-                      }
+                     }
                   }
                   
                   // ...
@@ -308,7 +317,7 @@
                   var coreClassesMenuData:XML = CodeLibManager.GetCoreTypesDataProvider ();
                   for each (var menuItem:Object in coreClassesMenuData.menuitem)
                   {
-                     if (isSceneDataDependent || menuItem.@["scene_data_dependent"] == false)
+                     if ((! isAnySceneDataIndependent) || menuItem.@["scene_data_dependent"] == false)
                      {
                         xml.appendChild (menuItem);
                      }

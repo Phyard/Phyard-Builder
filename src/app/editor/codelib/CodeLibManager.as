@@ -218,7 +218,7 @@ package editor.codelib {
          return mClassAssets [index] as AssetClass;
       }
       
-      public function GetCustomClass (index:int):ClassCustom
+      public function GetCustomClass (index:int):ClassDefinition_Custom
       {
          var classAsset:AssetClass = GetClassByIndex (index);
          return classAsset == null ? null : classAsset.GetCustomClass ();
@@ -616,11 +616,11 @@ package editor.codelib {
          }
 
          var theClasses:Array = classCodePackage.GetClasses ();
-         var aClass:ClassBase;
+         var aClass:ClassDefinition;
          var class_element:XML;
          for (var j:int = 0; j < theClasses.length; ++ j)
          {
-            aClass = theClasses [j] as ClassBase;
+            aClass = theClasses [j] as ClassDefinition;
             //if (aClass.IsShowUpInApiMenu ())
             //{
                class_element = <menuitem />;
@@ -759,7 +759,7 @@ package editor.codelib {
          var classAsset:AssetClass = GetClassByIndex (classId);
          if (classAsset != null)
          {
-            var customClass:ClassCustom = classAsset.GetCustomClass ();
+            var customClass:ClassDefinition_Custom = classAsset.GetCustomClass ();
             
             if (variableName == null)
                variableName = customClass.GetDefaultInstanceName ();

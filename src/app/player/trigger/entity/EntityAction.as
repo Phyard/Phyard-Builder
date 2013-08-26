@@ -37,7 +37,7 @@ package player.trigger.entity
                var codeSnippetDefine:CodeSnippetDefine = ((entityDefine.mFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
-               mVoidFunctionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetVoidFunctionDeclaration  ());
+               mVoidFunctionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetVoidFunctionDeclaration  ());
                mVoidFunctionDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
             }
          }

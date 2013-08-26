@@ -16,6 +16,10 @@ package common.trigger
          return mId;
       }
      
+      public function GetDefaultDirectDefineValue ():Object
+      {
+         return mDefaultDirectDefineValue;
+      }
    }
 }
       

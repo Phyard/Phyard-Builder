@@ -45,9 +45,9 @@ package player.trigger.entity
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
                if (mIsPairSelector)
-                  mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetEntityPairFilterFunctionDeclaration ());
+                  mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetEntityPairFilterFunctionDeclaration ());
                else
-                  mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetEntityFilterFunctionDeclaration ());
+                  mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetEntityFilterFunctionDeclaration ());
                
                mFilterDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
             }

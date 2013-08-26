@@ -12,8 +12,9 @@ package player.trigger
       
       public var mName:String = null; // for debug usage only
       
-      private var mClsssType:int = ClassTypeDefine.ClassType_Unknown;  // since v2.05
-      private var mValueType:int = CoreClassIds.ValueType_Void;
+      //private var mClassType:int = ClassTypeDefine.ClassType_Unknown;  // since v2.05
+      //private var mValueType:int = CoreClassIds.ValueType_Void;
+      private var mClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition;
       
       public var mValueObject:Object = null;
       
@@ -42,24 +43,31 @@ package player.trigger
          return mKey;
       }
       
-      public function SetClassType (type:int):void
-      {
-         mClsssType = type;
-      }
+      //public function SetClassType1 (type:int):void
+      //{
+      //   mClassType = type;
+      //}
       
       public function GetClassType ():int
       {
-         return mClsssType;
+         //return mClassType;
+         return mClassDefinition.GetClassType ();
       }
       
-      public function SetValueType (type:int):void
-      {
-         mValueType = type;
-      }
+      //public function SetValueType1 (type:int):void
+      //{
+      //   mValueType = type;
+      //}
       
       public function GetValueType ():int
       {
-         return mValueType;
+         //return mValueType;
+         return mClassDefinition.GetID ();
+      }
+      
+      public function SetClassDefinition (classDefinition:ClassDefinition):void
+      {
+         mClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
       }
       
       public function SetName (name:String):void
@@ -82,8 +90,10 @@ package player.trigger
       public function CloneFor (forVI:VariableInstance):void
       {
          forVI.SetKey (mKey);
-         forVI.SetValueType (mValueType);
          forVI.SetName (mName);
+         //forVI.SetClassType1 (mClassType);
+         //forVI.SetValueType1 (mValueType);
+         forVI.SetClassDefinition (mClassDefinition);
          forVI.SetValueObject (mValueObject);
       }
       

@@ -46,7 +46,7 @@ package editor.codelib {
    import editor.asset.Asset;
    import editor.asset.Linkable;
    
-   import editor.trigger.ClassCustom;
+   import editor.trigger.ClassDefinition_Custom;
    import editor.trigger.VariableSpaceClassInstance;
    
    import editor.display.dialog.NameSettingDialog;
@@ -62,7 +62,7 @@ package editor.codelib {
       
       protected var mPackage:AssetPackage = null;
       
-      protected var mCustomClass:ClassCustom;
+      protected var mCustomClass:ClassDefinition_Custom;
       
       private var mHalfWidth:Number;
       private var mHalfHeight:Number;
@@ -80,7 +80,7 @@ package editor.codelib {
          
          mouseChildren = false;
          
-         mCustomClass = new ClassCustom (GetName (), CoreClasses.ValidateValueObject_ArrayAndCustomObject);
+         mCustomClass = new ClassDefinition_Custom (GetName (), CoreClasses.ValidateValueObject_ArrayAndCustomObject);
       }
       
       public function SetClassIndex (classId:int):void
@@ -97,7 +97,7 @@ package editor.codelib {
          return mClassId;
       }
       
-      public function GetCustomClass ():ClassCustom
+      public function GetCustomClass ():ClassDefinition_Custom
       {
          return mCustomClass;
       }

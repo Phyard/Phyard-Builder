@@ -70,41 +70,68 @@ package common {
    
    public class TriggerFormatHelper2
    {
-      public static function BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):VariableSpace
+      public static function BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld:World, variableSpace:VariableSpace, functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):VariableSpace
       {
-         var variableSpace:VariableSpace;
-         
          var variableInstance:VariableInstance;
          var i:int;
+         var classId:int;
+         
+         var firstTime:Boolean = (variableSpace == null);
          
          if (forInputParams)
          {
             var numInputs:int = functionDeclaration.GetNumInputs ();
-            variableSpace = new VariableSpace (numInputs);
+            if (firstTime)
+               variableSpace = new VariableSpace (numInputs);
+            
             for (i =  0; i < numInputs; ++ i)
             {
                variableInstance = variableSpace.GetVariableAt (i);
-                  
-               variableInstance.SetIndex (i);
-               //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
-               //variableInstance.SetValueType (functionDeclaration.GetInputParamValueType (i));
-               variableInstance.SetClassDefinition (CoreClasses.GetCoreClassDefinition (functionDeclaration.GetInputParamValueType (i)));
-               variableInstance.SetValueObject (functionDeclaration.GetInputParamDefaultValue (i));
+               
+               classId = functionDeclaration.GetInputParamValueType (i);
+               
+               if (firstTime)
+               {
+                  variableInstance.SetIndex (i);
+                  //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
+                  //variableInstance.SetValueType (functionDeclaration.GetInputParamValueType (i));
+                  variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+               }
+               //variableInstance.SetValueObject (functionDeclaration.GetInputParamDefaultValue (i));
+               if (playerWorld == null) // avoid memory consuming after testing in editor.
+                  variableInstance.SetValueObject (null);
+               else
+               {
+                  variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetInputParamDefaultValue (i)));
+               }
             }
          }
          else
          {
             var numOutputs:int = functionDeclaration.GetNumOutputs ();
-            variableSpace = new VariableSpace (numOutputs);
+            if (firstTime)
+               variableSpace = new VariableSpace (numOutputs);
+            
             for (i =  0; i < numOutputs; ++ i)
             {
                variableInstance = variableSpace.GetVariableAt (i);
-                  
-               variableInstance.SetIndex (i);
-               //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
-               //variableInstance.SetValueType (functionDeclaration.GetOutputParamValueType (i));
-               variableInstance.SetClassDefinition (CoreClasses.GetCoreClassDefinition (functionDeclaration.GetOutputParamValueType (i)));
-               variableInstance.SetValueObject (functionDeclaration.GetOutputParamDefaultValue (i));
+               
+               classId = functionDeclaration.GetOutputParamValueType (i);
+               
+               if (firstTime)
+               {
+                  variableInstance.SetIndex (i);
+                  //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
+                  //variableInstance.SetValueType (functionDeclaration.GetOutputParamValueType (i));
+                  variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+               }
+               //variableInstance.SetValueObject (functionDeclaration.GetOutputParamDefaultValue (i));
+               if (playerWorld == null) // avoid memory consuming after testing in editor.
+                  variableInstance.SetValueObject (null);
+               else
+               {
+                  variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetOutputParamDefaultValue (i)));
+               }
             }
          }
          
@@ -191,9 +218,24 @@ package common {
       //   return paramDefines;
       //}
       
-      public static function CreateCoreFunctionDefinition (functionDeclaration:FunctionCoreBasicDefine, callback:Function):FunctionDefinition_Core
+      // coreFunction == null means this is the first time to create the function.
+      // otherwise, means to reset initial ClassInstance for all sources and target to avoid memory leak and logic errors.
+      public static function CreateCoreFunctionDefinition (playerWorld:World, coreFunction:FunctionDefinition_Core, functionDeclaration:FunctionCoreBasicDefine, callback:Function):FunctionDefinition_Core
       {
-         return new FunctionDefinition_Core (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), callback);
+         if (coreFunction == null)
+         {
+            return new FunctionDefinition_Core (
+                        BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, true), 
+                        BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, false), 
+                        callback);
+         }
+         else
+         {
+            BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, coreFunction.GetInputVariableSpace (), functionDeclaration, true);
+            BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, coreFunction.GetOutputVariableSpace (), functionDeclaration, false);
+            
+            return coreFunction;
+         }
       }
       
 //==============================================================================================
@@ -208,11 +250,14 @@ package common {
          var outputVariableSpace:VariableSpace;
          var numLocals:int = functionDefine.mLocalVariableDefines == null ? 0 : functionDefine.mLocalVariableDefines.length;
          
-         if (functionDeclaration != null) // should be a core function declaration
+         if (functionDeclaration != null) // event handler / action / condition / ...
          {
+            // maybe creating one Function for each event type is better. May be not.
+            // Currently, still create one for each instance.
+            
             //costomFunction = new FunctionDefinition_Custom (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), numLocals);
-            inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true);
-            outputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false);
+            inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, true);
+            outputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, false);
          }
          else
          {
@@ -857,23 +902,16 @@ package common {
             variableInstance.SetName (variableDefine.mName);
             
             //variableInstance.SetValueType (direct_source_define.mValueType);
+            var valueType:int = variableDefine.mValueType;
             if (variableDefine.mClassType == ClassTypeDefine.ClassType_Custom) // since v2.05
             {
-               var classDefinition:ClassDefinition = null;
-               if (playerWorld != null)
-               {
-                  classDefinition = Global.GetCustomClassDefinition (variableDefine.mValueType + customClassIdShiftOffset);
-               }
+               if (playerWorld == null)
+                  throw new Error ("Should not be a custom class!");
                
-               if (classDefinition == null)
-                  classDefinition = CoreClasses.kVoidClassDefinition;
-                                 
-               variableInstance.SetClassDefinition (classDefinition);
+               valueType += customClassIdShiftOffset;
             }
-            else
-            {
-               variableInstance.SetClassDefinition (CoreClasses.GetCoreClassDefinition (variableDefine.mValueType));
-            }
+            var classDefinition:ClassDefinition = CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Class, {mClassType : variableDefine.mClassType, mValueObject : valueType}) as ClassDefinition;
+            variableInstance.SetShellClassDefinition (classDefinition);
             
             //if (playerWorld != null)
             //{

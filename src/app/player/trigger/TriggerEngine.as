@@ -43,7 +43,7 @@ package player.trigger
          CoreFunctionDeclarations.Initialize ();
          CoreEventDeclarations.Initialize ();
          
-         CoreFunctionDefinitions.Initialize ();
+         // CoreFunctionDefinitions.Initialize (); // moved
          
          sConstDataInited = true;
       }

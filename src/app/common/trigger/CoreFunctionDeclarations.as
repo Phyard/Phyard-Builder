@@ -145,6 +145,34 @@ package common.trigger {
                      null
                   );
 
+      // class common
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CommonAssign,
+                     [
+                        [CoreClassIds.ValueType_Object,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Object,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CommonEquals,
+                     [
+                        [CoreClassIds.ValueType_Object,       null],
+                        [CoreClassIds.ValueType_Object,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CommonNewInstance,
+                     [
+                        [CoreClassIds.ValueType_Class,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Object,       null],
+                     ]
+                  );
+
       // system / time
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetProgramMilliseconds,

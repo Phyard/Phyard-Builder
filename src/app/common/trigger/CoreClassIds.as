@@ -86,11 +86,11 @@ package common.trigger {
       public static const ValueType_String:int  = 2;
       public static const ValueType_Number:int  = 3;
       
+      public static const ValueType_Class:int = 20; // or "type" type, type is a type
+      public static const ValueType_Object:int = 21;
+
       public static const ValueType_Array:int = 30;
-      
-      public static const ValueType_Object:int = 50;
-      public static const ValueType_Function:int = 51;
-      public static const ValueType_Class:int = 52; // or "type" type, type is a type
+      //public static const ValueType_Function:int = 31;
       
       public static const ValueType_Entity:int            = 60;
       public static const ValueType_CollisionCategory:int = 61;

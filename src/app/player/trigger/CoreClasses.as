@@ -2,6 +2,7 @@ package player.trigger {
 
    import flash.utils.ByteArray;
 
+   import player.design.Global;
    import player.world.World;
 
    import common.trigger.ClassTypeDefine;
@@ -122,6 +123,33 @@ package player.trigger {
                //   
                //}
             }
+            case CoreClassIds.ValueType_Class:
+               var aClass:ClassDefinition = null;
+               
+               if (valueObject != null)
+               {
+                  if (valueObject.mClassType == ClassTypeDefine.ClassType_Custom)
+                  {
+                     var theClassId:int = valueObject.mValueType;
+                     if (valueObject.mValueType >= 0 && extraInfos != null)
+                        theClassId = theClassId + extraInfos.mBeginningCustomClassIndex;
+                     
+                     aClass = Global.GetCustomClassDefinition (theClassId);
+                  }
+                  else
+                  {
+                     aClass = GetCoreClassDefinition (valueObject.mValueType);
+                  }
+               }
+               
+               if (aClass == null)
+               {
+                  aClass = kVoidClassDefinition;
+               }
+                  
+               return aClass;
+            case CoreClassIds.ValueType_Object:
+               return null;
             default:
             {
                return null;
@@ -166,6 +194,13 @@ package player.trigger {
                //{
                //   
                //}
+            case CoreClassIds.ValueType_Class:
+               if (valueObject == null)
+                  return ClassTypeDefine.ClassType_Core + "," + CoreClassIds.ValueType_Void;
+                  
+               return valueObject.mClassType + "," + valueObject.mValueType;
+            case CoreClassIds.ValueType_Object:
+               return null;
             default:
             {
                throw new Error ("! wrong value");
@@ -221,6 +256,11 @@ package player.trigger {
                //}
                
                break;
+            case CoreClassIds.ValueType_Class:
+               return {mClassType : binFile.readByte (), mValueType : binFile.readShort ()};
+            case CoreClassIds.ValueType_Object:
+               var isNull:Boolean = binFile.readByte () == 0;
+               return null;
             default:
             {
                throw new Error ("! bad value");

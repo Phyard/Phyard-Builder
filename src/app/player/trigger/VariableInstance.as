@@ -14,9 +14,10 @@ package player.trigger
       
       //private var mClassType:int = ClassTypeDefine.ClassType_Unknown;  // since v2.05
       //private var mValueType:int = CoreClassIds.ValueType_Void;
-      private var mClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition;
+      private var mShellClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition;
       
-      public var mValueObject:Object = null;
+      private var mValueClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition;
+      public var mValueObject:Object = undefined;
       
       public function VariableInstance (value:Object = null)
       {
@@ -51,7 +52,7 @@ package player.trigger
       public function GetClassType ():int
       {
          //return mClassType;
-         return mClassDefinition.GetClassType ();
+         return mShellClassDefinition.GetClassType ();
       }
       
       //public function SetValueType1 (type:int):void
@@ -62,12 +63,12 @@ package player.trigger
       public function GetValueType ():int
       {
          //return mValueType;
-         return mClassDefinition.GetID ();
+         return mShellClassDefinition.GetID ();
       }
       
-      public function SetClassDefinition (classDefinition:ClassDefinition):void
+      public function SetShellClassDefinition (classDefinition:ClassDefinition):void
       {
-         mClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
+         mShellClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
       }
       
       public function SetName (name:String):void
@@ -93,7 +94,7 @@ package player.trigger
          forVI.SetName (mName);
          //forVI.SetClassType1 (mClassType);
          //forVI.SetValueType1 (mValueType);
-         forVI.SetClassDefinition (mClassDefinition);
+         forVI.SetShellClassDefinition (mShellClassDefinition);
          forVI.SetValueObject (mValueObject);
       }
       

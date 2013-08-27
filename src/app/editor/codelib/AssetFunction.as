@@ -187,10 +187,14 @@ package editor.codelib {
          mFunctionDefinition.GetLocalVariableSpace ().DestroyAllVariableInstances ();
       }
       
+//=======================================================================================
+// 
+//=======================================================================================
       
       private var mLastModifyTimesOfInputVariableSpace:int = 0;
       private var mLastModifyTimesOfOutputVariableSpace:int = 0;
       private var mLastModifyTimesOfLocalVariableSpace:int = 0;
+      
       override public function Update (escapedTime:Number):void
       {
          if (  mFunctionDefinition.GetInputVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfInputVariableSpace

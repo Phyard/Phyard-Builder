@@ -583,7 +583,7 @@ package editor.world {
       }
       
 //=================================================================================
-//   core classes 
+//   classes 
 //=================================================================================      
       
       public static function GetCoreClassById (classId:int):ClassDefinition_Core

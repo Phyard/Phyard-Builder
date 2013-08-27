@@ -218,12 +218,6 @@ package editor.codelib {
          return mClassAssets [index] as AssetClass;
       }
       
-      public function GetCustomClass (index:int):ClassDefinition_Custom
-      {
-         var classAsset:AssetClass = GetClassByIndex (index);
-         return classAsset == null ? null : classAsset.GetCustomClass ();
-      }
-      
       public function GetPackageByIndex (index:int):AssetPackage
       {
          if (index < 0 || index >= mPackageAssets.length)
@@ -753,14 +747,38 @@ package editor.codelib {
 // custom variable definition
 //=====================================================================
 
+      public static function GetClass (codelibManager:CodeLibManager, classType:int, classId:int):ClassDefinition
+      {
+         var aClass:ClassDefinition = null;
+         if (classType == ClassTypeDefine.ClassType_Custom)
+         {
+            if (codelibManager == null)
+               throw new Error ("codelibManager can't be null.");
+            
+            aClass = codelibManager.GetCustomClass (classId);
+            
+            if (aClass != null)
+               return aClass;
+            
+            classId = CoreClassIds.ValueType_Void;
+         }
+
+         return World.GetCoreClassById (classId);
+      }
+      
+      public function GetCustomClass (index:int):ClassDefinition_Custom
+      {
+         var classAsset:AssetClass = GetClassByIndex (index);
+         return classAsset == null ? null : classAsset.GetCustomClass ();
+      }
+
       // variableName == nul means default name
       public function CreateCustomVariableDefinition (classId:int, variableName:String = null):VariableDefinition
       {
-         var classAsset:AssetClass = GetClassByIndex (classId);
-         if (classAsset != null)
+         var customClass:ClassDefinition_Custom = GetCustomClass (classId);
+         
+         if (customClass != null)
          {
-            var customClass:ClassDefinition_Custom = classAsset.GetCustomClass ();
-            
             if (variableName == null)
                variableName = customClass.GetDefaultInstanceName ();
             

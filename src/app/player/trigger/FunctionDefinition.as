@@ -28,6 +28,11 @@ package player.trigger
          mNumOutputParams = mOutputVariableSpace == null ? 0 : mOutputVariableSpace.GetNumVariables ();
       }
       
+      public function GetInputVariableSpace():VariableSpace
+      {
+         return mInputVariableSpace;
+      }
+      
       public function GetNumInputParameters ():int
       {
          return mNumInputParams;
@@ -40,6 +45,11 @@ package player.trigger
       public function GetInputParameter (paramId:int):VariableInstance
       {
          return mInputVariableSpace.GetVariableAt (paramId);
+      }
+      
+      public function GetOutputVariableSpace():VariableSpace
+      {
+         return mOutputVariableSpace;
       }
       
       public function GetNumOutputParameters ():int

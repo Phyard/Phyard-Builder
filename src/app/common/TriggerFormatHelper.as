@@ -1441,6 +1441,22 @@ package common {
                   else
                      directSourceDefine.mValueObject = -1;
                }
+               else if (valueType == CoreClassIds.ValueType_Class)
+               {
+                  if (directSourceDefine.mValueObject.mClassType == ClassTypeDefine.ClassType_Custom)
+                  {
+                     var classId:int = directSourceDefine.mValueObject.mValueType;
+                     if (classId >= 0 && classId < correctionTables.mClassRefIndex_CorrectionTable.length)
+                     {
+                        directSourceDefine.mValueObject.mValueType = correctionTables.mClassRefIndex_CorrectionTable [classId];
+                     }
+                     else
+                     {
+                        directSourceDefine.mValueObject.mClassType = ClassTypeDefine.ClassType_Core;
+                        directSourceDefine.mValueObject.mValueType = CoreClassIds.ValueType_Void;
+                     }
+                  }
+               }
             }
          }
          else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Variable || valueSourceType == ValueSourceTypeDefine.ValueSource_ObjectProperty)

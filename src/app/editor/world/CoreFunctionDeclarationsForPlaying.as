@@ -237,22 +237,29 @@ package editor.world {
 
        // class common
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_NewInstance, class_common_package, "New", "@#0 = New", "@#0 <- New",
-                     null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CommonAssign, class_common_package, "=", "@#0 = $0", "@#0 = $0",
                      [
-                             new VariableDefinitionBoolean ("Target Variable"),
+                             new VariableDefinitionObject ("Source Object"),
+                     ],
+                     [
+                             new VariableDefinitionObject ("Target Object"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_NewInstance, class_common_package, "New", "@#0 = New", "@#0 <- New",
-                     null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CommonEquals, class_common_package, "==", "@#0 == $0", "@#0 == $0",
                      [
-                             new VariableDefinitionBoolean ("Target Variable"),
+                             new VariableDefinitionObject ("Object 1"),
+                             new VariableDefinitionObject ("Object 2"),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_NewInstance, class_common_package, "New", "@#0 = New", "@#0 <- New",
-                     null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CommonNewInstance, class_common_package, "New", "@#0 = New ($0)", "@#0 = New (($0))",
                      [
-                             new VariableDefinitionBoolean ("Target Variable"),
+                             new VariableDefinitionClass ("Class"),
+                     ],
+                     [
+                             new VariableDefinitionObject ("Object"),
                      ]
                   );
 

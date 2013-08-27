@@ -30,6 +30,7 @@ package common {
       public var mFunctionDefines:Array = new Array ();
       
       public var mClassDefines:Array = new Array (); // since v2.05
+      public var mPackageDefines:Array = new Array (); // since v2.05
    }
 }
 

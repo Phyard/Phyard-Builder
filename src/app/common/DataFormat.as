@@ -100,6 +100,8 @@ package common {
    //import editor.trigger.entity.EntityFunction;
    import editor.codelib.AssetFunction;
    import editor.codelib.AssetClass;
+   import editor.codelib.AssetPackage;
+   
    import editor.codelib.CodeLibManager;
    
    import editor.trigger.VariableSpace;
@@ -107,6 +109,7 @@ package common {
    
    import editor.EditorContext;
    
+   import common.trigger.define.PackageDefine;
    import common.trigger.define.ClassDefine;
    import common.trigger.define.FunctionDefine;
    //import common.trigger.define.VariableSpaceDefine;
@@ -1054,8 +1057,26 @@ package common {
          // code lib
          //{
             // packages
-            
-            // package variables
+            //>>from v2.05
+            //var numPackages:int = scene.GetCodeLibManager ().GetNumPackages ();
+            //for (var packageId:int = 0; packageId < numPackages; ++ packageId)
+            //{
+            //   var packageAsset:AssetPackage = scene.GetCodeLibManager ().GetPackageByIndex (packageId);
+            //   
+            //   var packageDefine:PackageDefine = new PackageDefine ();
+            //   
+            //   packageDefine.mKey = packageAsset.GetKey ();
+            //   packageDefine.mTimeModified = packageAsset.GetTimeModified ();
+            //   
+            //   packageDefine.mName = packageAsset.GetName ();
+            //   packageDefine.mPosX = packageAsset.GetPositionX ();
+            //   packageDefine.mPosY = packageAsset.GetPositionY ();
+            //   
+            //   packageDefine.mPackageIndices = packageAsset.GetPackageIndices ();
+            //   
+            //   sceneDefine.mPackageDefines.push (packageDefine);
+            //}
+            //<<
             
             // classes
             //>>from v2.05
@@ -3651,6 +3672,13 @@ package common {
             }
          }
          
+         // packages
+         
+         if (worldDefine.mVersion >= 0x0205)
+         {
+            // pacakges
+         }
+         
          // custom classes
          
          if (worldDefine.mVersion >= 0x0205)
@@ -4818,6 +4846,13 @@ package common {
                byteArray.writeShort (pairDefine.mCollisionCategory1Index);
                byteArray.writeShort (pairDefine.mCollisionCategory2Index);
             }
+         }
+         
+         // packages
+         
+         if (worldDefine.mVersion >= 0x0205)
+         {
+            byteArray.writeShort (0);
          }
          
          // custom classes

@@ -2,12 +2,14 @@ package editor.world {
    
    import flash.utils.ByteArray;
    
+   import editor.codelib.CodeLibManager;
    import editor.entity.Scene;
    import editor.entity.Entity;
    import editor.ccat.CollisionCategory;
    import editor.image.AssetImageModule;
    import editor.sound.AssetSound;
 
+   import editor.trigger.ClassDefinition;
    import editor.trigger.ClassDefinition_Core;
    import editor.trigger.CodePackage;
 
@@ -48,6 +50,8 @@ package editor.world {
                             undefined,
                             ValidateValueObject_Void
                          ).SetSceneDataDependent (false);
+                         
+         sVoidClass = GetCoreClassById (CoreClassIds.ValueType_Void); // should put here for Class_Type will ref this.
          
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Boolean, 
@@ -120,10 +124,25 @@ package editor.world {
                             null,
                             ValidateValueObject_ArrayAndCustomObject
                          ).SetSceneDataDependent (false);
+                                   
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_Class, 
+                            "Class", // Class Name
+                            "aClass",
+                            sVoidClass,
+                            ValidateValueObject_Class
+                         ).SetSceneDataDependent (false);
+                                   
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_Object, 
+                            "Object", // Class Name
+                            "anObject",
+                            null,
+                            ValidateValueObject_ArrayAndCustomObject
+                         ).SetSceneDataDependent (true);
          
       // ...
-      
-         sVoidClass = GetCoreClassById (CoreClassIds.ValueType_Void);
+         
       }
       
 //===========================================================
@@ -235,6 +254,11 @@ package editor.world {
             sound = null;
          
          return sound;
+      }
+      
+      public static function ValidateValueObject_Class (valueObject:Object, options:Object):Object
+      {
+         return (valueObject as ClassDefinition) == null ? sVoidClass : valueObject;
       }
       
       public static function ValidateValueObject_ArrayAndCustomObject (valueObject:Object, options:Object):Object
@@ -358,6 +382,14 @@ package editor.world {
                //{
                //   
                //}
+            case CoreClassIds.ValueType_Class:
+               var aClass:ClassDefinition = valueObject as ClassDefinition;
+               if (aClass == null)
+                  aClass = sVoidClass;
+               
+               return {mClassType: aClass.GetClassType (), mValueType: aClass.GetID ()};
+            case CoreClassIds.ValueType_Object:
+               return null;
             default:
             {
                throw new Error ("! wrong value");
@@ -446,6 +478,11 @@ package editor.world {
                //{
                //   
                //}
+            case CoreClassIds.ValueType_Class:
+               return CodeLibManager.GetClass (scene.GetCodeLibManager (), valueObject.mClassType, valueObject.mValueType);
+            case CoreClassIds.ValueType_Object:
+               // alwaus null, do nothing
+               return null;
             default:
             {
                throw new Error ("!wrong balue");
@@ -488,6 +525,12 @@ package editor.world {
                //{
                //   
                //}
+            case CoreClassIds.ValueType_Class:
+               var tokens:Array = String (direct_value).split (",");
+               return {mClassType : parseInt (tokens [0]), mValueType : parseInt (tokens [1])};
+            case CoreClassIds.ValueType_Object:
+               // alwaus null, do nothing
+               return null;
             default:
             {
                throw new Error ("! wrong value");
@@ -495,7 +538,7 @@ package editor.world {
          }
       }
       
-      public static function WriteDirectValueObjectIntoBinFile (binFile:ByteArray, classType:int, valueType:int,  numberDetail:int, valueObject:Object):void
+      public static function WriteDirectValueObjectIntoBinFile (binFile:ByteArray, classType:int, valueType:int, numberDetail:int, valueObject:Object):void
       {
          if (classType != ClassTypeDefine.ClassType_Core)
             return;
@@ -542,7 +585,7 @@ package editor.world {
             case CoreClassIds.ValueType_Array:
                //if (valueObject == null) 
                //{
-                  binFile.writeByte (0);
+                  binFile.writeByte (0); // means null.
                //}
                //else
                //{
@@ -555,6 +598,20 @@ package editor.world {
                //   binFile.writeShort (values.length);
                //}
                
+               break;
+            case CoreClassIds.ValueType_Class:
+               binFile.writeByte (valueObject.mClassType);
+               binFile.writeShort (valueObject.mValueType);
+               break;
+            case CoreClassIds.ValueType_Object:
+               //if (valueObject == null) 
+               //{
+                  binFile.writeByte (0); // means null.
+               //}
+               //else
+               //{
+               //   binFile.writeByte (1);
+               //}
                break;
             default:
             {

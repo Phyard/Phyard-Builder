@@ -159,6 +159,27 @@ package editor.codelib {
          }
       }
       
+//=======================================================================================
+// 
+//=======================================================================================
+      
+      private var mLastModifyTimesOfPropertySpace:int = 0;
+      
+      override public function Update (escapedTime:Number):void
+      {
+         if (mCustomClass.GetPropertyDefinitionSpace ().GetNumModifiedTimes () > mLastModifyTimesOfPropertySpace)
+         {
+            UpdateTimeModified ();
+         }
+      }
+      
+      override public function SetTimeModified (time:Number):void
+      {
+         super.SetTimeModified (time);
+         
+         mLastModifyTimesOfPropertySpace = mCustomClass.GetPropertyDefinitionSpace ().GetNumModifiedTimes ();
+      }
+      
 //=============================================================
 //   
 //=============================================================

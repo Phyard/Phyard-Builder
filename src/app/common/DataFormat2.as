@@ -330,6 +330,9 @@ package common {
             Global.SetCurrentWorld (playerWorld);
             
             // ...
+            Global.CreateOrResetCoreFunctionDefinitions ();
+            
+            // ...
             WorldPlugin.Call ("SetViewerParams", worldDefine.mViewerParams);
             worldDefine.mViewerParams = null;
          }
@@ -1114,12 +1117,20 @@ package common {
          }
 
          if (worldDefine.mVersion >= 0x0205)
-            xml.CustomFunctions = <CustomClasses />;
+            xml.CustomPackages = <CustomPackages />;
+
+         if (worldDefine.mVersion >= 0x0205)
+            xml.CustomClasses = <CustomClasses />;
 
          if (worldDefine.mVersion >= 0x0153)
             xml.CustomFunctions = <CustomFunctions />;
 
          //...
+         
+         if (worldDefine.mVersion >= 0x0205)
+         {
+            // pacakges
+         }
 
          if (worldDefine.mVersion >= 0x0205)
          {
@@ -2356,6 +2367,13 @@ package common {
 
                sceneDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
             }
+         }
+         
+         // packages
+         
+         if (worldDefine.mVersion >= 0x0205)
+         {
+            byteArray.readShort ();
          }
          
          // custom classes

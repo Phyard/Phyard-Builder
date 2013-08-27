@@ -50,6 +50,12 @@ package common.trigger {
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Array, 
                                    null);
+                                   
+         RegisterClassDeclatation (CoreClassIds.ValueType_Class, 
+                                   CoreClassIds.ValueType_Void);
+                                   
+         RegisterClassDeclatation (CoreClassIds.ValueType_Object, 
+                                   null);
 
          sVoidClassDeclaration = GetCoreClassDeclarationById (CoreClassIds.ValueType_Void);
       }

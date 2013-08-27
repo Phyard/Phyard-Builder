@@ -15,6 +15,8 @@ package player.design
    import player.trigger.ClassDefinition;
    import player.trigger.ClassDefinition_Custom;
    import player.trigger.FunctionDefinition_Custom;
+   
+   import player.trigger.CoreFunctionDefinitions;
 
    import player.entity.Entity;
    
@@ -146,6 +148,8 @@ package player.design
       mSceneLookupTableByKey = null;
       mCurrentWorld = null;
       mWorldDefine = null;
+      
+      CoreFunctionDefinitions.Initialize (null);
       
       mRegisterVariableSpace_Boolean = null;
       mRegisterVariableSpace_String = null;
@@ -569,6 +573,14 @@ package player.design
       public static function GetCurrentWorld ():World
       {
          return mCurrentWorld;
+      }
+      
+      public static function CreateOrResetCoreFunctionDefinitions ():void
+      {
+         if (mCurrentWorld == null)
+            throw new Error ();
+         
+         CoreFunctionDefinitions.Initialize (mCurrentWorld);
       }
       
       protected static function CreateRegisterVariableSpace (initValueObject:Object):VariableSpace

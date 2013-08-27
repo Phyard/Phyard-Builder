@@ -155,6 +155,10 @@ package editor.trigger {
                return new VariableDefinitionScene (variableName);
             case CoreClassIds.ValueType_Array:
                return new VariableDefinitionArray (variableName);
+            case CoreClassIds.ValueType_Class:
+               return new VariableDefinitionClass (variableName);
+            case CoreClassIds.ValueType_Object:
+               return new VariableDefinitionObject (variableName);
             default:
                throw new Error ("unknown type in CreateCoreVariableDefinition");
          }

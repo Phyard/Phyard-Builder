@@ -86,7 +86,6 @@
 
    <path id="java-class-path">
       <fileset dir="${dir.third-party}/java_libs" includes="**/*.jar" />
-      <fileset dir="${dir.tools}/editor" includes="**/*.jar" />
    </path>
 
    <pathconvert property="string.java-class-path" refid="java-class-path"/>
@@ -126,9 +125,6 @@
          <fileset dir="${dir.external}/helper_classes_as3">
             <exclude name="**/.svn/**"/>
          </fileset>
-         <fileset dir="${dir.external}/suit2d_loader_as3">
-            <exclude name="**/.svn/**"/>
-         </fileset>
          <!--
          <fileset dir="${dir.external}/box2dflash">
             <exclude name="**/.svn/**"/>
@@ -152,10 +148,6 @@
             <exclude name="**/.svn/**"/>
          </fileset>
          <fileset dir="${dir.external}/box2dpool">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-
-         <fileset dir="${dir.third-party}/mochi_api">
             <exclude name="**/.svn/**"/>
          </fileset>
       </copy>
@@ -196,9 +188,11 @@
          <arg line="-locale=en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+         <!--
          <arg line="-library-path=${dir.third-party}/kongragate_api/KongregateAPI.swc" />
          <arg line="-library-path=${dir.third-party}/mindjolt_api/MindJoltAPI.swc" />
          <arg line="-library-path=${dir.third-party}/google_analytics/analytics.swc"/>
+         -->
 
          <arg line="${dir.build.src}/editor/Editor.mxml" />
       </exec>
@@ -638,9 +632,6 @@
          <fileset dir="${dir.external}/helper_classes_as3">
             <exclude name="**/.svn/**"/>
          </fileset>
-         <fileset dir="${dir.external}/suit2d_loader_as3">
-            <exclude name="**/.svn/**"/>
-         </fileset>
          <fileset dir="${dir.external}/box2d_alchemy">
             <exclude name="**/.svn/**"/>
          </fileset>
@@ -654,10 +645,6 @@
             <exclude name="**/.svn/**"/>
          </fileset>
          <fileset dir="${dir.external}/box2dpool">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-
-         <fileset dir="${dir.third-party}/mochi_api">
             <exclude name="**/.svn/**"/>
          </fileset>
       </copy>
@@ -696,9 +683,11 @@
 
          <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+         <!--
          <arg line="-library-path=${dir.third-party}/kongragate_api/KongregateAPI.swc" />
          <arg line="-library-path=${dir.third-party}/mindjolt_api/MindJoltAPI.swc" />
          <arg line="-library-path=${dir.third-party}/google_analytics/analytics.swc"/>
+         -->
 
          <arg line="${dir.build.src}/Editor.mxml" />
       </exec>

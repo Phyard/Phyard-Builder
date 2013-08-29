@@ -8,7 +8,7 @@ package player.entity {
    import player.physics.PhysicsProxy;
 
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectSource;
 
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
@@ -418,7 +418,7 @@ package player.entity {
 //====================================================================================================
 
       // not safe for nest callings
-      //protected static var mEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, null);
+      //protected static var mEventHandlerValueSource0:Parameter_DirectSource = new Parameter_DirectSource (null, null);
       //protected static var mEventHandlerValueSourceList:Parameter = mEventHandlerValueSource0;
       
       private var mCreateEventHandlerList:ListElement_EventHandler = null;
@@ -476,7 +476,7 @@ package player.entity {
          var list_element:ListElement_EventHandler = mCreateEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -511,7 +511,7 @@ package player.entity {
          var list_element:ListElement_EventHandler = mInitializeEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -542,7 +542,7 @@ package player.entity {
          var  list_element:ListElement_EventHandler = mUpdateEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -596,7 +596,7 @@ package player.entity {
          var list_element:ListElement_EventHandler = mDestroyEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)

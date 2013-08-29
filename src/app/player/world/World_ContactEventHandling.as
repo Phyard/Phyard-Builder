@@ -178,13 +178,13 @@ private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxySha
    //}
 }
 
-private var mContactEventHandlerValueSource2:Parameter_Direct = new Parameter_Direct (null);
-private var mContactEventHandlerValueSource1:Parameter_Direct = new Parameter_Direct (null, mContactEventHandlerValueSource2);
-private var mContactEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, mContactEventHandlerValueSource1);
+private var mContactEventHandlerValueSource2:Parameter_DirectSource = new Parameter_DirectSource (null);
+private var mContactEventHandlerValueSource1:Parameter_DirectSource = new Parameter_DirectSource (null, mContactEventHandlerValueSource2);
+private var mContactEventHandlerValueSource0:Parameter_DirectSource = new Parameter_DirectSource (null, mContactEventHandlerValueSource1);
 private var mContactEventHandlerValueSourceList:Parameter = mContactEventHandlerValueSource0;
 
-private var mContactEventHandlerValueSource1_InvertEntityOrder:Parameter_Direct = new Parameter_Direct (null, mContactEventHandlerValueSource2);
-private var mContactEventHandlerValueSource0_InvertEntityOrder:Parameter_Direct = new Parameter_Direct (null, mContactEventHandlerValueSource1_InvertEntityOrder);
+private var mContactEventHandlerValueSource1_InvertEntityOrder:Parameter_DirectSource = new Parameter_DirectSource (null, mContactEventHandlerValueSource2);
+private var mContactEventHandlerValueSource0_InvertEntityOrder:Parameter_DirectSource = new Parameter_DirectSource (null, mContactEventHandlerValueSource1_InvertEntityOrder);
 private var mContactEventHandlerValueSourceList_InvertEntityOrder:Parameter = mContactEventHandlerValueSource0_InvertEntityOrder;
 
 // new handling from v1.56

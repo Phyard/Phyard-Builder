@@ -8,7 +8,7 @@ package player.trigger.entity
    import player.entity.Entity;
    
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectSource;
    
    import player.trigger.data.ListElement_EntitySelector;
    
@@ -153,7 +153,7 @@ package player.trigger.entity
       
       public static function HandleTimerEventForEntityList (entityList:EntityList, filterFunc:Function, timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
       {
-         var valueSourceEntity:Parameter_Direct = valueSourceList.mNextParameter as Parameter_Direct;
+         var valueSourceEntity:Parameter_DirectSource = valueSourceList.mNextParameter as Parameter_DirectSource;
          
          var entity:Entity = entityList.GetHead ();
          if (entity != null)

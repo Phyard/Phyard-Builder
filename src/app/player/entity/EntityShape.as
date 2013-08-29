@@ -17,7 +17,6 @@ package player.entity {
    import player.physics.PhysicsProxyShape;
    
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
    import player.trigger.data.ListElement_EntityShape;

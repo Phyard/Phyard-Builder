@@ -13,7 +13,7 @@ package player.entity {
    import player.module.ModuleInstance;
    
    import player.trigger.entity.EntityEventHandler;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectSource;
    
    import common.Define;
    import common.Transform2D;
@@ -70,8 +70,8 @@ package player.entity {
          
          if (mLoopToEndEventHandler != null)
          {
-            var valueSource1:Parameter_Direct = new Parameter_Direct (module);
-            var valueSource0:Parameter_Direct = new Parameter_Direct (this, valueSource1);
+            var valueSource1:Parameter_DirectSource = new Parameter_DirectSource (module);
+            var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, valueSource1);
             
             mWorld.IncStepStage ();
             mLoopToEndEventHandler.HandleEvent (valueSource0);

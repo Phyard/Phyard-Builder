@@ -4,7 +4,7 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectTarget;
    import player.trigger.Parameter_Variable;
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionDefine;
@@ -69,14 +69,18 @@ package player.trigger.entity
       // todo, seems it is ok to use parameters like that in contact event handling.
       // currently, ApplyNewDirectParameter and ReleaseDirectParameter are some not very efficient.
       
+      private var mValueTarget:Parameter_DirectTarget = new Parameter_DirectTarget (null);
+      
       public function RunBoolFunction ():Boolean
       {
-         var outputValueTarget:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (false, null);
+         //var outputValueTarget:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (false, null);
+         mValueTarget.mValueObject = false;
          
          // if (mConditionListDefinition != null) // should not be null
-         mConditionDefinition.DoCall (null, outputValueTarget);
+         mConditionDefinition.DoCall (null, mValueTarget); // outputValueTarget);
          
-         return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
+         //return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
+         return Boolean (mValueTarget.EvaluateValueObject ());
       }
       
    }

@@ -56,7 +56,8 @@ package player.world {
    import player.trigger.data.ListElement_EntitySelector;
 
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectSource;
+   import player.trigger.Parameter_DirectTarget;
 
    import player.mode.Mode;
    import player.mode.ModeMoveWorldScene;

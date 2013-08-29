@@ -453,13 +453,13 @@
       if (handlerList == null)
          return;
       
-      var valueSource7:Parameter_Direct = new Parameter_Direct (null); // is overlapped by some entities
-      var valueSource6:Parameter_Direct = new Parameter_Direct (null, valueSource7); // alt down
-      var valueSource5:Parameter_Direct = new Parameter_Direct (null, valueSource6); // shift down
-      var valueSource4:Parameter_Direct = new Parameter_Direct (null, valueSource5); // ctrl down
-      var valueSource3:Parameter_Direct = new Parameter_Direct (null, valueSource4); // button down
-      var valueSource2:Parameter_Direct = new Parameter_Direct (null, valueSource3); // world physics y
-      var valueSource1:Parameter_Direct = new Parameter_Direct (null, valueSource2); // world physics x
+      var valueSource7:Parameter_DirectSource = new Parameter_DirectSource (null); // is overlapped by some entities
+      var valueSource6:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource7); // alt down
+      var valueSource5:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource6); // shift down
+      var valueSource4:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource5); // ctrl down
+      var valueSource3:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource4); // button down
+      var valueSource2:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource3); // world physics y
+      var valueSource1:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource2); // world physics x
       
       valueSource1.mValueObject = GetCurrentMouseX ();
       valueSource2.mValueObject = GetCurrentMouseY ();
@@ -475,7 +475,7 @@
       }
       else
       {
-         var valueSource0:Parameter_Direct = new Parameter_Direct (null, valueSource1); // entity
+         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource1); // entity
          valueSource0.mValueObject = shape;
          RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);
       }
@@ -567,11 +567,11 @@
       if (handlerList == null)
          return;
       
-      var valueSource4:Parameter_Direct = new Parameter_Direct (null);
-      var valueSource3:Parameter_Direct = new Parameter_Direct (null, valueSource4);
-      var valueSource2:Parameter_Direct = new Parameter_Direct (null, valueSource3);
-      var valueSource1:Parameter_Direct = new Parameter_Direct (null, valueSource2);
-      var valueSource0:Parameter_Direct = new Parameter_Direct (null, valueSource1);
+      var valueSource4:Parameter_DirectSource = new Parameter_DirectSource (null);
+      var valueSource3:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource4);
+      var valueSource2:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource3);
+      var valueSource1:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource2);
+      var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource1);
       
       valueSource0.mValueObject = exactKeyCode;
       valueSource1.mValueObject = event.charCode;
@@ -630,7 +630,7 @@
    {
       var handled:Boolean = false;
       
-      var valueTarget:Parameter_Direct = new Parameter_Direct (null);
+      var valueTarget:Parameter_DirectTarget = new Parameter_DirectTarget (null);
       
       var handler_element:ListElement_EventHandler = mEventHandlersByTypes [CoreEventIds.ID_OnSystemBack];
       

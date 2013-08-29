@@ -23,7 +23,7 @@ package common {
    import player.trigger.FunctionCalling_ConditionWithComparer;
    import player.trigger.FunctionCalling_Dummy;
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectSource;
    import player.trigger.Parameter_Variable;
    import player.trigger.Parameter_VariableRef;
    import player.trigger.Parameter_Property;
@@ -649,8 +649,8 @@ package common {
             //assert (valueType == direct_source_define.mValueType);
 
 trace ("classType = " + classType + ", classType = " + classType + ", direct_source_define.mValueObject = " + direct_source_define.mValueObject);
-            value_source = new Parameter_Direct (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos));
-trace ("     value = " + (value_source as Parameter_Direct).EvaluateValueObject ());
+            value_source = new Parameter_DirectSource (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos));
+trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueObject ());
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -748,7 +748,7 @@ trace ("     value = " + (value_source as Parameter_Direct).EvaluateValueObject 
          
          if (value_source == null)
          {
-            value_source = new Parameter_Direct (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos));
+            value_source = new Parameter_DirectSource (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos));
          }
          
          return value_source;

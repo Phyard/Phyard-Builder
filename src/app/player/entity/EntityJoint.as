@@ -10,7 +10,7 @@ package player.entity {
    
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectSource;
    
    import common.trigger.CoreEventIds;
    
@@ -225,7 +225,7 @@ package player.entity {
          var  list_element:ListElement_EventHandler = mReachLowerLimitEventHandlerList;
          
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
          
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -242,7 +242,7 @@ package player.entity {
          var  list_element:ListElement_EventHandler = mReachUpperLimitEventHandlerList;
          
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
          
          mWorld.IncStepStage ();
          while (list_element != null)

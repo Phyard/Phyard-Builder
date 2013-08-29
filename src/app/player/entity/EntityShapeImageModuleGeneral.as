@@ -13,7 +13,6 @@ package player.entity {
    import player.module.ModuleInstance;
    
    import player.trigger.entity.EntityEventHandler;
-   import player.trigger.Parameter_Direct;
    
    import common.Define;
    import common.Transform2D;

@@ -80,20 +80,20 @@ package player.trigger
 // cached Parameter instances
 //=============================================================================
       
-      public static var mFreeDirectParameterListHead:Parameter_Direct = null;
+      public static var mFreeDirectParameterListHead:Parameter_DirectSource = null;
       
-      public static function ApplyNewDirectParameter (initialValue:Object, nextParameter:Parameter):Parameter_Direct
+      public static function ApplyNewDirectParameter (initialValue:Object, nextParameter:Parameter):Parameter_DirectSource
       {
-         var returnParameter:Parameter_Direct = mFreeDirectParameterListHead;
+         var returnParameter:Parameter_DirectSource = mFreeDirectParameterListHead;
          
          if (returnParameter != null)
          {
-            mFreeDirectParameterListHead = returnParameter.mNextParameter as Parameter_Direct;
+            mFreeDirectParameterListHead = returnParameter.mNextParameter as Parameter_DirectSource;
             returnParameter.mValueObject = initialValue; // a little faster than calling AssignValueObject
          }
          else
          {
-            returnParameter = new Parameter_Direct (initialValue);
+            returnParameter = new Parameter_DirectSource (initialValue);
          }
          
          returnParameter.mNextParameter = nextParameter;
@@ -101,18 +101,18 @@ package player.trigger
          return returnParameter;
       }
       
-      public static function ReleaseDirectParameter_Target (parameter:Parameter_Direct):Object
-      {
-         var returnValue:Object = parameter.mValueObject;
-         
-         parameter.mValueObject = null; // a little faster than calling AssignValueObject
-         parameter.mNextParameter = mFreeDirectParameterListHead;
-         mFreeDirectParameterListHead = parameter;
-         
-         return returnValue;
-      }
+      //public static function ReleaseDirectParameter_Target (parameter:Parameter_DirectTarget):Object
+      //{
+      //   var returnValue:Object = parameter.mValueObject;
+      //   
+      //   parameter.mValueObject = null; // a little faster than calling AssignValueObject
+      //   parameter.mNextParameter = mFreeDirectParameterListHead;
+      //   mFreeDirectParameterListHead = parameter;
+      //   
+      //   return returnValue;
+      //}
       
-      public static function ReleaseDirectParameter_Source (parameter:Parameter_Direct):void
+      public static function ReleaseDirectParameter_Source (parameter:Parameter_DirectSource):void
       {
          parameter.mValueObject = null; // a little faster than calling AssignValueObject
          parameter.mNextParameter = mFreeDirectParameterListHead;

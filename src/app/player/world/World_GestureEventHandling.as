@@ -40,10 +40,10 @@
       if (handlerList == null)
          return;
       
-      var valueSource3:Parameter_Direct = new Parameter_Direct (null); // name
-      var valueSource2:Parameter_Direct = new Parameter_Direct (null, valueSource3); // cw / ccw
-      var valueSource1:Parameter_Direct = new Parameter_Direct (null, valueSource2); // angle
-      var valueSource0:Parameter_Direct = new Parameter_Direct (null, valueSource1);
+      var valueSource3:Parameter_DirectSource = new Parameter_DirectSource (null); // name
+      var valueSource2:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource3); // cw / ccw
+      var valueSource1:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource2); // angle
+      var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (null, valueSource1);
       
       valueSource3.mValueObject = gestureAnalyzeResult.mGestureType;
       valueSource2.mValueObject = gestureAnalyzeResult.mIsClockWise;

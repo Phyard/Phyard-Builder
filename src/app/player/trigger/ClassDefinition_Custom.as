@@ -4,12 +4,12 @@ package player.trigger
 
    public class ClassDefinition_Custom extends ClassDefinition
    {
-      protected var mId:int;
-      protected var mPropertyVariableSpaceTemplate:VariableSpace = null; // null for core class.
+      private var mId:int;
+      public var mPropertyVariableSpaceTemplate:VariableSpace = null; // null for core class.
       
-      public function ClassDefinition_Custom (id:int)
+      public function ClassDefinition_Custom (customId:int)
       {
-         mId = id;
+         mId = customId;
       }
       
       public function SetPropertyVariableSpaceTemplate (propertyVariableSpaceTemplate:VariableSpace):void
@@ -25,11 +25,6 @@ package player.trigger
       override public function GetClassType ():int
       {
          return ClassTypeDefine.ClassType_Custom;
-      }
-      
-      override public function CreateInstance ():ClassInstance
-      {
-         return new ClassInstance (this, mPropertyVariableSpaceTemplate.CloneSpace ());
       }
    }
 }

@@ -294,39 +294,39 @@
                                         || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_CustomType
                                         );
 
-                  var xml:XML = <root />;
+                  var xml:XML = CodeLibManager.GetTypesDataProviderForMenu (mCodeLibManager, isCurrentSceneDataDependent, isAnySceneDataIndependent);
 
-                  // custom Types
-                  if (isCurrentSceneDataDependent)
-                  {
-                     var customTypesMenu:XML = mCodeLibManager.GetCustomTypesDataProvider ();
-                     if (customTypesMenu != null)
-                     {
-                        xml.appendChild (customTypesMenu);
-                     }
-                  }
-                  
-                  // ...
-                  //for each (var menuItem:Object in CreateNewMenuData.menuitem)
+                  //// custom Types
+                  //if (isCurrentSceneDataDependent)
                   //{
-                  //   if (isSceneDataDependent || menuItem.@["scene_data_dependent"] != "true")
+                  //   var customTypesMenu:XML = mCodeLibManager.GetCustomTypesDataProvider ();
+                  //   if (customTypesMenu != null)
+                  //   {
+                  //      xml.appendChild (customTypesMenu);
+                  //   }
+                  //}
+                  //
+                  //// ...
+                  ////for each (var menuItem:Object in CreateNewMenuData.menuitem)
+                  ////{
+                  ////   if (isSceneDataDependent || menuItem.@["scene_data_dependent"] != "true")
+                  ////   {
+                  ////      xml.appendChild (menuItem);
+                  ////   }
+                  ////}
+                  //var coreClassesMenuData:XML = CodeLibManager.GetCoreTypesDataProvider ();
+                  //for each (var menuItem:Object in coreClassesMenuData.menuitem)
+                  //{
+                  //   if ((! isAnySceneDataIndependent) || menuItem.@["scene_data_dependent"] == false)
                   //   {
                   //      xml.appendChild (menuItem);
                   //   }
                   //}
-                  var coreClassesMenuData:XML = CodeLibManager.GetCoreTypesDataProvider ();
-                  for each (var menuItem:Object in coreClassesMenuData.menuitem)
-                  {
-                     if ((! isAnySceneDataIndependent) || menuItem.@["scene_data_dependent"] == false)
-                     {
-                        xml.appendChild (menuItem);
-                     }
-                  }
                   
                   //...
-                  mCreateNewVariableMenu = Menu.createMenu(Button_AddCommmand, xml, false);
-                  mCreateNewVariableMenu.labelField="@label";
-                  mCreateNewVariableMenu.addEventListener(MenuEvent.ITEM_CLICK, OnNewVariable);
+                  mCreateNewVariableMenu = Menu.createMenu (Button_AddCommmand, xml, false);
+                  mCreateNewVariableMenu.labelField = "@label";
+                  mCreateNewVariableMenu.addEventListener (MenuEvent.ITEM_CLICK, OnNewVariable);
                }
 
                var point:Point = Button_AddCommmand.localToGlobal (new Point (0, Button_AddCommmand.height));

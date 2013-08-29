@@ -670,10 +670,10 @@ package player.trigger {
       public static function CommonNewInstance (valueSource:Parameter, valueTarget:Parameter):void
       {
          var aClass:ClassDefinition = valueSource.EvaluateValueObject () as ClassDefinition;
+         if (aClass == null)
+            aClass = CoreClasses.kVoidClassDefinition;
          
-         var initValue:Object = null;
-         
-         valueTarget.AssignValueObject (initValue);
+         valueTarget.AssignValueObject (null);
       }
 
    //*******************************************************************
@@ -1665,7 +1665,7 @@ package player.trigger {
 
             while (-- num >= 0)
             {
-               array.splice (index, 0, undefined);
+               array.splice (index, 0, null); //undefined);
             }
          }
       }
@@ -1771,7 +1771,7 @@ package player.trigger {
          while (false);
 
          // for invalid params
-         valueTarget.AssignValueObject (undefined);
+         valueTarget.AssignValueObject (null); // undefined);
       }
 
       public static function SetArrayElementWithBoolean (valueSource:Parameter, valueTarget:Parameter):void

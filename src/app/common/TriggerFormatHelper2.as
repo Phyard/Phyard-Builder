@@ -96,7 +96,14 @@ package common {
                   //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
                   //variableInstance.SetValueType (functionDeclaration.GetInputParamValueType (i));
                   variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+                        // first time, real ClassDefinition is also set.
                }
+               else
+               {
+                  // real ClassDefinition may be changed. (or maybe not?)
+                  variableInstance.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+               }
+               
                //variableInstance.SetValueObject (functionDeclaration.GetInputParamDefaultValue (i));
                if (playerWorld == null) // avoid memory consuming after testing in editor.
                   variableInstance.SetValueObject (null);
@@ -124,7 +131,14 @@ package common {
                   //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
                   //variableInstance.SetValueType (functionDeclaration.GetOutputParamValueType (i));
                   variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+                        // first time, real ClassDefinition is also set.
                }
+               else
+               {
+                  // real ClassDefinition may be changed. (or maybe not?)
+                  variableInstance.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+               }
+               
                //variableInstance.SetValueObject (functionDeclaration.GetOutputParamDefaultValue (i));
                if (playerWorld == null) // avoid memory consuming after testing in editor.
                   variableInstance.SetValueObject (null);
@@ -545,12 +559,12 @@ package common {
             if (i >= funcCallingDefine.mNumInputs) // fill the missed parameters
             {
                //value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, vi.GetClassType (), vi.GetValueType (), vi.GetValueObject (), extraInfos);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, vi.GetRealClassType (), vi.GetRealValueType (), vi.GetValueObject (), extraInfos);
             }
             else                                   // use the value set by designer
             {
                //value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], vi.GetValueType (), vi.GetClassType (), vi.GetValueObject (), extraInfos);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], vi.GetRealValueType (), vi.GetRealClassType (), vi.GetValueObject (), extraInfos);
             }
                
             value_source.mNextParameter = value_source_list;
@@ -567,7 +581,7 @@ package common {
             {
                //value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], func_definition.GetOutputParamValueType (i), extraInfos);
                vi = func_definition.GetOutputParameter (i);
-               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], vi.GetClassType (), vi.GetValueType (), extraInfos);
+               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], vi.GetRealClassType (), vi.GetRealValueType (), extraInfos);
             }
             
             value_target.mNextParameter = value_target_list;
@@ -916,7 +930,7 @@ package common {
             //if (playerWorld != null)
             //{
                //variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
-               variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, variableInstance.GetClassType (), variableInstance.GetValueType (), variableDefine.mValueObject));
+               variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, variableInstance.GetRealClassType (), variableInstance.GetRealValueType (), variableDefine.mValueObject));
             //}
             
             if (useIdMappingTable)

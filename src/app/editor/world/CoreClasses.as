@@ -47,7 +47,7 @@ package editor.world {
                             CoreClassIds.ValueType_Void, 
                             "Void", // Class Name
                             "aVoid",
-                            undefined,
+                            null, // undefined,
                             ValidateValueObject_Void
                          ).SetSceneDataDependent (false);
                          
@@ -153,7 +153,7 @@ package editor.world {
       
       public static function ValidateValueObject_Void (valueObject:Object, options:Object):Object
       {
-         return undefined;
+         return null; //undefined;
       }
       
       public static function ValidateValueObject_Boolean (valueObject:Object, options:Object):Object

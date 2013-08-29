@@ -24,6 +24,13 @@ package editor.trigger {
          mInstanceValueValidateFunc = validateValueFunc;
       }
       
+      public function toString ():String
+      {
+         return (GetClassType () == ClassTypeDefine.ClassType_Custom ? "Custom : " : "Core : ")
+                 +
+                mClassName;
+      }
+      
       public function GetClassType ():int
       {
          return ClassTypeDefine.ClassType_Unknown;

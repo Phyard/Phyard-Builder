@@ -15,6 +15,7 @@ package player.trigger {
    public class CoreClasses
    {
       public static const kVoidClassDefinition:ClassDefinition_Core = new ClassDefinition_Core (CoreClassDeclarations.GetCoreClassDeclarationById (CoreClassIds.ValueType_Void));
+      public static const kObjectClassDefinition:ClassDefinition_Core = new ClassDefinition_Core (CoreClassDeclarations.GetCoreClassDeclarationById (CoreClassIds.ValueType_Object));
       private static var sCoreClassDefinitions:Array = null;
       
       public static function InitCoreClassDefinitions ():void
@@ -22,16 +23,45 @@ package player.trigger {
          if (sCoreClassDefinitions != null)
             return;
          
+         // ...
+         
+         var classId:int;
+         var classDef:ClassDefinition_Core;
+         
          sCoreClassDefinitions = new Array (CoreClassIds.NumCoreClasses);
-         for (var classId:int = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
+         for (classId = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
          {
             var coreDecl:ClassDeclaration = CoreClassDeclarations.GetCoreClassDeclarationById (classId);
             if (coreDecl != null)
             {
                if (classId == CoreClassIds.ValueType_Void)
-                  sCoreClassDefinitions [classId] = kVoidClassDefinition
+                  sCoreClassDefinitions [classId] = kVoidClassDefinition;
+               else if (classId == CoreClassIds.ValueType_Object)
+                  sCoreClassDefinitions [classId] = kObjectClassDefinition;
                else
                   sCoreClassDefinitions [classId] = new ClassDefinition_Core (coreDecl);
+            }
+         }
+         
+         // ...         
+         
+         for (classId = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
+         {
+            classDef = GetCoreClassDefinition (classId);
+            if (classDef != null)
+            {
+               classDef.SetParentClasses ([kObjectClassDefinition]);
+            }
+         }
+         
+         // ...         
+         
+         for (classId = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
+         {
+            classDef = GetCoreClassDefinition (classId);
+            if (classDef != null)
+            {
+               classDef.FindAncestorClasses ();
             }
          }
       }

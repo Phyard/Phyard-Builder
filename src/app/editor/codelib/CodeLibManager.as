@@ -575,7 +575,94 @@ package editor.codelib {
       }
       
       //========================
+      
+      public static function GetTypesDataProviderForParameter (codeLibManager:CodeLibManager, isCurrentSceneDataDependent:Boolean, isAnySceneDataIndependent:Boolean):Array
+      {
+         var provider:Array = new Array ();
+         
+         var type_element:Object;
+         
+         type_element = new Object ();
+         type_element.label = "null";
+         type_element.id = CoreClassIds.ValueType_Void;
+         type_element.type = ClassTypeDefine.ClassType_Core;
+         
+         provider.push (type_element);
+         
+         codeLibManager.GetCustomTypesDataProviderForParameter (provider);
+         
+         return provider;
+      }
+      
+      public function GetCustomTypesDataProviderForParameter (provider:Array):void
+      {
+         var type_element:Object;
+         var aClass:AssetClass;
+         for (var typeId:int = 0; typeId < mClassAssets.length; ++ typeId)
+         {
+            aClass = mClassAssets [typeId] as AssetClass;
+            
+            type_element = new Object ();
+            type_element.label = aClass.GetName ();
+            type_element.id = typeId; // aClass.GetID ();
+            type_element.type = ClassTypeDefine.ClassType_Custom; // aClass.GetClassType ();
 
+            provider.push (type_element);
+         }
+      }
+      
+      public static function GetSelectIndexForParameter (provider:Array, aClass:ClassDefinition):int
+      {
+         if (provider == null || aClass == null)
+            return 0; // null
+         
+         for (var i:int = 1; i < provider.length; ++ i)
+         {
+            var type_element:Object = provider [i];
+            
+            if (type_element.type == aClass.GetClassType () && type_element.id == aClass.GetID ())
+               return i;
+         }
+         
+         return 0;
+      }
+      
+      public function GetClassDefinitionForParameterFromSelectItem (type_element:Object):ClassDefinition
+      {
+         return GetClass (this, type_element.type, type_element.id);
+      }
+      
+      //------
+      
+      public static function GetTypesDataProviderForMenu (codeLibManager:CodeLibManager, isCurrentSceneDataDependent:Boolean, isAnySceneDataIndependent:Boolean):XML
+      {
+         var xml:XML = <root />;
+         
+         if (codeLibManager != null)
+         {
+            // custom Types
+            if (isCurrentSceneDataDependent)
+            {
+               var customTypesMenu:XML = codeLibManager.GetCustomTypesDataProvider ();
+               if (customTypesMenu != null)
+               {
+                  xml.appendChild (customTypesMenu);
+               }
+            }
+         }
+         
+         var coreClassesMenuData:XML = CodeLibManager.GetCoreTypesDataProvider ();
+         for each (var menuItem:Object in coreClassesMenuData.menuitem)
+         {
+            if ((! isAnySceneDataIndependent) || menuItem.@["scene_data_dependent"] == false)
+            {
+               xml.appendChild (menuItem);
+            }
+         }
+         
+         return xml;
+      }
+      
       private static var kCoreTypesDataProvider:XML = null;
 
       public static function GetCoreTypesDataProvider ():XML
@@ -658,14 +745,16 @@ package editor.codelib {
             
             type_element = <menuitem />;
             type_element.@label = aClass.GetName ();
-            type_element.@id = typeId;
-            type_element.@type = ClassTypeDefine.ClassType_Custom;
+            type_element.@id = typeId; // aClass.GetID ();
+            type_element.@type = ClassTypeDefine.ClassType_Custom; // aClass.GetClassType ();
 
             top_element.appendChild (type_element);
          }
          
          return top_element;
       }
+      
+      //=======================
       
       private var mCustomCodePackage:CodePackage = new CodePackage ("Custom");
 

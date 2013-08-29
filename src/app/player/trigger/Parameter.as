@@ -14,7 +14,7 @@ package player.trigger
       // as an input
       public function EvaluateValueObject ():Object
       {
-         return undefined; // to override
+         return null; // undefined; // to override
       }
       
       // as an output

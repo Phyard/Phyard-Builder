@@ -21,10 +21,5 @@ package player.trigger
       {
          return ClassTypeDefine.ClassType_Core;
       }
-      
-      override public function CreateInstance ():ClassInstance
-      {
-         return new ClassInstance (this, mClassDeclaration.GetDefaultDirectDefineValue ());
-      }
    }
 }

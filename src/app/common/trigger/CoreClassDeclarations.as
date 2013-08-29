@@ -22,7 +22,7 @@ package common.trigger {
       // ...
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Void, 
-                                   undefined);
+                                   /*undefined*/null);
          
          RegisterClassDeclatation (CoreClassIds.ValueType_Boolean, 
                                    false);

@@ -8,6 +8,7 @@ package editor.trigger {
    import editor.entity.Scene;
    import editor.entity.Entity;
    import editor.entity.Scene;
+   import editor.codelib.CodeLibManager;
    
    import editor.EditorContext;
    
@@ -46,15 +47,13 @@ package editor.trigger {
       
       override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
-         var scene_list:Array = scene.GetWorld ().GetSceneSelectListDataProvider ();
+         var type_list:Array = CodeLibManager.GetTypesDataProviderForParameter (scene.GetCodeLibManager (), true, false);
          
-         var scene:Scene = valueSourceDirect.GetValueObject () as Scene;
-         var scene_index:int = scene == null ? -1 : scene.GetSceneIndex ();
-         
-         var sel_index:int = World.SceneIndex2SelectListSelectedIndex (scene_index, scene_list);
+         var sel_index:int = CodeLibManager.GetSelectIndexForParameter (type_list, valueSourceDirect.GetValueObject () as ClassDefinition);
          
          var combo_box:ComboBox = new ComboBox ();
-         combo_box.dataProvider = scene_list;
+         combo_box.dataProvider = type_list;
+         combo_box.labelField = "label";
          combo_box.selectedIndex = sel_index;
          
          //trace ("sel_index = " + sel_index);
@@ -64,6 +63,13 @@ package editor.trigger {
       
       override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
+         if (control is ComboBox)
+         {
+            var combo_box:ComboBox = control as ComboBox;
+            
+            valueSourceDirect.SetValueObject (scene.GetCodeLibManager ().GetClassDefinitionForParameterFromSelectItem (combo_box.selectedItem));
+         }
+         
          return null;
       }
    }

@@ -36,10 +36,10 @@ package common.trigger
       public function GetInputParamDefaultValue (inputId:int):Object
       {
          if (mInputParamDefines == null)
-            return undefined;
+            return null;//undefined;
          
          if (inputId < 0 || inputId >= mInputParamDefines.length)
-            return undefined;
+            return null;//undefined;
          
          return mInputParamDefines [inputId][Index_DevaultValue];
       }

@@ -30,6 +30,7 @@ package player.design
    
    import common.trigger.ValueSpaceTypeDefine;
 
+   import common.trigger.ClassTypeDefine;
    import common.trigger.CoreClassIds;
    
    import common.trigger.define.ClassDefine;
@@ -249,7 +250,7 @@ package player.design
 //mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " + variableInstance.GetKey ();            
             binData.writeUTF (variableInstance.GetKey ());
             
-            WriteTypeAndValue (binData, variableInstance.GetValueType (), variableInstance.GetValueObject (), alreadySavedArrayLookupTable);
+            WriteTypeAndValue (binData, variableInstance.GetRealClassType (), variableInstance.GetRealValueType (), variableInstance.GetValueObject (), alreadySavedArrayLookupTable);
          }
          
          return binData;
@@ -265,9 +266,12 @@ package player.design
       return null;
    }
    
-   private static function WriteTypeAndValue (binData:ByteArray, type:int, value:Object, alreadySavedArrayLookupTable:Dictionary):void
+   private static function WriteTypeAndValue (binData:ByteArray, classType:int, valueType:int, value:Object, alreadySavedArrayLookupTable:Dictionary):void
    {
-      switch (type)
+      if (classType != ClassTypeDefine.ClassType_Core) // only core types supported.
+         valueType = CoreClassIds.ValueType_Void;
+         
+      switch (valueType)
       {
          case CoreClassIds.ValueType_Boolean:
             binData.writeShort (CoreClassIds.ValueType_Boolean);
@@ -307,23 +311,23 @@ package player.design
                      
                      if (arrValue is Boolean)
                      {
-                        WriteTypeAndValue (binData, CoreClassIds.ValueType_Boolean, arrValue, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Boolean, arrValue, alreadySavedArrayLookupTable);
                      }
                      else if (arrValue is Number)
                      {
-                        WriteTypeAndValue (binData, CoreClassIds.ValueType_Number, arrValue, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Number, arrValue, alreadySavedArrayLookupTable);
                      }
                      else if (arrValue is String)
                      {
-                        WriteTypeAndValue (binData, CoreClassIds.ValueType_String, arrValue, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_String, arrValue, alreadySavedArrayLookupTable);
                      }
                      else if (arrValue is Array)
                      {
-                        WriteTypeAndValue (binData, CoreClassIds.ValueType_Array, arrValue, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Array, arrValue, alreadySavedArrayLookupTable);
                      }
                      else
                      {
-                        WriteTypeAndValue (binData, CoreClassIds.ValueType_Void, null, alreadySavedArrayLookupTable);
+                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Void, null, alreadySavedArrayLookupTable);
                      }
                   }
                }
@@ -798,11 +802,21 @@ package player.design
 
          for (classId = 0; classId < numNewClasses; ++ classId)
          {
-            var classDefine:ClassDefine = classDefines [classId] as ClassDefine;
-            
             newClassId = numOldClasses + classId;
             var customClass:ClassDefinition_Custom = Global.GetCustomClassDefinition (newClassId);
+            
+            customClass.SetParentClasses ([CoreClasses.kObjectClassDefinition]);
+            
+            var classDefine:ClassDefine = classDefines [classId] as ClassDefine;
             customClass.SetPropertyVariableSpaceTemplate (TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, classDefine.mPropertyVariableDefines, null, numOldClasses));
+         }
+
+         for (classId = 0; classId < numNewClasses; ++ classId)
+         {
+            newClassId = numOldClasses + classId;
+            var customClass:ClassDefinition_Custom = Global.GetCustomClassDefinition (newClassId);
+            
+            customClass.FindAncestorClasses ();
          }
       }
       

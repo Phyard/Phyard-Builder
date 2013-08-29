@@ -373,14 +373,14 @@ package player.entity {
          //if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
          //   return null;
          //
-         //return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId).GetValueObject ();
+         //return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableByIndex (propertyId).GetValueObject ();
 
          var vi:VariableInstance;
          
          if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
-            vi = mCommonCustomProeprtySpace.GetVariableAt (propertyId);
+            vi = mCommonCustomProeprtySpace.GetVariableByIndex (propertyId);
          else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
-            vi = mCustomProeprtySpace.GetVariableAt (propertyId);
+            vi = mCustomProeprtySpace.GetVariableByIndex (propertyId);
             
          if (vi != null)
          {
@@ -398,14 +398,14 @@ package player.entity {
          //if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
          //   return;
          //
-         //var vi:VariableInstance = (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId);
+         //var vi:VariableInstance = (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableByIndex (propertyId);
 
          var vi:VariableInstance;
          
          if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
-            vi = mCommonCustomProeprtySpace.GetVariableAt (propertyId);
+            vi = mCommonCustomProeprtySpace.GetVariableByIndex (propertyId);
          else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
-            vi = mCustomProeprtySpace.GetVariableAt (propertyId);
+            vi = mCustomProeprtySpace.GetVariableByIndex (propertyId);
          
          if (vi != null)
          {

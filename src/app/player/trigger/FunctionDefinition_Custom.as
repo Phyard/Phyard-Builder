@@ -165,7 +165,7 @@ package player.trigger
          //>> fixed in v2.04
          mPrimaryFunctionInstance.mOutputVariableSpace.GetValuesFromParameters (outputParamList); // set default values. (output parameters are also input parameters)
          //<<
-         
+
          mCodeSnippet.Excute ();
          
          if (outputParamList != null)

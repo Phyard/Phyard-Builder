@@ -11,6 +11,7 @@ package player.design
    import player.trigger.TriggerEngine;
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
+   import player.trigger.VariableDeclaration;
    import player.trigger.CoreClasses;
    import player.trigger.ClassDefinition;
    import player.trigger.ClassDefinition_Custom;
@@ -244,11 +245,11 @@ package player.design
          binData.writeInt (numVariables);
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
-            var variableInstance:VariableInstance = mGameSaveVariableSpace.GetVariableAt (variableId);
+            var variableInstance:VariableInstance = mGameSaveVariableSpace.GetVariableByIndex (variableId) as VariableInstance;
             
 //if (mDebugString == null) mDebugString = "";
 //mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " + variableInstance.GetKey ();            
-            binData.writeUTF (variableInstance.GetKey ());
+            binData.writeUTF (variableInstance.GetDeclaration ().GetKey ());
             
             WriteTypeAndValue (binData, variableInstance.GetRealClassType (), variableInstance.GetRealValueType (), variableInstance.GetValueObject (), alreadySavedArrayLookupTable);
          }
@@ -380,19 +381,21 @@ package player.design
       {
          var variableInstance:VariableInstance;
          
-         var variableLookupTable:Dictionary = new Dictionary ();
-         var numVariables:int = mGameSaveVariableSpace.GetNumVariables ();
-         for (var variableId:int = 0; variableId < numVariables; ++ variableId)
-         {
-            variableInstance = mGameSaveVariableSpace.GetVariableAt (variableId);
-            variableLookupTable [variableInstance.GetKey ()] = variableInstance;
-         }
+         //var variableLookupTable:Dictionary = new Dictionary ();
+         //var numVariables:int = mGameSaveVariableSpace.GetNumVariables ();
+         //for (var variableId:int = 0; variableId < numVariables; ++ variableId)
+         //{
+         //   variableInstance = mGameSaveVariableSpace.GetVariableByIndex (variableId);
+         //   variableLookupTable [variableInstance.GetKey ()] = variableInstance;
+         //}
+            // now key support is available for variable space.
          
          for (savedVariableId = 0; savedVariableId < numSavedVariables; ++ savedVariableId)
          {
             var savedVariable:Object = savedVariables [savedVariableId];
             
-            variableInstance = variableLookupTable [savedVariable.mKey];
+            //variableInstance = variableLookupTable [savedVariable.mKey];
+            variableInstance = mGameSaveVariableSpace.GetVariableByKey (savedVariable.mKey);
             if (variableInstance != null)
             {
                variableInstance.SetValueObject (savedVariable.mValue);
@@ -518,15 +521,18 @@ package player.design
          mCustomFunctionDefinitions = null;
          
          //
+         CoreClasses.InitCoreClassDefinitions ();
+         
+         //
          TriggerEngine.InitializeConstData ();
          
          //
-         mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false);
-         mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null);
-         mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0);
-         mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null);
-         mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null);
-         mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null);
+         mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Boolean));
+         mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_String));
+         mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Number));
+         mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Entity));
+         mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory));
+         mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Array));
          
          //
          //if (! isRestartLevel) // before v2.00
@@ -587,12 +593,25 @@ package player.design
          CoreFunctionDefinitions.Initialize (mCurrentWorld);
       }
       
-      protected static function CreateRegisterVariableSpace (initValueObject:Object):VariableSpace
+      protected static function CreateRegisterVariableSpace (initValueObject:Object, classDefinition:ClassDefinition):VariableSpace
       {
          var vs:VariableSpace = new VariableSpace (Define.NumRegistersPerVariableType);
+         var vi:VariableInstance;
+         var varDeclaration:VariableDeclaration;
          
          for (var i:int = 0; i < Define.NumRegistersPerVariableType; ++ i)
-            vs.GetVariableAt (i).SetValueObject (initValueObject);
+         {
+            vi = vs.GetVariableByIndex (i);
+            
+            varDeclaration = new VariableDeclaration (classDefinition);
+            varDeclaration.SetIndex (i);
+            //varDeclaration.SetKey (variableDefine.mKey);
+            //varDeclaration.SetName (variableDefine.mName);
+
+            vi.SetDeclaration (varDeclaration);                  
+            
+            vi.SetValueObject (initValueObject);
+         }
          
          return vs;
       }
@@ -631,7 +650,8 @@ package player.design
          
          if (mGameSaveVariableSpace == null)
          {
-            mGameSaveVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/null, gameSaveVarialbeSpaceDefines, null, 0); // 0 is meaningless
+            mGameSaveVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/null, gameSaveVarialbeSpaceDefines, null, 0, // 0 is meaningless
+                                                                                          true); // support key mapping from v2.05. In fact, it can supported from v2.00
             mGameSaveVariableSpace_WithInitialValues = mGameSaveVariableSpace.CloneSpace ();
          }
          else // switch/restart level
@@ -770,9 +790,9 @@ package player.design
          var vi:VariableInstance;
          
          if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
-            vi = mCommonEntityVariableSpace.GetVariableAt (propertyId);
+            vi = mCommonEntityVariableSpace.GetVariableByIndex (propertyId);
          else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
-            vi = mEntityVariableSpace.GetVariableAt (propertyId);
+            vi = mEntityVariableSpace.GetVariableByIndex (propertyId);
          
          return vi == null ? null : vi.GetValueObject ();
       }

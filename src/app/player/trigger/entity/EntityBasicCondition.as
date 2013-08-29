@@ -4,7 +4,6 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;
-   import player.trigger.VariableInstance;
    import player.trigger.Parameter_Direct;
    import player.trigger.Parameter_Variable;
    import common.trigger.define.CodeSnippetDefine;

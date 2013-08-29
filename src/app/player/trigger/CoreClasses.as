@@ -97,7 +97,7 @@ package player.trigger {
             {
                if (playerWorld == null)
                   return null;
-               
+
                var entityIndex:int = valueObject as int;
                if (entityIndex < 0)
                {

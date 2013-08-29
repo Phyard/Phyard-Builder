@@ -36,7 +36,7 @@ package player.trigger
       //   if (mInputVariableSpace == null)
       //      return null;
       //   
-      //   return mInputVariableSpace.GetVariableAt (index);
+      //   return mInputVariableSpace.GetVariableByIndex (index);
       //}
       //
       //public function GetReturnVariableAt (index:int):VariableInstance
@@ -44,7 +44,7 @@ package player.trigger
       //   if (mReturnVariableSpace == null)
       //      return null;
       //   
-      //   return mReturnVariableSpace.GetVariableAt (index);
+      //   return mReturnVariableSpace.GetVariableByIndex (index);
       //}
       
       public function GetLocalVariableAt (index:int):VariableInstance
@@ -52,7 +52,7 @@ package player.trigger
          if (mLocalVariableSpace == null)
             return null;
          
-         return mLocalVariableSpace.GetVariableAt (index);
+         return mLocalVariableSpace.GetVariableByIndex (index);
       }
    }
 }

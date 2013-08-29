@@ -445,8 +445,6 @@ package common {
 
          if (isLoaingFromStretch || isMergingScene)
          {
-            CoreClasses.InitCoreClassDefinitions ();
-         
             var oldNumCustomClasses:int = Global.GetNumCustomClasses ();
             
             if (isMergingScene)

@@ -99,10 +99,10 @@ package common.trigger
       public function GetOutputParamDefaultValue (outputId:int):Object
       {
          if (mOutputParamDefines == null)
-            return undefined;
+            return null; //undefined;
          
          if (outputId < 0 || outputId >= mOutputParamDefines.length)
-            return undefined;
+            return null; //undefined;
          
          return mOutputParamDefines [outputId][Index_DevaultValue];
       }

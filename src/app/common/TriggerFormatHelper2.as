@@ -29,6 +29,7 @@ package common {
    import player.trigger.Parameter_Property;
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
+   import player.trigger.VariableDeclaration;
    
    import common.trigger.ClassTypeDefine;
    import common.trigger.CoreFunctionIds;
@@ -75,6 +76,8 @@ package common {
          var variableInstance:VariableInstance;
          var i:int;
          var classId:int;
+         var classDefinition:ClassDefinition;
+         var varDeclaration:VariableDeclaration;
          
          var firstTime:Boolean = (variableSpace == null);
          
@@ -86,23 +89,28 @@ package common {
             
             for (i =  0; i < numInputs; ++ i)
             {
-               variableInstance = variableSpace.GetVariableAt (i);
+               variableInstance = variableSpace.GetVariableByIndex (i);
                
                classId = functionDeclaration.GetInputParamValueType (i);
+               classDefinition = CoreClasses.GetCoreClassDefinition (classId);
                
                if (firstTime)
                {
-                  variableInstance.SetIndex (i);
-                  //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
-                  //variableInstance.SetValueType (functionDeclaration.GetInputParamValueType (i));
-                  variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
-                        // first time, real ClassDefinition is also set.
+                  ////variableInstance.SetIndex (i);
+                  ////variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
+                  ////variableInstance.SetValueType (functionDeclaration.GetInputParamValueType (i));
+                  //variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+                  
+                  varDeclaration = new VariableDeclaration (classDefinition);
+                  varDeclaration.SetIndex (i);
+                  //varDeclaration.SetKey (variableDefine.mKey);
+                  //varDeclaration.SetName (variableDefine.mName);
+
+                  variableInstance.SetDeclaration (varDeclaration);                  
                }
-               else
-               {
-                  // real ClassDefinition may be changed. (or maybe not?)
-                  variableInstance.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
-               }
+
+               // real ClassDefinition may be changed if not first time. (or maybe not?)
+               variableInstance.SetRealClassDefinition (classDefinition);
                
                //variableInstance.SetValueObject (functionDeclaration.GetInputParamDefaultValue (i));
                if (playerWorld == null) // avoid memory consuming after testing in editor.
@@ -121,23 +129,28 @@ package common {
             
             for (i =  0; i < numOutputs; ++ i)
             {
-               variableInstance = variableSpace.GetVariableAt (i);
+               variableInstance = variableSpace.GetVariableByIndex (i);
                
                classId = functionDeclaration.GetOutputParamValueType (i);
+               classDefinition = CoreClasses.GetCoreClassDefinition (classId);
                
                if (firstTime)
                {
-                  variableInstance.SetIndex (i);
-                  //variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
-                  //variableInstance.SetValueType (functionDeclaration.GetOutputParamValueType (i));
-                  variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
-                        // first time, real ClassDefinition is also set.
+                  ////variableInstance.SetIndex (i);
+                  ////variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
+                  ////variableInstance.SetValueType (functionDeclaration.GetOutputParamValueType (i));
+                  //variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+                  
+                  varDeclaration = new VariableDeclaration (classDefinition);
+                  varDeclaration.SetIndex (i);
+                  //varDeclaration.SetKey (variableDefine.mKey);
+                  //varDeclaration.SetName (variableDefine.mName);
+
+                  variableInstance.SetDeclaration (varDeclaration);                  
                }
-               else
-               {
-                  // real ClassDefinition may be changed. (or maybe not?)
-                  variableInstance.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
-               }
+
+               // real ClassDefinition may be changed if not first time. (or maybe not?)
+               variableInstance.SetRealClassDefinition (classDefinition);
                
                //variableInstance.SetValueObject (functionDeclaration.GetOutputParamDefaultValue (i));
                if (playerWorld == null) // avoid memory consuming after testing in editor.
@@ -564,7 +577,7 @@ package common {
             else                                   // use the value set by designer
             {
                //value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject, extraInfos);
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], vi.GetRealValueType (), vi.GetRealClassType (), vi.GetValueObject (), extraInfos);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], vi.GetRealClassType (), vi.GetRealValueType (), vi.GetValueObject (), extraInfos);
             }
                
             value_source.mNextParameter = value_source_list;
@@ -634,8 +647,10 @@ package common {
             var direct_source_define:ValueSourceDefine_Direct = valueSourceDefine as ValueSourceDefine_Direct;
             
             //assert (valueType == direct_source_define.mValueType);
-            
+
+trace ("classType = " + classType + ", classType = " + classType + ", direct_source_define.mValueObject = " + direct_source_define.mValueObject);
             value_source = new Parameter_Direct (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos));
+trace ("     value = " + (value_source as Parameter_Direct).EvaluateValueObject ());
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -650,14 +665,14 @@ package common {
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   // will not merge with new ones
-                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_source = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GameSave:
                   // will not merge with new ones
-                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_source = new Parameter_Variable (variable_instance);
                   
@@ -668,7 +683,7 @@ package common {
                      //variable_index += extraInfos.mBeinningSessionVariableIndex;
                      variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
                   }
-                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_source = new Parameter_Variable (variable_instance);
                   
@@ -676,14 +691,14 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningGlobalVariableIndex;
-                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_source = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
                   // will not merge with new ones
-                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_source = new Parameter_Variable (variable_instance);
                   
@@ -692,7 +707,7 @@ package common {
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
-                     variable_instance = variable_space.GetVariableAt (variable_index);
+                     variable_instance = variable_space.GetVariableByIndex (variable_index);
                      if (variable_instance != null)
                         value_source = new Parameter_Variable (variable_instance);
                   }
@@ -762,14 +777,14 @@ package common {
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   // will not merge with new ones
-                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_target = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GameSave:
                   // will not merge with new ones
-                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_target = new Parameter_Variable (variable_instance);
                   
@@ -780,7 +795,7 @@ package common {
                      //variable_index += extraInfos.mBeinningSessionVariableIndex;
                      variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
                   }
-                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_target = new Parameter_Variable (variable_instance);
                   
@@ -788,13 +803,13 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningGlobalVariableIndex;
-                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_target = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
-                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   if (variable_instance != null)
                      value_target = new Parameter_Variable (variable_instance);
                   
@@ -805,7 +820,7 @@ package common {
                      var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                      if (variable_space != null)
                      {
-                        variable_instance = variable_space.GetVariableAt (variable_index);
+                        variable_instance = variable_space.GetVariableByIndex (variable_index);
                         if (variable_instance != null)
                            value_target = new Parameter_Variable (variable_instance);
                      }
@@ -898,7 +913,7 @@ package common {
 
                if (variableInstance != null)
                {
-                  varialbeIdMappingTable [variableId] = variableInstance.GetIndex ();
+                  varialbeIdMappingTable [variableId] = variableInstance.GetDeclaration ().GetIndex ();
                   continue;
                }
             }
@@ -910,10 +925,7 @@ package common {
                variableSpace.SetNumVariables (newVariableIndexInSpace + 1);
             }
             
-            variableInstance = variableSpace.GetVariableAt (newVariableIndexInSpace);
-            variableInstance.SetIndex (newVariableIndexInSpace);
-            variableInstance.SetKey (variableDefine.mKey);
-            variableInstance.SetName (variableDefine.mName);
+            variableInstance = variableSpace.GetVariableByIndex (newVariableIndexInSpace);
             
             //variableInstance.SetValueType (direct_source_define.mValueType);
             var valueType:int = variableDefine.mValueType;
@@ -925,8 +937,16 @@ package common {
                valueType += customClassIdShiftOffset;
             }
             var classDefinition:ClassDefinition = CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Class, {mClassType : variableDefine.mClassType, mValueObject : valueType}) as ClassDefinition;
-            variableInstance.SetShellClassDefinition (classDefinition);
+            //variableInstance.SetShellClassDefinition (classDefinition);
             
+            var varDeclaration:VariableDeclaration = new VariableDeclaration (classDefinition);
+            varDeclaration.SetIndex (newVariableIndexInSpace);
+            varDeclaration.SetKey (variableDefine.mKey);
+            varDeclaration.SetName (variableDefine.mName);
+
+            variableInstance.SetDeclaration (varDeclaration);
+            
+            variableInstance.SetRealClassDefinition (classDefinition);
             //if (playerWorld != null)
             //{
                //variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
@@ -935,7 +955,7 @@ package common {
             
             if (useIdMappingTable)
             {
-               varialbeIdMappingTable [variableId] = variableInstance.GetIndex ();
+               varialbeIdMappingTable [variableId] = variableInstance.GetDeclaration ().GetIndex ();
             }
             
             if (supportKeymapping)
@@ -964,7 +984,7 @@ package common {
          
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {  
-            var variableInstance:VariableInstance = variableSpace.GetVariableAt (variableId);
+            var variableInstance:VariableInstance = variableSpace.GetVariableByIndex (variableId);
             
             variableInstance.SetValueObject (ValidateVariableValueObject (playerWorld, variableInstance.GetValueObject (), convertedArrays, tryToReSceneDependentVariables));
          }
@@ -1130,7 +1150,7 @@ package common {
                source_type = ValueSourceTypeDefine.ValueSource_Variable; // in history, source_type for PropertyOfEntity is alwasy 0. 
          }
          //<<
-         
+
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
             valueSourceDefine = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, numberDetail));

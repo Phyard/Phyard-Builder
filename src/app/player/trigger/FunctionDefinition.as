@@ -44,7 +44,7 @@ package player.trigger
       //}
       public function GetInputParameter (paramId:int):VariableInstance
       {
-         return mInputVariableSpace.GetVariableAt (paramId);
+         return mInputVariableSpace.GetVariableByIndex (paramId);
       }
       
       public function GetOutputVariableSpace():VariableSpace
@@ -63,7 +63,7 @@ package player.trigger
       //}
       public function GetOutputParameter (paramId:int):VariableInstance
       {
-         return mOutputVariableSpace.GetVariableAt (paramId);
+         return mOutputVariableSpace.GetVariableByIndex (paramId);
       }
       
       public function DoCall (inputValueSources:Parameter, returnValueTarget:Parameter):void

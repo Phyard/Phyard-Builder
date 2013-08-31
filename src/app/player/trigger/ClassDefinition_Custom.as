@@ -12,7 +12,7 @@ package player.trigger
          mId = customId;
       }
       
-      override public function GetDefaultInitialValue ():Object
+      override public function CreateDefaultInitialValue ():Object
       {
          return mPropertyVariableSpaceTemplate.CloneSpace ();
       }

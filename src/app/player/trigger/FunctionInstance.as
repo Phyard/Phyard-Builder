@@ -15,13 +15,28 @@ package player.trigger
       internal var mOutputVariableSpace:VariableSpace;
       internal var mLocalVariableSpace:VariableSpace;
       
-      public function FunctionInstance (customFunctionDefiniton:FunctionDefinition_Custom)
+      public function FunctionInstance (customFunctionDefiniton:FunctionDefinition_Custom, isPrimary:Boolean)
       {
          mCustomFunctionDefinition = customFunctionDefiniton;
          
-         mInputVariableSpace = new VariableSpace (mCustomFunctionDefinition.GetNumInputParameters ());
-         mOutputVariableSpace = new VariableSpace (mCustomFunctionDefinition.GetNumOutputParameters ());
-         mLocalVariableSpace = new VariableSpace (mCustomFunctionDefinition.GetNumLocalVariables ());
+         // before v2.05
+         //mInputVariableSpace = new VariableSpace (mCustomFunctionDefinition.GetNumInputParameters ());
+         //mOutputVariableSpace = new VariableSpace (mCustomFunctionDefinition.GetNumOutputParameters ());
+         //mLocalVariableSpace = new VariableSpace (mCustomFunctionDefinition.GetNumLocalVariables ());
+         
+         //since v2.05
+         if (isPrimary)
+         {
+            mInputVariableSpace = mCustomFunctionDefinition.GetInputVariableSpace ();
+            mOutputVariableSpace = mCustomFunctionDefinition.GetOutputVariableSpace ();
+            mLocalVariableSpace = mCustomFunctionDefinition.GetLocalVariableSpace ();
+         }
+         else
+         {
+            mInputVariableSpace = mCustomFunctionDefinition.GetInputVariableSpace ().CloneSpace ();
+            mOutputVariableSpace = mCustomFunctionDefinition.GetOutputVariableSpace ().CloneSpace ();
+            mLocalVariableSpace = mCustomFunctionDefinition.GetLocalVariableSpace ().CloneSpace ();
+         }
       }
       
       public function SetAsCurrent ():void
@@ -47,12 +62,12 @@ package player.trigger
       //   return mReturnVariableSpace.GetVariableByIndex (index);
       //}
       
-      public function GetLocalVariableAt (index:int):VariableInstance
-      {
-         if (mLocalVariableSpace == null)
-            return null;
-         
-         return mLocalVariableSpace.GetVariableByIndex (index);
-      }
+      //public function GetLocalVariableAt (index:int):VariableInstance
+      //{
+      //   if (mLocalVariableSpace == null)
+      //      return null;
+      //   
+      //   return mLocalVariableSpace.GetVariableByIndex (index);
+      //}
    }
 }

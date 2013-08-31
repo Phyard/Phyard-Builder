@@ -15,7 +15,7 @@ package player.trigger
       
       override public function GetVariableInstance ():VariableInstance
       {
-         var variableSpace:VariableSpace = mVariableReference.mVariableInstance as VariableSpace;
+         var variableSpace:VariableSpace = mVariableReference.mVariableInstance.mValueObject as VariableSpace;
          if (variableSpace == null)
             return null;
          

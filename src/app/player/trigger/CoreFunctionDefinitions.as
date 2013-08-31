@@ -655,16 +655,35 @@ package player.trigger {
 
       public static function CommonAssign (valueSource:Parameter, valueTarget:Parameter):void
       {
+         var soureVi:VariableInstance = valueSource.GetVariableInstance ();
+         if (soureVi != null)
+         {
+            var targetVi:VariableInstance = valueTarget.GetVariableInstance ();
+            if (targetVi != null)
+            {
+               targetVi.Assign (soureVi.mRealClassDefinition, soureVi.mValueObject);
+            }
+         }
          
+         // todo: make GetVI () always return a non-null VI. VoidVariableInstacne extends VariableInstance.
+         // to remove all "if (vi != null)"
       }
 
-      public static function CommonEquals (valueSource1:Parameter, valueTarget:Parameter):void
+      public static function CommonEquals (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var valueSource2:Parameter = valueSource1.mNextParameter;
+         var vi_1:VariableInstance = valueSource.GetVariableInstance ();
+         var vi_2:VariableInstance = valueSource.mNextParameter.GetVariableInstance ();
          
-         var equals:Boolean = false;
+         if (vi_1 != null && vi_2 != null)
+         {
+            var equals:Boolean = false;
            
-         //valueTarget.AssignValueObject (equals);
+            valueTarget.AssignValueObject (vi_1.mValueObject == vi_2.mValueObject);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (vi_1 == vi_2);
+         }
       }
 
       public static function CommonNewInstance (valueSource:Parameter, valueTarget:Parameter):void
@@ -675,8 +694,9 @@ package player.trigger {
          
          //valueTarget.AssignValueObject (aClass.GetDefaultInitialValue ());
          var vi:VariableInstance = valueTarget.GetVariableInstance ();
+         if (vi != null)
          {
-            vi.Assign (aClass, aClass.GetDefaultInitialValue ());
+            vi.Assign (aClass, aClass.CreateDefaultInitialValue ());
          }
       }
       

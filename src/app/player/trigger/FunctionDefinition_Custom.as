@@ -15,6 +15,7 @@ package player.trigger
       protected var mDesignDependent:Boolean = true;
       
       internal var mNumLocalVariables:int;
+      protected var mLocalVariableSpace:VariableSpace; // since v2.05
       
       internal var mInputVariableReferences:Array;
       internal var mOutputVariableReferences:Array;
@@ -25,12 +26,14 @@ package player.trigger
       internal var mLocalVariableRefList:VariableReference;
       
       //public function FunctionDefinition_Custom (inputValueSourceDefines:Array, ouputParamValueTypes:Array, numLocalVariables:int)
-      public function FunctionDefinition_Custom (inputVariableSpace:VariableSpace, outputVariableSpace:VariableSpace, numLocalVariables:int)
+      //public function FunctionDefinition_Custom (inputVariableSpace:VariableSpace, outputVariableSpace:VariableSpace, numLocalVariables:int)
+      public function FunctionDefinition_Custom (inputVariableSpace:VariableSpace, outputVariableSpace:VariableSpace, localVariableSpace:VariableSpace)
       {
          //super (inputValueSourceDefines, ouputParamValueTypes);
          super (inputVariableSpace, outputVariableSpace);
          
-         mNumLocalVariables = numLocalVariables;
+         mLocalVariableSpace = localVariableSpace;
+         mNumLocalVariables = mLocalVariableSpace.GetNumVariables ();
          
          mInputVariableReferences = VariableReference.CreateVariableReferenceArray (mNumInputParams);
          mOutputVariableReferences = VariableReference.CreateVariableReferenceArray (mNumOutputParams);
@@ -40,7 +43,7 @@ package player.trigger
          mOutputVariableRefList = mNumOutputParams > 0 ? mOutputVariableReferences [0] : null;
          mLocalVariableRefList = mNumLocalVariables > 0 ? mLocalVariableReferences [0] : null;
          
-         mPrimaryFunctionInstance = new FunctionInstance (this);
+         mPrimaryFunctionInstance = new FunctionInstance (this, true);
       }
       
       public function SetDesignDependent (designDependent:Boolean):void
@@ -51,6 +54,11 @@ package player.trigger
       public function IsDesignDependent ():Boolean
       {
          return mDesignDependent;
+      }
+      
+      public function GetLocalVariableSpace ():VariableSpace
+      {
+         return mLocalVariableSpace;
       }
       
       public function GetNumLocalVariables ():int
@@ -126,7 +134,7 @@ package player.trigger
       {
          // 1. push 
          
-         if (mCurrentFunctionInstance == null) // first dream space
+         if (mCurrentFunctionInstance == null) // first level dream space
          {
             mCurrentFunctionInstance = mPrimaryFunctionInstance;
             
@@ -143,7 +151,7 @@ package player.trigger
          {
             if (mCurrentFunctionInstance.mNextFunctionInstance == null)
             {
-               var next:FunctionInstance = new FunctionInstance (this);
+               var next:FunctionInstance = new FunctionInstance (this, false);
                mCurrentFunctionInstance.mNextFunctionInstance = next;
                next.mPrevFunctionInstance = mCurrentFunctionInstance;
             }

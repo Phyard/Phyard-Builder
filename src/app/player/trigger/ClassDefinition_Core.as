@@ -14,7 +14,7 @@ package player.trigger
          mClassDeclaration = classDeclaration;
       }
       
-      override public function GetDefaultInitialValue ():Object
+      override public function CreateDefaultInitialValue ():Object
       {
          return mDefaultInitialValue;
       }

@@ -151,7 +151,9 @@ package player.trigger {
                if (playerWorld == null)
                   return null;
 
-               var entityIndex:int = valueObject as int;
+               //var entityIndex:int = valueObject as int; // before v2.05. bug: null -> 0
+               var entityIndex:int = valueObject == null ? Define.EntityId_None : (valueObject as int);
+
                if (entityIndex < 0)
                {
                   if (entityIndex == Define.EntityId_Ground)
@@ -172,26 +174,27 @@ package player.trigger {
                if (playerWorld == null)
                   return null;
                
-               var ccatIndex:int = valueObject as int;
+               //var ccatIndex:int = valueObject as int; // before v2.05. bug: null -> 0
+               var ccatIndex:int = valueObject == null ? Define.CCatId_Hidden : (valueObject as int);
                if (ccatIndex >= 0 && extraInfos != null)
                   ccatIndex += extraInfos.mBeinningCCatIndex;
                return playerWorld.GetCollisionCategoryById (ccatIndex);
             }
             case CoreClassIds.ValueType_Module:
             {
-               var moduleIndex:int = valueObject as int;
+               var moduleIndex:int = valueObject == null ? -1 : (valueObject as int);
                //return Global.GetImageModuleByGlobalIndex (moduleIndex);
                return moduleIndex;
             }
             case CoreClassIds.ValueType_Sound:
             {
-               var soundIndex:int = valueObject as int;
+               var soundIndex:int = valueObject == null ? -1 : (valueObject as int);
                //return Global.GetSoundByIndex (soundIndex);
                return soundIndex;
             }
             case CoreClassIds.ValueType_Scene:
             {
-               var sceneIndex:int = valueObject as int;
+               var sceneIndex:int = valueObject == null ? -1 : (valueObject as int);
                //return Global.GetSceneByIndex (sceneIndex);
                return sceneIndex;
             }

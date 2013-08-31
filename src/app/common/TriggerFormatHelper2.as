@@ -257,7 +257,7 @@ package common {
                         BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, false), 
                         callback);
          }
-         else
+         else // to reset param values
          {
             BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, coreFunction.GetInputVariableSpace (), functionDeclaration, true);
             BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, coreFunction.GetOutputVariableSpace (), functionDeclaration, false);
@@ -276,7 +276,11 @@ package common {
       {
          var inputVariableSpace:VariableSpace;
          var outputVariableSpace:VariableSpace;
-         var numLocals:int = functionDefine.mLocalVariableDefines == null ? 0 : functionDefine.mLocalVariableDefines.length;
+         
+         // before v2.05
+         //var numLocals:int = functionDefine.mLocalVariableDefines == null ? 0 : functionDefine.mLocalVariableDefines.length;
+         // sicne v2.05
+         var localVariableSpace:VariableSpace = VariableDefines2VariableSpace (playerWorld, functionDefine.mLocalVariableDefines, null, customClassIdShiftOffset);
          
          if (functionDeclaration != null) // event handler / action / condition / ...
          {
@@ -294,7 +298,7 @@ package common {
             outputVariableSpace = VariableDefines2VariableSpace (playerWorld, functionDefine.mOutputVariableDefines, null, customClassIdShiftOffset);
          }
          
-         var costomFunction:FunctionDefinition_Custom = new FunctionDefinition_Custom (inputVariableSpace, outputVariableSpace, numLocals);
+         var costomFunction:FunctionDefinition_Custom = new FunctionDefinition_Custom (inputVariableSpace, outputVariableSpace, localVariableSpace);
          
          return costomFunction;
       }
@@ -905,7 +909,7 @@ package common {
          var useIdMappingTable:Boolean = false;
          
          //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
-         var numNewVariables:int = variableDefines.length;
+         var numNewVariables:int = variableDefines == null ? 0 : variableDefines.length;
          var numOldVariables:int;
          if (variableSpace == null)
          {

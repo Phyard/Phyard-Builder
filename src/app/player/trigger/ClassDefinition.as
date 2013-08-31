@@ -61,7 +61,7 @@ package player.trigger
          return false;
       }
       
-      public function GetDefaultInitialValue ():Object
+      public function CreateDefaultInitialValue ():Object
       {
          return null;
       }

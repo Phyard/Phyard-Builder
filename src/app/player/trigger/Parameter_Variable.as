@@ -11,18 +11,18 @@ package player.trigger
          mVariableInstance = vi;
       }
       
-      public function GetVariableInstance ():VariableInstance
+      override public function GetVariableInstance ():VariableInstance
       {
          return mVariableInstance;
       }
       
-      // as an input
+      // a little faster than super
       override public function EvaluateValueObject ():Object
       {
          return mVariableInstance.GetValueObject ();
       }
       
-      // as an output
+      // a little faster than super
       override public function AssignValueObject (valueObject:Object):void
       {
          mVariableInstance.SetValueObject (valueObject);

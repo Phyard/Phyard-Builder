@@ -31,15 +31,24 @@ package player.trigger {
          sCoreClassDefinitions = new Array (CoreClassIds.NumCoreClasses);
          for (classId = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
          {
+            if (classId == CoreClassIds.ValueType_Void)
+            {
+               sCoreClassDefinitions [classId] = kVoidClassDefinition;
+               continue;
+            }
+            else if (classId == CoreClassIds.ValueType_Object)
+            {
+               sCoreClassDefinitions [classId] = kObjectClassDefinition;
+               continue;
+            }
+            
             var coreDecl:ClassDeclaration = CoreClassDeclarations.GetCoreClassDeclarationById (classId);
             if (coreDecl != null)
             {
-               if (classId == CoreClassIds.ValueType_Void)
-                  sCoreClassDefinitions [classId] = kVoidClassDefinition;
-               else if (classId == CoreClassIds.ValueType_Object)
-                  sCoreClassDefinitions [classId] = kObjectClassDefinition;
-               else
-                  sCoreClassDefinitions [classId] = new ClassDefinition_Core (coreDecl);
+               if (coreDecl.GetID () != classId) // void
+                  continue;
+
+               sCoreClassDefinitions [classId] = new ClassDefinition_Core (coreDecl);
             }
          }
          
@@ -48,18 +57,17 @@ package player.trigger {
          for (classId = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
          {
             classDef = GetCoreClassDefinition (classId);
-            if (classDef != null)
+            if (classDef.GetID () == classId)
             {
                classDef.SetParentClasses ([kObjectClassDefinition]);
             }
          }
          
          // ...         
-         
          for (classId = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
          {
             classDef = GetCoreClassDefinition (classId);
-            if (classDef != null)
+            if (classDef.GetID () == classId)
             {
                classDef.FindAncestorClasses ();
             }
@@ -72,6 +80,51 @@ package player.trigger {
          
          var classDefinition:ClassDefinition_Core = sCoreClassDefinitions [coreClassId] as ClassDefinition_Core;
          return classDefinition == null ? kVoidClassDefinition : classDefinition;
+      }
+      
+      private static var sEntityClassDefinition:ClassDefinition_Core = null;
+      public static function GetEntityClassDefinition ():ClassDefinition_Core
+      {
+         if (sEntityClassDefinition == null)
+            sEntityClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Entity);
+         
+         return sEntityClassDefinition;
+      }
+      
+      private static var sModuleClassDefinition:ClassDefinition_Core = null;
+      public static function GetModuleClassDefinition ():ClassDefinition_Core
+      {
+         if (sModuleClassDefinition == null)
+            sModuleClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Module);
+         
+         return sModuleClassDefinition;
+      }
+      
+      private static var sBooelanClassDefinition:ClassDefinition_Core = null;
+      public static function GetBooleanClassDefinition ():ClassDefinition_Core
+      {
+         if (sBooelanClassDefinition == null)
+            sBooelanClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Boolean);
+         
+         return sBooelanClassDefinition;
+      }
+      
+      private static var sNumberClassDefinition:ClassDefinition_Core = null;
+      public static function GetNumberClassDefinition ():ClassDefinition_Core
+      {
+         if (sNumberClassDefinition == null)
+            sNumberClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Number);
+         
+         return sNumberClassDefinition;
+      }
+      
+      private static var sStringClassDefinition:ClassDefinition_Core = null;
+      public static function GetStringClassDefinition ():ClassDefinition_Core
+      {
+         if (sStringClassDefinition == null)
+            sStringClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_String);
+         
+         return sStringClassDefinition;
       }
       
 //==============================================================
@@ -154,27 +207,18 @@ package player.trigger {
                //}
             }
             case CoreClassIds.ValueType_Class:
-               var aClass:ClassDefinition = null;
+               var aClass:ClassDefinition = kVoidClassDefinition;
                
                if (valueObject != null)
-               {
+               {  
+                  var theClassId:int = valueObject.mValueType;
                   if (valueObject.mClassType == ClassTypeDefine.ClassType_Custom)
                   {
-                     var theClassId:int = valueObject.mValueType;
-                     if (valueObject.mValueType >= 0 && extraInfos != null)
+                     if (theClassId >= 0 && extraInfos != null)
                         theClassId = theClassId + extraInfos.mBeginningCustomClassIndex;
-                     
-                     aClass = Global.GetCustomClassDefinition (theClassId);
                   }
-                  else
-                  {
-                     aClass = GetCoreClassDefinition (valueObject.mValueType);
-                  }
-               }
-               
-               if (aClass == null)
-               {
-                  aClass = kVoidClassDefinition;
+                  
+                  aClass = Global.GetClassDefinition (valueObject.mClassType, theClassId);
                }
                   
                return aClass;
@@ -233,7 +277,7 @@ package player.trigger {
                return null;
             default:
             {
-               throw new Error ("! wrong value");
+               throw new Error ("! wrong value. valueType = " + valueType);
             }
          }
       }

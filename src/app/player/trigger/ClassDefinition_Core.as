@@ -7,9 +7,21 @@ package player.trigger
    {
       protected var mClassDeclaration:ClassDeclaration;
       
+      protected var mDefaultInitialValue:Object;
+      
       public function ClassDefinition_Core (classDeclaration:ClassDeclaration)
       {
          mClassDeclaration = classDeclaration;
+      }
+      
+      override public function GetDefaultInitialValue ():Object
+      {
+         return mDefaultInitialValue;
+      }
+      
+      public function SetDefaultInitialValue (value:Object):void
+      {
+         mDefaultInitialValue = value;
       }
       
       override public function GetID ():int
@@ -21,5 +33,10 @@ package player.trigger
       {
          return ClassTypeDefine.ClassType_Core;
       }
+      
+      //override public function IsCustomClass ():Boolean
+      //{
+      //   return false;
+      //}
    }
 }

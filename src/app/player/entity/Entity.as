@@ -6,9 +6,11 @@ package player.entity {
    import player.world.World;
    import player.world.EntityList;
    import player.physics.PhysicsProxy;
+   
+   import player.trigger.CoreClasses;
 
    import player.trigger.Parameter;
-   import player.trigger.Parameter_DirectSource;
+   import player.trigger.Parameter_DirectConstant;
 
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
@@ -368,6 +370,19 @@ package player.entity {
          }
       }
 
+      public function GetCustomPropertyInstance (spaceId:int, propertyId:int):VariableInstance
+      {
+         //if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
+         //   return null;
+         //
+         //return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableByIndex (propertyId).GetValueObject ();
+
+         if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+            return mCommonCustomProeprtySpace.GetVariableByIndex (propertyId);
+         else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+            return mCustomProeprtySpace.GetVariableByIndex (propertyId);
+      }
+
       public function GetCustomProperty (spaceId:int, propertyId:int):Object
       {
          //if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
@@ -387,10 +402,13 @@ package player.entity {
             return vi.GetValueObject ();
          }
 
-         if (propertyId < 0)
-            return null;
-
-         return vi == Global.GetDefaultEntityPropertyValue (spaceId, propertyId);
+         //if (propertyId < 0)
+         //   return null;
+         //
+         //return vi == Global.GetDefaultEntityPropertyValue (spaceId, propertyId);
+               // commented off at v2.05. 
+         
+         return null;
       }
 
       public function SetCustomProperty (spaceId:int, propertyId:int, valueObject:Object):void
@@ -418,7 +436,7 @@ package player.entity {
 //====================================================================================================
 
       // not safe for nest callings
-      //protected static var mEventHandlerValueSource0:Parameter_DirectSource = new Parameter_DirectSource (null, null);
+      //protected static var mEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (null, null);
       //protected static var mEventHandlerValueSourceList:Parameter = mEventHandlerValueSource0;
       
       private var mCreateEventHandlerList:ListElement_EventHandler = null;
@@ -476,7 +494,7 @@ package player.entity {
          var list_element:ListElement_EventHandler = mCreateEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -511,7 +529,7 @@ package player.entity {
          var list_element:ListElement_EventHandler = mInitializeEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -542,7 +560,7 @@ package player.entity {
          var  list_element:ListElement_EventHandler = mUpdateEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -596,7 +614,7 @@ package player.entity {
          var list_element:ListElement_EventHandler = mDestroyEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)

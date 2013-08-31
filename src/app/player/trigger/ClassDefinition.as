@@ -15,27 +15,30 @@ package player.trigger
       
       public function FindAncestorClasses ():void
       {
-         if (mParentClasses != null)
+         if (mAncestorClasses == null)
          {
-            mParentClasses = new Array ();
+            mAncestorClasses = new Array ();
             
-            for each (var parentClass:ClassDefinition in mParentClasses)
-            {
-               parentClass.FindAncestorClasses ();
-               if (mExtendOrder <= parentClass.mExtendOrder)
-                  mExtendOrder = parentClass.mExtendOrder + 1;
-               
-               if (mParentClasses.indexOf (parentClass) < 0)
-                  mParentClasses.push (parentClass);
-               
-               var parentPrentClasses:Array = parentClass.mParentClasses;
-               if (parentPrentClasses != null)
+            if (mParentClasses != null)
+            {  
+               for each (var parentClass:ClassDefinition in mParentClasses)
                {
-                  for each (var parentPrentClass:ClassDefinition in parentPrentClasses)
+                  parentClass.FindAncestorClasses ();
+                  if (mExtendOrder <= parentClass.mExtendOrder)
+                     mExtendOrder = parentClass.mExtendOrder + 1;
+                  
+                  if (mAncestorClasses.indexOf (parentClass) < 0)
+                     mAncestorClasses.push (parentClass);
+                  
+                  var parentPrentClasses:Array = parentClass.mParentClasses;
+                  if (parentPrentClasses != null)
                   {
-                     if (mParentClasses.indexOf (parentPrentClass) < 0)
+                     for each (var parentPrentClass:ClassDefinition in parentPrentClasses)
                      {
-                        mParentClasses.push (parentPrentClass);
+                        if (mAncestorClasses.indexOf (parentPrentClass) < 0)
+                        {
+                           mAncestorClasses.push (parentPrentClass);
+                        }
                      }
                   }
                }
@@ -52,5 +55,42 @@ package player.trigger
       {
          return ClassTypeDefine.ClassType_Unknown;
       }
+      
+      public function IsCustomClass ():Boolean
+      {
+         return false;
+      }
+      
+      public function GetDefaultInitialValue ():Object
+      {
+         return null;
+      }
+      
+      //===============================
+      // 
+      //===============================
+      
+      public function ConvertValueOfClassInstance (classInstance:ClassInstance):Object
+      {
+         if (classInstance.mRealClassDefinition == this)
+            return classInstance.mValueObject;
+         
+         var realClassDefinition:ClassDefinition = classInstance.mRealClassDefinition;
+         if (mExtendOrder != realClassDefinition.mExtendOrder) // possible one is the other's ancestor.
+         {
+            if (mExtendOrder < realClassDefinition.mExtendOrder) // this is possible the ancestor
+            {
+               if (realClassDefinition.mAncestorClasses.indexOf (this) >= 0)
+                  return classInstance.mValueObject;
+            }
+            else // realClassDefinition is possible the ancestor
+            {
+               
+            }
+         }
+         
+         return null;
+      }
+      
    }
 }

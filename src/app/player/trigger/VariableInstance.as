@@ -8,11 +8,11 @@ package player.trigger
       public var mNextVariableInstanceInSpace:VariableInstance; // for efficiency
       
       private var mDeclaration:VariableDeclaration;
-      //public var mClassInstance:ClassInstance; // use the extend implementation instead.
+      //public var mClassInstance:ClassInstance; // use the extend implementation instead now.
+            //mDeclaration == null means this VariableInstacne will rejest value assginings (in normal mode).
       
-      public function VariableInstance (value:Object = null)
+      public function VariableInstance ()
       {
-         super (value);
       }
       
       public function GetDeclaration ():VariableDeclaration
@@ -30,6 +30,22 @@ package player.trigger
          CloneForClassInstance (forVI);
          
          forVI.SetDeclaration (mDeclaration);
+      }
+      
+   //=====================================
+   // assign
+   //=====================================
+      
+      // if assign one VariableInstacne to the other, check if the two shell class definitions are same, 
+      // if true, assign directly without calling this function.
+      public function Assign (classDefinition:ClassDefinition, valueObject:Object):void
+      {
+         if (mDeclaration == null)
+            return;
+         
+         //if (mVariableDeclaration.m
+         mRealClassDefinition = classDefinition;
+         mValueObject = valueObject;
       }
       
    }

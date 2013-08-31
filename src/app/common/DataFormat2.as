@@ -330,6 +330,7 @@ package common {
             Global.SetCurrentWorld (playerWorld);
             
             // ...
+            Global.UpdateCoreClassDefaultInitialValues ();
             Global.CreateOrResetCoreFunctionDefinitions ();
             
             // ...

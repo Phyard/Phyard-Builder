@@ -52,7 +52,7 @@ package common.trigger {
                                    null);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Class, 
-                                   CoreClassIds.ValueType_Void);
+                                   {mClassType : ClassTypeDefine.ClassType_Core, mValueType : CoreClassIds.ValueType_Void});
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Object, 
                                    null);

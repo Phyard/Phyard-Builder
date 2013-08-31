@@ -4,11 +4,13 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;
-   import player.trigger.Parameter_DirectTarget;
+   import player.trigger.Parameter_DirectMutable;
    import player.trigger.Parameter_Variable;
+   
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionDefine;
    import common.trigger.ValueDefine;
+   import common.trigger.CoreClassIds;
    
    import common.TriggerFormatHelper2;
    
@@ -69,7 +71,11 @@ package player.trigger.entity
       // todo, seems it is ok to use parameters like that in contact event handling.
       // currently, ApplyNewDirectParameter and ReleaseDirectParameter are some not very efficient.
       
-      private var mValueTarget:Parameter_DirectTarget = new Parameter_DirectTarget (null);
+      private var mValueTarget:Parameter_DirectMutable = Parameter_DirectMutable.CreateCoreClassDirectMutable (
+                                                            CoreClassIds.ValueType_Boolean,
+                                                            false
+                                                          ); 
+                                                         //new Parameter_DirectMutable (null);
       
       public function RunBoolFunction ():Boolean
       {

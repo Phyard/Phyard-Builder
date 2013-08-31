@@ -77,8 +77,11 @@ package player.trigger
          mPrimaryFunctionInstance.SetAsCurrent ();
       }
       
-      public function CreateVariableParameter (variableSpaceType:int, variableIndex:int, isOutput:Boolean, nextParameter:Parameter = null):Parameter
+      public function CreateVariableParameter (variableSpaceType:int, variableIndex:int, withProperty:Boolean, propertyIndex:int, nextParameter:Parameter = null):Parameter
       {
+         if (withProperty && propertyIndex < 0)
+            return null;
+
          var variableReferenceArray:Array;
          
          if (variableSpaceType == ValueSpaceTypeDefine.ValueSpace_Input)
@@ -109,6 +112,11 @@ package player.trigger
          //{
          //   return new Parameter_Variable (mPrimaryFunctionInstance.GetLocalVariableAt (variableIndex), nextParameter);
          //}
+         
+         if (withProperty)
+         {
+            return new Parameter_ObjectRefProperty (variableReferenceArray [variableIndex], propertyIndex, nextParameter);
+         }
          
          return new Parameter_VariableRef (variableReferenceArray [variableIndex], nextParameter);
       }

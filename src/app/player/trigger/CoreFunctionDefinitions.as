@@ -664,7 +664,7 @@ package player.trigger {
          
          var equals:Boolean = false;
            
-         valueTarget.AssignValueObject (equals);
+         //valueTarget.AssignValueObject (equals);
       }
 
       public static function CommonNewInstance (valueSource:Parameter, valueTarget:Parameter):void
@@ -673,9 +673,13 @@ package player.trigger {
          if (aClass == null)
             aClass = CoreClasses.kVoidClassDefinition;
          
-         valueTarget.AssignValueObject (null);
+         //valueTarget.AssignValueObject (aClass.GetDefaultInitialValue ());
+         var vi:VariableInstance = valueTarget.GetVariableInstance ();
+         {
+            vi.Assign (aClass, aClass.GetDefaultInitialValue ());
+         }
       }
-
+      
    //*******************************************************************
    // system / time
    //*******************************************************************

@@ -16,9 +16,11 @@ package player.entity {
    
    import player.world.World;
    
+   import player.trigger.CoreClasses;
+   
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
-   import player.trigger.Parameter_DirectSource;
+   import player.trigger.Parameter_DirectConstant;
    
    import common.trigger.CoreEventIds;
    
@@ -129,7 +131,7 @@ package player.entity {
          var  list_element:ListElement_EventHandler = mTextChangedEventHandlerList;
          
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_DirectSource = new Parameter_DirectSource (this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), this, null);
          
          mWorld.IncStepStage ();
          while (list_element != null)

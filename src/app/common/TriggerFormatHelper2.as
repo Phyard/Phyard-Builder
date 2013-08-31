@@ -23,10 +23,11 @@ package common {
    import player.trigger.FunctionCalling_ConditionWithComparer;
    import player.trigger.FunctionCalling_Dummy;
    import player.trigger.Parameter;
-   import player.trigger.Parameter_DirectSource;
+   import player.trigger.Parameter_DirectConstant;
    import player.trigger.Parameter_Variable;
-   import player.trigger.Parameter_VariableRef;
-   import player.trigger.Parameter_Property;
+   import player.trigger.Parameter_ObjectProperty;
+   import player.trigger.Parameter_EntityProperty;
+   import player.trigger.Parameter_EntityPropertyProperty;
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
    import player.trigger.VariableDeclaration;
@@ -648,11 +649,12 @@ package common {
             
             //assert (valueType == direct_source_define.mValueType);
 
-trace ("classType = " + classType + ", classType = " + classType + ", direct_source_define.mValueObject = " + direct_source_define.mValueObject);
-            value_source = new Parameter_DirectSource (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos));
-trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueObject ());
+            value_source = new Parameter_DirectConstant (
+                                    Global.GetClassDefinition (classType, valueType),
+                                    CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos)
+                                 ); 
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variable_source_define:ValueSourceDefine_Variable = valueSourceDefine as ValueSourceDefine_Variable;
             
@@ -666,15 +668,11 @@ trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueO
                case ValueSpaceTypeDefine.ValueSpace_World:
                   // will not merge with new ones
                   variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_source = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GameSave:
                   // will not merge with new ones
                   variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_source = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
@@ -684,42 +682,47 @@ trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueO
                      variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
                   }
                   variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_source = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningGlobalVariableIndex;
                   variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_source = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
                   // will not merge with new ones
                   variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_source = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
-                  var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
-                  if (variable_space != null)
+                  if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     variable_instance = variable_space.GetVariableByIndex (variable_index);
-                     if (variable_instance != null)
-                        value_source = new Parameter_Variable (variable_instance);
+                     var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
+                     if (variable_space != null)
+                        variable_instance = variable_space.GetVariableByIndex (variable_index);
                   }
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Input:
                case ValueSpaceTypeDefine.ValueSpace_Output:
                case ValueSpaceTypeDefine.ValueSpace_Local:
-                  value_source = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, false);
+                  if (source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
+                     value_source = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, true, (variable_source_define as ValueSourceDefine_ObjectProperty).mPropertyIndex);
+                  else
+                     value_source = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, false, -1);
+                  
                   break;
                default:
                   break;
+            }
+            
+            if (variable_instance != null)
+            {
+               if (source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
+                  value_source = new Parameter_ObjectProperty (variable_instance, (variable_source_define as ValueSourceDefine_ObjectProperty).mPropertyIndex);
+               else
+                  value_source = new Parameter_Variable (variable_instance);
             }
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
@@ -741,14 +744,27 @@ trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueO
                }
             }
             
-            value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, null, extraInfos)
-                                                      , property_source_define.mPropertyValueSourceDefine.mSpaceType
-                                                      , customPropertyId);
+            var entitySource:Parameter = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, null, extraInfos);
+            if (property_source_define.mPropertyValueSourceDefine.GetValueSourceType () == ValueSourceTypeDefine.ValueSource_ObjectProperty)
+            {
+               var propertyPropertyIndex:int = (property_source_define.mPropertyValueSourceDefine as ValueSourceDefine_ObjectProperty).mPropertyIndex;
+               if (propertyPropertyIndex >= 0)
+               {
+                  value_source = new Parameter_EntityPropertyProperty (entitySource, property_source_define.mPropertyValueSourceDefine.mSpaceType, customPropertyId, propertyPropertyIndex);
+               }
+            }
+            else
+            {
+               value_source = new Parameter_EntityProperty (entitySource, property_source_define.mPropertyValueSourceDefine.mSpaceType, customPropertyId);
+            }
          }
          
          if (value_source == null)
          {
-            value_source = new Parameter_DirectSource (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos));
+            value_source = new Parameter_DirectConstant (
+                                 Global.GetClassDefinition (classType, valueType),
+                                 CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos)
+                              );
          }
          
          return value_source;
@@ -778,15 +794,11 @@ trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueO
                case ValueSpaceTypeDefine.ValueSpace_World:
                   // will not merge with new ones
                   variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_target = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GameSave:
                   // will not merge with new ones
                   variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_target = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
@@ -796,22 +808,16 @@ trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueO
                      variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
                   }
                   variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_target = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningGlobalVariableIndex;
                   variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_target = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
                   variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
-                  if (variable_instance != null)
-                     value_target = new Parameter_Variable (variable_instance);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
@@ -819,21 +825,29 @@ trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueO
                   {
                      var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                      if (variable_space != null)
-                     {
                         variable_instance = variable_space.GetVariableByIndex (variable_index);
-                        if (variable_instance != null)
-                           value_target = new Parameter_Variable (variable_instance);
-                     }
                   }
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Input:
                case ValueSpaceTypeDefine.ValueSpace_Output:
                case ValueSpaceTypeDefine.ValueSpace_Local:
-                  value_target = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, true);
+                  if (target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
+                     value_target = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, true, (variable_target_define as ValueTargetDefine_ObjectProperty).mPropertyIndex);
+                  else
+                     value_target = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, false, -1);
+                     
                   break;
                default:
                   break;
+            }
+            
+            if (variable_instance != null)
+            {
+               if (target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
+                  value_target = new Parameter_ObjectProperty (variable_instance, (variable_target_define as ValueTargetDefine_ObjectProperty).mPropertyIndex);
+               else
+                  value_target = new Parameter_Variable (variable_instance);
             }
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
@@ -855,8 +869,20 @@ trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueO
                   customPropertyId += extraInfos.mBeinningCustomEntityVariableIndex;
                }
             }
-            value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, null, extraInfos)
-                                                      , property_target_define.mPropertyValueTargetDefine.mSpaceType, customPropertyId);
+            
+            var entitySource:Parameter = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, null, extraInfos);
+            if (property_target_define.mPropertyValueTargetDefine.GetValueTargetType () == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
+            {
+               var propertyPropertyIndex:int = (property_target_define.mPropertyValueTargetDefine as ValueTargetDefine_ObjectProperty).mPropertyIndex;
+               if (propertyPropertyIndex >= 0)
+               {
+                  value_target = new Parameter_EntityPropertyProperty (entitySource, property_target_define.mPropertyValueTargetDefine.mSpaceType, customPropertyId, propertyPropertyIndex);
+               }
+            }
+            else
+            {
+               value_target = new Parameter_EntityProperty (entitySource, property_target_define.mPropertyValueTargetDefine.mSpaceType, customPropertyId);
+            }
          }
          
          if (value_target == null)
@@ -936,7 +962,7 @@ trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueO
                
                valueType += customClassIdShiftOffset;
             }
-            var classDefinition:ClassDefinition = CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Class, {mClassType : variableDefine.mClassType, mValueObject : valueType}) as ClassDefinition;
+            var classDefinition:ClassDefinition = CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Class, {mClassType : variableDefine.mClassType, mValueType : valueType}) as ClassDefinition;
             //variableInstance.SetShellClassDefinition (classDefinition);
             
             var varDeclaration:VariableDeclaration = new VariableDeclaration (classDefinition);
@@ -1298,6 +1324,7 @@ trace ("     value = " + (value_source as Parameter_DirectSource).EvaluateValueO
             //                                                valueType,
             //                                                supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
             //                                                );
+            variableDefine.mClassType = classType;
             variableDefine.mValueType = valueType;
             variableDefine.mValueObject = supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
             

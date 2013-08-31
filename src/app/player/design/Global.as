@@ -10,10 +10,12 @@ package player.design
    
    import player.trigger.TriggerEngine;
    import player.trigger.VariableSpace;
+   import player.trigger.ClassInstance;
    import player.trigger.VariableInstance;
    import player.trigger.VariableDeclaration;
    import player.trigger.CoreClasses;
    import player.trigger.ClassDefinition;
+   import player.trigger.ClassDefinition_Core;
    import player.trigger.ClassDefinition_Custom;
    import player.trigger.FunctionDefinition_Custom;
    
@@ -33,7 +35,8 @@ package player.design
 
    import common.trigger.ClassTypeDefine;
    import common.trigger.CoreClassIds;
-   
+   import common.trigger.ClassDeclaration;
+   import common.trigger.CoreClassDeclarations;
    import common.trigger.define.ClassDefine;
    import common.trigger.define.FunctionDefine;
    
@@ -269,7 +272,7 @@ package player.design
    
    private static function WriteTypeAndValue (binData:ByteArray, classType:int, valueType:int, value:Object, alreadySavedArrayLookupTable:Dictionary):void
    {
-      if (classType != ClassTypeDefine.ClassType_Core) // only core types supported.
+      if (classType != ClassTypeDefine.ClassType_Core) // only core types supported now.
          valueType = CoreClassIds.ValueType_Void;
          
       switch (valueType)
@@ -362,9 +365,9 @@ package player.design
          {
             var key:String = savedData.readUTF ();
             
-            var value:Object = ReadNextVariableValue (savedData);
+            var ci:ClassInstance = ReadNextVariableValue (savedData);
 
-            savedVariables [savedVariableId] = {mKey: key, mValue: value};
+            savedVariables [savedVariableId] = {mKey: key, mClassInstance: ci};
          }
       }
       catch (error:Error)
@@ -398,34 +401,40 @@ package player.design
             variableInstance = mGameSaveVariableSpace.GetVariableByKey (savedVariable.mKey);
             if (variableInstance != null)
             {
-               variableInstance.SetValueObject (savedVariable.mValue);
+               //variableInstance.SetValueObject (savedVariable.mClassInstance.mValueObject);
+               var classInstance:ClassInstance = savedVariable.mClassInstance as ClassInstance;
+               variableInstance.Assign (classInstance.mRealClassDefinition, classInstance.mValueObject);
             }
          }
       }
    }
    
-   private static function ReadNextVariableValue (savedData:ByteArray):Object
+   private static function ReadNextVariableValue (savedData:ByteArray):ClassInstance
    {
       var type:int = savedData.readShort ();
-
+      var value:Object;
+      
       switch (type)
       {
          case CoreClassIds.ValueType_Boolean:
-            return savedData.readByte () != 0;
+            value = savedData.readByte () != 0;
+            break;
          case CoreClassIds.ValueType_Number:
-            return savedData.readDouble ();
+            value = savedData.readDouble ();
+            break;
          case CoreClassIds.ValueType_String:
             var strLen:int = savedData.readInt ();
             if (strLen < 0)
-               return null;
+               value = null;
             else
             {
-               return savedData.readUTFBytes (strLen);
+               value = savedData.readUTFBytes (strLen);
             }
+            break;
          case CoreClassIds.ValueType_Array:
             var arrLen:int = savedData.readInt ();
             if (arrLen < 0)
-               return null;
+               value = null;
             else
             {
                var valuesArray:Array = new Array (arrLen);
@@ -433,13 +442,22 @@ package player.design
                {
                   valuesArray [i] = ReadNextVariableValue (savedData);
                }
+               
+               value = valuesArray ;
             }
-            return valuesArray ;
+            
+            break;
          default:
          {
-            return null;
+            value = null;
          }
       } 
+      
+      var ci:ClassInstance = new ClassInstance ();
+      ci.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (type));
+      ci.SetValueObject (value);
+      
+      return ci;
    }
    
    private static var mDebugString:String = null;
@@ -583,6 +601,19 @@ package player.design
       public static function GetCurrentWorld ():World
       {
          return mCurrentWorld;
+      }
+      
+      public static function UpdateCoreClassDefaultInitialValues ():void
+      {
+         for (var classId:int = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
+         {
+            var coreDecl:ClassDeclaration = CoreClassDeclarations.GetCoreClassDeclarationById (classId);
+            var classDef:ClassDefinition_Core = CoreClasses.GetCoreClassDefinition (classId);
+            if (classDef.GetID () == classId)
+            {
+               classDef.SetDefaultInitialValue (CoreClasses.ValidateInitialDirectValueObject_Define2Object (Global.GetCurrentWorld (), ClassTypeDefine.ClassType_Core, classId, coreDecl.GetDefaultDirectDefineValue ()));
+            }
+         }
       }
       
       public static function CreateOrResetCoreFunctionDefinitions ():void
@@ -835,7 +866,7 @@ package player.design
          {
             newClassId = numOldClasses + classId;
             var customClass:ClassDefinition_Custom = Global.GetCustomClassDefinition (newClassId);
-            
+
             customClass.FindAncestorClasses ();
          }
       }
@@ -851,6 +882,27 @@ package player.design
             return null;
          
          return mCustomClassDefinitions [classId] as ClassDefinition_Custom;
+      }
+      
+      public static function GetClassDefinition (classType:int, classId:int):ClassDefinition
+      {
+         var aClass:ClassDefinition;
+         
+         if (classType == ClassTypeDefine.ClassType_Custom)
+         {
+            aClass = GetCustomClassDefinition (classId);
+            
+            if (aClass == null)
+            {
+               aClass = CoreClasses.kVoidClassDefinition;
+            }
+         }
+         else
+         {
+            aClass = CoreClasses.GetCoreClassDefinition (classId);
+         }
+         
+         return aClass;
       }
       
       // custom functions

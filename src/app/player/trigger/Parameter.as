@@ -1,6 +1,6 @@
 package player.trigger
 {
-   // also used as Parameter_Null
+   // this class instance used as null Parameter.
    
    public class Parameter
    {
@@ -11,16 +11,28 @@ package player.trigger
          mNextParameter = next;
       }
       
+      public function GetVariableInstance ():VariableInstance
+      {
+         return null;
+      }
+      
       // as an input
       public function EvaluateValueObject ():Object
       {
-         return null; // undefined; // to override
+         var vi:VariableInstance = GetVariableInstance ();
+
+         return vi == null ? null : vi.GetValueObject ();
       }
       
       // as an output
       public function AssignValueObject (valueObject:Object):void
       {
-         // to override
+         var vi:VariableInstance = GetVariableInstance ();
+         
+         if (vi != null)
+         {
+            vi.SetValueObject (valueObject);
+         }
       }
    }
 }

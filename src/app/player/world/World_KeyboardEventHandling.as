@@ -43,11 +43,11 @@
       }
    }
    
-   private var mKeyboardEventHandlerValueSource4:Parameter_DirectSource = new Parameter_DirectSource (null);
-   private var mKeyboardEventHandlerValueSource3:Parameter_DirectSource = new Parameter_DirectSource (null, mKeyboardEventHandlerValueSource4);
-   private var mKeyboardEventHandlerValueSource2:Parameter_DirectSource = new Parameter_DirectSource (null, mKeyboardEventHandlerValueSource3);
-   private var mKeyboardEventHandlerValueSource1:Parameter_DirectSource = new Parameter_DirectSource (null, mKeyboardEventHandlerValueSource2);
-   private var mKeyboardEventHandlerValueSource0:Parameter_DirectSource = new Parameter_DirectSource (null, mKeyboardEventHandlerValueSource1);
+   private var mKeyboardEventHandlerValueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, null);
+   private var mKeyboardEventHandlerValueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, mKeyboardEventHandlerValueSource4);
+   private var mKeyboardEventHandlerValueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, mKeyboardEventHandlerValueSource3);
+   private var mKeyboardEventHandlerValueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, mKeyboardEventHandlerValueSource2);
+   private var mKeyboardEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, mKeyboardEventHandlerValueSource1);
    private var mKeyboardEventHandlerValueSourceList:Parameter = mKeyboardEventHandlerValueSource0;
    
    // key down and up events have already handled when they are triggered.

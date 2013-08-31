@@ -8,9 +8,8 @@ package player.trigger
       public var mRealClassDefinition:ClassDefinition = null; // CoreClasses.kVoidClassDefinition;
       public var mValueObject:Object = null; // undefined;
       
-      public function ClassInstance (value:Object = null)
+      public function ClassInstance ()
       {
-         mValueObject = value;
       }
       
       public function SetRealClassDefinition (classDefinition:ClassDefinition):void

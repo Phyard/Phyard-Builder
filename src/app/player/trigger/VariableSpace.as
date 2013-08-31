@@ -57,7 +57,7 @@ package player.trigger
          {
             var viSource:VariableInstance = (mVariableInstances [i] as VariableInstance);
             var viTarget:VariableInstance = (forVariableSpace.mVariableInstances [i] as VariableInstance);
-            
+
             viSource.CloneForVariableInstance (viTarget);
          }
          

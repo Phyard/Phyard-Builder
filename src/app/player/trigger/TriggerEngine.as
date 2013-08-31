@@ -80,40 +80,32 @@ package player.trigger
 // cached Parameter instances
 //=============================================================================
       
-      public static var mFreeDirectParameterListHead:Parameter_DirectSource = null;
+      // this cache implementation may not better than direct new ()
       
-      public static function ApplyNewDirectParameter (initialValue:Object, nextParameter:Parameter):Parameter_DirectSource
+      public static var mFreeDirectParameterListHead:Parameter_DirectConstant = null;
+      
+      public static function ApplyNewDirectParameter_Source (classDefinition:ClassDefinition, initialValue:Object, nextParameter:Parameter):Parameter_DirectConstant
       {
-         var returnParameter:Parameter_DirectSource = mFreeDirectParameterListHead;
+         var returnParameter:Parameter_DirectConstant = mFreeDirectParameterListHead;
          
-         if (returnParameter != null)
+         if (returnParameter == null)
          {
-            mFreeDirectParameterListHead = returnParameter.mNextParameter as Parameter_DirectSource;
-            returnParameter.mValueObject = initialValue; // a little faster than calling AssignValueObject
+            returnParameter = new Parameter_DirectConstant (classDefinition, initialValue, nextParameter);
          }
          else
          {
-            returnParameter = new Parameter_DirectSource (initialValue);
+            mFreeDirectParameterListHead = returnParameter.mNextParameter as Parameter_DirectConstant;
+            returnParameter.GetVariableInstance ().SetRealClassDefinition (classDefinition);
+            returnParameter.mValueObject = initialValue; // a little faster than calling AssignValueObject
+            returnParameter.mNextParameter = nextParameter;
          }
-         
-         returnParameter.mNextParameter = nextParameter;
          
          return returnParameter;
       }
       
-      //public static function ReleaseDirectParameter_Target (parameter:Parameter_DirectTarget):Object
-      //{
-      //   var returnValue:Object = parameter.mValueObject;
-      //   
-      //   parameter.mValueObject = null; // a little faster than calling AssignValueObject
-      //   parameter.mNextParameter = mFreeDirectParameterListHead;
-      //   mFreeDirectParameterListHead = parameter;
-      //   
-      //   return returnValue;
-      //}
-      
-      public static function ReleaseDirectParameter_Source (parameter:Parameter_DirectSource):void
+      public static function ReleaseDirectParameter_Source (parameter:Parameter_DirectConstant):void
       {
+         parameter.GetVariableInstance ().SetRealClassDefinition (null);
          parameter.mValueObject = null; // a little faster than calling AssignValueObject
          parameter.mNextParameter = mFreeDirectParameterListHead;
          mFreeDirectParameterListHead = parameter;

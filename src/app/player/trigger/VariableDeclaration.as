@@ -12,7 +12,7 @@ package player.trigger
       
       //private var mClassType:int = ClassTypeDefine.ClassType_Unknown;  // since v2.05
       //private var mValueType:int = CoreClassIds.ValueType_Void;
-      private var mShellClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition;
+      internal var mShellClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition;
       
       public function VariableDeclaration (classDef:ClassDefinition)
       {

@@ -104,6 +104,7 @@
          {
             PopUpManager.removePopUp (this);
             
+            theVariablesEditPanel.NotifyDialogClosing ();
             //SetVariableSpace (null);
             SetCodeLibManager (null);
             

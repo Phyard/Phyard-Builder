@@ -46,7 +46,7 @@ package editor.world {
          RegisterCoreClass (null, //sCoreCodePackage,
                             CoreClassIds.ValueType_Void, 
                             "Void", // Class Name
-                            "aVoid",
+                            "",
                             null, // undefined,
                             ValidateValueObject_Void
                          ).SetSceneDataDependent (false);

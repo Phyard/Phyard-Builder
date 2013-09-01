@@ -30,14 +30,14 @@ package editor.trigger {
       
       private var mVariableSpace:VariableSpace;
       private var mIndex:int = -1; // index in space
-      
-      private var mValueObject:Object;
+      private var mKey:String = "";
       
       private var mVariableDefinition:VariableDefinition;
       
    // only valid when mVariableDefinition == null
-      private var mValuetype:int = CoreClassIds.ValueType_Void;
-      private var mName:String = null;
+      //private var mValuetype:int = CoreClassIds.ValueType_Void;
+      //private var mName:String = null;
+      //private var mValueObject:Object;
       
       // used in VariableSpace.CreateVariableInstance () and GetNullVariableInstance ()
       public function VariableInstance (variableSpace:VariableSpace, id:int, variableDefinition:VariableDefinition, 
@@ -49,9 +49,11 @@ package editor.trigger {
          
          if (variableDefinition == null)
          {
-            mValuetype = valueType;
-            SetName (variableName);
-            SetValueObject (intialValue);
+            //mValuetype = valueType;
+            //SetName (variableName);
+            //SetValueObject (intialValue);
+            
+            throw new Error ("variableDefinition can't be null"); // since v2.05
          }
          else
          {
@@ -69,7 +71,8 @@ package editor.trigger {
          mVariableDefinition = variableDefinition;
          if (mVariableDefinition == null) // generally, shouldn't
          {
-            mValuetype = CoreClassIds.ValueType_Void;
+            //mValuetype = CoreClassIds.ValueType_Void;
+            throw new Error ("mVariableDefinition can't be null");
             return;
          }
          
@@ -77,12 +80,12 @@ package editor.trigger {
          SetName (variableDefinition.GetName ());
       }
       
-      public function ToVariableDefinitionString ():String
+      public function ToVariableDefinitionString (tempName:String = null):String
       {
          //return VariableDefinition.GetValueTypeName (GetValueType ()) + " " + GetName ();
          //return World.GetCoreClassById (GetValueType ()).GetName () + " " + GetName ();
          if (mVariableDefinition != null)
-            return mVariableDefinition.GetTypeName () + " : " + GetName ();
+            return mVariableDefinition.GetTypeName () + " : " + (tempName != null ? tempName : GetName ());
          
          return "null";
       }
@@ -135,18 +138,23 @@ package editor.trigger {
          return mIndex;
       }
       
+      public function ChangeName (newName:String):void
+      {
+         GetVariableSpace ().ChangeVariableName (this, newName);
+      }
+      
       public function SetName (name:String):void
       {
-         if (mVariableDefinition == null)
+         if (mVariableDefinition != null)
          {
-            mName = name;
+            mVariableDefinition.SetName (name);
          }
       }
       
       public function GetName ():String
       {
-         if (mVariableDefinition == null)
-            return mName;
+         //if (mVariableDefinition == null)
+         //   return mName;
          
          return mVariableDefinition.GetName ();
       }
@@ -166,8 +174,8 @@ package editor.trigger {
       
       public function GetValueType ():int
       {
-         if (mVariableDefinition == null)
-            return mValuetype;
+         //if (mVariableDefinition == null)
+         //   return mValuetype;
          
          return mVariableDefinition.GetValueType ();
       }
@@ -196,12 +204,21 @@ package editor.trigger {
             throw new Error ("mVariableDefinition can't be null!"); // todo: merge this class into VariableDefinition
          }
          
-          mValueObject = valueObject;
+          //mValueObject = valueObject;
       }
       
       public function GetValueObject ():Object
       {
-         return mValueObject;
+         if (mVariableDefinition != null)
+         {
+            return mVariableDefinition.GetDefaultValue ();
+         }
+         else
+         {
+            throw new Error ("mVariableDefinition can't be null!"); // todo: merge this class into VariableDefinition
+         }
+         
+         //return mValueObject;
       }
       
       // it seems VariableDefinition has no the "GetDefaultValue" function.
@@ -222,8 +239,6 @@ package editor.trigger {
    
    // uuid
    
-      private var mKey:String = "";
-      
       public function GetKey ():String
       {
          return mKey;

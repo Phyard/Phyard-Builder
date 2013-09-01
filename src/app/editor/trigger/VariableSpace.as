@@ -113,6 +113,8 @@ package editor.trigger {
          }
          mVariableInstances.splice (0, mVariableInstances.length);
          
+         mLookupTableByName = new Dictionary ();
+         
          if (IsVariableKeySupported ())
          {
             mLookupTableByKey = new Dictionary ();
@@ -136,6 +138,8 @@ package editor.trigger {
          {
             delete mLookupTableByKey [vi.GetKey ()];
          }
+         
+         delete mLookupTableByName [vi.GetName ()];
          
          RearrangeVariableInstanceIndexes ();
          
@@ -216,7 +220,7 @@ package editor.trigger {
       public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition, 
                                                                              validVariableIndexes:Array = null,
                                                                              labelPrefix:String = null, 
-                                                                             propertyOwnerIndex:int = -1,
+                                                                             propertyOwnerVi:VariableInstance = null,
                                                                              dataList:Array = null
                                                                           ):Array
       {
@@ -228,7 +232,8 @@ package editor.trigger {
             
             item = new Object ();
             item.label = "(null)"; // mNullVariableInstance.GetLongName ();
-            item.mIndex = -1;
+            //item.mIndex = -1; // bug
+            item.mVariableInstance = mNullVariableInstance;
             item.mProperty = -1;
             
             dataList.push (item);
@@ -267,13 +272,15 @@ package editor.trigger {
                   if (labelPrefix == null)
                   {
                      item.label = generalLabel == null ? vi.GetLongName () : generalLabel;
-                     item.mIndex = i;
+                     //item.mIndex = i; // bug
+                     item.mVariableInstance = vi;
                      item.mProperty = -1;
                   }
                   else
                   {
                      item.label = labelPrefix + " [" + i + "] " + vi.GetName ();
-                     item.mIndex = propertyOwnerIndex;
+                     //item.mIndex = propertyOwnerViIndex; // bug
+                     item.mVariableInstance = propertyOwnerVi;
                      item.mProperty = i;
                   }
                   
@@ -284,7 +291,7 @@ package editor.trigger {
                {
                   if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false))
                   {
-                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProviderByVariableDefinition (variableDefinition, null, generalLabel, i, dataList);
+                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProviderByVariableDefinition (variableDefinition, null, generalLabel, vi, dataList);
                   }
                }
             }
@@ -293,12 +300,12 @@ package editor.trigger {
          return dataList;
       }
       
-      public static function VariableIndex2SelectListSelectedIndex (selectListDataProvider:Array, variableInstanceIndex:int, propertyIndex:int = -1):int
+      public static function VariableIndex2SelectListSelectedIndex (selectListDataProvider:Array, variableInstance:VariableInstance, propertyIndex:int = -1):int
       {
          for (var i:int = 0; i < selectListDataProvider.length; ++ i)
          {
             var item:Object = selectListDataProvider[i];
-            if (item.mIndex == variableInstanceIndex && item.mProperty == propertyIndex)
+            if (item.mVariableInstance == variableInstance && item.mProperty == propertyIndex)
                return i;
          }
          
@@ -312,14 +319,13 @@ package editor.trigger {
          
          variableValueSource.ClearProperty ();
          
-         var viIndex:int = selectItem.mIndex;
-         if (viIndex < 0)
+         var vi:VariableInstance = selectItem.mVariableInstance;
+         if (vi.GetIndex () < 0)
          {
             variableValueSource.SetVariableInstance (variable_space.GetNullVariableInstance ());
             return;
          }
          
-         var vi:VariableInstance = variable_space.GetVariableInstanceAt (viIndex);
          variableValueSource.SetVariableInstance (vi);
          
          if (selectItem.mProperty >= 0)
@@ -335,14 +341,13 @@ package editor.trigger {
          
          variableValueTarget.ClearProperty ();
          
-         var viIndex:int = selectItem.mIndex;
-         if (viIndex < 0)
+         var vi:VariableInstance = selectItem.mVariableInstance;
+         if (vi.GetIndex () < 0)
          {
             variableValueTarget.SetVariableInstance (variable_space.GetNullVariableInstance ());
             return;
          }
          
-         var vi:VariableInstance = variable_space.GetVariableInstanceAt (viIndex);
          variableValueTarget.SetVariableInstance (vi);
          
          if (selectItem.mProperty >= 0)
@@ -476,8 +481,15 @@ package editor.trigger {
             }
          }
          
+         // ...
+         
          vi = new VariableInstance (this, mVariableInstances.length, variableDefinition);
          vi.SetValueObject (variableDefinition.GetClass ().GetInitialInstacneValue ());
+         
+         ValidateVariableDefinitionName (variableDefinition);
+         mLookupTableByName [variableDefinition.GetName ()] = vi; // vi.GetName () == variableDefinition.GetName ()
+         
+         //...
          
          mVariableInstances.push (vi);
          
@@ -564,6 +576,49 @@ package editor.trigger {
          }
          
          return key;
+      }
+      
+      private var mLookupTableByName:Dictionary = new Dictionary ();
+      
+      public function GetVariableInstanceByName (name:String):VariableInstance
+      {
+         return mLookupTableByName [name] as VariableInstance;
+      }
+      
+      public function ValidateVariableName (name:String):String
+      {  
+         var baseName:String = name + " ";
+         var i:int = 1;
+         while (mLookupTableByName [name] != null)
+         {
+            name = baseName + (i ++);
+         }
+         
+         return name;
+      }
+      
+      private function ValidateVariableDefinitionName (variableDefinition:VariableDefinition):void
+      {
+         var name:String = variableDefinition.GetName ();
+         if (name == null || name.length == 0)
+         {
+            name = variableDefinition.GetClass ().GetDefaultInstanceName ();
+         }
+         
+         variableDefinition.SetName (ValidateVariableName (name));
+      }
+      
+      internal function ChangeVariableName (vi:VariableInstance, newName:String):void
+      {
+         if (newName == vi.GetName ())
+            return;
+         
+         delete mLookupTableByName [vi.GetName ()];
+         
+         vi.GetVariableDefinition ().SetName (newName);
+         ValidateVariableDefinitionName (vi.GetVariableDefinition ());
+         
+         mLookupTableByName [vi.GetName ()] = vi; // vi.GetName () == vi.GetVariableDefinition ().GetName ()
       }
       
    }

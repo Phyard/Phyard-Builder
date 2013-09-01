@@ -10,7 +10,7 @@
          <mx:Button id="Button_MoveUpCommmand" click="OnMoveUpVariable ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
          <mx:Button id="Button_MoveDownCommmand" click="OnMoveDownVariable ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
       </mx:HBox>
-      <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" width="100%" height="100%" change="OnChangeVariable ()"  labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false"/>
+      <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" change="OnChangeVariable ()" width="100%" height="100%" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false"/>
       <mx:ViewStack id="ViewStack_VariableProperties" creationPolicy="all" width="100%" height="77" borderStyle="solid" borderThickness="1">
          <mx:VBox id="Box_BlankPanel" width="100%" height="100%">
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
@@ -39,7 +39,7 @@
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="3" />
                <mx:Label width="35%" text="Name:" textAlign="right" />
-               <mx:TextInput width="65%" id="Text_Name" text="" change="OnNameChanged ();"/>
+               <mx:TextInput width="65%" id="Text_Name" text="" enter="OnConfirmVariableName ();" change="OnNameChanged ();"/>
                <mx:Spacer width="3" />
             </mx:HBox>
             <mx:ViewStack id="ViewStack_VariableSetting" creationPolicy="all" width="100%" height="100%">
@@ -379,7 +379,9 @@
 
                if (selectedIndex >= 0)
                   List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex);
-
+               
+               mCurrentVariable = null;
+               
                OnChangeVariable ();
 
                UpdateInterface ();
@@ -398,7 +400,7 @@
                List_Variables.dataProvider.addItemAt (List_Variables.dataProvider.removeItemAt (selectedIndex), selectedIndex - 1);
                List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex - 1);
 
-               OnChangeVariable ();
+               //OnChangeVariable ();
 
                UpdateInterface ();
             }
@@ -416,21 +418,52 @@
                List_Variables.dataProvider.addItemAt (List_Variables.dataProvider.removeItemAt (selectedIndex), selectedIndex + 1);
                List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex + 1);
 
-               OnChangeVariable ();
+               //OnChangeVariable ();
 
                UpdateInterface ();
             }
 
         //===========================
-
+            
+            public function NotifyDialogClosing ():void
+            {
+               ConfirmChangeCurrentVariableName ();
+               
+               mCurrentVariable = null;
+            }
+            
+            private function OnConfirmVariableName ():void
+            {
+               // no need
+            }
+            
+            private var mCurrentVariable:VariableInstance = null;
+            private function ConfirmChangeCurrentVariableName ():void
+            {
+               if (mCurrentVariable != null)
+               {
+                  var oldName:String = mCurrentVariable.GetName ();
+                  mCurrentVariable.ChangeName (Text_Name.text);
+                  
+                  if (oldName != mCurrentVariable.GetName ())
+                  {
+                     mVariableSpace.NotifyModified ();
+                  }
+               }
+            }
+            
             public function OnChangeVariable ():void
             {
+               ConfirmChangeCurrentVariableName ();
+               
                var selectedIndex:int = List_Variables.selectedIndex;
 
                if (mVariableSpace == null || selectedIndex < 0)
                {
                   //VariableType.selectedValue = null;
                   ViewStack_VariableProperties.selectedChild = Box_BlankPanel;
+                  
+                  mCurrentVariable = null;
                }
                else
                {
@@ -497,8 +530,10 @@
                      //VariableType.selectedValue = null;
                      ViewStack_VariableSetting.selectedChild = Box_NullValuePanel;
                   }
+                  
+                  mCurrentVariable = variableInstance;
                }
-
+               
                UpdateInterface ();
             }
 
@@ -508,20 +543,33 @@
             {
                if (mVariableSpace == null)
                   return;
-
-               var selectedIndex:int = List_Variables.selectedIndex;
-               if (selectedIndex < 0)
+               
+               if (mCurrentVariable == null)
                   return;
-
-               var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
-               var variableInstance:VariableInstance = item.mData;
-               variableInstance.GetVariableDefinition ().SetName (Text_Name.text);
-               var name:String = variableInstance.ToVariableDefinitionString ();
+               
+               var tempName:String = Text_Name.text;
+               if (tempName != mCurrentVariable.GetName ())
+               {
+                  var oldTempName:String = tempName;
+                  tempName = mCurrentVariable.GetVariableSpace ().ValidateVariableName (tempName);
+                  if (tempName != oldTempName && mCurrentVariable.GetName ().indexOf (oldTempName) == 0)
+                     tempName = mCurrentVariable.GetName ();
+               }
+               tempName = mCurrentVariable.ToVariableDefinitionString (tempName);
+               
+               SetCurrrentItemName (tempName);
+            }
+            
+            private function SetCurrrentItemName (name:String):void
+            {  
+               var selectedIndex:int = List_Variables.selectedIndex;
+               if (selectedIndex < 0) // should not
+                  return;
+               
+               var item:Object  = List_Variables.dataProvider.getItemAt (List_Variables.selectedIndex);
                item.mName = name;
                item.mDataTip = name;
                List_Variables.invalidateList ();
-
-               mVariableSpace.NotifyModified ();
             }
 
             public function OnBooleanVariableSettingChanged ():void

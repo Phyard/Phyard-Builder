@@ -252,6 +252,11 @@ package editor.trigger {
          return mDescription;
       }
       
+      public function GetDefaultValue ():Object
+      {
+         return mDefaultValueObject;
+      }
+      
       public function SetDefaultValue (valueObject:Object):void
       {
          mDefaultValueObject = ValidateDirectValueObject (valueObject);
@@ -334,7 +339,7 @@ package editor.trigger {
          combo_box.dataProvider = variable_list;
          combo_box.rowCount = 11;
          
-         combo_box.selectedIndex = VariableSpace.VariableIndex2SelectListSelectedIndex (variable_list, valueTargetVariable.GetVariableIndex(), valueTargetVariable.GetPropertyIndex());
+         combo_box.selectedIndex = VariableSpace.VariableIndex2SelectListSelectedIndex (variable_list, valueTargetVariable.GetVariableInstance(), valueTargetVariable.GetPropertyIndex());
          
          return combo_box;
       }
@@ -522,7 +527,7 @@ package editor.trigger {
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
-         combo_box.selectedIndex = VariableSpace.VariableIndex2SelectListSelectedIndex (variable_list, valueSourceVariable.GetVariableIndex(), valueSourceVariable.GetPropertyIndex());
+         combo_box.selectedIndex = VariableSpace.VariableIndex2SelectListSelectedIndex (variable_list, valueSourceVariable.GetVariableInstance(), valueSourceVariable.GetPropertyIndex());
          combo_box.rowCount = 11;
          
          return combo_box;

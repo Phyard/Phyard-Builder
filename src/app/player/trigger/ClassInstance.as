@@ -5,11 +5,16 @@ package player.trigger
    
    public class ClassInstance
    {
-      public var mRealClassDefinition:ClassDefinition = null; // CoreClasses.kVoidClassDefinition;
-      public var mValueObject:Object = null; // undefined;
+      private var mRealClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition; // must inited with this value, for kVoidVariableInstance.
+      private var mValueObject:Object = null; // undefined;  // must inited with this value, for kVoidVariableInstance.
       
       public function ClassInstance ()
       {
+      }
+      
+      public function GetRealClassDefinition ():ClassDefinition
+      {
+         return mRealClassDefinition;
       }
       
       public function SetRealClassDefinition (classDefinition:ClassDefinition):void
@@ -32,7 +37,14 @@ package player.trigger
          return mValueObject;
       }
       
+      // this one may be overridden.
       public function SetValueObject (valueObject:Object):void
+      {
+         mValueObject = valueObject;
+      }
+      
+      // this one can't be overridden
+      internal final function _SetValueObject (valueObject:Object):void
       {
          mValueObject = valueObject;
       }

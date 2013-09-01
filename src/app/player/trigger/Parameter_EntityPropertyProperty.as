@@ -16,10 +16,10 @@ package player.trigger
       override public function GetVariableInstance ():VariableInstance
       {
          var ownerVi:VariableInstance = super.GetVariableInstance ();
-         if (ownerVi == null)
-            return null;
+         //if (ownerVi == null) // must be not null now. It may be VariableInstance.kVoidVariableInstance.
+         //   return null;
          
-         var variableSpace:VariableSpace = ownerVi.mValueObject as VariableSpace;
+         var variableSpace:VariableSpace = ownerVi.GetValueObject () as VariableSpace;
          if (variableSpace == null)
             return null;
          

@@ -1809,7 +1809,6 @@ package editor.asset {
             }
          }
          
-trace ("111 created = " + created);
          if (created)
          {
             RepaintAllAssetLinks ();

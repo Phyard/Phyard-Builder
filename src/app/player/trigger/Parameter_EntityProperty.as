@@ -21,7 +21,10 @@ package player.trigger
       {
          var entity:Entity = mEntityParameter.EvaluateValueObject () as Entity;
          
-         return entity == null ? /*undefined*/null : entity.GetCustomPropertyInstance (mSpacePackageId, mEntityPropertyId);
+         if (entity == null)
+            return VariableInstanceConstant.kVoidVariableInstance;
+         
+         return entity.GetCustomPropertyInstance (mSpacePackageId, mEntityPropertyId);;
       }
    }
 }

@@ -397,10 +397,10 @@ package player.entity {
          else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
             vi = mCustomProeprtySpace.GetVariableByIndex (propertyId);
             
-         if (vi != null)
-         {
-            return vi.GetValueObject ();
-         }
+         //if (vi != null)
+         //{
+            return vi.GetValueObject (); // vi must be not null now. It may be VariableInstance.kVoidVariableInstance.
+         //}
 
          //if (propertyId < 0)
          //   return null;
@@ -408,7 +408,7 @@ package player.entity {
          //return vi == Global.GetDefaultEntityPropertyValue (spaceId, propertyId);
                // commented off at v2.05. 
          
-         return null;
+         //return null;
       }
 
       public function SetCustomProperty (spaceId:int, propertyId:int, valueObject:Object):void
@@ -425,10 +425,11 @@ package player.entity {
          else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
             vi = mCustomProeprtySpace.GetVariableByIndex (propertyId);
          
-         if (vi != null)
-         {
-            vi.SetValueObject (valueObject);
-         }
+         //if (vi != null)
+         //{
+            vi.SetValueObject (valueObject); // vi must be not null now. It may be VariableInstance.kVoidVariableInstance
+                                             // VariableInstance.kVoidVariableInstance will reject value assigning silently.
+         //}
       }
 
 //====================================================================================================

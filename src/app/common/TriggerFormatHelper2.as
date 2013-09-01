@@ -30,6 +30,7 @@ package common {
    import player.trigger.Parameter_EntityPropertyProperty;
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
+   import player.trigger.VariableInstanceConstant;
    import player.trigger.VariableDeclaration;
    
    import common.trigger.ClassTypeDefine;
@@ -716,12 +717,13 @@ package common {
                   else
                      value_source = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, false, -1);
                   
+                  // variable_instance == null
                   break;
                default:
                   break;
             }
             
-            if (variable_instance != null)
+            if (variable_instance != null && variable_instance != VariableInstanceConstant.kVoidVariableInstance)
             {
                if (source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
                   value_source = new Parameter_ObjectProperty (variable_instance, (variable_source_define as ValueSourceDefine_ObjectProperty).mPropertyIndex);
@@ -840,13 +842,14 @@ package common {
                      value_target = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, true, (variable_target_define as ValueTargetDefine_ObjectProperty).mPropertyIndex);
                   else
                      value_target = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, false, -1);
-                     
+                  
+                  // variable_instance == null
                   break;
                default:
                   break;
             }
             
-            if (variable_instance != null)
+            if (variable_instance != null && variable_instance != VariableInstanceConstant.kVoidVariableInstance)
             {
                if (target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
                   value_target = new Parameter_ObjectProperty (variable_instance, (variable_target_define as ValueTargetDefine_ObjectProperty).mPropertyIndex);
@@ -941,7 +944,7 @@ package common {
             {
                variableInstance = variableSpace.GetVariableByKey (variableDefine.mKey);
 
-               if (variableInstance != null)
+               if (variableInstance != VariableInstanceConstant.kVoidVariableInstance)
                {
                   varialbeIdMappingTable [variableId] = variableInstance.GetDeclaration ().GetIndex ();
                   continue;
@@ -956,6 +959,7 @@ package common {
             }
             
             variableInstance = variableSpace.GetVariableByIndex (newVariableIndexInSpace);
+                  // msut be not null (VariableInstanceConstant.kVoidVariableInstance)
             
             //variableInstance.SetValueType (direct_source_define.mValueType);
             var valueType:int = variableDefine.mValueType;
@@ -1015,6 +1019,7 @@ package common {
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {  
             var variableInstance:VariableInstance = variableSpace.GetVariableByIndex (variableId);
+                  // must be not null (VariableInstanceConstant.kVoidVariableInstance)
             
             variableInstance.SetValueObject (ValidateVariableValueObject (playerWorld, variableInstance.GetValueObject (), convertedArrays, tryToReSceneDependentVariables));
          }

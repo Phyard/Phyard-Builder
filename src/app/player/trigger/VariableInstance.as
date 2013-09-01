@@ -8,9 +8,15 @@ package player.trigger
       public var mNextVariableInstanceInSpace:VariableInstance; // for efficiency
       
       private var mDeclaration:VariableDeclaration;
-      //public var mClassInstance:ClassInstance; // use the extend implementation instead now.
-            //mDeclaration == null means this VariableInstacne will rejest value assginings (in normal mode).
+            // mDeclaration.mClassDefinition == VoidClassDefinition means 
+            // this VariableInstacne will reject value assginings (in normal mode).
+            //
+            // this value is never null.
+            // when clone a variable instance, this value is passed to the cloned one directly.
       
+      //public var mClassInstance:ClassInstance; 
+            // use the extend implementation instead now.
+
       public function VariableInstance ()
       {
       }
@@ -43,9 +49,9 @@ package player.trigger
          if (mDeclaration == null)
             return;
          
-         //if (mVariableDeclaration.m
-         mRealClassDefinition = classDefinition;
-         mValueObject = valueObject;
+         //
+         SetRealClassDefinition (classDefinition);
+         SetValueObject (valueObject);
       }
       
    }

@@ -4,7 +4,7 @@ package player.trigger
    // So that every Parameter.GetVariableInstane () will non-null VariableInstance.
    // This will bring conviences for common value assignments, which is introduced at v2.05.
    
-   public class Parameter_DirectMutable extends Parameter_Variable // Parameter_DirectConstant
+   public class Parameter_DirectMutable extends Parameter_Variable
    {
       public static function CreateCoreClassDirectMutable (coreClassId:int, initValue:Object, next:Parameter = null):Parameter_DirectMutable
       {
@@ -21,7 +21,6 @@ package player.trigger
          mVariableInstance.SetDeclaration (variableDeclaration);
          mVariableInstance.SetRealClassDefinition (classDefinition);
          
-         //AssignValueObject (valueObject); // bug
          mValueObject = valueObject;
       }
       
@@ -33,7 +32,7 @@ package player.trigger
       
       public function set mValueObject (valueObject:Object):void
       {
-         mVariableInstance.SetValueObject (valueObject);
+         mVariableInstance._SetValueObject (valueObject);
       }
       //<<<<<<<
    }

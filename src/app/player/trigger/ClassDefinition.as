@@ -72,16 +72,16 @@ package player.trigger
       
       public function ConvertValueOfClassInstance (classInstance:ClassInstance):Object
       {
-         if (classInstance.mRealClassDefinition == this)
-            return classInstance.mValueObject;
+         if (classInstance.GetRealClassDefinition () == this)
+            return classInstance.GetValueObject ();
          
-         var realClassDefinition:ClassDefinition = classInstance.mRealClassDefinition;
+         var realClassDefinition:ClassDefinition = classInstance.GetRealClassDefinition ();
          if (mExtendOrder != realClassDefinition.mExtendOrder) // possible one is the other's ancestor.
          {
             if (mExtendOrder < realClassDefinition.mExtendOrder) // this is possible the ancestor
             {
                if (realClassDefinition.mAncestorClasses.indexOf (this) >= 0)
-                  return classInstance.mValueObject;
+                  return classInstance.GetValueObject ();
             }
             else // realClassDefinition is possible the ancestor
             {

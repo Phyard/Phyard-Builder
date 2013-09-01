@@ -12,11 +12,11 @@ package player.trigger
       
       //private var mClassType:int = ClassTypeDefine.ClassType_Unknown;  // since v2.05
       //private var mValueType:int = CoreClassIds.ValueType_Void;
-      internal var mShellClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition;
+      internal var mShellClassDefinition:ClassDefinition; // must be not null.
       
-      public function VariableDeclaration (classDef:ClassDefinition)
+      public function VariableDeclaration (classDef:ClassDefinition = null)
       {
-         mShellClassDefinition = classDef;
+         mShellClassDefinition = classDef != null ? classDef : CoreClasses.kVoidClassDefinition;
       }
       
       public function SetIndex (index:int):void
@@ -44,10 +44,11 @@ package player.trigger
          mName = name;
       }
       
-      public function SetShellClassDefinition (classDefinition:ClassDefinition):void
-      {
-         mShellClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
-      }
+      // forbit changing this value now.
+      //public function SetShellClassDefinition (classDefinition:ClassDefinition):void
+      //{
+      //   mShellClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
+      //}
       
       //public function SetClassType (type:int):void
       //{

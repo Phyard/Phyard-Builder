@@ -140,7 +140,7 @@ package player.trigger
       public function GetVariableByIndex (index:int):VariableInstance
       {
          if (index < 0 || mVariableInstances == null || index >= mVariableInstances.length)
-            return null;
+            return VariableInstanceConstant.kVoidVariableInstance; // null;
          
          return mVariableInstances [index];
       }
@@ -156,7 +156,7 @@ package player.trigger
       public function GetVariableByKey (key:String):VariableInstance
       {
          if (mVariableKeyMappings == null)
-            return null;
+            return VariableInstanceConstant.kVoidVariableInstance; // null;
          
          return mVariableKeyMappings [key] as VariableInstance;
       }

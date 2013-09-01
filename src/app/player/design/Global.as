@@ -249,7 +249,8 @@ package player.design
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
             var variableInstance:VariableInstance = mGameSaveVariableSpace.GetVariableByIndex (variableId) as VariableInstance;
-            
+                  // must be not null (VariableInstance.kVoidVariableInstance)
+                  
 //if (mDebugString == null) mDebugString = "";
 //mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " + variableInstance.GetKey ();            
             binData.writeUTF (variableInstance.GetDeclaration ().GetKey ());
@@ -399,12 +400,13 @@ package player.design
             
             //variableInstance = variableLookupTable [savedVariable.mKey];
             variableInstance = mGameSaveVariableSpace.GetVariableByKey (savedVariable.mKey);
-            if (variableInstance != null)
-            {
+            
+            //if (variableInstance != null) // now must not be null, may be VariableInstance.kVoidVariableInstance
+            //{
                //variableInstance.SetValueObject (savedVariable.mClassInstance.mValueObject);
                var classInstance:ClassInstance = savedVariable.mClassInstance as ClassInstance;
-               variableInstance.Assign (classInstance.mRealClassDefinition, classInstance.mValueObject);
-            }
+               variableInstance.Assign (classInstance.GetRealClassDefinition (), classInstance.GetValueObject ());
+            //}
          }
       }
    }
@@ -633,6 +635,7 @@ package player.design
          for (var i:int = 0; i < Define.NumRegistersPerVariableType; ++ i)
          {
             vi = vs.GetVariableByIndex (i);
+               // must be not null (VariableInstance.kVoidVariableInstance).
             
             varDeclaration = new VariableDeclaration (classDefinition);
             varDeclaration.SetIndex (i);
@@ -825,7 +828,8 @@ package player.design
          else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
             vi = mEntityVariableSpace.GetVariableByIndex (propertyId);
          
-         return vi == null ? null : vi.GetValueObject ();
+         //return vi == null ? null : vi.GetValueObject ();
+         return vi.GetValueObject (); // vi must be not null now. it may be VariableInstance.kVoidVariableInstance.
       }
       
       // custom classes

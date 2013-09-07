@@ -22,40 +22,64 @@ package common.trigger {
       // ...
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Void, 
-                                   /*undefined*/null);
+                                   "Void", // Class Name
+                                   /*undefined*/null,
+                                   true);
          
          RegisterClassDeclatation (CoreClassIds.ValueType_Boolean, 
-                                   false);
+                                   "Boolean", // Class Name
+                                   false,
+                                   true);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Number, 
-                                   0);
+                                   "Number", // Class Name
+                                   0,
+                                   true);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_String, 
-                                   "");
+                                   "Text", // Class Name
+                                   "",
+                                   true);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_CollisionCategory, 
-                                   Define.CCatId_Hidden);
+                                   "CCat", // Class Name
+                                   Define.CCatId_Hidden,
+                                   true);
                                    
-         RegisterClassDeclatation (CoreClassIds.ValueType_Entity,            
-                                   Define.EntityId_None);
+         RegisterClassDeclatation (CoreClassIds.ValueType_Entity,               
+                                   "Entity", // Class Name        
+                                   Define.EntityId_None,
+                                   false);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Module, 
-                                   -1);
+                                   "Module", // Class Name
+                                   -1,
+                                   true);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Sound, 
-                                   -1);
+                                   "Sound", // Class Name
+                                   -1,
+                                   true);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Scene, 
-                                   -1);
+                                   "Scene", // Class Name
+                                   -1,
+                                   false);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Array, 
-                                   null);
+                                   "Array", // Class Name
+                                   null,
+                                   true);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Class, 
-                                   {mClassType : ClassTypeDefine.ClassType_Core, mValueType : CoreClassIds.ValueType_Void});
+                                   "Class", // Class Name
+                                   {mClassType : ClassTypeDefine.ClassType_Core, mValueType : CoreClassIds.ValueType_Void},
+                                   true);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Object, 
-                                   null);
+                                   "Object", // Class Name
+                                   null,
+                                   false);
 
          sVoidClassDeclaration = GetCoreClassDeclarationById (CoreClassIds.ValueType_Void);
       }
@@ -64,12 +88,12 @@ package common.trigger {
 // util functions
 //===========================================================
 
-      private static function RegisterClassDeclatation (classId:int, defaultDirectDefineValue:Object):void
+      private static function RegisterClassDeclatation (classId:int, name:String,  defaultDirectDefineValue:Object, isFinal:Boolean):void
       {
          if (classId < 0 || classId >= CoreClassIds.NumCoreClasses)
             return;
 
-         var class_decl:ClassDeclaration = new ClassDeclaration (classId, defaultDirectDefineValue);
+         var class_decl:ClassDeclaration = new ClassDeclaration (classId, name, defaultDirectDefineValue, isFinal);
 
          sCoreClassDeclarations [classId] = class_decl;
       }

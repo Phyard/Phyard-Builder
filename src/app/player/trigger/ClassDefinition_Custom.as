@@ -5,11 +5,19 @@ package player.trigger
    public class ClassDefinition_Custom extends ClassDefinition
    {
       private var mId:int;
+      private var mName:String;
       public var mPropertyVariableSpaceTemplate:VariableSpace; // should not be null
       
-      public function ClassDefinition_Custom (customId:int)
+      public function ClassDefinition_Custom (customId:int, name:String)
       {
          mId = customId;
+         mName = name;
+         
+         mToNumberFunc = CoreClasses.Object2Number;
+         mToBooleanFunc = CoreClasses.Object2Boolean;
+         mToStringFunc = CoreClasses.Object2String;
+         mIsNullFunc = CoreClasses.IsNullObjectValue;
+         mGetNullFunc = CoreClasses.GetNullObjectValue;
       }
       
       override public function CreateDefaultInitialValue ():Object
@@ -25,6 +33,11 @@ package player.trigger
       override public function GetID ():int
       {
          return mId;
+      }
+      
+      override public function GetName ():String
+      {
+         return mName;
       }
       
       override public function GetClassType ():int

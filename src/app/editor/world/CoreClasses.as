@@ -45,7 +45,6 @@ package editor.world {
                                    
          RegisterCoreClass (null, //sCoreCodePackage,
                             CoreClassIds.ValueType_Void, 
-                            "Void", // Class Name
                             "",
                             null, // undefined,
                             ValidateValueObject_Void
@@ -55,7 +54,6 @@ package editor.world {
          
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Boolean, 
-                            "Boolean", // Class Name
                             "aBool",
                             false,
                             ValidateValueObject_Boolean
@@ -63,7 +61,6 @@ package editor.world {
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Number, 
-                            "Number", // Class Name
                             "aNumber",
                             0,
                             ValidateValueObject_Number
@@ -71,15 +68,13 @@ package editor.world {
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_String, 
-                            "Text", // Class Name
                             "aText",
                             "",
                             ValidateValueObject_String
                          ).SetSceneDataDependent (false);
                                    
          RegisterCoreClass (sCoreCodePackage,
-                            CoreClassIds.ValueType_Entity,            
-                            "Entity", // Class Name
+                            CoreClassIds.ValueType_Entity, 
                             "anEntity",
                             null,
                             ValidateValueObject_Entity
@@ -87,7 +82,6 @@ package editor.world {
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_CollisionCategory, 
-                            "CCat", // Class Name
                             "aCCat",
                             null,
                             ValidateValueObject_CollisionCategory
@@ -95,7 +89,6 @@ package editor.world {
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Module, 
-                            "Module", // Class Name
                             "aModule",
                             null,
                             ValidateValueObject_Module
@@ -103,7 +96,6 @@ package editor.world {
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Sound, 
-                            "Sound", // Class Name
                             "aSound",
                             null,
                             ValidateValueObject_Sound
@@ -111,7 +103,6 @@ package editor.world {
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Scene, 
-                            "Scene", // Class Name
                             "aScene",
                             null,
                             ValidateValueObject_Scene
@@ -119,7 +110,6 @@ package editor.world {
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Array, 
-                            "Array", // Class Name
                             "anArray",
                             null,
                             ValidateValueObject_ArrayAndCustomObject
@@ -127,7 +117,6 @@ package editor.world {
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Class, 
-                            "Class", // Class Name
                             "aClass",
                             sVoidClass,
                             ValidateValueObject_Class
@@ -135,7 +124,6 @@ package editor.world {
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Object, 
-                            "Object", // Class Name
                             "anObject",
                             null,
                             ValidateValueObject_ArrayAndCustomObject
@@ -270,12 +258,11 @@ package editor.world {
 // util functions
 //===========================================================
 
-      private static function RegisterCoreClass (codePacakge:CodePackage, classId:int, typeName:String, defaultInstanceName:String, initialInitialValue:Object, valueValidateFunc:Function = null):ClassDefinition_Core
+      private static function RegisterCoreClass (codePacakge:CodePackage, classId:int, defaultInstanceName:String, initialInitialValue:Object, valueValidateFunc:Function = null):ClassDefinition_Core
       {
          var coreDecl:ClassDeclaration = CoreClassDeclarations.GetCoreClassDeclarationById (classId);
 
          var coreClass:ClassDefinition_Core = new ClassDefinition_Core (coreDecl, 
-                                                  typeName, 
                                                   defaultInstanceName, 
                                                   initialInitialValue, 
                                                   valueValidateFunc

@@ -4,13 +4,40 @@ package player.trigger
    
    public class ClassDefinition
    {
-      public var mParentClasses:Array = null; //ClassDefinition;
-      public var mExtendOrder:int = 0; // an ancestor class's extend order must be smaller than its sub classes.
+      // these static values are defined in CoreClasses.as,
+      // no errors in compiling.
+      // but flash player reports runtime errors.
+      // so move them here.
+      
+      // num
+      public static const NumPrimitiveClasses:int = 3;
+      
+      // primitive classes
+      public static const ValueConvertOrder_Number:int = 0;
+      public static const ValueConvertOrder_Boolean:int = 1;
+      public static const ValueConvertOrder_String:int = 2;
+
+      // other non-promitive classes
+      public static const ValueConvertOrder_Others:int = 3;
+         
+   //================================================
+   
+      public var mParentClasses:Array = null; // direct ones.
       public var mAncestorClasses:Array = null;
+      public var mExtendOrder:int = 0; 
+                  // an ancestor class's extend order must be smaller than its sub classes.
+      
+      public var mValueConvertFunctions:Array = new Array (NumPrimitiveClasses);
+      public var mValueConvertOrder:int; 
+                  // for compare API. higher will be converted to lower before comparing.
       
       public function SetParentClasses (parentClasses:Array):void
       {
          mParentClasses = parentClasses;
+         
+         mValueConvertFunctions [ValueConvertOrder_Number] = ToNumber;
+         mValueConvertFunctions [ValueConvertOrder_Boolean] = ToBoolean;
+         mValueConvertFunctions [ValueConvertOrder_String] = ToString;
       }
       
       public function FindAncestorClasses ():void
@@ -51,6 +78,11 @@ package player.trigger
          return 0; // to override
       }
       
+      public function GetName ():String
+      {
+         return null; // to override
+      }
+      
       public function GetClassType ():int
       {
          return ClassTypeDefine.ClassType_Unknown;
@@ -67,30 +99,43 @@ package player.trigger
       }
       
       //===============================
-      // 
+      // value convert
       //===============================
       
-      public function ConvertValueOfClassInstance (classInstance:ClassInstance):Object
+      // generally, these 3 should not be null
+      public var mToNumberFunc:Function; // only null for Number
+      public var mToBooleanFunc:Function; // only null for Boolean
+      public var mToStringFunc:Function; // only null for String
+      
+      // for non primitive classes
+      public var mIsNullFunc:Function;
+      public var mGetNullFunc:Function;
+      
+      public function ToNumber (valueObject:Object):Number
       {
-         if (classInstance.GetRealClassDefinition () == this)
-            return classInstance.GetValueObject ();
-         
-         var realClassDefinition:ClassDefinition = classInstance.GetRealClassDefinition ();
-         if (mExtendOrder != realClassDefinition.mExtendOrder) // possible one is the other's ancestor.
-         {
-            if (mExtendOrder < realClassDefinition.mExtendOrder) // this is possible the ancestor
-            {
-               if (realClassDefinition.mAncestorClasses.indexOf (this) >= 0)
-                  return classInstance.GetValueObject ();
-            }
-            else // realClassDefinition is possible the ancestor
-            {
-               
-            }
-         }
-         
-         return null;
+         return mToNumberFunc (valueObject);
       }
       
+      public function ToBoolean (valueObject:Object):Boolean
+      {
+         return mToBooleanFunc (valueObject);
+      }
+      
+      private var mClassNameForToString:String = null;
+      public function ToString (valueObject:Object):String
+      {
+         if (mIsNullFunc == null) // primitive
+            return mToStringFunc (valueObject);
+         else
+         {
+            if (mIsNullFunc (valueObject))
+               return "null";
+            
+            if (mClassNameForToString == null)
+               mClassNameForToString = "[" + GetName () + "]";
+            
+            return mToStringFunc (valueObject, mClassNameForToString);
+         }
+      }
    }
 }

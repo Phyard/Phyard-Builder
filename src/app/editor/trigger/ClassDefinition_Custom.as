@@ -9,10 +9,13 @@ package editor.trigger {
       private var mPropertyDefinitionSpace:VariableSpaceClassInstance;
       
       private var mId:int = -1;
+      
+      private var mName:String;
         
       public function ClassDefinition_Custom (typeName:String, validateValueFunc:Function)
       {
-         super (typeName, typeName.toLowerCase (), null, validateValueFunc);
+         super (typeName.toLowerCase (), null, validateValueFunc);
+         mName = typeName;
          SetSceneDataDependent (true);
          
          mPropertyDefinitionSpace = new VariableSpaceClassInstance (GetName ());
@@ -33,16 +36,21 @@ package editor.trigger {
          mId = id;
       }
       
+      override public function GetName ():String
+      {
+         return mName;
+      }
+      
+      public function SetName (name:String):void
+      {
+         mName = name;
+         
+         mPropertyDefinitionSpace.SetSpaceName (GetName ());
+      }
+      
       public function GetPropertyDefinitionSpace ():VariableSpaceClassInstance
       {
          return mPropertyDefinitionSpace;
-      }
-      
-      override public function SetName (name:String):void
-      {
-         super.SetName (name);
-         
-         mPropertyDefinitionSpace.SetSpaceName (GetName ());
       }
    }
 }

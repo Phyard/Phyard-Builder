@@ -22,6 +22,7 @@ package common {
    import player.trigger.FunctionCalling_Condition;
    import player.trigger.FunctionCalling_ConditionWithComparer;
    import player.trigger.FunctionCalling_Dummy;
+   import player.trigger.FunctionCalling_CommonAssign;
    import player.trigger.Parameter;
    import player.trigger.Parameter_DirectConstant;
    import player.trigger.Parameter_Variable;
@@ -628,6 +629,9 @@ package common {
                case CoreFunctionIds.ID_Break:
                case CoreFunctionIds.ID_Continue:
                   calling = new FunctionCalling_Dummy (lineNumber, func_definition, value_source_list, value_target_list);
+                  break;
+               case CoreFunctionIds.ID_CommonAssign: // since v2.05
+                  calling = new FunctionCalling_CommonAssign (lineNumber, func_definition, value_source_list, value_target_list);
                   break;
                default:
                { 

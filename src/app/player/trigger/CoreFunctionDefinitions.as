@@ -19,9 +19,11 @@ package player.trigger {
 
    import player.physics.PhysicsEngine;
 
-   import player.trigger.FunctionDefinition_Core;
-   import player.trigger.Parameter;
-   import player.trigger.Parameter;
+   //import player.trigger.FunctionDefinition_Core;
+   //import player.trigger.Parameter;
+   //import player.trigger.Parameter_DirectConstant;
+   //import player.trigger.CoreClasses;
+   //import player.trigger.ClassInstance;
 
    import com.tapirgames.util.RandomNumberGenerator;
 
@@ -75,7 +77,7 @@ package player.trigger {
 
       // class common
          
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonAssign,                      CommonAssign);
+         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonAssign,                      CommonAssign);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonEquals,                      CommonEquals);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonNewInstance,                 CommonNewInstance);
 
@@ -652,39 +654,13 @@ package player.trigger {
    //*******************************************************************
    // class common
    //*******************************************************************
-
-      public static function CommonAssign (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         var soureVi:VariableInstance = valueSource.GetVariableInstance ();
-         //if (soureVi != null)
-         //{
-            var targetVi:VariableInstance = valueTarget.GetVariableInstance ();
-            //if (targetVi != null)
-            //{
-               targetVi.Assign (soureVi.GetRealClassDefinition (), soureVi.GetValueObject ());
-            //}
-         //}
-         
-         // todo: make GetVI () always return a non-null VI. VoidVariableInstacne extends VariableInstance.
-         // to remove all "if (vi != null)"
-      }
-
-      public static function CommonEquals (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         var vi_1:VariableInstance = valueSource.GetVariableInstance ();
-         var vi_2:VariableInstance = valueSource.mNextParameter.GetVariableInstance ();
-         
-         //if (vi_1 != null && vi_2 != null)
-         //{
-            var equals:Boolean = false;
-           
-            valueTarget.AssignValueObject (vi_1.GetValueObject () == vi_2.GetValueObject ());
-         //}
-         //else
-         //{
-            valueTarget.AssignValueObject (vi_1 == vi_2);
-         //}
-      }
+      
+      // now move into FunctionCalling_CommonAssign
+      //public static function CommonAssign (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //}
+      
+      public static const kTempClassInstanceForNewInstance:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kVoidClassDefinition, null);
 
       public static function CommonNewInstance (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -692,12 +668,19 @@ package player.trigger {
          if (aClass == null)
             aClass = CoreClasses.kVoidClassDefinition;
          
-         //valueTarget.AssignValueObject (aClass.GetDefaultInitialValue ());
-         var vi:VariableInstance = valueTarget.GetVariableInstance ();
-         //if (vi != null)
-         //{
-            vi.Assign (aClass, aClass.CreateDefaultInitialValue ());
-         //}
+         kTempClassInstanceForNewInstance.SetRealClassDefinition (aClass);
+         kTempClassInstanceForNewInstance._SetValueObject (aClass.CreateDefaultInitialValue ());
+         
+         CoreClasses.AssignValue (kTempClassInstanceForNewInstance, valueTarget.GetVariableInstance ());
+      }
+
+      public static const kTempClassInstanceForComparing:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.GetBooleanClassDefinition (), false);
+
+      public static function CommonEquals (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         kTempClassInstanceForComparing._SetValueObject (CoreClasses.CompareEquals (valueSource.GetVariableInstance (), valueSource.mNextParameter.GetVariableInstance ()));
+         
+         CoreClasses.AssignValue (kTempClassInstanceForComparing, valueTarget.GetVariableInstance ());
       }
       
    //*******************************************************************
@@ -1935,7 +1918,7 @@ package player.trigger {
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
-         valueTarget.AssignValueObject (-value);
+         valueTarget.AssignValueObject (- value);
       }
 
       public static function AddTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void

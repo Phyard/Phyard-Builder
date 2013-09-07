@@ -9,9 +9,6 @@ package player.trigger
          super (next);
          
          mVariableInstance = vi;
-         
-if (mVariableInstance == null)
-throw new Error ("111");
       }
       
       override public function GetVariableInstance ():VariableInstance

@@ -5,8 +5,22 @@ package player.trigger
    
    public class ClassInstance
    {
-      private var mRealClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition; // must inited with this value, for kVoidVariableInstance.
-      private var mValueObject:Object = null; // undefined;  // must inited with this value, for kVoidVariableInstance.
+      public static function CreateClassInstance (classDefinition:ClassDefinition, initValue:Object):ClassInstance
+      {
+         var ci:ClassInstance = new ClassInstance ();
+         ci._mRealClassDefinition = classDefinition;
+         ci._mValueObject = initValue;
+         
+         return ci;
+      }
+      
+   //================================================
+   
+      // the 2 are set to public for better performance.
+      // their values can only be changed in CommonAssgin API.
+      // (mValueObject can also be changed in SetValueObject for old APIs)
+      internal var _mRealClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition; // must inited with this value, for kVoidVariableInstance.
+      internal var _mValueObject:Object = null; // undefined;  // must inited with this value, for kVoidVariableInstance.
       
       public function ClassInstance ()
       {
@@ -14,45 +28,45 @@ package player.trigger
       
       public function GetRealClassDefinition ():ClassDefinition
       {
-         return mRealClassDefinition;
+         return _mRealClassDefinition;
       }
       
       public function SetRealClassDefinition (classDefinition:ClassDefinition):void
       {
-         mRealClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
+         _mRealClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
       }
       
       public function GetRealClassType ():int
       {
-         return mRealClassDefinition.GetClassType ();
+         return _mRealClassDefinition.GetClassType ();
       }
       
       public function GetRealValueType ():int
       {
-         return mRealClassDefinition.GetID ();
+         return _mRealClassDefinition.GetID ();
       }
       
       public function GetValueObject ():Object
       {
-         return mValueObject;
+         return _mValueObject;
       }
       
       // this one may be overridden.
       public function SetValueObject (valueObject:Object):void
       {
-         mValueObject = valueObject;
+         _mValueObject = valueObject;
       }
       
       // this one can't be overridden
       internal final function _SetValueObject (valueObject:Object):void
       {
-         mValueObject = valueObject;
+         _mValueObject = valueObject;
       }
       
       public function CloneForClassInstance (forVI:ClassInstance):void
       {
-         forVI.SetRealClassDefinition (mRealClassDefinition);
-         forVI.SetValueObject (mValueObject);
+         forVI._mRealClassDefinition = _mRealClassDefinition;
+         forVI._mValueObject = _mValueObject;
       }
       
    }

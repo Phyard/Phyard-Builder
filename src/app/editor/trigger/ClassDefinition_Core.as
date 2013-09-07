@@ -9,9 +9,9 @@ package editor.trigger {
    {
       private var mCoreClassDeclaration:ClassDeclaration;
       
-      public function ClassDefinition_Core (coreDecl:ClassDeclaration, typeName:String, defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
+      public function ClassDefinition_Core (coreDecl:ClassDeclaration, defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
       {
-         super (typeName, defalutInstanceName, initialInitialValue, validateValueFunc);
+         super (defalutInstanceName, initialInitialValue, validateValueFunc);
          
          mCoreClassDeclaration = coreDecl;
       }
@@ -29,6 +29,11 @@ package editor.trigger {
       override public function GetID ():int
       {
          return mCoreClassDeclaration.GetID ();
+      }
+      
+      override public function GetName ():String
+      {
+         return mCoreClassDeclaration.GetName ();
       }
    }
 }

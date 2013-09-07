@@ -26,7 +26,7 @@ package player.trigger
          //var vi:VariableInstance = GetVariableInstance ();
          //
          //return vi == null ? null : vi.GetValueObject ();
-         
+
          return GetVariableInstance ().GetValueObject ();
       }
       

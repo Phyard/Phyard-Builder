@@ -12,11 +12,11 @@ package player.trigger
       
       //private var mClassType:int = ClassTypeDefine.ClassType_Unknown;  // since v2.05
       //private var mValueType:int = CoreClassIds.ValueType_Void;
-      internal var mShellClassDefinition:ClassDefinition; // must be not null.
+      public var _mShellClassDefinition:ClassDefinition; // must be not null.
       
       public function VariableDeclaration (classDef:ClassDefinition = null)
       {
-         mShellClassDefinition = classDef != null ? classDef : CoreClasses.kVoidClassDefinition;
+         _mShellClassDefinition = classDef != null ? classDef : CoreClasses.kVoidClassDefinition;
       }
       
       public function SetIndex (index:int):void
@@ -47,7 +47,7 @@ package player.trigger
       // forbit changing this value now.
       //public function SetShellClassDefinition (classDefinition:ClassDefinition):void
       //{
-      //   mShellClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
+      //   _mShellClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
       //}
       
       //public function SetClassType (type:int):void
@@ -58,7 +58,7 @@ package player.trigger
       //public function GetShellClassType ():int
       //{
       //   //return mClassType;
-      //   return mShellClassDefinition.GetClassType ();
+      //   return _mShellClassDefinition.GetClassType ();
       //}
       
       //public function SetValueType (type:int):void
@@ -69,7 +69,7 @@ package player.trigger
       //public function GetShellValueType ():int
       //{
       //   //return mValueType;
-      //   return mShellClassDefinition.GetID ();
+      //   return _mShellClassDefinition.GetID ();
       //}
    }
 }

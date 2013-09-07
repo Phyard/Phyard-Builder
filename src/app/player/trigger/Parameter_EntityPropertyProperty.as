@@ -21,7 +21,7 @@ package player.trigger
          
          var variableSpace:VariableSpace = ownerVi.GetValueObject () as VariableSpace;
          if (variableSpace == null)
-            return null;
+            return VariableInstanceConstant.kVoidVariableInstance;
          
          return variableSpace.GetVariableByIndex (mPropertyId);
       }

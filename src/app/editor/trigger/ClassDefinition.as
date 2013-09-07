@@ -7,7 +7,6 @@ package editor.trigger {
    
    public class ClassDefinition
    {
-      public var mClassName:String;
       public var mDefaultInstanceName:String;
       
       private var mInitialInstacneValue:Object;
@@ -15,9 +14,8 @@ package editor.trigger {
       
       private var mSceneDataDependent:Boolean;
       
-      public function ClassDefinition (typeName:String, defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
+      public function ClassDefinition (defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
       {
-         mClassName = typeName;
          mDefaultInstanceName = defalutInstanceName;
          
          mInitialInstacneValue = initialInitialValue;
@@ -28,7 +26,7 @@ package editor.trigger {
       {
          return (GetClassType () == ClassTypeDefine.ClassType_Custom ? "Custom : " : "Core : ")
                  +
-                mClassName;
+                GetName ();
       }
       
       public function GetClassType ():int
@@ -53,12 +51,7 @@ package editor.trigger {
       
       public function GetName ():String
       {
-         return mClassName;
-      }
-      
-      public function SetName (name:String):void
-      {
-         mClassName = name;
+         return null; // to overide
       }
       
       public function GetDefaultInstanceName ():String

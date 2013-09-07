@@ -29,6 +29,11 @@ package player.trigger
          return mClassDeclaration.GetID ();
       }
       
+      override public function GetName ():String
+      {
+         return mClassDeclaration.GetName ();
+      }
+      
       override public function GetClassType ():int
       {
          return ClassTypeDefine.ClassType_Core;

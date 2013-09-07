@@ -7,8 +7,8 @@ package player.trigger
    {
       public var mNextVariableInstanceInSpace:VariableInstance; // for efficiency
       
-      private var mDeclaration:VariableDeclaration;
-            // mDeclaration.mClassDefinition == VoidClassDefinition means 
+      public var _mDeclaration:VariableDeclaration;
+            // _mDeclaration.mClassDefinition == VoidClassDefinition means 
             // this VariableInstacne will reject value assginings (in normal mode).
             //
             // this value is never null.
@@ -23,19 +23,19 @@ package player.trigger
       
       public function GetDeclaration ():VariableDeclaration
       {
-         return mDeclaration;
+         return _mDeclaration;
       }
       
       public function SetDeclaration (declaration:VariableDeclaration):void
       {
-         mDeclaration = declaration;
+         _mDeclaration = declaration;
       }
       
       public function CloneForVariableInstance (forVI:VariableInstance):void
       {
          CloneForClassInstance (forVI);
          
-         forVI.SetDeclaration (mDeclaration);
+         forVI.SetDeclaration (_mDeclaration);
       }
       
    //=====================================
@@ -46,12 +46,8 @@ package player.trigger
       // if true, assign directly without calling this function.
       public function Assign (classDefinition:ClassDefinition, valueObject:Object):void
       {
-         if (mDeclaration == null)
-            return;
-         
-         //
-         SetRealClassDefinition (classDefinition);
-         SetValueObject (valueObject);
+         _mRealClassDefinition = classDefinition;
+         _mValueObject = valueObject;
       }
       
    }

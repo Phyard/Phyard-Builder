@@ -849,10 +849,12 @@ package player.design
          
          var classId:int;
          var newClassId:int;
+         var classDefine:ClassDefine;
          for (classId = 0; classId < numNewClasses; ++ classId)
          {
             newClassId = numOldClasses + classId;
-            mCustomClassDefinitions [newClassId] = new ClassDefinition_Custom (newClassId);
+            classDefine = classDefines [classId] as ClassDefine;
+            mCustomClassDefinitions [newClassId] = new ClassDefinition_Custom (newClassId, classDefine.mName);
          }
 
          for (classId = 0; classId < numNewClasses; ++ classId)
@@ -862,7 +864,7 @@ package player.design
             
             customClass.SetParentClasses ([CoreClasses.kObjectClassDefinition]);
             
-            var classDefine:ClassDefine = classDefines [classId] as ClassDefine;
+            classDefine = classDefines [classId] as ClassDefine;
             customClass.SetPropertyVariableSpaceTemplate (TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, classDefine.mPropertyVariableDefines, null, numOldClasses));
          }
 

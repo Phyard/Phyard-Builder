@@ -192,21 +192,29 @@ package editor.trigger {
       //   return false;
       //}
       
-      public function HasVariablesSatisfiedBy (variableDefinition:VariableDefinition, deepIntoCustomClass:Boolean = true):Boolean
+      public function HasVariablesSatisfiedBy (variableDefinition:VariableDefinition, deepIntoCustomClass:Boolean = true, inPhaseForAddingVariablesOfOtherClasses:Boolean = false):Boolean
       {
-         var viDef:VariableDefinition;
          var count:int = GetNumVariableInstances ();
+
+         if (variableDefinition.AllowVariablesOfOtherClasses ())
+            return count > 0;
+            
+         var viDef:VariableDefinition;
          for (var i:int = 0; i < count; ++ i)
          {
             viDef = GetVariableInstanceAt (i).GetVariableDefinition ();
             if (viDef != null) // always
             {
-               if (variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition))
+               var compitable:Boolean = variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition);
+               if (inPhaseForAddingVariablesOfOtherClasses)
+                  compitable = ! compitable;
+               
+               if (compitable)
                   return true;
                
                if (deepIntoCustomClass && viDef is VariableDefinition_Custom)
                {
-                  if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false))
+                  if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false, inPhaseForAddingVariablesOfOtherClasses))
                      return true;
                }
             }
@@ -215,14 +223,41 @@ package editor.trigger {
          return false;
       }
       
-      // labelPrefix and dataList are both null or non-null
       //public function GetVariableSelectListDataProviderByValueType (typeType:int, valueType:int, validVariableIndexes:Array = null):Array
-      public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition, 
-                                                                             validVariableIndexes:Array = null,
-                                                                             labelPrefix:String = null, 
-                                                                             propertyOwnerVi:VariableInstance = null,
-                                                                             dataList:Array = null
-                                                                          ):Array
+      public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition, validVariableIndexes:Array = null):Array
+      {
+         var dataList:Array = GetVariableSelectListDataProvider (variableDefinition, validVariableIndexes);
+         
+         if (variableDefinition.AllowVariablesOfOtherClasses () && HasVariablesSatisfiedBy (variableDefinition, true, true))
+         {
+            // .
+            var item:Object = new Object ();
+            item.label = "----------------";
+            //item.mIndex = -1; // bug
+            item.mVariableInstance = mNullVariableInstance;
+            item.mProperty = -1;
+            
+            dataList.push (item);
+            
+            // ...
+            GetVariableSelectListDataProvider (variableDefinition, null, 
+                                               null, null, true,
+                                               dataList);
+            
+            // ...
+         }
+         
+         return dataList;
+      }
+
+      // labelPrefix and dataList are both null or non-null
+      private function GetVariableSelectListDataProvider ( variableDefinition:VariableDefinition, 
+                                                           validVariableIndexes:Array = null,
+                                                           labelPrefix:String = null, 
+                                                           propertyOwnerVi:VariableInstance = null,
+                                                           inPhaseForAddingVariablesOfOtherClasses:Boolean = false,
+                                                           dataList:Array = null
+                                                        ):Array
       {
          var item:Object;
          
@@ -257,7 +292,7 @@ package editor.trigger {
             {
                var toDeepInto:Boolean =   labelPrefix == null 
                                        && viDef is VariableDefinition_Custom
-                                       && (viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false)
+                                       && (viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false, inPhaseForAddingVariablesOfOtherClasses)
                                        ;
                
                var generalLabel:String = null;
@@ -265,6 +300,9 @@ package editor.trigger {
                   generalLabel = vi.GetLongName ();
                
                var campatible:Boolean = variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition);
+               if (inPhaseForAddingVariablesOfOtherClasses)
+                  campatible = ! campatible;
+               
                if (campatible)
                {
                   item = new Object ();
@@ -289,10 +327,10 @@ package editor.trigger {
                
                if (toDeepInto)
                {
-                  if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false))
-                  {
-                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProviderByVariableDefinition (variableDefinition, null, generalLabel, vi, dataList);
-                  }
+                  //if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false, inPhaseForAddingVariablesOfOtherClasses))
+                  //{
+                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProvider (variableDefinition, null, generalLabel, vi, inPhaseForAddingVariablesOfOtherClasses, dataList);
+                  //}
                }
             }
          }

@@ -63,6 +63,13 @@ package player.trigger
          _mValueObject = valueObject;
       }
       
+      public function CloneClassInstance ():ClassInstance
+      {
+         var newCI:ClassInstance = new ClassInstance (); 
+         CloneForClassInstance (newCI);
+         return newCI;
+      }
+      
       public function CloneForClassInstance (forVI:ClassInstance):void
       {
          forVI._mRealClassDefinition = _mRealClassDefinition;

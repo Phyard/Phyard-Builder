@@ -268,6 +268,11 @@ package editor.trigger {
          return (GetClassType () == variableDefinition.GetClassType ()) && (GetValueType () == variableDefinition.GetValueType ());
       }
       
+      public function AllowVariablesOfOtherClasses ():Boolean
+      {
+         return mOptions.mAllowVariablesOfOtherClasses;
+      }
+      
 //==============================================================================
 // clone
 //==============================================================================

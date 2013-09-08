@@ -558,7 +558,7 @@ package common {
          }
          
          // assert (func_definition != null)
-         
+
          var real_num_input_params:int = func_definition.GetNumInputParameters ();
          var dafault_value_source_define:ValueSourceDefine_Direct = new ValueSourceDefine_Direct (null);
          

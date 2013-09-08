@@ -29,7 +29,7 @@ package editor.world {
 
       public static function GetCoreClassPackage ():CodePackage
       {
-         return sCoreCodePackage
+         return sCoreCodePackage;
       }
 
       private static var mInitialized:Boolean = false;
@@ -122,7 +122,7 @@ package editor.world {
                             ValidateValueObject_Class
                          ).SetSceneDataDependent (false);
                                    
-         RegisterCoreClass (sCoreCodePackage,
+         RegisterCoreClass (null, //sCoreCodePackage,
                             CoreClassIds.ValueType_Object, 
                             "anObject",
                             null,

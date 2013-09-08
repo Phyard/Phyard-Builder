@@ -16,7 +16,7 @@ package player.trigger
          SetDeclaration (variableDeclaration);
       }
       
-      // this class is to make more safer.
+      // this class is to make common assignment more faster and safer.
 
       override public function Assign (classDefinition:ClassDefinition, valueObject:Object):void
       {

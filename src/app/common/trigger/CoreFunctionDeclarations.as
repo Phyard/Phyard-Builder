@@ -845,6 +845,24 @@ package common.trigger {
                      ]
                   );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElement,
+                     [
+                        [CoreClassIds.ValueType_Array,       null],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Object,       null],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElement,
+                     [
+                        [CoreClassIds.ValueType_Array,       null],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Object,       null],
+                     ]
+                  );
+
        // math basic op
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Assign,

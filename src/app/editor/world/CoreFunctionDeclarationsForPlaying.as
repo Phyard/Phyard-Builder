@@ -53,7 +53,7 @@ package editor.world {
             var random_package:CodePackage             = new CodePackage ("Random", number_package);
          var string_package:CodePackage = new CodePackage ("String", sGlobalCodePackage);
          var array_package:CodePackage   = new CodePackage ("Array", sGlobalCodePackage);
-            var array_element_package:CodePackage   = new CodePackage ("Element", array_package);
+            var array_element_package:CodePackage   = array_package; // new CodePackage ("Element", array_package);
          var system_package:CodePackage = new CodePackage ("System", sGlobalCodePackage);
          var services_package:CodePackage = new CodePackage ("Services", sGlobalCodePackage);
 
@@ -169,13 +169,13 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ReturnIfTrue, code_flow_package, "Return If True", "@Return if $0 is true", null,
                      [
-                             new VariableDefinitionBoolean ("Bool Value"),
+                             new VariableDefinitionBoolean ("Bool Value", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ReturnIfFalse, code_flow_package, "Return If False", "@Return if $0 is false", null,
                      [
-                             new VariableDefinitionBoolean ("Bool Value"),
+                             new VariableDefinitionBoolean ("Bool Value", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      null
                   );
@@ -197,8 +197,8 @@ package editor.world {
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartIf, code_flow_package, "If", "@If ($0 == $1)", "@If ($0 == $1)",
                      [
-                             new VariableDefinitionBoolean ("Condition Result"),
-                             new VariableDefinitionBoolean ("Comparer"),
+                             new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
+                             new VariableDefinitionBoolean ("Comparer", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      null,
                      true
@@ -215,8 +215,8 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartWhile, code_flow_package, "While", "@While ($0 == $1)", "@While ($0 == $1)",
                      [
-                             new VariableDefinitionBoolean ("Condition Result"),
-                             new VariableDefinitionBoolean ("Comparer"),
+                             new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
+                             new VariableDefinitionBoolean ("Comparer", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      null,
                      true
@@ -259,7 +259,7 @@ package editor.world {
                              new VariableDefinitionClass ("Class"),
                      ],
                      [
-                             new VariableDefinitionObject ("Object"),
+                             new VariableDefinitionObject ("Object", null, {mAllowCoreClasses: false}),
                      ]
                   );
 
@@ -669,6 +669,24 @@ package editor.world {
 
        // array
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElement, array_package, "Set Array Element", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"),
+                              new VariableDefinitionNumber ("Element Index"),
+                              new VariableDefinitionObject ("Element Value"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElement, array_package, "Get Array Element", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"),
+                              new VariableDefinitionNumber ("Element Index"),
+                     ],
+                     [
+                              new VariableDefinitionObject ("Element Value"),
+                     ]
+                  );
+
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Assign, array_package, "= (Array Assign)", "@#0 = $0", "@#0 = $0",
                      [
                               new VariableDefinitionArray ("Source"),
@@ -710,6 +728,15 @@ package editor.world {
                      ],
                      [
                              new VariableDefinitionBoolean ("Result"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Concat, array_package, "Array + Array", "@#0 = ($0 + $1)", "@#0 = ($0 + $1)",
+                     [
+                              new VariableDefinitionArray ("Array 1"),
+                              new VariableDefinitionArray ("Array 2"),
+                     ],
+                     [
+                              new VariableDefinitionArray ("Result Array"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ToString, array_package, "Array -> String", "ArrayToString", "ArrayToString",
@@ -777,15 +804,6 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Concat, array_package, "Concat Arrays", null, null,
-                     [
-                              new VariableDefinitionArray ("Array 1"),
-                              new VariableDefinitionArray ("Array 2"),
-                     ],
-                     [
-                              new VariableDefinitionArray ("Result Array"),
-                     ]
-                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SwapElements, array_package, "Swap Array Elements", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
@@ -806,7 +824,8 @@ package editor.world {
                               new VariableDefinitionNumber ("Element Index"),
                               new VariableDefinitionBoolean ("Element Value (Boolean)"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsBoolean, array_element_package, "Get Element As Boolean", null, null,
                      [
@@ -815,7 +834,8 @@ package editor.world {
                      ],
                      [
                               new VariableDefinitionBoolean ("Element Value (Boolean)"),
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber, array_element_package, "Set Element With Number", null, null,
                      [
@@ -823,7 +843,8 @@ package editor.world {
                               new VariableDefinitionNumber ("Element Index"),
                               new VariableDefinitionNumber ("Element Value (Number)"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsNumber, array_element_package, "Get Element As Number", null, null,
                      [
@@ -832,7 +853,8 @@ package editor.world {
                      ],
                      [
                               new VariableDefinitionNumber ("Element Value (Number)"),
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithString, array_element_package, "Set Element With String", null, null,
                      [
@@ -840,7 +862,8 @@ package editor.world {
                               new VariableDefinitionNumber ("Element Index"),
                               new VariableDefinitionString ("Element Value (String)"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsString, array_element_package, "Get Element As String", null, null,
                      [
@@ -849,7 +872,8 @@ package editor.world {
                      ],
                      [
                               new VariableDefinitionString ("Element Value (String)"),
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithCCat, array_element_package, "Set Element With CCat", null, null,
                      [
@@ -857,7 +881,8 @@ package editor.world {
                               new VariableDefinitionNumber ("Element Index"),
                               new VariableDefinitionCollisionCategory ("Element Value (CCat)"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsCCat, array_element_package, "Get Element As CCat", null, null,
                      [
@@ -866,7 +891,8 @@ package editor.world {
                      ],
                      [
                               new VariableDefinitionCollisionCategory ("Element Value (CCat)"),
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithEntity, array_element_package, "Set Element With Entity", null, null,
                      [
@@ -874,7 +900,8 @@ package editor.world {
                               new VariableDefinitionNumber ("Element Index"),
                               new VariableDefinitionEntity ("Element Value (Entity)"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsEntity, array_element_package, "Get Element As Entity", null, null,
                      [
@@ -883,7 +910,8 @@ package editor.world {
                      ],
                      [
                               new VariableDefinitionEntity ("Element Value (Entity)"),
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithModule, array_element_package, "Set Element With Module", null, null,
                      [
@@ -891,7 +919,8 @@ package editor.world {
                               new VariableDefinitionNumber ("Element Index"),
                               new VariableDefinitionModule ("Element Value (Module)"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsModule, array_element_package, "Get Element As Module", null, null,
                      [
@@ -900,7 +929,8 @@ package editor.world {
                      ],
                      [
                               new VariableDefinitionModule ("Element Value (Module)"),
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithSound, array_element_package, "Set Element With Sound", null, null,
                      [
@@ -908,7 +938,8 @@ package editor.world {
                               new VariableDefinitionNumber ("Element Index"),
                               new VariableDefinitionSound ("Element Value (Sound)"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsSound, array_element_package, "Get Element As Sound", null, null,
                      [
@@ -917,7 +948,8 @@ package editor.world {
                      ],
                      [
                               new VariableDefinitionSound ("Element Value (Sound)"),
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithArray, array_element_package, "Set Element With Array", null, null,
                      [
@@ -925,7 +957,8 @@ package editor.world {
                               new VariableDefinitionNumber ("Element Index"),
                               new VariableDefinitionArray ("Element Value (Array)"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsArray, array_element_package, "Get Element As Array", null, null,
                      [
@@ -934,7 +967,8 @@ package editor.world {
                      ],
                      [
                               new VariableDefinitionArray ("Element Value (Array)"),
-                     ]
+                     ],
+                     false
                   );
 
        // math basic ops
@@ -3769,7 +3803,10 @@ package editor.world {
       {
          if (function_id < 0)
             return;
-
+         
+         if (sFunctionDeclarations [function_id] != null)
+            throw new Error ("Duplicated API ID: " + function_id);
+         
          sFunctionDeclarations [function_id] = new FunctionDeclaration_PreDefined (function_id, function_name, "", function_name, function_name, param_defines, return_defines);
 
          if (codePackage != null)
@@ -3781,6 +3818,9 @@ package editor.world {
          if (function_id < 0)
             return;
 
+         if (sFunctionDeclarations [function_id] != null)
+            throw new Error ("Duplicated API ID: " + function_id);
+         
          sFunctionDeclarations [function_id] = new FunctionDeclaration_Core (function_id, function_name, "", poemCallingFormat, traditionalCallingFormat, param_defines, return_defines, showUpInApiMenu);
 
          if (codePackage != null)

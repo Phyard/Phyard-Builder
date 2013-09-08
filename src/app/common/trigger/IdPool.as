@@ -172,6 +172,8 @@ package common.trigger {
       public static const CoreApiId_114:int = 114; //
       public static const CoreApiId_115:int = 115; //
       public static const CoreApiId_116:int = 116; //
+      public static const CoreApiId_117:int = 117; //
+      public static const CoreApiId_118:int = 118; //
 
       public static const CoreApiId_120:int = 120; //
       public static const CoreApiId_121:int = 121; //

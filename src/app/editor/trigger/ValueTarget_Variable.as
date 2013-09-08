@@ -23,10 +23,10 @@ package editor.trigger {
       
       public function TargetToCodeString (vd:VariableDefinition):String
       {
-         var codeStr:String = mVariableInstance.SourceToCodeString (vd);
+         var codeStr:String = mVariableInstance.TargetToCodeString (vd);
          if (mPropertyVariableInstance != null)
          {
-            codeStr = codeStr + mPropertyVariableInstance.SourceToCodeString (null);
+            codeStr = codeStr + mPropertyVariableInstance.TargetToCodeString (null);
          }
          
          return codeStr;
@@ -140,7 +140,7 @@ package editor.trigger {
       
       public function CloneTarget (scene:Scene, /*triggerEngine:TriggerEngine, */targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
-         var defaultValueTarget:ValueTarget = callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueTarget(/*triggerEngine*/);
+         var defaultValueTarget:ValueTarget = callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultValueTarget(/*triggerEngine*/);
 
          var vi:VariableInstance = GetVariableInstanceFrom (mVariableInstance, scene, targetFunctionDefinition, callingFunctionDeclaration, paramIndex);
          if (vi == null)

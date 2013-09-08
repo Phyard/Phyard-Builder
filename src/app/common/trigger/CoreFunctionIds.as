@@ -140,6 +140,7 @@ package common.trigger {
       public static const ID_Array_Concat:int                  = IdPool.CoreApiId_79; // v1.57
       public static const ID_Array_SwapElements:int          = IdPool.CoreApiId_103; // v1.59
       public static const ID_Array_Reverse:int               = IdPool.CoreApiId_104; // v1.59
+      
       public static const ID_Array_SetElementWithBoolean:int     = IdPool.CoreApiId_87; // v1.54
       public static const ID_Array_GetElementAsBoolean:int       = IdPool.CoreApiId_88; // v1.54
       public static const ID_Array_SetElementWithNumber:int      = IdPool.CoreApiId_89; // v1.54
@@ -156,6 +157,9 @@ package common.trigger {
       public static const ID_Array_GetElementAsSound:int        = IdPool.CoreApiId_108; // v2.00
       public static const ID_Array_SetElementWithArray:int       = IdPool.CoreApiId_97; // v1.54
       public static const ID_Array_GetElementAsArray:int         = IdPool.CoreApiId_98; // v1.54
+
+      public static const ID_Array_SetElement:int       = IdPool.CoreApiId_117; // v2.05
+      public static const ID_Array_GetElement:int       = IdPool.CoreApiId_118; // v2.05
 
    // math basic op
 

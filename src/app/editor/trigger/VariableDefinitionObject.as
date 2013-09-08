@@ -8,6 +8,7 @@ package editor.trigger {
    import editor.entity.Scene;
    
    import common.trigger.CoreClassIds;
+   import common.trigger.ClassTypeDefine;
    
    import common.Define;
    
@@ -20,6 +21,11 @@ package editor.trigger {
       public function VariableDefinitionObject (name:String, description:String = null, options:Object = null)
       {
          super (World.GetCoreClassById (CoreClassIds.ValueType_Object), name, description, options);
+      }
+      
+      public function AllowCoreClasses ():Boolean
+      {
+         return (mOptions.mAllowCoreClasses == null) || (mOptions.mAllowCoreClasses == true);
       }
       
 //==============================================================================
@@ -37,7 +43,8 @@ package editor.trigger {
       
       override public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
       {
-         return true;
+         // temp, only custom types can be newed.
+         return AllowCoreClasses () || variableDefinition.GetClassType () == ClassTypeDefine.ClassType_Custom;
       }
       
 //==============================================================================

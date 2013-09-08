@@ -77,7 +77,7 @@ package player.trigger {
 
       // class common
          
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonAssign,                      CommonAssign);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonAssign,                      null); // CommonAssign);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonEquals,                      CommonEquals);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonNewInstance,                 CommonNewInstance);
 
@@ -162,22 +162,24 @@ package player.trigger {
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_Concat,                       ConcatArrays);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SwapElements,                SwapArrayElements);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_Reverse,                     ReverseArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithBoolean,     SetArrayElementWithBoolean);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsBoolean,       GetArrayElementAsBoolean);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithNumber,     SetArrayElementWithNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsNumber,       GetArrayElementAsNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithString,     SetArrayElementWithString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsString,       GetArrayElementAsString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithCCat,     SetArrayElementWithCCat);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsCCat,       GetArrayElementAsCCat);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithEntity,     SetArrayElementWithEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsEntity,       GetArrayElementAsEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithModule,     SetArrayElementWithModule);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsModule,       GetArrayElementAsModule);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithSound,     SetArrayElementWithSound);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsSound,       GetArrayElementAsSound);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithArray,     SetArrayElementWithArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsArray,       GetArrayElementAsArray);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithBoolean,     SetArrayElement); // SetArrayElementWithBoolean);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsBoolean,       GetArrayElement); // GetArrayElementAsBoolean);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithNumber,      SetArrayElement); // SetArrayElementWithNumber);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsNumber,        GetArrayElement); // GetArrayElementAsNumber);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithString,      SetArrayElement); // SetArrayElementWithString);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsString,        GetArrayElement); // GetArrayElementAsString);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithCCat,        SetArrayElement); // SetArrayElementWithCCat);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsCCat,          GetArrayElement); // GetArrayElementAsCCat);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithEntity,      SetArrayElement); // SetArrayElementWithEntity);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsEntity,        GetArrayElement); // GetArrayElementAsEntity);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithModule,      SetArrayElement); // SetArrayElementWithModule);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsModule,        GetArrayElement); // GetArrayElementAsModule);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithSound,       SetArrayElement); // SetArrayElementWithSound);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsSound,         GetArrayElement); // GetArrayElementAsSound);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithArray,       SetArrayElement); // SetArrayElementWithArray);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsArray,         GetArrayElement); // GetArrayElementAsArray);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElement,       SetArrayElement);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElement,       GetArrayElement);
 
       // math ops
 
@@ -1738,7 +1740,7 @@ package player.trigger {
          }
       }
 
-      private static function SetArrayElementWithSpecfiedClass (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void
+      public static function SetArrayElement (valueSource:Parameter, valueTarget:Parameter):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
          if (array == null)
@@ -1752,11 +1754,11 @@ package player.trigger {
 
          valueSource = valueSource.mNextParameter;
 
-         //trace ("set index = " + index + ", value = " + (valueSource.EvaluateValueObject () as specfiedClass));
-         array [index] = valueSource.EvaluateValueObject () as specfiedClass;
+         // if index >= length, length will extend to index automtically.
+         array [index] = valueSource.GetVariableInstance ().CloneClassInstance ();
       }
 
-      private static function GetArrayElementAsSpecfiedClass  (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void
+      public static function GetArrayElement (valueSource:Parameter, valueTarget:Parameter):void
       {
          do
          {
@@ -1767,99 +1769,145 @@ package player.trigger {
             valueSource = valueSource.mNextParameter;
             //var index:int = valueSource.EvaluateValueObject () as int;
             var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
-            if (index < 0)
+            if (index < 0 || index >= array.length)
                break;
-
-            //trace ("- get index = " + index + ", value = " + (array [index] as specfiedClass));
-            valueTarget.AssignValueObject (array [index] as specfiedClass);
+            
+            var sourceCi:ClassInstance = array [index] as ClassInstance;
+            if (sourceCi == null)
+               break;
+            
+            CoreClasses.AssignValue (sourceCi, valueTarget.GetVariableInstance ());
 
             return;
          }
          while (false);
 
          // for invalid params
-         valueTarget.AssignValueObject (null); // undefined);
+         CoreClasses.AssignValue (VariableInstanceConstant.kVoidVariableInstance, valueTarget.GetVariableInstance ());
       }
 
-      public static function SetArrayElementWithBoolean (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Boolean);
-      }
+      //private static function SetArrayElementWithSpecfiedClass (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void
+      //{
+      //   var array:Array = valueSource.EvaluateValueObject () as Array;
+      //   if (array == null)
+      //      return;
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   //var index:int = valueSource.EvaluateValueObject () as int;
+      //   var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
+      //   if (index < 0)
+      //      return;
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //
+      //   //trace ("set index = " + index + ", value = " + (valueSource.EvaluateValueObject () as specfiedClass));
+      //   array [index] = valueSource.EvaluateValueObject () as specfiedClass;
+      //}
 
-      public static function GetArrayElementAsBoolean (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Boolean);
-      }
+      //private static function GetArrayElementAsSpecfiedClass  (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void
+      //{
+      //   do
+      //   {
+      //      var array:Array = valueSource.EvaluateValueObject () as Array;
+      //      if (array == null)
+      //         break;
+      //
+      //      valueSource = valueSource.mNextParameter;
+      //      //var index:int = valueSource.EvaluateValueObject () as int;
+      //      var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
+      //      if (index < 0)
+      //         break;
+      //
+      //      //trace ("- get index = " + index + ", value = " + (array [index] as specfiedClass));
+      //      valueTarget.AssignValueObject (array [index] as specfiedClass);
+      //
+      //      return;
+      //   }
+      //   while (false);
+      //
+      //   // for invalid params
+      //   valueTarget.AssignValueObject (null); // undefined);
+      //}
 
-      public static function SetArrayElementWithNumber (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Number);
-      }
-
-      public static function GetArrayElementAsNumber (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Number);
-      }
-
-      public static function SetArrayElementWithString (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, String);
-      }
-
-      public static function GetArrayElementAsString (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, String);
-      }
-
-      public static function SetArrayElementWithCCat (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, CollisionCategory);
-      }
-
-      public static function GetArrayElementAsCCat (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, CollisionCategory);
-      }
-
-      public static function SetArrayElementWithEntity (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Entity);
-      }
-
-      public static function GetArrayElementAsEntity (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Entity);
-      }
-
-      public static function SetArrayElementWithModule (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Module);
-      }
-
-      public static function GetArrayElementAsModule (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Module);
-      }
-
-      public static function SetArrayElementWithSound (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Sound);
-      }
-
-      public static function GetArrayElementAsSound (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Sound);
-      }
-
-      public static function SetArrayElementWithArray (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Array);
-      }
-
-      public static function GetArrayElementAsArray (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Array);
-      }
+      //public static function SetArrayElementWithBoolean (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Boolean);
+      //}
+      //
+      //public static function GetArrayElementAsBoolean (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Boolean);
+      //}
+      //
+      //public static function SetArrayElementWithNumber (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Number);
+      //}
+      //
+      //public static function GetArrayElementAsNumber (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Number);
+      //}
+      //
+      //public static function SetArrayElementWithString (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, String);
+      //}
+      //
+      //public static function GetArrayElementAsString (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, String);
+      //}
+      //
+      //public static function SetArrayElementWithCCat (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, CollisionCategory);
+      //}
+      //
+      //public static function GetArrayElementAsCCat (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, CollisionCategory);
+      //}
+      //
+      //public static function SetArrayElementWithEntity (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Entity);
+      //}
+      //
+      //public static function GetArrayElementAsEntity (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Entity);
+      //}
+      //
+      //public static function SetArrayElementWithModule (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Module);
+      //}
+      //
+      //public static function GetArrayElementAsModule (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Module);
+      //}
+      //
+      //public static function SetArrayElementWithSound (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Sound);
+      //}
+      //
+      //public static function GetArrayElementAsSound (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Sound);
+      //}
+      //
+      //public static function SetArrayElementWithArray (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Array);
+      //}
+      //
+      //public static function GetArrayElementAsArray (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Array);
+      //}
 
    //************************************************
    // math

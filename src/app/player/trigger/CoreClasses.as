@@ -247,7 +247,7 @@ package player.trigger {
             
       public static function Object2String (valueObject:Object, className:String):String
       {
-         return valueObject == null ? "null" : className;
+         return className;
       }
       
       public static function IsNullObjectValue (valueObject:Object):Boolean
@@ -274,8 +274,7 @@ package player.trigger {
       
       public static function Asset2String (valueObject:Object, className:String):String
       {
-         var assetId:int = valueObject == null ? -1 : int (valueObject);
-         return assetId < 0 ? "null" : (className + "#" + assetId);
+         return className + "#" + int (valueObject);
       }
       
       public static function IsNullAssetValue (valueObject:Object):Boolean

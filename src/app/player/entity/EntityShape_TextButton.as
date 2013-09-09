@@ -310,7 +310,7 @@ package player.entity {
                   displayBorderThickness_MouseOver, // draw border
                   false, // not draw background
                   0x0, // invald bg color
-                  mIsRoundCornors
+                  mIsRoundJoint // mIsRoundCornors
                );
          
          GraphicsUtil.ClearAndDrawRect (
@@ -335,7 +335,7 @@ package player.entity {
                   displayBorderThickness_MouseOver, // draw border
                   false, // not draw background
                   0x0, // invald bg color
-                  mIsRoundCornors
+                  mIsRoundJoint // mIsRoundCornors
                );
          
          mBackgroundShape_MouseOver.visible = mBackgroundShape_MouseDown.visible = mDrawBackground_MouseOver;

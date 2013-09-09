@@ -4,15 +4,18 @@ package common.shape
    {
       public function VectorShapeRectangle ()
       {
-         SetRoundCorners (false); // <=> SetJointType (JointType_Moter);
+         //SetRoundCorners (false); // <=> SetJointType (JointType_Moter);
+         SetRoundJoint (false); // <=> SetJointType (JointType_Moter);
       }
       
-      public function IsRoundCorners ():Boolean
+      //public function IsRoundCorners ():Boolean
+      public function IsRoundJoint ():Boolean
       {
          return GetJointType () == JointType_Round;
       }
 
-      public function SetRoundCorners (round:Boolean):void
+      //public function SetRoundCorners (round:Boolean):void
+      public function SetRoundJoint (round:Boolean):void
       {
          SetJointType (round ? JointType_Round : JointType_Moter);
       }

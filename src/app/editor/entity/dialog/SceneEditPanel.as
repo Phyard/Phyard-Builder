@@ -1335,7 +1335,8 @@ package editor.entity.dialog {
                {
                   values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mScene.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
                   values.mHeight = ValueAdjuster.Number2Precision (2.0 * mScene.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
-                  values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
+                  //values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
+                  values.mIsRoundJoint = (vectorShape as EntityVectorShapeRectangle).IsRoundJoint ();
                   
                   if (Define.IsBombShape (values.mAiType))
                      EditorContext.ShowModalDialog (ShapeRectangleBombSettingDialog, ConfirmSettingEntityProperties, values);
@@ -1839,7 +1840,8 @@ package editor.entity.dialog {
                {
                   (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mWidth));
                   (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mHeight));
-                  (vectorShape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
+                  //(vectorShape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
+                  (vectorShape as EntityVectorShapeRectangle).SetRoundJoint (params.mIsRoundJoint);
                }
                else if (entity is EntityVectorShapePolygon)
                {
@@ -2331,8 +2333,10 @@ package editor.entity.dialog {
             {
                ++ numRectangles;
             
-               if (params.mToModifyRoundCorners)
-                  rect.SetRoundCorners (params.mIsRoundCorners);
+               //if (params.mToModifyRoundCorners)
+               //   rect.SetRoundCorners (params.mIsRoundCorners);
+               if (params.mToModifyRoundJoint)
+                  rect.SetRoundJoint (params.mIsRoundJoint);
                if (params.mToModifyWidth)
                   rect.SetHalfWidth (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mWidth));
                if (params.mToModifyHeight)

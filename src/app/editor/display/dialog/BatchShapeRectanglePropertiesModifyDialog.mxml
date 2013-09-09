@@ -22,9 +22,9 @@
             <mx:TextInput id="Text_Height" enabled="false" text="" width="100"/>
          </mx:HBox>
          <mx:HBox width="100%">
-            <mx:CheckBox id="CheckBox_RoundCorners_Modify" label="" click="CheckBox_RoundCorners.enabled=CheckBox_RoundCorners_Modify.selected;"/>
+            <mx:CheckBox id="CheckBox_RoundJoint_Modify" label="" click="CheckBox_RoundJoint.enabled=CheckBox_RoundJoint_Modify.selected;"/>
             <mx:Label visible="false" width="57"/>
-            <mx:CheckBox id="CheckBox_RoundCorners" enabled="false" label="Round Corners"/>
+            <mx:CheckBox id="CheckBox_RoundJoint" enabled="false" label="Round Joint"/>
          </mx:HBox>
       </mx:VBox>
       <mx:Spacer width="100%"/>
@@ -68,9 +68,12 @@
 
          public function GetValues (returnValues:Object):void
          {
-            returnValues.mToModifyRoundCorners = CheckBox_RoundCorners_Modify.selected;
-            if (returnValues.mToModifyRoundCorners)
-               returnValues.mIsRoundCorners = CheckBox_RoundCorners.selected;
+            //returnValues.mToModifyRoundCorners = CheckBox_RoundCorners_Modify.selected;
+            //if (returnValues.mToModifyRoundCorners)
+            //   returnValues.mIsRoundCorners = CheckBox_RoundCorners.selected;
+            returnValues.mToModifyRoundJoint = CheckBox_RoundJoint_Modify.selected;
+            if (returnValues.mToModifyRoundJoint)
+               returnValues.mIsRoundJoint = CheckBox_RoundJoint.selected;
 
             var valueWidth:Number = parseFloat (Text_Width.text);
             returnValues.mToModifyWidth = (! isNaN (valueWidth)) && CheckBox_Width_Modify.selected;

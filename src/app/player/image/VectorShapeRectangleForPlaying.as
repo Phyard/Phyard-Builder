@@ -59,7 +59,7 @@ package player.image
                      -1, // not draw border
                      true, // draw background
                      bodyColor,
-                     IsRoundCorners (),
+                     IsRoundJoint (), //IsRoundCorners (),
                      false, 1.0, 
                      bitmapModule == null ? null : bitmapModule.GetBitmapData (),
                      bitmapTransform == null ? null : bitmapTransform.ToMatrix ()
@@ -85,14 +85,21 @@ package player.image
                      displayBorderThickness, // draw border
                      false, // not draw background
                      0x0, // invald bg color
-                     IsRoundCorners ()
+                     IsRoundJoint () // IsRoundCorners ()
                   );
             }
       }
 
       public function BuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
-         physicsShapeProxy.AddRectangle (transform, GetHalfWidthInPhysics (), GetHalfHeightInPhysics (), IsBuildBackground (), IsBuildBorder (), GetBorderThicknessInPhysics (), IsRoundCorners ());
+         physicsShapeProxy.AddRectangle (transform, 
+                                         GetHalfWidthInPhysics (), 
+                                         GetHalfHeightInPhysics (), 
+                                         IsBuildBackground (), 
+                                         IsBuildBorder (), 
+                                         GetBorderThicknessInPhysics (), 
+                                         IsRoundJoint () // IsRoundCorners ()
+                                      );
       }
    }
 }

@@ -37,8 +37,10 @@ package player.entity {
                SetHalfWidth (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mHalfWidth));
             if (entityDefine.mHalfHeight != undefined)
                SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mHalfHeight));
-            if (entityDefine.mIsRoundCorners != undefined)
-               SetRoundCornors (entityDefine.mIsRoundCorners);
+            //if (entityDefine.mIsRoundCorners != undefined)
+            //   SetRoundCornors (entityDefine.mIsRoundCorners);
+            if (entityDefine.mIsRoundJoint != undefined)
+               SetRoundJoint (entityDefine.mIsRoundJoint);
          }
       }
       
@@ -48,7 +50,8 @@ package player.entity {
          
          entityDefine.mHalfWidth = mWorld.GetCoordinateSystem ().P2D_Length (GetHalfWidth ());
          entityDefine.mHalfHeight = mWorld.GetCoordinateSystem ().P2D_Length (GetHalfHeight ());
-         entityDefine.mIsRoundCorners = IsRoundCornors ();
+         //entityDefine.mIsRoundCorners = IsRoundCornors ();
+         entityDefine.mIsRoundJoint = IsRoundJoint ();
          
          entityDefine.mEntityType = Define.EntityType_ShapeRectangle;
          return entityDefine;
@@ -62,7 +65,8 @@ package player.entity {
       protected var mHalfHeight:Number = 0.0;
 
       //>> v1.07
-      protected var mIsRoundCornors:Boolean = false;
+      //protected var mIsRoundCornors:Boolean = false;
+      protected var mIsRoundJoint:Boolean = false; // since v2.05.
       //<<
 
       public function SetHalfWidth (halfWidth:Number):void
@@ -97,14 +101,17 @@ package player.entity {
          return mHalfHeight;
       }
       
-      public function SetRoundCornors (roundCorners:Boolean):void
+      //public function SetRoundCornors (roundCorners:Boolean):void
+      public function SetRoundJoint (roundJoint:Boolean):void
       {
-         mIsRoundCornors = roundCorners;
+         //mIsRoundCornors = roundJoint;
+         mIsRoundJoint = roundJoint;
       }
       
-      public function IsRoundCornors ():Boolean
+      //public function IsRoundCornors ():Boolean
+      public function IsRoundJoint ():Boolean
       {
-         return mIsRoundCornors;
+         return mIsRoundJoint; // mIsRoundCornors;
       }
       
 //=============================================================
@@ -167,7 +174,7 @@ package player.entity {
                   -1, // not draw border
                   true, // draw background
                   GetFilledColor (),
-                  mIsRoundCornors,
+                  mIsRoundJoint, // mIsRoundCornors,
                   false, 1.0, 
                   mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData (),
                   mBodyTextureTransform == null ? null : mBodyTextureTransform.ToMatrix ()
@@ -183,7 +190,7 @@ package player.entity {
                   displayBorderThickness, // draw border
                   false, // not draw background
                   0x0, // invald bg color
-                  mIsRoundCornors
+                  mIsRoundJoint // mIsRoundCornors
                );
       }
       
@@ -197,7 +204,10 @@ package player.entity {
          {
             //mPhysicsShapeProxy.AddRectangle (mIsStatic, 0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
             mPhysicsShapeProxy.AddRectangle (mLocalTransform, 
-                                       mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
+                                       mHalfWidth, mHalfHeight, 
+                                       mBuildInterior, mBuildBorder, mBorderThickness, 
+                                       mIsRoundJoint // mIsRoundCornors
+                                       );
          }
       }
       

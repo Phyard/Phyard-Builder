@@ -24,7 +24,7 @@
          <mx:Spacer height="100%"/>
          <mx:HBox id="AppearanceOtherSettingsPanel" width="100%" creationComplete="OnAppearanceOtherSettingsPanelCreationComplete()">
             <mx:Spacer width="60"/>
-            <mx:CheckBox id="CheckBox_RoundCorners" label="Round Corners"/>
+            <mx:CheckBox id="CheckBox_RoundJoint" label="Round Joint"/>
          </mx:HBox>
          <mx:Spacer height="100%"/>
       </mx:VBox>
@@ -97,7 +97,8 @@
 
          private function OnAppearanceOtherSettingsPanelCreationComplete ():void
          {
-            CheckBox_RoundCorners.selected = mParams.mIsRoundCorners;
+            //CheckBox_RoundCorners.selected = mParams.mIsRoundCorners;
+            CheckBox_RoundJoint.selected = mParams.mIsRoundJoint;
          }
 
          private function OnEntityBasicSettingPanelCreationComplete ():void
@@ -135,7 +136,8 @@
 
             if (AppearanceOtherSettingsPanel != null)
             {
-               mParams.mIsRoundCorners = CheckBox_RoundCorners.selected;
+               //mParams.mIsRoundCorners = CheckBox_RoundCorners.selected;
+               mParams.mIsRoundJoint = CheckBox_RoundJoint.selected;
             }
 
             if (BasicSettingPanel != null)

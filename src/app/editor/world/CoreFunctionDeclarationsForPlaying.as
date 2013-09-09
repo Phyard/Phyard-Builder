@@ -419,7 +419,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
-                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
                              new VariableDefinitionString ("Source String 1"),
                              new VariableDefinitionString ("Source String 2"),
                      ],
@@ -453,8 +453,8 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Add, string_package, "String + String", "@#0 = $0 + $1", "@#0 = $0 + $1",
                      [
-                             new VariableDefinitionString ("Source String 1"),
-                             new VariableDefinitionString ("Source String 2"),
+                             new VariableDefinitionString ("Source String 1", null, {mAllowVariablesOfOtherClasses: true}),
+                             new VariableDefinitionString ("Source String 2", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      [
                              new VariableDefinitionString ("Target String"),
@@ -572,7 +572,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign, bool_package, "=? (Condition Assign Boolean)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
-                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
                              new VariableDefinitionBoolean ("Source Boolean 1"),
                              new VariableDefinitionBoolean ("Source Boolean 2"),
                      ],
@@ -697,7 +697,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ConditionAssign, array_package, "=? (Condition Assign)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
-                              new VariableDefinitionBoolean ("Condition Result"),
+                              new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
                               new VariableDefinitionArray ("True Source"),
                               new VariableDefinitionArray ("False Source"),
                      ],
@@ -983,7 +983,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ConditionAssign, numbe_general_package, "=? (Condition Assign)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
-                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
                              new VariableDefinitionNumber ("True Source"),
                              new VariableDefinitionNumber ("False Source"),
                      ],
@@ -2135,7 +2135,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign, ccat_package, "?= (Condition Assign CCat)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
-                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
                              new VariableDefinitionCollisionCategory ("Collision Category 1"),
                              new VariableDefinitionCollisionCategory ("Collision Category 2"),
                      ],
@@ -2203,7 +2203,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign, entity_general_package, "?= (Condition Assign Entity)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
-                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
                              new VariableDefinitionEntity ("Source Entity 1"),
                              new VariableDefinitionEntity ("Source Entity 2"),
                      ],

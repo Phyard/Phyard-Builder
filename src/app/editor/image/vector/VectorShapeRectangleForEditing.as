@@ -68,7 +68,9 @@ package editor.image.vector
          
          var rectSprite:Shape = new Shape ();
          GraphicsUtil.ClearAndDrawRect (rectSprite, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, 
-                                        borderColor, borderThickness, drawBg, filledColor, rectangle.IsRoundCorners (), false, 1.0, 
+                                        borderColor, borderThickness, drawBg, filledColor, 
+                                        rectangle.IsRoundJoint (), // IsRoundCorners (), 
+                                        false, 1.0, 
                                         bodyTextureModule == null ? null : bodyTextureModule.GetBitmapData (),
                                         bodyTextureTransform == null ? null : bodyTextureTransform.ToMatrix ());
 
@@ -76,7 +78,9 @@ package editor.image.vector
          {
             var blueShape:Shape = new Shape ();
             GraphicsUtil.ClearAndDrawRect (blueShape, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, 
-                                           0x0000FF, -1, true, 0x0000FF, rectangle.IsRoundCorners (), false, 1.0);
+                                           0x0000FF, -1, true, 0x0000FF, 
+                                           rectangle.IsRoundJoint (), // IsRoundCorners (), 
+                                           false, 1.0);
             blueShape.alpha = 0.5;
             
             var contianer:Sprite = new Sprite ();

@@ -937,12 +937,18 @@ package player.trigger {
 
       public static function AddTwoStrings (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:String = valueSource.EvaluateValueObject () as String;
-
-         valueSource = valueSource.mNextParameter;
-         var value2:String = valueSource.EvaluateValueObject () as String;
-
-         valueTarget.AssignValueObject (value1 + value2);
+         //var value1:String = valueSource.EvaluateValueObject () as String;
+         //
+         //valueSource = valueSource.mNextParameter;
+         //var value2:String = valueSource.EvaluateValueObject () as String;
+         //
+         //valueTarget.AssignValueObject (value1 + value2);
+         
+         valueTarget.AssignValueObject (
+                                 CoreClasses.ToString (valueSource.GetVariableInstance ())
+                                 +
+                                 CoreClasses.ToString (valueSource.mNextParameter.GetVariableInstance ())
+                              );
       }
 
       public static function GetStringLength (valueSource:Parameter, valueTarget:Parameter):void

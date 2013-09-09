@@ -1762,7 +1762,11 @@ package common {
                {
                   if (worldDefine.mVersion >= 0x0108)
                   {
-                     element.@round_corners = entityDefine.mIsRoundCorners ? 1 : 0;
+                     //element.@round_corners = entityDefine.mIsRoundCorners ? 1 : 0;
+                     if (worldDefine.mVersion < 0x0205)
+                        element.@round_corners = entityDefine.mIsRoundJoint ? 1 : 0;
+                     else // >= 0x0205
+                        element.@round_joint = entityDefine.mIsRoundJoint ? 1 : 0;
                   }
 
                   element.@half_width = entityDefine.mHalfWidth;
@@ -2662,7 +2666,8 @@ package common {
                   {
                      if (worldDefine.mVersion >= 0x0108)
                      {
-                        entityDefine.mIsRoundCorners = byteArray.readByte () != 0
+                        //entityDefine.mIsRoundCorners = byteArray.readByte () != 0
+                        entityDefine.mIsRoundJoint = byteArray.readByte () != 0
                      }
 
                      entityDefine.mHalfWidth = byteArray.readFloat ();
@@ -3914,7 +3919,8 @@ package common {
                         {
                            if (worldDefine.mVersion < 0x0108)
                            {
-                              entityDefine.mIsRoundCorners = false;
+                              //entityDefine.mIsRoundCorners = false;
+                              entityDefine.mIsRoundJoint = false;
                            }
                            
                            if (worldDefine.mVersion < 0x0160)

@@ -117,16 +117,19 @@ package editor.entity {
          return mVectorShapeRectangle.GetHalfHeight ();
       }
 
-      public function SetRoundCorners (round:Boolean):void
+      //public function SetRoundCorners (round:Boolean):void
+      public function SetRoundJoint (round:Boolean):void
       {
          //mRoundCorners = round;
-         mVectorShapeRectangle.SetRoundCorners (round);
+         //mVectorShapeRectangle.SetRoundCorners (round);
+         mVectorShapeRectangle.SetRoundJoint (round);
       }
 
-      public function IsRoundCorners ():Boolean
+      //public function IsRoundCorners ():Boolean
+      public function IsRoundJoint ():Boolean
       {
          //return mRoundCorners;
-         return mVectorShapeRectangle.IsRoundCorners ();
+         return mVectorShapeRectangle.IsRoundJoint (); // IsRoundCorners ();
       }
 
 //====================================================================
@@ -145,7 +148,8 @@ package editor.entity {
          var rect:EntityVectorShapeRectangle = entity as EntityVectorShapeRectangle;
          rect.SetHalfWidth ( GetHalfWidth () );
          rect.SetHalfHeight ( GetHalfHeight () );
-         rect.SetRoundCorners (IsRoundCorners ());
+         //rect.SetRoundCorners (IsRoundCorners ());
+         rect.SetRoundJoint (IsRoundJoint ());
       }
 
    }

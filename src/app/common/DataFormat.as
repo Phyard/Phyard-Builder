@@ -716,7 +716,8 @@ package common {
                         entityDefine.mHalfHeight = (vectorShape as EntityVectorShapeRectangle).GetHalfHeight ();
                         
                         //from v1.08
-                        entityDefine.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
+                        //entityDefine.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
+                        entityDefine.mIsRoundJoint = (vectorShape as EntityVectorShapeRectangle).IsRoundJoint ();
                         //<<
                      }
                      //>>from v1.04
@@ -2467,7 +2468,8 @@ package common {
                         rect.SetHalfHeight (entityDefine.mHalfHeight);
                         
                         //from v1.08
-                        rect.SetRoundCorners (entityDefine.mIsRoundCorners);
+                        //rect.SetRoundCorners (entityDefine.mIsRoundCorners);
+                        rect.SetRoundJoint (entityDefine.mIsRoundJoint);
                         //<<
                         
                         entity = vectorShape = rect;
@@ -4281,7 +4283,11 @@ package common {
                {
                   if (worldDefine.mVersion >= 0x0108)
                   {
-                     entityDefine.mIsRoundCorners = parseInt (element.@round_corners) != 0;
+                     //entityDefine.mIsRoundCorners = parseInt (element.@round_corners) != 0;
+                     if (worldDefine.mVersion < 0x0205)
+                        entityDefine.mIsRoundJoint = parseInt (element.@round_corners) != 0;
+                     else // >= 0x0205
+                        entityDefine.mIsRoundJoint = parseInt (element.@round_joint) != 0;
                   }
                   
                   entityDefine.mHalfWidth = parseFloat (element.@half_width);
@@ -5142,7 +5148,8 @@ package common {
                   {
                      if (worldDefine.mVersion >= 0x0108)
                      {
-                        byteArray.writeByte (entityDefine.mIsRoundCorners ? 1 : 0);
+                        //byteArray.writeByte (entityDefine.mIsRoundCorners ? 1 : 0);
+                        byteArray.writeByte (entityDefine.mIsRoundJoint ? 1 : 0);
                      }
                      
                      byteArray.writeFloat (entityDefine.mHalfWidth);

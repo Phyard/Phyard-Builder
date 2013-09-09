@@ -115,7 +115,7 @@ package editor.world {
                             ValidateValueObject_ArrayAndCustomObject
                          ).SetSceneDataDependent (false);
                                    
-         RegisterCoreClass (sCoreCodePackage,
+         RegisterCoreClass (null, //sCoreCodePackage,
                             CoreClassIds.ValueType_Class, 
                             "aClass",
                             sVoidClass,

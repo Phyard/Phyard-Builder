@@ -4,7 +4,7 @@ package common.display
 
    public class ModuleSprite extends Sprite
    {
-      protected var mAdjustShapeVisualSize:Boolean = true;
+      protected var mAdjustShapeVisualSize:Boolean = true; // for capability?
       protected var mScale:Number = 1.0;
       
       public function ModuleSprite ()

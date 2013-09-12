@@ -43,8 +43,10 @@ package editor.entity {
             borderSize  = 1;
          }
          
-         GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, filledColor);
-         GraphicsUtil.DrawEllipse (this, - 1, - 1, 1 + 1, 1 + 1);
+         //GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, filledColor);
+         //GraphicsUtil.DrawEllipse (this, - 1, - 1, 1 + 1, 1 + 1);
+         GraphicsUtil.ClearAndDrawCircle (this, 0, 0, mRadius, borderColor, borderSize, true, filledColor);
+         GraphicsUtil.DrawCircle (this, 0, 0, 1);
       }
       
       override public function UpdateSelectionProxy ():void

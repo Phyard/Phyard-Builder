@@ -1338,6 +1338,10 @@ package editor.entity.dialog {
                   //values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
                   values.mIsRoundJoint = (vectorShape as EntityVectorShapeRectangle).IsRoundJoint ();
                   
+                  values.mIsRoundCorner = (vectorShape as EntityVectorShapeRectangle).IsRoundCorner ();
+                  values.mCornerEclipseWidth = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseWidth ();
+                  values.mCornerEclipseHeight = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseHeight ();
+                  
                   if (Define.IsBombShape (values.mAiType))
                      EditorContext.ShowModalDialog (ShapeRectangleBombSettingDialog, ConfirmSettingEntityProperties, values);
                   else
@@ -1842,6 +1846,10 @@ package editor.entity.dialog {
                   (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mHeight));
                   //(vectorShape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
                   (vectorShape as EntityVectorShapeRectangle).SetRoundJoint (params.mIsRoundJoint);
+                  
+                  (vectorShape as EntityVectorShapeRectangle).SetRoundCorner (params.mIsRoundCorner);
+                  (vectorShape as EntityVectorShapeRectangle).SetCornerEclipseWidth (params.mCornerEclipseWidth);
+                  (vectorShape as EntityVectorShapeRectangle).SetCornerEclipseHeight (params.mCornerEclipseHeight);
                }
                else if (entity is EntityVectorShapePolygon)
                {

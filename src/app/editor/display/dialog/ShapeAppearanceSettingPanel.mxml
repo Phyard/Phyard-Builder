@@ -11,13 +11,11 @@
 
    <mx:HBox width="100%" id="Box_CiType">
       <mx:Spacer width="60"/>
-      <mx:CheckBox id="CheckBox_IsCiShape" label="Is C.I. Shape" width="22%" click="OnCiTypeSelectListClick()"/>
+      <mx:CheckBox id="CheckBox_IsCiShape" label="Is C.I. Shape" width="22%" click="OnCiTypeSelectListClick();"/>
       <mx:Label id="Label_AiType" text="C.I. Shape Type:" textAlign="right"/>
       <mx:ComboBox id="SelectList_AiType" rowCount="10" change="OnCiTypeSelectListClick ()"/>
    </mx:HBox>
-   <mx:Spacer height="3"/>
-   <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
-   <mx:Spacer height="3"/>
+   <mx:HRule strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
    <mx:HBox width="100%">
       <mx:Spacer width="60"/>
       <mx:CheckBox id="CheckBox_DrawBackground" label="Filled" width="22%"/>

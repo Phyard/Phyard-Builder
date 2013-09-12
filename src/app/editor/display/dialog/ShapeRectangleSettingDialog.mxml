@@ -19,13 +19,29 @@
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <ShapeAppearanceSettingPanel id="AppearanceSettingPanel" creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
-         <mx:Spacer height="100%"/>
+         <mx:Spacer height="3"/>
          <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
-         <mx:Spacer height="100%"/>
-         <mx:HBox id="AppearanceOtherSettingsPanel" width="100%" creationComplete="OnAppearanceOtherSettingsPanelCreationComplete()">
-            <mx:Spacer width="60"/>
-            <mx:CheckBox id="CheckBox_RoundJoint" label="Round Joint"/>
-         </mx:HBox>
+         <mx:Spacer height="3"/>
+         <mx:VBox id="AppearanceOtherSettingsPanel" width="100%" creationComplete="OnAppearanceOtherSettingsPanelCreationComplete()">
+            <mx:HBox width="100%">
+               <mx:Spacer width="60"/>
+               <mx:CheckBox id="CheckBox_RoundJoint" label="Round Joints"/>
+            </mx:HBox>
+            <mx:HBox width="100%">
+               <mx:Spacer width="60"/>
+               <mx:CheckBox id="CheckBox_RoundCorner" label="Round Corners" click="OnRoundCornerClick();" width="22%"/>
+               <mx:Label id="Label_CornerEclipseWidth" text="Corner Eclipse Width:" textAlign="right"/>
+               <mx:NumericStepper id="NumericStepper_CornerEclipseWidth" stepSize="1" minimum="0" maximum="255" value="0" width="80" />
+               <mx:Label text="(pixels)"/>
+            </mx:HBox>
+            <mx:HBox width="100%">
+               <mx:Spacer width="60"/>
+               <mx:Spacer width="22%"/>
+               <mx:Label id="Label_CornerEclipseHeight" text="Corner Eclipse Height:" textAlign="right"/>
+               <mx:NumericStepper id="NumericStepper_CornerEclipseHeight" stepSize="1" minimum="0" maximum="255" value="0" width="80" />
+               <mx:Label text="(pixels)"/>
+            </mx:HBox>
+         </mx:VBox>
          <mx:Spacer height="100%"/>
       </mx:VBox>
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
@@ -91,14 +107,26 @@
          private function OnAppearanceSettingPanelCreationComplete ():void
          {
             mParams.mCiTypeSelectable = true;
-            mParams.mOnCiTypeChanged = PhysicsSettingPanel.OnCiTypeChanged;
+            mParams.mOnCiTypeChanged = OnCiTypeChanged; // PhysicsSettingPanel.OnCiTypeChanged;
             AppearanceSettingPanel.SetValues (mParams);
+         }
+         
+         private function OnCiTypeChanged (isCI:Boolean):void
+         {
+            AppearanceOtherSettingsPanel.enabled = ! isCI;
+            PhysicsSettingPanel.OnCiTypeChanged (isCI);
          }
 
          private function OnAppearanceOtherSettingsPanelCreationComplete ():void
          {
             //CheckBox_RoundCorners.selected = mParams.mIsRoundCorners;
             CheckBox_RoundJoint.selected = mParams.mIsRoundJoint;
+            
+            CheckBox_RoundCorner.selected = mParams.mIsRoundCorner;
+            NumericStepper_CornerEclipseWidth.value = mParams.mCornerEclipseWidth;
+            NumericStepper_CornerEclipseHeight.value = mParams.mCornerEclipseHeight;
+            
+            OnRoundCornerClick ();
          }
 
          private function OnEntityBasicSettingPanelCreationComplete ():void
@@ -110,6 +138,11 @@
          private function OnEntityWidthHeightSettingPanelCreationComplete ():void
          {
             WidthHeightSettingPanel.SetValues (mParams);
+         }
+         
+         private function OnRoundCornerClick ():void
+         {
+            CheckBox_RoundJoint.enabled = (! CheckBox_RoundCorner.selected);
          }
 
          public function SetConfirmFunc (onConfirm:Function):void
@@ -138,6 +171,10 @@
             {
                //mParams.mIsRoundCorners = CheckBox_RoundCorners.selected;
                mParams.mIsRoundJoint = CheckBox_RoundJoint.selected;
+               
+               mParams.mIsRoundCorner = CheckBox_RoundCorner.selected;
+               mParams.mCornerEclipseWidth = NumericStepper_CornerEclipseWidth.value;
+               mParams.mCornerEclipseHeight = NumericStepper_CornerEclipseHeight.value;
             }
 
             if (BasicSettingPanel != null)

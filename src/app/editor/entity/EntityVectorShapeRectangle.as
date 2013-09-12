@@ -131,7 +131,41 @@ package editor.entity {
          //return mRoundCorners;
          return mVectorShapeRectangle.IsRoundJoint (); // IsRoundCorners ();
       }
-
+      
+      public function SetCornerEclipseWidth (cornerEclipseWidth:Number):void
+      {
+         mVectorShapeRectangle.SetCornerEclipseWidth (cornerEclipseWidth);
+      }
+      
+      public function GetCornerEclipseWidth ():Number
+      {
+         return mVectorShapeRectangle.GetCornerEclipseWidth ();
+      }
+      
+      public function SetCornerEclipseHeight (cornerEclipseHeight:Number):void
+      {
+         mVectorShapeRectangle.SetCornerEclipseHeight (cornerEclipseHeight);
+      }
+      
+      public function GetCornerEclipseHeight ():Number
+      {
+         return mVectorShapeRectangle.GetCornerEclipseHeight ();
+      }
+      
+      public function SetRoundCorner (roundCorner:Boolean):void
+      {
+         mVectorShapeRectangle.SetRoundCorner (roundCorner);
+         if (roundCorner) // now round rect doesn't support physics.
+         {
+            SetPhysicsEnabled (false);
+         }
+      }
+      
+      public function IsRoundCorner ():Boolean
+      {
+         return mVectorShapeRectangle.IsRoundCorner ();
+      }
+      
 //====================================================================
 //   clone
 //====================================================================

@@ -1369,6 +1369,12 @@ package common {
                {
                   element.@rect_half_width = moduleInstanceDefine.mRectHalfWidth;
                   element.@rect_half_height = moduleInstanceDefine.mRectHalfHeight;
+                  
+                  if (worldVersion >= 0x0205)
+                  {
+                     element.@corner_eclipse_width = moduleInstanceDefine.mCornerEclipseWidth;
+                     element.@corner_eclipse_height = moduleInstanceDefine.mCornerEclipseHeight;
+                  }
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
@@ -1767,6 +1773,13 @@ package common {
                         element.@round_corners = entityDefine.mIsRoundJoint ? 1 : 0;
                      else // >= 0x0205
                         element.@round_joint = entityDefine.mIsRoundJoint ? 1 : 0;
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0205)
+                  {
+                     element.@round_corner = entityDefine.mIsRoundCorner ? 1 : 0;
+                     element.@corner_eclipse_width = entityDefine.mCornerEclipseWidth;
+                     element.@corner_eclipse_height = entityDefine.mCornerEclipseHeight;
                   }
 
                   element.@half_width = entityDefine.mHalfWidth;
@@ -2667,7 +2680,14 @@ package common {
                      if (worldDefine.mVersion >= 0x0108)
                      {
                         //entityDefine.mIsRoundCorners = byteArray.readByte () != 0
-                        entityDefine.mIsRoundJoint = byteArray.readByte () != 0
+                        entityDefine.mIsRoundJoint = byteArray.readByte () != 0;
+                     }
+                     
+                     if (worldDefine.mVersion >= 0x0205)
+                     {
+                        entityDefine.mIsRoundCorner = byteArray.readByte () != 0;
+                        entityDefine.mCornerEclipseWidth = byteArray.readFloat ();
+                        entityDefine.mCornerEclipseHeight = byteArray.readFloat ();
                      }
 
                      entityDefine.mHalfWidth = byteArray.readFloat ();
@@ -3074,6 +3094,12 @@ package common {
                {
                   moduleInstanceDefine.mRectHalfWidth = byteArray.readFloat ();
                   moduleInstanceDefine.mRectHalfHeight = byteArray.readFloat ();
+                  
+                  if (worldVersion >= 0x0205)
+                  {
+                     moduleInstanceDefine.mCornerEclipseWidth = byteArray.readFloat ();
+                     moduleInstanceDefine.mCornerEclipseHeight = byteArray.readFloat ();
+                  }
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
@@ -3365,6 +3391,9 @@ package common {
                         entityDefine.mHalfWidth = ValueAdjuster.Number2Precision (entityDefine.mHalfWidth, 6);
                         entityDefine.mHalfHeight = ValueAdjuster.Number2Precision (entityDefine.mHalfHeight, 6);
                   
+                        entityDefine.mCornerEclipseWidth = ValueAdjuster.Number2Precision (entityDefine.mCornerEclipseWidth, 6);
+                        entityDefine.mCornerEclipseHeight = ValueAdjuster.Number2Precision (entityDefine.mCornerEclipseHeight, 6);
+                  
                         if (worldDefine.mVersion >= 0x0160)
                         {
                            AdjustNumberValuesInTextureDefine (entityDefine.mBodyTextureDefine);
@@ -3635,6 +3664,9 @@ package common {
                {
                   moduleInstanceDefine.mRectHalfWidth = ValueAdjuster.Number2Precision (moduleInstanceDefine.mRectHalfWidth, 6);
                   moduleInstanceDefine.mRectHalfHeight = ValueAdjuster.Number2Precision (moduleInstanceDefine.mRectHalfHeight, 6);
+                  
+                  moduleInstanceDefine.mCornerEclipseWidth = ValueAdjuster.Number2Precision (moduleInstanceDefine.mCornerEclipseWidth, 6);
+                  moduleInstanceDefine.mCornerEclipseHeight = ValueAdjuster.Number2Precision (moduleInstanceDefine.mCornerEclipseHeight, 6);
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
@@ -3923,6 +3955,13 @@ package common {
                               entityDefine.mIsRoundJoint = false;
                            }
                            
+                           if (worldDefine.mVersion < 0x0205)
+                           {
+                              entityDefine.mIsRoundCorner = false;
+                              entityDefine.mCornerEclipseWidth = 0.0;
+                              entityDefine.mCornerEclipseHeight = 0.0;
+                           }
+                           
                            if (worldDefine.mVersion < 0x0160)
                            {
                               entityDefine.mBodyTextureDefine = new Object ();
@@ -4101,17 +4140,29 @@ package common {
          {
             var moduleInstanceDefine:Object = moduleInstanceDefines [miId];
             
-            if (worldVersion < 0x0160)
+            if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
             {
-               if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+               if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
                {
-                  moduleInstanceDefine.mBodyTextureDefine = new Object ();
-                  moduleInstanceDefine.mBodyTextureDefine.mModuleIndex = -1;
+                  if (worldVersion < 0x0160)
+                  {
+                     moduleInstanceDefine.mBodyTextureDefine = new Object ();
+                     moduleInstanceDefine.mBodyTextureDefine.mModuleIndex = -1;
+                  }
+                  
+                  if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
+                  {
+                     if (worldVersion < 0x0205)
+                     {
+                        moduleInstanceDefine.mCornerEclipseWidth = 0.0;
+                        moduleInstanceDefine.mCornerEclipseHeight = 0.0;
+                     }
+                  }
                }
             }
-         }
-      }
+         } // for
+      } // function
 
-   }
+   } // class
 
-}
+} // package

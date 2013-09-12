@@ -17,19 +17,31 @@ package player.image
          var displayHalfWidth :Number = GetHalfWidth ();
          var displayHalfHeight:Number = GetHalfHeight ();
          var displayBorderThickness:Number = GetBorderThickness ();
-
+         
+         var cornerWidth:Number = GetCornerEclipseWidth ();
+         var cornerHeight:Number = GetCornerEclipseHeight ();
+         
          if (moduleSprite.IsAdjustShapeVisualSize ())
          {
             if (IsBuildBackground () || displayBorderThickness < Number.MIN_VALUE)
             {
                displayHalfWidth += 0.5 / moduleSprite.GetScale (); // + 0.5 to avoid the visual leaps between contacting shapes sometimes
                displayHalfHeight += 0.5 / moduleSprite.GetScale (); // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+               
+               cornerWidth += 0.5;
+               cornerHeight += 0.5;
             }
             else
             {
                displayBorderThickness += 1.0 / moduleSprite.GetScale (); // + 1.0 to avoid the visual leaps between contacting shapes sometimes
             }
          }
+         
+         if (cornerWidth > displayHalfWidth + displayHalfWidth)
+            cornerWidth = displayHalfWidth + displayHalfWidth;
+         if (cornerHeight > displayHalfHeight + displayHalfHeight)
+            cornerHeight = displayHalfHeight + displayHalfHeight;
+         var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
          
          var bodyColor:int = GetBodyColor ();
          var borderColor:int = GetBorderColor ();
@@ -60,7 +72,7 @@ package player.image
                      true, // draw background
                      bodyColor,
                      IsRoundJoint (), //IsRoundCorners (),
-                     false, 1.0, 
+                     isRoundCorner, cornerWidth, cornerHeight,
                      bitmapModule == null ? null : bitmapModule.GetBitmapData (),
                      bitmapTransform == null ? null : bitmapTransform.ToMatrix ()
                   );
@@ -85,7 +97,8 @@ package player.image
                      displayBorderThickness, // draw border
                      false, // not draw background
                      0x0, // invald bg color
-                     IsRoundJoint () // IsRoundCorners ()
+                     IsRoundJoint () && (! isRoundCorner), // IsRoundCorners ()
+                     isRoundCorner, cornerWidth, cornerHeight
                   );
             }
       }

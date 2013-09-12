@@ -73,15 +73,16 @@ package editor.entity {
             var invertFilledColor:uint = GraphicsUtil.GetInvertColor_b (GetFilledColor ());
             
             decoShape = new Shape ();
-            GraphicsUtil.DrawEllipse (decoShape, pos, 0, 1, 1, invertFilledColor, 1, true, invertFilledColor);
-            
+            //GraphicsUtil.DrawEllipse (decoShape, pos, 0, 1, 1, invertFilledColor, 1, true, invertFilledColor);
+            GraphicsUtil.DrawCircle (decoShape, pos, 0, 1, invertFilledColor, 1, true, invertFilledColor);
          }
          else if (mAppearanceType == Define.CircleAppearanceType_Column)
          {
             var radius2:Number = GetRadius () * 0.5;
             
             decoShape = new Shape ();
-            GraphicsUtil.DrawEllipse (decoShape, - radius2, - radius2, radius2 + radius2, radius2 + radius2, GetBorderColor (), 1, false, GetFilledColor ());
+            //GraphicsUtil.DrawEllipse (decoShape, - radius2, - radius2, radius2 + radius2, radius2 + radius2, GetBorderColor (), 1, false, GetFilledColor ());
+            GraphicsUtil.DrawCircle (decoShape, 0, 0, radius2, GetBorderColor (), 1, false, GetFilledColor ());
             GraphicsUtil.DrawLine (decoShape, radius2, 0, visualRadius, 0, GetBorderColor (), 1);
          }
 
@@ -89,7 +90,8 @@ package editor.entity {
          {
             if (decoShape == null)
                decoShape = new Shape ();
-            GraphicsUtil.DrawEllipse (decoShape, - GetRadius () * 0.5, - GetRadius () * 0.5, GetRadius (), GetRadius (), 0x808080, 0, true, 0x808080);
+            //GraphicsUtil.DrawEllipse (decoShape, - GetRadius () * 0.5, - GetRadius () * 0.5, GetRadius (), GetRadius (), 0x808080, 0, true, 0x808080);
+            GraphicsUtil.DrawCircle (decoShape, 0, 0, 0.5 * GetRadius (), 0x808080, 0, true, 0x808080);
          }
          
          if (decoShape != null)

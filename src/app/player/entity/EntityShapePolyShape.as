@@ -103,7 +103,7 @@ package player.entity {
          return returnValues;
       }
       
-      // physics values, either in local or world space
+      // called by API, physics values, either in local or world space
       public function SetVertexPositions (xyValues:Array, inWorldSpace:Boolean):void
       {
          CreateVertexArrays (xyValues == null ? -1 : xyValues.length / 2);

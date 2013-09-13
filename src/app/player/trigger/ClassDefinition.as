@@ -13,8 +13,8 @@ package player.trigger
       public static const NumPrimitiveClasses:int = 3;
       
       // primitive classes
-      public static const ValueConvertOrder_Number:int = 0;
-      public static const ValueConvertOrder_Boolean:int = 1;
+      public static const ValueConvertOrder_Boolean:int = 0; // 1;
+      public static const ValueConvertOrder_Number:int = 1; // 0;
       public static const ValueConvertOrder_String:int = 2;
 
       // other non-promitive classes
@@ -35,8 +35,8 @@ package player.trigger
       {
          mParentClasses = parentClasses;
          
-         mValueConvertFunctions [ValueConvertOrder_Number] = ToNumber;
          mValueConvertFunctions [ValueConvertOrder_Boolean] = ToBoolean;
+         mValueConvertFunctions [ValueConvertOrder_Number] = ToNumber;
          mValueConvertFunctions [ValueConvertOrder_String] = ToString;
       }
       
@@ -122,19 +122,23 @@ package player.trigger
       }
       
       private var mClassNameForToString:String = null;
-      public function ToString (valueObject:Object):String
+      public function ToString (valueObject:Object, extraInfos:Object = null):String 
       {
          if (mIsNullFunc == null) // primitive
+         {
             return mToStringFunc (valueObject);
+         }
          else
          {
             if (mIsNullFunc (valueObject))
-               return "null";
+               return null; // "null";
+                            // different from action script, which returns "null"
+                            // all nulls of any classes mean VariableInstanceConstant.kVoidVariableInstance
             
             if (mClassNameForToString == null)
-               mClassNameForToString = "[" + GetName () + "]";
+               mClassNameForToString = "<" + GetName () + ">"; // for debug only, the format may be changed later,
             
-            return mToStringFunc (valueObject, mClassNameForToString);
+            return mToStringFunc (valueObject, mClassNameForToString, extraInfos);
          }
       }
    }

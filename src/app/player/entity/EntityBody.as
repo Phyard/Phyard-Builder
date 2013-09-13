@@ -6,6 +6,10 @@ package player.entity {
    import player.physics.PhysicsProxyBody;
    import player.physics.PhysicsProxyShape;
    
+   import player.trigger.ClassInstance;
+   import player.trigger.CoreClasses;
+   import player.trigger.ClassDefinition;
+   
    import common.Define;
    
    // There will many shapes glued with a body, either the shapes are physics or not.

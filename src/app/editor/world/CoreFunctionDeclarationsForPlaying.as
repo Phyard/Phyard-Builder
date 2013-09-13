@@ -3306,14 +3306,14 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetText, shape_text_package, "Set Text", "@Set Text ($1) of $0", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
-                             new VariableDefinitionString ("New Text String"),
+                             new VariableDefinitionString ("New Text String", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_AppendText, shape_text_package, "Append Text", "@Append Text ($1) to $0", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
-                             new VariableDefinitionString ("Text to Append"),
+                             new VariableDefinitionString ("Text to Append", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      null
                   );

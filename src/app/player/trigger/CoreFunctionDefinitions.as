@@ -123,7 +123,7 @@ package player.trigger {
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_LastIndexOf,                 LastIndexOfSubstring);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Substring,                   Substring);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Split,                       SplitString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Replace,                     ReplacetString);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Replace,                     ReplaceString);
 
       // bool
 
@@ -268,7 +268,7 @@ package player.trigger {
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetCurrentLevel,           GetCurrentLevel);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_IsNullLevel,            IsNullLevel);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SceneEquals,            EqualsWith_Scenes);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_Scene2String,           Scene2String);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_Scene2String,           SceneToString);
          
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_WriteSaveData,          WriteSaveData);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_LoadSaveData,           LoadSaveData);
@@ -1050,6 +1050,7 @@ package player.trigger {
                if (texts != null)
                {
                   substrings = texts.concat ();
+                  CoreClasses.CovertArrayElementsToClassInstances (substrings, CoreClasses.GetStringClassDefinition ());
                }
             }
          }
@@ -1062,7 +1063,7 @@ package player.trigger {
          valueTarget.AssignValueObject (substrings);
       }
       
-      public static function ReplacetString(valueSource:Parameter, valueTarget:Parameter):void
+      public static function ReplaceString(valueSource:Parameter, valueTarget:Parameter):void
       {
          var resultString:String = null;
 
@@ -1130,9 +1131,10 @@ package player.trigger {
 
       public static function NumberToString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvaluateValueObject () as Number;
+         var value:Number = Number (valueSource.EvaluateValueObject ());
 
-         valueTarget.AssignValueObject (value.toString (10));
+         //valueTarget.AssignValueObject (value.toString (10));
+         valueTarget.AssignValueObject (CoreClasses.Number2String (value));
       }
 
       //public static function NumberToExponentialString (valueSource:Parameter, valueTarget:Parameter):void
@@ -1186,7 +1188,7 @@ package player.trigger {
 
       public static function NumberToStringByRadix (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvaluateValueObject () as Number;
+         var value:Number = Number (valueSource.EvaluateValueObject ());
 
          valueSource = valueSource.mNextParameter;
          var radix:int = int (valueSource.EvaluateValueObject ());
@@ -1219,23 +1221,36 @@ package player.trigger {
 
       public static function BooleanToString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
+         var value:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
-         valueTarget.AssignValueObject (String (value));
+         //valueTarget.AssignValueObject (String (value));
+         valueTarget.AssignValueObject (CoreClasses.Boolean2String (value));
       }
 
       public static function EntityToString (valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
-
-         valueTarget.AssignValueObject (entity == null ? "null" : entity.ToString ());
+         
+         //if (entity == null)
+         //   valueTarget.AssignValueObject ("null");
+         //else
+         //   valueTarget.AssignValueObject (CoreClasses.Entity2String (entity));
+         
+         // since v2.05. A little non-compatible: old "null" vs new null.
+         valueTarget.AssignValueObject (CoreClasses.GetEntityClassDefinition ().ToString (entity));
       }
 
       public static function CollisionCategoryToString (valueSource:Parameter, valueTarget:Parameter):void
       {
          var ccat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
-         valueTarget.AssignValueObject (ccat == null ? "null" : ccat.ToString ());
+         //if (ccat == null)
+         //   valueTarget.AssignValueObject ("null");
+         //else
+         //   valueTarget.AssignValueObject (CoreClasses.CCat2String (ccat));
+         
+         // since v2.05. A little non-compatible: old "null" vs new null.
+         valueTarget.AssignValueObject (CoreClasses.GetCCatClassDefinition ().ToString (ccat));
       }
 
    //************************************************
@@ -1361,122 +1376,130 @@ package player.trigger {
 
       public static function ExactEqualsWith_Arrays (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Array = valueSource.EvaluateValueObject () as Array;
-
-         valueSource = valueSource.mNextParameter;
-         var value2:Array = valueSource.EvaluateValueObject () as Array;
+         //var value1:Array = valueSource.EvaluateValueObject () as Array;
+         //
+         //valueSource = valueSource.mNextParameter;
+         //var value2:Array = valueSource.EvaluateValueObject () as Array;
+         //
+         //valueTarget.AssignValueObject (CompareArrays (value1, value2));
          
-         valueTarget.AssignValueObject (CompareArrays (value1, value2));
+         valueTarget.AssignValueObject (CompareByEachArrayElement (valueSource.GetVariableInstance (), valueSource.mNextParameter.GetVariableInstance ()));
       }
+      
+      // for both Array type, compare each elements individually.
+      // for other cases, use CoreClasses.CompareEqualsExactly
 
-      private static function CompareArrays (values1:Array, values2:Array, numRegisterdArrays:int = 0, registerdArrays:Dictionary = null, registedComparePairs:Dictionary = null):Boolean
+      
+      private static const kArrayClass:ClassDefinition = CoreClasses.GetArrayClassDefinition ();
+      private static function CompareByEachArrayElement (ci_1:ClassInstance, ci_2:ClassInstance, numRegisteredArrays:int = 0, registerdArrays:Dictionary = null, registedComparePairs:Dictionary = null):Boolean
       {
-         if (values1 == values2)
-            return true;
-
-         if (values1 == null || values2 == null || values1.length != values2.length)
-            return false;
-         
-         if (numRegisterdArrays == 0)
+         if (ci_1._mRealClassDefinition == ci_2._mRealClassDefinition)
          {
-            registerdArrays = new Dictionary ();
-            registedComparePairs = new Dictionary ();
-         }
-         var index1:Object = registerdArrays [values1];
-         if (index1 == null)
-            registerdArrays [values1] = index1 = numRegisterdArrays ++;
-         var index2:Object = registerdArrays [values2];
-         if (index2 == null)
-            registerdArrays [values2] = index2 = numRegisterdArrays ++;
-         var pairId:int = (index1 as int) < (index2 as int) ? (((index1 as int) << 16) | (index2 as int)) : (((index2 as int) << 16) | (index1 as int)); // !! max 65536 aryays
-         if (registedComparePairs [pairId] != null)
-            return true;
-         registedComparePairs [pairId] = 1;            
-         
-         var count:int = values1.length;
-         for (var i:int = 0; i < count; ++ i)
-         {
-            var element1:Object = values1 [i];
-            var element2:Object = values2 [i];
-            
-            if (element1 != element2)
+            if (ci_1._mRealClassDefinition == kArrayClass)
             {
-               if (element1 is Array && element2 is Array)
-               {
-                  if (CompareArrays (element1 as Array, element2 as Array, numRegisterdArrays, registerdArrays, registedComparePairs))
-                     continue;
-               }
-               else
-               {
+               var values1:Array = ci_1._mValueObject as Array;
+               var values2:Array = ci_2._mValueObject as Array;
+               
+               if (values1 == values2)
+                  return true;
+
+               if (values1 == null || values2 == null || values1.length != values2.length)
                   return false;
+               
+               if (numRegisteredArrays == 0)
+               {
+                  registerdArrays = new Dictionary ();
+                  registedComparePairs = new Dictionary ();
                }
+               
+               var index1:Object = registerdArrays [values1];
+               if (index1 == null)
+                  registerdArrays [values1] = index1 = numRegisteredArrays ++;
+               var index2:Object = registerdArrays [values2];
+               if (index2 == null)
+                  registerdArrays [values2] = index2 = numRegisteredArrays ++;
+               var pairId:int = (index1 as int) < (index2 as int) ? (((index1 as int) << 16) | (index2 as int)) : (((index2 as int) << 16) | (index1 as int)); // !! max 65536 aryays
+               if (registedComparePairs [pairId] != null)
+                  return true;
+               registedComparePairs [pairId] = 1;            
+               
+               var count:int = values1.length;
+               for (var i:int = 0; i < count; ++ i)
+               {
+                  var ci_element1:ClassInstance = CoreClasses.GetArrayElement (values1, i) as ClassInstance;
+                  var ci_element2:ClassInstance = CoreClasses.GetArrayElement (values2, i) as ClassInstance;
+                  
+                  return CompareByEachArrayElement (ci_element1, ci_element2, numRegisteredArrays, registerdArrays, registedComparePairs);
+               }
+               
+               return true;
             }
+            
+            return ci_1._mValueObject != ci_2._mValueObject;
          }
          
-         return true;
+         return false;
       }
+      
+      // before v2.05
+      //private static function CompareArrays (array_1:, values2:Array, numRegisterdArrays:int = 0, registerdArrays:Dictionary = null, registedComparePairs:Dictionary = null):Boolean
+      //{
+      //   if (values1 == values2)
+      //      return true;
+      //
+      //   if (values1 == null || values2 == null || values1.length != values2.length)
+      //      return false;
+      //   
+      //   if (numRegisterdArrays == 0)
+      //   {
+      //      registerdArrays = new Dictionary ();
+      //      registedComparePairs = new Dictionary ();
+      //   }
+      //   var index1:Object = registerdArrays [values1];
+      //   if (index1 == null)
+      //      registerdArrays [values1] = index1 = numRegisterdArrays ++;
+      //   var index2:Object = registerdArrays [values2];
+      //   if (index2 == null)
+      //      registerdArrays [values2] = index2 = numRegisterdArrays ++;
+      //   var pairId:int = (index1 as int) < (index2 as int) ? (((index1 as int) << 16) | (index2 as int)) : (((index2 as int) << 16) | (index1 as int)); // !! max 65536 aryays
+      //   if (registedComparePairs [pairId] != null)
+      //      return true;
+      //   registedComparePairs [pairId] = 1;            
+      //   
+      //   var count:int = values1.length;
+      //   for (var i:int = 0; i < count; ++ i)
+      //   {
+      //      var element1:Object = values1 [i];
+      //      var element2:Object = values2 [i];
+      //      
+      //      if (element1 != element2)
+      //      {
+      //         if (element1 is Array && element2 is Array)
+      //         {
+      //            if (CompareArrays (element1 as Array, element2 as Array, numRegisterdArrays, registerdArrays, registedComparePairs))
+      //               continue;
+      //         }
+      //         else
+      //         {
+      //            return false;
+      //         }
+      //      }
+      //   }
+      //   
+      //   return true;
+      //}
 
       public static function ArrayToString (valueSource:Parameter, valueTarget:Parameter):void
       {
          var values:Array = valueSource.EvaluateValueObject () as Array;
-
-         valueTarget.AssignValueObject (ConvertArrayToString (values));
-      }
-
-      private static function ConvertArrayToString (values:Array, convertedArrays:Dictionary = null):String
-      {
-         if (values == null)
-            return "null";
-
-         var returnText:String = "[";
-
-         var numElements:int = values.length;
-         var value:Object;
-         if (numElements > 0)
-         {
-            var valuesString:String;
-            if (convertedArrays == null)
-            {
-               convertedArrays = new Dictionary ();
-               valuesString = null;
-            }
-            else
-            {
-               valuesString = convertedArrays [values];
-            }
-
-            if (valuesString != null)
-            {
-               return valuesString;
-            }
-            else
-            {
-               convertedArrays [values] = "(length: " + numElements + ")"; // A not good but not worst value. Avoid dead loop.
-
-               var sep:String = "";
-
-               for (var i:int = 0; i < numElements; ++ i)
-               {
-                  value = values [i];
-                  if (value is Array)
-                     returnText = returnText + sep + ConvertArrayToString (value as Array, convertedArrays);
-                  else if (value is Entity)
-                     returnText = returnText + sep + (value as Entity).ToString ();
-                  //else if (value is CollisionCategory)
-                  //   returnText = returnText + sep + (value as CollisionCategory).ToString ();
-                  else
-                     returnText = returnText + sep + String (value);
-                  
-                  sep = ",";
-               }
-
-               convertedArrays [values] = returnText; // correct the value. Avoid dead loop.
-            }
-         }
-
-         returnText = returnText + "]";
-
-         return returnText;
+         
+         //if (values == null)
+         //   valueTarget.AssignValueObject ("null");
+         //else
+         //   valueTarget.AssignValueObject (ConvertArrayToString (values));
+         
+         // since v2.05. A little non-compatible: old "null" vs new null.
+         valueTarget.AssignValueObject (CoreClasses.GetArrayClassDefinition ().ToString (values));
       }
 
       public static function LargerThan (valueSource:Parameter, valueTarget:Parameter):void
@@ -1730,7 +1753,8 @@ package player.trigger {
 
          if (index2 < 0 || index2 > array.length)
             return;
-
+         
+         // no needs to use CoreClasses.GetArrayElement
          var temp:Object = array [index1];
          array [index1] = array [index2];
          array [index2] = temp;
@@ -1778,9 +1802,12 @@ package player.trigger {
             if (index < 0 || index >= array.length)
                break;
             
-            var sourceCi:ClassInstance = array [index] as ClassInstance;
-            if (sourceCi == null)
-               break;
+            // before v2.05
+            //var sourceCi:ClassInstance = array [index] as ClassInstance;
+            //if (sourceCi == null)
+            //   break;
+            // since v2.05
+            var sourceCi:ClassInstance = CoreClasses.GetArrayElement (array, index) as ClassInstance; // not null for sure
             
             CoreClasses.AssignValue (sourceCi, valueTarget.GetVariableInstance ());
 
@@ -2539,15 +2566,17 @@ package player.trigger {
             valueTarget.AssignValueObject (levelIndex1 == levelIndex2);
       }
       
-      public static function Scene2String (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SceneToString (valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = valueSource.EvaluateValueObject () as int;
          
-         var sceneDefine:SceneDefine = Global.GetSceneDefine (levelIndex);
-         if (sceneDefine == null)
-            valueTarget.AssignValueObject ("null");
-         else
-            valueTarget.AssignValueObject ("scene#" + levelIndex + "[" + sceneDefine.mName + "]");
+         //var sceneDefine:SceneDefine = Global.GetSceneDefine (levelIndex);
+         //if (sceneDefine == null)
+         //   valueTarget.AssignValueObject ("null");
+         //else
+         //   valueTarget.AssignValueObject ("scene#" + levelIndex + "[" + sceneDefine.mName + "]");
+         
+         valueTarget.AssignValueObject (CoreClasses.GetSceneClassDefinition ().ToString (levelIndex));
       }
       
       public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void
@@ -4857,8 +4886,11 @@ package player.trigger {
 
          valueSource = valueSource.mNextParameter;
          var pointY:Number = valueSource.EvaluateValueObject () as Number;
-
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY));
+         
+         var shapes:Array = Global.GetCurrentWorld ().GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY);
+         CoreClasses.CovertArrayElementsToClassInstances (shapes, CoreClasses.GetEntityClassDefinition ())
+         
+         valueTarget.AssignValueObject (shapes);
       }
 
       public static function GetFirstIncomingIntersectionWithLineSegment(valueSource:Parameter, valueTarget:Parameter):void
@@ -5403,8 +5435,9 @@ package player.trigger {
          if (entity_text == null || entity_text.IsDestroyedAlready ())
             return;
 
-         valueSource = valueSource.mNextParameter;
-         var text:String = valueSource.EvaluateValueObject () as String;
+         //valueSource = valueSource.mNextParameter;
+         //var text:String = valueSource.EvaluateValueObject () as String;
+         var text:String = CoreClasses.ToString (valueSource.mNextParameter.GetVariableInstance ());
 
          entity_text.SetText (text);
       }
@@ -5415,8 +5448,9 @@ package player.trigger {
          if (entity_text == null || entity_text.IsDestroyedAlready ())
             return;
 
-         valueSource = valueSource.mNextParameter;
-         var text:String = valueSource.EvaluateValueObject () as String;
+         //valueSource = valueSource.mNextParameter;
+         //var text:String = valueSource.EvaluateValueObject () as String;
+         var text:String = CoreClasses.ToString (valueSource.mNextParameter.GetVariableInstance ());
 
          entity_text.SetText (entity_text.GetText () + text);
       }
@@ -5828,8 +5862,12 @@ package player.trigger {
             valueTarget.AssignValueObject (null);
             return;
          }
+         
+         var positions:Array = polyShape.GetVertexPositions (false);
+         if (positions != null)
+            CoreClasses.CovertArrayElementsToClassInstances (positions, CoreClasses.GetNumberClassDefinition ())
 
-         valueTarget.AssignValueObject (polyShape.GetVertexPositions (false));
+         valueTarget.AssignValueObject (positions);
       }
 
       public static function SetVertexLocalPositions (valueSource:Parameter, valueTarget:Parameter):void
@@ -5841,7 +5879,10 @@ package player.trigger {
 
          valueSource = valueSource.mNextParameter;
          var positions:Array = valueSource.EvaluateValueObject () as Array;
-
+         
+         if (positions != null)
+            CoreClasses.CovertClassInstancesToArrayElements (positions);
+         
          EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, false);
       }
 
@@ -5854,8 +5895,12 @@ package player.trigger {
             valueTarget.AssignValueObject (null);
             return;
          }
+         
+         var positions:Array = polyShape.GetVertexPositions (true);
+         if (positions != null)
+            CoreClasses.CovertArrayElementsToClassInstances (positions, CoreClasses.GetNumberClassDefinition ())
 
-         valueTarget.AssignValueObject (polyShape.GetVertexPositions (true));
+         valueTarget.AssignValueObject (positions);
       }
 
       public static function SetVertexWorldPositions (valueSource:Parameter, valueTarget:Parameter):void
@@ -5867,6 +5912,9 @@ package player.trigger {
 
          valueSource = valueSource.mNextParameter;
          var positions:Array = valueSource.EvaluateValueObject () as Array;
+         
+         if (positions != null)
+            CoreClasses.CovertClassInstancesToArrayElements (positions);
 
          EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, true);
       }

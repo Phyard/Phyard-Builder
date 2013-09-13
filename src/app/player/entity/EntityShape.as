@@ -21,6 +21,10 @@ package player.entity {
    import player.trigger.data.ListElement_EventHandler;
    import player.trigger.data.ListElement_EntityShape;
    
+   import player.trigger.ClassInstance;
+   import player.trigger.CoreClasses;
+   import player.trigger.ClassDefinition;
+   
    import common.DataFormat2;
    import common.CoordinateSystem;
    import common.Transform2D;
@@ -1405,6 +1409,8 @@ package player.entity {
       
       public function PutConnectedShapesInArray (shapes:Array):void
       {
+         var entityClass:ClassDefinition = CoreClasses.GetEntityClassDefinition ();
+         
          var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
          var hashtable:Dictionary = new Dictionary ();
          var anotherAnchor:SubEntityJointAnchor;
@@ -1418,7 +1424,7 @@ package player.entity {
                   if (hashtable [anotherAnchor.mShape] == null)
                   {
                      hashtable [anotherAnchor.mShape] = 1;
-                     shapes.push (anotherAnchor.mShape);
+                     shapes.push (ClassInstance.CreateClassInstance (entityClass, anotherAnchor.mShape));
                   }
                }
             }
@@ -1480,11 +1486,13 @@ package player.entity {
       
       public function PutContactedShapesInArray (shapes:Array):void
       {
+         var entityClass:ClassDefinition = CoreClasses.GetEntityClassDefinition ();
+         
          var listElement:ListElement_EntityShape = mContactedShapeList;
          while (listElement != null)
          {
             if (shapes.indexOf (listElement.mEntityShape) < 0) // may be not efficient
-               shapes.push (listElement.mEntityShape);
+               shapes.push (ClassInstance.CreateClassInstance (entityClass, listElement.mEntityShape));
             
             listElement = listElement.mNextListElement;
          }

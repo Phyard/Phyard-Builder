@@ -33,10 +33,12 @@ public function PutShapesInArray (shapes:Array):void
    if (shapes == null)
       return;
    
+   var entityClass:ClassDefinition = CoreClasses.GetEntityClassDefinition ();
+   
    var shape:EntityShape = mShapeListHead;
    while (shape != null)
    {
-      shapes.push (shape);
+      shapes.push (ClassInstance.CreateClassInstance (entityClass, shape));
       shape = shape.mNextShapeInBody;
    }
 }

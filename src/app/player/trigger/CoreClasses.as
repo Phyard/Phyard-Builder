@@ -1,6 +1,7 @@
 package player.trigger {
 
    import flash.utils.ByteArray;
+   import flash.utils.Dictionary;
 
    import player.design.Global;
    import player.world.World;
@@ -107,6 +108,7 @@ package player.trigger {
          
          GetCoreClassDefinition (CoreClassIds.ValueType_Entity).mToStringFunc = Entity2String;
          GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory).mToStringFunc = CCat2String;
+         GetCoreClassDefinition (CoreClassIds.ValueType_Array).mToStringFunc = Array2String;
          
          for each (var primitiveClassId:int in [CoreClassIds.ValueType_Boolean, 
                                                 CoreClassIds.ValueType_Number, 
@@ -143,6 +145,15 @@ package player.trigger {
          return classDefinition == null ? kVoidClassDefinition : classDefinition;
       }
       
+      private static var sSceneClassDefinition:ClassDefinition_Core = null;
+      public static function GetSceneClassDefinition ():ClassDefinition_Core
+      {
+         if (sSceneClassDefinition == null)
+            sSceneClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Scene);
+         
+         return sSceneClassDefinition;
+      }
+      
       private static var sEntityClassDefinition:ClassDefinition_Core = null;
       public static function GetEntityClassDefinition ():ClassDefinition_Core
       {
@@ -150,6 +161,24 @@ package player.trigger {
             sEntityClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Entity);
          
          return sEntityClassDefinition;
+      }
+      
+      private static var sCCatClassDefinition:ClassDefinition_Core = null;
+      public static function GetCCatClassDefinition ():ClassDefinition_Core
+      {
+         if (sCCatClassDefinition == null)
+            sCCatClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory);
+         
+         return sCCatClassDefinition;
+      }
+      
+      private static var sArrayClassDefinition:ClassDefinition_Core = null;
+      public static function GetArrayClassDefinition ():ClassDefinition_Core
+      {
+         if (sArrayClassDefinition == null)
+            sArrayClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Array);
+         
+         return sArrayClassDefinition;
       }
       
       private static var sModuleClassDefinition:ClassDefinition_Core = null;
@@ -245,7 +274,7 @@ package player.trigger {
          return valueObject == null ? false : true;
       }
             
-      public static function Object2String (valueObject:Object, className:String):String
+      public static function Object2String (valueObject:Object, className:String, extraInfos:Object):String
       {
          return className;
       }
@@ -272,7 +301,7 @@ package player.trigger {
          return int (valueObject) < 0 ? false : true;
       }
       
-      public static function Asset2String (valueObject:Object, className:String):String
+      public static function Asset2String (valueObject:Object, className:String, extraInfos:Object):String
       {
          return className + "#" + int (valueObject);
       }
@@ -289,22 +318,131 @@ package player.trigger {
       
       //--------------
             
-      public static function Entity2String (valueObject:Object, className:String):String
+      public static function Entity2String (valueObject:Object, className:String, extraInfos:Object):String
       {
-         var entity:Entity = valueObject as Entity;
-         if (entity == null)
-            return "null";
+         var entity:Entity = valueObject as Entity; // not null for sure
             
          return className + "#" + entity.GetCreationId ();
       }
             
-      public static function CCat2String (valueObject:Object, className:String):String
+      public static function CCat2String (valueObject:Object, className:String, extraInfos:Object):String
       {
-         var ccat:CollisionCategory = valueObject as CollisionCategory;
-         if (ccat == null)
-            return "null";
+         var ccat:CollisionCategory = valueObject as CollisionCategory; // not null for sure
             
          return className + "#" + ccat.GetIndexInEditor ();
+      }
+      
+      public static function Array2String (valueObject:Object, className:String, extraInfos:Object):String
+      {
+         var anArray:Array = valueObject as Array; // not null for sure
+            
+         return className + "#" + ConvertArrayToString (anArray, extraInfos as Dictionary);
+      }
+
+      private static function ConvertArrayToString (values:Array, convertedArrays:Dictionary = null):String
+      {
+         //if (values == null) // not null for sure
+         //   return null; // "null";
+
+         var returnText:String = "[";
+
+         var numElements:int = values.length;
+         //var value:Object;
+         var ci:ClassInstance;
+         if (numElements > 0)
+         {
+            var valuesString:String;
+            if (convertedArrays == null)
+            {
+               convertedArrays = new Dictionary ();
+               valuesString = null;
+            }
+            else
+            {
+               valuesString = convertedArrays [values];
+            }
+
+            if (valuesString != null)
+            {
+               return valuesString;
+            }
+            else
+            {
+               convertedArrays [values] = "(<Array>#length: " + numElements + ")"; // A not good but not worst value. Avoid dead loop.
+
+               var sep:String = "";
+
+               for (var i:int = 0; i < numElements; ++ i)
+               {
+                  // before v2.05
+                  
+                  //value = values [i];
+                  //
+                  //if (value is Array)
+                  //   returnText = returnText + sep + ConvertArrayToString (value as Array, convertedArrays);
+                  //else if (value is Entity)
+                  //   returnText = returnText + sep + (value as Entity).ToString ();
+                  ////else if (value is CollisionCategory)
+                  ////   returnText = returnText + sep + (value as CollisionCategory).ToString ();
+                  //else
+                  //   returnText = returnText + sep + String (value);
+                  
+                  // sicne v2.05
+                  
+                  ci = GetArrayElement (values, i) as ClassInstance; // must be not null.
+                  
+                  returnText = returnText + sep + ci._mRealClassDefinition.ToString (ci._mValueObject, convertedArrays);
+                  
+                  sep = ",";
+               }
+
+               convertedArrays [values] = returnText; // correct the value. Avoid dead loop.
+            }
+         }
+
+         returnText = returnText + "]";
+
+         return returnText;
+      }
+      
+//========================================================
+// array special
+//========================================================
+      
+      // todo: create a MyArray class.
+      // but can't extend from Array. see b2GrowableStack. (bug on iOS)
+      // make sure anArray is not null and index is in [0, anArray.length)
+      public static function GetArrayElement (anArray:Array, index:int):ClassInstance
+      {
+         var element:ClassInstance = anArray [index];
+         return element != null ? element : VariableInstanceConstant.kVoidVariableInstance;
+      }
+      
+      // make sure anArray is not null
+      public static function CovertArrayElementsToClassInstances (anArray:Array, classDefinition:ClassDefinition):void
+      {
+         for (var i:int = anArray.length - 1; i >= 0; -- i)
+         {
+            var element:Object = anArray [i];
+            if (element != null)
+            {
+               anArray [i] = ClassInstance.CreateClassInstance (classDefinition, element);
+            }
+         }
+         
+         //return anArray;
+      }
+      
+      // make sure anArray is not null
+      public static function CovertClassInstancesToArrayElements (anArray:Array):void
+      {
+         for (var i:int = anArray.length - 1; i >= 0; -- i)
+         {
+            var ci:ClassInstance = anArray [i] as ClassInstance;
+            anArray [i] = ci == null ? null : ci._mValueObject;
+         }
+         
+         //return anArray;
       }
       
 //==============================================================
@@ -312,6 +450,7 @@ package player.trigger {
 // they represent the spirit of piapia lang.
 //==============================================================
       
+      // if value classes are different, auto convert source to target
       public static function AssignValue (sourceCi:ClassInstance, targetVi:VariableInstance):void
       {
          if (sourceCi._mRealClassDefinition == targetVi._mRealClassDefinition) // the most common case
@@ -371,6 +510,7 @@ package player.trigger {
          }
       }
       
+      // compare with auto convert
       public static function CompareEquals (ci_1:ClassInstance, ci_2:ClassInstance):Boolean
       {
          if (ci_1._mRealClassDefinition == ci_2._mRealClassDefinition) // the most common case

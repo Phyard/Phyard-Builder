@@ -240,7 +240,10 @@ package player.design
       try
       {
          var binData:ByteArray = new ByteArray ();
-         binData.writeShort (0); // data format version
+         
+         // data format version
+         // binData.writeShort (0); // before v2.05 (custom classes not supported yet)
+         binData.writeShort (1); // since v2.05 (add support for custom classes), totally compatible with version 0
          
          var alreadySavedArrayLookupTable:Dictionary = new Dictionary ();
          
@@ -251,10 +254,8 @@ package player.design
             var variableInstance:VariableInstance = mGameSaveVariableSpace.GetVariableByIndex (variableId) as VariableInstance;
                   // must be not null (VariableInstance.kVoidVariableInstance)
                   
-//if (mDebugString == null) mDebugString = "";
-//mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " + variableInstance.GetKey ();            
             binData.writeUTF (variableInstance.GetDeclaration ().GetKey ());
-            
+
             WriteTypeAndValue (binData, variableInstance.GetRealClassType (), variableInstance.GetRealValueType (), variableInstance.GetValueObject (), alreadySavedArrayLookupTable);
          }
          
@@ -303,37 +304,48 @@ package player.design
             }
             else
             {
-               alreadySavedArrayLookupTable [valuesArray] = true;
+               if (! CoreClasses.kArrayClassDefinition.mIsNullFunc (valuesArray))
+               {
+                  alreadySavedArrayLookupTable [valuesArray] = true;
+               }
 
                binData.writeShort (CoreClassIds.ValueType_Array);
                binData.writeInt (valuesArray == null ? -1 : valuesArray.length);
                if (valuesArray != null)
                {
-                  //for each (var arrValue:Object in valuesArray) // fant! bug: undefined value is not iterated.
+                  //for each (var arrValue:Object in valuesArray) // faint! bug: undefined value is not iterated.
                   for (var i:int = 0; i < valuesArray.length; ++ i)
                   {
-                     var arrValue:Object = valuesArray [i];
+                     // before v2.05
+                     //
+                     //var arrValue:Object = valuesArray [i];
+                     //
+                     //if (arrValue is Boolean)
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Boolean, arrValue, alreadySavedArrayLookupTable);
+                     //}
+                     //else if (arrValue is Number)
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Number, arrValue, alreadySavedArrayLookupTable);
+                     //}
+                     //else if (arrValue is String)
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_String, arrValue, alreadySavedArrayLookupTable);
+                     //}
+                     //else if (arrValue is Array)
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Array, arrValue, alreadySavedArrayLookupTable);
+                     //}
+                     //else
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Void, null, alreadySavedArrayLookupTable);
+                     //}
                      
-                     if (arrValue is Boolean)
-                     {
-                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Boolean, arrValue, alreadySavedArrayLookupTable);
-                     }
-                     else if (arrValue is Number)
-                     {
-                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Number, arrValue, alreadySavedArrayLookupTable);
-                     }
-                     else if (arrValue is String)
-                     {
-                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_String, arrValue, alreadySavedArrayLookupTable);
-                     }
-                     else if (arrValue is Array)
-                     {
-                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Array, arrValue, alreadySavedArrayLookupTable);
-                     }
-                     else
-                     {
-                        WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Void, null, alreadySavedArrayLookupTable);
-                     }
+                     // since v2.05
+                     
+                     var arrayElement:ClassInstance = CoreClasses.GetArrayElement (valuesArray, i);
+                     
+                     WriteTypeAndValue (binData, arrayElement.GetRealClassType (), arrayElement.GetRealValueType (), arrayElement.GetValueObject (), alreadySavedArrayLookupTable);
                   }
                }
             }
@@ -366,7 +378,7 @@ package player.design
          {
             var key:String = savedData.readUTF ();
             
-            var ci:ClassInstance = ReadNextVariableValue (savedData);
+            var ci:ClassInstance = ReadNextVariableValue (savedData, false);
 
             savedVariables [savedVariableId] = {mKey: key, mClassInstance: ci};
          }
@@ -405,13 +417,14 @@ package player.design
             //{
                //variableInstance.SetValueObject (savedVariable.mClassInstance.mValueObject);
                var classInstance:ClassInstance = savedVariable.mClassInstance as ClassInstance;
-               variableInstance.Assign (classInstance.GetRealClassDefinition (), classInstance.GetValueObject ());
+               //variableInstance.Assign (classInstance.GetRealClassDefinition (), classInstance.GetValueObject ());
+               CoreClasses.AssignValue (classInstance, variableInstance);
             //}
-         }
+         } // for
       }
    }
    
-   private static function ReadNextVariableValue (savedData:ByteArray):ClassInstance
+   private static function ReadNextVariableValue (savedData:ByteArray, forArrayElement:Boolean):ClassInstance
    {
       var type:int = savedData.readShort ();
       var value:Object;
@@ -442,7 +455,7 @@ package player.design
                var valuesArray:Array = new Array (arrLen);
                for (var i:int = 0; i < arrLen; ++ i)
                {
-                  valuesArray [i] = ReadNextVariableValue (savedData);
+                  valuesArray [i] = ReadNextVariableValue (savedData, true);
                }
                
                value = valuesArray ;
@@ -455,9 +468,15 @@ package player.design
          }
       } 
       
-      var ci:ClassInstance = new ClassInstance ();
-      ci.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (type));
-      ci.SetValueObject (value);
+      var ci:ClassInstance;
+      if (forArrayElement && value == null)
+         ci = null;
+      else
+      {
+         ci = new ClassInstance ();
+         ci.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (type));
+         ci.SetValueObject (value);
+      }
       
       return ci;
    }

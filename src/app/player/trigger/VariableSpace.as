@@ -165,10 +165,14 @@ package player.trigger
       {
          var vi:VariableInstance = mFirstVariableInstance;
          
-         // "vi != null" == "inputParamList != null"
+         // same length. "vi != null" == "inputParamList != null"
          while (vi != null) // && inputParamList != null) // the missed value sources should be appended at init process.
          {
-            vi.SetValueObject (inputParamList.EvaluateValueObject ());
+            // before v2.05
+            //vi.SetValueObject (inputParamList.EvaluateValueObject ());
+            // since v2.05
+            CoreClasses.AssignValue (inputParamList.GetVariableInstance (), vi);
+            
             vi = vi.mNextVariableInstanceInSpace;
             inputParamList = inputParamList.mNextParameter;
          }
@@ -178,9 +182,14 @@ package player.trigger
       {
          var vi:VariableInstance = mFirstVariableInstance;
          
+         // same length. "vi != null" == "outputParamList != null"
          while (vi != null) // && outputParamList != null) // the missed value targets should be appended at init process.
          {
-            outputParamList.AssignValueObject (vi.GetValueObject ());
+            // before v2.05
+            //outputParamList.AssignValueObject (vi.GetValueObject ());
+            // since v2.05
+            CoreClasses.AssignValue (vi, outputParamList.GetVariableInstance ());
+            
             vi = vi.mNextVariableInstanceInSpace;
             outputParamList = outputParamList.mNextParameter;
          }

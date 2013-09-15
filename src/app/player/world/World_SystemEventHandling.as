@@ -453,13 +453,13 @@
       if (handlerList == null)
          return;
       
-      var valueSource7:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, null); // is overlapped by some entities
-      var valueSource6:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, valueSource7); // alt down
-      var valueSource5:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, valueSource6); // shift down
-      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, valueSource5); // ctrl down
-      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, valueSource4); // button down
-      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, valueSource3); // world physics y
-      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, valueSource2); // world physics x
+      var valueSource7:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, null); // is overlapped by some entities
+      var valueSource6:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource7); // alt down
+      var valueSource5:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource6); // shift down
+      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource5); // ctrl down
+      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource4); // button down
+      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource3); // world physics y
+      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource2); // world physics x
       
       valueSource1.mValueObject = GetCurrentMouseX ();
       valueSource2.mValueObject = GetCurrentMouseY ();
@@ -475,7 +475,7 @@
       }
       else
       {
-         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), null, valueSource1); // entity
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, null, valueSource1); // entity
          valueSource0.mValueObject = shape;
          RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);
       }
@@ -567,11 +567,11 @@
       if (handlerList == null)
          return;
       
-      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, null);
-      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, valueSource4);
-      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, valueSource3);
-      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, valueSource2);
-      var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, valueSource1);
+      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, null);
+      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource4);
+      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource3);
+      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource2);
+      var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource1);
       
       valueSource0.mValueObject = exactKeyCode;
       valueSource1.mValueObject = event.charCode;

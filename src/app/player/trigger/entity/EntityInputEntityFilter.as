@@ -69,7 +69,7 @@ package player.trigger.entity
       {
          //var outputValueTarget:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter (false, null);
          mValueTarget.mValueObject = false;
-         var inputValueSource:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.GetEntityClassDefinition (), entity, null);
+         var inputValueSource:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity, null);
          
          // if (mFilterDefinition != null) // should not be null
          mFilterDefinition.DoCall (inputValueSource, mValueTarget); // outputValueTarget);
@@ -89,8 +89,8 @@ package player.trigger.entity
       {
          //var outputValueTarget:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter (false, null);
          mValueTarget.mValueObject = false;
-         var inputValueSource1:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.GetEntityClassDefinition (), entity2, null);
-         var inputValueSource0:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.GetEntityClassDefinition (), entity1, inputValueSource1);
+         var inputValueSource1:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity2, null);
+         var inputValueSource0:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity1, inputValueSource1);
          
          // if (mFilterDefinition != null) // should not be null
          mFilterDefinition.DoCall (inputValueSource0, mValueTarget); //outputValueTarget);

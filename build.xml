@@ -26,11 +26,11 @@
    <property name="dir.build.res"      value="${dir.build}/res" />
    <property name="dir.build.res-compiled"      value="${dir.build}/res-compiled" />
    <property name="dir.build.src"      value="${dir.build}/src" />
-   <property name="dir.release"        value="${basedir}/.release" />
-   <property name="dir.release.editor"        value="${basedir}/.release_editor" />
-   <property name="dir.release.unieditor"        value="${basedir}/.release_unieditor" />
-   <property name="dir.release.univiewer"        value="${basedir}/.release_univiewer" />
-   <property name="dir.release-for-test"        value="${basedir}/.test" />
+   <property name="dir.release"        value="${basedir}/##release" />
+   <property name="dir.release.editor"        value="${basedir}/#release_editor" />
+   <property name="dir.release.unieditor"        value="${basedir}/#release_unieditor" />
+   <property name="dir.release.univiewer"        value="${basedir}/#release_univiewer" />
+   <property name="dir.release-for-test"        value="${basedir}/#test" />
    
    <!-- -DForAir=true -->
    <condition property="program.as3compiler.nosuffix" value="${dir.flexsdk}/bin/amxmlc" else="${dir.flexsdk}/bin/mxmlc">

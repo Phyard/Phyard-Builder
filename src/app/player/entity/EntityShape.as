@@ -1409,8 +1409,6 @@ package player.entity {
       
       public function PutConnectedShapesInArray (shapes:Array):void
       {
-         var entityClass:ClassDefinition = CoreClasses.GetEntityClassDefinition ();
-         
          var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
          var hashtable:Dictionary = new Dictionary ();
          var anotherAnchor:SubEntityJointAnchor;
@@ -1424,7 +1422,7 @@ package player.entity {
                   if (hashtable [anotherAnchor.mShape] == null)
                   {
                      hashtable [anotherAnchor.mShape] = 1;
-                     shapes.push (ClassInstance.CreateClassInstance (entityClass, anotherAnchor.mShape));
+                     shapes.push (ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, anotherAnchor.mShape));
                   }
                }
             }
@@ -1486,13 +1484,11 @@ package player.entity {
       
       public function PutContactedShapesInArray (shapes:Array):void
       {
-         var entityClass:ClassDefinition = CoreClasses.GetEntityClassDefinition ();
-         
          var listElement:ListElement_EntityShape = mContactedShapeList;
          while (listElement != null)
          {
             if (shapes.indexOf (listElement.mEntityShape) < 0) // may be not efficient
-               shapes.push (ClassInstance.CreateClassInstance (entityClass, listElement.mEntityShape));
+               shapes.push (ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, listElement.mEntityShape));
             
             listElement = listElement.mNextListElement;
          }

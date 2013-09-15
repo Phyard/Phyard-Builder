@@ -44,6 +44,11 @@ package player.trigger
          mName = name;
       }
       
+      public function GetName ():String
+      {
+         return mName;
+      }
+      
       // forbit changing this value now.
       //public function SetShellClassDefinition (classDefinition:ClassDefinition):void
       //{

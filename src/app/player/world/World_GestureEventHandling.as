@@ -40,10 +40,10 @@
       if (handlerList == null)
          return;
       
-      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetStringClassDefinition (), null, null); // name
-      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetBooleanClassDefinition (), false, valueSource3); // cw / ccw
-      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, valueSource2); // angle
-      var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), -1, valueSource1);
+      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kStringClassDefinition, null, null); // name
+      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource3); // cw / ccw
+      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource2); // angle
+      var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, -1, valueSource1);
       
       valueSource3.mValueObject = gestureAnalyzeResult.mGestureType;
       valueSource2.mValueObject = gestureAnalyzeResult.mIsClockWise;

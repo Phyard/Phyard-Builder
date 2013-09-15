@@ -63,6 +63,11 @@ package player.trigger
          _mValueObject = valueObject;
       }
       
+      public function toString ():String
+      {
+         return "{class: " + _mRealClassDefinition.GetName () + ", value: " + _mValueObject + "}";
+      }
+      
       public function CloneClassInstance ():ClassInstance
       {
          var newCI:ClassInstance = new ClassInstance (); 

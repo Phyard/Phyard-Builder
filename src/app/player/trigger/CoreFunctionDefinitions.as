@@ -676,7 +676,7 @@ package player.trigger {
          CoreClasses.AssignValue (kTempClassInstanceForNewInstance, valueTarget.GetVariableInstance ());
       }
 
-      public static const kTempClassInstanceForComparing:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.GetBooleanClassDefinition (), false);
+      public static const kTempClassInstanceForComparing:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kBooelanClassDefinition, false);
 
       public static function CommonEquals (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -1050,7 +1050,7 @@ package player.trigger {
                if (texts != null)
                {
                   substrings = texts.concat ();
-                  CoreClasses.CovertArrayElementsToClassInstances (substrings, CoreClasses.GetStringClassDefinition ());
+                  CoreClasses.CovertArrayElementsToClassInstances (substrings, CoreClasses.kStringClassDefinition);
                }
             }
          }
@@ -1237,7 +1237,7 @@ package player.trigger {
          //   valueTarget.AssignValueObject (CoreClasses.Entity2String (entity));
          
          // since v2.05. A little non-compatible: old "null" vs new null.
-         valueTarget.AssignValueObject (CoreClasses.GetEntityClassDefinition ().ToString (entity));
+         valueTarget.AssignValueObject (CoreClasses.kEntityClassDefinition.ToString (entity));
       }
 
       public static function CollisionCategoryToString (valueSource:Parameter, valueTarget:Parameter):void
@@ -1250,7 +1250,7 @@ package player.trigger {
          //   valueTarget.AssignValueObject (CoreClasses.CCat2String (ccat));
          
          // since v2.05. A little non-compatible: old "null" vs new null.
-         valueTarget.AssignValueObject (CoreClasses.GetCCatClassDefinition ().ToString (ccat));
+         valueTarget.AssignValueObject (CoreClasses.kCCatClassDefinition.ToString (ccat));
       }
 
    //************************************************
@@ -1389,13 +1389,11 @@ package player.trigger {
       // for both Array type, compare each elements individually.
       // for other cases, use CoreClasses.CompareEqualsExactly
 
-      
-      private static const kArrayClass:ClassDefinition = CoreClasses.GetArrayClassDefinition ();
       private static function CompareByEachArrayElement (ci_1:ClassInstance, ci_2:ClassInstance, numRegisteredArrays:int = 0, registerdArrays:Dictionary = null, registedComparePairs:Dictionary = null):Boolean
       {
          if (ci_1._mRealClassDefinition == ci_2._mRealClassDefinition)
          {
-            if (ci_1._mRealClassDefinition == kArrayClass)
+            if (ci_1._mRealClassDefinition == CoreClasses.kArrayClassDefinition)
             {
                var values1:Array = ci_1._mValueObject as Array;
                var values2:Array = ci_2._mValueObject as Array;
@@ -1499,7 +1497,7 @@ package player.trigger {
          //   valueTarget.AssignValueObject (ConvertArrayToString (values));
          
          // since v2.05. A little non-compatible: old "null" vs new null.
-         valueTarget.AssignValueObject (CoreClasses.GetArrayClassDefinition ().ToString (values));
+         valueTarget.AssignValueObject (CoreClasses.kArrayClassDefinition.ToString (values));
       }
 
       public static function LargerThan (valueSource:Parameter, valueTarget:Parameter):void
@@ -2576,7 +2574,7 @@ package player.trigger {
          //else
          //   valueTarget.AssignValueObject ("scene#" + levelIndex + "[" + sceneDefine.mName + "]");
          
-         valueTarget.AssignValueObject (CoreClasses.GetSceneClassDefinition ().ToString (levelIndex));
+         valueTarget.AssignValueObject (CoreClasses.kSceneClassDefinition.ToString (levelIndex));
       }
       
       public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void
@@ -4888,7 +4886,7 @@ package player.trigger {
          var pointY:Number = valueSource.EvaluateValueObject () as Number;
          
          var shapes:Array = Global.GetCurrentWorld ().GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY);
-         CoreClasses.CovertArrayElementsToClassInstances (shapes, CoreClasses.GetEntityClassDefinition ())
+         CoreClasses.CovertArrayElementsToClassInstances (shapes, CoreClasses.kEntityClassDefinition);
          
          valueTarget.AssignValueObject (shapes);
       }
@@ -5865,7 +5863,7 @@ package player.trigger {
          
          var positions:Array = polyShape.GetVertexPositions (false);
          if (positions != null)
-            CoreClasses.CovertArrayElementsToClassInstances (positions, CoreClasses.GetNumberClassDefinition ())
+            CoreClasses.CovertArrayElementsToClassInstances (positions, CoreClasses.kNumberClassDefinition)
 
          valueTarget.AssignValueObject (positions);
       }
@@ -5898,7 +5896,7 @@ package player.trigger {
          
          var positions:Array = polyShape.GetVertexPositions (true);
          if (positions != null)
-            CoreClasses.CovertArrayElementsToClassInstances (positions, CoreClasses.GetNumberClassDefinition ())
+            CoreClasses.CovertArrayElementsToClassInstances (positions, CoreClasses.kNumberClassDefinition)
 
          valueTarget.AssignValueObject (positions);
       }

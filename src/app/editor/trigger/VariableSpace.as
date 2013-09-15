@@ -223,6 +223,8 @@ package editor.trigger {
          return false;
       }
       
+      // why use validVariableIndexes filters? (wondering at v2.05)
+      // 
       //public function GetVariableSelectListDataProviderByValueType (typeType:int, valueType:int, validVariableIndexes:Array = null):Array
       public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition, validVariableIndexes:Array = null):Array
       {

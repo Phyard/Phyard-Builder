@@ -72,8 +72,8 @@ package player.entity {
          
          if (mLoopToEndEventHandler != null)
          {
-            var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetModuleClassDefinition (), module, null);
-            var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), this, valueSource1);
+            var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kModuleClassDefinition, module, null);
+            var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, this, valueSource1);
             
             mWorld.IncStepStage ();
             mLoopToEndEventHandler.HandleEvent (valueSource0);

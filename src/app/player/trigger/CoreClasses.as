@@ -132,9 +132,22 @@ package player.trigger {
          GetCoreClassDefinition (CoreClassIds.ValueType_String).mToNumberFunc = String2Number;
          GetCoreClassDefinition (CoreClassIds.ValueType_String).mToBooleanFunc = String2Boolean;
          GetCoreClassDefinition (CoreClassIds.ValueType_String).mToStringFunc = DoNothing;
-         GetCoreClassDefinition (CoreClassIds.ValueType_Number).mValueConvertOrder = ClassDefinition.ValueConvertOrder_String;
+         GetCoreClassDefinition (CoreClassIds.ValueType_String).mValueConvertOrder = ClassDefinition.ValueConvertOrder_String;
          
          // ...
+         
+         // use constants instead now.
+         //GetSceneClassDefinition ();
+         //GetEntityClassDefinition ();
+         //GetCCatClassDefinition ();
+         //GetArrayClassDefinition ();
+         //GetModuleClassDefinition ();
+         //GetBooleanClassDefinition ();
+         //GetNumberClassDefinition ();
+         //GetStringClassDefinition ();
+         
+         //var iii:int = 999;
+         //trace ("iii as Number = " + (iii as Number)); // no null (0), still is 999. good.
       }
       
       public static function GetCoreClassDefinition (coreClassId:int):ClassDefinition_Core
@@ -145,77 +158,79 @@ package player.trigger {
          return classDefinition == null ? kVoidClassDefinition : classDefinition;
       }
       
-      private static var sSceneClassDefinition:ClassDefinition_Core = null;
-      public static function GetSceneClassDefinition ():ClassDefinition_Core
-      {
-         if (sSceneClassDefinition == null)
-            sSceneClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Scene);
-         
-         return sSceneClassDefinition;
-      }
+      //======
       
-      private static var sEntityClassDefinition:ClassDefinition_Core = null;
-      public static function GetEntityClassDefinition ():ClassDefinition_Core
-      {
-         if (sEntityClassDefinition == null)
-            sEntityClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Entity);
-         
-         return sEntityClassDefinition;
-      }
+      public static const kSceneClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Scene);
+      //public static function GetSceneClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
+      //{
+      //   if (sSceneClassDefinition == null)
+      //      sSceneClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Scene);
+      //   
+      //   return sSceneClassDefinition;
+      //}
       
-      private static var sCCatClassDefinition:ClassDefinition_Core = null;
-      public static function GetCCatClassDefinition ():ClassDefinition_Core
-      {
-         if (sCCatClassDefinition == null)
-            sCCatClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory);
-         
-         return sCCatClassDefinition;
-      }
+      public static const kEntityClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Entity);
+      //public static function GetEntityClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
+      //{
+      //   if (sEntityClassDefinition == null)
+      //      sEntityClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Entity);
+      //   
+      //   return sEntityClassDefinition;
+      //}
       
-      private static var sArrayClassDefinition:ClassDefinition_Core = null;
-      public static function GetArrayClassDefinition ():ClassDefinition_Core
-      {
-         if (sArrayClassDefinition == null)
-            sArrayClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Array);
-         
-         return sArrayClassDefinition;
-      }
+      public static const kCCatClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory);
+      //public static function GetCCatClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
+      //{
+      //   if (sCCatClassDefinition == null)
+      //      sCCatClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory);
+      //   
+      //   return sCCatClassDefinition;
+      //}
       
-      private static var sModuleClassDefinition:ClassDefinition_Core = null;
-      public static function GetModuleClassDefinition ():ClassDefinition_Core
-      {
-         if (sModuleClassDefinition == null)
-            sModuleClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Module);
-         
-         return sModuleClassDefinition;
-      }
+      public static const kArrayClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Array);
+      //public static function GetArrayClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
+      //{
+      //   if (sArrayClassDefinition == null)
+      //      sArrayClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Array);
+      //   
+      //   return sArrayClassDefinition;
+      //}
       
-      private static var sBooelanClassDefinition:ClassDefinition_Core = null;
-      public static function GetBooleanClassDefinition ():ClassDefinition_Core
-      {
-         if (sBooelanClassDefinition == null)
-            sBooelanClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Boolean);
-         
-         return sBooelanClassDefinition;
-      }
+      public static const kModuleClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Module);
+      //public static function GetModuleClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
+      //{
+      //   if (sModuleClassDefinition == null)
+      //      sModuleClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Module);
+      //   
+      //   return sModuleClassDefinition;
+      //}
       
-      private static var sNumberClassDefinition:ClassDefinition_Core = null;
-      public static function GetNumberClassDefinition ():ClassDefinition_Core
-      {
-         if (sNumberClassDefinition == null)
-            sNumberClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Number);
-         
-         return sNumberClassDefinition;
-      }
+      public static const kBooelanClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Boolean);
+      //public static function GetBooleanClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
+      //{
+      //   if (sBooelanClassDefinition == null)
+      //      sBooelanClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Boolean);
+      //   
+      //   return sBooelanClassDefinition;
+      //}
       
-      private static var sStringClassDefinition:ClassDefinition_Core = null;
-      public static function GetStringClassDefinition ():ClassDefinition_Core
-      {
-         if (sStringClassDefinition == null)
-            sStringClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_String);
-         
-         return sStringClassDefinition;
-      }
+      public static const kNumberClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Number);
+      //public static function GetNumberClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
+      //{
+      //   if (sNumberClassDefinition == null)
+      //      sNumberClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_Number);
+      //   
+      //   return sNumberClassDefinition;
+      //}
+      
+      public static const kStringClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_String);
+      //public static function GetStringClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
+      //{
+      //   if (sStringClassDefinition == null)
+      //      sStringClassDefinition = GetCoreClassDefinition (CoreClassIds.ValueType_String);
+      //   
+      //   return sStringClassDefinition;
+      //}
       
 //==============================================================
 // 
@@ -532,9 +547,13 @@ package player.trigger {
             else // at least one is primitive
             {
                if (class_1.mValueConvertOrder > class_2.mValueConvertOrder) // v2 is target
+               {
                   return ci_2._mValueObject == class_1.mValueConvertFunctions [class_2.mValueConvertOrder] (ci_1._mValueObject);
+               }
                else // if (class_1.mValueConvertOrder < class_2.mValueConvertOrder) // v1 is target
+               {
                   return ci_1._mValueObject == class_2.mValueConvertFunctions [class_1.mValueConvertOrder] (ci_2._mValueObject);
+               }
             }
          }
       }

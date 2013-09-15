@@ -227,7 +227,7 @@ package player.entity {
          var  list_element:ListElement_EventHandler = mReachLowerLimitEventHandlerList;
          
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, this, null);
          
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -244,7 +244,7 @@ package player.entity {
          var  list_element:ListElement_EventHandler = mReachUpperLimitEventHandlerList;
          
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, this, null);
          
          mWorld.IncStepStage ();
          while (list_element != null)

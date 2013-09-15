@@ -208,9 +208,9 @@ package player.trigger.entity
          return false;
       }
       
-      private var mTimerEventHandlerValueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), null, null);
-      private var mTimerEventHandlerValueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetEntityClassDefinition (), null, mTimerEventHandlerValueSource2);
-      private var mTimerEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetNumberClassDefinition (), 0, mTimerEventHandlerValueSource1);
+      private var mTimerEventHandlerValueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, null, null);
+      private var mTimerEventHandlerValueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, null, mTimerEventHandlerValueSource2);
+      private var mTimerEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, mTimerEventHandlerValueSource1);
       private var mTimerEventHandlerValueSourceList:Parameter = mTimerEventHandlerValueSource0;
       
       public function HandleWorldTimerEvent ():void

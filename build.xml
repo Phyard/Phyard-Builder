@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="CIEditor" basedir="." default="release-editor">
+<project name="CIEditor" basedir="." default="debug-editor">
 
    <condition property="file.local.properties" value="local.properties.Windows1" else="local.properties.Linux">
       <os family="windows" />
@@ -17,8 +17,6 @@
          <isset property="Path.SecureSWF"/>
       </not>
    </condition>
-   
-   <available file="${file.local.properties}" property="is.properties.file.available"/>
 
    <property name="dir.flexsdk"        value="${Path.FlexSDK}" />
    <property name="dir.secureswf"        value="${Path.SecureSWF}" />
@@ -95,10 +93,16 @@
       </and>
    </condition>
 
-   <property name="program.secureSWF"        value="${dir.secureswf}/ssCLI" />
-   <condition property="program.secureSWF" value="${program.secureSWF}.exe">
+   <property name="program.secureSWF.without.postsuffix"        value="${dir.secureswf}/ssCLI" />
+   <condition property="program.secureSWF" value="${program.secureSWF.without.postsuffix}.exe">
       <os family="windows" />
    </condition>
+   <condition property="program.secureSWF" value="${program.secureSWF.without.postsuffix}">
+      <not>
+         <os family="windows" />
+      </not>
+   </condition>
+   <available file="${program.secureSWF}" property="has.program.secureSWF"/>
 
    <path id="java-class-path">
       <fileset dir="${dir.third-party}/java_libs" includes="**/*.jar" />
@@ -238,7 +242,7 @@
       <mkdir dir="${dir.release}" />
       <delete file="${dir.release}/editor.swf" quiet="true" />
 
-      <exec dir="${dir.output.editor}" executable="${dir.secureswf}/ssCLI">
+      <exec dir="${dir.output.editor}" executable="${program.secureSWF}">
          <arg line="${dir.output.editor}/editor_unsecure.swf"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.release}"/>
          <arg line="-wrap:3"/>
@@ -308,7 +312,7 @@
       <mkdir dir="${dir.release}" />
       <delete file="${dir.release}/unieditor.swf" quiet="true" />
 
-      <exec dir="${dir.output.unieditor}" executable="${dir.secureswf}/ssCLI">
+      <exec dir="${dir.output.unieditor}" executable="${program.secureSWF}">
          <arg line="${dir.output.unieditor}/unieditor_unsecure.swf"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.output.unieditor}"/>
          <arg line="-wrap:0"/>
@@ -378,7 +382,7 @@
       <mkdir dir="${dir.release}" />
       <delete file="${dir.release}/univiewer.swf" quiet="true" />
 
-      <exec dir="${dir.output.univiewer}" executable="${dir.secureswf}/ssCLI">
+      <exec dir="${dir.output.univiewer}" executable="${program.secureSWF}">
          <arg line="${dir.output.univiewer}/univiewer_unsecure.swf"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.output.univiewer}"/>
          <arg line="-wrap:0"/>
@@ -456,7 +460,7 @@
       <mkdir dir="${dir.release}" />
       <delete file="${dir.release}/${plugin-name}.swf" quiet="true" />
 
-      <exec dir="${dir.output}-plugin-${plugin-name}" executable="${dir.secureswf}/ssCLI">
+      <exec dir="${dir.output}-plugin-${plugin-name}" executable="${program.secureSWF}">
          <arg line="${dir.output}-plugin-${plugin-name}/${plugin-name}_unsecure.swf"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.release}/${plugin-name}"/>
          <arg line="-wrap:0"/>
@@ -564,7 +568,7 @@
       <mkdir dir="${dir.release}" />
       <delete file="${dir.release}/${library-name}.swc" quiet="true" />
 
-      <exec dir="${dir.output}-library-${library-name}" executable="${dir.secureswf}/ssCLI">
+      <exec dir="${dir.output}-library-${library-name}" executable="${program.secureSWF}">
          <arg line="${dir.output}-library-${library-name}/${library-name}_unsecure.swc"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.release}/${library-name}"/>
          <arg line="-wrap:0"/>

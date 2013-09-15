@@ -1,5 +1,8 @@
 LocalSettings.properties*
-\#release_**
+!##release/editor.htm
+\##release/**/*
+\##release/*
+\#output**
 .build
 .classpath
 .project

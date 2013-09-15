@@ -482,7 +482,8 @@ package player.trigger {
             {
                // both are not primitive classes (ClassDefinition.ValueConvertOrder_Others)
                
-               if (//sourceClass.mExtendOrder > targetShellClass.mExtendOrder &&
+               if (targetShellClass == sourceClass ||
+                  //sourceClass.mExtendOrder > targetShellClass.mExtendOrder &&
                    sourceClass.mAncestorClasses.indexOf (targetShellClass) >= 0)
                {
                   //targetVi._mRealClassDefinition = sourceClass;

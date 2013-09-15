@@ -1,10 +1,7 @@
 LocalSettings.properties*
+#release_**/*
+#release_editor
 .build
-.release
-.release.*
-.release_**/*
-.release_editor
 .classpath
 .project
-.test.*
 

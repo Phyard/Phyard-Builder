@@ -27,6 +27,7 @@
                <mx:Spacer width="60"/>
                <mx:CheckBox id="CheckBox_RoundJoint" label="Round Joints"/>
             </mx:HBox>
+            <!--
             <mx:HBox width="100%">
                <mx:Spacer width="60"/>
                <mx:CheckBox id="CheckBox_RoundCorner" label="Round Corners" click="OnRoundCornerClick();" width="22%"/>
@@ -41,6 +42,7 @@
                <mx:NumericStepper id="NumericStepper_CornerEclipseHeight" stepSize="1" minimum="0" maximum="255" value="0" width="80" />
                <mx:Label text="(pixels)"/>
             </mx:HBox>
+            -->
          </mx:VBox>
          <mx:Spacer height="100%"/>
       </mx:VBox>
@@ -122,12 +124,19 @@
             //CheckBox_RoundCorners.selected = mParams.mIsRoundCorners;
             CheckBox_RoundJoint.selected = mParams.mIsRoundJoint;
             
-            CheckBox_RoundCorner.selected = mParams.mIsRoundCorner;
-            NumericStepper_CornerEclipseWidth.value = mParams.mCornerEclipseWidth;
-            NumericStepper_CornerEclipseHeight.value = mParams.mCornerEclipseHeight;
+            //CheckBox_RoundCorner.selected = mParams.mIsRoundCorner;
+            //NumericStepper_CornerEclipseWidth.value = mParams.mCornerEclipseWidth;
+            //NumericStepper_CornerEclipseHeight.value = mParams.mCornerEclipseHeight;
             
-            OnRoundCornerClick ();
+            
+            
+            //OnRoundCornerClick ();
          }
+         
+         //private function OnRoundCornerClick ():void
+         //{
+         //   CheckBox_RoundJoint.enabled = (! CheckBox_RoundCorner.selected);
+         //}
 
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
@@ -138,11 +147,6 @@
          private function OnEntityWidthHeightSettingPanelCreationComplete ():void
          {
             WidthHeightSettingPanel.SetValues (mParams);
-         }
-         
-         private function OnRoundCornerClick ():void
-         {
-            CheckBox_RoundJoint.enabled = (! CheckBox_RoundCorner.selected);
          }
 
          public function SetConfirmFunc (onConfirm:Function):void
@@ -172,9 +176,9 @@
                //mParams.mIsRoundCorners = CheckBox_RoundCorners.selected;
                mParams.mIsRoundJoint = CheckBox_RoundJoint.selected;
                
-               mParams.mIsRoundCorner = CheckBox_RoundCorner.selected;
-               mParams.mCornerEclipseWidth = NumericStepper_CornerEclipseWidth.value;
-               mParams.mCornerEclipseHeight = NumericStepper_CornerEclipseHeight.value;
+               //mParams.mIsRoundCorner = CheckBox_RoundCorner.selected;
+               //mParams.mCornerEclipseWidth = NumericStepper_CornerEclipseWidth.value;
+               //mParams.mCornerEclipseHeight = NumericStepper_CornerEclipseHeight.value;
             }
 
             if (BasicSettingPanel != null)

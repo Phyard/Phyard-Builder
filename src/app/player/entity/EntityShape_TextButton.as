@@ -288,7 +288,8 @@ package player.entity {
          var displayHeight:Number = displayHalfHeight +  displayHalfHeight;
          var displayBorderThickness_MouseOver:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness_MouseOver);
          
-         var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
+         //var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
+         var isRoundCorner:Boolean = false;
          
          GraphicsUtil.ClearAndDrawRect (
                   mBackgroundShape_MouseOver,

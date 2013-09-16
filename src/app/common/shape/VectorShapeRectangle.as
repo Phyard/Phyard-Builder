@@ -47,41 +47,41 @@ package common.shape
       
       // corner
       
-      protected var mCornerEclipseWidth:Number = 0.0;
-      protected var mCornerEclipseHeight:Number = 0.0;
+      //protected var mCornerEclipseWidth:Number = 0.0;
+      //protected var mCornerEclipseHeight:Number = 0.0;
 
-      public function GetCornerEclipseWidth ():Number
-      {
-         return mCornerEclipseWidth;
-      }
+      //public function GetCornerEclipseWidth ():Number
+      //{
+      //   return mCornerEclipseWidth;
+      //}
 
-      public function SetCornerEclipseWidth (ellipseWidth:Number):void
-      {
-         mCornerEclipseWidth = Math.abs (ellipseWidth);
-      }
+      //public function SetCornerEclipseWidth (ellipseWidth:Number):void
+      //{
+      //   mCornerEclipseWidth = Math.abs (ellipseWidth);
+      //}
 
-      public function GetCornerEclipseHeight ():Number
-      {
-         return mCornerEclipseHeight;
-      }
+      //public function GetCornerEclipseHeight ():Number
+      //{
+      //   return mCornerEclipseHeight;
+      //}
 
-      public function SetCornerEclipseHeight (ellipseHeight:Number):void
-      {
-         mCornerEclipseHeight = Math.abs (ellipseHeight);
-      }
+      //public function SetCornerEclipseHeight (ellipseHeight:Number):void
+      //{
+      //   mCornerEclipseHeight = Math.abs (ellipseHeight);
+      //}
       
-      public function IsRoundCorner ():Boolean
-      {
-         return (mAttributeBits & Flag_RoundCorner) != 0;
-      }
-      
-      public function SetRoundCorner (roundCorner:Boolean):void
-      {
-         if (roundCorner)
-            mAttributeBits |= Flag_RoundCorner;
-         else
-            mAttributeBits &= ~Flag_RoundCorner;
-      }
+      //public function IsRoundCorner ():Boolean
+      //{
+      //   return (mAttributeBits & Flag_RoundCorner) != 0;
+      //}
+      //
+      //public function SetRoundCorner (roundCorner:Boolean):void
+      //{
+      //   if (roundCorner)
+      //      mAttributeBits |= Flag_RoundCorner;
+      //   else
+      //      mAttributeBits &= ~Flag_RoundCorner;
+      //}
 
 //==============================================
 // for playing

@@ -1338,9 +1338,10 @@ package editor.entity.dialog {
                   //values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
                   values.mIsRoundJoint = (vectorShape as EntityVectorShapeRectangle).IsRoundJoint ();
                   
-                  values.mIsRoundCorner = (vectorShape as EntityVectorShapeRectangle).IsRoundCorner ();
-                  values.mCornerEclipseWidth = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseWidth ();
-                  values.mCornerEclipseHeight = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseHeight ();
+                  // cancelled
+                  //values.mIsRoundCorner = (vectorShape as EntityVectorShapeRectangle).IsRoundCorner ();
+                  //values.mCornerEclipseWidth = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseWidth ();
+                  //values.mCornerEclipseHeight = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseHeight ();
                   
                   if (Define.IsBombShape (values.mAiType))
                      EditorContext.ShowModalDialog (ShapeRectangleBombSettingDialog, ConfirmSettingEntityProperties, values);
@@ -1847,9 +1848,10 @@ package editor.entity.dialog {
                   //(vectorShape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
                   (vectorShape as EntityVectorShapeRectangle).SetRoundJoint (params.mIsRoundJoint);
                   
-                  (vectorShape as EntityVectorShapeRectangle).SetRoundCorner (params.mIsRoundCorner);
-                  (vectorShape as EntityVectorShapeRectangle).SetCornerEclipseWidth (params.mCornerEclipseWidth);
-                  (vectorShape as EntityVectorShapeRectangle).SetCornerEclipseHeight (params.mCornerEclipseHeight);
+                  // cancllled
+                  //(vectorShape as EntityVectorShapeRectangle).SetRoundCorner (params.mIsRoundCorner);
+                  //(vectorShape as EntityVectorShapeRectangle).SetCornerEclipseWidth (params.mCornerEclipseWidth);
+                  //(vectorShape as EntityVectorShapeRectangle).SetCornerEclipseHeight (params.mCornerEclipseHeight);
                }
                else if (entity is EntityVectorShapePolygon)
                {

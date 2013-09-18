@@ -55,9 +55,9 @@ package player.entity {
 //   
 //=============================================================
       
-      override protected function SetModuleIndexByAPI_Internal (moduleIndex:int):void
+      override protected function SetModuleIndexByAPI_Internal (moduleIndex:int):Boolean
       {
-         SetModuleIndex (moduleIndex);
+         return SetModuleIndex (moduleIndex);
       }
       
       override public function GetModuleIndex ():int
@@ -75,11 +75,14 @@ package player.entity {
       protected var mModuleInstance:ModuleInstance; // should not be null
       
       // for calling in loading 
-      public function SetModuleIndex (moduleIndex:int):void
+      public function SetModuleIndex (moduleIndex:int):Boolean
       {
-         if (mModuleIndex == moduleIndex && mModuleInstance != null)
+         if (mModuleIndex == moduleIndex)
          {
-            return;
+            if ((mModuleIndex >= 0) == (mModuleInstance != null))
+            {
+               return false;
+            }
          }
          
          mModuleIndex = moduleIndex;
@@ -87,6 +90,8 @@ package player.entity {
          
          // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 
+         
+         return true;
       }
 
 //=============================================================

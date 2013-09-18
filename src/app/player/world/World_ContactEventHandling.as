@@ -163,7 +163,7 @@ private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxySha
    
    -- contact_info.mNumContactPoints;
    
-   //trace ("contact_info#" + contact_id + "'s.mNumContactPoints = " + contact_info.mNumContactPoints);
+//trace ("contact_info#" + contact_id + "'s.mNumContactPoints = " + contact_info.mNumContactPoints);
    
    //if (contact_info.mNumContactPoints <= 0)
    //{

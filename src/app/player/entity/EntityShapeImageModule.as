@@ -38,17 +38,18 @@ package player.entity {
       // for calling in APIs
       public function SetModuleIndexByAPI (moduleIndex:int, loopToEndEventHandler:EntityEventHandler):void
       {
-         SetModuleIndexByAPI_Internal (moduleIndex);
+         if (SetModuleIndexByAPI_Internal (moduleIndex))
+         {
+            //RebuildShapePhysicsInternal (); // ! bug, the old one is not destroyed.
+            RebuildShapePhysics ();
+         }
          
          mLoopToEndEventHandler = loopToEndEventHandler;
-         
-         //RebuildShapePhysicsInternal (); // ! bug, the old one is not destroyed.
-         RebuildShapePhysics ();
       }
       
-      protected function SetModuleIndexByAPI_Internal (moduleIndex:int):void
+      protected function SetModuleIndexByAPI_Internal (moduleIndex:int):Boolean
       {
-         // to override
+         return false; // to override
       }
       
       protected function GetModuleInstance ():ModuleInstance

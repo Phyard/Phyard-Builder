@@ -103,9 +103,9 @@ package player.entity {
 //   
 //=============================================================
       
-      override protected function SetModuleIndexByAPI_Internal (moduleIndex:int):void
+      override protected function SetModuleIndexByAPI_Internal (moduleIndex:int):Boolean
       {
-         SetModuleIndexUp (moduleIndex);
+         return SetModuleIndexUp (moduleIndex);
       }
       
       override public function GetModuleIndex ():int
@@ -126,13 +126,23 @@ package player.entity {
       protected var mModuleInstanceOver:ModuleInstance = null;
       protected var mModuleInstanceDown:ModuleInstance = null;
       
-      public function SetModuleIndexUp (moduleIndex:int):void
+      public function SetModuleIndexUp (moduleIndex:int):Boolean
       {
+         if (mModuleIndexUp == moduleIndex)
+         {
+            if ((mModuleIndexUp >= 0) == (mModuleInstanceUp != null))
+            {
+               return false;
+            }
+         }
+         
          mModuleIndexUp = moduleIndex;
          mModuleInstanceUp = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexUp));
          
          // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
-         DelayUpdateAppearance (); 
+         DelayUpdateAppearance ();
+         
+         return true;
       }
       
       public function GetModuleIndexOver ():int
@@ -142,6 +152,14 @@ package player.entity {
 
       public function SetModuleIndexOver (moduleIndex:int):void
       {
+         if (mModuleIndexOver == moduleIndex)
+         {
+            if ((mModuleIndexOver >= 0) == (mModuleInstanceOver != null))
+            {
+               return;
+            }
+         }
+         
          // mModuleIndexUp should be set earlier than this
          mModuleIndexOver = moduleIndex;
          if (mModuleIndexOver >= 0)
@@ -165,6 +183,14 @@ package player.entity {
 
       public function SetModuleIndexDown (moduleIndex:int):void
       {
+         if (mModuleIndexDown == moduleIndex)
+         {
+            if ((mModuleIndexDown >= 0) == (mModuleInstanceDown != null))
+            {
+               return;
+            }
+         }
+         
          // mModuleIndexUp should be set earlier than this
          mModuleIndexDown = moduleIndex;
          if (mModuleIndexDown >= 0)

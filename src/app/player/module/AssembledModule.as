@@ -45,6 +45,7 @@ package player.module {
          }
       }
       
+      // frameIndex should be always 0
       override public function BuildPhysicsProxy (frameIndex:int, physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
          for each (var moudlePart:ModulePart in mModuleParts)

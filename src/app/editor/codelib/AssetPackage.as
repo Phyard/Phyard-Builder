@@ -43,12 +43,7 @@ package editor.codelib {
    
    import editor.asset.Asset;
    import editor.asset.Linkable;
-   
-   import editor.trigger.FunctionDefinition;
-   import editor.trigger.CodeSnippet;
-   import editor.trigger.FunctionDeclaration;
-   import editor.trigger.FunctionDeclaration_Custom;
-   
+      
    import editor.display.dialog.NameSettingDialog;
    
    import editor.EditorContext;

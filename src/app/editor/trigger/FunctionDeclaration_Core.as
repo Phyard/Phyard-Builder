@@ -27,13 +27,16 @@ package editor.trigger {
             }
          }
          
-         super (id, name, description, inputDefinitions, returnDefinitions, showUpInApiMenu);
+         //super (id, name, description, inputDefinitions, returnDefinitions, showUpInApiMenu);
+         super (id, name, description, showUpInApiMenu);
+         AddInputVariableFromDefinitions (inputDefinitions);
+         AddOutputVariableFromDefinitions (returnDefinitions);
          
          ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
          
-         var result:String = CheckConsistent (mFunctionDeclaration_Common);
+         var result:String = CheckConsistent (CoreFunctionDeclarations.GetCoreFunctionDeclaration (id));
          if (result != null)
-            throw new Error ("not consistent! id = " + id + ", reaspm: " + result);
+            throw new Error ("core api not consistent! id = " + id + ", name = " + name + ", reaspm: " + result);
       }
       
       override public function GetType ():int 

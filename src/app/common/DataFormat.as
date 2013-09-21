@@ -3040,7 +3040,8 @@ package common {
                //<<
             
                TriggerFormatHelper.FunctionDefine2FunctionDefinition (scene, functionDefine, functionAsset.GetCodeSnippet (), functionAsset.GetCodeSnippet ().GetOwnerFunctionDefinition (), true, classRefIndex_CorrectionTable, false);
-               functionAsset.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
+               //functionAsset.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
+               functionAsset.GetFunctionDefinition ().NotifyModified ();
             }
             
             if (functionAsset != null)

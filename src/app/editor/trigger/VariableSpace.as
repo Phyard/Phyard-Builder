@@ -224,11 +224,11 @@ package editor.trigger {
       }
       
       // why use validVariableIndexes filters? (wondering at v2.05)
-      // 
+      // - ok, after merging FunctionDeclaration and FunctionDefinition, validVariableIndexes param is removed.
       //public function GetVariableSelectListDataProviderByValueType (typeType:int, valueType:int, validVariableIndexes:Array = null):Array
-      public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition, validVariableIndexes:Array = null):Array
+      public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition):Array
       {
-         var dataList:Array = GetVariableSelectListDataProvider (variableDefinition, validVariableIndexes);
+         var dataList:Array = GetVariableSelectListDataProvider (variableDefinition); //, validVariableIndexes);
          
          if (variableDefinition.AllowVariablesOfOtherClasses () && HasVariablesSatisfiedBy (variableDefinition, true, true))
          {
@@ -242,7 +242,7 @@ package editor.trigger {
             dataList.push (item);
             
             // ...
-            GetVariableSelectListDataProvider (variableDefinition, null, 
+            GetVariableSelectListDataProvider (variableDefinition,// null, 
                                                null, null, true,
                                                dataList);
             
@@ -254,7 +254,7 @@ package editor.trigger {
 
       // labelPrefix and dataList are both null or non-null
       private function GetVariableSelectListDataProvider ( variableDefinition:VariableDefinition, 
-                                                           validVariableIndexes:Array = null,
+                                                           //validVariableIndexes:Array = null,
                                                            labelPrefix:String = null, 
                                                            propertyOwnerVi:VariableInstance = null,
                                                            inPhaseForAddingVariablesOfOtherClasses:Boolean = false,
@@ -281,11 +281,11 @@ package editor.trigger {
          
          for (var i:int = 0; i < mVariableInstances.length; ++ i)
          {  
-            if (validVariableIndexes != null)
-            {
-               if (validVariableIndexes.indexOf (i) < 0)
-                  continue;
-            }
+            //if (validVariableIndexes != null)
+            //{
+            //   if (validVariableIndexes.indexOf (i) < 0)
+            //      continue;
+            //}
             
             vi = mVariableInstances [i] as VariableInstance;
             viDef = GetVariableInstanceAt (i).GetVariableDefinition ();
@@ -331,7 +331,8 @@ package editor.trigger {
                {
                   //if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false, inPhaseForAddingVariablesOfOtherClasses))
                   //{
-                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProvider (variableDefinition, null, generalLabel, vi, inPhaseForAddingVariablesOfOtherClasses, dataList);
+                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProvider (variableDefinition, //null, 
+                                                                                       generalLabel, vi, inPhaseForAddingVariablesOfOtherClasses, dataList);
                   //}
                }
             }

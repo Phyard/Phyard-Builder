@@ -169,7 +169,8 @@ package editor.trigger {
          codeSnippet.CopyCallingsFrom (scene, sameAsSourceScene, this, 0, callingIds);
          if (ownerFunctionDefinition.IsCustom ())
          {
-            ownerFunctionDefinition.SybchronizeDeclarationWithDefinition ();
+            //ownerFunctionDefinition.SybchronizeDeclarationWithDefinition ();
+            ownerFunctionDefinition.NotifyModified ();
          }
          
          return codeSnippet;

@@ -332,13 +332,14 @@ package editor.trigger {
          return new ValueTarget_Variable (variableSpace.GetNullVariableInstance ());
       }
       
-      public function CreateControlForVariableValueTarget (valueTargetVariable:ValueTarget_Variable, validVariableIndexes:Array = null):UIComponent
+      //public function CreateControlForVariableValueTarget (valueTargetVariable:ValueTarget_Variable, validVariableIndexes:Array = null):UIComponent
+      public function CreateControlForVariableValueTarget (valueTargetVariable:ValueTarget_Variable):UIComponent
       {
          var currentVariable:VariableInstance = valueTargetVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
          //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetClassType (), GetValueType (), validVariableIndexes);
-         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this, validVariableIndexes);
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this); //, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
@@ -395,7 +396,7 @@ package editor.trigger {
          }
          else if (entityValueSource is ValueSource_Variable)
          {
-            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable); // , null);
          }
          else
          {
@@ -403,7 +404,7 @@ package editor.trigger {
          }
          
          //var propertyValueTargetTontrol:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueTarget (propertyValueTarget, null);
-         var propertyValueTargetTontrol:UIComponent = this.CreateControlForVariableValueTarget (propertyValueTarget, null);
+         var propertyValueTargetTontrol:UIComponent = this.CreateControlForVariableValueTarget (propertyValueTarget); //, null);
          
          var box:HBox = new HBox ();
          entityValueSourceControl.percentWidth = 50;
@@ -522,13 +523,14 @@ package editor.trigger {
          return new ValueSource_Variable (variableSpace.GetNullVariableInstance ());
       }
       
-      public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable, validVariableIndexes:Array = null):UIComponent
+      //public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable, validVariableIndexes:Array = null):UIComponent
+      public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable):UIComponent
       {
          var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
 
          //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetClassType (), GetValueType (), validVariableIndexes);
-         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this, validVariableIndexes);
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this); //, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
@@ -607,7 +609,7 @@ package editor.trigger {
          }
          else if (entityValueSource is ValueSource_Variable)
          {
-            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable); //, null);
          }
          else
          {
@@ -615,7 +617,7 @@ package editor.trigger {
          }
          
          //var propertyValueSourceControl:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueSource (propertyValueSource, null);
-         var propertyValueSourceControl:UIComponent = this.CreateControlForVariableValueSource (propertyValueSource, null);
+         var propertyValueSourceControl:UIComponent = this.CreateControlForVariableValueSource (propertyValueSource); //, null);
          
          var box:HBox = new HBox ();
          entityValueSourceControl.percentWidth = 50;

@@ -3807,7 +3807,9 @@ package editor.world {
          if (sFunctionDeclarations [function_id] != null)
             throw new Error ("Duplicated API ID: " + function_id);
          
-         sFunctionDeclarations [function_id] = new FunctionDeclaration_PreDefined (function_id, function_name, "", function_name, function_name, param_defines, return_defines);
+         var functionDeclaration:FunctionDeclaration = new FunctionDeclaration_PreDefined (function_id, function_name, "", function_name, function_name, param_defines, return_defines);
+         
+         sFunctionDeclarations [function_id] = functionDeclaration;
 
          if (codePackage != null)
             codePackage.AddFunctionDeclaration (sFunctionDeclarations [function_id]);

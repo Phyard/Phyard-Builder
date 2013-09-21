@@ -60,15 +60,15 @@ package editor.trigger {
          return mFunctionDeclaration;
       }
       
-      public function GetFunctionType ():int
-      {
-         return mFunctionDeclaration.GetType ();
-      }
+      //public function GetFunctionType ():int
+      //{
+      //   return mFunctionDeclaration.GetType ();
+      //}
       
-      public function GetFunctionId ():int
-      {
-         return mFunctionDeclaration.GetID ();
-      }
+      //public function GetFunctionId ():int
+      //{
+      //   return mFunctionDeclaration.GetID ();
+      //}
       
       public function GetNumInputs ():int
       {

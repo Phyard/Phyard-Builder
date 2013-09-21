@@ -1007,16 +1007,17 @@
             }
             else if (value_source is ValueSource_Variable)
             {
-               var validVariableIndexes:Array = null;
-               var space_type:int = (value_source as ValueSource_Variable).GetVariableSpaceType ();
-
-               if (space_type == ValueSpaceTypeDefine.ValueSpace_Input)
-               {
-                  var ownerFuncDeclaration:FunctionDeclaration = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration ();
-                  validVariableIndexes = ownerFuncDeclaration.GetInputVariableIndexesSatisfy (variable_def);
-               }
-
-               value_control = variable_def.CreateControlForVariableValueSource (value_source as ValueSource_Variable, validVariableIndexes)
+               //var validVariableIndexes:Array = null;
+               //var space_type:int = (value_source as ValueSource_Variable).GetVariableSpaceType ();
+               //
+               //if (space_type == ValueSpaceTypeDefine.ValueSpace_Input)
+               //{
+               //   var ownerFuncDeclaration:FunctionDeclaration = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration ();
+               //   validVariableIndexes = ownerFuncDeclaration.GetInputVariableIndexesSatisfy (variable_def);
+               //}
+               //
+               //value_control = variable_def.CreateControlForVariableValueSource (value_source as ValueSource_Variable, validVariableIndexes)
+               value_control = variable_def.CreateControlForVariableValueSource (value_source as ValueSource_Variable);
             }
             else if (value_source is ValueSource_EntityProperty)
             {
@@ -1057,16 +1058,17 @@
                value_control = variable_def.CreateControlForNullValueTarget (value_target as ValueTarget_Null);
             else if (value_target is ValueTarget_Variable)
             {
-               var validVariableIndexes:Array = null;
-               var space_type:int = (value_target as ValueTarget_Variable).GetVariableSpaceType ();
-
-               if (space_type == ValueSpaceTypeDefine.ValueSpace_Output)
-               {
-                  var ownerFuncDeclaration:FunctionDeclaration = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration ();
-                  validVariableIndexes = ownerFuncDeclaration.GetOutputVariableIndexesSatisfiedBy (variable_def);
-               }
-
-               value_control = variable_def.CreateControlForVariableValueTarget (value_target as ValueTarget_Variable, validVariableIndexes);
+               //var validVariableIndexes:Array = null;
+               //var space_type:int = (value_target as ValueTarget_Variable).GetVariableSpaceType ();
+               //
+               //if (space_type == ValueSpaceTypeDefine.ValueSpace_Output)
+               //{
+               //   var ownerFuncDeclaration:FunctionDeclaration = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration ();
+               //   validVariableIndexes = ownerFuncDeclaration.GetOutputVariableIndexesSatisfiedBy (variable_def);
+               //}
+               //
+               //value_control = variable_def.CreateControlForVariableValueTarget (value_target as ValueTarget_Variable, validVariableIndexes);
+               value_control = variable_def.CreateControlForVariableValueTarget (value_target as ValueTarget_Variable);
             }
             else if (value_target is ValueTarget_EntityProperty)
             {
@@ -1266,10 +1268,10 @@
             {
                AppendContextMenuItem (sprite, "from Direct Entity", isForTarget ? OnSelectValueSource_Direct_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_Direct_ForEntityPropertyOwner, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
-               if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
+               if (ownerFuncDefinition.GetInputVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Input Entity Variable", isForTarget ? OnSelectValueSource_InputVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_InputVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
 
-               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+               if (ownerFuncDefinition.GetLocalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Local Entity Variable", isForTarget ? OnSelectValueSource_LocalVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_LocalVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
 
                //AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Register);
@@ -1296,10 +1298,10 @@
 
                AppendContextMenuItem (sprite, "from Direct Value", OnSelectValueSource_Direct, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
-               if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
+               if (ownerFuncDefinition.GetInputVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Input Variable", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
 
-               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+               if (ownerFuncDefinition.GetLocalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Local Variable", OnSelectValueSource_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
 
                if (! mIsDesignIndependentCustomFunction)
@@ -2013,10 +2015,10 @@
 
             AppendContextMenuItem (sprite, "to Nothing", OnSelectValueTarget_Null, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
-            if (ownerFuncDefinition.HasOutputsSatisfiedBy (variableDefinition))
+            if (ownerFuncDefinition.GetOutputVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                AppendContextMenuItem (sprite, "to Output Variables", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Output);
 
-            if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+            if (ownerFuncDefinition.GetLocalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
 
             if (! mIsDesignIndependentCustomFunction)
@@ -2560,7 +2562,8 @@
                RetrieveCurrentCommandParameterValuesFromControls (true);
 
                var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
-               ownerFuncDefinition.SybchronizeDeclarationWithDefinition ();
+               //ownerFuncDefinition.SybchronizeDeclarationWithDefinition ();
+               ownerFuncDefinition.NotifyModified ();
 
                ValidateFunctionCallingLineDatas (ownerFuncDefinition.GetFunctionDeclaration ());
 
@@ -2590,8 +2593,8 @@
                RetrieveCurrentCommandParameterValuesFromControls (true);
 
                var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
-               ownerFuncDefinition.SybchronizeDeclarationWithDefinition ();
-               ownerFuncDefinition.GetFunctionDeclaration ().ParseAllCallingTextSegments ();
+               //ownerFuncDefinition.SybchronizeDeclarationWithDefinition ();
+               ownerFuncDefinition.NotifyModified ();
 
                ValidateFunctionCallingLineDatas (ownerFuncDefinition.GetFunctionDeclaration ());
 

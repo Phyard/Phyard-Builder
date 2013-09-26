@@ -1079,7 +1079,7 @@ package common {
             //   packageDefine.mPosX = packageAsset.GetPositionX ();
             //   packageDefine.mPosY = packageAsset.GetPositionY ();
             //   
-            //   packageDefine.mPackageIndices = packageAsset.GetPackageIndices ();
+            //   packageDefine.mPackageIndices = packageAsset.GetContainingPackageIndices ();
             //   
             //   sceneDefine.mPackageDefines.push (packageDefine);
             //}
@@ -1103,7 +1103,7 @@ package common {
                
                TriggerFormatHelper.VariableSpace2VariableDefines (scene, classAsset.GetCustomClass ().GetPropertyDefinitionSpace (), classDefine.mPropertyVariableDefines, true, false);
                
-               classDefine.mPackageIndices = classAsset.GetPackageIndices ();
+               classDefine.mPackageIndices = classAsset.GetContainingPackageIndices ();
                classDefine.mParentClassIndices = classAsset.GetParentClassIndices ();
                
                sceneDefine.mClassDefines.push (classDefine);
@@ -1134,7 +1134,7 @@ package common {
                //<<
                
                //>>2.05
-               functionDefine.mPackageIndices = functionAsset.GetPackageIndices ();
+               functionDefine.mPackageIndices = functionAsset.GetContainingPackageIndices ();
                //<<
                
                sceneDefine.mFunctionDefines.push (functionDefine);
@@ -2934,7 +2934,7 @@ package common {
 
                classAsset.SetPosition (classDefine.mPosX, classDefine.mPosY);
                
-               classAsset.SetPackageIndices (classDefine.mPackageIndices);
+               classAsset.SetContainingPackageIndices (classDefine.mPackageIndices);
                classAsset.SetParentClassIndices (classDefine.mParentClassIndices);
                
                classAsset.UpdateAppearance ();
@@ -3080,7 +3080,7 @@ package common {
                functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
                
                //>>2.05
-               functionAsset.SetPackageIndices (functionDefine.mPackageIndices);
+               functionAsset.SetContainingPackageIndices (functionDefine.mPackageIndices);
                //<<
                
                functionAsset.UpdateAppearance ();

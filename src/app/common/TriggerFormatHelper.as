@@ -736,16 +736,23 @@ package common {
          var variableDefinition:VariableDefinition;
          if (variableDefine.mClassType == ClassTypeDefine.ClassType_Custom)
          {
-            var realClassId:int = classRefIndex_CorrectionTable == null ? variableDefine.mValueType : classRefIndex_CorrectionTable [variableDefine.mValueType];
+            var realClassId:int = (variableDefine.mValueType < 0 || classRefIndex_CorrectionTable == null) ? variableDefine.mValueType : classRefIndex_CorrectionTable [variableDefine.mValueType];
             variableDefinition = scene.GetCodeLibManager ().CreateCustomVariableDefinition (realClassId, variableDefine.mName);
+            
+            if (variableDefinition == null)
+            {
+               variableDefinition = VariableDefinition.CreateCoreVariableDefinition (CoreClassIds.ValueType_Void, variableDefine.mName + " (custom type is removed)");
+            }
          }
          else
          {
+            // may return Void but not null.
             variableDefinition = VariableDefinition.CreateCoreVariableDefinition (variableDefine.mValueType, variableDefine.mName);
          }
          
-         if (variableDefinition != null)
-         {
+         // always not null now (since v2.05)
+         //if (variableDefinition != null)
+         //{
             var oldNum:int = variableSpace.GetNumVariableInstances ();
             var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variablesHaveKey ? variableDefine.mKey : null, variableDefinition, avoidNameConflicting);
 
@@ -755,9 +762,11 @@ package common {
             }
              
             return vi;
-         }
-         
-         return null;
+         //}
+         //else
+         //{
+         //   return null;
+         //}
       }
       
       // for ConvertRegisterVariablesToGlobalVariables

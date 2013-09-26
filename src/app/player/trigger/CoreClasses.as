@@ -727,7 +727,8 @@ package player.trigger {
                return null;
             default:
             {
-               throw new Error ("! wrong value. valueType = " + valueType);
+               //throw new Error ("! wrong value. valueType = " + valueType);
+               return null;
             }
          }
       }
@@ -787,7 +788,8 @@ package player.trigger {
                return null;
             default:
             {
-               throw new Error ("! bad value");
+               //throw new Error ("! bad value");
+               return null;
             }
          }
       }

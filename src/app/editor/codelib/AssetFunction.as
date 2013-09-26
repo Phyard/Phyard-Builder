@@ -55,12 +55,9 @@ package editor.codelib {
    
    import common.Define;
    
-   public class AssetFunction extends Asset implements Linkable
+   public class AssetFunction extends AssetCodeLibElement // Asset implements Linkable
    {
-      protected var mCodeLibManager:CodeLibManager;
       protected var mFunctionId:int = -1;
-      
-      protected var mPackage:AssetPackage = null;
       
       protected var mCodeSnippet:CodeSnippet;
       protected var mFunctionDeclaration:FunctionDeclaration_Custom;
@@ -78,8 +75,6 @@ package editor.codelib {
          
          doubleClickEnabled = true;
          
-         mCodeLibManager = codeLibManager;
-         
          mouseChildren = false;
          
          mFunctionDeclaration = new FunctionDeclaration_Custom (mName);
@@ -89,8 +84,15 @@ package editor.codelib {
       
       override public function Destroy ():void
       {
-         mFunctionDeclaration.SetID (-1);
+         SetFunctionIndex (-1);
+         
          mFunctionDeclaration.NotifyRemoved ();
+         
+         // if a calling call this function, the calling will be converted into CoreFunctionIds.ID_Removed, when
+         // 1. editing open the dialog to edit the calling's code snippet.
+         // 2. saving as WorldDefine.
+         //
+         // maybe this lazy handling is not good and it is better to put this handling in mCodeLibManager.DestroyAsset ().
          
          super.Destroy ();
       }
@@ -105,28 +107,6 @@ package editor.codelib {
       public function GetFunctionIndex ():int
       {
          return mFunctionId;
-      }
-      
-      public function SetPackage (thePacakge:AssetPackage):void
-      {
-         mPackage = thePacakge;
-      }
-      
-      public function GetPackage ():AssetPackage
-      {
-         if (mPackage != null && (mPackage.GetPackageIndex () < 0 || mPackage.GetCreationOrderId () < 0))
-            mPackage = null;
-         
-         return mPackage;
-      }
-      
-      public function SetPackageIndices (indexes:Array):void
-      {
-      }
-      
-      public function GetPackageIndices ():Array
-      {
-         return null;
       }
       
       public function IsDesignDependent ():Boolean
@@ -362,7 +342,7 @@ package editor.codelib {
 //   linkable
 //====================================================================
       
-      public function GetLinkZoneId (localX:Number, localY:Number, checkActiveZones:Boolean = true, checkPassiveZones:Boolean = true):int
+      override public function GetLinkZoneId (localX:Number, localY:Number, checkActiveZones:Boolean = true, checkPassiveZones:Boolean = true):int
       {
          //if (localX > mTextFieldCenterX - mTextFieldHalfWidth && localX < mTextFieldCenterX + mTextFieldHalfWidth && localY > mTextFieldCenterY - mTextFieldHalfHeight && localY < mTextFieldCenterY + mTextFieldHalfHeight)
          //   return -1;
@@ -375,14 +355,14 @@ package editor.codelib {
          return 0;
       }
       
-      public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
+      override public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
       {
          var local_point:Point = DisplayObjectUtil.LocalToLocal (mCodeLibManager, this, new Point (worldDisplayX, worldDisplayY));
          
          return GetLinkZoneId (local_point.x, local_point.y) >= 0;
       }
       
-      public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
+      override public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
       {
          return false;
       }
@@ -393,13 +373,16 @@ package editor.codelib {
       
       override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
-         var parentPackage:AssetPackage = GetPackage ();
-         if (parentPackage != null)
+         for each (var aPackage:AssetPackage in mPackages)
          {
-            var parentPoint:Point = DisplayObjectUtil.LocalToLocal (parentPackage, mCodeLibManager, new Point (parentPackage.GetHalfWidth (), 0));
-            var thisPoint  :Point = DisplayObjectUtil.LocalToLocal (this, mCodeLibManager, new Point (- GetHalfWidth (), 0));
-         
-            GraphicsUtil.DrawLine (canvasSprite, thisPoint.x, thisPoint.y, parentPoint.x, parentPoint.y, 0x0, 0);
+            var index:int = aPackage.GetPackageIndex ();
+            if (index >= 0)
+            {
+               var packagePoint:Point = DisplayObjectUtil.LocalToLocal (aPackage, mCodeLibManager, new Point (aPackage.GetHalfWidth (), 0));
+               var thisPoint  :Point = DisplayObjectUtil.LocalToLocal (this, mCodeLibManager, new Point (- GetHalfWidth (), 0));
+            
+               GraphicsUtil.DrawLine (canvasSprite, thisPoint.x, thisPoint.y, packagePoint.x, packagePoint.y, 0x0, 0);
+            }
          }
       }
 

@@ -46,16 +46,17 @@ package editor.codelib {
       
    import editor.display.dialog.NameSettingDialog;
    
+   import editor.trigger.CodePackage;
+   
    import editor.EditorContext;
    
    import common.Define;
    
-   public class AssetPackage extends Asset implements Linkable
+   public class AssetPackage extends AssetCodeLibElement // Asset implements Linkable
    {
-      protected var mCodeLibManager:CodeLibManager;
       protected var mPackageId:int = -1;
       
-      protected var mParentPackage:AssetPackage = null;
+      protected var mCodePackageData:CodePackage; // not null for sure
       
       private var mHalfWidth:Number;
       private var mHalfHeight:Number;
@@ -72,6 +73,15 @@ package editor.codelib {
          mCodeLibManager = codeLibManager;
          
          mouseChildren = false;
+         
+         mCodePackageData = new CodePackage (GetName ());
+      }
+      
+      override public function Destroy ():void
+      {
+         SetPackageIndex (-1);
+         
+         super.Destroy ();
       }
       
       public function SetPackageIndex (packageId:int):void
@@ -84,19 +94,6 @@ package editor.codelib {
          return mPackageId;
       }
       
-      public function SetParentPackage (parentPacakge:AssetPackage):void
-      {
-         mParentPackage = parentPacakge;
-      }
-      
-      public function GetParentPackage ():AssetPackage
-      {
-         if (mParentPackage != null && (mParentPackage.GetPackageIndex () < 0 || mParentPackage.GetCreationOrderId () < 0))
-            mParentPackage = null;
-         
-         return mParentPackage;
-      }
-      
       override public function ToCodeString ():String
       {
          return "Package#" + GetPackageIndex ();
@@ -105,6 +102,47 @@ package editor.codelib {
       override public function GetTypeName ():String
       {
          return "Package";
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      public function GetCodePackageData ():CodePackage
+      {
+         return mCodePackageData;
+      }
+      
+      public function OnElementAdded (element:AssetCodeLibElement):void
+      {
+         if (element is AssetPackage)
+         {
+            mCodePackageData.AddChildCodePackage ((element as AssetPackage).GetCodePackageData ());
+         }
+         else if (element is AssetClass)
+         {
+            mCodePackageData.AddClass ((element as AssetClass).GetCustomClass ());
+         }
+         else if (element is AssetFunction)
+         {
+            mCodePackageData.AddFunctionDeclaration ((element as AssetFunction).GetFunctionDeclaration ());
+         }
+      }
+      
+      public function OnElementRemoved (element:AssetCodeLibElement):void
+      {
+         if (element is AssetPackage)
+         {
+            mCodePackageData.RemoveChildCodePackage ((element as AssetPackage).GetCodePackageData ());
+         }
+         else if (element is AssetClass)
+         {
+            mCodePackageData.RemoveClass ((element as AssetClass).GetCustomClass ());
+         }
+         else if (element is AssetFunction)
+         {
+            mCodePackageData.RemoveFunctionDeclaration ((element as AssetFunction).GetFunctionDeclaration ());
+         }
       }
       
 //=============================================================
@@ -217,7 +255,7 @@ package editor.codelib {
 //   linkable
 //====================================================================
       
-      public function GetLinkZoneId (localX:Number, localY:Number, checkActiveZones:Boolean = true, checkPassiveZones:Boolean = true):int
+      override public function GetLinkZoneId (localX:Number, localY:Number, checkActiveZones:Boolean = true, checkPassiveZones:Boolean = true):int
       {
          //if (localX > mTextFieldCenterX - mTextFieldHalfWidth && localX < mTextFieldCenterX + mTextFieldHalfWidth && localY > mTextFieldCenterY - mTextFieldHalfHeight && localY < mTextFieldCenterY + mTextFieldHalfHeight)
          //   return -1;
@@ -229,14 +267,14 @@ package editor.codelib {
          return localX > 0 ? 1 : 0;
       }
       
-      public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
+      override public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
       {
          var local_point:Point = DisplayObjectUtil.LocalToLocal (mCodeLibManager, this, new Point (worldDisplayX, worldDisplayY));
          
          return GetLinkZoneId (local_point.x, local_point.y) >= 0;
       }
       
-      public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
+      override public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
       {
          if (toAsset is AssetPackage)
          {
@@ -250,20 +288,20 @@ package editor.codelib {
             
             if (fromZoneId != toZoneId)
             {
-               if ((fromZoneId == 0 || toZoneId == 1) && (! toPackage.IsInPackage (this)))
+               if ((fromZoneId == 0 || toZoneId == 1) && CanStayInPackage (toPackage))
                {
-                  if (this.GetParentPackage () == toPackage)
-                     this.SetParentPackage (null);
+                  if (this.IsInPackage (toPackage))
+                     this.RemoveFromPackage (toPackage);
                   else
-                     this.SetParentPackage (toPackage);
+                     this.AddIntoPackage (toPackage);
                }
                
-               if ((toZoneId == 0 || fromZoneId == 1) && (! this.IsInPackage (toPackage)))
+               if ((toZoneId == 0 || fromZoneId == 1) && toPackage.CanStayInPackage (this))
                {
-                  if (toPackage.GetParentPackage () == this)
-                     toPackage.SetParentPackage (null);
+                  if (toPackage.IsInPackage (this))
+                     toPackage.RemoveFromPackage (this);
                   else
-                     toPackage.SetParentPackage (this);
+                     toPackage.AddIntoPackage (this);
                }
                
                return true;
@@ -271,19 +309,19 @@ package editor.codelib {
          }
          else if (toAsset is AssetFunction)
          {
-            if ((toAsset as AssetFunction).GetPackage () == this)
-               (toAsset as AssetFunction).SetPackage (null);
+            if ((toAsset as AssetFunction).IsInPackage (this))
+               (toAsset as AssetFunction).RemoveFromPackage (this);
             else
-               (toAsset as AssetFunction).SetPackage (this);
+               (toAsset as AssetFunction).AddIntoPackage (this);
             
             return true;
          }
          else if (toAsset is AssetClass)
          {
-            if ((toAsset as AssetClass).GetPackage () == this)
-               (toAsset as AssetClass).SetPackage (null);
+            if ((toAsset as AssetClass).IsInPackage (this))
+               (toAsset as AssetClass).RemoveFromPackage (this);
             else
-               (toAsset as AssetClass).SetPackage (this);
+               (toAsset as AssetClass).AddIntoPackage (this);
             
             return true;
          }
@@ -291,19 +329,34 @@ package editor.codelib {
          return false;
       }
       
-      private function IsInPackage (thePackage:AssetPackage):Boolean
+      private function CanStayInPackage (thePackage:AssetPackage):Boolean
+      {  
+         if (thePackage == null || thePackage.GetPackageIndex () < 0)
+            return false;
+         
+         if (this == thePackage)
+            return false;
+         
+         var actionId:int = ++ EditorContext.mNextActionId;
+         return ! thePackage.IsInPackageDirectlyOrIndirectly (this, actionId);
+      }
+      
+      private function IsInPackageDirectlyOrIndirectly (thePackage:AssetPackage, actionId:int):Boolean
       {
-         var aPackage:AssetPackage = this;
-         while (aPackage != thePackage)
+         for each (var aPackage:AssetPackage in mPackages)
          {
-            aPackage = aPackage.GetParentPackage ();
-            if (aPackage == null)
+            if (aPackage.GetCurrentActionId () < actionId)
             {
-               break;
+               aPackage.SetCurrentActionId (actionId);
+               
+               if (thePackage == aPackage)
+                  return true;
+               
+               return aPackage.IsInPackageDirectlyOrIndirectly (thePackage, actionId);
             }
          }
          
-         return aPackage != null;
+         return false;
       }
       
 //====================================================================
@@ -312,13 +365,16 @@ package editor.codelib {
       
       override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
-         var parentPackage:AssetPackage = GetParentPackage ();
-         if (parentPackage != null)
+         for each (var aPackage:AssetPackage in mPackages)
          {
-            var parentPoint:Point = DisplayObjectUtil.LocalToLocal (parentPackage, mCodeLibManager, new Point (parentPackage.GetHalfWidth (), 0));
-            var thisPoint  :Point = DisplayObjectUtil.LocalToLocal (this, mCodeLibManager, new Point (- GetHalfWidth (), 0));
-         
-            GraphicsUtil.DrawLine (canvasSprite, thisPoint.x, thisPoint.y, parentPoint.x, parentPoint.y, 0x0, 0);
+            var index:int = aPackage.GetPackageIndex ();
+            if (index >= 0)
+            {
+               var packagePoint:Point = DisplayObjectUtil.LocalToLocal (aPackage, mCodeLibManager, new Point (aPackage.GetHalfWidth (), 0));
+               var thisPoint  :Point = DisplayObjectUtil.LocalToLocal (this, mCodeLibManager, new Point (- GetHalfWidth (), 0));
+            
+               GraphicsUtil.DrawLine (canvasSprite, thisPoint.x, thisPoint.y, packagePoint.x, packagePoint.y, 0x0, 0);
+            }
          }
       }
       

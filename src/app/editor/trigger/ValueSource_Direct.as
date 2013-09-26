@@ -42,11 +42,14 @@ package editor.trigger {
          if (vd is VariableDefinitionString)
          {
             var str:String = mValueObject as String;
-            var pattern:RegExp;
-            pattern  = /\\/g;
-            str = str.replace(pattern, "\\\\");
-            pattern = /"/g;
-            str = str.replace(pattern, "\\\"");
+            if (str != null)
+            {
+               var pattern:RegExp;
+               pattern  = /\\/g;
+               str = str.replace(pattern, "\\\\");
+               pattern = /"/g;
+               str = str.replace(pattern, "\\\"");
+            }
             
             return "\"" + str + "\"";
          }

@@ -1,4 +1,5 @@
 package editor.trigger {
+   import flash.system.Capabilities;
    
    import mx.core.UIComponent;
    import mx.controls.ComboBox;
@@ -160,7 +161,14 @@ package editor.trigger {
             case CoreClassIds.ValueType_Object:
                return new VariableDefinitionObject (variableName);
             default:
-               throw new Error ("unknown type in CreateCoreVariableDefinition");
+            {
+               //if (Capabilities.isDebugger)
+               //{
+               //   throw new Error ("unknown type in CreateCoreVariableDefinition");
+               //}
+               
+               return new VariableDefinitionVoid (variableName);
+            }
          }
       }
 

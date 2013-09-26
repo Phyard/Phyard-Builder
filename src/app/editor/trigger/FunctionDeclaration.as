@@ -79,6 +79,7 @@ package editor.trigger {
          return mId;
       }
       
+      // todo: chagne to GetFunctionType
       public function GetType ():int 
       {
          return FunctionTypeDefine.FunctionType_Unknown;

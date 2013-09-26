@@ -125,7 +125,7 @@ package editor.trigger {
          NotifyModified ();
       }
       
-      public function DestroyVariableInstanceByIndex (variableId:int):void
+      public function DestroyVariableInstanceAtIndex (variableId:int):void
       {
          if (variableId < 0 || variableId >= mVariableInstances.length)
             return;
@@ -153,7 +153,7 @@ package editor.trigger {
          {
             // assert vi.GetVariableSpace () == this
             
-            DestroyVariableInstanceByIndex (index);
+            DestroyVariableInstanceAtIndex (index);
          }
       }
       
@@ -587,6 +587,30 @@ package editor.trigger {
       //   //
       //   //return variable_instance;
       //}
+      
+      //public function RemoveReferencesOfClass (customClass:ClassDefinition):void
+      //{
+      //   for (var i:int = GetNumVariableInstances () - 1; i >= 0; -- i)
+      //   {
+      //      var viDef:VariableDefinition = GetVariableInstanceAt (i).GetVariableDefinition ();
+      //      if (viDef.GetClass () == customClass)
+      //      {
+      //         DestroyVariableInstanceAtIndex (i);
+      //      }
+      //   }
+      //}
+      
+      public function Validate ():void
+      {
+         for (var i:int = GetNumVariableInstances () - 1; i >= 0; -- i)
+         {
+            var viDef:VariableDefinition = GetVariableInstanceAt (i).GetVariableDefinition ();
+            if ((viDef.GetClass () is ClassDefinition_Custom) && (viDef.GetClass ().GetID () < 0))
+            {
+               DestroyVariableInstanceAtIndex (i);
+            }
+         }
+      }
       
 //============================================================================
 // lookup tables 

@@ -93,13 +93,20 @@ package editor.trigger {
       
       public function ValidateCallings ():void
       {
+         mOwnerFunctionDefinition.GetLocalVariableSpace ().Validate ();
+         if (mOwnerFunctionDefinition.GetFunctionDeclaration () is FunctionDeclaration_Custom)
+         {
+            mOwnerFunctionDefinition.GetFunctionDeclaration ().GetInputVariableSpace ().Validate ();
+            mOwnerFunctionDefinition.GetFunctionDeclaration ().GetOutputVariableSpace ().Validate ();
+         }
+         
          var func_calling:FunctionCalling;
          for (var i:int = mFunctionCallings.length - 1; i >= 0 ; -- i)
          {
             func_calling = mFunctionCallings [i] as FunctionCalling;
             if (func_calling != null)
             {
-               if (func_calling.Validate ())
+               if (func_calling.Validate ()) // removed already
                {
                    mFunctionCallings [i] = new FunctionCalling_Core (/*EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine (), */World.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
                }

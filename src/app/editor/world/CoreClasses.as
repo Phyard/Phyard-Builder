@@ -45,7 +45,7 @@ package editor.world {
                                    
          RegisterCoreClass (null, //sCoreCodePackage,
                             CoreClassIds.ValueType_Void, 
-                            "",
+                            "aVoid",
                             null, // undefined,
                             ValidateValueObject_Void
                          ).SetSceneDataDependent (false);
@@ -379,7 +379,8 @@ package editor.world {
                return null;
             default:
             {
-               throw new Error ("! wrong value");
+               //throw new Error ("! wrong value");
+               return null;
             }
          }
       }
@@ -472,7 +473,8 @@ package editor.world {
                return null;
             default:
             {
-               throw new Error ("!wrong balue");
+               //throw new Error ("!wrong balue");
+               return null;
             }
          }
       }
@@ -520,7 +522,8 @@ package editor.world {
                return null;
             default:
             {
-               throw new Error ("! wrong value");
+               //throw new Error ("! wrong value");
+               return null;
             }
          }
       }
@@ -602,7 +605,8 @@ package editor.world {
                break;
             default:
             {
-               throw new Error ("! bad value");
+               //throw new Error ("! bad value");
+               // do nothing
             }
          }
       }

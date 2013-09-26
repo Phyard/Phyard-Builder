@@ -325,7 +325,7 @@
                   
                   //...
                   mCreateNewVariableMenu = Menu.createMenu (Button_AddCommmand, xml, false);
-                  mCreateNewVariableMenu.labelField = "@label";
+                  mCreateNewVariableMenu.labelField = "@name";
                   mCreateNewVariableMenu.addEventListener (MenuEvent.ITEM_CLICK, OnNewVariable);
                }
 
@@ -341,8 +341,11 @@
 
                var variableDefinition:VariableDefinition = null;
 
-               var classType:int = event.item.@type;
                var valueType:int = event.item.@id;
+               if (valueType < 0)
+                  return;
+               
+               var classType:int = event.item.@type;
                
                variableDefinition = CodeLibManager.CreateVariableDefinition (mCodeLibManager, classType, valueType);
                
@@ -371,7 +374,7 @@
                if (selectedIndex < 0)
                   return;
 
-               mVariableSpace.DestroyVariableInstanceByIndex (selectedIndex);
+               mVariableSpace.DestroyVariableInstanceAtIndex (selectedIndex);
                List_Variables.dataProvider.removeItemAt (selectedIndex);
 
                if (selectedIndex >= List_Variables.dataProvider.length)

@@ -61,7 +61,7 @@ package editor.trigger {
          
          if (mLastModifiedTimesOfFunctionDeclaration < mCustomfunctionDeclatation.GetNumModifiedTimes ())
          {
-            mLastModifiedTimesOfFunctionDeclaration = mCustomfunctionDeclatation.GetNumModifiedTimes ()
+            mLastModifiedTimesOfFunctionDeclaration = mCustomfunctionDeclatation.GetNumModifiedTimes ();
             
             var numInputs:int = mCustomfunctionDeclatation.GetNumInputs ();
             var numOutputs:int = mCustomfunctionDeclatation.GetNumOutputs ();

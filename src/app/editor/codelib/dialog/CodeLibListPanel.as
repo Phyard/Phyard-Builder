@@ -269,6 +269,7 @@ package editor.codelib.dialog {
          if (asset is AssetFunction)
          {
             var aFunction:AssetFunction = asset as AssetFunction;
+            aFunction.GetCodeSnippet ().ValidateCallings ();
             
             values.mCodeLibManager = mCodeLibManager;
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();

@@ -93,37 +93,58 @@ package editor.codelib {
             index = mFunctionAssets.indexOf (asset);
             if (index >= 0) // must be
             {
-               //delete mNameLookupTable[ (asset as AssetFunction).GetFunctionName () ];
                (asset as AssetFunction).SetFunctionIndex (-1);
                mFunctionAssets.splice (index, 1);
+
+               // ... todo
+               //RemoveReferencesOfFunction (asset as AssetFunction);
+               
+               //delete mNameLookupTable[ (asset as AssetFunction).GetFunctionName () ];
                
                UpdateFunctionIndexes ();
                UpdateFunctionAppearances ();
             }
          }
-         
-         if (asset is AssetClass)
+         else if (asset is AssetClass)
          {
             index = mClassAssets.indexOf (asset);
             if (index >= 0) // must be
             {
-               //delete mNameLookupTable[(asset as AssetFunction).GetFunctionName ()];
-               (asset as AssetClass).SetClassIndex (-1);
+               (asset as AssetClass).SetClassIndex (-1); // should before calling RemoveReferencesOfClass
                mClassAssets.splice (index, 1);
+
+               // ...
+               RemoveReferencesOfClass (asset as AssetClass);
+               
+               //delete mNameLookupTable[(asset as AssetFunction).GetFunctionName ()];
                
                UpdateClassIndexes ();
                UpdateClassAppearances ();
             }
          }
-         
-         if (asset is AssetPackage)
+         else if (asset is AssetPackage)
          {
             index = mPackageAssets.indexOf (asset);
             if (index >= 0) // must be
             {
-               //delete mNameLookupTable[ (asset as AssetFunction).GetFunctionName () ];
                (asset as AssetPackage).SetPackageIndex (-1);
                mPackageAssets.splice (index, 1);
+
+               // ...
+               var thePackage:AssetPackage = asset as AssetPackage;
+               
+               var numAssets:int = mAssetsSortedByCreationId.length;
+               for (var i:uint = 0; i < numAssets; ++ i)
+               {
+                  var element:AssetCodeLibElement = GetAssetByCreationId (i) as AssetCodeLibElement;
+                  
+                  if (element != null) // && element.IsInPackage (thePackage))
+                  {
+                     element.RemoveFromPackage (thePackage);
+                  }
+               }
+               
+               //delete mNameLookupTable[ (asset as AssetFunction).GetFunctionName () ];
                
                UpdatePackageIndexes ();
                UpdatePackageAppearances ();
@@ -146,6 +167,36 @@ package editor.codelib {
          mPackageAssets.splice (0, mPackageAssets.length);
          
          super.DestroyAllAssets ();
+      }
+      
+      public function RemoveReferencesOfClass (theClass:AssetClass):void
+      {
+         mGlobalVariableSpace.Validate (); // RemoveReferencesOfClass (theCustomClassDefinition);
+         mEntityVariableSpace.Validate (); // RemoveReferencesOfClass (theCustomClassDefinition);
+         mSessionVariableSpace.Validate (); // RemoveReferencesOfClass (theCustomClassDefinition); // may be not essential
+         
+         var theCustomClassDefinition:ClassDefinition_Custom = theClass.GetCustomClass ();
+         
+         var index:int;
+         
+         for (index = 0; index < mClassAssets.length; ++ index)
+         {
+            var aClass:AssetClass = mClassAssets [index] as AssetClass;
+            //if (aClass != theClass)
+            //{
+               aClass.GetCustomClass ().GetPropertyDefinitionSpace ().Validate (); // RemoveReferencesOfClass (theCustomClassDefinition);
+            //}
+         }
+         
+         for (index = 0; index < mFunctionAssets.length; ++ index)
+         {
+            var aFunction:FunctionDefinition = (mFunctionAssets [index] as AssetFunction).GetFunctionDefinition ();
+            aFunction.GetLocalVariableSpace ().Validate (); // RemoveReferencesOfClass (theCustomClassDefinition);
+            aFunction.GetFunctionDeclaration ().GetInputVariableSpace ().Validate (); // RemoveReferencesOfClass (theCustomClassDefinition);
+            aFunction.GetFunctionDeclaration ().GetOutputVariableSpace ().Validate (); // RemoveReferencesOfClass (theCustomClassDefinition);
+         }
+         
+         // up to now, the CodeSnippets in Entities are still not validated.
       }
       
 //==============================
@@ -488,16 +539,16 @@ package editor.codelib {
 // for undo point
 //=============================================
       
-      private var mIsChanged:Boolean = false;
+      private var mIsChanged:Boolean = true; // false;
       
       public function SetChanged (changed:Boolean):void
       {
          mIsChanged = changed;
          
-         if (mIsChanged && mUpdateFunctionMenuAtOnce)
-         {
-            UpdateFunctionMenu ();
-         }
+         //if (mIsChanged && mUpdateFunctionMenuAtOnce)
+         //{
+         //   UpdateFunctionMenu ();
+         //}
       }
       
       public function IsChanged ():Boolean
@@ -505,76 +556,266 @@ package editor.codelib {
          return mIsChanged;
       }
       
-      private var mUpdateFunctionMenuAtOnce:Boolean = true;
+      //private var mUpdateFunctionMenuAtOnce:Boolean = true;
       
       public function SetDelayUpdateFunctionMenu (delay:Boolean):void
       {
-         mUpdateFunctionMenuAtOnce = ! delay;
+         //mUpdateFunctionMenuAtOnce = ! delay; // since v2.05, this fucntion is useless.
+      }
+      
+      public function UpdateFunctionMenu ():void
+      {
+         // since v2.05, this fucntion is useless.
       }
       
 //=============================================
 // menu
 //=============================================
+
+      internal var mCoreAndCustomClassesDataProvider:XML = null;
+      private static var sCoreClassesDataProvider:XML = null;
+      private static var sGameSaveClassesDataProvider:XML = null;
       
-      public function UpdateFunctionMenu ():void
+      public static function GetTypesDataProviderForMenu (codeLibManager:CodeLibManager, isCurrentSceneDataDependent:Boolean, isAnySceneDataIndependent:Boolean):XML
       {
-         if (mCustomCodePackage == null)
-            return;
-         
-         mCustomCodePackage.Clear ();
-         
-         // mCustomCodePackage.AddChildCodePackage ();
-         // mCustomCodePackage.AddFunctionDeclaration ();
-         
-         var i:int;
-         
-         if (mFunctionAssets.length > 16)
+         if (isCurrentSceneDataDependent) // codeLibManager must not be null.
          {
-            var numGroups:int = Math.floor ((mFunctionAssets.length + 15) / 16);
-            for (var g:int = 0; g < numGroups; ++ g)
+            if (codeLibManager.IsChanged ())
+            {  
+               codeLibManager.SetChanged (false);
+               
+               codeLibManager.UpdateDataProvidersForMenu ();
+            }
+            
+            return codeLibManager.mCoreAndCustomClassesDataProvider;
+         }
+         else // codeLibManager is null
+         {
+            if (isAnySceneDataIndependent)
             {
-               var fromId:int = g * 16;
-               var toId:int = fromId + 16;
-               if (toId > mFunctionAssets.length)
-                  toId = mFunctionAssets.length;
+               if (sGameSaveClassesDataProvider == null)
+                  BuildGameSaveClassesDataProvider ();
                
-               var aCodePackage:CodePackage = new CodePackage (fromId + " - " + (toId - 1));
-               mCustomCodePackage.AddChildCodePackage (aCodePackage);
+               return sGameSaveClassesDataProvider;
+            }
+            else // codeLibManager is null
+            {
+               if (sCoreClassesDataProvider == null)
+                  BuildCoreClassesDataProvider ();
                
-               for (i = fromId; i < toId; ++ i)
+               return sCoreClassesDataProvider;
+            }
+         }
+      }
+      
+      private var mFunctionsDataProviderShorter:XML = CreateXmlFromCodePackages (CoreFunctionDeclarationsForPlaying.GetCodePackagesForShorterMenuBar ().concat ([new CodePackage (kCustomPackagename)]), true);
+      private var mFunctionsDataProviderLonger :XML = CreateXmlFromCodePackages (CoreFunctionDeclarationsForPlaying.GetCodePackagesForLongerMenuBar ().concat ([new CodePackage (kCustomPackagename)]), true);
+
+      public function GetShorterMenuBarDataProvider ():XML
+      {
+         if (IsChanged ())
+         {  
+            SetChanged (false);
+            
+            UpdateDataProvidersForMenu ();
+         }
+         
+         return mFunctionsDataProviderShorter;
+      }
+
+      public function GetLongerMenuBarDataProvider ():XML
+      {
+         if (IsChanged ())
+         {  
+            SetChanged (false);
+            
+            UpdateDataProvidersForMenu ();
+         }
+         
+         return mFunctionsDataProviderLonger;
+      }
+      
+   //==========================================
+   // 
+   //==========================================
+      
+      private static function BuildCoreClassesDataProvider ():void
+      {
+         var coreClassPackage:CodePackage = CoreClasses.GetCoreClassPackage ();
+         
+         sCoreClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, true);
+      }
+      
+      private static function BuildGameSaveClassesDataProvider ():void
+      {
+         var coreClassPackage:CodePackage = CoreClasses.GetCoreClassPackage ();
+         
+         sGameSaveClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, false);
+         
+         for each (var menuItem:Object in sGameSaveClassesDataProvider.menuitem)
+         {
+            if (menuItem.@["scene_data_dependent"] == true)
+            {
+               //sGameSaveClassesDataProvider.removeChild (menuItem);
+               delete menuItem.parent().children()[menuItem.childIndex()];
+            }
+         }
+      }
+      
+      public static const kCustomPackagename:String = "Custom";
+      
+      internal function UpdateDataProvidersForMenu ():void
+      {
+         var topPackage:CodePackage = new CodePackage (kCustomPackagename);
+
+         for each (var aPackage:AssetPackage in mPackageAssets)
+         {
+            if (! aPackage.HasContainingPackages ())
+            {
+               topPackage.AddChildCodePackage (aPackage.GetCodePackageData ());
+            }
+         }
+
+         for each (var aClass:AssetClass in mClassAssets)
+         {
+            if (! aClass.HasContainingPackages ())
+            {
+               topPackage.AddClass (aClass.GetCustomClass ());
+            }
+         }
+         
+         for each (var aFunction:AssetFunction in mFunctionAssets)
+         {
+            if (! aFunction.HasContainingPackages ())
+            {
+               topPackage.AddFunctionDeclaration (aFunction.GetFunctionDeclaration ());
+            }
+         }
+         
+         // classes
+         
+         if (sCoreClassesDataProvider == null)
+            BuildCoreClassesDataProvider ();
+         
+         if (GetNumClasses () > 0)
+         {
+            var customClassesDataProvider:XML = ConvertCodePackageToXML (topPackage, null, null, false);
+            
+            mCoreAndCustomClassesDataProvider = <root />;
+            mCoreAndCustomClassesDataProvider.appendChild (sCoreClassesDataProvider);
+            mCoreAndCustomClassesDataProvider.appendChild (customClassesDataProvider);
+         }
+         else
+         {
+            mCoreAndCustomClassesDataProvider = sCoreClassesDataProvider;
+         }
+         
+         // functions
+         
+         delete mFunctionsDataProviderLonger.menuitem.(@name==kCustomPackagename)[0];
+         mFunctionsDataProviderLonger.appendChild (ConvertCodePackageToXML (topPackage, null, null, true));
+
+         delete mFunctionsDataProviderShorter.menuitem.(@name==kCustomPackagename)[0];
+         mFunctionsDataProviderShorter.appendChild (ConvertCodePackageToXML (topPackage, null, null, true));
+      }
+
+      // top level
+      // forFunctions: true for functions, false for classes.
+      private static function CreateXmlFromCodePackages (packages:Array, forFunctions:Boolean, allowSceneDependentClasses:Boolean = true):XML
+      {
+         var xml:XML = <root />;
+
+         for each (var codePackage:CodePackage in packages)
+         {
+            ConvertCodePackageToXML (codePackage, xml, packages, forFunctions, allowSceneDependentClasses);
+         }
+
+         return xml;
+      }
+
+      private static function ConvertCodePackageToXML (codePackage:CodePackage, parentXml:XML, topCodePackages:Array, forFunctions:Boolean, allowSceneDependentClasses:Boolean = true):XML
+      {
+         var package_element:XML = <menuitem />;
+         package_element.@name = codePackage.GetName ();
+         
+         if (parentXml != null)
+            parentXml.appendChild (package_element);
+
+         var num_items:int = 0;
+
+         var numChildPackages:int = codePackage.GetNumChildCodePackages ();
+         for (var i:int = 0; i < numChildPackages; ++ i)
+         {
+            var childCodePackage:CodePackage = codePackage.GetChildCodePackageAtIndex (i);
+            if (topCodePackages == null || topCodePackages.indexOf (childCodePackage) < 0)
+            {
+               ConvertCodePackageToXML (childCodePackage, package_element, topCodePackages, forFunctions);
+
+               ++ num_items;
+            }
+         }
+         
+         var j:int;
+
+         if (forFunctions)
+         {
+            var numFunctions:int = codePackage.GetNumFunctionDeclarations (); 
+            var declaration:FunctionDeclaration;
+            var function_element:XML;
+            for (j = 0; j < numFunctions; ++ j)
+            {
+               declaration = codePackage.GetFunctionDeclarationAtIndex (j);
+               if (declaration.IsShowUpInApiMenu ())
                {
-                  aCodePackage.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
+                  function_element = <menuitem />;
+                  function_element.@name = declaration.GetName ();
+                  function_element.@id = declaration.GetID ();
+                  function_element.@type = declaration.GetType ();
+   
+                  package_element.appendChild (function_element);
+   
+                  ++ num_items;
                }
             }
          }
          else
          {
-            for (i = 0; i < mFunctionAssets.length; ++ i)
+            var numClasses:int = codePackage.GetNumClasses (); 
+            var aClass:ClassDefinition;
+            var class_element:XML;
+            for (j = 0; j < numClasses; ++ j)
             {
-               mCustomCodePackage.AddFunctionDeclaration ((mFunctionAssets [i] as AssetFunction).GetFunctionDeclaration ());
+               aClass = codePackage.GetClassAtIndex (j);
+               
+               if (allowSceneDependentClasses || (! aClass.IsSceneDataDependent ()))
+               {
+                  class_element = <menuitem />;
+                  class_element.@name = aClass.GetName ();
+                  class_element.@id = aClass.GetID ();
+                  class_element.@type = aClass.GetClassType ();
+   
+                  package_element.appendChild (class_element);
+   
+                  ++ num_items;
+               }
             }
          }
+
+         if (num_items == 0)
+         {
+            var element:XML = <menuitem />;
+            element.@name = "[nothing]";
+            element.@id = -1;
+
+            package_element.appendChild (element);
+         }
          
-         //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
-         UpdateCustomMenu ();
+         return package_element;
       }
-
-      public function UpdateCustomMenu ():void
-      {
-         var parent:XML;
-
-         parent = mMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0].parent ();
-         delete mMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0];
-
-         ConvertFunctionCodePackageToXML (mCustomCodePackage, parent, null);
-
-         parent = mMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0].parent ();
-         delete mMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0];
-
-         ConvertFunctionCodePackageToXML (mCustomCodePackage, parent, null);
-      }
-      
-      //========================
+        
+//=====================================================================
+// calling parameter editing related
+//=====================================================================
       
       public static function GetTypesDataProviderForParameter (codeLibManager:CodeLibManager, isCurrentSceneDataDependent:Boolean, isAnySceneDataIndependent:Boolean):Array
       {
@@ -631,206 +872,6 @@ package editor.codelib {
       {
          return GetClass (this, type_element.type, type_element.id);
       }
-      
-      //------
-      
-      public static function GetTypesDataProviderForMenu (codeLibManager:CodeLibManager, isCurrentSceneDataDependent:Boolean, isAnySceneDataIndependent:Boolean):XML
-      {
-         var xml:XML = <root />;
-         
-         if (codeLibManager != null)
-         {
-            // custom Types
-            if (isCurrentSceneDataDependent)
-            {
-               var customTypesMenu:XML = codeLibManager.GetCustomTypesDataProvider ();
-               if (customTypesMenu != null)
-               {
-                  xml.appendChild (customTypesMenu);
-               }
-            }
-         }
-         
-         var coreClassesMenuData:XML = CodeLibManager.GetCoreTypesDataProvider ();
-         for each (var menuItem:Object in coreClassesMenuData.menuitem)
-         {
-            if ((! isAnySceneDataIndependent) || menuItem.@["scene_data_dependent"] == false)
-            {
-               xml.appendChild (menuItem);
-            }
-         }
-         
-         return xml;
-      }
-      
-      private static var kCoreTypesDataProvider:XML = null;
-
-      public static function GetCoreTypesDataProvider ():XML
-      {
-         if (kCoreTypesDataProvider != null)
-            return kCoreTypesDataProvider;
-         
-         var topPackage:CodePackage = CoreClasses.GetCoreClassPackage ();
-         
-         kCoreTypesDataProvider = ConvertClassCodePackageToXML (topPackage, null);
-         
-         return kCoreTypesDataProvider;
-      }
-      
-      // to enhance
-      private static function ConvertClassCodePackageToXML (classCodePackage:CodePackage, parentXml:XML = null):XML
-      {
-         var package_element:XML = <menuitem />;
-         package_element.@label = classCodePackage.GetName ();
-         
-         if (parentXml != null)
-            parentXml.appendChild (package_element);
-         
-         var num_items:int = 0;
-
-         var child_packages:Array = classCodePackage.GetChildCodePackages ();
-         for (var i:int = 0; i < child_packages.length; ++ i)
-         {
-            ConvertClassCodePackageToXML (child_packages [i] as CodePackage, package_element);
-
-            ++ num_items;
-         }
-
-         var theClasses:Array = classCodePackage.GetClasses ();
-         var aClass:ClassDefinition;
-         var class_element:XML;
-         for (var j:int = 0; j < theClasses.length; ++ j)
-         {
-            aClass = theClasses [j] as ClassDefinition;
-            //if (aClass.IsShowUpInApiMenu ())
-            //{
-               class_element = <menuitem />;
-               class_element.@label = aClass.GetName ();
-               class_element.@id = aClass.GetID ();
-               class_element.@type = aClass.GetClassType ();
-               class_element.@scene_data_dependent = aClass.IsSceneDataDependent ();
-   
-               package_element.appendChild (class_element);
-
-               ++ num_items;
-            //}
-         }
-
-         if (num_items == 0)
-         {
-            class_element = <menuitem />;
-            class_element.@label = "[nothing]";
-            class_element.@id = -1;
-            class_element.@type = ClassTypeDefine.ClassType_Unknown;
-
-            package_element.appendChild (class_element);
-         }
-         
-         return package_element;
-      }
-
-      public function GetCustomTypesDataProvider ():XML
-      {
-         if (mClassAssets.length == 0)
-            return null;
-         
-         var top_element:XML = <menuitem />;
-         top_element.@label = "Custom";
-         
-         var aClass:AssetClass;
-         var type_element:XML;
-         for (var typeId:int = 0; typeId < mClassAssets.length; ++ typeId)
-         {
-            aClass = mClassAssets [typeId] as AssetClass;
-            
-            type_element = <menuitem />;
-            type_element.@label = aClass.GetName ();
-            type_element.@id = typeId; // aClass.GetID ();
-            type_element.@type = ClassTypeDefine.ClassType_Custom; // aClass.GetClassType ();
-
-            top_element.appendChild (type_element);
-         }
-         
-         return top_element;
-      }
-      
-      //=======================
-      
-      private var mCustomCodePackage:CodePackage = new CodePackage ("Custom");
-
-      private var mMenuBarDataProvider_Shorter:XML = CreateXmlFromCodePackages (CoreFunctionDeclarationsForPlaying.GetCodePackagesForShorterMenuBar ().concat ([mCustomCodePackage]));
-      private var mMenuBarDataProvider_Longer :XML = CreateXmlFromCodePackages (CoreFunctionDeclarationsForPlaying.GetCodePackagesForLongerMenuBar ().concat ([mCustomCodePackage]));
-      
-      public function GetShorterMenuBarDataProvider ():XML
-      {
-         return mMenuBarDataProvider_Shorter;
-      }
-
-      public function GetLongerMenuBarDataProvider ():XML
-      {
-         return mMenuBarDataProvider_Longer;
-      }
-
-      // top level
-      private static function CreateXmlFromCodePackages (packages:Array):XML
-      {
-         var xml:XML = <root />;
-
-         for each (var functionCodePackage:CodePackage in packages)
-         {
-            ConvertFunctionCodePackageToXML (functionCodePackage, xml, packages);
-         }
-
-         return xml;
-      }
-
-      private static function ConvertFunctionCodePackageToXML (functionCodePackage:CodePackage, parentXml:XML, topCodePackages:Array):void
-      {
-         var package_element:XML = <menuitem />;
-         package_element.@name = functionCodePackage.GetName ();
-         parentXml.appendChild (package_element);
-
-         var num_items:int = 0;
-
-         var child_packages:Array = functionCodePackage.GetChildCodePackages ();
-         for (var i:int = 0; i < child_packages.length; ++ i)
-         {
-            if (topCodePackages == null || topCodePackages.indexOf (child_packages [i]) < 0)
-            {
-               ConvertFunctionCodePackageToXML (child_packages [i] as CodePackage, package_element, topCodePackages);
-
-               ++ num_items;
-            }
-         }
-
-         var declarations:Array = functionCodePackage.GetFunctionDeclarations ();
-         var declaration:FunctionDeclaration;
-         var function_element:XML;
-         for (var j:int = 0; j < declarations.length; ++ j)
-         {
-            declaration = declarations [j] as FunctionDeclaration;
-            if (declaration.IsShowUpInApiMenu ())
-            {
-               function_element = <menuitem />;
-               function_element.@name = declaration.GetName ();
-               function_element.@id = declaration.GetID ();
-               function_element.@type = declaration.GetType ();
-
-               package_element.appendChild (function_element);
-
-               ++ num_items;
-            }
-         }
-
-         if (num_items == 0)
-         {
-            function_element = <menuitem />;
-            function_element.@name = "[nothing]";
-            function_element.@id = -1;
-
-            package_element.appendChild (function_element);
-         }
-      }
         
 //=====================================================================
 // custom variable definition
@@ -874,7 +915,9 @@ package editor.codelib {
             return new VariableDefinition_Custom (customClass, variableName);
          }
          
-         throw new Error ("unknown class in CreateCustomVariableDefinition");
+         //throw new Error ("unknown class in CreateCustomVariableDefinition");
+         
+         return null;
       }
 
       // scene can be null if classType is core.

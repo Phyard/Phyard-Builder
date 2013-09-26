@@ -62,6 +62,7 @@ package common {
    import player.trigger.ClassDefinition_Custom;
    import player.trigger.FunctionDefinition_Custom;
 
+   import common.trigger.define.PackageDefine;
    import common.trigger.define.ClassDefine;
    import common.trigger.define.FunctionDefine;
    import common.trigger.define.CodeSnippetDefine;
@@ -1128,7 +1129,23 @@ package common {
          
          if (worldDefine.mVersion >= 0x0205)
          {
-            // pacakges
+            for (var packageId:int = 0; packageId < sceneDefine.mPackageDefines.length; ++ packageId)
+            {
+               var packageDefine:PackageDefine = sceneDefine.mPackageDefines [packageId] as PackageDefine;
+               
+               element = <Package />;
+               
+               element.@key = packageDefine.mKey;
+               element.@time_modified = TimeValue2HexString (packageDefine.mTimeModified);
+               
+               element.@name = packageDefine.mName;
+               element.@x = packageDefine.mPosX;
+               element.@y = packageDefine.mPosY;
+               
+               element.@package_indices = IntegerArray2IndicesString (packageDefine.mPackageIndices);
+
+               xml.CustomPackages.appendChild (element);
+            }
          }
 
          if (worldDefine.mVersion >= 0x0205)
@@ -2389,7 +2406,23 @@ package common {
          
          if (worldDefine.mVersion >= 0x0205)
          {
-            byteArray.readShort ();
+            var numPackages:int = byteArray.readShort ();
+            
+            for (var packageId:int = 0; packageId < numPackages; ++ packageId)
+            {
+               var packageDefine:PackageDefine = new PackageDefine ();
+               
+               packageDefine.mKey = byteArray.readUTF ();
+               packageDefine.mTimeModified = ReadTimeValue (byteArray);
+               
+               packageDefine.mName = byteArray.readUTF ();
+               packageDefine.mPosX = byteArray.readFloat ();
+               packageDefine.mPosY = byteArray.readFloat ();
+               
+               packageDefine.mPackageIndices = ReadShortArrayFromBinFile (byteArray);
+               
+               sceneDefine.mPackageDefines.push (packageDefine);
+            }
          }
          
          // custom classes
@@ -3570,6 +3603,18 @@ package common {
                  TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (sceneDefine.mSessionVariableDefines);
                  TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (sceneDefine.mGlobalVariableDefines);
                  TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (sceneDefine.mEntityPropertyDefines);
+            //}
+   
+            //packages
+            // from v2.05
+            //{
+               for (var packageId:int = 0; packageId < sceneDefine.mPackageDefines.length; ++ packageId)
+               {
+                  var packageDefine:PackageDefine = sceneDefine.mPackageDefines [packageId];
+   
+                  packageDefine.mPosX = ValueAdjuster.Number2Precision (packageDefine.mPosX, 6);
+                  packageDefine.mPosY = ValueAdjuster.Number2Precision (packageDefine.mPosY, 6);
+               }
             //}
    
             //custom classes

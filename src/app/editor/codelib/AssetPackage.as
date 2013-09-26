@@ -104,6 +104,14 @@ package editor.codelib {
          return "Package";
       }
       
+      override protected function OnNameChanged ():void
+      {
+         if (mCodePackageData != null)
+         {
+            mCodePackageData.SetName (GetName ());
+         }
+      }
+      
 //=============================================================
 //   
 //=============================================================

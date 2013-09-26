@@ -249,6 +249,8 @@ package editor.codelib.dialog {
             
             asset.UpdateAppearance ();
             
+            RepaintAllAssetLinks ();
+            
             UpdateInterface ();
          }
       }

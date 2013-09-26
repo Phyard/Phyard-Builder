@@ -1065,24 +1065,24 @@ package common {
          //{
             // packages
             //>>from v2.05
-            //var numPackages:int = scene.GetCodeLibManager ().GetNumPackages ();
-            //for (var packageId:int = 0; packageId < numPackages; ++ packageId)
-            //{
-            //   var packageAsset:AssetPackage = scene.GetCodeLibManager ().GetPackageByIndex (packageId);
-            //   
-            //   var packageDefine:PackageDefine = new PackageDefine ();
-            //   
-            //   packageDefine.mKey = packageAsset.GetKey ();
-            //   packageDefine.mTimeModified = packageAsset.GetTimeModified ();
-            //   
-            //   packageDefine.mName = packageAsset.GetName ();
-            //   packageDefine.mPosX = packageAsset.GetPositionX ();
-            //   packageDefine.mPosY = packageAsset.GetPositionY ();
-            //   
-            //   packageDefine.mPackageIndices = packageAsset.GetContainingPackageIndices ();
-            //   
-            //   sceneDefine.mPackageDefines.push (packageDefine);
-            //}
+            var numPackages:int = scene.GetCodeLibManager ().GetNumPackages ();
+            for (var packageId:int = 0; packageId < numPackages; ++ packageId)
+            {
+               var packageAsset:AssetPackage = scene.GetCodeLibManager ().GetPackageByIndex (packageId);
+               
+               var packageDefine:PackageDefine = new PackageDefine ();
+               
+               packageDefine.mKey = packageAsset.GetKey ();
+               packageDefine.mTimeModified = packageAsset.GetTimeModified ();
+
+               packageDefine.mName = packageAsset.GetName ();
+               packageDefine.mPosX = packageAsset.GetPositionX ();
+               packageDefine.mPosY = packageAsset.GetPositionY ();
+               
+               packageDefine.mPackageIndices = packageAsset.GetContainingPackageIndices ();
+               
+               sceneDefine.mPackageDefines.push (packageDefine);
+            }
             //<<
             
             // classes
@@ -2863,6 +2863,86 @@ package common {
          
          codelibManager.SetDelayUpdateFunctionMenu (true);
          
+         //>>> packages from v2.05
+         
+         var packageRefIndex_CorrectionTable:Array = new Array (sceneDefine.mPackageDefines.length);
+         
+         var packageId:int;
+         var packageAsset:AssetPackage;
+         var packageDefine:PackageDefine;
+         
+         for (packageId = 0; packageId < sceneDefine.mPackageDefines.length; ++ packageId)
+         {
+            packageDefine = sceneDefine.mPackageDefines [packageId] as PackageDefine;
+            
+            packageAsset = codelibManager.GetAssetByKey (packageDefine.mKey) as AssetPackage;
+            
+            if (packageAsset == null)
+            {
+               toUseNewData = true;
+               packageAsset = codelibManager.CreatePackage (packageDefine.mKey, packageDefine.mName);
+            }
+            else if (policyOnConflictingSceneAssets == 3) // always create new 
+            {
+               toUseNewData = true;
+               
+               packageAsset = codelibManager.CreatePackage (null, packageDefine.mName);
+            }
+            else if (policyOnConflictingSceneAssets == 2) // override
+            {
+               toUseNewData = true;
+               
+               //packageAsset.Reset ();
+               packageAsset.SetName (packageDefine.mName);
+            }
+            else if (policyOnConflictingSceneAssets == 1) // skip
+            {
+               toUseNewData = false;
+            }
+            else // if (policyOnConflictingSceneAssets == 0) // auto
+            {
+               toUseNewData = packageDefine.mTimeModified > packageAsset.GetTimeModified ();
+               
+               if (toUseNewData)
+               {
+                  //packageAsset.Reset ();
+                  packageAsset.SetName (packageDefine.mName);
+               }
+            }
+            
+            packageDefine.mToLoadNewData = toUseNewData;
+            if (packageDefine.mToLoadNewData)
+            {
+               // put below
+            }
+            
+            if (packageAsset != null)
+               packageDefine.mKey = packageAsset.GetKey ();
+            
+            packageRefIndex_CorrectionTable [packageId] = packageAsset.GetPackageIndex ();
+         }
+         
+         for (packageId = 0; packageId < sceneDefine.mPackageDefines.length; ++ packageId)
+         {
+            packageDefine = sceneDefine.mPackageDefines [packageId] as PackageDefine;
+            
+            if (packageDefine.mToLoadNewData)
+            {
+               packageAsset = codelibManager.GetAssetByKey (packageDefine.mKey) as AssetPackage;
+
+               packageAsset.SetPosition (packageDefine.mPosX, packageDefine.mPosY);
+               
+               ShiftEntityRefIndexes (packageDefine.mPackageIndices, packageRefIndex_CorrectionTable);
+               packageAsset.SetContainingPackageIndices (packageDefine.mPackageIndices);
+               
+               packageAsset.UpdateAppearance ();
+               packageAsset.UpdateSelectionProxy ();
+               
+               packageAsset.SetTimeModified (packageDefine.mTimeModified);
+            }
+         }
+         //<<<
+         
          //>>> classes from v2.05
          
          var classRefIndex_CorrectionTable:Array = new Array (sceneDefine.mClassDefines.length);
@@ -2934,7 +3014,9 @@ package common {
 
                classAsset.SetPosition (classDefine.mPosX, classDefine.mPosY);
                
+               ShiftEntityRefIndexes (classDefine.mPackageIndices, packageRefIndex_CorrectionTable);
                classAsset.SetContainingPackageIndices (classDefine.mPackageIndices);
+               ShiftEntityRefIndexes (classDefine.mParentClassIndices, classRefIndex_CorrectionTable);
                classAsset.SetParentClassIndices (classDefine.mParentClassIndices);
                
                classAsset.UpdateAppearance ();
@@ -3080,6 +3162,7 @@ package common {
                functionAsset.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
                
                //>>2.05
+               ShiftEntityRefIndexes (functionDefine.mPackageIndices, packageRefIndex_CorrectionTable);
                functionAsset.SetContainingPackageIndices (functionDefine.mPackageIndices);
                //<<
                
@@ -3701,13 +3784,28 @@ package common {
          
          if (worldDefine.mVersion >= 0x0205)
          {
-            // pacakges
+            var packageDefine:PackageDefine;
+            
+            for each (element in sceneXML.CustomPackages.Package)
+            {
+               packageDefine = new PackageDefine ();
+               sceneDefine.mPackageDefines.push (packageDefine);                
+               
+               packageDefine.mKey = element.@key;
+               packageDefine.mTimeModified = ParseTimeString (element.@time_modified);
+               
+               packageDefine.mName = element.@name;
+               packageDefine.mPosX = parseFloat (element.@x);
+               packageDefine.mPosY = parseFloat (element.@y);
+               
+               packageDefine.mPackageIndices = IndicesString2IntegerArray (element.@package_indices);
+            }
          }
          
          // custom classes
          
          if (worldDefine.mVersion >= 0x0205)
-         {  
+         {
             var classDefine:ClassDefine;
             
             for each (element in sceneXML.CustomClasses.Class)
@@ -4894,7 +4992,21 @@ package common {
          
          if (worldDefine.mVersion >= 0x0205)
          {
-            byteArray.writeShort (0);
+            byteArray.writeShort (sceneDefine.mPackageDefines.length);
+            
+            for (var packageId:int = 0; packageId < sceneDefine.mPackageDefines.length; ++ packageId)
+            {
+               var packageDefine:PackageDefine = sceneDefine.mPackageDefines [packageId] as PackageDefine;
+               
+               byteArray.writeUTF (packageDefine.mKey == null ? "" : packageDefine.mKey);
+               WriteTimeValue (byteArray, packageDefine.mTimeModified);
+               
+               byteArray.writeUTF (packageDefine.mName);
+               byteArray.writeFloat (packageDefine.mPosX);
+               byteArray.writeFloat (packageDefine.mPosY);
+               
+               WriteShortArrayIntoBinFile (packageDefine.mPackageIndices, byteArray);
+            }
          }
          
          // custom classes

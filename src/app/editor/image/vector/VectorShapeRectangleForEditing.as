@@ -66,13 +66,13 @@ package editor.image.vector
          var visualHalfWidth :Number = rectangle.GetHalfWidth  () + 0.5; // be consistent with player
          var visualHalfHeight:Number = rectangle.GetHalfHeight () + 0.5; // be consistent with player
          
-         //var cornerWidth:Number = rectangle.GetCornerEclipseWidth () + 1; // be consistent with player
-         //if (cornerWidth > visualHalfWidth + visualHalfWidth)
-         //   cornerWidth = visualHalfWidth + visualHalfWidth;
-         //var cornerHeight:Number = rectangle.GetCornerEclipseHeight () + 1; // be consistent with player
-         //if (cornerHeight > visualHalfHeight + visualHalfHeight)
-         //   cornerHeight = visualHalfHeight + visualHalfHeight;
-         //var isRoundCorner:Boolean = rectangle.IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
+         var cornerWidth:Number = rectangle.GetCornerEclipseWidth () + 1; // be consistent with player
+         if (cornerWidth > visualHalfWidth + visualHalfWidth)
+            cornerWidth = visualHalfWidth + visualHalfWidth;
+         var cornerHeight:Number = rectangle.GetCornerEclipseHeight () + 1; // be consistent with player
+         if (cornerHeight > visualHalfHeight + visualHalfHeight)
+            cornerHeight = visualHalfHeight + visualHalfHeight;
+         var isRoundCorner:Boolean = rectangle.IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
          
          // here these "be consistent with player" are not very consistent with player.
          // see VectorShapeRectangleForPlaying for details.
@@ -81,8 +81,8 @@ package editor.image.vector
          GraphicsUtil.ClearAndDrawRect (rectSprite, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, 
                                         borderColor, borderThickness, drawBg, filledColor, 
                                         rectangle.IsRoundJoint (), // IsRoundCorners (), 
-                                        //isRoundCorner, cornerWidth, cornerHeight,
-                                        false, 0, 0,
+                                        isRoundCorner, cornerWidth, cornerHeight,
+                                        //false, 0, 0,
                                         bodyTextureModule == null ? null : bodyTextureModule.GetBitmapData (),
                                         bodyTextureTransform == null ? null : bodyTextureTransform.ToMatrix ());
 

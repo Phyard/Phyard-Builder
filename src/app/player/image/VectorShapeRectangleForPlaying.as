@@ -18,10 +18,8 @@ package player.image
          var displayHalfHeight:Number = GetHalfHeight ();
          var displayBorderThickness:Number = GetBorderThickness ();
          
-         //var cornerWidth:Number = GetCornerEclipseWidth ();
-         //var cornerHeight:Number = GetCornerEclipseHeight ();
-         var cornerWidth:Number = 0;
-         var cornerHeight:Number = 0;
+         var cornerWidth:Number = GetCornerEclipseWidth ();
+         var cornerHeight:Number = GetCornerEclipseHeight ();
          
          if (moduleSprite.IsAdjustShapeVisualSize ())
          {
@@ -39,12 +37,11 @@ package player.image
             }
          }
          
-         //if (cornerWidth > displayHalfWidth + displayHalfWidth)
-         //   cornerWidth = displayHalfWidth + displayHalfWidth;
-         //if (cornerHeight > displayHalfHeight + displayHalfHeight)
-         //   cornerHeight = displayHalfHeight + displayHalfHeight;
-         //var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
-         var isRoundCorner:Boolean = false;
+         if (cornerWidth > displayHalfWidth + displayHalfWidth)
+            cornerWidth = displayHalfWidth + displayHalfWidth;
+         if (cornerHeight > displayHalfHeight + displayHalfHeight)
+            cornerHeight = displayHalfHeight + displayHalfHeight;
+         var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
          
          var bodyColor:int = GetBodyColor ();
          var borderColor:int = GetBorderColor ();

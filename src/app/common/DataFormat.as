@@ -720,10 +720,10 @@ package common {
                         entityDefine.mIsRoundJoint = (vectorShape as EntityVectorShapeRectangle).IsRoundJoint ();
                         //<<
                         
-                        //>>from v2.05 (cancelled)
-                        //entityDefine.mIsRoundCorner = (vectorShape as EntityVectorShapeRectangle).IsRoundCorner ();
-                        //entityDefine.mCornerEclipseWidth = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseWidth ();
-                        //entityDefine.mCornerEclipseHeight = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseHeight ();
+                        //>>from v2.05 
+                        entityDefine.mIsRoundCorner = (vectorShape as EntityVectorShapeRectangle).IsRoundCorner ();
+                        entityDefine.mCornerEclipseWidth = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseWidth ();
+                        entityDefine.mCornerEclipseHeight = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseHeight ();
                         //<<
                      }
                      //>>from v1.04
@@ -1277,9 +1277,9 @@ package common {
                   moduleInstanceDefine.mRectHalfWidth = rectangleShape.GetHalfWidth ();
                   moduleInstanceDefine.mRectHalfHeight = rectangleShape.GetHalfHeight ();
                   
-                  //>>from v2.05 (canclled)
-                  //moduleInstanceDefine.mCornerEclipseWidth = rectangleShape.GetCornerEclipseWidth ();
-                  //moduleInstanceDefine.mCornerEclipseHeight = rectangleShape.GetCornerEclipseHeight ();
+                  //>>from v2.05
+                  moduleInstanceDefine.mCornerEclipseWidth = rectangleShape.GetCornerEclipseWidth ();
+                  moduleInstanceDefine.mCornerEclipseHeight = rectangleShape.GetCornerEclipseHeight ();
                   //<<
                   
                   //if (vectorShape is VectorShapeText)
@@ -1401,9 +1401,9 @@ package common {
                   rectangleShape.SetHalfWidth (moduleInstanceDefine.mRectHalfWidth);
                   rectangleShape.SetHalfHeight (moduleInstanceDefine.mRectHalfHeight);
                   
-                  //>>from v2.05 (cancelled)
-                  //rectangleShape.SetCornerEclipseWidth (moduleInstanceDefine.mCornerEclipseWidth);
-                  //rectangleShape.SetCornerEclipseHeight (moduleInstanceDefine.mCornerEclipseHeight);
+                  //>>from v2.05 
+                  rectangleShape.SetCornerEclipseWidth (moduleInstanceDefine.mCornerEclipseWidth);
+                  rectangleShape.SetCornerEclipseHeight (moduleInstanceDefine.mCornerEclipseHeight);
                   //<<
                   
                   areaVectorShape = rectangleShape as VectorShapeArea;
@@ -2493,10 +2493,10 @@ package common {
                         rect.SetRoundJoint (entityDefine.mIsRoundJoint);
                         //<<
                         
-                        //>>from v2.05 (canclled)
-                        //rect.SetRoundCorner (entityDefine.mIsRoundCorner);
-                        //rect.SetCornerEclipseWidth (entityDefine.mCornerEclipseWidth);
-                        //rect.SetCornerEclipseHeight (entityDefine.mCornerEclipseHeight);
+                        //>>from v2.05 
+                        rect.SetRoundCorner (entityDefine.mIsRoundCorner);
+                        rect.SetCornerEclipseWidth (entityDefine.mCornerEclipseWidth);
+                        rect.SetCornerEclipseHeight (entityDefine.mCornerEclipseHeight);
                         //<<
                         
                         entity = vectorShape = rect;
@@ -4045,11 +4045,11 @@ package common {
                   moduleInstanceDefine.mRectHalfWidth = parseFloat (element.@rect_half_width);
                   moduleInstanceDefine.mRectHalfHeight = parseFloat (element.@rect_half_height);
                   
-                  //if (worldVersion >= 0x0205) // cancelled
-                  //{
-                  //   moduleInstanceDefine.mCornerEclipseWidth = parseFloat (element.@corner_eclipse_width);
-                  //   moduleInstanceDefine.mCornerEclipseHeight = parseFloat (element.@corner_eclipse_height);
-                  //}
+                  if (worldVersion >= 0x0205)
+                  {
+                     moduleInstanceDefine.mCornerEclipseWidth = parseFloat (element.@corner_eclipse_width);
+                     moduleInstanceDefine.mCornerEclipseHeight = parseFloat (element.@corner_eclipse_height);
+                  }
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
@@ -4422,12 +4422,12 @@ package common {
                         entityDefine.mIsRoundJoint = parseInt (element.@round_joint) != 0;
                   }
                   
-                  //if (worldDefine.mVersion >= 0x0205) // (canclled)
-                  //{
-                  //   entityDefine.mIsRoundCorner = parseInt (element.@round_corner) != 0;
-                  //   entityDefine.mCornerEclipseWidth = parseFloat (element.@corner_eclipse_width);
-                  //   entityDefine.mCornerEclipseHeight = parseFloat (element.@corner_eclipse_height);
-                  //}
+                  if (worldDefine.mVersion >= 0x0205)
+                  {
+                     entityDefine.mIsRoundCorner = parseInt (element.@round_corner) != 0;
+                     entityDefine.mCornerEclipseWidth = parseFloat (element.@corner_eclipse_width);
+                     entityDefine.mCornerEclipseHeight = parseFloat (element.@corner_eclipse_height);
+                  }
                   
                   entityDefine.mHalfWidth = parseFloat (element.@half_width);
                   entityDefine.mHalfHeight = parseFloat (element.@half_height);
@@ -5305,12 +5305,12 @@ package common {
                         byteArray.writeByte (entityDefine.mIsRoundJoint ? 1 : 0);
                      }
                      
-                     //if (worldDefine.mVersion >= 0x0205) // (canclled)
-                     //{
-                     //   byteArray.writeByte (entityDefine.mIsRoundCorner ? 1 : 0);
-                     //   byteArray.writeFloat (entityDefine.mCornerEclipseWidth);
-                     //   byteArray.writeFloat (entityDefine.mCornerEclipseHeight);
-                     //}
+                     if (worldDefine.mVersion >= 0x0205)
+                     {
+                        byteArray.writeByte (entityDefine.mIsRoundCorner ? 1 : 0);
+                        byteArray.writeFloat (entityDefine.mCornerEclipseWidth);
+                        byteArray.writeFloat (entityDefine.mCornerEclipseHeight);
+                     }
                      
                      byteArray.writeFloat (entityDefine.mHalfWidth);
                      byteArray.writeFloat (entityDefine.mHalfHeight);
@@ -5699,11 +5699,11 @@ package common {
                   byteArray.writeFloat (moduleInstanceDefine.mRectHalfWidth);
                   byteArray.writeFloat (moduleInstanceDefine.mRectHalfHeight);
                   
-                  //if (worldVersion >= 0x0205) // cancelled
-                  //{
-                  //   byteArray.writeFloat (moduleInstanceDefine.mCornerEclipseWidth);
-                  //   byteArray.writeFloat (moduleInstanceDefine.mCornerEclipseHeight);
-                  //}
+                  if (worldVersion >= 0x0205)
+                  {
+                     byteArray.writeFloat (moduleInstanceDefine.mCornerEclipseWidth);
+                     byteArray.writeFloat (moduleInstanceDefine.mCornerEclipseHeight);
+                  }
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {

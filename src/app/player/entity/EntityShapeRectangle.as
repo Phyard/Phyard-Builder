@@ -41,13 +41,13 @@ package player.entity {
             //   SetRoundCornors (entityDefine.mIsRoundCorners);
             if (entityDefine.mIsRoundJoint != undefined)
                SetRoundJoint (entityDefine.mIsRoundJoint);
-            // corner (cancelled)
-            //if (entityDefine.mIsRoundCorner != undefined)
-            //   SetRoundCorner (entityDefine.mIsRoundCorner);
-            //if (entityDefine.mCornerEclipseWidth != undefined)
-            //   SetCornerEclipseWidth (entityDefine.mCornerEclipseWidth);
-            //if (entityDefine.mCornerEclipseHeight != undefined)
-            //   SetCornerEclipseHeight (entityDefine.mCornerEclipseHeight);
+            // corner
+            if (entityDefine.mIsRoundCorner != undefined)
+               SetRoundCorner (entityDefine.mIsRoundCorner);
+            if (entityDefine.mCornerEclipseWidth != undefined)
+               SetCornerEclipseWidth (entityDefine.mCornerEclipseWidth);
+            if (entityDefine.mCornerEclipseHeight != undefined)
+               SetCornerEclipseHeight (entityDefine.mCornerEclipseHeight);
          }
       }
       
@@ -60,10 +60,9 @@ package player.entity {
          //entityDefine.mIsRoundCorners = IsRoundCornors ();
          entityDefine.mIsRoundJoint = IsRoundJoint ();
          
-         // canclled
-         //entityDefine.mIsRoundCorner = IsRoundCorner ();
-         //entityDefine.mCornerEclipseWidth = mWorld.GetCoordinateSystem ().P2D_Length (GetCornerEclipseWidth ());
-         //entityDefine.mCornerEclipseHeight = mWorld.GetCoordinateSystem ().P2D_Length (GetCornerEclipseHeight ());
+         entityDefine.mIsRoundCorner = IsRoundCorner ();
+         entityDefine.mCornerEclipseWidth = mWorld.GetCoordinateSystem ().P2D_Length (GetCornerEclipseWidth ());
+         entityDefine.mCornerEclipseHeight = mWorld.GetCoordinateSystem ().P2D_Length (GetCornerEclipseHeight ());
          
          entityDefine.mEntityType = Define.EntityType_ShapeRectangle;
          return entityDefine;
@@ -128,40 +127,40 @@ package player.entity {
       
       // corner, since v2.05
       
-      //protected var mIsRoundCorner:Boolean = false;
-      //
-      //protected var mCornerEclipseWidth:Number = 0.0;
-      //protected var mCornerEclipseHeight:Number = 0.0;
-
-      //public function GetCornerEclipseWidth ():Number
-      //{
-      //   return mCornerEclipseWidth;
-      //}
-
-      //public function SetCornerEclipseWidth (ellipseWidth:Number):void
-      //{
-      //   mCornerEclipseWidth = Math.abs (ellipseWidth);
-      //}
-
-      //public function GetCornerEclipseHeight ():Number
-      //{
-      //   return mCornerEclipseHeight;
-      //}
-
-      //public function SetCornerEclipseHeight (ellipseHeight:Number):void
-      //{
-      //   mCornerEclipseHeight = Math.abs (ellipseHeight);
-      //}
+      protected var mIsRoundCorner:Boolean = false;
       
-      //public function IsRoundCorner ():Boolean
-      //{
-      //   return mIsRoundCorner;
-      //}
+      protected var mCornerEclipseWidth:Number = 0.0;
+      protected var mCornerEclipseHeight:Number = 0.0;
+
+      public function GetCornerEclipseWidth ():Number
+      {
+         return mCornerEclipseWidth;
+      }
+
+      public function SetCornerEclipseWidth (ellipseWidth:Number):void
+      {
+         mCornerEclipseWidth = Math.abs (ellipseWidth);
+      }
+
+      public function GetCornerEclipseHeight ():Number
+      {
+         return mCornerEclipseHeight;
+      }
+
+      public function SetCornerEclipseHeight (ellipseHeight:Number):void
+      {
+         mCornerEclipseHeight = Math.abs (ellipseHeight);
+      }
       
-      //public function SetRoundCorner (roundCorner:Boolean):void
-      //{
-      //   mIsRoundCorner = roundCorner;
-      //}
+      public function IsRoundCorner ():Boolean
+      {
+         return mIsRoundCorner;
+      }
+      
+      public function SetRoundCorner (roundCorner:Boolean):void
+      {
+         mIsRoundCorner = roundCorner;
+      }
       
 //=============================================================
 //   appearance
@@ -183,24 +182,24 @@ package player.entity {
             var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
             var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
             
-            //var cornerWidth:Number = mCornerEclipseWidth;
-            //var cornerHeight:Number = mCornerEclipseHeight;
+            var cornerWidth:Number = mCornerEclipseWidth;
+            var cornerHeight:Number = mCornerEclipseHeight;
             
             if (mBuildInterior || displayBorderThickness < Number.MIN_VALUE)
             {
                displayHalfWidth += 0.5 / GetScale (); // + 0.5 to avoid the visual leaps between contacting shapes sometimes
                displayHalfHeight += 0.5 / GetScale (); // + 0.5 to avoid the visual leaps between contacting shapes sometimes
                
-               //if (mIsRoundCorner)
-               //{
-               //   cornerWidth += 0.5 / GetScale ();
-               //   cornerHeight += 0.5 / GetScale ();
-               //   
-               //   if (cornerWidth > displayHalfWidth + displayHalfWidth)
-               //      cornerWidth = displayHalfWidth + displayHalfWidth;
-               //   if (cornerHeight > displayHalfHeight + displayHalfHeight)
-               //      cornerHeight = displayHalfHeight + displayHalfHeight;
-               //}
+               if (mIsRoundCorner)
+               {
+                  cornerWidth += 0.5 / GetScale ();
+                  cornerHeight += 0.5 / GetScale ();
+                  
+                  if (cornerWidth > displayHalfWidth + displayHalfWidth)
+                     cornerWidth = displayHalfWidth + displayHalfWidth;
+                  if (cornerHeight > displayHalfHeight + displayHalfHeight)
+                     cornerHeight = displayHalfHeight + displayHalfHeight;
+               }
             }
             else
             {
@@ -208,8 +207,7 @@ package player.entity {
             }
             
             RebuildBackgroundAndBorder (displayHalfWidth, displayHalfHeight, displayBorderThickness, 
-                                        //cornerWidth, cornerHeight
-                                        0, 0
+                                        cornerWidth, cornerHeight
                                         );
          }
          
@@ -229,8 +227,7 @@ package player.entity {
          var displayWidth :Number = displayHalfWidth +  displayHalfWidth;
          var displayHeight:Number = displayHalfHeight +  displayHalfHeight;
          
-         //var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
-         var isRoundCorner:Boolean = false;
+         var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
             
          // todo: body texture (remember add texture define in ToEntityDefine)
          

@@ -94,7 +94,7 @@
       <mx:Spacer width="100%"/>
    </mx:HBox>
 
-   <mx:Spacer height="16" />
+   <mx:Spacer height="32" />
 
    <mx:Script>
       <![CDATA[       

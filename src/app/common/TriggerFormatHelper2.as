@@ -771,10 +771,19 @@ package common {
          
          if (value_source == null)
          {
+            // before v2.05, 2 <- null + null 
+            //value_source = new Parameter_DirectConstant (
+            //                     Global.GetClassDefinition (classType, valueType),
+            //                     CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos)
+            //                  );
+            
+            // since v2.05, 0 <- null + null
+            var theClass:ClassDefinition = Global.GetClassDefinition (classType, valueType);
             value_source = new Parameter_DirectConstant (
-                                 Global.GetClassDefinition (classType, valueType),
-                                 CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos)
+                                 theClass,
+                                 theClass.mGetNullFunc () // this function must be not null
                               );
+            
          }
          
          return value_source;

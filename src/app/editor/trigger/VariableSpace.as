@@ -605,7 +605,10 @@ package editor.trigger {
          for (var i:int = GetNumVariableInstances () - 1; i >= 0; -- i)
          {
             var viDef:VariableDefinition = GetVariableInstanceAt (i).GetVariableDefinition ();
-            if ((viDef.GetClass () is ClassDefinition_Custom) && (viDef.GetClass ().GetID () < 0))
+            
+            if (   (( viDef.GetClass () is ClassDefinition_Custom) && (viDef.GetClass ().GetID () < 0))
+                || (( viDef.GetClass () is ClassDefinition_Core) && (viDef.GetClass ().GetID () == CoreClassIds.ValueType_Void))
+               )
             {
                DestroyVariableInstanceAtIndex (i);
             }

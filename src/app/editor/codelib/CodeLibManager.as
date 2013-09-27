@@ -114,7 +114,8 @@ package editor.codelib {
                mClassAssets.splice (index, 1);
 
                // ...
-               RemoveReferencesOfClass (asset as AssetClass);
+               //RemoveReferencesOfClass (asset as AssetClass);
+               RemoveReferencesOfInvalidClasses ();
                
                //delete mNameLookupTable[(asset as AssetFunction).GetFunctionName ()];
                
@@ -169,13 +170,14 @@ package editor.codelib {
          super.DestroyAllAssets ();
       }
       
-      public function RemoveReferencesOfClass (theClass:AssetClass):void
+      //public function RemoveReferencesOfClass (theClass:AssetClass):void
+      public function RemoveReferencesOfInvalidClasses ():void
       {
+         //var theCustomClassDefinition:ClassDefinition_Custom = theClass.GetCustomClass ();
+         
          mGlobalVariableSpace.Validate (); // RemoveReferencesOfClass (theCustomClassDefinition);
          mEntityVariableSpace.Validate (); // RemoveReferencesOfClass (theCustomClassDefinition);
          mSessionVariableSpace.Validate (); // RemoveReferencesOfClass (theCustomClassDefinition); // may be not essential
-         
-         var theCustomClassDefinition:ClassDefinition_Custom = theClass.GetCustomClass ();
          
          var index:int;
          

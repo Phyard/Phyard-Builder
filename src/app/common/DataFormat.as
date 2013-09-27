@@ -2057,10 +2057,15 @@ package common {
             for (sceneId = 0; sceneId < worldDefine.mSceneDefines.length; ++ sceneId)
             {
                newSceneId = sceneRefIndex_CorrectionTable [sceneId];
-               if (newCreatedScenes [sceneId] == null)
+               newScene = newCreatedScenes [sceneId];
+               if (newScene == null)
                {
                   sceneRefIndex_CorrectionTable [sceneId] = -1;
                   editorWorld.DeleteSceneByIndex (newSceneId, false);
+               }
+               else
+               {
+                  newScene.GetCodeLibManager ().RemoveReferencesOfInvalidClasses ();
                }
             }
             

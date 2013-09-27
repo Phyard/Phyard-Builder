@@ -116,22 +116,24 @@ package player.trigger {
                                                 )
          {
             GetCoreClassDefinition (primitiveClassId).mIsNullFunc = null;
-            GetCoreClassDefinition (primitiveClassId).mGetNullFunc = null;
          }
          
          GetCoreClassDefinition (CoreClassIds.ValueType_Boolean).mToNumberFunc = Boolean2Number;
          GetCoreClassDefinition (CoreClassIds.ValueType_Boolean).mToBooleanFunc = DoNothing;
          GetCoreClassDefinition (CoreClassIds.ValueType_Boolean).mToStringFunc = Boolean2String;
+         GetCoreClassDefinition (CoreClassIds.ValueType_Boolean).mGetNullFunc = GetNull_Boolean;
          GetCoreClassDefinition (CoreClassIds.ValueType_Boolean).mValueConvertOrder = ClassDefinition.ValueConvertOrder_Boolean;
          
          GetCoreClassDefinition (CoreClassIds.ValueType_Number).mToNumberFunc = DoNothing;
          GetCoreClassDefinition (CoreClassIds.ValueType_Number).mToBooleanFunc = Number2Boolean;
          GetCoreClassDefinition (CoreClassIds.ValueType_Number).mToStringFunc = Number2String;
+         GetCoreClassDefinition (CoreClassIds.ValueType_Number).mGetNullFunc = GetNull_Number;
          GetCoreClassDefinition (CoreClassIds.ValueType_Number).mValueConvertOrder = ClassDefinition.ValueConvertOrder_Number;
          
          GetCoreClassDefinition (CoreClassIds.ValueType_String).mToNumberFunc = String2Number;
          GetCoreClassDefinition (CoreClassIds.ValueType_String).mToBooleanFunc = String2Boolean;
          GetCoreClassDefinition (CoreClassIds.ValueType_String).mToStringFunc = DoNothing;
+         //GetCoreClassDefinition (CoreClassIds.ValueType_String).mGetNullFunc = GetNullObjectValue; // set above
          GetCoreClassDefinition (CoreClassIds.ValueType_String).mValueConvertOrder = ClassDefinition.ValueConvertOrder_String;
          
          // ...
@@ -245,6 +247,16 @@ package player.trigger {
       
       // ------------------
       
+      public static function GetNull_Boolean ():Boolean
+      {
+         return false;
+      }
+      
+      public static function GetNull_Number():Number
+      {
+         return 0;
+      }
+      
       public static function Number2Boolean (valueObject:Object):Boolean
       {
          return Boolean (Number (valueObject));
@@ -305,7 +317,9 @@ package player.trigger {
       }
       
       //----------------
-            
+      
+      // the asset ones should be merged into object ones later.
+      
       public static function Asset2Number (valueObject:Object):Number
       {
          return int (valueObject) < 0 ? 0 : 1;

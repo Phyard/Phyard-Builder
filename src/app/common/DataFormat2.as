@@ -2974,7 +2974,7 @@ package common {
             {
                TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mSessionVariableDefines, true, false, "/session/" + sceneIndex, worldDefine.mVersion >= 0x0205);
             }
-            
+             
             //var numSpaces:int;
             //var spaceId:int;
             //var variableSpaceDefine:VariableSpaceDefine;

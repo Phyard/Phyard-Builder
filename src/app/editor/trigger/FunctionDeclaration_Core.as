@@ -16,6 +16,24 @@ package editor.trigger {
                                                 inputDefinitions:Array = null, returnDefinitions:Array = null, 
                                                 showUpInApiMenu:Boolean = true)
       {
+         // bug: the default values will be overrided in Variable.CreateVariableInstanceFromDefinition
+         //mFunctionDeclaration_Common = CoreFunctionDeclarations.GetCoreFunctionDeclaration (id);
+         //
+         //if (inputDefinitions != null)
+         //{
+         //   var count:int = inputDefinitions.length;
+         //   for (var i:int = 0; i < count; ++ i)
+         //   {
+         //      (inputDefinitions[i] as VariableDefinition).SetDefaultValue (mFunctionDeclaration_Common.GetInputParamDefaultValue (i));
+         //   }
+         //}
+         
+         //super (id, name, description, inputDefinitions, returnDefinitions, showUpInApiMenu);
+         super (id, name, description, showUpInApiMenu);
+         AddInputVariableFromDefinitions (inputDefinitions);
+         AddOutputVariableFromDefinitions (returnDefinitions);
+         
+         //>> moved from above 
          mFunctionDeclaration_Common = CoreFunctionDeclarations.GetCoreFunctionDeclaration (id);
          
          if (inputDefinitions != null)
@@ -23,14 +41,10 @@ package editor.trigger {
             var count:int = inputDefinitions.length;
             for (var i:int = 0; i < count; ++ i)
             {
-               (inputDefinitions[i] as VariableDefinition).SetDefaultValue (mFunctionDeclaration_Common.GetInputParamDefaultValue (i));
+               GetInputParamDefinitionAt (i).SetDefaultValue (mFunctionDeclaration_Common.GetInputParamDefaultValue (i));
             }
          }
-         
-         //super (id, name, description, inputDefinitions, returnDefinitions, showUpInApiMenu);
-         super (id, name, description, showUpInApiMenu);
-         AddInputVariableFromDefinitions (inputDefinitions);
-         AddOutputVariableFromDefinitions (returnDefinitions);
+         //<<
          
          ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
          

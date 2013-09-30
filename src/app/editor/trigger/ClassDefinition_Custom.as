@@ -15,9 +15,9 @@ package editor.trigger {
       public function ClassDefinition_Custom (typeName:String, validateValueFunc:Function)
       {
          super (typeName.toLowerCase (), null, validateValueFunc);
-         mName = typeName;
          SetSceneDataDependent (true);
          
+         mName = typeName;
          mPropertyDefinitionSpace = new VariableSpaceClassInstance (GetName ());
       }
       
@@ -46,6 +46,11 @@ package editor.trigger {
          mName = name;
          
          mPropertyDefinitionSpace.SetSpaceName (GetName ());
+         
+         if (mName != null)
+         {
+            SetDefaultInstanceName (mName.toLowerCase ());
+         }
       }
       
       public function GetPropertyDefinitionSpace ():VariableSpaceClassInstance

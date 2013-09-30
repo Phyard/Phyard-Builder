@@ -16,7 +16,7 @@ package editor.trigger {
       
       public function ClassDefinition (defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
       {
-         mDefaultInstanceName = defalutInstanceName;
+         SetDefaultInstanceName (defalutInstanceName);
          
          mInitialInstacneValue = initialInitialValue;
          mInstanceValueValidateFunc = validateValueFunc;
@@ -57,6 +57,11 @@ package editor.trigger {
       public function GetDefaultInstanceName ():String
       {
          return mDefaultInstanceName;
+      }
+      
+      public function SetDefaultInstanceName (defalutInstanceName:String):void
+      {
+         mDefaultInstanceName = defalutInstanceName;
       }
       
       //===========

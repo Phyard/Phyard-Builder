@@ -18,6 +18,8 @@ package player.trigger
          mToStringFunc = CoreClasses.Object2String;
          mIsNullFunc = CoreClasses.IsNullObjectValue;
          mGetNullFunc = CoreClasses.GetNullObjectValue;
+         
+         mValueConvertOrder = ClassDefinition.ValueConvertOrder_Others;
       }
       
       override public function CreateDefaultInitialValue ():Object

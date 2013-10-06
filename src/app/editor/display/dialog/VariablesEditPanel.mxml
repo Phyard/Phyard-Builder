@@ -24,7 +24,7 @@
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="16" />
                <mx:HBox width="67%" borderStyle="none" borderThickness="0">
-                  <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_BooleanType" value="Booelan" label="Boolean" />
+                  <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_BooleanType" value="Boolean" label="Boolean" />
                   <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_NumberType" value="Number" label="Number" selected="true" />
                </mx:HBox>
                <mx:RadioButton groupName="VariableType" enabled="false" width="33%" id="RadioButton_StringType" value="String" label="String" />
@@ -33,7 +33,7 @@
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="16" />
                <mx:RadioButton groupName="VariableType" enabled="false" width="67%" id="RadioButton_CCatType" value="CCat" label="Collision Category" />
-               <mx:RadioButton groupName="VariableType" enabled="false" width="33%" id="RadioButton_EntityType" value="Booelan" label="Entity" />
+               <mx:RadioButton groupName="VariableType" enabled="false" width="33%" id="RadioButton_EntityType" value="Entity" label="Entity" />
                <mx:Spacer width="6" />
             </mx:HBox-->
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
@@ -338,7 +338,12 @@
             {
                if (mVariableSpace == null)
                   return;
-
+               
+               //>>fix bugs. Otherwise the one selected variable name may be forced changed by the new created one.
+               ConfirmChangeCurrentVariableName ();
+               mCurrentVariable = null;
+               //<<
+               
                var variableDefinition:VariableDefinition = null;
 
                var valueType:int = event.item.@id;

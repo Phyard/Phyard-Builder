@@ -104,8 +104,8 @@ package editor.trigger {
             inputParamDefinitions [i] = mInputVariableSpace.GetVariableInstanceAt (i).GetVariableDefinition ().Clone ();
          for (i = mOutputVariableSpace.GetNumVariableInstances () - 1; i >= 0; -- i)
             outputParamDefinitions [i] = mOutputVariableSpace.GetVariableInstanceAt (i).GetVariableDefinition ().Clone ();
-         AddInputVariableFromDefinitions (inputParamDefinitions);
-         AddOutputVariableFromDefinitions (outputParamDefinitions);
+         customFunctionDeclaration.AddInputVariableFromDefinitions (inputParamDefinitions);
+         customFunctionDeclaration.AddOutputVariableFromDefinitions (outputParamDefinitions);
          
          return customFunctionDeclaration;
       }

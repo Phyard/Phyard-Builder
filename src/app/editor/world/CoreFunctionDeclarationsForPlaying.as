@@ -669,6 +669,26 @@ package editor.world {
 
        // array
 
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_IndexOf, array_package, "Index Of", null, null,
+         //            [
+         //                    new VariableDefinitionArray ("The Array"),
+         //                    new VariableDefinitionObject ("Element Value"),
+         //                    new VariableDefinitionNumber ("From Index", null, {mMinValue: 0, mMaxValue: 0x7fffffff}),
+         //            ],
+         //            [
+         //                    new VariableDefinitionNumber ("Index"),
+         //            ]
+         //         );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_LastIndexOf, array_package, "Last Index Of", null, null,
+         //            [
+         //                    new VariableDefinitionArray ("The Array"),
+         //                    new VariableDefinitionObject ("Element Value"),
+         //                    new VariableDefinitionNumber ("From Index", null, {mMinValue: 0, mMaxValue: 0x7fffffff}),
+         //            ],
+         //            [
+         //                    new VariableDefinitionNumber ("Last Index"),
+         //            ]
+         //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElement, array_package, "Set Array Element", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),

@@ -160,6 +160,8 @@ package common.trigger {
 
       public static const ID_Array_SetElement:int       = IdPool.CoreApiId_117; // v2.05
       public static const ID_Array_GetElement:int       = IdPool.CoreApiId_118; // v2.05
+      //public static const ID_Array_IndexOf:int                   = IdPool.CoreApiId_135; // v2.05
+      //public static const ID_Array_LastIndexOf:int               = IdPool.CoreApiId_136; // v2.05
 
    // math basic op
 

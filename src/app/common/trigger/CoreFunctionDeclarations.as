@@ -862,6 +862,26 @@ package common.trigger {
                         [CoreClassIds.ValueType_Object,       null],
                      ]
                   );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Array_IndexOf,
+         //            [
+         //               [CoreClassIds.ValueType_Array,       ""],
+         //               [CoreClassIds.ValueType_Object,       null],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+         //            ],
+         //            [
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
+         //            ]
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Array_LastIndexOf,
+         //            [
+         //               [CoreClassIds.ValueType_Array,       ""],
+         //               [CoreClassIds.ValueType_Object,       null],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0x7fffffff],
+         //            ],
+         //            [
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
+         //            ]
+         //         );
 
        // math basic op
 

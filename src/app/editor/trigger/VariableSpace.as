@@ -465,7 +465,7 @@ package editor.trigger {
                var newVi:VariableInstance = CreateVariableInstanceFromDefinition (variableKey, variableDefinition);
                //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
                //newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
-               
+
                return newVi;
             }
             
@@ -529,7 +529,7 @@ package editor.trigger {
          
          ValidateVariableDefinitionName (variableDefinition);
          mLookupTableByName [variableDefinition.GetName ()] = vi; // vi.GetName () == variableDefinition.GetName ()
-         
+
          //...
          
          mVariableInstances.push (vi);

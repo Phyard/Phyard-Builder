@@ -176,7 +176,7 @@ package editor.codelib {
          
          packageName = TextUtil.GetHtmlEscapedText (packageName);
          
-         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>&lt;" + GetPackageIndex () + "&gt; " + packageName + "</font>", false, 0xFFFFFF, 0x0);
+         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>{" + GetPackageIndex () + "} " + packageName + "</font>", false, 0xFFFFFF, 0x0);
             
          addChild (textField);
          

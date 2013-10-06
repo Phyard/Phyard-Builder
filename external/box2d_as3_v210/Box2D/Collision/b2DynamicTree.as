@@ -149,6 +149,7 @@ package Box2D.Collision
 			//b2GrowableStack<int32, 256> stack;
          //var stack:b2GrowableStack = new b2GrowableStack (256); // bug!!!, crash on iOS. Ill on PC.
          //var stack:b2GrowableStack = new b2GrowableStack (0); // Still crash on iOS
+                                                   // [update] see the comment in b2GrowableStack.as to check why the crash. 
          var stack:Array = new Array ();
 			stack.push(m_root);
 

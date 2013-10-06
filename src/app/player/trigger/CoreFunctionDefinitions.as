@@ -180,6 +180,8 @@ package player.trigger {
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsArray,         GetArrayElement); // GetArrayElementAsArray);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElement,       SetArrayElement);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElement,       GetArrayElement);
+         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_IndexOf,                     IndexOfArrayElement);
+         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_LastIndexOf,                 LastIndexOfArrayElement);
 
       // math ops
 
@@ -1013,10 +1015,21 @@ package player.trigger {
 
       public static function IndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void
       {
+         _IndexOfSubstring (valueSource, valueTarget, false);
+      }
+
+      public static function LastIndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         _IndexOfSubstring (valueSource, valueTarget, true);
+      }
+
+      public static function _IndexOfSubstring (valueSource:Parameter, valueTarget:Parameter, fromLast:Boolean):void
+      {
          var text:String = valueSource.EvaluateValueObject () as String;
          if (text == null)
          {
             valueTarget.AssignValueObject (-1);
+
             return;
          }
 
@@ -1031,7 +1044,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var fromIndex:int = int (valueSource.EvaluateValueObject ());
 
-         valueTarget.AssignValueObject (text.indexOf (substring, fromIndex));
+         if (fromLast)
+            valueTarget.AssignValueObject (text.lastIndexOf (substring, fromIndex));
+         else
+            valueTarget.AssignValueObject (text.indexOf (substring, fromIndex));
       }
 
       public static function SplitString (valueSource:Parameter, valueTarget:Parameter):void
@@ -1085,30 +1101,6 @@ package player.trigger {
          }
 
          valueTarget.AssignValueObject (resultString);
-      }
-
-      public static function LastIndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         var text:String = valueSource.EvaluateValueObject () as String;
-         if (text == null)
-         {
-            valueTarget.AssignValueObject (-1);
-
-            return;
-         }
-
-         valueSource = valueSource.mNextParameter;
-         var substring:String = valueSource.EvaluateValueObject () as String;
-         if (substring == null)
-         {
-            valueTarget.AssignValueObject (-1);
-            return;
-         }
-
-         valueSource = valueSource.mNextParameter;
-         var lastFromIndex:int = int (valueSource.EvaluateValueObject ());
-
-         valueTarget.AssignValueObject (text.lastIndexOf (substring, lastFromIndex));
       }
 
       public static function Substring (valueSource:Parameter, valueTarget:Parameter):void
@@ -1785,6 +1777,55 @@ package player.trigger {
          // if index >= length, length will extend to index automtically.
          array [index] = valueSource.GetVariableInstance ().CloneClassInstance ();
       }
+      
+      //public static function IndexOfArrayElement (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   _IndexOfArrayElement (valueSource, valueTarget, false);
+      //}
+      //
+      //public static function LastIndexOfArrayElement (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   _IndexOfArrayElement (valueSource, valueTarget, true);
+      //}
+      
+      // in the current piapia language implementation, it is hard to use Array.indexOf to search a element, 
+      // for every elements in array are a different ClassInstance.
+      // so piapia implementation needs some changes.
+      // - change ClassInstacne as a property of VariableInstance, mClassInstance may be
+      //   - boolean, number (and later int), string and array
+      //   - custom types as current.
+      // - use mixin to add GetClassDefinition fucntion on boolean/number/...
+      //   - maybe not possible to do this.
+      // 
+      // - use mixin: http://tobyho.com/2009/05/02/modifying-core-types-in/
+      //              http://www.josha.me/2009/06/17/prototype-and-as3/
+      //              http://help.adobe.com/en_US/ActionScript/3.0_ProgrammingAS3/WS5b3ccc516d4fbf351e63e3d118a9b90204-7f3f.html
+      //              http://help.adobe.com/en_US/ActionScript/3.0_ProgrammingAS3/WS5b3ccc516d4fbf351e63e3d118a9b90204-7f3f.html#WS5b3ccc516d4fbf351e63e3d118a9b90204-7fa3
+      // - int.prototype.mClassDefinition = CoreClasses.GetClassDefintion (id_int);
+      //     ...
+      //     var aInt:int;
+      //     trace (aInt.mClassDefinition):
+      
+      //public static function _IndexOfArrayElement (valueSource:Parameter, valueTarget:Parameter, forLast:Boolean):void
+      //{
+      //   var theArray:Array = valueSource.EvaluateValueObject () as Array;
+      //   if (theArray == null)
+      //   {
+      //      valueTarget.AssignValueObject (-1);
+      //      return;
+      //   }
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var element:Object = valueSource.EvaluateValueObject ();
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var fromIndex:int = int (valueSource.EvaluateValueObject ());
+      //   
+      //   if (forLast)
+      //      valueTarget.AssignValueObject (theArray.indexOf (element, fromIndex));
+      //   else
+      //      valueTarget.AssignValueObject (theArray.lastIndexOf (element, fromIndex));
+      //}
 
       public static function GetArrayElement (valueSource:Parameter, valueTarget:Parameter):void
       {

@@ -44,6 +44,18 @@
    
    private var mCacheSystemEvents:Boolean = true;
    
+   // [2013.10.14 v2.05]:
+   // seems this function was added from v1.50.
+   // for viewer calling only, not exposed as an API.
+   // the viewer will call world.SetCacheSystemEvent (world.mShowPlayBar).
+   // maybe doing this will be helpful for some cases I forget now.
+   //    (maybe for Flash security, for example, Flash only only call ClipBoard.paste in system event handlers)
+   // it will bring lags when synchronizing shape visual and physics.
+   // to keep the compatibility:
+   // - to add a UpdateShapeAppearance API for synchronizing shape visual immediately
+   // - in viewer, for v2.xx, don't call world.SetCacheSystemEvent (world.mShowPlayBar)
+   // - to add a SetCacheSystemEvent API
+   
    public function SetCacheSystemEvent (cache:Boolean):void
    {
       mCacheSystemEvents = cache;

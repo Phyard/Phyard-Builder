@@ -230,7 +230,7 @@ package player.entity {
          var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
             
          // todo: body texture (remember add texture define in ToEntityDefine)
-         
+        
          GraphicsUtil.ClearAndDrawRect (
                   mBackgroundShape,
                   - displayHalfWidth,

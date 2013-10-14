@@ -970,7 +970,7 @@ package player.entity {
             mAppearanceObjectsContainer.x = newX;
             mAppearanceObjectsContainer.y = newY;
          }
-         
+
          mAppearanceObjectsContainer.rotation = newR;
          
          //mAppearanceObjectsContainer.scaleX = mFlipped ? - mScale : mScale;

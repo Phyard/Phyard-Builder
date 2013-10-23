@@ -1796,6 +1796,8 @@ package player.trigger {
       //   - custom types as current.
       // - use mixin to add GetClassDefinition fucntion on boolean/number/...
       //   - maybe not possible to do this.
+      //
+      // - for CCat and Entity, etc, add a mPiapiaValueInstance = new ClassInstance (CoreType, Type_XXX, this); 
       // 
       // - use mixin: http://tobyho.com/2009/05/02/modifying-core-types-in/
       //              http://www.josha.me/2009/06/17/prototype-and-as3/

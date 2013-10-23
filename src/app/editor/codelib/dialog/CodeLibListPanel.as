@@ -248,6 +248,7 @@ package editor.codelib.dialog {
             }
             
             asset.UpdateAppearance ();
+            asset.UpdateSelectionProxy ();
             
             RepaintAllAssetLinks ();
             

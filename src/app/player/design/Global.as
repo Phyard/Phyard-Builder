@@ -664,6 +664,7 @@ package player.design
             vi.SetDeclaration (varDeclaration);                  
             
             vi.SetValueObject (initValueObject);
+            vi.SetRealClassDefinition (classDefinition); // !!! otherwise, reg variables will trated as void in compare
          }
          
          return vs;

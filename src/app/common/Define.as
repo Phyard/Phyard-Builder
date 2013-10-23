@@ -169,7 +169,8 @@ package common {
          // - If there is no contact proxy id between 0 and 0xFFFF to apply for a new shape, there may be some problems
       
       public static const MinEntityNameLength:int = 1;
-      public static const MaxEntityNameLength:int = 30; // would be 32 when plus 2 digits number
+      //public static const MaxEntityNameLength:int = 30; // would be 32 when plus 2 digits number
+      public static const MaxEntityNameLength:int = 62; // would be 64 when plus 2 digits number
       
       public static const EntityId_None:int = -1;
       public static const EntityId_Ground:int = -2;

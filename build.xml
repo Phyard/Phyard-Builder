@@ -4,6 +4,8 @@
    <condition property="file.local.properties" value="local.properties.Windows1" else="local.properties.Linux">
       <os family="windows" />
    </condition>
+
+   <property name="setting.ToEncryptSWFs"        value="false" />
    
    <property file="${basedir}/${file.local.properties}" />
    <!-- if above file is not available, do nothing, so set default values -->
@@ -44,7 +46,7 @@
    <property name="dir.output"        value="${basedir}/#output" />
    <property name="dir.output.editor"        value="${dir.output}-editor" />
    <property name="dir.output.unieditor"        value="${dir.output}-unieditor" />
-   <property name="dir.output.univiewer"        value="$${dir.output}-univiewer" />
+   <property name="dir.output.univiewer"        value="${dir.output}-univiewer" />
    
    <!-- -DForAir=true -->
    <condition property="program.as3compiler.nosuffix" value="${dir.flexsdk}/bin/amxmlc" else="${dir.flexsdk}/bin/mxmlc">
@@ -102,7 +104,10 @@
          <os family="windows" />
       </not>
    </condition>
+
+   <!--
    <available file="${program.secureSWF}" property="has.program.secureSWF"/>
+   -->
 
    <!--
    <path id="java-class-path">
@@ -178,6 +183,40 @@
 
    <!-- ============================================= editor =========================================================== -->
 
+   <target name="--encrypt-swf" if="${setting.ToEncryptSWFs}">
+      <mkdir dir="${--to-directory}" />
+      <delete file="${--to-directory}/${--from-swf}" quiet="true" />
+      <delete file="${--to-directory}/${--to-swf}" quiet="true" />
+
+      <exec dir="${--from-directory}" executable="${program.secureSWF}">
+         <arg line="${--from-directory}/${--from-swf}" /> <!-- here must inlcude the path on linux -->
+         <arg line="${--to-directory}"/>
+         <arg line="-wrap:${--wrap}"/>
+         <arg line="-controlflow:${--controlflow}"/>
+         <arg line="-optimize:${--optimize}"/>
+         <arg line="-slr:${--slr}"/>
+         <arg line="-rename:${--rename}"/>
+         <arg line="-safe:${--safe}"/>
+      </exec>
+
+      <move file="${--to-directory}/${--from-swf}" tofile="${--to-directory}/${--to-swf}"/>
+   </target>
+
+   <target name="--move-swf" unless="${setting.ToEncryptSWFs}">
+      <move file="${--from-directory}/${--from-swf}" tofile="${--to-directory}/${--to-swf}"/>
+   </target>
+
+   <target name="--release-swf">
+      <mkdir dir="${--to-directory}" />
+      <delete file="${--to-directory}/${--from-swf}" quiet="true" />
+      <delete file="${--to-directory}/${--to-swf}" quiet="true" />
+      
+      <antcall target="--encrypt-swf" />
+      <antcall target="--move-swf" />
+   </target>
+
+   <!-- ============================================= editor =========================================================== -->
+
    <target name="--compile-editor">
       <delete dir="${dir.output.editor}" quiet="true" />
       <mkdir dir="${dir.output.editor}" />
@@ -239,21 +278,18 @@
          <param name="--height" value="${editor-height}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/editor.swf" quiet="true" />
-
-      <exec dir="${dir.output.editor}" executable="${program.secureSWF}">
-         <arg line="${dir.output.editor}/editor_unsecure.swf"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.release}"/>
-         <arg line="-wrap:3"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:on"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:on"/>
-      </exec>
-
-      <move file="${dir.release}/editor_unsecure.swf" tofile="${dir.release}/editor.swf"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output.editor}" />
+         <param name="--from-swf" value="editor_unsecure.swf" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="editor.swf" />
+         <param name="--wrap" value="3" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="on" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="on" />
+      </antcall>
    </target>
 
    <!-- ============================================= unieditor =========================================================== -->
@@ -309,21 +345,18 @@
          <param name="--height" value="${editor-height}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/unieditor.swf" quiet="true" />
-
-      <exec dir="${dir.output.unieditor}" executable="${program.secureSWF}">
-         <arg line="${dir.output.unieditor}/unieditor_unsecure.swf"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.output.unieditor}"/>
-         <arg line="-wrap:0"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:off"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:off"/>
-      </exec>
-
-      <move file="${dir.output.unieditor}/unieditor_unsecure.swf" tofile="${dir.release}/unieditor.swf"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output.unieditor}" />
+         <param name="--from-swf" value="unieditor_unsecure.swf" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="unieditor.swf" />
+         <param name="--wrap" value="0" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="off" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="off" />
+      </antcall>
    </target>
 
     <!-- ============================================= univiewer =========================================================== -->
@@ -379,21 +412,18 @@
          <param name="--height" value="${player-height}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/univiewer.swf" quiet="true" />
-
-      <exec dir="${dir.output.univiewer}" executable="${program.secureSWF}">
-         <arg line="${dir.output.univiewer}/univiewer_unsecure.swf"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.output.univiewer}"/>
-         <arg line="-wrap:0"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:off"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:off"/>
-      </exec>
-
-      <move file="${dir.output.univiewer}/univiewer_unsecure.swf" tofile="${dir.release}/univiewer.swf"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output.univiewer}" />
+         <param name="--from-swf" value="univiewer_unsecure.swf" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="univiewer.swf" />
+         <param name="--wrap" value="0" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="off" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="off" />
+      </antcall>
    </target>
 
    <!-- ============================================= plugins =========================================================== -->
@@ -457,21 +487,18 @@
          <param name="--plugin-name" value="${plugin-name}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/${plugin-name}.swf" quiet="true" />
-
-      <exec dir="${dir.output}-plugin-${plugin-name}" executable="${program.secureSWF}">
-         <arg line="${dir.output}-plugin-${plugin-name}/${plugin-name}_unsecure.swf"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.release}/${plugin-name}"/>
-         <arg line="-wrap:0"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:off"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:off"/>
-      </exec>
-
-      <move file="${dir.output}-plugin-${plugin-name}/${plugin-name}_unsecure.swf" tofile="${dir.release}/${plugin-name}.swf"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output}-plugin-${plugin-name}" />
+         <param name="--from-swf" value="${plugin-name}_unsecure.swf" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="${plugin-name}.swf" />
+         <param name="--wrap" value="0" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="off" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="off" />
+      </antcall>
    </target>
 
    <target name="debug-plugin-viewer">
@@ -565,21 +592,18 @@
          <param name="--library-name" value="${library-name}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/${library-name}.swc" quiet="true" />
-
-      <exec dir="${dir.output}-library-${library-name}" executable="${program.secureSWF}">
-         <arg line="${dir.output}-library-${library-name}/${library-name}_unsecure.swc"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.release}/${library-name}"/>
-         <arg line="-wrap:0"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:off"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:off"/>
-      </exec>
-
-      <move file="${dir.output}-library-${library-name}/${library-name}_unsecure.swc" tofile="${dir.release}/${library-name}.swc"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output}-library-${library-name}" />
+         <param name="--from-swf" value="${library-name}_unsecure.swc" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="/${library-name}.swc" />
+         <param name="--wrap" value="0" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="off" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="off" />
+      </antcall>
    </target>
 
    <target name="debug-library-ViewerWorld">

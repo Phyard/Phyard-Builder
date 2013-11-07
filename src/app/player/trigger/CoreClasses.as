@@ -463,15 +463,21 @@ package player.trigger {
       }
       
       // make sure anArray is not null
-      public static function CovertClassInstancesToArrayElements (anArray:Array):void
+      public static function CovertClassInstancesToArrayElements (anArray:Array, creartNewArray:Boolean = true):Array
       {
+         var newArray:Array;
+         if (creartNewArray)
+            newArray = new Array (anArray.length);
+         else
+            newArray = anArray;
+         
          for (var i:int = anArray.length - 1; i >= 0; -- i)
          {
             var ci:ClassInstance = anArray [i] as ClassInstance;
-            anArray [i] = ci == null ? null : ci._mValueObject;
+            newArray [i] = ci == null ? null : ci._mValueObject;
          }
          
-         //return anArray;
+         return newArray;
       }
       
 //==============================================================

@@ -1,5 +1,6 @@
 LocalSettings.properties*
 !##release/editor.htm
+!#output-editor/editor.htm
 \##release/**/*
 \##release/*
 \#output**

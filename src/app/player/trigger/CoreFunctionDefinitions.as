@@ -5955,7 +5955,7 @@ package player.trigger {
          var positions:Array = valueSource.EvaluateValueObject () as Array;
          
          if (positions != null)
-            positions = CoreClasses.CovertClassInstancesToArrayElements (positions, ture);
+            positions = CoreClasses.CovertClassInstancesToArrayElements (positions, true);
 
          EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, true);
       }

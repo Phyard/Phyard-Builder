@@ -14,9 +14,9 @@ package editor.selection {
    import Box2D.Collision.*;
    import Box2D.Collision.Shapes.*;
    
-   import Box2D.b2WorldPool;
+   import common.physics.Box2D.b2WorldPool;
    
-   import Box2dEx.Helper.b2eWorldAABBQueryCallback;
+   import common.physics.Box2D.Helper.b2eWorldAABBQueryCallback;
    
    import common.Define;
    

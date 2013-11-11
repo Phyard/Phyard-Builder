@@ -23,17 +23,16 @@ package player.physics {
    
    import Box2D.Common.b2Settings;
    
-   import Box2D.b2WorldPool;
-   
-   import Box2dEx.Helper.b2eWorldAABBQueryCallback;
-   import Box2dEx.Helper.b2eWorldRayCastCallback;
-   import Box2dEx.Helper.b2eRayCastIntersection;
-   
    import player.entity.EntityShape;
    
    import player.trigger.ClassInstance;
    import player.trigger.CoreClasses;
    import player.trigger.ClassDefinition;
+   
+   import common.physics.Box2D.b2WorldPool;
+   import common.physics.Box2D.Helper.b2eWorldRayCastCallback;
+   import common.physics.Box2D.Helper.b2eWorldAABBQueryCallback;
+   import common.physics.Box2D.Helper.b2eRayCastIntersection;
    
    public class PhysicsEngine
    {

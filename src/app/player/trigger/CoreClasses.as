@@ -564,6 +564,7 @@ package player.trigger {
                // true when only both are null
 
                return class_1.mIsNullFunc (ci_1._mValueObject) && class_2.mIsNullFunc (ci_2._mValueObject);
+                     // equals only when both are null
             }
             else // at least one is primitive
             {

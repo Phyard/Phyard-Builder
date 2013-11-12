@@ -168,7 +168,8 @@ package editor.selection {
                visualShape.x = circlePhysicsShape.m_p.x;
                visualShape.y = circlePhysicsShape.m_p.y;
                var radius:Number = circlePhysicsShape.m_radius;
-               GraphicsUtil.DrawEllipse (visualShape, - radius, - radius, radius + radius, radius + radius, 0x0, 1, false);
+               //GraphicsUtil.DrawEllipse (visualShape, - radius, - radius, radius + radius, radius + radius, 0x0, 1, false);
+               GraphicsUtil.DrawCircle (visualShape, 0, 0, radius, 0x0, 1, false);
             }
             else if (physicsShape is b2PolygonShape)
             {

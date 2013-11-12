@@ -1,9 +1,9 @@
 package common.trigger.define
 {
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.FunctionCoreBasicDefine;
    import common.trigger.CoreFunctionDeclarations;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.FunctionTypeDefine;
    
    import common.CoordinateSystem;
@@ -57,7 +57,7 @@ package common.trigger.define
       {
          if (mFunctionType == FunctionTypeDefine.FunctionType_Core)
          {
-            var functionDeclaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (mFunctionId);
+            var functionDeclaration:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (mFunctionId);
             
             var sourceDefine:ValueSourceDefine;
             var directSourceDefine:ValueSourceDefine_Direct;
@@ -70,7 +70,7 @@ package common.trigger.define
                sourceDefine = mInputValueSourceDefines [i] as ValueSourceDefine;
                valueType = functionDeclaration.GetInputParamValueType (i);
                
-               if (valueType == ValueTypeDefine.ValueType_Number && sourceDefine is ValueSourceDefine_Direct)
+               if (valueType == CoreClassIds.ValueType_Number && sourceDefine is ValueSourceDefine_Direct)
                {
                   directSourceDefine = sourceDefine as ValueSourceDefine_Direct;
                   directValue = Number (directSourceDefine.mValueObject);
@@ -86,7 +86,7 @@ package common.trigger.define
       {
          if (mFunctionType == FunctionTypeDefine.FunctionType_Core)
          {
-            var functionDeclaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (mFunctionId);
+            var functionDeclaration:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (mFunctionId);
             
             var sourceDefine:ValueSourceDefine;
             var directSourceDefine:ValueSourceDefine_Direct;
@@ -99,7 +99,7 @@ package common.trigger.define
                sourceDefine = mInputValueSourceDefines [i] as ValueSourceDefine;
                valueType = functionDeclaration.GetInputParamValueType (i);
                
-               if (valueType == ValueTypeDefine.ValueType_Number && sourceDefine is ValueSourceDefine_Direct)
+               if (valueType == CoreClassIds.ValueType_Number && sourceDefine is ValueSourceDefine_Direct)
                {
                   directSourceDefine = sourceDefine as ValueSourceDefine_Direct;
                   directValue = Number (directSourceDefine.mValueObject);

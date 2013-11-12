@@ -4,9 +4,11 @@ package player.trigger
    {
       public var mCoreFunction:Function = null;
       
-      public function FunctionDefinition_Core (inputValueSourceDefines:Array, ouputParamValueTypes:Array, callback:Function)
+      //public function FunctionDefinition_Core (inputValueSourceDefines:Array, ouputParamValueTypes:Array, callback:Function)
+      public function FunctionDefinition_Core (inputVariableSpace:VariableSpace, outputVariableSpace:VariableSpace, callback:Function)
       {
-         super (inputValueSourceDefines, ouputParamValueTypes);
+         //super (inputValueSourceDefines, ouputParamValueTypes);
+         super (inputVariableSpace, outputVariableSpace);
          
          mCoreFunction = callback;
       }

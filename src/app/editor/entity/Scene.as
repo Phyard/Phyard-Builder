@@ -85,6 +85,8 @@ package editor.entity {
    
    //
    
+   import common.trigger.ClassTypeDefine;
+   
    import common.CoordinateSystem;
    
    import common.Define;
@@ -1936,41 +1938,15 @@ package editor.entity {
 //=================================================================================
 //   draw links
 //=================================================================================
-
-      private static function SortEntitiesByDrawLinksOrder (entity1:Entity, entity2:Entity):int
-      {
-         var drawLinksOrder1:int = entity1.GetDrawLinksOrder ();
-         var drawLinksOrder2:int = entity2.GetDrawLinksOrder ();
-
-         if (drawLinksOrder1 < drawLinksOrder2)
-            return -1;
-         else if (drawLinksOrder1 > drawLinksOrder2)
-            return 1;
-         else
-            return 0;
-      }
       
       override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean):void
       {
-         DrawEntityLinks (canvasSprite, forceDraw);
+         DrawAssetsLinks_Default (canvasSprite, forceDraw);
       }
 
       public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean):void
       {
-         var entityArray:Array = mAssetsSortedByCreationId.concat ();
-         entityArray.sort (SortEntitiesByDrawLinksOrder);
-
-         var entity:Entity;
-         var i:int;
-         var numEntities:int = entityArray.length;
-         for (i = 0; i < numEntities; ++ i)
-         {
-            entity = entityArray [i];
-            if (entity != null)
-            {
-               entity.DrawEntityLinks (canvasSprite, forceDraw);
-            }
-         }
+         DrawAssetLinks (canvasSprite, forceDraw);
       }
       
       public function NotifyEntityLinksModified ():void
@@ -1980,6 +1956,7 @@ package editor.entity {
             mAssetLinksChangedCallback ();
          }
       }
+      
    }
 }
 

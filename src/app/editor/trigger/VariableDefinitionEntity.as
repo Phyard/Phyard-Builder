@@ -10,11 +10,11 @@ package editor.trigger {
    
    import editor.EditorContext;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
    import common.Define;
    
-   public class VariableDefinitionEntity extends VariableDefinition
+   public class VariableDefinitionEntity extends VariableDefinition_Core
    {
    //========================================================================================================
    //
@@ -28,7 +28,7 @@ package editor.trigger {
       
       public function VariableDefinitionEntity (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Entity, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Entity), name, description, options);
          
          if (options != null)
          {
@@ -124,14 +124,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var entityVariableDefinition:VariableDefinitionEntity = new VariableDefinitionEntity (mName, mDescription);
-         entityVariableDefinition.mValidClasses = mValidClasses;
-         entityVariableDefinition.mExceptClasses = mExceptClasses;
-         entityVariableDefinition.mNullValueEnabled = mNullValueEnabled;
-         entityVariableDefinition.mMultiValuesEnabled = mMultiValuesEnabled;
-         entityVariableDefinition.mGroundSelectable = mGroundSelectable;
-         
-         return entityVariableDefinition;
+         return new VariableDefinitionEntity (mName, mDescription, mOptions);
       }
       
 //==============================================================================
@@ -151,11 +144,6 @@ package editor.trigger {
          }
          
          return false;
-      }
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_Entity (valueObject);
       }
       
 //==============================================================================

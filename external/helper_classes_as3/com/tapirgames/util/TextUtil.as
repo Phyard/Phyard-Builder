@@ -203,11 +203,11 @@ package com.tapirgames.util {
       
       private static function RegReplace ():String
       {
-trace ("arguments = " + arguments);
-trace ("        1 = " + arguments [1]);
-trace ("        2 = " + arguments [2]);
-trace ("        3 = " + arguments [3]);
-trace ("        4 = " + arguments [4]);
+//trace ("arguments = " + arguments);
+//trace ("        1 = " + arguments [1]);
+//trace ("        2 = " + arguments [2]);
+//trace ("        3 = " + arguments [3]);
+//trace ("        4 = " + arguments [4]);
          var url:String = arguments[2] + arguments[3];
          var endPart:String = arguments[4];
          var lastChar:String = url.charAt (url.length - 1);

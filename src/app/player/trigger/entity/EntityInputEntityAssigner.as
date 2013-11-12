@@ -8,7 +8,7 @@ package player.trigger.entity
    import player.entity.Entity;
    
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectConstant;
    
    import player.trigger.data.ListElement_EntitySelector;
    
@@ -432,7 +432,7 @@ package player.trigger.entity
          }
          else // if (mAssignerType == Define.EntitySelectorType_Single || mAssignerType == Define.EntitySelectorType_Many)
          {
-            var valueSourceEntity:Parameter_Direct = valueSourceList.mNextParameter as Parameter_Direct;
+            var valueSourceEntity:Parameter_DirectConstant = valueSourceList.mNextParameter as Parameter_DirectConstant;
             
             var count:int = mInputEntityArray1.length;
             var entity:Entity;
@@ -465,8 +465,8 @@ package player.trigger.entity
          if (! mIsPairSelector)
             return;
          
-         var valueSourceEntity1:Parameter_Direct = valueSourceList.mNextParameter as Parameter_Direct;
-         var valueSourceEntity2:Parameter_Direct = valueSourceEntity1.mNextParameter as Parameter_Direct;
+         var valueSourceEntity1:Parameter_DirectConstant = valueSourceList.mNextParameter as Parameter_DirectConstant;
+         var valueSourceEntity2:Parameter_DirectConstant = valueSourceEntity1.mNextParameter as Parameter_DirectConstant;
          
          var entity1:Entity;
          var entity2:Entity;

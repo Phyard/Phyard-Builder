@@ -39,11 +39,6 @@ package editor.entity {
          return false;
       }
       
-      override public function GetDefaultName ():String
-      {
-         return GetTypeName ();
-      }
-      
       override public function ToCodeString ():String
       {
          return "Entity#" + GetCreationOrderId ();
@@ -146,30 +141,6 @@ package editor.entity {
             SetControlPointsVisible (false);
             SetControlPointsVisible (true);
          }
-      }
-      
-//====================================================================
-//   draw entity links
-//====================================================================
-      
-      public static const DrawLinksOrder_Normal:int = 10;
-      public static const DrawLinksOrder_Logic:int = 20;
-      public static const DrawLinksOrder_Task:int = 30;
-      public static const DrawLinksOrder_EventHandler:int = 50;
-      
-      public function GetDrawLinksOrder ():int
-      {
-         return DrawLinksOrder_Normal;
-      }
-      
-      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
-      {
-         DrawEntityLinks (canvasSprite, forceDraw, isExpanding);
-      }
-      
-      public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
-      {
-         // to override
       }
 
    }

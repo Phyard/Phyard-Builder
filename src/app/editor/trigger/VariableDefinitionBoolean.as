@@ -6,39 +6,41 @@ package editor.trigger {
    import mx.controls.RadioButtonGroup;
    import mx.controls.RadioButton;
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
-   public class VariableDefinitionBoolean extends VariableDefinition
+   public class VariableDefinitionBoolean extends VariableDefinition_Core
    {
       
    //========================================================================================================
    //
    //========================================================================================================
       
-      protected var mDefaultValue:Boolean = false;
+      //protected var mDefaultValue:Boolean = false;
       
       public function VariableDefinitionBoolean (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Boolean, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Boolean), name, description, options);
          
-         if (options != null)
-         {
-            if (options.mDefaultValue != undefined)
-               mDefaultValue = Boolean (options.mDefaultValue);
-         }
+         //if (options != null)
+         //{
+         //   if (options.mDefaultValue != undefined)
+         //      mDefaultValue = Boolean (options.mDefaultValue);
+         //}
       }
       
-      override public function SetDefaultValue (valueObject:Object):void
-      {
-         mDefaultValue = Boolean (valueObject);
-      }
+      //override public function SetDefaultValue (valueObject:Object):void
+      //{
+      //   mDefaultValue = Boolean (valueObject);
+      //}
       
-      public function GetDefaultValue ():Boolean
-      {
-         return mDefaultValue;
-      }
+      //public function GetDefaultValue ():Boolean
+      //{
+      //   return mDefaultValue;
+      //}
       
 //==============================================================================
 // clone
@@ -46,19 +48,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var booleanVariableDefinition:VariableDefinitionBoolean = new VariableDefinitionBoolean (mName, mDescription);
-         booleanVariableDefinition.SetDefaultValue (mDefaultValue);
-         
-         return booleanVariableDefinition;
-      }
-      
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return Boolean (valueObject);
+         return new VariableDefinitionBoolean (mName, mDescription, mOptions);
       }
       
 //==============================================================================
@@ -67,7 +57,7 @@ package editor.trigger {
       
       override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         return new ValueSource_Direct (mDefaultValue);
+         return new ValueSource_Direct (mDefaultValueObject);
       }
       
       override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent

@@ -7,14 +7,18 @@ package player.trigger.entity
    
    import player.entity.Entity;
    
+   import player.trigger.CoreClasses;
+   
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectConstant;
+   import player.trigger.Parameter_DirectMutable;
    
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionDefine;
    import common.trigger.ValueDefine;
+   import common.trigger.CoreClassIds;
    
    import common.TriggerFormatHelper2;
    
@@ -45,9 +49,9 @@ package player.trigger.entity
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
                if (mIsPairSelector)
-                  mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetEntityPairFilterFunctionDeclaration ());
+                  mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetEntityPairFilterFunctionDeclaration ());
                else
-                  mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetEntityFilterFunctionDeclaration ());
+                  mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetEntityFilterFunctionDeclaration ());
                
                mFilterDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
             }
@@ -63,28 +67,38 @@ package player.trigger.entity
       
       public function DoFilterEntity (entity:Entity):Boolean
       {
-         var outputValueTarget:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (false, null);
-         var inputValueSource:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (entity, null);
+         //var outputValueTarget:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter (false, null);
+         mValueTarget.mValueObject = false;
+         var inputValueSource:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity, null);
          
          // if (mFilterDefinition != null) // should not be null
-         mFilterDefinition.DoCall (inputValueSource, outputValueTarget);
+         mFilterDefinition.DoCall (inputValueSource, mValueTarget); // outputValueTarget);
          
          TriggerEngine.ReleaseDirectParameter_Source (inputValueSource);
-         return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
+         //return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
+         return Boolean (mValueTarget.EvaluateValueObject ());
       }
+      
+      private var mValueTarget:Parameter_DirectMutable = Parameter_DirectMutable.CreateCoreClassDirectMutable (
+                                                            CoreClassIds.ValueType_Boolean,
+                                                            false
+                                                          ); 
+                                                         //new Parameter_DirectMutable (null);
 
       public function DoFilterEntityPair (entity1:Entity, entity2:Entity):Boolean
       {
-         var outputValueTarget:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (false, null);
-         var inputValueSource1:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (entity2, null);
-         var inputValueSource0:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (entity1, inputValueSource1);
+         //var outputValueTarget:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter (false, null);
+         mValueTarget.mValueObject = false;
+         var inputValueSource1:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity2, null);
+         var inputValueSource0:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity1, inputValueSource1);
          
          // if (mFilterDefinition != null) // should not be null
-         mFilterDefinition.DoCall (inputValueSource0, outputValueTarget);
+         mFilterDefinition.DoCall (inputValueSource0, mValueTarget); //outputValueTarget);
          
          TriggerEngine.ReleaseDirectParameter_Source (inputValueSource0);
          TriggerEngine.ReleaseDirectParameter_Source (inputValueSource1);
-         return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
+         //return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
+         return Boolean (mValueTarget.EvaluateValueObject ());
       }
 
 //==========================================================================================================

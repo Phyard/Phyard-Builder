@@ -5,8 +5,10 @@ package editor.trigger {
    
    import editor.EditorContext;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.ClassTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.FunctionTypeDefine;
+   import common.trigger.FunctionCoreBasicDefine;
    
    public class FunctionDeclaration
    {
@@ -15,13 +17,20 @@ package editor.trigger {
       
       internal var mDescription:String = null;
       
-      internal var mInputParamDefinitions:Array; // input variable defines
-      internal var mOutputParamDefinitions:Array; // returns
+      // before v2.05
+      //internal var mInputParamDefinitions:Array; // input variable defines
+      //internal var mOutputParamDefinitions:Array; // returns
       
+      // since v2.05
+      internal var mInputVariableSpace:VariableSpaceInput;
+      internal var mOutputVariableSpace:VariableSpaceOutput;
+      
+      // 
       internal var mShowUpInApiMenu:Boolean = true;
       
       public function FunctionDeclaration (id:int, name:String, description:String = null, 
-                                          inputDefinitions:Array = null, returnDefinitions:Array = null, 
+                                          //inputDefinitions:Array = null, returnDefinitions:Array = null, 
+                                          //inputVariableSpace:VariableSpaceInput = null, outputVariableSpace:VariableSpaceOutput = null,
                                           showUpInApiMenu:Boolean = true)
       {
          mId = id;
@@ -30,11 +39,19 @@ package editor.trigger {
          
          mShowUpInApiMenu = showUpInApiMenu;
          
-         mInputParamDefinitions = inputDefinitions;
-         mOutputParamDefinitions = returnDefinitions;
-         
          if (mName == null)
             mName = "";
+         
+         //mInputParamDefinitions = inputDefinitions;
+         //mOutputParamDefinitions = returnDefinitions;
+         
+         //mInputVariableSpace = inputVariableSpace;
+         //if (mInputVariableSpace == null)
+            mInputVariableSpace = new VariableSpaceInput ();
+         
+         //mOutputVariableSpace = outputVariableSpace;
+         //if (mOutputVariableSpace == null)
+            mOutputVariableSpace = new VariableSpaceOutput ();
       }
       
       public function ParseAllCallingTextSegments (poemCallingFormat:String = null, traditionalCallingFormat:String = null):void
@@ -62,6 +79,7 @@ package editor.trigger {
          return mId;
       }
       
+      // todo: chagne to GetFunctionType
       public function GetType ():int 
       {
          return FunctionTypeDefine.FunctionType_Unknown;
@@ -84,149 +102,221 @@ package editor.trigger {
       
       public function GetNumOutputs ():int
       {
-         if (mOutputParamDefinitions == null)
-            return 0;
+         //if (mOutputParamDefinitions == null)
+         //   return 0;
+         //
+         //return mOutputParamDefinitions.length;
          
-         return mOutputParamDefinitions.length;
+         return mOutputVariableSpace.GetNumVariableInstances ();
       }
       
       public function GetOutputParamDefinitionAt (returnId:int):VariableDefinition
       {
-         if (mOutputParamDefinitions == null)
-            return null;
+         //if (mOutputParamDefinitions == null)
+         //   return null;
+         //
+         //if (returnId < 0 || returnId >= mOutputParamDefinitions.length)
+         //   return null;
+         //
+         //return mOutputParamDefinitions [returnId];
          
-         if (returnId < 0 || returnId >= mOutputParamDefinitions.length)
-            return null;
+         return mOutputVariableSpace.GetVariableInstanceAt (returnId).GetVariableDefinition ();
+      }
+      
+      public function GetOutputParamClassType (returnId:int):int
+      {
+         var vd:VariableDefinition = GetOutputParamDefinitionAt (returnId);
          
-         return mOutputParamDefinitions [returnId];
+         // commented off since v2.05
+         //if (vd == null)
+         //   return ClassTypeDefine.ClassType_Unknown;
+         
+         return vd.GetClassType ();
       }
       
       public function GetOutputParamValueType (returnId:int):int
       {
          var vd:VariableDefinition = GetOutputParamDefinitionAt (returnId);
          
-         if (vd == null)
-            return ValueTypeDefine.ValueType_Void;
+         // commented off since v2.05
+         //if (vd == null)
+         //   return CoreClassIds.ValueType_Void;
          
          return vd.GetValueType ();
       }
       
+      public function GetOutputVariableSpace ():VariableSpaceOutput
+      {
+         return mOutputVariableSpace;
+      }
+      
+      public function GetInputVariableSpace ():VariableSpaceInput
+      {
+         return mInputVariableSpace;
+      }
+      
       public function GetNumInputs ():int
       {
-         if (mInputParamDefinitions == null)
-            return 0;
+         //if (mInputParamDefinitions == null)
+         //   return 0;
+         //
+         //return mInputParamDefinitions.length;
          
-         return mInputParamDefinitions.length;
+         return mInputVariableSpace.GetNumVariableInstances ();
       }
       
       public function GetInputParamDefinitionAt (inputId:int):VariableDefinition
       {
-         if (mInputParamDefinitions == null)
-            return null;
+         //if (mInputParamDefinitions == null)
+         //   return null;
+         //
+         //if (inputId < 0 || inputId >= mInputParamDefinitions.length)
+         //   return null;
+         //
+         //return mInputParamDefinitions [inputId];
          
-         if (inputId < 0 || inputId >= mInputParamDefinitions.length)
-            return null;
+         return mInputVariableSpace.GetVariableInstanceAt (inputId).GetVariableDefinition ();
+      }
+      
+      public function GetInputParamClassType (inputId:int):int
+      {
+         var vd:VariableDefinition = GetInputParamDefinitionAt (inputId);
          
-         return mInputParamDefinitions [inputId];
+         // commented off since v2.05
+         //if (vd == null)
+         //   return ClassTypeDefine.ClassType_Unknown;
+         
+         return vd.GetClassType ();
       }
       
       public function GetInputParamValueType (inputId:int):int
       {
          var vd:VariableDefinition = GetInputParamDefinitionAt (inputId);
          
-         if (vd == null)
-            return ValueTypeDefine.ValueType_Void;
+         // commented off since v2.05
+         //if (vd == null)
+         //   return CoreClassIds.ValueType_Void;
          
          return vd.GetValueType ();
       }
       
-      public function HasInputsWithValueTypeOf (valueType:int):Boolean
-      {
-         if (mInputParamDefinitions == null)
-            return false;
-         
-         for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
-         {
-            if (GetInputParamValueType (i) == valueType)
-               return true;
-         }
-         
-         return false;
-      }
+      //public function HasInputsWithValueTypeOf (valueType:int):Boolean
+      //{
+      //   if (mInputParamDefinitions == null)
+      //      return false;
+      //   
+      //   for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
+      //   {
+      //      if (GetInputParamValueType (i) == valueType)
+      //         return true;
+      //   }
+      //   
+      //   return false;
+      //}
       
-      public function HasInputsSatisfy (variableDefinition:VariableDefinition):Boolean
-      {
-         if (mInputParamDefinitions != null)
-         {
-            for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
-            {
-               if (GetInputParamDefinitionAt (i).IsCompatibleWith (variableDefinition) || variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
-                  return true;
-            }
-         }
-         
-         return false;
-      }
+      //public function HasInputsSatisfy (variableDefinition:VariableDefinition):Boolean
+      //{
+      //   if (mInputParamDefinitions != null)
+      //   {
+      //      for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
+      //      {
+      //         if (GetInputParamDefinitionAt (i).IsCompatibleWith (variableDefinition) || variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
+      //            return true;
+      //      }
+      //   }
+      //   
+      //   return false;
+      //}
       
-      public function GetInputVariableIndexesSatisfy (variableDefinition:VariableDefinition):Array
-      {
-         var indexes:Array = new Array ();
-         
-         if (mInputParamDefinitions != null)
-         {
-            for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
-            {
-               if (GetInputParamDefinitionAt (i).IsCompatibleWith (variableDefinition) || variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
-                  indexes.push (i);
-            }
-         }
-         
-         return indexes;
-      }
+      // edit at v2.05: why this function? Maybe for sometimes, the variable definitions in Declaration adn Definition are not synchronized.
+      //                so under the later new implementation, this function may be not essential.
+      // or, it is for the variable definition in declaration is more detail than the spaces in function definition?
+      //                seems this claim is not valid now. So it is safe the remvoe this function?
+      //public function GetInputVariableIndexesSatisfy (variableDefinition:VariableDefinition):Array
+      //{
+      //   var indexes:Array = new Array ();
+      //   
+      //   if (mInputParamDefinitions != null)
+      //   {
+      //      for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
+      //      {
+      //         if (GetInputParamDefinitionAt (i).IsCompatibleWith (variableDefinition) || variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
+      //         {
+      //            indexes.push (i);
+      //         }
+      //      }
+      //   }
+      //   
+      //   return indexes;
+      //}
       
-      public function HasOutputsSatisfiedBy (variableDefinition:VariableDefinition):Boolean
-      {
-         if (mOutputParamDefinitions != null)
-         {
-            for (var i:int = 0; i < mOutputParamDefinitions.length; ++ i)
-            {
-               if (variableDefinition.IsCompatibleWith (GetOutputParamDefinitionAt (i)))
-                  return true;
-            }
-         }
-         
-         return false;
-      }
+      //public function HasOutputsSatisfiedBy (variableDefinition:VariableDefinition):Boolean
+      //{
+      //   if (mOutputParamDefinitions != null)
+      //   {
+      //      for (var i:int = 0; i < mOutputParamDefinitions.length; ++ i)
+      //      {
+      //         if (variableDefinition.IsCompatibleWith (GetOutputParamDefinitionAt (i)))
+      //            return true;
+      //      }
+      //   }
+      //   
+      //   return false;
+      //}
       
-      public function GetOutputVariableIndexesSatisfiedBy (variableDefinition:VariableDefinition):Array
+      //public function GetOutputVariableIndexesSatisfiedBy (variableDefinition:VariableDefinition):Array
+      //{
+      //   var indexes:Array = new Array ();
+      //   
+      //   if (mOutputParamDefinitions != null)
+      //   {
+      //      for (var i:int = 0; i < mOutputParamDefinitions.length; ++ i)
+      //      {
+      //         if (variableDefinition.IsCompatibleWith (GetOutputParamDefinitionAt (i)))
+      //            indexes.push (i);
+      //      }
+      //   }
+      //   
+      //   return indexes;
+      //}
+
+      public function AddInputVariableFromDefinitions (variableDefinitions:Array):void
       {
-         var indexes:Array = new Array ();
-         
-         if (mOutputParamDefinitions != null)
+         if (variableDefinitions == null)
+            return;
+          
+         var num:int = variableDefinitions.length;
+         for (var j:int = 0; j < num; ++ j)
          {
-            for (var i:int = 0; i < mOutputParamDefinitions.length; ++ i)
-            {
-               if (variableDefinition.IsCompatibleWith (GetOutputParamDefinitionAt (i)))
-                  indexes.push (i);
-            }
+            mInputVariableSpace.CreateVariableInstanceFromDefinition (null, variableDefinitions [j] as VariableDefinition);
          }
-         
-         return indexes;
+      }
+
+      public function AddOutputVariableFromDefinitions (variableDefinitions:Array):void
+      {
+         if (variableDefinitions == null)
+            return;
+          
+         var num:int = variableDefinitions.length;
+         for (var j:int = 0; j < num; ++ j)
+         {
+            mOutputVariableSpace.CreateVariableInstanceFromDefinition (null, variableDefinitions [j] as VariableDefinition);
+         }
       }
       
 //=================================================================
 // some to override
 //=================================================================
       
-      public function IsSupportLocalVariables ():Boolean
-      {
-         return false;
-      }
+      //public function IsSupportLocalVariables ():Boolean
+      //{
+      //   return false;
+      //}
       
-      public function IsSupportParameters ():Boolean // input and output
-      {
-         return false;
-      }
+      //public function IsSupportParameters ():Boolean // input and output
+      //{
+      //   return false;
+      //}
       
 //=================================================================
 //
@@ -234,19 +324,21 @@ package editor.trigger {
       
       public function GetInputNumberTypeDetail (inputId:int):int
       {
-         return ValueTypeDefine.NumberTypeDetail_Double;
+         return CoreClassIds.NumberTypeDetail_Double;
       }
       
       public function GetInputNumberTypeUsage (inputId:int):int
       {
-         return ValueTypeDefine.NumberTypeUsage_General;
+         return CoreClassIds.NumberTypeUsage_General;
       }
       
 //=================================================================
 //
 //=================================================================
       
-      protected function CheckConsistent (coreDelcaration:common.trigger.FunctionDeclaration):String
+      // check core APIs
+      
+      protected function CheckConsistent (coreDelcaration:FunctionCoreBasicDefine):String
       {
          if (coreDelcaration == null)
             return "delc is null";
@@ -256,41 +348,43 @@ package editor.trigger {
          
          var num_inputs:int = coreDelcaration.GetNumInputs ();
          
-         if ((mInputParamDefinitions == null && num_inputs != 0) || (mInputParamDefinitions != null && num_inputs == 0))
-            return "numInputs wrong";
+         //if ((mInputParamDefinitions == null && num_inputs != 0) || (mInputParamDefinitions != null && num_inputs == 0))
+         if (GetNumInputs () != num_inputs)
+            return "number of inputs is wrong!";
          
          var i:int;
          
-         if (mInputParamDefinitions != null && num_inputs != 0)
-         {
-            if (mInputParamDefinitions.length != num_inputs)
-               return "numInputs wrong";
-            
+         //if (mInputParamDefinitions != null && num_inputs != 0)
+         //{
+         //   if (mInputParamDefinitions.length != num_inputs)
+         //      return "numInputs wrong";
+         //   
             for (i = 0; i < num_inputs; ++ i)
             {
                if (GetInputParamValueType (i) != coreDelcaration.GetInputParamValueType (i))
-                  return "input#" + i + " wrong";
+                  return "input#" + i + " is wrong";
             }
-         }
+         //}
          
          var num_outputs:int = coreDelcaration.GetNumOutputs ();
          
-         if ((mOutputParamDefinitions == null && num_outputs != 0) || (mOutputParamDefinitions != null && num_outputs == 0))
-            return "numOutputs wrong";
+         //if ((mOutputParamDefinitions == null && num_outputs != 0) || (mOutputParamDefinitions != null && num_outputs == 0))
+         if (GetNumOutputs () != num_outputs)
+            return "number of outputs is wrong";
          
-         if (mOutputParamDefinitions != null && num_outputs != 0)
-         {
-            if (mOutputParamDefinitions.length != num_outputs)
-               return "numOutputs wrong";
-            
+         //if (mOutputParamDefinitions != null && num_outputs != 0)
+         //{
+         //   if (mOutputParamDefinitions.length != num_outputs)
+         //      return "numOutputs wrong";
+         //   
             for (i = 0; i < num_outputs; ++ i)
             {
                if (GetOutputParamValueType (i) != coreDelcaration.GetOutputParamValueType (i))
-                  return "ouput#" + i + " wrong";
+                  return "ouput#" + i + " is wrong";
             }
-         }
+         //}
          
-         return null;
+         return null; // no problems
       }
       
 //==========================================================================================

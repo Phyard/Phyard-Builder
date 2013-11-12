@@ -54,15 +54,19 @@ package player.world {
    import player.trigger.data.ListElement_EntityShape;
    import player.trigger.data.ListElement_EventHandler;
    import player.trigger.data.ListElement_EntitySelector;
+   
+   import player.trigger.CoreClasses;
 
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectConstant;
+   import player.trigger.Parameter_DirectMutable;
 
    import player.mode.Mode;
    import player.mode.ModeMoveWorldScene;
 
    import common.CoordinateSystem;
 
+   import common.trigger.CoreClassIds;
    import common.trigger.CoreEventIds;
    import common.trigger.IdPool;
    import common.trigger.ValueDefine;
@@ -907,7 +911,7 @@ package player.world {
       //-----------------------------
       // repaint
       //-----------------------------
-         
+
          Repaint ();
 
       //------------------------------------

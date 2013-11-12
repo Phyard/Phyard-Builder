@@ -10,11 +10,11 @@ package editor.trigger {
    
    import editor.EditorContext;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
    import common.Define;
    
-   public class VariableDefinitionScene extends VariableDefinition
+   public class VariableDefinitionScene extends VariableDefinition_Core
    {
    //========================================================================================================
    //
@@ -24,7 +24,7 @@ package editor.trigger {
       
       public function VariableDefinitionScene (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Scene, name, description, null);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Scene), name, description, null);
          
          if (options != null)
          {
@@ -39,20 +39,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var sceneVariableDefinition:VariableDefinitionScene = new VariableDefinitionScene (mName, mDescription);
-         
-         sceneVariableDefinition.mDefaultValue = mDefaultValue;
-         
-         return sceneVariableDefinition;
-      }
-      
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_Scene (valueObject);
+         return new VariableDefinitionScene (mName, mDescription, mOptions);
       }
       
 //==============================================================================

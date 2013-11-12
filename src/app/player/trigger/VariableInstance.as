@@ -1,67 +1,53 @@
 package player.trigger
 {
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.ClassTypeDefine;
+   import common.trigger.CoreClassIds;
    
-   public class VariableInstance
+   public class VariableInstance extends ClassInstance
    {
       public var mNextVariableInstanceInSpace:VariableInstance; // for efficiency
       
-      private var mKey:String;
+      public var _mDeclaration:VariableDeclaration;
+            // _mDeclaration.mClassDefinition == VoidClassDefinition means 
+            // this VariableInstacne will reject value assginings (in normal mode).
+            //
+            // this value is never null.
+            // when clone a variable instance, this value is passed to the cloned one directly.
       
-      private var mValueType:int = ValueTypeDefine.ValueType_Void;
-      
-      public var mName:String = null; // for debug usage only
-      
-      public var mValueObject:Object = null;
-      
-      public function VariableInstance (value:Object = null)
+      //public var mClassInstance:ClassInstance; 
+            // use the extend implementation instead now.
+
+      public function VariableInstance ()
       {
-         mValueObject = value;
       }
       
-      public function SetKey (key:String):void
+      public function GetDeclaration ():VariableDeclaration
       {
-         mKey = key;
+         return _mDeclaration;
       }
       
-      public function GetKey ():String
+      public function SetDeclaration (declaration:VariableDeclaration):void
       {
-         return mKey;
+         _mDeclaration = declaration;
       }
       
-      public function SetValueType (type:int):void
+      public function CloneForVariableInstance (forVI:VariableInstance):void
       {
-         mValueType = type;
+         CloneForClassInstance (forVI);
+         
+         forVI.SetDeclaration (_mDeclaration);
       }
       
-      public function GetValueType ():int
-      {
-         return mValueType;
-      }
+   //=====================================
+   // assign
+   //=====================================
       
-      public function SetName (name:String):void
+      // if assign one VariableInstacne to the other, check if the two shell class definitions are same, 
+      // if true, assign directly without calling this function.
+      public function Assign (classDefinition:ClassDefinition, valueObject:Object):void
       {
-         mName = name;
-      }
-      
-      // it is possible to remvoe the set/get function when optimizing
-      
-      public function GetValueObject ():Object
-      {
-         return mValueObject;
-      }
-      
-      public function SetValueObject (valueObject:Object):void
-      {
-         mValueObject = valueObject;
-      }
-      
-      public function CloneFor (forVI:VariableInstance):void
-      {
-         forVI.SetKey (mKey);
-         forVI.SetValueType (mValueType);
-         forVI.SetName (mName);
-         forVI.SetValueObject (mValueObject);
+         _mRealClassDefinition = classDefinition;
+         _mValueObject = valueObject;
       }
       
    }

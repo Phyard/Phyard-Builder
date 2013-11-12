@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Variables Setting" width="500" height="386"
+    title="Variables Setting" width="386" height="386"
     borderAlpha="0.77"
     showCloseButton="false"
     mouseDown="PopUpManager.bringToFront (this);"
@@ -30,7 +30,8 @@
          import flash.display.DisplayObject;
          
          import mx.managers.PopUpManager;
-
+         
+         import editor.codelib.CodeLibManager;
          import editor.trigger.VariableSpace;
          
       //==============================================
@@ -77,6 +78,11 @@
          //   theVariablesEditPanel.NotifyVariableSpaceModified ();
          //}
          
+         public function SetCodeLibManager (codeLibManager:CodeLibManager):void
+         {
+            theVariablesEditPanel.SetCodeLibManager (codeLibManager);
+         }
+         
          public function UpdateVariableSpace (variableSpace:VariableSpace):void
          {
             // assert (theVariablesEditPanel != null)
@@ -98,12 +104,16 @@
          {
             PopUpManager.removePopUp (this);
             
+            theVariablesEditPanel.NotifyDialogClosing ();
             //SetVariableSpace (null);
+            SetCodeLibManager (null);
             
             if (OnClose != null)
             {
                OnClose ();
             }
+            
+            OnClose = null;
          }
 
        ]]>

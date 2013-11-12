@@ -14,6 +14,11 @@ package common.trigger.define
          return mValueSourceType;
       }
       
+      protected function SetValueSourceType (sourceType:int):void
+      {
+         mValueSourceType = sourceType;
+      }
+      
       public function Clone ():ValueSourceDefine
       {
          return null; // to override

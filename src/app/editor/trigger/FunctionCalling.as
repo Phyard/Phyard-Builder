@@ -7,7 +7,7 @@ package editor.trigger {
    
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.CoreFunctionIds;
    import common.ValueAdjuster;
    import common.CoordinateSystem;
@@ -60,15 +60,15 @@ package editor.trigger {
          return mFunctionDeclaration;
       }
       
-      public function GetFunctionType ():int
-      {
-         return mFunctionDeclaration.GetType ();
-      }
+      //public function GetFunctionType ():int
+      //{
+      //   return mFunctionDeclaration.GetType ();
+      //}
       
-      public function GetFunctionId ():int
-      {
-         return mFunctionDeclaration.GetID ();
-      }
+      //public function GetFunctionId ():int
+      //{
+      //   return mFunctionDeclaration.GetID ();
+      //}
       
       public function GetNumInputs ():int
       {
@@ -226,7 +226,7 @@ package editor.trigger {
             valueType = mFunctionDeclaration.GetInputParamValueType (i);
             source = mInputValueSources [i] as ValueSource;
             
-            if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
+            if (valueType == CoreClassIds.ValueType_Number && source is ValueSource_Direct)
             {
                directSource = source as ValueSource_Direct;
                directValue = Number (directSource.GetValueObject ());
@@ -251,7 +251,7 @@ package editor.trigger {
             valueType = mFunctionDeclaration.GetInputParamValueType (i);
             source = mInputValueSources [i] as ValueSource;
             
-            if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
+            if (valueType == CoreClassIds.ValueType_Number && source is ValueSource_Direct)
             {
                directSource = source as ValueSource_Direct;
                directValue = Number (directSource.GetValueObject ());
@@ -276,7 +276,7 @@ package editor.trigger {
             source = mInputValueSources [i] as ValueSource;
             valueType = mFunctionDeclaration.GetInputParamValueType (i);
             
-            if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
+            if (valueType == CoreClassIds.ValueType_Number && source is ValueSource_Direct)
             {
                directSource = source as ValueSource_Direct;
                directValue = Number (directSource.GetValueObject ());
@@ -284,13 +284,13 @@ package editor.trigger {
                
                switch (numberDetail)
                {
-                  case ValueTypeDefine.NumberTypeDetail_Single:
+                  case CoreClassIds.NumberTypeDetail_Single:
                      directValue = ValueAdjuster.Number2Precision (directValue, 6);
                      break;
-                  case ValueTypeDefine.NumberTypeDetail_Integer:
+                  case CoreClassIds.NumberTypeDetail_Integer:
                      directValue = Math.round (directValue);
                      break;
-                  case ValueTypeDefine.NumberTypeDetail_Double:
+                  case CoreClassIds.NumberTypeDetail_Double:
                   default:
                      directValue = ValueAdjuster.Number2Precision (directValue, 12);
                      break;
@@ -319,15 +319,15 @@ package editor.trigger {
             {
                ConvertRegisterVariablesForValueSource (scene, source as ValueSource_Variable);
             }
-            else if (source is ValueSource_Property)
+            else if (source is ValueSource_EntityProperty)
             {
-               entityValueSource = (source as ValueSource_Property).GetEntityValueSource ();
+               entityValueSource = (source as ValueSource_EntityProperty).GetEntityValueSource ();
                if (entityValueSource is ValueSource_Variable)
                {
                   ConvertRegisterVariablesForValueSource (scene, entityValueSource as ValueSource_Variable);
                }
                
-               var propertyValueSource:ValueSource = (source as ValueSource_Property).GetPropertyValueSource ();
+               var propertyValueSource:ValueSource = (source as ValueSource_EntityProperty).GetPropertyValueSource ();
                if (propertyValueSource is ValueSource_Variable)
                {
                   ConvertRegisterVariablesForValueSource (scene, propertyValueSource as ValueSource_Variable);
@@ -344,15 +344,15 @@ package editor.trigger {
             {
                ConvertRegisterVariablesForValueTarget (scene, target as ValueTarget_Variable);
             }
-            else if (target is ValueTarget_Property)
+            else if (target is ValueTarget_EntityProperty)
             {
-               entityValueSource = (target as ValueTarget_Property).GetEntityValueSource ();
+               entityValueSource = (target as ValueTarget_EntityProperty).GetEntityValueSource ();
                if (entityValueSource is ValueSource_Variable)
                {
                   ConvertRegisterVariablesForValueSource (scene, entityValueSource as ValueSource_Variable);
                }
                
-               var propertyValueTarget:ValueTarget = (target as ValueTarget_Property).GetPropertyValueTarget ();
+               var propertyValueTarget:ValueTarget = (target as ValueTarget_EntityProperty).GetPropertyValueTarget ();
                if (propertyValueTarget is ValueTarget_Variable)
                {
                   ConvertRegisterVariablesForValueTarget (scene, propertyValueTarget as ValueTarget_Variable);

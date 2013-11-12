@@ -61,9 +61,9 @@ package editor.ccat {
       private var mHalfTextWidth:Number;
       private var mHalfTextHeight:Number;
       
-      public function CollisionCategory (collisionCategoryManager:CollisionCategoryManager, key:String)
+      public function CollisionCategory (collisionCategoryManager:CollisionCategoryManager, key:String, name:String)
       {
-         super (collisionCategoryManager, key);
+         super (collisionCategoryManager, key, name);
          
          mCollisionCategoryManager = collisionCategoryManager;
          
@@ -85,26 +85,26 @@ package editor.ccat {
          return "Collision Category";
       }
       
-      public function GetCategoryName ():String
-      {
-         //return mCategoryName;
-         return GetName ();
-      }
+      //public function GetCategoryName ():String
+      //{
+      //   //return mCategoryName;
+      //   return GetName ();
+      //}
       
-      public function SetCategoryName (newName:String, checkValidity:Boolean = true):void
-      {
-         if (checkValidity)
-         {
-            mCollisionCategoryManager.ChangeCollisionCategoryName (newName, GetName ());
-         }
-         else
-         {
-            //mCategoryName = newName;
-            SetName (newName);
-            
-            UpdateTimeModified ();
-         }
-      }
+      //public function SetCategoryName (newName:String, checkValidity:Boolean = true):void
+      //{
+      //   if (checkValidity)
+      //   {
+      //      mCollisionCategoryManager.ChangeCollisionCategoryName (newName, GetName ());
+      //   }
+      //   else
+      //   {
+      //      //mCategoryName = newName;
+      //      SetName (newName);
+      //      
+      //      UpdateTimeModified ();
+      //   }
+      //}
       
       public function IsCollideInternally ():Boolean
       {

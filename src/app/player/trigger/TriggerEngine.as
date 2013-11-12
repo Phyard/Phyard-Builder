@@ -2,12 +2,11 @@ package player.trigger
 {
    import flash.utils.getTimer;
    
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.FunctionCoreBasicDefine;
    import common.trigger.CoreFunctionIds;
    import common.trigger.CoreEventIds;
    import common.trigger.CoreFunctionDeclarations;
    import common.trigger.CoreEventDeclarations;
-   import common.trigger.ValueTypeDefine;
    import common.trigger.IdPool;
    
    public class TriggerEngine
@@ -44,7 +43,7 @@ package player.trigger
          CoreFunctionDeclarations.Initialize ();
          CoreEventDeclarations.Initialize ();
          
-         CoreFunctionDefinitions.Initialize ();
+         // CoreFunctionDefinitions.Initialize (); // moved
          
          sConstDataInited = true;
       }
@@ -57,22 +56,22 @@ package player.trigger
          return CoreFunctionDefinitions.sCoreFunctionDefinitions [functionId];
       }
       
-      public static function GetVoidFunctionDeclaration ():FunctionDeclaration
+      public static function GetVoidFunctionDeclaration ():FunctionCoreBasicDefine
       {
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_Void];
       }
       
-      public static function GetBoolFunctionDeclaration ():FunctionDeclaration
+      public static function GetBoolFunctionDeclaration ():FunctionCoreBasicDefine
       {
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_Bool];
       }
       
-      public static function GetEntityFilterFunctionDeclaration ():FunctionDeclaration
+      public static function GetEntityFilterFunctionDeclaration ():FunctionCoreBasicDefine
       {
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_EntityFilter];
       }
       
-      public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration
+      public static function GetEntityPairFilterFunctionDeclaration ():FunctionCoreBasicDefine
       {
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_EntityPairFilter];
       }
@@ -81,40 +80,32 @@ package player.trigger
 // cached Parameter instances
 //=============================================================================
       
-      public static var mFreeDirectParameterListHead:Parameter_Direct = null;
+      // this cache implementation may not better than direct new ()
       
-      public static function ApplyNewDirectParameter (initialValue:Object, nextParameter:Parameter):Parameter_Direct
+      public static var mFreeDirectParameterListHead:Parameter_DirectConstant = null;
+      
+      public static function ApplyNewDirectParameter_Source (classDefinition:ClassDefinition, initialValue:Object, nextParameter:Parameter):Parameter_DirectConstant
       {
-         var returnParameter:Parameter_Direct = mFreeDirectParameterListHead;
+         var returnParameter:Parameter_DirectConstant = mFreeDirectParameterListHead;
          
-         if (returnParameter != null)
+         if (returnParameter == null)
          {
-            mFreeDirectParameterListHead = returnParameter.mNextParameter as Parameter_Direct;
-            returnParameter.mValueObject = initialValue; // a little faster than calling AssignValueObject
+            returnParameter = new Parameter_DirectConstant (classDefinition, initialValue, nextParameter);
          }
          else
          {
-            returnParameter = new Parameter_Direct (initialValue);
+            mFreeDirectParameterListHead = returnParameter.mNextParameter as Parameter_DirectConstant;
+            returnParameter.GetVariableInstance ().SetRealClassDefinition (classDefinition);
+            returnParameter.mValueObject = initialValue; // a little faster than calling AssignValueObject
+            returnParameter.mNextParameter = nextParameter;
          }
-         
-         returnParameter.mNextParameter = nextParameter;
          
          return returnParameter;
       }
       
-      public static function ReleaseDirectParameter_Target (parameter:Parameter_Direct):Object
+      public static function ReleaseDirectParameter_Source (parameter:Parameter_DirectConstant):void
       {
-         var returnValue:Object = parameter.mValueObject;
-         
-         parameter.mValueObject = null; // a little faster than calling AssignValueObject
-         parameter.mNextParameter = mFreeDirectParameterListHead;
-         mFreeDirectParameterListHead = parameter;
-         
-         return returnValue;
-      }
-      
-      public static function ReleaseDirectParameter_Source (parameter:Parameter_Direct):void
-      {
+         parameter.GetVariableInstance ().SetRealClassDefinition (null);
          parameter.mValueObject = null; // a little faster than calling AssignValueObject
          parameter.mNextParameter = mFreeDirectParameterListHead;
          mFreeDirectParameterListHead = parameter;

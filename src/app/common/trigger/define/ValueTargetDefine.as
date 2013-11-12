@@ -14,6 +14,11 @@ package common.trigger.define
          return mValueTargetType;
       }
       
+      protected function SetValueTargetType (targetType:int):void
+      {
+         mValueTargetType = targetType;
+      }
+      
       public function Clone ():ValueTargetDefine
       {
          return null; // to override

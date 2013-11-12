@@ -32,6 +32,8 @@ package common.shape
             // for area shapes
             public static const Flag_BuildBorder      :int = 1 << 3;
             public static const Flag_DrawBorder       :int = 1 << 4;
+               // for rectangle
+               public static const Flag_RoundCorner      :int = 1 << 12;
          // joint type (0 - round, 1 - 尖的, 2 - 钝的), useless for circle
          public static const Mask_JointType   :int = (1 << 5) | (1 << 6) | (1 << 7); // 7th bit is reserved
          public static const Shift_JointType  :int = 5;

@@ -311,7 +311,7 @@ package editor.entity.dialog {
 // undo point
 //=====================================================================
 
-      override protected function CreateUndoPoint (undoPointName:String):void
+      override public function CreateUndoPoint (undoPointName:String):void
       {
          //EditorContext.GetEditorApp ().CreateWorldSnapshot (undoPointName);
          EditorContext.GetEditorApp ().CreateSceneSnapshot (mScene, undoPointName);
@@ -1335,7 +1335,12 @@ package editor.entity.dialog {
                {
                   values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mScene.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfWidth ()), 6);
                   values.mHeight = ValueAdjuster.Number2Precision (2.0 * mScene.GetCoordinateSystem ().D2P_Length ((vectorShape as EntityVectorShapeRectangle).GetHalfHeight ()), 6);
-                  values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
+                  //values.mIsRoundCorners = (vectorShape as EntityVectorShapeRectangle).IsRoundCorners ();
+                  values.mIsRoundJoint = (vectorShape as EntityVectorShapeRectangle).IsRoundJoint ();
+                  
+                  values.mIsRoundCorner = (vectorShape as EntityVectorShapeRectangle).IsRoundCorner ();
+                  values.mCornerEclipseWidth = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseWidth ();
+                  values.mCornerEclipseHeight = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseHeight ();
                   
                   if (Define.IsBombShape (values.mAiType))
                      EditorContext.ShowModalDialog (ShapeRectangleBombSettingDialog, ConfirmSettingEntityProperties, values);
@@ -1839,7 +1844,12 @@ package editor.entity.dialog {
                {
                   (vectorShape as EntityVectorShapeRectangle).SetHalfWidth (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mWidth));
                   (vectorShape as EntityVectorShapeRectangle).SetHalfHeight (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mHeight));
-                  (vectorShape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
+                  //(vectorShape as EntityVectorShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
+                  (vectorShape as EntityVectorShapeRectangle).SetRoundJoint (params.mIsRoundJoint);
+                  
+                  (vectorShape as EntityVectorShapeRectangle).SetRoundCorner (params.mIsRoundCorner);
+                  (vectorShape as EntityVectorShapeRectangle).SetCornerEclipseWidth (params.mCornerEclipseWidth);
+                  (vectorShape as EntityVectorShapeRectangle).SetCornerEclipseHeight (params.mCornerEclipseHeight);
                }
                else if (entity is EntityVectorShapePolygon)
                {
@@ -2331,8 +2341,10 @@ package editor.entity.dialog {
             {
                ++ numRectangles;
             
-               if (params.mToModifyRoundCorners)
-                  rect.SetRoundCorners (params.mIsRoundCorners);
+               //if (params.mToModifyRoundCorners)
+               //   rect.SetRoundCorners (params.mIsRoundCorners);
+               if (params.mToModifyRoundJoint)
+                  rect.SetRoundJoint (params.mIsRoundJoint);
                if (params.mToModifyWidth)
                   rect.SetHalfWidth (0.5 * mScene.GetCoordinateSystem ().P2D_Length (params.mWidth));
                if (params.mToModifyHeight)
@@ -2553,43 +2565,9 @@ package editor.entity.dialog {
       
       override public function CreateOrBreakAssetLink (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):void
       {
-         var created:Boolean = false;
-         
-         // first round
-         var entities:Array = mScene.GetAssetsAtPoint (endManagerX, endManagerY);
-         var entity:Entity;
-         var linkable:Linkable;
-         var i:int;
-         for (i = 0; !created && i < entities.length; ++ i)
+         if (CreateOrBreakAssetLink_Default (startLinkable, mStartManagerX, mStartManagerY, endManagerX, endManagerY))
          {
-            entity = entities [i] as Entity;
-            if (entity is Linkable)
-            {
-               linkable = entity as Linkable;
-               created = startLinkable.TryToCreateLink (mStartManagerX, mStartManagerY, linkable as Entity, endManagerX, endManagerY);
-               if (! created && startLinkable is Entity)
-                  created = linkable.TryToCreateLink (endManagerX, endManagerY, startLinkable as Entity, mStartManagerX, mStartManagerY);
-            }
-         }
-         
-         // second round, link general entity with a linkable
-         
-         for (i = 0; i < entities.length; ++ i)
-         {
-            entity = (entities [i] as Entity).GetMainAsset () as Entity;
-            if (! (entity is Linkable) )
-            {
-               created = startLinkable.TryToCreateLink (mStartManagerX, mStartManagerY, entity, endManagerX, endManagerY);
-               if (created)
-                  break;
-            }
-         }
-         
-         if (created)
-         {
-            RepaintAllAssetLinks ();
-            
-            CreateUndoPoint ("Create link");
+            CreateUndoPoint ("Created a link");
          }
       }
    

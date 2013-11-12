@@ -7,7 +7,7 @@
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:codelib="editor.codelib.dialog.*"
     title="Code Library Manager"
-    width="700" height="500"
+    width="730" height="530"
     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
     showCloseButton="true"
     creationComplete="InitDialog ();"
@@ -20,13 +20,13 @@
             >
       <mx:HBox id="Box_Commands" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="1" verticalGap="0">
          <mx:Spacer width="2"/>
-         <!--mx:Button id="Button_CreatePackage" visible="false" toolTip="New Package" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-package-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-package-disabled.png')" upIcon="@Embed('../../../res/function/create-package.png')" downIcon="@Embed('../../../res/function/create-package-sel.png')" overIcon="@Embed('../../../res/function/create-package.png')" selectedUpIcon="@Embed('../../../res/function/create-package-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-package-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-package.png')"   /-->
-         <!--mx:Button id="Button_CreateClass" visible="false" toolTip="New Class" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-class-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-class-disabled.png')" upIcon="@Embed('../../../res/function/create-class.png')" downIcon="@Embed('../../../res/function/create-class-sel.png')" overIcon="@Embed('../../../res/function/create-class.png')" selectedUpIcon="@Embed('../../../res/function/create-class-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-class-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-class.png')"   /-->
          <!--
          <mx:Button id="Button_CreatePureFunction" toolTip="New Pure Function" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-pure.png')" downIcon="@Embed('../../../res/function/create-function-pure-sel.png')" overIcon="@Embed('../../../res/function/create-function-pure.png')" selectedUpIcon="@Embed('../../../res/function/create-function-pure-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-pure-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-pure.png')"   />
          <mx:Button id="Button_CreateDirtyFunction" toolTip="New Design-Dependent Function" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
          -->
          <mx:Button id="Button_CreateDirtyFunction" toolTip="New Function" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
+         <mx:Button id="Button_CreateType" toolTip="New Class" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-class-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-class-disabled.png')" upIcon="@Embed('../../../res/function/create-class.png')" downIcon="@Embed('../../../res/function/create-class-sel.png')" overIcon="@Embed('../../../res/function/create-class.png')" selectedUpIcon="@Embed('../../../res/function/create-class-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-class-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-class.png')"   />
+         <mx:Button id="Button_CreatePackage" visible="true" toolTip="New Package" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-package-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-package-disabled.png')" upIcon="@Embed('../../../res/function/create-package.png')" downIcon="@Embed('../../../res/function/create-package-sel.png')" overIcon="@Embed('../../../res/function/create-package.png')" selectedUpIcon="@Embed('../../../res/function/create-package-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-package-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-package.png')"   />
          <mx:Spacer width="30"/>
          <mx:Button id="Button_DeleteFunctionAsset" toolTip="Delete" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
          <mx:Spacer width="30"/>
@@ -163,13 +163,13 @@
             // 
             //panelCodeLibList.mButtonCreatePureFunction = Button_CreatePureFunction;
             panelCodeLibList.mButtonCreateDirtyFunction = Button_CreateDirtyFunction;
-            //panelCodeLibList.mButtonCreatePackage = Button_CreatePackage;
-            //panelCodeLibList.mButtonCreateClass = Button_CreateClass;
+            panelCodeLibList.mButtonCreatePackage = Button_CreatePackage;
+            panelCodeLibList.mButtonCreateType = Button_CreateType;
             
             //Button_CreatePureFunction.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
             Button_CreateDirtyFunction.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
-            //Button_CreatePackage.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
-            //Button_CreateClass.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
+            Button_CreatePackage.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
+            Button_CreateType.addEventListener (MouseEvent.CLICK, panelCodeLibList.OnCreateButtonClick);
             
             panelCodeLibList.mButtonDelete = Button_DeleteFunctionAsset;
             panelCodeLibList.mButtonSetting = Button_SettingFunction;
@@ -193,37 +193,37 @@
 
          private function OnEditSessionVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetSessionVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetSessionVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
          private function OnEditGlobalVariables ():void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetGlobalVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetGlobalVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
 
          private function OnEditEntityVariables ():void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this,  GetCodeLibListPanel ().GetCodeLibManager ().GetEntityVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetEntityVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
          private function OnEditCommonGlobalVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
 
          private function OnEditCommonEntityVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this,  EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
          private function OnEditWorldVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
 
          private function OnEditGameSaveVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this,  EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), null);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
      ]]>

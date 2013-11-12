@@ -6,12 +6,20 @@ package player.design
    import flash.system.Capabilities;
    
    import player.world.World;
-   import player.world.EntityList
+   import player.world.EntityList;
    
    import player.trigger.TriggerEngine;
    import player.trigger.VariableSpace;
+   import player.trigger.ClassInstance;
    import player.trigger.VariableInstance;
+   import player.trigger.VariableDeclaration;
+   import player.trigger.CoreClasses;
+   import player.trigger.ClassDefinition;
+   import player.trigger.ClassDefinition_Core;
+   import player.trigger.ClassDefinition_Custom;
    import player.trigger.FunctionDefinition_Custom;
+   
+   import player.trigger.CoreFunctionDefinitions;
 
    import player.entity.Entity;
    
@@ -23,8 +31,13 @@ package player.design
    import com.tapirgames.util.RandomNumberGenerator;
    import com.tapirgames.util.MersenneTwisterRNG;
    
-   import common.trigger.ValueTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
+
+   import common.trigger.ClassTypeDefine;
+   import common.trigger.CoreClassIds;
+   import common.trigger.ClassDeclaration;
+   import common.trigger.CoreClassDeclarations;
+   import common.trigger.define.ClassDefine;
    import common.trigger.define.FunctionDefine;
    
    import common.TriggerFormatHelper2;
@@ -75,6 +88,8 @@ package player.design
       //public static var mEntityVariableSpaces:Array;
       public static var mEntityVariableSpace:VariableSpace;
       public static var mCommonEntityVariableSpace:VariableSpace;
+      
+      public static var mCustomClassDefinitions:Array;
       
       public static var mCustomFunctionDefinitions:Array;
       
@@ -139,6 +154,8 @@ package player.design
       mCurrentWorld = null;
       mWorldDefine = null;
       
+      CoreFunctionDefinitions.Initialize (null);
+      
       mRegisterVariableSpace_Boolean = null;
       mRegisterVariableSpace_String = null;
       mRegisterVariableSpace_Number = null;
@@ -151,6 +168,8 @@ package player.design
       mCommonGlobalVariableSpace = null;
       mEntityVariableSpace = null;
       mCommonEntityVariableSpace = null;
+      
+      mCustomClassDefinitions = null;
       
       mCustomFunctionDefinitions = null;
       
@@ -221,7 +240,10 @@ package player.design
       try
       {
          var binData:ByteArray = new ByteArray ();
-         binData.writeShort (0); // data format version
+         
+         // data format version
+         // binData.writeShort (0); // before v2.05 (custom classes not supported yet)
+         binData.writeShort (1); // since v2.05 (add support for custom classes), totally compatible with version 0
          
          var alreadySavedArrayLookupTable:Dictionary = new Dictionary ();
          
@@ -229,13 +251,12 @@ package player.design
          binData.writeInt (numVariables);
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
-            var variableInstance:VariableInstance = mGameSaveVariableSpace.GetVariableAt (variableId);
-            
-//if (mDebugString == null) mDebugString = "";
-//mDebugString = mDebugString + "\n" + "variableId = " + variableId + ", key = " + variableInstance.GetKey ();            
-            binData.writeUTF (variableInstance.GetKey ());
-            
-            WriteTypeAndValue (binData, variableInstance.GetValueType (), variableInstance.GetValueObject (), alreadySavedArrayLookupTable);
+            var variableInstance:VariableInstance = mGameSaveVariableSpace.GetVariableByIndex (variableId) as VariableInstance;
+                  // must be not null (VariableInstance.kVoidVariableInstance)
+                  
+            binData.writeUTF (variableInstance.GetDeclaration ().GetKey ());
+
+            WriteTypeAndValue (binData, variableInstance.GetRealClassType (), variableInstance.GetRealValueType (), variableInstance.GetValueObject (), alreadySavedArrayLookupTable);
          }
          
          return binData;
@@ -251,20 +272,23 @@ package player.design
       return null;
    }
    
-   private static function WriteTypeAndValue (binData:ByteArray, type:int, value:Object, alreadySavedArrayLookupTable:Dictionary):void
+   private static function WriteTypeAndValue (binData:ByteArray, classType:int, valueType:int, value:Object, alreadySavedArrayLookupTable:Dictionary):void
    {
-      switch (type)
+      if (classType != ClassTypeDefine.ClassType_Core) // only core types supported now.
+         valueType = CoreClassIds.ValueType_Void;
+         
+      switch (valueType)
       {
-         case ValueTypeDefine.ValueType_Boolean:
-            binData.writeShort (ValueTypeDefine.ValueType_Boolean);
+         case CoreClassIds.ValueType_Boolean:
+            binData.writeShort (CoreClassIds.ValueType_Boolean);
             binData.writeByte (Boolean (value) ? 1 : 0);
             break;
-         case ValueTypeDefine.ValueType_Number:
-            binData.writeShort (ValueTypeDefine.ValueType_Number);
+         case CoreClassIds.ValueType_Number:
+            binData.writeShort (CoreClassIds.ValueType_Number);
             binData.writeDouble (Number (value));
             break;
-         case ValueTypeDefine.ValueType_String:
-            binData.writeShort (ValueTypeDefine.ValueType_String);
+         case CoreClassIds.ValueType_String:
+            binData.writeShort (CoreClassIds.ValueType_String);
             var text:String = value as String;
             binData.writeInt (text == null ? -1 : text.length);
             if (text != null)
@@ -272,52 +296,63 @@ package player.design
                binData.writeUTFBytes (text);
             }
             break;
-         case ValueTypeDefine.ValueType_Array:
+         case CoreClassIds.ValueType_Array:
             var valuesArray:Array = value as Array;
             if (alreadySavedArrayLookupTable [valuesArray] == true)
             {
-               binData.writeShort (ValueTypeDefine.ValueType_Void);
+               binData.writeShort (CoreClassIds.ValueType_Void);
             }
             else
             {
-               alreadySavedArrayLookupTable [valuesArray] = true;
+               if (! CoreClasses.kArrayClassDefinition.mIsNullFunc (valuesArray))
+               {
+                  alreadySavedArrayLookupTable [valuesArray] = true;
+               }
 
-               binData.writeShort (ValueTypeDefine.ValueType_Array);
+               binData.writeShort (CoreClassIds.ValueType_Array);
                binData.writeInt (valuesArray == null ? -1 : valuesArray.length);
                if (valuesArray != null)
                {
-                  //for each (var arrValue:Object in valuesArray) // fant! bug: undefined value is not iterated.
+                  //for each (var arrValue:Object in valuesArray) // faint! bug: undefined value is not iterated.
                   for (var i:int = 0; i < valuesArray.length; ++ i)
                   {
-                     var arrValue:Object = valuesArray [i];
+                     // before v2.05
+                     //
+                     //var arrValue:Object = valuesArray [i];
+                     //
+                     //if (arrValue is Boolean)
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Boolean, arrValue, alreadySavedArrayLookupTable);
+                     //}
+                     //else if (arrValue is Number)
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Number, arrValue, alreadySavedArrayLookupTable);
+                     //}
+                     //else if (arrValue is String)
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_String, arrValue, alreadySavedArrayLookupTable);
+                     //}
+                     //else if (arrValue is Array)
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Array, arrValue, alreadySavedArrayLookupTable);
+                     //}
+                     //else
+                     //{
+                     //   WriteTypeAndValue (binData, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Void, null, alreadySavedArrayLookupTable);
+                     //}
                      
-                     if (arrValue is Boolean)
-                     {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Boolean, arrValue, alreadySavedArrayLookupTable);
-                     }
-                     else if (arrValue is Number)
-                     {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Number, arrValue, alreadySavedArrayLookupTable);
-                     }
-                     else if (arrValue is String)
-                     {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_String, arrValue, alreadySavedArrayLookupTable);
-                     }
-                     else if (arrValue is Array)
-                     {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Array, arrValue, alreadySavedArrayLookupTable);
-                     }
-                     else
-                     {
-                        WriteTypeAndValue (binData, ValueTypeDefine.ValueType_Void, null, alreadySavedArrayLookupTable);
-                     }
+                     // since v2.05
+                     
+                     var arrayElement:ClassInstance = CoreClasses.GetArrayElement (valuesArray, i);
+                     
+                     WriteTypeAndValue (binData, arrayElement.GetRealClassType (), arrayElement.GetRealValueType (), arrayElement.GetValueObject (), alreadySavedArrayLookupTable);
                   }
                }
             }
             break;
          default:
          {
-            binData.writeShort (ValueTypeDefine.ValueType_Void);
+            binData.writeShort (CoreClassIds.ValueType_Void);
             break;
          }
       }      
@@ -343,9 +378,9 @@ package player.design
          {
             var key:String = savedData.readUTF ();
             
-            var value:Object = ReadNextVariableValue (savedData);
+            var ci:ClassInstance = ReadNextVariableValue (savedData, false);
 
-            savedVariables [savedVariableId] = {mKey: key, mValue: value};
+            savedVariables [savedVariableId] = {mKey: key, mClassInstance: ci};
          }
       }
       catch (error:Error)
@@ -362,63 +397,88 @@ package player.design
       {
          var variableInstance:VariableInstance;
          
-         var variableLookupTable:Dictionary = new Dictionary ();
-         var numVariables:int = mGameSaveVariableSpace.GetNumVariables ();
-         for (var variableId:int = 0; variableId < numVariables; ++ variableId)
-         {
-            variableInstance = mGameSaveVariableSpace.GetVariableAt (variableId);
-            variableLookupTable [variableInstance.GetKey ()] = variableInstance;
-         }
+         //var variableLookupTable:Dictionary = new Dictionary ();
+         //var numVariables:int = mGameSaveVariableSpace.GetNumVariables ();
+         //for (var variableId:int = 0; variableId < numVariables; ++ variableId)
+         //{
+         //   variableInstance = mGameSaveVariableSpace.GetVariableByIndex (variableId);
+         //   variableLookupTable [variableInstance.GetKey ()] = variableInstance;
+         //}
+            // now key support is available for variable space.
          
          for (savedVariableId = 0; savedVariableId < numSavedVariables; ++ savedVariableId)
          {
             var savedVariable:Object = savedVariables [savedVariableId];
             
-            variableInstance = variableLookupTable [savedVariable.mKey];
-            if (variableInstance != null)
-            {
-               variableInstance.SetValueObject (savedVariable.mValue);
-            }
-         }
+            //variableInstance = variableLookupTable [savedVariable.mKey];
+            variableInstance = mGameSaveVariableSpace.GetVariableByKey (savedVariable.mKey);
+            
+            //if (variableInstance != null) // now must not be null, may be VariableInstance.kVoidVariableInstance
+            //{
+               //variableInstance.SetValueObject (savedVariable.mClassInstance.mValueObject);
+               var classInstance:ClassInstance = savedVariable.mClassInstance as ClassInstance;
+               //variableInstance.Assign (classInstance.GetRealClassDefinition (), classInstance.GetValueObject ());
+               CoreClasses.AssignValue (classInstance, variableInstance);
+            //}
+         } // for
       }
    }
    
-   private static function ReadNextVariableValue (savedData:ByteArray):Object
+   private static function ReadNextVariableValue (savedData:ByteArray, forArrayElement:Boolean):ClassInstance
    {
       var type:int = savedData.readShort ();
-
+      var value:Object;
+      
       switch (type)
       {
-         case ValueTypeDefine.ValueType_Boolean:
-            return savedData.readByte () != 0;
-         case ValueTypeDefine.ValueType_Number:
-            return savedData.readDouble ();
-         case ValueTypeDefine.ValueType_String:
+         case CoreClassIds.ValueType_Boolean:
+            value = savedData.readByte () != 0;
+            break;
+         case CoreClassIds.ValueType_Number:
+            value = savedData.readDouble ();
+            break;
+         case CoreClassIds.ValueType_String:
             var strLen:int = savedData.readInt ();
             if (strLen < 0)
-               return null;
+               value = null;
             else
             {
-               return savedData.readUTFBytes (strLen);
+               value = savedData.readUTFBytes (strLen);
             }
-         case ValueTypeDefine.ValueType_Array:
+            break;
+         case CoreClassIds.ValueType_Array:
             var arrLen:int = savedData.readInt ();
             if (arrLen < 0)
-               return null;
+               value = null;
             else
             {
                var valuesArray:Array = new Array (arrLen);
                for (var i:int = 0; i < arrLen; ++ i)
                {
-                  valuesArray [i] = ReadNextVariableValue (savedData);
+                  valuesArray [i] = ReadNextVariableValue (savedData, true);
                }
+               
+               value = valuesArray ;
             }
-            return valuesArray ;
+            
+            break;
          default:
          {
-            return null;
+            value = null;
          }
       } 
+      
+      var ci:ClassInstance;
+      if (forArrayElement && value == null)
+         ci = null;
+      else
+      {
+         ci = new ClassInstance ();
+         ci.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (type));
+         ci.SetValueObject (value);
+      }
+      
+      return ci;
    }
    
    private static var mDebugString:String = null;
@@ -495,18 +555,23 @@ package player.design
          mEntityVariableSpace = null;
          mCommonEntityVariableSpace = null;
          
+         mCustomClassDefinitions = null;
+         
          mCustomFunctionDefinitions = null;
+         
+         //
+         CoreClasses.InitCoreClassDefinitions ();
          
          //
          TriggerEngine.InitializeConstData ();
          
          //
-         mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false);
-         mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null);
-         mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0);
-         mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null);
-         mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null);
-         mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null);
+         mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Boolean));
+         mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_String));
+         mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Number));
+         mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Entity));
+         mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory));
+         mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Array));
          
          //
          //if (! isRestartLevel) // before v2.00
@@ -559,12 +624,48 @@ package player.design
          return mCurrentWorld;
       }
       
-      protected static function CreateRegisterVariableSpace (initValueObject:Object):VariableSpace
+      public static function UpdateCoreClassDefaultInitialValues ():void
+      {
+         for (var classId:int = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
+         {
+            var coreDecl:ClassDeclaration = CoreClassDeclarations.GetCoreClassDeclarationById (classId);
+            var classDef:ClassDefinition_Core = CoreClasses.GetCoreClassDefinition (classId);
+            if (classDef.GetID () == classId)
+            {
+               classDef.SetDefaultInitialValue (CoreClasses.ValidateInitialDirectValueObject_Define2Object (Global.GetCurrentWorld (), ClassTypeDefine.ClassType_Core, classId, coreDecl.GetDefaultDirectDefineValue ()));
+            }
+         }
+      }
+      
+      public static function CreateOrResetCoreFunctionDefinitions ():void
+      {
+         if (mCurrentWorld == null)
+            throw new Error ();
+         
+         CoreFunctionDefinitions.Initialize (mCurrentWorld);
+      }
+      
+      protected static function CreateRegisterVariableSpace (initValueObject:Object, classDefinition:ClassDefinition):VariableSpace
       {
          var vs:VariableSpace = new VariableSpace (Define.NumRegistersPerVariableType);
+         var vi:VariableInstance;
+         var varDeclaration:VariableDeclaration;
          
          for (var i:int = 0; i < Define.NumRegistersPerVariableType; ++ i)
-            vs.GetVariableAt (i).SetValueObject (initValueObject);
+         {
+            vi = vs.GetVariableByIndex (i);
+               // must be not null (VariableInstance.kVoidVariableInstance).
+            
+            varDeclaration = new VariableDeclaration (classDefinition);
+            varDeclaration.SetIndex (i);
+            //varDeclaration.SetKey (variableDefine.mKey);
+            //varDeclaration.SetName (variableDefine.mName);
+
+            vi.SetDeclaration (varDeclaration);                  
+            
+            vi.SetValueObject (initValueObject);
+            vi.SetRealClassDefinition (classDefinition); // !!! otherwise, reg variables will trated as void in compare
+         }
          
          return vs;
       }
@@ -573,17 +674,17 @@ package player.design
       {
          switch (valueType)
          {
-            case ValueTypeDefine.ValueType_Boolean:
+            case CoreClassIds.ValueType_Boolean:
                return mRegisterVariableSpace_Boolean;
-            case ValueTypeDefine.ValueType_String:
+            case CoreClassIds.ValueType_String:
                return mRegisterVariableSpace_String;
-            case ValueTypeDefine.ValueType_Number:
+            case CoreClassIds.ValueType_Number:
                return mRegisterVariableSpace_Number;
-            case ValueTypeDefine.ValueType_Entity:
+            case CoreClassIds.ValueType_Entity:
                return mRegisterVariableSpace_Entity;
-            case ValueTypeDefine.ValueType_CollisionCategory:
+            case CoreClassIds.ValueType_CollisionCategory:
                return mRegisterVariableSpace_CollisionCategory;
-            case ValueTypeDefine.ValueType_Array:
+            case CoreClassIds.ValueType_Array:
                return mRegisterVariableSpace_Array;
             default:
                return null;
@@ -594,26 +695,30 @@ package player.design
       {
          if (mWorldVariableSpace == null)
          {
-            mWorldVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, worldVarialbeSpaceDefines, null);
+            mWorldVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/null, worldVarialbeSpaceDefines, null, 0); // 0 is meaningless
          }
          else // switch/restart level
          {
-            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mWorldVariableSpace, worldVarialbeSpaceDefines, false);            
+            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mWorldVariableSpace, worldVarialbeSpaceDefines, true, false);            
          }
          
          if (mGameSaveVariableSpace == null)
          {
-            mGameSaveVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, gameSaveVarialbeSpaceDefines, null);
+            mGameSaveVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/null, gameSaveVarialbeSpaceDefines, null, 0, // 0 is meaningless
+                                                                                          true); // support key mapping from v2.05. In fact, it can supported from v2.00
             mGameSaveVariableSpace_WithInitialValues = mGameSaveVariableSpace.CloneSpace ();
          }
          else // switch/restart level
          {
-            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mGameSaveVariableSpace, gameSaveVarialbeSpaceDefines, false);
+            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mGameSaveVariableSpace, gameSaveVarialbeSpaceDefines, true, false);
          }
       }
       
       //public static function InitSceneCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
-      public static function InitSceneCustomVariables (globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, sessionVariableDefines:Array, isMerging:Boolean = false):void // sessionVariableDefines added from v1.57
+      public static function InitSceneCustomVariables (globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, 
+                                                      sessionVariableDefines:Array, sessionVariableIndexMappingTable:Array,  // sessionVariableDefines added from v1.57
+                                                      isMerging:Boolean/* = false*/,
+                                                      customClassIdShiftOffset:int):void // customClassIdShiftOffset added from v2.05
       {
          //>> v1.52 only
          //var numSpaces:int;
@@ -637,13 +742,14 @@ package player.design
          
          if (mSessionVariableSpace == null) // load from stretch
          {
-            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, null);
+            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, null, customClassIdShiftOffset, true);
          }
          else // restart level or merge level
          {
             if (isMerging)
             {
-               mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, mSessionVariableSpace);
+               // todo: for session, should use the CreatePnlyOnNotExist policy.
+               mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, mSessionVariableSpace, customClassIdShiftOffset, true, sessionVariableIndexMappingTable);
             }
             else
             {
@@ -651,16 +757,16 @@ package player.design
                // nullify non-placed-in-editor entities and ccats
                // potiential decision: discard session variables since a later version, use Game_Data_Save API alikes instead. 
    
-               TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mSessionVariableSpace, sessionVariableDefines, true);
+               TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mSessionVariableSpace, sessionVariableDefines, false, true);
             }
          }
          
-         mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines, isMerging ? mGlobalVariableSpace : null);
-         mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines, isMerging ? mEntityVariableSpace : null);
+         mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines, isMerging ? mGlobalVariableSpace : null, customClassIdShiftOffset);
+         mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines, isMerging ? mEntityVariableSpace : null, customClassIdShiftOffset);
          if (! isMerging)
          {
-            mCommonGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonGlobalVarialbeDefines, null);
-            mCommonEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonEntityVarialbeDefines, null);
+            mCommonGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonGlobalVarialbeDefines, null, customClassIdShiftOffset);
+            mCommonEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonEntityVarialbeDefines, null, customClassIdShiftOffset);
          }
       }
       
@@ -738,14 +844,96 @@ package player.design
          var vi:VariableInstance;
          
          if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
-            vi = mCommonEntityVariableSpace.GetVariableAt (propertyId);
+            vi = mCommonEntityVariableSpace.GetVariableByIndex (propertyId);
          else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
-            vi = mEntityVariableSpace.GetVariableAt (propertyId);
+            vi = mEntityVariableSpace.GetVariableByIndex (propertyId);
          
-         return vi == null ? null : vi.GetValueObject ();
+         //return vi == null ? null : vi.GetValueObject ();
+         return vi.GetValueObject (); // vi must be not null now. it may be VariableInstance.kVoidVariableInstance.
       }
       
-      public static function CreateCustomFunctionDefinitions (functionDefines:Array, isMerging:Boolean):void
+      // custom classes
+      
+      public static function InitCustomClassDefinitions (classDefines:Array, isMerging:Boolean):void
+      {
+         var numNewClasses:int = classDefines.length;
+         var numOldClasses:int = mCustomClassDefinitions == null ? 0 : mCustomClassDefinitions.length;
+         if (isMerging)
+         {
+            mCustomClassDefinitions.length = numOldClasses + numNewClasses;
+         }
+         else
+         {
+            mCustomClassDefinitions = new Array (numNewClasses);
+         }
+         
+         var classId:int;
+         var newClassId:int;
+         var classDefine:ClassDefine;
+         for (classId = 0; classId < numNewClasses; ++ classId)
+         {
+            newClassId = numOldClasses + classId;
+            classDefine = classDefines [classId] as ClassDefine;
+            mCustomClassDefinitions [newClassId] = new ClassDefinition_Custom (newClassId, classDefine.mName);
+         }
+
+         for (classId = 0; classId < numNewClasses; ++ classId)
+         {
+            newClassId = numOldClasses + classId;
+            var customClass:ClassDefinition_Custom = Global.GetCustomClassDefinition (newClassId);
+            
+            customClass.SetParentClasses ([CoreClasses.kObjectClassDefinition]);
+            
+            classDefine = classDefines [classId] as ClassDefine;
+            customClass.SetPropertyVariableSpaceTemplate (TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, classDefine.mPropertyVariableDefines, null, numOldClasses));
+         }
+
+         for (classId = 0; classId < numNewClasses; ++ classId)
+         {
+            newClassId = numOldClasses + classId;
+            var customClass:ClassDefinition_Custom = Global.GetCustomClassDefinition (newClassId);
+
+            customClass.FindAncestorClasses ();
+         }
+      }
+      
+      public static function GetNumCustomClasses ():int
+      {
+         return mCustomClassDefinitions == null ? 0 : mCustomClassDefinitions.length;
+      }
+      
+      public static function GetCustomClassDefinition (classId:int):ClassDefinition_Custom
+      {
+         if (classId < 0 || mCustomClassDefinitions == null || classId >= mCustomClassDefinitions.length)
+            return null;
+         
+         return mCustomClassDefinitions [classId] as ClassDefinition_Custom;
+      }
+      
+      public static function GetClassDefinition (classType:int, classId:int):ClassDefinition
+      {
+         var aClass:ClassDefinition;
+         
+         if (classType == ClassTypeDefine.ClassType_Custom)
+         {
+            aClass = GetCustomClassDefinition (classId);
+            
+            if (aClass == null)
+            {
+               aClass = CoreClasses.kVoidClassDefinition;
+            }
+         }
+         else
+         {
+            aClass = CoreClasses.GetCoreClassDefinition (classId);
+         }
+         
+         return aClass;
+      }
+      
+      // custom functions
+      
+      public static function CreateCustomFunctionDefinitions (functionDefines:Array, isMerging:Boolean, customClassIdShiftOffset:int):void
       {
          var numOldFunctions:int = mCustomFunctionDefinitions == null ? 0 : mCustomFunctionDefinitions.length;
          var numNewFunctions:int = functionDefines.length;
@@ -760,7 +948,7 @@ package player.design
          
          for (var functionId:int = 0; functionId < numNewFunctions; ++ functionId)
          {
-            mCustomFunctionDefinitions [numOldFunctions + functionId] = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (functionDefines [functionId] as FunctionDefine, null);
+            mCustomFunctionDefinitions [numOldFunctions + functionId] = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mCurrentWorld, functionDefines [functionId] as FunctionDefine, null, customClassIdShiftOffset);
          }
       }
       

@@ -2,7 +2,7 @@ package player.trigger
 {
    public class Parameter_Variable extends Parameter
    {
-      internal var mVariableInstance:VariableInstance;
+      internal var mVariableInstance:VariableInstance; // msut be not null.
       
       public function Parameter_Variable (vi:VariableInstance, next:Parameter = null)
       {
@@ -11,21 +11,9 @@ package player.trigger
          mVariableInstance = vi;
       }
       
-      public function GetVariableInstance ():VariableInstance
+      override public function GetVariableInstance ():VariableInstance
       {
          return mVariableInstance;
-      }
-      
-      // as an input
-      override public function EvaluateValueObject ():Object
-      {
-         return mVariableInstance.GetValueObject ();
-      }
-      
-      // as an output
-      override public function AssignValueObject (valueObject:Object):void
-      {
-         mVariableInstance.SetValueObject (valueObject);
       }
    }
 }

@@ -44,6 +44,18 @@
    
    private var mCacheSystemEvents:Boolean = true;
    
+   // [2013.10.14 v2.05]:
+   // seems this function was added from v1.50.
+   // for viewer calling only, not exposed as an API.
+   // the viewer will call world.SetCacheSystemEvent (world.mShowPlayBar).
+   // maybe doing this will be helpful for some cases I forget now.
+   //    (maybe for Flash security, for example, Flash only only call ClipBoard.paste in system event handlers)
+   // it will bring lags when synchronizing shape visual and physics.
+   // to keep the compatibility:
+   // - to add a UpdateShapeAppearance API for synchronizing shape visual immediately
+   // - in viewer, for v2.xx, don't call world.SetCacheSystemEvent (world.mShowPlayBar)
+   // - to add a SetCacheSystemEvent API
+   
    public function SetCacheSystemEvent (cache:Boolean):void
    {
       mCacheSystemEvents = cache;
@@ -453,13 +465,13 @@
       if (handlerList == null)
          return;
       
-      var valueSource7:Parameter_Direct = new Parameter_Direct (null); // is overlapped by some entities
-      var valueSource6:Parameter_Direct = new Parameter_Direct (null, valueSource7); // alt down
-      var valueSource5:Parameter_Direct = new Parameter_Direct (null, valueSource6); // shift down
-      var valueSource4:Parameter_Direct = new Parameter_Direct (null, valueSource5); // ctrl down
-      var valueSource3:Parameter_Direct = new Parameter_Direct (null, valueSource4); // button down
-      var valueSource2:Parameter_Direct = new Parameter_Direct (null, valueSource3); // world physics y
-      var valueSource1:Parameter_Direct = new Parameter_Direct (null, valueSource2); // world physics x
+      var valueSource7:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, null); // is overlapped by some entities
+      var valueSource6:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource7); // alt down
+      var valueSource5:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource6); // shift down
+      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource5); // ctrl down
+      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource4); // button down
+      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource3); // world physics y
+      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource2); // world physics x
       
       valueSource1.mValueObject = GetCurrentMouseX ();
       valueSource2.mValueObject = GetCurrentMouseY ();
@@ -475,7 +487,7 @@
       }
       else
       {
-         var valueSource0:Parameter_Direct = new Parameter_Direct (null, valueSource1); // entity
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, null, valueSource1); // entity
          valueSource0.mValueObject = shape;
          RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);
       }
@@ -567,11 +579,11 @@
       if (handlerList == null)
          return;
       
-      var valueSource4:Parameter_Direct = new Parameter_Direct (null);
-      var valueSource3:Parameter_Direct = new Parameter_Direct (null, valueSource4);
-      var valueSource2:Parameter_Direct = new Parameter_Direct (null, valueSource3);
-      var valueSource1:Parameter_Direct = new Parameter_Direct (null, valueSource2);
-      var valueSource0:Parameter_Direct = new Parameter_Direct (null, valueSource1);
+      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, null);
+      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource4);
+      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource3);
+      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource2);
+      var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource1);
       
       valueSource0.mValueObject = exactKeyCode;
       valueSource1.mValueObject = event.charCode;
@@ -630,7 +642,11 @@
    {
       var handled:Boolean = false;
       
-      var valueTarget:Parameter_Direct = new Parameter_Direct (null);
+      var valueTarget:Parameter_DirectMutable = Parameter_DirectMutable.CreateCoreClassDirectMutable (
+                                                            CoreClassIds.ValueType_Boolean,
+                                                            false
+                                                          ); 
+                                                         //new Parameter_DirectMutable (null);
       
       var handler_element:ListElement_EventHandler = mEventHandlersByTypes [CoreEventIds.ID_OnSystemBack];
       

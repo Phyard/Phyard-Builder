@@ -43,11 +43,11 @@
       }
    }
    
-   private var mKeyboardEventHandlerValueSource4:Parameter_Direct = new Parameter_Direct (null);
-   private var mKeyboardEventHandlerValueSource3:Parameter_Direct = new Parameter_Direct (null, mKeyboardEventHandlerValueSource4);
-   private var mKeyboardEventHandlerValueSource2:Parameter_Direct = new Parameter_Direct (null, mKeyboardEventHandlerValueSource3);
-   private var mKeyboardEventHandlerValueSource1:Parameter_Direct = new Parameter_Direct (null, mKeyboardEventHandlerValueSource2);
-   private var mKeyboardEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, mKeyboardEventHandlerValueSource1);
+   private var mKeyboardEventHandlerValueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, null);
+   private var mKeyboardEventHandlerValueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, mKeyboardEventHandlerValueSource4);
+   private var mKeyboardEventHandlerValueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, mKeyboardEventHandlerValueSource3);
+   private var mKeyboardEventHandlerValueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, mKeyboardEventHandlerValueSource2);
+   private var mKeyboardEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, mKeyboardEventHandlerValueSource1);
    private var mKeyboardEventHandlerValueSourceList:Parameter = mKeyboardEventHandlerValueSource0;
    
    // key down and up events have already handled when they are triggered.

@@ -713,11 +713,11 @@ package com.tapirgames.gesture {
       /*
       private function TraceSegments (title:String):void
       {
-         trace ("=================================== segments: " + title);
+trace ("=================================== segments: " + title);
          var segment:GestureSegment = mStartSegment;
          while (segment != null)
          {
-            trace (segment.mIndex + "> start index: " + segment.mStartPoint.mIndex + ", end index: " + segment.mEndPoint.mIndex
+trace (segment.mIndex + "> start index: " + segment.mStartPoint.mIndex + ", end index: " + segment.mEndPoint.mIndex
                      + ", dx: " + segment.mDx + ", dy: " + segment.mDy
                    //  + ", accLength: " + segment.mAccumulatedLength + ", distance: " + segment.mStarEndDistance
                      + ", delta angle: " + segment.mDeltaAngle + ", acc angle: " + segment.mAccumulatedAngle

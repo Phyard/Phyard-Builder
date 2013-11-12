@@ -233,7 +233,14 @@ package viewer {
       {  
          if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerDestroyed != null)
          {
-            mWorldDesignProperties.OnViewerDestroyed ();
+            try
+            {            
+               mWorldDesignProperties.OnViewerDestroyed ();
+            }
+            catch (error:Error)
+            {
+               TraceError (error);
+            }
          }
       }
 

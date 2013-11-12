@@ -92,7 +92,8 @@ package editor.ccat.dialog {
          {
             mCheckBoxCollideInternally.selected = onlySelected.IsCollideInternally ();
             mCheckBoxDefaultCategory.selected = onlySelected.IsDefaultCategory ();
-            mTextInputName.text = onlySelected.GetCategoryName ();
+            //mTextInputName.text = onlySelected.GetCategoryName ();
+            mTextInputName.text = onlySelected.GetName ();
          }
          else
          {
@@ -262,7 +263,12 @@ package editor.ccat.dialog {
             
             var category:CollisionCategory = mCollisionCategoryManager.GetSelectedAssets () [0] as CollisionCategory;
             
-            category.SetCategoryName (mTextInputName.text);
+            //category.SetCategoryName (mTextInputName.text);
+            category.SetName (mTextInputName.text);
+            category.UpdateTimeModified ();
+            
+            mCollisionCategoryManager.SetChanged (true);
+            
             category.UpdateAppearance ();
             
             UpdateInterface ();

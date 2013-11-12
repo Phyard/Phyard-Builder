@@ -3,17 +3,19 @@ package editor.trigger {
    import mx.core.UIComponent;
    import mx.controls.Label;
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
 
    import editor.display.control.SoundPickButton;
 
    import editor.sound.AssetSound;
 
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
 
    import common.Define;
 
-   public class VariableDefinitionSound extends VariableDefinition
+   public class VariableDefinitionSound extends VariableDefinition_Core
    {
    //========================================================================================================
    //
@@ -21,7 +23,7 @@ package editor.trigger {
 
       public function VariableDefinitionSound (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Sound, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Sound), name, description, options);
 
          if (options != null)
          {
@@ -34,18 +36,7 @@ package editor.trigger {
 
       override public function Clone ():VariableDefinition
       {
-         var soundVariableDefinition:VariableDefinitionSound = new VariableDefinitionSound (mName, mDescription);
-
-         return soundVariableDefinition;
-      }
-
-//==============================================================================
-// to override
-//==============================================================================
-
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_Sound (valueObject);
+         return new VariableDefinitionSound (mName, mDescription, mOptions);
       }
 
 //==============================================================================

@@ -43,7 +43,8 @@ package editor.entity {
             borderSize  = 1;
          }
          
-         GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, filledColor);
+         //GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, filledColor);
+         GraphicsUtil.ClearAndDrawCircle (this, 0, 0, mRadius, borderColor, borderSize, true, filledColor);
          var xy:Number = mRadius * Math.cos (Math.PI / 4.0);
          GraphicsUtil.DrawLine (this, - xy, - xy,   xy, xy, 0x0, 1);
          GraphicsUtil.DrawLine (this, - xy,   xy, xy, -xy, 0x0, 1);

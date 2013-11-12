@@ -3,53 +3,55 @@ package editor.trigger {
    import mx.core.UIComponent;
    import mx.controls.TextInput;
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
-   public class VariableDefinitionString extends VariableDefinition
+   public class VariableDefinitionString extends VariableDefinition_Core
    {
       
    //========================================================================================================
    //
    //========================================================================================================
       
-      protected var mDefaultValue:String = "";
-      protected var mMaxLength:int = 0;
+      //protected var mDefaultValue:String = "";
+      //protected var mMaxLength:int = 0;
       
       public function VariableDefinitionString (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_String, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_String), name, description, options);
          
-         if (options != null)
-         {
-            if (options.mMaxLength != undefined)
-               mMaxLength = int (options.mMaxLength);
-            if (options.mDefaultValue != undefined)
-               mDefaultValue = options.mDefaultValue as String;
-         }
+         //if (options != null)
+         //{
+         //   //if (options.mMaxLength != undefined)
+         //   //   mMaxLength = int (options.mMaxLength);
+         //   if (options.mDefaultValue != undefined)
+         //      mDefaultValue = options.mDefaultValue as String;
+         //}
       }
       
-      override public function SetDefaultValue (valueObject:Object):void
-      {
-         mDefaultValue = String (valueObject);
-      }
+      //override public function SetDefaultValue (valueObject:Object):void
+      //{
+      //   mDefaultValue = String (valueObject);
+      //}
       
-      public function GetDefaultValue ():String
-      {
-         return mDefaultValue;
-      }
+      //public function GetDefaultValue ():String
+      //{
+      //   return mDefaultValue;
+      //}
       
-      protected function ValidateValue (text:String):String
-      {
-         if (text == null)
-            return null;
-         
-         if (mMaxLength > 0 && text.length > mMaxLength)
-            return text.substr (0, mMaxLength);
-         
-         return text;
-      }
+      //protected function ValidateValue (text:String):String
+      //{
+      //   if (text == null)
+      //      return null;
+      //   
+      //   if (mMaxLength > 0 && text.length > mMaxLength)
+      //      return text.substr (0, mMaxLength);
+      //   
+      //   return text;
+      //}
       
 //==============================================================================
 // clone
@@ -57,20 +59,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var stringVariableDefinition:VariableDefinitionString = new VariableDefinitionString (mName, mDescription);
-         stringVariableDefinition.mMaxLength = mMaxLength;
-         stringVariableDefinition.mDefaultValue = mDefaultValue;
-         
-         return stringVariableDefinition;
-      }
-      
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return String (valueObject);
+         return new VariableDefinitionString (mName, mDescription, mOptions);
       }
       
 //==============================================================================
@@ -79,7 +68,7 @@ package editor.trigger {
       
       override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         return new ValueSource_Direct (mDefaultValue);
+         return new ValueSource_Direct (mDefaultValueObject);
       }
       
       override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
@@ -93,7 +82,7 @@ package editor.trigger {
       
       override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
-         var text:String = mDefaultValue;
+         var text:String = mDefaultValueObject as String;
          
          if (control is TextInput)
          {
@@ -102,7 +91,8 @@ package editor.trigger {
             text = String (text_input.text);
          }
 
-         text = ValidateValue (text);
+         //text = ValidateValue (text);
+         text = ValidateDirectValueObject (text) as String;
          
          valueSourceDirect.SetValueObject (text);
          

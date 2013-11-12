@@ -115,7 +115,15 @@ package common.trigger {
       public static const CoreApiId_40:int = 40; //
       public static const CoreApiId_41:int = 41; //
 
-      public static const CoreApiId_59:int = 59; // end of block callings
+      public static const CoreApiId_50:int = 50; // assign
+      public static const CoreApiId_51:int = 51; // equals
+      
+      //public static const CoreApiId_53:int = 53; // to string
+      //public static const CoreApiId_54:int = 54; // to Boolean
+      
+      public static const CoreApiId_56:int = 56; // new
+
+      //public static const CoreApiId_59:int = 59; // end of block callings
 
       public static const CoreApiId_70:int = 70; //
       public static const CoreApiId_71:int = 71; //
@@ -164,6 +172,8 @@ package common.trigger {
       public static const CoreApiId_114:int = 114; //
       public static const CoreApiId_115:int = 115; //
       public static const CoreApiId_116:int = 116; //
+      public static const CoreApiId_117:int = 117; //
+      public static const CoreApiId_118:int = 118; //
 
       public static const CoreApiId_120:int = 120; //
       public static const CoreApiId_121:int = 121; //
@@ -180,6 +190,8 @@ package common.trigger {
       public static const CoreApiId_132:int = 132; //
       public static const CoreApiId_133:int = 133; //
       public static const CoreApiId_134:int = 134; //
+      public static const CoreApiId_135:int = 135; //
+      public static const CoreApiId_136:int = 136; //
 
       public static const CoreApiId_150:int = 150; //
       public static const CoreApiId_151:int = 151; //

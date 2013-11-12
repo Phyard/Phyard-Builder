@@ -12,11 +12,11 @@ package editor.trigger {
    
    import editor.ccat.CollisionCategoryManager;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
    import common.Define;
    
-   public class VariableDefinitionCollisionCategory extends VariableDefinition
+   public class VariableDefinitionCollisionCategory extends VariableDefinition_Core
    {
    //========================================================================================================
    //
@@ -24,7 +24,7 @@ package editor.trigger {
       
       public function VariableDefinitionCollisionCategory (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_CollisionCategory, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_CollisionCategory), name, description, options);
       }
       
 //==============================================================================
@@ -33,20 +33,9 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var ccatVariableDefinition:VariableDefinitionCollisionCategory = new VariableDefinitionCollisionCategory (mName, mDescription);
+         return new VariableDefinitionCollisionCategory (mName, mDescription, mOptions);
+      }
          
-         return ccatVariableDefinition;
-      }
-      
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_CollisiontCategory (valueObject);
-      }
-      
 //==============================================================================
 // to override
 //==============================================================================

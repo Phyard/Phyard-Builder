@@ -14,9 +14,9 @@ package editor.selection {
    import Box2D.Collision.*;
    import Box2D.Collision.Shapes.*;
    
-   import Box2D.b2WorldPool;
+   import common.physics.Box2D.b2WorldPool;
    
-   import Box2dEx.Helper.b2eWorldAABBQueryCallback;
+   import common.physics.Box2D.Helper.b2eWorldAABBQueryCallback;
    
    import common.Define;
    
@@ -183,7 +183,8 @@ package editor.selection {
                visualShape.x = circlePhysicsShape.m_p.x;
                visualShape.y = circlePhysicsShape.m_p.y;
                var radius:Number = circlePhysicsShape.m_radius;
-               GraphicsUtil.DrawEllipse (visualShape, - radius, - radius, radius + radius, radius + radius, 0xFF0000, 2, false);
+               //GraphicsUtil.DrawEllipse (visualShape, - radius, - radius, radius + radius, radius + radius, 0xFF0000, 2, false);
+               GraphicsUtil.DrawCircle (visualShape, 0, 0, radius, 0xFF0000, 2, false);
             }
             else if (physicsShape is b2PolygonShape)
             {

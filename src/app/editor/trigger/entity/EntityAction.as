@@ -69,23 +69,5 @@ package editor.trigger.entity {
          var action:EntityAction = entity as EntityAction;
       }
       
-//====================================================================
-//   linkable
-//====================================================================
-      
-//====================================================================
-//   as EntityCondition
-//====================================================================
-      
-      public function GetTargetValueByLinkZoneId (zoneId:int):int
-      {
-         return ValueDefine.BoolValue_True;
-      }
-      
-      public function GetTargetValueZoneWorldCenter (targetValue:int):Point
-      {
-         return new Point (GetPositionX (), GetPositionY ());
-      }
-      
    }
 }

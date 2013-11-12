@@ -29,6 +29,12 @@ package Box2D.Common
 	//template <typename T, int32 N>
 	public class b2GrowableStack extends Array
 	{
+	  //todo: adobe docs says: You can extend the Array class and override or add methods. 
+	  //                       However, you must specify the subclass as dynamic or you will 
+	  //                       lose the ability to store data in an array.
+	  // 
+	  
+	
 	//public:
 		public function b2GrowableStack(N:int)
 		{

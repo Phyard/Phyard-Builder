@@ -2,9 +2,13 @@ package editor.trigger {
    
    import flash.utils.Dictionary;
    
+   import editor.world.World;
+   import editor.entity.Scene;
+   import editor.codelib.CodeLibManager;
+   
    import editor.core.EditorObject;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSpaceTypeDefine;
    
    public class VariableSpace
@@ -25,7 +29,12 @@ package editor.trigger {
       {
          //mTriggerEngine = triggerEngine;
          
-         mNullVariableInstance = new VariableInstance (this, -1, null, ValueTypeDefine.ValueType_Void, "(null)", null);
+         //mNullVariableInstance = new VariableInstance (this, -1, null, CoreClassIds.ValueType_Void, "(null)", null);
+         mNullVariableInstance = new VariableInstance (this, -1, 
+                                    new VariableDefinitionVoid (
+                                                World.GetCoreClassById (CoreClassIds.ValueType_Void).GetDefaultInstanceName (), 
+                                                null)
+                                 );
       }
       
       //public function GetTriggerEngine ():TriggerEngine
@@ -38,14 +47,14 @@ package editor.trigger {
          return true;
       }
       
-      public function GetSpaceType ():int
-      {
-         return -1;
-      }
-      
       public function IsVariableKeySupported ():Boolean
       {
          return false;
+      }
+      
+      public function GetSpaceType ():int
+      {
+         return -1;
       }
       
       public function GetSpaceName ():String
@@ -104,6 +113,8 @@ package editor.trigger {
          }
          mVariableInstances.splice (0, mVariableInstances.length);
          
+         mLookupTableByName = new Dictionary ();
+         
          if (IsVariableKeySupported ())
          {
             mLookupTableByKey = new Dictionary ();
@@ -114,7 +125,7 @@ package editor.trigger {
          NotifyModified ();
       }
       
-      public function DestroyVariableInstanceByIndex (variableId:int):void
+      public function DestroyVariableInstanceAtIndex (variableId:int):void
       {
          if (variableId < 0 || variableId >= mVariableInstances.length)
             return;
@@ -128,6 +139,8 @@ package editor.trigger {
             delete mLookupTableByKey [vi.GetKey ()];
          }
          
+         delete mLookupTableByName [vi.GetName ()];
+         
          RearrangeVariableInstanceIndexes ();
          
          NotifyModified ();
@@ -140,7 +153,7 @@ package editor.trigger {
          {
             // assert vi.GetVariableSpace () == this
             
-            DestroyVariableInstanceByIndex (index);
+            DestroyVariableInstanceAtIndex (index);
          }
       }
       
@@ -164,73 +177,236 @@ package editor.trigger {
          NotifyModified ();
       }
       
-      public function HasVariablesWithValueType (valueType:int):Boolean
-      {
-         var vi:VariableInstance;
-         
-         for (var i:int = 0; i < mVariableInstances.length; ++ i)
-         {
-            vi = mVariableInstances [i] as VariableInstance;
-            
-            if (vi.GetValueType () == valueType)
-               return true;
-         }
-         
-         return false;
-      }
+      //public function HasVariablesWithValueType (valueType:int):Boolean
+      //{
+      //   var vi:VariableInstance;
+      //   
+      //   for (var i:int = 0; i < mVariableInstances.length; ++ i)
+      //   {
+      //      vi = mVariableInstances [i] as VariableInstance;
+      //      
+      //      if (vi.GetValueType () == valueType)
+      //         return true;
+      //   }
+      //   
+      //   return false;
+      //}
       
-      public function HasVariablesSatisfiedBy (variableDefinition:VariableDefinition):Boolean
+      public function HasVariablesSatisfiedBy (variableDefinition:VariableDefinition, deepIntoCustomClass:Boolean = true, inPhaseForAddingVariablesOfOtherClasses:Boolean = false):Boolean
       {
-         var viDef:VariableDefinition;
          var count:int = GetNumVariableInstances ();
+
+         if (variableDefinition.AllowVariablesOfOtherClasses ())
+            return count > 0;
+            
+         var viDef:VariableDefinition;
          for (var i:int = 0; i < count; ++ i)
          {
             viDef = GetVariableInstanceAt (i).GetVariableDefinition ();
-            if (viDef != null)
+            if (viDef != null) // always
             {
-               if (variableDefinition.IsCompatibleWith (viDef))
+               var compitable:Boolean = variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition);
+               if (inPhaseForAddingVariablesOfOtherClasses)
+                  compitable = ! compitable;
+               
+               if (compitable)
                   return true;
+               
+               if (deepIntoCustomClass && viDef is VariableDefinition_Custom)
+               {
+                  if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false, inPhaseForAddingVariablesOfOtherClasses))
+                     return true;
+               }
             }
          }
          
          return false;
       }
       
-      public function GetVariableSelectListDataProviderByValueType (valueType:int, validVariableIndexes:Array = null):Array
+      // why use validVariableIndexes filters? (wondering at v2.05)
+      // - ok, after merging FunctionDeclaration and FunctionDefinition, validVariableIndexes param is removed.
+      //public function GetVariableSelectListDataProviderByValueType (typeType:int, valueType:int, validVariableIndexes:Array = null):Array
+      public function GetVariableSelectListDataProviderByVariableDefinition (variableDefinition:VariableDefinition):Array
       {
-         var entity_list:Array = new Array ();
+         var dataList:Array = GetVariableSelectListDataProvider (variableDefinition); //, validVariableIndexes);
          
-         var item:Object = new Object ();
-         item.label = "(null)"; // mNullVariableInstance.GetLongName ();
-         item.mVariableInstance = null;
-         
-         entity_list.push (item);
-         
-         var vi:VariableInstance;
-         
-         for (var i:int = 0; i < mVariableInstances.length; ++ i)
+         if (variableDefinition.AllowVariablesOfOtherClasses () && HasVariablesSatisfiedBy (variableDefinition, true, true))
          {
-            vi = mVariableInstances [i] as VariableInstance;
+            // .
+            var item:Object = new Object ();
+            item.label = "----------------";
+            //item.mIndex = -1; // bug
+            item.mVariableInstance = mNullVariableInstance;
+            item.mProperty = -1;
             
-            if (vi.GetValueType () != valueType)
-               continue;
+            dataList.push (item);
             
-            if (validVariableIndexes != null)
-            {
-               if (validVariableIndexes.indexOf (i) < 0)
-                  continue;
-            }
+            // ...
+            GetVariableSelectListDataProvider (variableDefinition,// null, 
+                                               null, null, true,
+                                               dataList);
             
-            item = new Object ();
-            item.label = vi.GetLongName ();
-            item.mVariableInstance = vi;
-            
-            entity_list.push (item);
+            // ...
          }
          
-         return entity_list;
+         return dataList;
+      }
+
+      // labelPrefix and dataList are both null or non-null
+      private function GetVariableSelectListDataProvider ( variableDefinition:VariableDefinition, 
+                                                           //validVariableIndexes:Array = null,
+                                                           labelPrefix:String = null, 
+                                                           propertyOwnerVi:VariableInstance = null,
+                                                           inPhaseForAddingVariablesOfOtherClasses:Boolean = false,
+                                                           dataList:Array = null
+                                                        ):Array
+      {
+         var item:Object;
+         
+         if (dataList == null)
+         {
+            dataList = new Array ();
+            
+            item = new Object ();
+            item.label = "(null)"; // mNullVariableInstance.GetLongName ();
+            //item.mIndex = -1; // bug
+            item.mVariableInstance = mNullVariableInstance;
+            item.mProperty = -1;
+            
+            dataList.push (item);
+         }
+         
+         var vi:VariableInstance;
+         var viDef:VariableDefinition;
+         
+         for (var i:int = 0; i < mVariableInstances.length; ++ i)
+         {  
+            //if (validVariableIndexes != null)
+            //{
+            //   if (validVariableIndexes.indexOf (i) < 0)
+            //      continue;
+            //}
+            
+            vi = mVariableInstances [i] as VariableInstance;
+            viDef = GetVariableInstanceAt (i).GetVariableDefinition ();
+            
+            if (viDef != null) // always
+            {
+               var toDeepInto:Boolean =   labelPrefix == null 
+                                       && viDef is VariableDefinition_Custom
+                                       && (viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false, inPhaseForAddingVariablesOfOtherClasses)
+                                       ;
+               
+               var generalLabel:String = null;
+               if (toDeepInto)
+                  generalLabel = vi.GetLongName ();
+               
+               var campatible:Boolean = variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition);
+               if (inPhaseForAddingVariablesOfOtherClasses)
+                  campatible = ! campatible;
+               
+               if (campatible)
+               {
+                  item = new Object ();
+                  
+                  if (labelPrefix == null)
+                  {
+                     item.label = generalLabel == null ? vi.GetLongName () : generalLabel;
+                     //item.mIndex = i; // bug
+                     item.mVariableInstance = vi;
+                     item.mProperty = -1;
+                  }
+                  else
+                  {
+                     item.label = labelPrefix + " [" + i + "] " + vi.GetName ();
+                     //item.mIndex = propertyOwnerViIndex; // bug
+                     item.mVariableInstance = propertyOwnerVi;
+                     item.mProperty = i;
+                  }
+                  
+                  dataList.push (item);
+               }
+               
+               if (toDeepInto)
+               {
+                  //if ((viDef as VariableDefinition_Custom).GetCustomProperties ().HasVariablesSatisfiedBy (variableDefinition, false, inPhaseForAddingVariablesOfOtherClasses))
+                  //{
+                     (viDef as VariableDefinition_Custom).GetCustomProperties ().GetVariableSelectListDataProvider (variableDefinition, //null, 
+                                                                                       generalLabel, vi, inPhaseForAddingVariablesOfOtherClasses, dataList);
+                  //}
+               }
+            }
+         }
+         
+         return dataList;
       }
       
+      public static function VariableIndex2SelectListSelectedIndex (selectListDataProvider:Array, variableInstance:VariableInstance, propertyIndex:int = -1):int
+      {
+         for (var i:int = 0; i < selectListDataProvider.length; ++ i)
+         {
+            var item:Object = selectListDataProvider[i];
+            if (item.mVariableInstance == variableInstance && item.mProperty == propertyIndex)
+               return i;
+         }
+         
+         return 0; // null
+      }
+      
+      public function RetrieveValueForVariableValueSource (variableValueSource:ValueSource_Variable, selectItem:Object):void
+      {
+         var currentVariable:VariableInstance = variableValueSource.GetVariableInstance ();
+         var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
+         
+         variableValueSource.ClearProperty ();
+         
+         var vi:VariableInstance = selectItem.mVariableInstance;
+         if (vi.GetIndex () < 0)
+         {
+            variableValueSource.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            return;
+         }
+         
+         variableValueSource.SetVariableInstance (vi);
+         
+         if (selectItem.mProperty >= 0)
+         {
+            variableValueSource.SetPropertyIndex (selectItem.mProperty);
+         }
+      }
+      
+      public function RetrieveValueForVariableValueTarget (variableValueTarget:ValueTarget_Variable, selectItem:Object):void
+      {
+         var currentVariable:VariableInstance = variableValueTarget.GetVariableInstance ();
+         var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
+         
+         variableValueTarget.ClearProperty ();
+         
+         var vi:VariableInstance = selectItem.mVariableInstance;
+         if (vi.GetIndex () < 0)
+         {
+            variableValueTarget.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            return;
+         }
+         
+         variableValueTarget.SetVariableInstance (vi);
+         
+         if (selectItem.mProperty >= 0)
+         {
+            variableValueTarget.SetPropertyIndex (selectItem.mProperty);
+         }
+      }
+      
+      //public static function CreateSelectionListItemValue (variableInstanceIndex:int, propertyVariableInstanceIndex:int = -1):int
+      //{
+      //   if (variableInstanceIndex < 0 || variableInstanceIndex > 0xFFFF)
+      //      return -1;
+      //   
+      //   if (propertyVariableInstanceIndex < 0)
+      //      return variableInstanceIndex;
+      //   else
+      //      return (propertyVariableInstanceIndex << 16) | variableInstanceIndex;
+      //}
       
       public function NotifyModified ():void
       {
@@ -247,20 +423,23 @@ package editor.trigger {
 //============================================================================
       
       // this function is slow if the number of variables is large.
-      public function GetVariableInstanceByTypeAndName (valueType:int, variableName:String, createIfNotExist:Boolean = false):VariableInstance
+      // if createIfNotExist is false or classType is core, scene can be null.
+      public function GetVariableInstanceByTypeAndName (scene:Scene, classType:int, valueType:int, variableName:String, createIfNotExist:Boolean = false):VariableInstance
       {
          for (var variableId:int = mVariableInstances.length - 1; variableId >= 0; -- variableId)
          {
             var variable_instance:VariableInstance = mVariableInstances [variableId];
-            if (variable_instance.GetValueType () == valueType && variable_instance.GetName () == variableName)
+            if (variable_instance.GetClassType () == classType && variable_instance.GetValueType () == valueType && variable_instance.GetName () == variableName)
                return variable_instance;
          }
        
          if (createIfNotExist)
          {
-            var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);
+            //var variableDefinition:VariableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
+            var variableDefinition:VariableDefinition = CodeLibManager.CreateVariableDefinition (scene.GetCodeLibManager (), classType, valueType, variableName);
             var newVi:VariableInstance = CreateVariableInstanceFromDefinition (null, variableDefinition);
-            newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
+            //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
+            //newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
             
             return newVi;
          }
@@ -268,23 +447,25 @@ package editor.trigger {
          return mNullVariableInstance;
       }
       
-      public function GetVariableInstanceByTypeAndKey (valueType:int, variableKey:String, variableName:String, createIfNotExist:Boolean = false):VariableInstance
+      //public function GetVariableInstanceByTypeAndKey (valueType:int, variableKey:String, variableName:String, createIfNotExist:Boolean = false):VariableInstance
+      public function GetVariableInstanceByDefinitionAndKey (variableDefinition:VariableDefinition, variableKey:String, createIfNotExist:Boolean = false):VariableInstance
       {
          if (IsVariableKeySupported ())
          {
             if (variableKey != null && variableKey.length > 0)
             {
                var variable_instance:VariableInstance = mLookupTableByKey [variableKey];
-               if (variable_instance != null && variable_instance.GetValueType () == valueType)
+               if (variable_instance != null && variable_instance.GetClassType () == variableDefinition.GetClassType () && variable_instance.GetValueType () == variableDefinition.GetValueType ())
                   return variable_instance;
             }
             
             if (createIfNotExist)
             {
-               var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);
+               //var variableDefinition:VariableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
                var newVi:VariableInstance = CreateVariableInstanceFromDefinition (variableKey, variableDefinition);
-               newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
-               
+               //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
+               //newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());
+
                return newVi;
             }
             
@@ -325,7 +506,7 @@ package editor.trigger {
          {
             if (IsVariableKeySupported () && key != null && key.length > 0)
             {
-               vi = GetVariableInstanceByTypeAndKey (variableDefinition.GetValueType (), key, variableDefinition.GetName ());
+               vi = GetVariableInstanceByDefinitionAndKey (variableDefinition, key);
                if (vi != null && vi != mNullVariableInstance)
                {
                   return vi;
@@ -333,7 +514,7 @@ package editor.trigger {
             }
             else
             {
-               vi = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
+               vi = GetVariableInstanceByTypeAndName (null, variableDefinition.GetClassType (), variableDefinition.GetValueType (), variableDefinition.GetName ());
                if (vi != null && vi != mNullVariableInstance)
                {
                   return vi;
@@ -341,7 +522,15 @@ package editor.trigger {
             }
          }
          
+         // ...
+         
          vi = new VariableInstance (this, mVariableInstances.length, variableDefinition);
+         vi.SetValueObject (variableDefinition.GetClass ().GetInitialInstacneValue ());
+         
+         ValidateVariableDefinitionName (variableDefinition);
+         mLookupTableByName [variableDefinition.GetName ()] = vi; // vi.GetName () == variableDefinition.GetName ()
+
+         //...
          
          mVariableInstances.push (vi);
          
@@ -363,40 +552,67 @@ package editor.trigger {
          return vi;
       }
       
-      public function CreateVariableInstanceByTypeNameValue (/*key:String, */valueType:int, variableName:String, intialValue:Object):VariableInstance
-      {
-         // it seems this function is only for create register variables
-         // VariableSpaceRegister has overridden this function
-         // 
-         // the key (uuid) of register variables is not important.
-         // so keys will not be created for register variables.
-         
-         throw new Error ();
+      //public function CreateVariableInstanceByTypeNameValue (/*key:String, */valueType:int, variableName:String, intialValue:Object):VariableInstance
+      //{
+      //   // it seems this function is only for create register variables
+      //   // VariableSpaceRegister has overridden this function
+      //   // 
+      //   // the key (uuid) of register variables is not important.
+      //   // so keys will not be created for register variables.
+      //   
+      //   throw new Error ();
+      //
+      //   //if (mVariableIdMapTable != null) // in importing
+      //   //{
+      //   //   var vi:VariableInstance = GetVariableInstanceByTypeAndName (valueType, variableName);
+      //   //   if (vi!= null && vi != mNullVariableInstance)
+      //   //   {
+      //   //      mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
+      //   //      return vi;
+      //   //   }
+      //   //}
+      //   //
+      //   //var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, null, valueType, variableName, intialValue);
+      //   //
+      //   //mVariableInstances.push (variable_instance);
+      //   //
+      //   //++ mAccVariableInstanceId;
+      //   //
+      //   ////>> bug fix: this line added from v2.03
+      //   //if (mVariableIdMapTable != null)
+      //   //   mVariableIdMapTable [mVirualVariablesCount++] = variable_instance.GetIndex ();
+      //   ////<<
+      //   //
+      //   //NotifyModified ();
+      //   //
+      //   //return variable_instance;
+      //}
       
-         //if (mVariableIdMapTable != null) // in importing
-         //{
-         //   var vi:VariableInstance = GetVariableInstanceByTypeAndName (valueType, variableName);
-         //   if (vi!= null && vi != mNullVariableInstance)
-         //   {
-         //      mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
-         //      return vi;
-         //   }
-         //}
-         //
-         //var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, null, valueType, variableName, intialValue);
-         //
-         //mVariableInstances.push (variable_instance);
-         //
-         //++ mAccVariableInstanceId;
-         //
-         ////>> bug fix: this line added from v2.03
-         //if (mVariableIdMapTable != null)
-         //   mVariableIdMapTable [mVirualVariablesCount++] = variable_instance.GetIndex ();
-         ////<<
-         //
-         //NotifyModified ();
-         //
-         //return variable_instance;
+      //public function RemoveReferencesOfClass (customClass:ClassDefinition):void
+      //{
+      //   for (var i:int = GetNumVariableInstances () - 1; i >= 0; -- i)
+      //   {
+      //      var viDef:VariableDefinition = GetVariableInstanceAt (i).GetVariableDefinition ();
+      //      if (viDef.GetClass () == customClass)
+      //      {
+      //         DestroyVariableInstanceAtIndex (i);
+      //      }
+      //   }
+      //}
+      
+      public function Validate ():void
+      {
+         for (var i:int = GetNumVariableInstances () - 1; i >= 0; -- i)
+         {
+            var viDef:VariableDefinition = GetVariableInstanceAt (i).GetVariableDefinition ();
+            
+            if (   (( viDef.GetClass () is ClassDefinition_Custom) && (viDef.GetClass ().GetID () < 0))
+                || (( viDef.GetClass () is ClassDefinition_Core) && (viDef.GetClass ().GetID () == CoreClassIds.ValueType_Void))
+               )
+            {
+               DestroyVariableInstanceAtIndex (i);
+            }
+         }
       }
       
 //============================================================================
@@ -428,6 +644,49 @@ package editor.trigger {
          }
          
          return key;
+      }
+      
+      private var mLookupTableByName:Dictionary = new Dictionary ();
+      
+      public function GetVariableInstanceByName (name:String):VariableInstance
+      {
+         return mLookupTableByName [name] as VariableInstance;
+      }
+      
+      public function ValidateVariableName (name:String):String
+      {  
+         var baseName:String = name + " ";
+         var i:int = 1;
+         while (mLookupTableByName [name] != null)
+         {
+            name = baseName + (i ++);
+         }
+         
+         return name;
+      }
+      
+      private function ValidateVariableDefinitionName (variableDefinition:VariableDefinition):void
+      {
+         var name:String = variableDefinition.GetName ();
+         if (name == null || name.length == 0)
+         {
+            name = variableDefinition.GetClass ().GetDefaultInstanceName ();
+         }
+         
+         variableDefinition.SetName (ValidateVariableName (name));
+      }
+      
+      internal function ChangeVariableName (vi:VariableInstance, newName:String):void
+      {
+         if (newName == vi.GetName ())
+            return;
+         
+         delete mLookupTableByName [vi.GetName ()];
+         
+         vi.GetVariableDefinition ().SetName (newName);
+         ValidateVariableDefinitionName (vi.GetVariableDefinition ());
+         
+         mLookupTableByName [vi.GetName ()] = vi; // vi.GetName () == vi.GetVariableDefinition ().GetName ()
       }
       
    }

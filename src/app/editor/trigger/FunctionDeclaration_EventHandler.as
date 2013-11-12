@@ -15,13 +15,16 @@ package editor.trigger {
                                                       paramDefines:Array = null, returnDefinitions:Array = null,
                                                       showUpInApiMenu:Boolean = true)
       {
-         super (id, name, description, paramDefines, returnDefinitions, showUpInApiMenu);
+         //super (id, name, description, paramDefines, returnDefinitions, showUpInApiMenu);
+         super (id, name, description, showUpInApiMenu);
+         AddInputVariableFromDefinitions (paramDefines);
+         AddOutputVariableFromDefinitions (returnDefinitions);
          
          ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
          
          var result:String = CheckConsistent (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (id))
          if (result != null)
-            throw new Error ("not consistent! event id = " + id + ", reason: " + result);
+            throw new Error ("event handler not consistent! event id = " + id + ", name = " + name + ", reason: " + result);
       }
       
       override public function GetType ():int 

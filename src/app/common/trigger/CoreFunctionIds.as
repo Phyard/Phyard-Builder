@@ -17,7 +17,7 @@ package common.trigger {
       public static const ID_EntityFilter:int                = IdPool.CoreApiId_12; //
       public static const ID_EntityPairFilter:int            = IdPool.CoreApiId_13; //
 
-   // global
+   // code flow
 
       public static const ID_Return:int                       = IdPool.CoreApiId_20; //
       public static const ID_ReturnIfTrue:int                 = IdPool.CoreApiId_21; //
@@ -45,6 +45,16 @@ package common.trigger {
       public static const ID_EndWhile:int                     = IdPool.CoreApiId_39; //
       //public static const ID_StartDoWhile:int                   = IdPool.CoreApiId_40; //
       //public static const ID_EndDoWhile:int                     = IdPool.CoreApiId_41; //
+      
+   // class common
+      
+      public static const ID_CommonAssign:int                   = IdPool.CoreApiId_50; //
+      public static const ID_CommonEquals:int                   = IdPool.CoreApiId_51; //
+      
+      //public static const ID_CommonToString:int                   = IdPool.CoreApiId_53; // used to debug. Also, add a API is better. Also need a Number () API.
+      //public static const ID_CommonToBoolean:int                   = IdPool.CoreApiId_54; // not a good idea. Add a Boolean () API is bug.
+      
+      public static const ID_CommonNewInstance:int              = IdPool.CoreApiId_56; //
       
    // system
 
@@ -130,6 +140,7 @@ package common.trigger {
       public static const ID_Array_Concat:int                  = IdPool.CoreApiId_79; // v1.57
       public static const ID_Array_SwapElements:int          = IdPool.CoreApiId_103; // v1.59
       public static const ID_Array_Reverse:int               = IdPool.CoreApiId_104; // v1.59
+      
       public static const ID_Array_SetElementWithBoolean:int     = IdPool.CoreApiId_87; // v1.54
       public static const ID_Array_GetElementAsBoolean:int       = IdPool.CoreApiId_88; // v1.54
       public static const ID_Array_SetElementWithNumber:int      = IdPool.CoreApiId_89; // v1.54
@@ -146,6 +157,11 @@ package common.trigger {
       public static const ID_Array_GetElementAsSound:int        = IdPool.CoreApiId_108; // v2.00
       public static const ID_Array_SetElementWithArray:int       = IdPool.CoreApiId_97; // v1.54
       public static const ID_Array_GetElementAsArray:int         = IdPool.CoreApiId_98; // v1.54
+
+      public static const ID_Array_SetElement:int       = IdPool.CoreApiId_117; // v2.05
+      public static const ID_Array_GetElement:int       = IdPool.CoreApiId_118; // v2.05
+      //public static const ID_Array_IndexOf:int                   = IdPool.CoreApiId_135; // v2.05
+      //public static const ID_Array_LastIndexOf:int               = IdPool.CoreApiId_136; // v2.05
 
    // math basic op
 

@@ -2,7 +2,6 @@ package editor.trigger {
    
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
-   import common.trigger.ValueTypeDefine;
    
    import common.ValueAdjuster;
    import common.CoordinateSystem;

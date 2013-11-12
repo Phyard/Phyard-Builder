@@ -280,13 +280,15 @@ package player.entity {
          super.RebuildTextAppearance ();
       }
       
-      override protected function RebuildBackgroundAndBorder (displayHalfWidth:Number, displayHalfHeight:Number, displayBorderThickness:Number):void
+      override protected function RebuildBackgroundAndBorder (displayHalfWidth:Number, displayHalfHeight:Number, displayBorderThickness:Number, cornerWidth:Number, cornerHeight:Number):void
       {
-         super.RebuildBackgroundAndBorder (displayHalfWidth, displayHalfHeight, displayBorderThickness);
+         super.RebuildBackgroundAndBorder (displayHalfWidth, displayHalfHeight, displayBorderThickness, cornerWidth, cornerHeight);
          
          var displayWidth :Number = displayHalfWidth +  displayHalfWidth;
          var displayHeight:Number = displayHalfHeight +  displayHalfHeight;
          var displayBorderThickness_MouseOver:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness_MouseOver);
+         
+         var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
          
          GraphicsUtil.ClearAndDrawRect (
                   mBackgroundShape_MouseOver,
@@ -297,7 +299,9 @@ package player.entity {
                   mBorderColor_MouseOver,
                   -1, // not draw border
                   true, // draw background
-                  mBackgroundColor_MouseOver
+                  mBackgroundColor_MouseOver,
+                  mIsRoundJoint && (! isRoundCorner), // mIsRoundCornors,
+                  isRoundCorner, cornerWidth, cornerHeight
                );
          
          GraphicsUtil.ClearAndDrawRect (
@@ -310,7 +314,8 @@ package player.entity {
                   displayBorderThickness_MouseOver, // draw border
                   false, // not draw background
                   0x0, // invald bg color
-                  mIsRoundCornors
+                  mIsRoundJoint && (! isRoundCorner), // mIsRoundCornors,
+                  isRoundCorner, cornerWidth, cornerHeight
                );
          
          GraphicsUtil.ClearAndDrawRect (
@@ -322,7 +327,9 @@ package player.entity {
                   mBorderColor_MouseOver,
                   -1, // not draw border
                   true, // draw background
-                  mBackgroundColor_MouseOver
+                  mBackgroundColor_MouseOver,
+                  mIsRoundJoint && (! isRoundCorner), // mIsRoundCornors,
+                  isRoundCorner, cornerWidth, cornerHeight
                );
          
          GraphicsUtil.ClearAndDrawRect (
@@ -335,7 +342,8 @@ package player.entity {
                   displayBorderThickness_MouseOver, // draw border
                   false, // not draw background
                   0x0, // invald bg color
-                  mIsRoundCornors
+                  mIsRoundJoint && (! isRoundCorner), // mIsRoundCornors,
+                  isRoundCorner, cornerWidth, cornerHeight
                );
          
          mBackgroundShape_MouseOver.visible = mBackgroundShape_MouseDown.visible = mDrawBackground_MouseOver;

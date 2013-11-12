@@ -34,9 +34,12 @@ package editor.codelib.dialog {
    import editor.asset.Asset;
    import editor.asset.AssetManagerPanel;
    import editor.asset.IntentPutAsset;
+   import editor.asset.Linkable;
    
    import editor.codelib.CodeLibManager;
    import editor.codelib.AssetFunction;
+   import editor.codelib.AssetClass;
+   import editor.codelib.AssetPackage;
    
    import editor.trigger.CodeSnippet;
    
@@ -85,19 +88,36 @@ package editor.codelib.dialog {
          }
          
          mButtonDelete.enabled = numSelecteds > 0;
-         mButtonSetting.enabled = (onlySelected is AssetFunction);
+         mButtonSetting.enabled = (onlySelected is AssetFunction || onlySelected is AssetClass);
          
          mLabelName.enabled = numSelecteds == 1;
-         mTextInputName.enabled = numSelecteds == 1;
+         //mTextInputName.enabled = numSelecteds == 1;
          
+         var showName:Boolean = false;
          if (onlySelected != null)
          {
-            mTextInputName.text = onlySelected.GetName ();
+            if (onlySelected is AssetFunction || onlySelected is AssetClass || onlySelected is AssetPackage)
+            {
+               mTextInputName.text = onlySelected.GetName ();
+               showName = true;
+            }
          }
-         else
+         
+         mTextInputName.enabled = showName;
+
+         if (! showName)
          {
             mTextInputName.text = "";
          }
+      }
+      
+//============================================================================
+//   entity links
+//============================================================================
+      
+      override public function CreateOrBreakAssetLink (startLinkable:Linkable, mStartManagerX:Number, mStartManagerY:Number, endManagerX:Number, endManagerY:Number):void
+      {
+         CreateOrBreakAssetLink_Default (startLinkable, mStartManagerX, mStartManagerY, endManagerX, endManagerY);
       }
       
 //============================================================================
@@ -106,8 +126,8 @@ package editor.codelib.dialog {
       
       public var mButtonCreatePureFunction:Button;
       public var mButtonCreateDirtyFunction:Button;
-      //public var mButtonCreatePackage:Button;
-      //public var mButtonCreateClass:Button;
+      public var mButtonCreatePackage:Button;
+      public var mButtonCreateType:Button;
       
       private var mCurrentSelectedCreateButton:Button = null;
       
@@ -168,13 +188,16 @@ package editor.codelib.dialog {
                                  mCodeLibManager.CreateFunction (null, null, true, true), 
                                  OnPutingCreating, OnCreatingCancelled));
                break;
-            //case mButtonCreatePackage:
-            //   //SetCurrentIntent (new FunctionModePlaceCreateAsset (this, CreateAssetFunctionPackage));
-            //   break;
-            //case mButtonCreateClass:
-            //   //SetCurrentIntent (new FunctionModePlaceCreateAsset (this, CreateAssetClass));
-            //   break;
-         // ...
+            case mButtonCreateType:
+               SetCurrentIntent (new IntentPutAsset (
+                                 mCodeLibManager.CreateClass (null, null/*, false*/, true), 
+                                 OnPutingCreating, OnCreatingCancelled));
+               break;
+            case mButtonCreatePackage:
+               SetCurrentIntent (new IntentPutAsset (
+                                 mCodeLibManager.CreatePackage (null, null/*, false*/, true), 
+                                 OnPutingCreating, OnCreatingCancelled));
+               break;
             default:
                SetCurrentIntent (null);
                break;
@@ -217,13 +240,17 @@ package editor.codelib.dialog {
             
             var asset:Asset = mCodeLibManager.GetSelectedAssets () [0] as Asset;
             
-            if (asset is AssetFunction)
-            {
-               (asset as AssetFunction).SetFunctionName (mTextInputName.text);
-               (asset as AssetFunction).UpdateTimeModified ();
+            if (asset is AssetFunction || asset is AssetClass || asset is AssetPackage)
+            {  
+               asset.SetName (mTextInputName.text);
+               asset.UpdateTimeModified ();
+               mCodeLibManager.SetChanged (true);
             }
             
             asset.UpdateAppearance ();
+            asset.UpdateSelectionProxy ();
+            
+            RepaintAllAssetLinks ();
             
             UpdateInterface ();
          }
@@ -245,6 +272,7 @@ package editor.codelib.dialog {
          if (asset is AssetFunction)
          {
             var aFunction:AssetFunction = asset as AssetFunction;
+            aFunction.GetCodeSnippet ().ValidateCallings ();
             
             values.mCodeLibManager = mCodeLibManager;
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
@@ -252,6 +280,12 @@ package editor.codelib.dialog {
             (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mCodeLibManager.GetScene ().GetCoordinateSystem ());
             
             EditorContext.ShowModalDialog (FunctionEditDialog, ConfirmSettingAssetProperties, values);
+         }
+         else if (asset is AssetClass)
+         {
+            var aClass:AssetClass = asset as AssetClass;
+            
+            EditorContext.ShowVariableSpaceEditDialog (this, aClass.GetCustomClass ().GetPropertyDefinitionSpace (), null, mCodeLibManager, "Edit Custom Type: ");
          }
       }
       

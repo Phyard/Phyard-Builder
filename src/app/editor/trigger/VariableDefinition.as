@@ -1,22 +1,17 @@
 package editor.trigger {
+   import flash.system.Capabilities;
    
    import mx.core.UIComponent;
    import mx.controls.ComboBox;
    import mx.controls.Label;
    import mx.containers.HBox;
    
-   import editor.world.World;
    import editor.entity.Scene;
-   import editor.entity.Entity;
-   import editor.ccat.CollisionCategory;
-   
-   import editor.image.AssetImageModule;
-   
-   import editor.sound.AssetSound;
    
    import editor.EditorContext;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.ClassTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    
    public class VariableDefinition
@@ -31,203 +26,223 @@ package editor.trigger {
       //   }
       //}
       
-      public static function ValidateValueByType (value:Object, valueType:int):Object
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return Boolean (value);
-            case ValueTypeDefine.ValueType_String:
-               return String (value);
-            case ValueTypeDefine.ValueType_Number:
-               return Number (value);
-            case ValueTypeDefine.ValueType_Entity:
-               return ValidateValueObject_Entity (value);
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               return ValidateValueObject_CollisiontCategory (value);
-            case ValueTypeDefine.ValueType_Module:
-               return ValidateValueObject_Module (value);
-            case ValueTypeDefine.ValueType_Sound:
-               return ValidateValueObject_Sound (value);
-            case ValueTypeDefine.ValueType_Scene:
-               return ValidateValueObject_Scene (value);
-            case ValueTypeDefine.ValueType_Array:
-               return ValidateValueObject_Array (value);
-            default:
-               return value;
-         }
-      }
+      //public static function ValidateValueByType (value:Object, valueType:int):Object
+      //{
+      //   switch (valueType)
+      //   {
+      //      case CoreClassIds.ValueType_Boolean:
+      //         return Boolean (value);
+      //      case CoreClassIds.ValueType_String:
+      //         return String (value);
+      //      case CoreClassIds.ValueType_Number:
+      //         return Number (value);
+      //      case CoreClassIds.ValueType_Entity:
+      //         return ValidateValueObject_Entity (value);
+      //      case CoreClassIds.ValueType_CollisionCategory:
+      //         return ValidateValueObject_CollisiontCategory (value);
+      //      case CoreClassIds.ValueType_Module:
+      //         return ValidateValueObject_Module (value);
+      //      case CoreClassIds.ValueType_Sound:
+      //         return ValidateValueObject_Sound (value);
+      //      case CoreClassIds.ValueType_Scene:
+      //         return ValidateValueObject_Scene (value);
+      //      case CoreClassIds.ValueType_Array:
+      //         return ValidateValueObject_Array (value);
+      //      default:
+      //         return value;
+      //   }
+      //}
       
-      public static function GetValueTypeName (valueType:int):String
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return "Bool";
-            case ValueTypeDefine.ValueType_String:
-               return "Text";
-            case ValueTypeDefine.ValueType_Number:
-               return "Number";
-            case ValueTypeDefine.ValueType_Entity:
-               return "Entity";
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               return "CCat";
-            case ValueTypeDefine.ValueType_Module:
-               return "Module";
-            case ValueTypeDefine.ValueType_Sound:
-               return "Sound";
-            case ValueTypeDefine.ValueType_Scene:
-               return "Scene";
-            case ValueTypeDefine.ValueType_Array:
-               return "Array";
-            default:
-               return "void";
-         }
-      }
+      //public static function GetValueTypeName (valueType:int):String
+      //{
+      //   switch (valueType)
+      //   {
+      //      case CoreClassIds.ValueType_Boolean:
+      //         return "Bool";
+      //      case CoreClassIds.ValueType_String:
+      //         return "Text";
+      //      case CoreClassIds.ValueType_Number:
+      //         return "Number";
+      //      case CoreClassIds.ValueType_Entity:
+      //         return "Entity";
+      //      case CoreClassIds.ValueType_CollisionCategory:
+      //         return "CCat";
+      //      case CoreClassIds.ValueType_Module:
+      //         return "Module";
+      //      case CoreClassIds.ValueType_Sound:
+      //         return "Sound";
+      //      case CoreClassIds.ValueType_Scene:
+      //         return "Scene";
+      //      case CoreClassIds.ValueType_Array:
+      //         return "Array";
+      //      default:
+      //         return "void";
+      //   }
+      //}
       
-      public static function GetDefaultInitialValueByType (valueType:int):Object
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return false;
-            case ValueTypeDefine.ValueType_String:
-               return "";
-            case ValueTypeDefine.ValueType_Number:
-               return 0;
-            case ValueTypeDefine.ValueType_Entity:
-               return null;
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               return null;
-            case ValueTypeDefine.ValueType_Module:
-               return null;
-            case ValueTypeDefine.ValueType_Sound:
-               return null;
-            case ValueTypeDefine.ValueType_Scene:
-               return null;
-            case ValueTypeDefine.ValueType_Array:
-               return null;
-            default:
-               return undefined;
-         }
-      }
+      //public static function GetValueTypeInstanceName (valueType:int):String
+      //{
+      //   switch (valueType)
+      //   {
+      //      case CoreClassIds.ValueType_Boolean:
+      //         return "aBool";
+      //      case CoreClassIds.ValueType_String:
+      //         return "aText";
+      //      case CoreClassIds.ValueType_Number:
+      //         return "aNumber";
+      //      case CoreClassIds.ValueType_Entity:
+      //         return "anEntity";
+      //      case CoreClassIds.ValueType_CollisionCategory:
+      //         return "aCCat";
+      //      case CoreClassIds.ValueType_Module:
+      //         return "aModule";
+      //      case CoreClassIds.ValueType_Sound:
+      //         return "aSound";
+      //      case CoreClassIds.ValueType_Scene:
+      //         return "aScene";
+      //      case CoreClassIds.ValueType_Array:
+      //         return "anArray";
+      //      default:
+      //         return "void";
+      //   }
+      //}
       
-      public static function CreateVariableDefinition (valueType:int, variableName:String):VariableDefinition
+      //public static function GetDefaultInitialValueByType (valueType:int):Object
+      //{
+      //   switch (valueType)
+      //   {
+      //      case CoreClassIds.ValueType_Boolean:
+      //         return false;
+      //      case CoreClassIds.ValueType_String:
+      //         return "";
+      //      case CoreClassIds.ValueType_Number:
+      //         return 0;
+      //      case CoreClassIds.ValueType_Entity:
+      //         return null;
+      //      case CoreClassIds.ValueType_CollisionCategory:
+      //         return null;
+      //      case CoreClassIds.ValueType_Module:
+      //         return null;
+      //      case CoreClassIds.ValueType_Sound:
+      //         return null;
+      //      case CoreClassIds.ValueType_Scene:
+      //         return null;
+      //      case CoreClassIds.ValueType_Array:
+      //         return null;
+      //      default:
+      //         return undefined;
+      //   }
+      //}
+      
+      public static function CreateCoreVariableDefinition (valueType:int, variableName:String):VariableDefinition
       {
          switch (valueType)
          {
-            case ValueTypeDefine.ValueType_Boolean:
+            case CoreClassIds.ValueType_Boolean:
                return new VariableDefinitionBoolean (variableName);
-            case ValueTypeDefine.ValueType_String:
+            case CoreClassIds.ValueType_String:
                return new VariableDefinitionString (variableName);
-            case ValueTypeDefine.ValueType_Number:
+            case CoreClassIds.ValueType_Number:
                return new VariableDefinitionNumber (variableName);
-            case ValueTypeDefine.ValueType_Entity:
+            case CoreClassIds.ValueType_Entity:
                return new VariableDefinitionEntity (variableName);
-            case ValueTypeDefine.ValueType_CollisionCategory:
+            case CoreClassIds.ValueType_CollisionCategory:
                return new VariableDefinitionCollisionCategory (variableName);
-            case ValueTypeDefine.ValueType_Module:
+            case CoreClassIds.ValueType_Module:
                return new VariableDefinitionModule (variableName);
-            case ValueTypeDefine.ValueType_Sound:
+            case CoreClassIds.ValueType_Sound:
                return new VariableDefinitionSound (variableName);
-            case ValueTypeDefine.ValueType_Scene:
+            case CoreClassIds.ValueType_Scene:
                return new VariableDefinitionScene (variableName);
-            case ValueTypeDefine.ValueType_Array:
+            case CoreClassIds.ValueType_Array:
                return new VariableDefinitionArray (variableName);
+            case CoreClassIds.ValueType_Class:
+               return new VariableDefinitionClass (variableName);
+            case CoreClassIds.ValueType_Object:
+               return new VariableDefinitionObject (variableName);
             default:
-               throw new Error ("unknown type in CreateVariableDefinition");
+            {
+               //if (Capabilities.isDebugger)
+               //{
+               //   throw new Error ("unknown type in CreateCoreVariableDefinition");
+               //}
+               
+               return new VariableDefinitionVoid (variableName);
+            }
          }
       }
-      
-      public static function ValidateValueObject_Scene (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var scene:Scene = valueObject as Scene;
-         //if (scene != null && scene.GetWorld () != world)
-         if (scene != null && scene.GetSceneIndex () < 0)
-            scene = null;
-         
-         return scene;
-      }
-      
-      public static function ValidateValueObject_Entity (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var entity:Entity = valueObject as Entity;
-         //if (entity != null && (entity.GetWorld () != world || entity.GetCreationOrderId () < 0))
-         if (entity != null && entity.GetCreationOrderId () < 0)
-            entity = null;
-         
-         return entity;
-      }
-      
-      public static function ValidateValueObject_CollisiontCategory (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var category:CollisionCategory = valueObject as CollisionCategory;
-         if (category != null && category.GetAppearanceLayerId () < 0)
-            category = null;
-         
-         return category;
-      }
-      
-      public static function ValidateValueObject_Module (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var module:AssetImageModule = valueObject as AssetImageModule;
-         if (module != null && module.GetAppearanceLayerId () < 0)
-            module = null;
-         
-         return module;
-      }
-      
-      public static function ValidateValueObject_Sound (valueObject:Object):Object
-      {
-         //var world:World = EditorContext.GetEditorApp ().GetWorld (); // in loading stage, it would be null
-         
-         var sound:AssetSound = valueObject as AssetSound;
-         if (sound != null && sound.GetAppearanceLayerId () < 0)
-            sound = null;
-         
-         return sound;
-      }
-      
-      public static function ValidateValueObject_Array (valueObject:Object):Object
-      {
-         return null; // currently
-      }
+
       
    //========================================================================================================
    //
    //========================================================================================================
       
-      public var mName:String;
-      public var mValueType:int;
+      // the 2 all are moved into sub classes.
+      //public var mTypeType:int;
+      //public var mValueType:int;
+      
+      protected var mClass:ClassDefinition;
+      
+      protected var mName:String;
+      protected var mDescription:String = null;
+
+      protected var mDefaultValueObject:Object;
+      
+      protected var mOptions:Object;
       
       //public var mIsReference:Boolean = false;
-      
-      public var mDescription:String = null;
-      
-      // options
       
       // cancelled to unref TriggerEngine
       //private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
       
-      public function VariableDefinition (valueType:int, name:String, description:String = null, options:Object = null)
+      //public function VariableDefinition (/*typeType:int, valueType:int, */name:String, description:String = null/*, options:Object = null*/)
+      public function VariableDefinition (aClass:ClassDefinition, name:String, description:String = null, options:Object = null)
       {
-         mValueType = valueType;
+         //mTypeType = typeType;
+         //mValueType = valueType;
+         
+         mClass = aClass;
+         mDefaultValueObject = mClass.GetInitialInstacneValue (); // may be changed by options or sub or other classes.
+         
          mName = name;
          mDescription = description;
          
-         if (options != null)
+         mOptions = options;
+         if (mOptions == null)
+            mOptions = new Object ();
+         
+         if (mOptions.mDefaultValue != undefined)
          {
-            //if (options.mDefaultSourceType != undefined)
-            //   mDefaultSourceType = int (options.mDefaultSourceType);
+            mDefaultValueObject = mOptions.mDefaultValue;
          }
+         
+         SetDefaultValue (mDefaultValueObject); // to call ValidateDirectValueObject (mDefaultValueObject) and update mOptions.mDefaultValue
+         
+         //if (options != null)
+         //{
+         //   //if (options.mDefaultSourceType != undefined)
+         //   //   mDefaultSourceType = int (options.mDefaultSourceType);
+         //}
+      }
+      
+      public function GetClass ():ClassDefinition
+      {
+         return mClass;
+      }
+      
+      public function GetClassType ():int
+      {
+         return mClass.GetClassType ();
+      }
+      
+      public function GetValueType ():int
+      {
+         return mClass.GetID ();
+      }
+      
+      public function GetTypeName ():String
+      {
+         return mClass.GetName ();
       }
       
       public function GetName ():String
@@ -240,24 +255,30 @@ package editor.trigger {
          mName= name;
       }
       
-      public function GetValueType ():int
-      {
-         return mValueType;
-      }
-      
       public function GetDescription ():String
       {
          return mDescription;
       }
       
-      public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
+      public function GetDefaultValue ():Object
       {
-         return mValueType == variableDefinition.GetValueType ();
+         return mDefaultValueObject;
       }
       
       public function SetDefaultValue (valueObject:Object):void
       {
-         // to override
+         mDefaultValueObject = ValidateDirectValueObject (valueObject);
+         mOptions.mDefaultValue = mDefaultValueObject;
+      }
+      
+      public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
+      {
+         return (GetClassType () == variableDefinition.GetClassType ()) && (GetValueType () == variableDefinition.GetValueType ());
+      }
+      
+      public function AllowVariablesOfOtherClasses ():Boolean
+      {
+         return mOptions.mAllowVariablesOfOtherClasses;
       }
       
 //==============================================================================
@@ -269,25 +290,6 @@ package editor.trigger {
          throw new Error ("need override");
          
          return null; // to override
-      }
-      
-//==============================================================================
-// common used for value target and value source
-//==============================================================================
-      
-      public static function VariableIndex2SelectListSelectedIndex (variableIndex:int, selectListDataProvider:Array):int
-      {
-         var vi:VariableInstance;
-         var index:int;
-         for (var i:int = 0; i < selectListDataProvider.length; ++ i)
-         {
-            vi = selectListDataProvider[i].mVariableInstance as VariableInstance;
-            index = vi == null ? -1 : vi.GetIndex ();
-            if (variableIndex == index)
-               return i;
-         }
-         
-         return -1;
       }
       
 //==============================================================================
@@ -338,18 +340,20 @@ package editor.trigger {
          return new ValueTarget_Variable (variableSpace.GetNullVariableInstance ());
       }
       
-      public function CreateControlForVariableValueTarget (valueTargetVariable:ValueTarget_Variable, validVariableIndexes:Array = null):UIComponent
+      //public function CreateControlForVariableValueTarget (valueTargetVariable:ValueTarget_Variable, validVariableIndexes:Array = null):UIComponent
+      public function CreateControlForVariableValueTarget (valueTargetVariable:ValueTarget_Variable):UIComponent
       {
          var currentVariable:VariableInstance = valueTargetVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
-         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType, validVariableIndexes);
+         //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetClassType (), GetValueType (), validVariableIndexes);
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this); //, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
          combo_box.rowCount = 11;
          
-         combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);;
+         combo_box.selectedIndex = VariableSpace.VariableIndex2SelectListSelectedIndex (variable_list, valueTargetVariable.GetVariableInstance(), valueTargetVariable.GetPropertyIndex());
          
          return combo_box;
       }
@@ -363,11 +367,13 @@ package editor.trigger {
             var currentVariable:VariableInstance = valueTargetVariable.GetVariableInstance ();
             var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
             
-            var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
-            if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
-               valueTargetVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
-            else
-               valueTargetVariable.SetVariableInstance (vi);
+            //var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
+            //if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
+            //   valueTargetVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            //else
+            //   valueTargetVariable.SetVariableInstance (vi);
+            
+            variable_space.RetrieveValueForVariableValueTarget (valueTargetVariable, combo_box.selectedItem);
          }
       }
       
@@ -375,16 +381,16 @@ package editor.trigger {
    // todo: property target
    //==============================================================================
       
-      //public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpaceEntityProperties):ValueTarget_Property
+      //public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpaceEntityProperties):ValueTarget_EntityProperty
       // from v.202, scene common entity property space is added
-      public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpace):ValueTarget_Property
+      public function GetDefaultPropertyValueTarget (entityVariableSpace:VariableSpace):ValueTarget_EntityProperty
       {
          BuildPropertyVaribleDefinition ();
-         //return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
-         return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (entityVariableSpace));
+         //return new ValueTarget_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         return new ValueTarget_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), this.GetDefaultVariableValueTarget (entityVariableSpace));
       }
       
-      public function CreateControlForPropertyValueTarget (scene:Scene, valueTargetProperty:ValueTarget_Property):UIComponent
+      public function CreateControlForPropertyValueTarget (scene:Scene, valueTargetProperty:ValueTarget_EntityProperty):UIComponent
       {
          BuildPropertyVaribleDefinition ();
          
@@ -394,18 +400,19 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable); // , null);
          }
          else
          {
             trace ("unknown value source type in CreateControlForPropertyValueSource");
          }
          
-         var propertyValueTargetTontrol:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueTarget (propertyValueTarget, null);
+         //var propertyValueTargetTontrol:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueTarget (propertyValueTarget, null);
+         var propertyValueTargetTontrol:UIComponent = this.CreateControlForVariableValueTarget (propertyValueTarget); //, null);
          
          var box:HBox = new HBox ();
          entityValueSourceControl.percentWidth = 50;
@@ -416,7 +423,7 @@ package editor.trigger {
          return box;
       }
       
-      public function RetrievePropertyValueTargetFromControl (scene:Scene, valueTargetProperty:ValueTarget_Property, control:UIComponent):void
+      public function RetrievePropertyValueTargetFromControl (scene:Scene, valueTargetProperty:ValueTarget_EntityProperty, control:UIComponent):void
       {
    	   if (control is HBox)
    	   {
@@ -430,11 +437,11 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
+               mPropertyOwnerDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {
-               mEntityVariableDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
+               mPropertyOwnerDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
             }
             else
             {
@@ -442,7 +449,8 @@ package editor.trigger {
             }
             
             var propertyValueTargetControl:UIComponent = box.getChildAt (1) as UIComponent;
-            mPropertyVariableDefinition.RetrieveVariableValueTargetFromControl (propertyValueTarget, propertyValueTargetControl);
+            //mPropertyVariableDefinition.RetrieveVariableValueTargetFromControl (propertyValueTarget, propertyValueTargetControl);
+            this.RetrieveVariableValueTargetFromControl (propertyValueTarget, propertyValueTargetControl);
    	   }
       }
       
@@ -455,7 +463,7 @@ package editor.trigger {
       //switch (mDefaultSourceType)
       //{
       //   //case ValueSourceTypeDefine.ValueSource_Variable:
-      //   //   return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (mValueType));
+      //   //   return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (GetValueType ()));
       //   case ValueSourceTypeDefine.ValueSource_Direct:
       //   default:
       //      return GetDefaultDirectValueSource ();
@@ -477,7 +485,7 @@ package editor.trigger {
 // direct source
 //==============================================================================
       
-      public function ValidateDirectValueSource (valueSourceDirect:ValueSource_Direct):void
+      final public function ValidateDirectValueSource (valueSourceDirect:ValueSource_Direct):void
       {
          if (valueSourceDirect == null)
             return;
@@ -491,7 +499,7 @@ package editor.trigger {
       
       public function ValidateDirectValueObject (valueObject:Object):Object
       {
-         return valueObject;
+         return mClass.ValidateValueObject (valueObject, mOptions);
       }
       
    //==============================================================================
@@ -523,16 +531,18 @@ package editor.trigger {
          return new ValueSource_Variable (variableSpace.GetNullVariableInstance ());
       }
       
-      public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable, validVariableIndexes:Array = null):UIComponent
+      //public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable, validVariableIndexes:Array = null):UIComponent
+      public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable):UIComponent
       {
          var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
-         
-         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType, validVariableIndexes);
+
+         //var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (GetClassType (), GetValueType (), validVariableIndexes);
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByVariableDefinition (this); //, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
-         combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);
+         combo_box.selectedIndex = VariableSpace.VariableIndex2SelectListSelectedIndex (variable_list, valueSourceVariable.GetVariableInstance(), valueSourceVariable.GetPropertyIndex());
          combo_box.rowCount = 11;
          
          return combo_box;
@@ -547,11 +557,13 @@ package editor.trigger {
             var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
             var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
             
-            var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
-            if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
-               valueSourceVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
-            else
-               valueSourceVariable.SetVariableInstance (vi);
+            //var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.value;
+            //if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
+            //   valueSourceVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            //else
+            //   valueSourceVariable.SetVariableInstance (vi);
+            
+            variable_space.RetrieveValueForVariableValueSource (valueSourceVariable, combo_box.selectedItem);
          }
       }
       
@@ -559,70 +571,39 @@ package editor.trigger {
 // to do: property source
 //==============================================================================
       
-      private var mEntityVariableDefinition:VariableDefinitionEntity = null;
-      private var mPropertyVariableDefinition:VariableDefinition = null;
+      private var mPropertyOwnerDefinition:VariableDefinitionEntity = null;
+      //private var mPropertyVariableDefinition:VariableDefinition = null; // use "this" now.
       
       public function GetVariableDefinitionForEntityParameter ():VariableDefinitionEntity
       {
-         return mEntityVariableDefinition;
+         return mPropertyOwnerDefinition;
       }
       
       private function BuildPropertyVaribleDefinition ():void
       {
-         if (mEntityVariableDefinition == null)
+         if (mPropertyOwnerDefinition == null)
          {
-            mEntityVariableDefinition = new VariableDefinitionEntity ("Property Owner", null, null);
+            mPropertyOwnerDefinition = new VariableDefinitionEntity ("Property Owner", null, null);
          }
          
-         if (mPropertyVariableDefinition == null)
-         {
-            switch (mValueType)
-            {
-               case ValueTypeDefine.ValueType_Boolean:
-                  mPropertyVariableDefinition = new VariableDefinitionBoolean ("Boolean Property");
-                  break;
-               case ValueTypeDefine.ValueType_String:
-                  mPropertyVariableDefinition = new VariableDefinitionString ("String Property");
-                  break;
-               case ValueTypeDefine.ValueType_Number:
-                  mPropertyVariableDefinition = new VariableDefinitionNumber ("Number Property");
-                  break;
-               case ValueTypeDefine.ValueType_Entity:
-                  mPropertyVariableDefinition = new VariableDefinitionEntity ("Entity Property");
-                  break;
-               case ValueTypeDefine.ValueType_CollisionCategory:
-                  mPropertyVariableDefinition = new VariableDefinitionCollisionCategory ("CCat Property");
-                  break;
-               case ValueTypeDefine.ValueType_Module:
-                  mPropertyVariableDefinition = new VariableDefinitionModule ("Module Property");
-                  break;
-               case ValueTypeDefine.ValueType_Sound:
-                  mPropertyVariableDefinition = new VariableDefinitionSound ("Sound Property");
-                  break;
-               case ValueTypeDefine.ValueType_Scene:
-                  mPropertyVariableDefinition = new VariableDefinitionScene ("Scene Property");
-                  break;
-               case ValueTypeDefine.ValueType_Array:
-                  mPropertyVariableDefinition = new VariableDefinitionArray ("Array Property");
-                  break;
-               default:
-               {
-                  trace ("unknown mValueType in BuildPropertyVaribleDefinition");
-               }
-            }
-         }
+         //if (mPropertyVariableDefinition == null)
+         //{
+         //   // clone is better
+         //   mPropertyVariableDefinition = CreateCoreVariableDefinition (GetValueType (), World.GetCoreClassById (GetValueType ()).GetName () + " Property");
+         //}
       }
       
-      //public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpaceEntityProperties):ValueSource_Property
+      //public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpaceEntityProperties):ValueSource_EntityProperty
       // from v.202, scene common entity property space is added
-      public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpace):ValueSource_Property
+      public function GetDefaultPropertyValueSource (entityVariableSpace:VariableSpace):ValueSource_EntityProperty
       {
          BuildPropertyVaribleDefinition ();
-         //return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
-         return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (entityVariableSpace));
+         //return new ValueSource_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+         //return new ValueSource_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (entityVariableSpace));
+         return new ValueSource_EntityProperty (mPropertyOwnerDefinition.GetDefaultDirectValueSource (), this.GetDefaultVariableValueSource (entityVariableSpace));
       }
       
-      public function CreateControlForPropertyValueSource (scene:Scene, valueSourceProperty:ValueSource_Property):UIComponent
+      public function CreateControlForPropertyValueSource (scene:Scene, valueSourceProperty:ValueSource_EntityProperty):UIComponent
       {
          BuildPropertyVaribleDefinition ();
          
@@ -632,18 +613,19 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForDirectValueSource (scene, entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
+            entityValueSourceControl = mPropertyOwnerDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable); //, null);
          }
          else
          {
             trace ("unknown value source type in CreateControlForPropertyValueSource");
          }
          
-         var propertyValueSourceControl:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueSource (propertyValueSource, null);
+         //var propertyValueSourceControl:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueSource (propertyValueSource, null);
+         var propertyValueSourceControl:UIComponent = this.CreateControlForVariableValueSource (propertyValueSource); //, null);
          
          var box:HBox = new HBox ();
          entityValueSourceControl.percentWidth = 50;
@@ -654,7 +636,7 @@ package editor.trigger {
          return box;
       }
       
-      public function RetrievePropertyValueSourceFromControl (scene:Scene, valueSourceProperty:ValueSource_Property, control:UIComponent):void
+      public function RetrievePropertyValueSourceFromControl (scene:Scene, valueSourceProperty:ValueSource_EntityProperty, control:UIComponent):void
       {
    	   if (control is HBox)
    	   {
@@ -668,11 +650,11 @@ package editor.trigger {
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
-               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
+               mPropertyOwnerDefinition.RetrieveDirectValueSourceFromControl (scene, entityValueSource as ValueSource_Direct, entityValueSourceControl/*, EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ()*/);
             }
             else if (entityValueSource is ValueSource_Variable)
             {
-               mEntityVariableDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
+               mPropertyOwnerDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
             }
             else
             {
@@ -680,7 +662,8 @@ package editor.trigger {
             }
             
             var propertyValueSourceControl:UIComponent = box.getChildAt (1) as UIComponent;
-            mPropertyVariableDefinition.RetrieveVariableValueSourceFromControl (propertyValueSource, propertyValueSourceControl);
+            //mPropertyVariableDefinition.RetrieveVariableValueSourceFromControl (propertyValueSource, propertyValueSourceControl);
+            this.RetrieveVariableValueSourceFromControl (propertyValueSource, propertyValueSourceControl);
    	   }
       }
       

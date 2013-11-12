@@ -6,7 +6,7 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectConstant;
    
    import common.trigger.define.CodeSnippetDefine;
    
@@ -78,7 +78,7 @@ package player.trigger.entity
             var num:int = mKeyCodes.length;
             var keyCode:int;
             
-            var eventKeyCode:int = int ((valueSourceList as Parameter_Direct).mValueObject);
+            var eventKeyCode:int = int ((valueSourceList as Parameter_DirectConstant).mValueObject);
             for (i = 0; i < num; ++ i)
             {
                keyCode = mKeyCodes [i];

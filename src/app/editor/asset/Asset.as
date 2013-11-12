@@ -39,7 +39,7 @@ package editor.asset {
             
       protected var mSelectionProxy:SelectionProxy = null;
       
-      protected var mName:String = "";
+      protected var mName:String = null;
       
       protected var mTransform:Transform2D = new Transform2D (); // don't change it directly
       
@@ -53,12 +53,13 @@ package editor.asset {
       private var mAlpha:Number = 1.0;
       private var mIsVisible:Boolean = true;
       
-      public function Asset (assetManager:AssetManager, key:String = null)
+      public function Asset (assetManager:AssetManager, key:String = null, name:String = null)
       {
          mAssetManager = assetManager;
          SetKey (key);
+         SetName (name);
          
-         if (mAssetManager != null) // at some special cases, mAssetManager is null
+         if (mAssetManager != null) // at some special cases, mAssetManager is null (ex. AssetImageShapeModule).
             mAssetManager.OnAssetCreated (this);
 
          // really allow mAssetManager == null? seems it is a historical issue.
@@ -70,11 +71,9 @@ package editor.asset {
          //
          // found it: for AssetImageShapeModule, the mAssetManager is really null.
          
-         //SetName (null);
-         
          mouseChildren = false;
          
-         addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+         addEventListener (Event.ADDED_TO_STAGE, OnAddedToStage);
       }
       
       public function GetAssetManager ():AssetManager
@@ -256,12 +255,34 @@ package editor.asset {
 // name, position
 //======================================================
       
-      public function SetName (name:String):void
+      //public function SetName (name:String):void
+      //{
+      //   mName = name;
+      //}
+      
+      public function SetName (newName:String, checkValidity:Boolean = true):void
       {
-         //if (name == null)
-         //   name = GetDefaultName ();
-         
-         mName = name;
+         if (checkValidity)
+         {
+            if (mAssetManager != null) // !!!
+            {
+               mAssetManager.ChangeAssetName (this, newName);
+            }
+         }
+         else
+         {
+            //mName = name; // no compiling error!! big bug!! (== DisplayObject.name)
+            mName = newName;
+            
+            //UpdateTimeModified (); // bug: shouldn't in loading. 
+            
+            OnNameChanged ();
+         }
+      }
+      
+      protected function OnNameChanged ():void
+      {
+         // to overrdie
       }
       
       public function GetName ():String
@@ -777,10 +798,25 @@ package editor.asset {
       {
          // to override
       }
-      
+            
 //====================================================================
 //   draw entity links
 //====================================================================
+      
+      public static const DrawLinksOrder_Normal:int = 10;
+      public static const DrawLinksOrder_Logic:int = 20;
+      public static const DrawLinksOrder_Task:int = 30;
+      public static const DrawLinksOrder_EventHandler:int = 50;
+      
+      public function GetDrawLinksOrder ():int
+      {
+         return DrawLinksOrder_Normal;
+      }
+      
+      public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      {
+         // to override
+      }
       
       public function GetLinkPointX ():Number
       {
@@ -790,11 +826,6 @@ package editor.asset {
       public function GetLinkPointY ():Number
       {
          return mTransform.mOffsetY;
-      }
-      
-      public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
-      {
-         // to override
       }
       
 //====================================================================

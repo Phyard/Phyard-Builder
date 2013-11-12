@@ -3,13 +3,15 @@ package editor.trigger {
    import mx.core.UIComponent;
    import mx.controls.Label;
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
    import common.Define;
    
-   public class VariableDefinitionArray extends VariableDefinition
+   public class VariableDefinitionArray extends VariableDefinition_Core
    {
    //========================================================================================================
    //
@@ -19,7 +21,7 @@ package editor.trigger {
       
       public function VariableDefinitionArray (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Array, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Array), name, description, options);
          
          if (options != null)
          {
@@ -34,22 +36,9 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var arrayVariableDefinition:VariableDefinitionArray = new VariableDefinitionArray (mName, mDescription);
-         arrayVariableDefinition.mNullValueEnabled = mNullValueEnabled;
-         
-         return arrayVariableDefinition;
+         return new VariableDefinitionArray (mName, mDescription);
       }
 
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         //return valueObject as Array;
-         return null; // current, direct array value is not supported. 
-      }
-      
 //==============================================================================
 // to override
 //==============================================================================

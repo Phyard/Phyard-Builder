@@ -3,6 +3,8 @@ package editor.trigger {
    import mx.core.UIComponent;
    import mx.controls.Label;
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
 
    import editor.display.control.ModulePickButton;
@@ -10,11 +12,11 @@ package editor.trigger {
    import editor.image.AssetImageModule;
    import editor.image.AssetImageBitmapModule;
 
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
 
    import common.Define;
 
-   public class VariableDefinitionModule extends VariableDefinition
+   public class VariableDefinitionModule extends VariableDefinition_Core
    {
    //========================================================================================================
    //
@@ -24,7 +26,7 @@ package editor.trigger {
 
       public function VariableDefinitionModule (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Module, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Module), name, description, options);
 
          if (options != null)
          {
@@ -39,18 +41,7 @@ package editor.trigger {
 
       override public function Clone ():VariableDefinition
       {
-         var moduleVariableDefinition:VariableDefinitionModule = new VariableDefinitionModule (mName, mDescription);
-
-         return moduleVariableDefinition;
-      }
-
-//==============================================================================
-// to override
-//==============================================================================
-
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         return ValidateValueObject_Module (valueObject);
+         return new VariableDefinitionModule (mName, mDescription, mOptions);
       }
 
 //==============================================================================

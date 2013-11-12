@@ -204,25 +204,14 @@ package editor.asset {
          return mAccAssetId;
       }
       
-      protected function ValidateAssetKey (key:String):String
-      {  
-         if (key != null && key.length == 0)
-            key = null;
-         
-         while (key == null || mLookupTableByKey [key] != null)
-         {
-            key = EditorObject.BuildKey (GetAccAssetId ());
-         }
-         
-         return key;
-      }
-      
       final public function OnAssetCreated (asset:Asset):void
       {
+         var oldAsset:Asset;
+         
          if (asset.GetKey () != null)
          {
             //>> generally, this will not happen
-            var oldAsset:Asset = mLookupTableByKey [asset.GetKey ()];
+            oldAsset = mLookupTableByKey [asset.GetKey ()];
             if (oldAsset != null)
             {
                DestroyAsset (oldAsset);
@@ -232,6 +221,21 @@ package editor.asset {
             mLookupTableByKey [asset.GetKey ()] = asset;
          }
          
+         if (asset.GetName () != null)
+         {
+            oldAsset = mLookupTableByName [asset.GetName ()];
+            if (oldAsset != asset) // always normally
+            {
+               //>> generally, this will not happen
+               if (oldAsset != null)
+               {
+                  DestroyAsset (oldAsset);
+               }
+               //<<
+               
+               mLookupTableByName [asset.GetName ()] = asset;
+            }
+         }
          // ...
          
          ++ mAccAssetId; // never decrease
@@ -252,6 +256,11 @@ package editor.asset {
          if (asset.GetKey () != null)
          {
             delete mLookupTableByKey [asset.GetKey ()];
+         }
+         
+         if (asset.GetName () != null)
+         {
+            delete mLookupTableByName [asset.GetName ()];
          }
          
          // ...
@@ -1493,7 +1502,75 @@ package editor.asset {
          return mLookupTableByKey [key] as Asset;
       }
       
-      // todo: lookup table by name
+      protected function ValidateAssetKey (key:String):String
+      {  
+         if (key != null && key.length == 0)
+            key = null;
+         
+         while (key == null || mLookupTableByKey [key] != null)
+         {
+            key = EditorObject.BuildKey (GetAccAssetId ());
+         }
+         
+         return key;
+      }
+      
+      //----------
+      
+      private var mLookupTableByName:Dictionary = new Dictionary ();
+      
+      public function GetAssetByName (name:String):Asset
+      {
+         return mLookupTableByName [name] as Asset;
+      }
+      
+      protected function GetRecommendAssetName (aName:String):String
+      {
+         if (aName == null)
+            return null;
+         
+         var n:int = 1;
+         var aNameN:String = aName;
+         while (true)
+         {
+            if (mLookupTableByName [aNameN] == null)
+               return aNameN;
+            
+            aNameN = aName + " " + (n ++);
+         }
+         
+         return null;
+      }
+      
+      internal function ChangeAssetName (childAsset:Asset, newName:String):void
+      {
+         var oldName:String = childAsset.GetName ();
+         
+         if (newName != null)
+         {
+            if (newName.length < Define.MinEntityNameLength)
+               newName = childAsset.GetDefaultName ();
+            else if (newName.length > Define.MaxEntityNameLength)
+               newName = newName.substr (0, Define.MaxEntityNameLength);
+         }
+
+         if (newName == oldName)
+            return;
+         
+         if (oldName != null)
+         {
+            //assert mLookupTableByName [oldName] == childAsset
+            delete mLookupTableByName [oldName];
+         }
+         
+         if (newName != null)
+         {
+            newName = GetRecommendAssetName (newName);
+            mLookupTableByName [newName] = childAsset;
+         }
+         
+         childAsset.SetName (newName, false);
+      }
       
 //============================================================================
 // utils
@@ -1615,7 +1692,38 @@ package editor.asset {
       
       public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean):void
       {
-         // to override
+         // to override, generally call DrawEntityLinks_Default
+      }
+
+      protected function DrawAssetsLinks_Default (canvasSprite:Sprite, forceDraw:Boolean):void
+      {
+         var assetArray:Array = mAssetsSortedByCreationId.concat ();
+         assetArray.sort (SortAssetsByDrawLinksOrder);
+
+         var asset:Asset;
+         var i:int;
+         var numAssets:int = assetArray.length;
+         for (i = 0; i < numAssets; ++ i)
+         {
+            asset = assetArray [i] as Asset;
+            if (asset != null)
+            {
+               asset.DrawAssetLinks (canvasSprite, forceDraw);
+            }
+         }
+      }
+
+      private static function SortAssetsByDrawLinksOrder (asset1:Asset, asset2:Asset):int
+      {
+         var drawLinksOrder1:int = asset1.GetDrawLinksOrder ();
+         var drawLinksOrder2:int = asset2.GetDrawLinksOrder ();
+
+         if (drawLinksOrder1 < drawLinksOrder2)
+            return -1;
+         else if (drawLinksOrder1 > drawLinksOrder2)
+            return 1;
+         else
+            return 0;
       }
       
       public function UpdateAssetIdTexts (canvasSprite:Sprite):void

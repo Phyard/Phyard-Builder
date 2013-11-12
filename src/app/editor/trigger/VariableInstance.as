@@ -2,7 +2,10 @@ package editor.trigger {
    
    import mx.core.UIComponent;
    
-   import common.trigger.ValueTypeDefine;
+   import editor.world.World;
+   
+   import common.trigger.ClassTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueTargetTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
@@ -27,18 +30,18 @@ package editor.trigger {
       
       private var mVariableSpace:VariableSpace;
       private var mIndex:int = -1; // index in space
-      
-      private var mValueObject:Object;
+      private var mKey:String = "";
       
       private var mVariableDefinition:VariableDefinition;
       
    // only valid when mVariableDefinition == null
-      private var mValuetype:int = ValueTypeDefine.ValueType_Void;
-      private var mName:String = null;
+      //private var mValuetype:int = CoreClassIds.ValueType_Void;
+      //private var mName:String = null;
+      //private var mValueObject:Object;
       
       // used in VariableSpace.CreateVariableInstance () and GetNullVariableInstance ()
       public function VariableInstance (variableSpace:VariableSpace, id:int, variableDefinition:VariableDefinition, 
-                        valueType:int=0, /*ValueTypeDefine.ValueType_Void,*/ // shit, mxmlc bug 
+                        valueType:int=0, /*CoreClassIds.ValueType_Void,*/ // shit, mxmlc bug 
                         variableName:String = null, intialValue:Object = null)
       {
          mVariableSpace = variableSpace;
@@ -46,9 +49,11 @@ package editor.trigger {
          
          if (variableDefinition == null)
          {
-            mValuetype = valueType;
-            SetName (variableName);
-            SetValueObject (intialValue);
+            //mValuetype = valueType;
+            //SetName (variableName);
+            //SetValueObject (intialValue);
+            
+            throw new Error ("variableDefinition can't be null"); // since v2.05
          }
          else
          {
@@ -66,7 +71,8 @@ package editor.trigger {
          mVariableDefinition = variableDefinition;
          if (mVariableDefinition == null) // generally, shouldn't
          {
-            mValuetype = ValueTypeDefine.ValueType_Void;
+            //mValuetype = CoreClassIds.ValueType_Void;
+            throw new Error ("mVariableDefinition can't be null");
             return;
          }
          
@@ -74,9 +80,14 @@ package editor.trigger {
          SetName (variableDefinition.GetName ());
       }
       
-      public function ToVariableDefinitionString ():String
+      public function ToVariableDefinitionString (tempName:String = null):String
       {
-         return ValueTypeDefine.GetTypeName (GetValueType ()) + " " + GetName ();
+         //return VariableDefinition.GetValueTypeName (GetValueType ()) + " " + GetName ();
+         //return World.GetCoreClassById (GetValueType ()).GetName () + " " + GetName ();
+         if (mVariableDefinition != null)
+            return mVariableDefinition.GetTypeName () + " : " + (tempName != null ? tempName : GetName ());
+         
+         return "null";
       }
       
       private function ToCodeStringForSourceOrTarget (forTarget:Boolean):String
@@ -127,18 +138,23 @@ package editor.trigger {
          return mIndex;
       }
       
+      public function ChangeName (newName:String):void
+      {
+         GetVariableSpace ().ChangeVariableName (this, newName);
+      }
+      
       public function SetName (name:String):void
       {
-         if (mVariableDefinition == null)
+         if (mVariableDefinition != null)
          {
-            mName = name;
+            mVariableDefinition.SetName (name);
          }
       }
       
       public function GetName ():String
       {
-         if (mVariableDefinition == null)
-            return mName;
+         //if (mVariableDefinition == null)
+         //   return mName;
          
          return mVariableDefinition.GetName ();
       }
@@ -148,43 +164,61 @@ package editor.trigger {
          return mVariableSpace.GetShortName () + " [" + mIndex + "] " + GetName ();
       }
       
+      public function GetClassType ():int
+      {
+         if (mVariableDefinition == null) // never
+            return ClassTypeDefine.ClassType_Unknown;
+         
+         return mVariableDefinition.GetClassType ();
+      }
+      
       public function GetValueType ():int
       {
-         if (mVariableDefinition == null)
-            return mValuetype;
+         //if (mVariableDefinition == null)
+         //   return mValuetype;
          
          return mVariableDefinition.GetValueType ();
       }
       
       // should not call this
-      public function Clone():VariableInstance
-      {
-         //var vi:VariableInstance = mVariableSpace.Create ... //new VariableInstance (mVariableSpace, mIndex, mVariableDefinition);
-         //vi.AssignValue (this);
-         //
-         //return vi;
-         
-         return null;
-      }
+      //public function Clone():VariableInstance
+      //{
+      //   //var vi:VariableInstance = mVariableSpace.Create ... //new VariableInstance (mVariableSpace, mIndex, mVariableDefinition);
+      //   //vi.AssignValue (this);
+      //   //
+      //   //return vi;
+      //   
+      //   return null;
+      //}
       
       public function SetValueObject (valueObject:Object):void
       {
          if (mVariableDefinition != null)
          {
-            valueObject = mVariableDefinition.ValidateDirectValueObject (valueObject);
-            mVariableDefinition.SetDefaultValue (valueObject);
+            //valueObject = mVariableDefinition.ValidateDirectValueObject (valueObject);
+            mVariableDefinition.SetDefaultValue (valueObject); // will call ValidateDirectValueObject now
          }
          else
          {
-            valueObject = VariableDefinition.ValidateValueByType (valueObject, mValuetype);
+            //valueObject = VariableDefinition.ValidateValueByType (valueObject, mValuetype);
+            throw new Error ("mVariableDefinition can't be null!"); // todo: merge this class into VariableDefinition
          }
          
-          mValueObject = valueObject;
+          //mValueObject = valueObject;
       }
       
       public function GetValueObject ():Object
       {
-         return mValueObject;
+         if (mVariableDefinition != null)
+         {
+            return mVariableDefinition.GetDefaultValue ();
+         }
+         else
+         {
+            throw new Error ("mVariableDefinition can't be null!"); // todo: merge this class into VariableDefinition
+         }
+         
+         //return mValueObject;
       }
       
       // it seems VariableDefinition has no the "GetDefaultValue" function.
@@ -205,8 +239,6 @@ package editor.trigger {
    
    // uuid
    
-      private var mKey:String = "";
-      
       public function GetKey ():String
       {
          return mKey;

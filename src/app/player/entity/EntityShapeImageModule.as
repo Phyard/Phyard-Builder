@@ -12,8 +12,10 @@ package player.entity {
    import player.module.Module;
    import player.module.ModuleInstance;
    
+   import player.trigger.CoreClasses;
+   
    import player.trigger.entity.EntityEventHandler;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectConstant;
    
    import common.Define;
    import common.Transform2D;
@@ -36,17 +38,18 @@ package player.entity {
       // for calling in APIs
       public function SetModuleIndexByAPI (moduleIndex:int, loopToEndEventHandler:EntityEventHandler):void
       {
-         SetModuleIndexByAPI_Internal (moduleIndex);
+         if (SetModuleIndexByAPI_Internal (moduleIndex))
+         {
+            //RebuildShapePhysicsInternal (); // ! bug, the old one is not destroyed.
+            RebuildShapePhysics ();
+         }
          
          mLoopToEndEventHandler = loopToEndEventHandler;
-         
-         //RebuildShapePhysicsInternal (); // ! bug, the old one is not destroyed.
-         RebuildShapePhysics ();
       }
       
-      protected function SetModuleIndexByAPI_Internal (moduleIndex:int):void
+      protected function SetModuleIndexByAPI_Internal (moduleIndex:int):Boolean
       {
-         // to override
+         return false; // to override
       }
       
       protected function GetModuleInstance ():ModuleInstance
@@ -70,8 +73,8 @@ package player.entity {
          
          if (mLoopToEndEventHandler != null)
          {
-            var valueSource1:Parameter_Direct = new Parameter_Direct (module);
-            var valueSource0:Parameter_Direct = new Parameter_Direct (this, valueSource1);
+            var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kModuleClassDefinition, module, null);
+            var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, this, valueSource1);
             
             mWorld.IncStepStage ();
             mLoopToEndEventHandler.HandleEvent (valueSource0);

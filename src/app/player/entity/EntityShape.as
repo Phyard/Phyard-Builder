@@ -17,10 +17,13 @@ package player.entity {
    import player.physics.PhysicsProxyShape;
    
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
    import player.trigger.data.ListElement_EntityShape;
+   
+   import player.trigger.ClassInstance;
+   import player.trigger.CoreClasses;
+   import player.trigger.ClassDefinition;
    
    import common.DataFormat2;
    import common.CoordinateSystem;
@@ -967,7 +970,7 @@ package player.entity {
             mAppearanceObjectsContainer.x = newX;
             mAppearanceObjectsContainer.y = newY;
          }
-         
+
          mAppearanceObjectsContainer.rotation = newR;
          
          //mAppearanceObjectsContainer.scaleX = mFlipped ? - mScale : mScale;
@@ -1419,7 +1422,7 @@ package player.entity {
                   if (hashtable [anotherAnchor.mShape] == null)
                   {
                      hashtable [anotherAnchor.mShape] = 1;
-                     shapes.push (anotherAnchor.mShape);
+                     shapes.push (ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, anotherAnchor.mShape));
                   }
                }
             }
@@ -1485,7 +1488,7 @@ package player.entity {
          while (listElement != null)
          {
             if (shapes.indexOf (listElement.mEntityShape) < 0) // may be not efficient
-               shapes.push (listElement.mEntityShape);
+               shapes.push (ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, listElement.mEntityShape));
             
             listElement = listElement.mNextListElement;
          }

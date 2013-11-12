@@ -6,7 +6,6 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
    
    import common.trigger.define.CodeSnippetDefine;
    

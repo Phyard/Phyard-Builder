@@ -117,18 +117,55 @@ package editor.entity {
          return mVectorShapeRectangle.GetHalfHeight ();
       }
 
-      public function SetRoundCorners (round:Boolean):void
+      //public function SetRoundCorners (round:Boolean):void
+      public function SetRoundJoint (round:Boolean):void
       {
          //mRoundCorners = round;
-         mVectorShapeRectangle.SetRoundCorners (round);
+         //mVectorShapeRectangle.SetRoundCorners (round);
+         mVectorShapeRectangle.SetRoundJoint (round);
       }
 
-      public function IsRoundCorners ():Boolean
+      //public function IsRoundCorners ():Boolean
+      public function IsRoundJoint ():Boolean
       {
          //return mRoundCorners;
-         return mVectorShapeRectangle.IsRoundCorners ();
+         return mVectorShapeRectangle.IsRoundJoint (); // IsRoundCorners ();
       }
-
+      
+      public function SetCornerEclipseWidth (cornerEclipseWidth:Number):void
+      {
+         mVectorShapeRectangle.SetCornerEclipseWidth (cornerEclipseWidth);
+      }
+      
+      public function GetCornerEclipseWidth ():Number
+      {
+         return mVectorShapeRectangle.GetCornerEclipseWidth ();
+      }
+      
+      public function SetCornerEclipseHeight (cornerEclipseHeight:Number):void
+      {
+         mVectorShapeRectangle.SetCornerEclipseHeight (cornerEclipseHeight);
+      }
+      
+      public function GetCornerEclipseHeight ():Number
+      {
+         return mVectorShapeRectangle.GetCornerEclipseHeight ();
+      }
+      
+      public function SetRoundCorner (roundCorner:Boolean):void
+      {
+         mVectorShapeRectangle.SetRoundCorner (roundCorner);
+         if (roundCorner) // now round rect doesn't support physics.
+         {
+            SetPhysicsEnabled (false);
+         }
+      }
+      
+      public function IsRoundCorner ():Boolean
+      {
+         return mVectorShapeRectangle.IsRoundCorner ();
+      }
+      
 //====================================================================
 //   clone
 //====================================================================
@@ -145,7 +182,12 @@ package editor.entity {
          var rect:EntityVectorShapeRectangle = entity as EntityVectorShapeRectangle;
          rect.SetHalfWidth ( GetHalfWidth () );
          rect.SetHalfHeight ( GetHalfHeight () );
-         rect.SetRoundCorners (IsRoundCorners ());
+         //rect.SetRoundCorners (IsRoundCorners ());
+         rect.SetRoundJoint (IsRoundJoint ());
+         
+         rect.SetRoundCorner (IsRoundCorner ());
+         rect.SetCornerEclipseWidth (GetCornerEclipseWidth ());
+         rect.SetCornerEclipseHeight (GetCornerEclipseHeight ());
       }
 
    }

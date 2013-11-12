@@ -57,9 +57,13 @@ package common {
    import player.trigger.entity.EntityEventHandler_Gesture;
 
    import player.trigger.data.ListElement_EventHandler;
-
+   
+   import player.trigger.CoreClasses;
+   import player.trigger.ClassDefinition_Custom;
    import player.trigger.FunctionDefinition_Custom;
 
+   import common.trigger.define.PackageDefine;
+   import common.trigger.define.ClassDefine;
    import common.trigger.define.FunctionDefine;
    import common.trigger.define.CodeSnippetDefine;
    //import common.trigger.define.VariableSpaceDefine;
@@ -327,6 +331,10 @@ package common {
             Global.SetCurrentWorld (playerWorld);
             
             // ...
+            Global.UpdateCoreClassDefaultInitialValues ();
+            Global.CreateOrResetCoreFunctionDefinitions ();
+            
+            // ...
             WorldPlugin.Call ("SetViewerParams", worldDefine.mViewerParams);
             worldDefine.mViewerParams = null;
          }
@@ -433,6 +441,22 @@ package common {
             }
          }
 
+      // custom classes (and core classes)
+         
+         extraInfos.mBeginningCustomClassIndex = 0;
+
+         if (isLoaingFromStretch || isMergingScene)
+         {
+            var oldNumCustomClasses:int = Global.GetNumCustomClasses ();
+            
+            if (isMergingScene)
+            {
+               extraInfos.mBeginningCustomClassIndex = oldNumCustomClasses;
+            }
+
+            Global.InitCustomClassDefinitions (sceneDefine.mClassDefines, isMergingScene);
+         }
+
       // init custom variables / correct entity refernce ids
 
          if (isLoaingFromStretch) // the following half is drawing feet for snakes // && (! worldDefine.mDontReloadGlobalAssets))
@@ -441,14 +465,17 @@ package common {
          }
          
          // these are the default values for isLoaingFromStretch and cloning shape, not for isMergingScene
+         extraInfos.mSessionVariableIdMappingTable = null;
          extraInfos.mBeinningSessionVariableIndex = 0;
          extraInfos.mBeinningGlobalVariableIndex = 0;
          extraInfos.mBeinningCustomEntityVariableIndex = 0;
                
-         if (isLoaingFromStretch || isMergingScene) // isMergingScene must be false
+         if (isLoaingFromStretch || isMergingScene)
          {
             if (isMergingScene)
             {
+               if (worldDefine.mForRestartLevel)
+                  extraInfos.mSessionVariableIdMappingTable = new Array (sceneDefine.mSessionVariableDefines.length);
                extraInfos.mBeinningSessionVariableIndex = Global.GetSessionVariableSpace ().GetNumVariables ();
                extraInfos.mBeinningGlobalVariableIndex = Global.GetGlobalVariableSpace ().GetNumVariables ();
                extraInfos.mBeinningCustomEntityVariableIndex = Global.GetCustomEntityVariableSpace ().GetNumVariables ();
@@ -456,9 +483,11 @@ package common {
             
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines); // before v2.00
-            Global.InitSceneCustomVariables (sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
+            extraInfos.mSessionVariableMappingTable = Global.InitSceneCustomVariables (
+                                        sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
                                         sceneDefine.mEntityPropertyDefines, worldDefine.mCommonEntityPropertyDefines, 
-                                        sceneDefine.mSessionVariableDefines, isMergingScene);
+                                        sceneDefine.mSessionVariableDefines, extraInfos.mSessionVariableIdMappingTable,
+                                        isMergingScene, extraInfos.mBeginningCustomClassIndex);
             
             // append the missed new custom variables for old entities
             // (merged with foloowing "init entity custom properties" block)
@@ -498,8 +527,18 @@ package common {
          //      }
          //   }
          //}
-
+         
+         if (extraInfos.mSessionVariableIdMappingTable == null)
+         {
+            extraInfos.mSessionVariableIdMappingTable = new Array (sceneDefine.mSessionVariableDefines.length);
+            for (var variableIndex:int = sceneDefine.mSessionVariableDefines.length - 1; variableIndex >= 0; -- variableIndex)
+            {
+               extraInfos.mSessionVariableIdMappingTable [variableIndex] = variableIndex + extraInfos.mBeinningSessionVariableIndex;
+            }
+         }
+         
       // init entity custom properties
+      
          //for (createId = 0; createId < numEntities; ++ createId)
          //{
          //   entityDefine = entityDefineArray [createId];
@@ -528,7 +567,7 @@ package common {
                extraInfos.mBeginningCustomFunctionIndex = oldNumCustomFunctions;
             }
 
-            Global.CreateCustomFunctionDefinitions (sceneDefine.mFunctionDefines, isMergingScene);
+            Global.CreateCustomFunctionDefinitions (sceneDefine.mFunctionDefines, isMergingScene, extraInfos.mBeginningCustomClassIndex);
 
             var numFunctions:int = sceneDefine.mFunctionDefines.length;
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
@@ -755,10 +794,10 @@ package common {
             xml.CommonSceneGlobalVariables = <CommonSceneGlobalVariables />;
             xml.CommonSceneEntityProperties = <CommonSceneEntityProperties />;
             
-            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mGameSaveVariableDefines, xml.DataSaveVariables [0], true, true);
-            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mWorldVariableDefines, xml.WorldVariables [0], true, false);
-            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonGlobalVariableDefines, xml.CommonSceneGlobalVariables [0], true, false);
-            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonEntityPropertyDefines, xml.CommonSceneEntityProperties [0], true, false);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mGameSaveVariableDefines, xml.DataSaveVariables [0], true, true, worldDefine.mVersion >= 0x0205);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mWorldVariableDefines, xml.WorldVariables [0], true, false, worldDefine.mVersion >= 0x0205);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonGlobalVariableDefines, xml.CommonSceneGlobalVariables [0], true, false, worldDefine.mVersion >= 0x0205);
+            TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mCommonEntityPropertyDefines, xml.CommonSceneEntityProperties [0], true, false, worldDefine.mVersion >= 0x0205);
          }
          
          // image modules
@@ -1077,10 +1116,61 @@ package common {
             xml.EntityProperties = <EntityProperties />;
          }
 
+         if (worldDefine.mVersion >= 0x0205)
+            xml.CustomPackages = <CustomPackages />;
+
+         if (worldDefine.mVersion >= 0x0205)
+            xml.CustomClasses = <CustomClasses />;
+
          if (worldDefine.mVersion >= 0x0153)
             xml.CustomFunctions = <CustomFunctions />;
 
-         //
+         //...
+         
+         if (worldDefine.mVersion >= 0x0205)
+         {
+            for (var packageId:int = 0; packageId < sceneDefine.mPackageDefines.length; ++ packageId)
+            {
+               var packageDefine:PackageDefine = sceneDefine.mPackageDefines [packageId] as PackageDefine;
+               
+               element = <Package />;
+               
+               element.@key = packageDefine.mKey;
+               element.@time_modified = TimeValue2HexString (packageDefine.mTimeModified);
+               
+               element.@name = packageDefine.mName;
+               element.@x = packageDefine.mPosX;
+               element.@y = packageDefine.mPosY;
+               
+               element.@package_indices = IntegerArray2IndicesString (packageDefine.mPackageIndices);
+
+               xml.CustomPackages.appendChild (element);
+            }
+         }
+
+         if (worldDefine.mVersion >= 0x0205)
+         {
+            for (var classId:int = 0; classId < sceneDefine.mClassDefines.length; ++ classId)
+            {
+               var classDefine:ClassDefine = sceneDefine.mClassDefines [classId] as ClassDefine;
+
+               element = <Class />;
+               element.Properties = <Properties />;
+               TriggerFormatHelper2.VariablesDefine2Xml (classDefine.mPropertyVariableDefines, element.Properties[0], true, false, worldDefine.mVersion >= 0x0205);
+
+               element.@key = classDefine.mKey;
+               element.@time_modified = TimeValue2HexString (classDefine.mTimeModified);
+               
+               element.@name = classDefine.mName;
+               element.@x = classDefine.mPosX;
+               element.@y = classDefine.mPosY;
+               
+               element.@package_indices = IntegerArray2IndicesString (classDefine.mPackageIndices);
+               element.@parent_indices = IntegerArray2IndicesString (classDefine.mParentClassIndices);
+
+               xml.CustomClasses.appendChild (element);
+            }
+         }
 
          if (worldDefine.mVersion >= 0x0153)
          {
@@ -1089,7 +1179,7 @@ package common {
                var functionDefine:FunctionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
 
                element = <Function />;
-               TriggerFormatHelper2.FunctionDefine2Xml (functionDefine, element, true, true, sceneDefine.mFunctionDefines);
+               TriggerFormatHelper2.FunctionDefine2Xml (functionDefine, element, true, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
 
                if (worldDefine.mVersion >= 0x0201)
                {
@@ -1103,6 +1193,10 @@ package common {
                if (worldDefine.mVersion >= 0x0156)
                {
                   element.@design_dependent = functionDefine.mDesignDependent ? 1 : 0;
+               }
+               if (worldDefine.mVersion >= 0x0205)
+               {
+                  element.@package_indices = IntegerArray2IndicesString (functionDefine.mPackageIndices);
                }
 
                xml.CustomFunctions.appendChild (element);
@@ -1209,22 +1303,22 @@ package common {
                //xml.GlobalVariables.VariablePackage.@name = "";
                //xml.GlobalVariables.VariablePackage.@package_id = 0;
                //xml.GlobalVariables.VariablePackage.@parent_package_id = -1;
-               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables.VariablePackage[0], true, false);
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables.VariablePackage[0], true, false, worldDefine.mVersion >= 0x0205);
 
                xml.EntityProperties.VariablePackage = <VariablePackage />;
                //xml.EntityProperties.VariablePackage.@name = "";
                //xml.EntityProperties.VariablePackage.@package_id = 0;
                //xml.EntityProperties.VariablePackage.@parent_package_id = -1;
-               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties.VariablePackage [0], true, false);
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties.VariablePackage [0], true, false, worldDefine.mVersion >= 0x0205);
             }
             else
             {
                if (worldDefine.mVersion >= 0x0157)
                {
-                  TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mSessionVariableDefines, xml.SessionVariables [0], true, false);
+                  TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mSessionVariableDefines, xml.SessionVariables [0], true, false, worldDefine.mVersion >= 0x0205);
                }
-               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables [0], true, false);
-               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties [0], true, false);
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mGlobalVariableDefines, xml.GlobalVariables [0], true, false, worldDefine.mVersion >= 0x0205);
+               TriggerFormatHelper2.VariablesDefine2Xml (sceneDefine.mEntityPropertyDefines, xml.EntityProperties [0], true, false, worldDefine.mVersion >= 0x0205);
             }
          }
          
@@ -1292,6 +1386,12 @@ package common {
                {
                   element.@rect_half_width = moduleInstanceDefine.mRectHalfWidth;
                   element.@rect_half_height = moduleInstanceDefine.mRectHalfHeight;
+                  
+                  if (worldVersion >= 0x0205)
+                  {
+                     element.@corner_eclipse_width = moduleInstanceDefine.mCornerEclipseWidth;
+                     element.@corner_eclipse_height = moduleInstanceDefine.mCornerEclipseHeight;
+                  }
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
@@ -1518,9 +1618,9 @@ package common {
             if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
             {
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                else
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
@@ -1586,9 +1686,9 @@ package common {
                            if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                            {
                               var preHandlingCodeSnippetXML:XML = <PreHandlingCodeSnippet/>
-                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPreFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, false, preHandlingCodeSnippetXML);
+                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPreFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, preHandlingCodeSnippetXML, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                               var postHandlingCodeSnippetXML:XML = <PostHandlingCodeSnippet/>
-                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPostFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, false, postHandlingCodeSnippetXML);
+                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPostFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, postHandlingCodeSnippetXML, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                            }
                         }
 
@@ -1608,28 +1708,28 @@ package common {
 
                if (worldDefine.mVersion >= 0x0153)
                {
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                else
                {
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
             {
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                else
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
             //>>from v1.56
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
             {
-               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
+               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
             {
-               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines);
+               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
             //<<
          }
@@ -1685,7 +1785,18 @@ package common {
                {
                   if (worldDefine.mVersion >= 0x0108)
                   {
-                     element.@round_corners = entityDefine.mIsRoundCorners ? 1 : 0;
+                     //element.@round_corners = entityDefine.mIsRoundCorners ? 1 : 0;
+                     if (worldDefine.mVersion < 0x0205)
+                        element.@round_corners = entityDefine.mIsRoundJoint ? 1 : 0;
+                     else // >= 0x0205
+                        element.@round_joint = entityDefine.mIsRoundJoint ? 1 : 0;
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0205)
+                  {
+                     element.@round_corner = entityDefine.mIsRoundCorner ? 1 : 0;
+                     element.@corner_eclipse_width = entityDefine.mCornerEclipseWidth;
+                     element.@corner_eclipse_height = entityDefine.mCornerEclipseHeight;
                   }
 
                   element.@half_width = entityDefine.mHalfWidth;
@@ -2007,22 +2118,22 @@ package common {
             var numScenes:int = byteArray.readShort ();
             for (var sceneId:int = 0; sceneId < numScenes; ++ sceneId)
             {  
-               worldDefine.mSceneDefines.push (ByteArray2SceneDefine (byteArray, worldDefine));
+               worldDefine.mSceneDefines.push (ByteArray2SceneDefine (byteArray, worldDefine, sceneId));
             }
          }
          else
          {
-            worldDefine.mSceneDefines.push (ByteArray2SceneDefine (byteArray, worldDefine));
+            worldDefine.mSceneDefines.push (ByteArray2SceneDefine (byteArray, worldDefine, 0));
          }
                   
          // scene common variables
          
          if (worldDefine.mVersion >= 0x0203)
          {
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mGameSaveVariableDefines, true, true);
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mWorldVariableDefines, true, false);
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true, false);
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true, false);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mGameSaveVariableDefines, true, true, null, worldDefine.mVersion >= 0x0205);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mWorldVariableDefines, true, false, null, worldDefine.mVersion >= 0x0205);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonGlobalVariableDefines, true, false, null, worldDefine.mVersion >= 0x0205);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mCommonEntityPropertyDefines, true, false, null, worldDefine.mVersion >= 0x0205);
          }
          
          // modules
@@ -2163,7 +2274,7 @@ package common {
          return (v1 * 0x10000 + v2) * 0x10000 + v3;
       }
       
-      public static function ByteArray2SceneDefine (byteArray:ByteArray, worldDefine:WorldDefine):SceneDefine
+      public static function ByteArray2SceneDefine (byteArray:ByteArray, worldDefine:WorldDefine, sceneIndex:int):SceneDefine
       {
          var sceneDefine:SceneDefine = new SceneDefine ();
          
@@ -2291,7 +2402,56 @@ package common {
             }
          }
          
-         // functions
+         // packages
+         
+         if (worldDefine.mVersion >= 0x0205)
+         {
+            var numPackages:int = byteArray.readShort ();
+            
+            for (var packageId:int = 0; packageId < numPackages; ++ packageId)
+            {
+               var packageDefine:PackageDefine = new PackageDefine ();
+               
+               packageDefine.mKey = byteArray.readUTF ();
+               packageDefine.mTimeModified = ReadTimeValue (byteArray);
+               
+               packageDefine.mName = byteArray.readUTF ();
+               packageDefine.mPosX = byteArray.readFloat ();
+               packageDefine.mPosY = byteArray.readFloat ();
+               
+               packageDefine.mPackageIndices = ReadShortArrayFromBinFile (byteArray);
+               
+               sceneDefine.mPackageDefines.push (packageDefine);
+            }
+         }
+         
+         // custom classes
+         
+         if (worldDefine.mVersion >= 0x0205)
+         {
+            var numClasses:int = byteArray.readShort ();
+            
+            for (var classId:int = 0; classId < numClasses; ++ classId)
+            {
+               var classDefine:ClassDefine = new ClassDefine ();
+               
+               TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, classDefine.mPropertyVariableDefines, true, false, null, worldDefine.mVersion >= 0x0205);
+               
+               classDefine.mKey = byteArray.readUTF ();
+               classDefine.mTimeModified = ReadTimeValue (byteArray);
+               
+               classDefine.mName = byteArray.readUTF ();
+               classDefine.mPosX = byteArray.readFloat ();
+               classDefine.mPosY = byteArray.readFloat ();
+               
+               classDefine.mPackageIndices = ReadShortArrayFromBinFile (byteArray);
+               classDefine.mParentClassIndices = ReadShortArrayFromBinFile (byteArray);
+               
+               sceneDefine.mClassDefines.push (classDefine);
+            }
+         }
+         
+         // custom functions
 
          if (worldDefine.mVersion >= 0x0153)
          {
@@ -2304,7 +2464,7 @@ package common {
             {
                functionDefine = new FunctionDefine ();
 
-               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, true, null);
+               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, true, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
 
                sceneDefine.mFunctionDefines.push (functionDefine);
             }
@@ -2326,8 +2486,12 @@ package common {
                {
                   functionDefine.mDesignDependent = byteArray.readByte () != 0;
                }
+               if (worldDefine.mVersion >= 0x0205)
+               {
+                  functionDefine.mPackageIndices = ReadShortArrayFromBinFile (byteArray);
+               }
 
-               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, false, sceneDefine.mFunctionDefines);
+               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
          }
 
@@ -2400,9 +2564,9 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                   else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -2461,8 +2625,8 @@ package common {
                            {
                               if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                               {
-                                 entityDefine.mPreFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, false);
-                                 entityDefine.mPostFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, false);
+                                 entityDefine.mPreFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                                 entityDefine.mPostFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                               }
                            }
 
@@ -2482,28 +2646,28 @@ package common {
 
                   if (worldDefine.mVersion >= 0x0153)
                   {
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                   }
                   else
                   {
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                   }
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                   else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                //>>from v1.56
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
-                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines);
+                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
-                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines);
+                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                //<<
             }
@@ -2548,7 +2712,15 @@ package common {
                   {
                      if (worldDefine.mVersion >= 0x0108)
                      {
-                        entityDefine.mIsRoundCorners = byteArray.readByte () != 0
+                        //entityDefine.mIsRoundCorners = byteArray.readByte () != 0
+                        entityDefine.mIsRoundJoint = byteArray.readByte () != 0;
+                     }
+                     
+                     if (worldDefine.mVersion >= 0x0205)
+                     {
+                        entityDefine.mIsRoundCorner = byteArray.readByte () != 0;
+                        entityDefine.mCornerEclipseWidth = byteArray.readFloat ();
+                        entityDefine.mCornerEclipseHeight = byteArray.readFloat ();
                      }
 
                      entityDefine.mHalfWidth = byteArray.readFloat ();
@@ -2800,9 +2972,9 @@ package common {
          {
             if (worldDefine.mVersion >= 0x0157)
             {
-               TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mSessionVariableDefines, true, false);
+               TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mSessionVariableDefines, true, false, "/session/" + sceneIndex, worldDefine.mVersion >= 0x0205);
             }
-            
+             
             //var numSpaces:int;
             //var spaceId:int;
             //var variableSpaceDefine:VariableSpaceDefine;
@@ -2813,7 +2985,7 @@ package common {
                byteArray.readUTF (); // space name
                byteArray.readShort (); // parent id
             }
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mGlobalVariableDefines, true, false);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mGlobalVariableDefines, true, false, null, worldDefine.mVersion >= 0x0205);
 
             if (worldDefine.mVersion == 0x0152)
             {
@@ -2821,7 +2993,7 @@ package common {
                byteArray.readUTF (); // space name
                byteArray.readShort (); // parent id
             }
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mEntityPropertyDefines, true, false);
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, sceneDefine.mEntityPropertyDefines, true, false, null, worldDefine.mVersion >= 0x0205);
          }
          
          // ...
@@ -2955,6 +3127,12 @@ package common {
                {
                   moduleInstanceDefine.mRectHalfWidth = byteArray.readFloat ();
                   moduleInstanceDefine.mRectHalfHeight = byteArray.readFloat ();
+                  
+                  if (worldVersion >= 0x0205)
+                  {
+                     moduleInstanceDefine.mCornerEclipseWidth = byteArray.readFloat ();
+                     moduleInstanceDefine.mCornerEclipseHeight = byteArray.readFloat ();
+                  }
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
@@ -3246,6 +3424,9 @@ package common {
                         entityDefine.mHalfWidth = ValueAdjuster.Number2Precision (entityDefine.mHalfWidth, 6);
                         entityDefine.mHalfHeight = ValueAdjuster.Number2Precision (entityDefine.mHalfHeight, 6);
                   
+                        entityDefine.mCornerEclipseWidth = ValueAdjuster.Number2Precision (entityDefine.mCornerEclipseWidth, 6);
+                        entityDefine.mCornerEclipseHeight = ValueAdjuster.Number2Precision (entityDefine.mCornerEclipseHeight, 6);
+                  
                         if (worldDefine.mVersion >= 0x0160)
                         {
                            AdjustNumberValuesInTextureDefine (entityDefine.mBodyTextureDefine);
@@ -3424,6 +3605,31 @@ package common {
                  TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (sceneDefine.mEntityPropertyDefines);
             //}
    
+            //packages
+            // from v2.05
+            //{
+               for (var packageId:int = 0; packageId < sceneDefine.mPackageDefines.length; ++ packageId)
+               {
+                  var packageDefine:PackageDefine = sceneDefine.mPackageDefines [packageId];
+   
+                  packageDefine.mPosX = ValueAdjuster.Number2Precision (packageDefine.mPosX, 6);
+                  packageDefine.mPosY = ValueAdjuster.Number2Precision (packageDefine.mPosY, 6);
+               }
+            //}
+   
+            //custom classes
+            // from v2.05
+            //{
+               for (var classId:int = 0; classId < sceneDefine.mClassDefines.length; ++ classId)
+               {
+                  var classDefine:ClassDefine = sceneDefine.mClassDefines [classId];
+   
+                  classDefine.mPosX = ValueAdjuster.Number2Precision (classDefine.mPosX, 6);
+                  classDefine.mPosY = ValueAdjuster.Number2Precision (classDefine.mPosY, 6);
+                  TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (classDefine.mPropertyVariableDefines);
+               }
+            //}
+   
             //custom functions
             // from v1.53
             //{
@@ -3503,6 +3709,9 @@ package common {
                {
                   moduleInstanceDefine.mRectHalfWidth = ValueAdjuster.Number2Precision (moduleInstanceDefine.mRectHalfWidth, 6);
                   moduleInstanceDefine.mRectHalfHeight = ValueAdjuster.Number2Precision (moduleInstanceDefine.mRectHalfHeight, 6);
+                  
+                  moduleInstanceDefine.mCornerEclipseWidth = ValueAdjuster.Number2Precision (moduleInstanceDefine.mCornerEclipseWidth, 6);
+                  moduleInstanceDefine.mCornerEclipseHeight = ValueAdjuster.Number2Precision (moduleInstanceDefine.mCornerEclipseHeight, 6);
                }
                else if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapePolygon)
                {
@@ -3787,7 +3996,15 @@ package common {
                         {
                            if (worldDefine.mVersion < 0x0108)
                            {
-                              entityDefine.mIsRoundCorners = false;
+                              //entityDefine.mIsRoundCorners = false;
+                              entityDefine.mIsRoundJoint = false;
+                           }
+                           
+                           if (worldDefine.mVersion < 0x0205)
+                           {
+                              entityDefine.mIsRoundCorner = false;
+                              entityDefine.mCornerEclipseWidth = 0.0;
+                              entityDefine.mCornerEclipseHeight = 0.0;
                            }
                            
                            if (worldDefine.mVersion < 0x0160)
@@ -3947,7 +4164,7 @@ package common {
                {
                   var functionDefine:FunctionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
    
-                  if (worldDefine.mVersion < 0x0156)
+                  if (worldDefine.mVersion < 0x0156) // no custom function
                   {
                      functionDefine.mDesignDependent = false;
                   }
@@ -3956,8 +4173,8 @@ package common {
                      functionDefine.mDesignDependent = true;
                   }
                }
-            }
-         }
+            } // functions
+         } // scene
       }
       
 
@@ -3968,17 +4185,29 @@ package common {
          {
             var moduleInstanceDefine:Object = moduleInstanceDefines [miId];
             
-            if (worldVersion < 0x0160)
+            if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
             {
-               if (Define.IsVectorShapeEntity (moduleInstanceDefine.mModuleType))
+               if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
                {
-                  moduleInstanceDefine.mBodyTextureDefine = new Object ();
-                  moduleInstanceDefine.mBodyTextureDefine.mModuleIndex = -1;
+                  if (worldVersion < 0x0160)
+                  {
+                     moduleInstanceDefine.mBodyTextureDefine = new Object ();
+                     moduleInstanceDefine.mBodyTextureDefine.mModuleIndex = -1;
+                  }
+                  
+                  if (moduleInstanceDefine.mModuleType == Define.EntityType_ShapeRectangle)
+                  {
+                     if (worldVersion < 0x0205)
+                     {
+                        moduleInstanceDefine.mCornerEclipseWidth = 0.0;
+                        moduleInstanceDefine.mCornerEclipseHeight = 0.0;
+                     }
+                  }
                }
             }
-         }
-      }
+         } // for
+      } // function
 
-   }
+   } // class
 
-}
+} // package

@@ -2,7 +2,7 @@ package player.trigger
 {
    public class Parameter_VariableRef extends Parameter
    {
-      internal var mVariableReference:VariableReference;
+      internal var mVariableReference:VariableReference; // it and it.mVariableInstacne must be not null.
       
       public function Parameter_VariableRef (varRef:VariableReference, next:Parameter = null)
       {
@@ -11,16 +11,9 @@ package player.trigger
          mVariableReference = varRef;
       }
       
-      // as an input
-      override public function EvaluateValueObject ():Object
+      override public function GetVariableInstance ():VariableInstance
       {
-         return mVariableReference.mVariableInstance.GetValueObject ();
-      }
-      
-      // as an output
-      override public function AssignValueObject (valueObject:Object):void
-      {
-         mVariableReference.mVariableInstance.SetValueObject (valueObject);
+         return mVariableReference.mVariableInstance;
       }
    }
 }

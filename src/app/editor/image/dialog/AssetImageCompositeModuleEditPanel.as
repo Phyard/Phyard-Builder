@@ -474,7 +474,7 @@ package editor.image.dialog {
       
       public var mTextInputCircleRadius:TextInput;
       
-      public var mCheckBoxRectRoundCorners:CheckBox;
+      public var mCheckBoxRectRoundJoint:CheckBox;
       public var mTextInputRectWidth:TextInput;
       public var mTextInputRectHeight:TextInput;
       
@@ -561,7 +561,7 @@ package editor.image.dialog {
                   {
                      var rectangleShape:VectorShapeRectangle = areaVectorShape as VectorShapeRectangle;
                      
-                     mFormOtherPropertySettings.addChild (mCheckBoxRectRoundCorners.parent);
+                     mFormOtherPropertySettings.addChild (mCheckBoxRectRoundJoint.parent);
                      mFormOtherPropertySettings.addChild (mTextInputRectWidth.parent);
                      mFormOtherPropertySettings.addChild (mTextInputRectHeight.parent);
                   }
@@ -662,7 +662,7 @@ package editor.image.dialog {
                   {
                      var rectangleShape:VectorShapeRectangle = areaVectorShape as VectorShapeRectangle;
                      
-                     mCheckBoxRectRoundCorners.selected = rectangleShape.IsRoundCorners ();
+                     mCheckBoxRectRoundJoint.selected = rectangleShape.IsRoundJoint (); // IsRoundCorners ();
                      mTextInputRectWidth.text = "" + (2.0 * rectangleShape.GetHalfWidth ());
                      mTextInputRectHeight.text = "" + (2.0 * rectangleShape.GetHalfHeight ());
                   }
@@ -812,7 +812,8 @@ package editor.image.dialog {
                   {
                      var rectangleShape:VectorShapeRectangle = areaVectorShape as VectorShapeRectangle;
                      
-                     rectangleShape.SetRoundCorners (mCheckBoxRectRoundCorners.selected);
+                     //rectangleShape.SetRoundCorners (mCheckBoxRectRoundCorners.selected);
+                     rectangleShape.SetRoundJoint (mCheckBoxRectRoundJoint.selected);
                      rectangleShape.SetHalfWidth (0.5 * MathUtil.ParseNumber (mTextInputRectWidth.text, 1.0, Define.kFloatEpsilon, Number.MAX_VALUE));
                      rectangleShape.SetHalfHeight (0.5 * MathUtil.ParseNumber (mTextInputRectHeight.text, 1.0, Define.kFloatEpsilon, Number.MAX_VALUE));
                   }

@@ -36,7 +36,7 @@ public function PutShapesInArray (shapes:Array):void
    var shape:EntityShape = mShapeListHead;
    while (shape != null)
    {
-      shapes.push (shape);
+      shapes.push (ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, shape));
       shape = shape.mNextShapeInBody;
    }
 }

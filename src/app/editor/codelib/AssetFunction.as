@@ -42,6 +42,7 @@ package editor.codelib {
    import editor.selection.SelectionProxyRectangle;
    
    import editor.asset.Asset;
+   import editor.asset.Linkable;
    
    import editor.trigger.FunctionDefinition;
    import editor.trigger.CodeSnippet;
@@ -54,9 +55,8 @@ package editor.codelib {
    
    import common.Define;
    
-   public class AssetFunction extends Asset
+   public class AssetFunction extends AssetCodeLibElement // Asset implements Linkable
    {
-      protected var mCodeLibManager:CodeLibManager;
       protected var mFunctionId:int = -1;
       
       protected var mCodeSnippet:CodeSnippet;
@@ -69,13 +69,11 @@ package editor.codelib {
       private var mHalfTextWidth:Number;
       private var mHalfTextHeight:Number;
       
-      public function AssetFunction (codeLibManager:CodeLibManager, key:String)
+      public function AssetFunction (codeLibManager:CodeLibManager, key:String, name:String)
       {
-         super (codeLibManager, key);
+         super (codeLibManager, key, name);
          
          doubleClickEnabled = true;
-         
-         mCodeLibManager = codeLibManager;
          
          mouseChildren = false;
          
@@ -86,8 +84,15 @@ package editor.codelib {
       
       override public function Destroy ():void
       {
-         mFunctionDeclaration.SetID (-1);
+         SetFunctionIndex (-1);
+         
          mFunctionDeclaration.NotifyRemoved ();
+         
+         // if a calling call this function, the calling will be converted into CoreFunctionIds.ID_Removed, when
+         // 1. editing open the dialog to edit the calling's code snippet.
+         // 2. saving as WorldDefine.
+         //
+         // maybe this lazy handling is not good and it is better to put this handling in mCodeLibManager.DestroyAsset ().
          
          super.Destroy ();
       }
@@ -116,7 +121,7 @@ package editor.codelib {
       
       override public function ToCodeString ():String
       {
-         return "Function#" + GetCreationOrderId ();
+         return "Function#" + GetFunctionIndex ();
       }
       
       override public function GetTypeName ():String
@@ -124,22 +129,31 @@ package editor.codelib {
          return "Function";
       }
       
-      public function GetFunctionName ():String
-      {
-         return GetName ();
-      }
+      //public function GetFunctionName ():String
+      //{
+      //   return GetName ();
+      //}
       
-      public function SetFunctionName (newName:String, checkValidity:Boolean = true):void
+      //public function SetFunctionName (newName:String, checkValidity:Boolean = true):void
+      //{
+      //   if (checkValidity)
+      //   {
+      //      mCodeLibManager.ChangeFunctionName (newName, GetName ());
+      //   }
+      //   else
+      //   {
+      //      SetName (newName);
+      //      
+      //      mFunctionDeclaration.SetName (newName);
+      //      mFunctionDeclaration.ParseAllCallingTextSegments ();
+      //   }
+      //}
+      
+      override protected function OnNameChanged ():void
       {
-         if (checkValidity)
+         if (mFunctionDeclaration != null)
          {
-            mCodeLibManager.ChangeFunctionName (newName, GetName ());
-         }
-         else
-         {
-            SetName (newName);
-            
-            mFunctionDeclaration.SetName (newName);
+            mFunctionDeclaration.SetName (GetName ());
             mFunctionDeclaration.ParseAllCallingTextSegments ();
          }
       }
@@ -153,10 +167,14 @@ package editor.codelib {
          mFunctionDefinition.GetLocalVariableSpace ().DestroyAllVariableInstances ();
       }
       
+//=======================================================================================
+// 
+//=======================================================================================
       
       private var mLastModifyTimesOfInputVariableSpace:int = 0;
       private var mLastModifyTimesOfOutputVariableSpace:int = 0;
       private var mLastModifyTimesOfLocalVariableSpace:int = 0;
+      
       override public function Update (escapedTime:Number):void
       {
          if (  mFunctionDefinition.GetInputVariableSpace ().GetNumModifiedTimes () > mLastModifyTimesOfInputVariableSpace
@@ -215,16 +233,28 @@ package editor.codelib {
 //   
 //=============================================================
       
+      public function GetHalfWidth ():Number
+      {
+         return mHalfWidth;
+      }
+      
+      public function GetHalfHeight ():Number
+      {
+         return mHalfHeight;
+      }
+      
+      private static const kDragLinkHandlerWidth:int = 10;
+      
       override public function UpdateAppearance ():void
       {
          while (numChildren > 0)
             removeChildAt (0);
          
-         var ccName:String = GetName ();
+         var funcName:String = GetName ();
          
-         ccName = TextUtil.GetHtmlEscapedText (ccName);
+         funcName = TextUtil.GetHtmlEscapedText (funcName);
          
-         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>&lt;" + GetFunctionIndex () + "&gt; " + ccName + "</font>", false, 0xFFFFFF, 0x0);
+         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>&lt;" + GetFunctionIndex () + "&gt; " + funcName + "</font>", false, 0xFFFFFF, 0x0);
             
          addChild (textField);
          
@@ -248,10 +278,12 @@ package editor.codelib {
          mHalfTextWidth = 0.5 * textField.width + 2;
          mHalfTextHeight = 0.5 * textField.height + 1;
          
-         mHalfWidth = mHalfTextWidth;// + 15;
+         textField.x += (kDragLinkHandlerWidth >> 1);
+         mHalfWidth = mHalfTextWidth + (kDragLinkHandlerWidth >> 1);
          mHalfHeight = mHalfTextHeight;
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, -1, true, IsDesignDependent () ? 0xFFC20E : 0xC0FFC0);
+         GraphicsUtil.DrawRect (this, - mHalfWidth, - mHalfHeight, kDragLinkHandlerWidth, mHalfHeight + mHalfHeight, 0x0, 1, true, 0xB08888);
          GraphicsUtil.DrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false);
       }
       
@@ -304,6 +336,54 @@ package editor.codelib {
          //codeLibManager.OnFunctionOrderIDsChanged ();
          
          codeLibManager.ChangeFunctionOrderIDs (GetFunctionIndex (), newIndex);
+      }
+      
+//====================================================================
+//   linkable
+//====================================================================
+      
+      override public function GetLinkZoneId (localX:Number, localY:Number, checkActiveZones:Boolean = true, checkPassiveZones:Boolean = true):int
+      {
+         //if (localX > mTextFieldCenterX - mTextFieldHalfWidth && localX < mTextFieldCenterX + mTextFieldHalfWidth && localY > mTextFieldCenterY - mTextFieldHalfHeight && localY < mTextFieldCenterY + mTextFieldHalfHeight)
+         //   return -1;
+         //if (localX > - mHalfTextWidth) // && localX < mHalfTextWidth) // && localY > - mIconHalfHeight && localY < mIconHalfHeight)
+         if (localX > - mHalfTextWidth + (kDragLinkHandlerWidth >> 1))
+         {
+            return -1;
+         }
+         
+         return 0;
+      }
+      
+      override public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean
+      {
+         var local_point:Point = DisplayObjectUtil.LocalToLocal (mCodeLibManager, this, new Point (worldDisplayX, worldDisplayY));
+         
+         return GetLinkZoneId (local_point.x, local_point.y) >= 0;
+      }
+      
+      override public function TryToCreateLink (fromManagerDisplayX:Number, fromManagerDisplayY:Number, toAsset:Asset, toManagerDisplayX:Number, toManagerDisplayY:Number):Boolean
+      {
+         return false;
+      }
+      
+//====================================================================
+//   draw links
+//====================================================================
+      
+      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      {
+         for each (var aPackage:AssetPackage in mPackages)
+         {
+            var index:int = aPackage.GetPackageIndex ();
+            if (index >= 0)
+            {
+               var packagePoint:Point = DisplayObjectUtil.LocalToLocal (aPackage, mCodeLibManager, new Point (aPackage.GetHalfWidth (), 0));
+               var thisPoint  :Point = DisplayObjectUtil.LocalToLocal (this, mCodeLibManager, new Point (- GetHalfWidth (), 0));
+            
+               GraphicsUtil.DrawLine (canvasSprite, thisPoint.x, thisPoint.y, packagePoint.x, packagePoint.y, 0x0, 0);
+            }
+         }
       }
 
   }

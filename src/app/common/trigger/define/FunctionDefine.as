@@ -11,12 +11,18 @@ package common.trigger.define
       public var mPosY:int; // for custom function only
       public var mDesignDependent:Boolean; // for custom function only
       
-      public var mInputVariableDefines:Array = new Array (); // For custom function only
-      
-      public var mOutputVariableDefines:Array = new Array (); // only the mValueType in ValueSourceDefine_Direct is valid. For custom function only
-      public var mLocalVariableDefines:Array = new Array ();  // only the mValueType in ValueSourceDefine_Direct is valid
+      public var mInputVariableDefines:Array = new Array ();
+      public var mOutputVariableDefines:Array = new Array (); 
+            // only the mValueType in ValueSourceDefine_Direct is valid. For custom function only
+               // the above comment is invalide now, mValueType is moved from ValueSourceDefine_Direct to VariableDefine
+
+      public var mLocalVariableDefines:Array = new Array ();  
+            // only the mValueType in ValueSourceDefine_Direct is valid
+               // the above comment is invalide now, mValueType is moved from ValueSourceDefine_Direct to VariableDefine
       
       public var mCodeSnippetDefine:CodeSnippetDefine = null;
+      
+      public var mPackageIndices:Array = null;
    }
    
 }

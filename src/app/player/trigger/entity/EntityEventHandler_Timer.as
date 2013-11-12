@@ -4,11 +4,13 @@ package player.trigger.entity
 
    import player.entity.Entity;
    
+   import player.trigger.CoreClasses;
+   
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;   
    import player.trigger.CodeSnippet;
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectConstant;
    
    import player.trigger.data.ListElement_EntitySelector;
    
@@ -55,7 +57,7 @@ package player.trigger.entity
                   var preCodeSnippetDefine:CodeSnippetDefine = ((entityDefine.mPreFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                   preCodeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
    
-                  mPreEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mPreFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
+                  mPreEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mPreFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
                   mPreEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
                   mPreEventHandlerDefinition.SetCodeSnippetDefine (preCodeSnippetDefine, extraInfos);
                }
@@ -66,7 +68,7 @@ package player.trigger.entity
                   var postCodeSnippetDefine:CodeSnippetDefine = ((entityDefine.mPostFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                   postCodeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
    
-                  mPostEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mPostFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
+                  mPostEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mPostFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
                   mPostEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
                   mPostEventHandlerDefinition.SetCodeSnippetDefine (postCodeSnippetDefine, extraInfos);
                }
@@ -206,9 +208,9 @@ package player.trigger.entity
          return false;
       }
       
-      private var mTimerEventHandlerValueSource2:Parameter_Direct = new Parameter_Direct (null);
-      private var mTimerEventHandlerValueSource1:Parameter_Direct = new Parameter_Direct (null, mTimerEventHandlerValueSource2);
-      private var mTimerEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, mTimerEventHandlerValueSource1);
+      private var mTimerEventHandlerValueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, null, null);
+      private var mTimerEventHandlerValueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, null, mTimerEventHandlerValueSource2);
+      private var mTimerEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, mTimerEventHandlerValueSource1);
       private var mTimerEventHandlerValueSourceList:Parameter = mTimerEventHandlerValueSource0;
       
       public function HandleWorldTimerEvent ():void

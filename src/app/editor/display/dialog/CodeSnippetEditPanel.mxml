@@ -84,7 +84,6 @@
 
          import common.Define;
          import common.trigger.CoreFunctionIds;
-         import common.trigger.ValueTypeDefine;
          import common.trigger.ValueSpaceTypeDefine;
          import common.trigger.ValueSourceTypeDefine;
          import common.trigger.FunctionTypeDefine;
@@ -121,11 +120,11 @@
          import editor.trigger.ValueSource;
          import editor.trigger.ValueSource_Direct;
          import editor.trigger.ValueSource_Variable;
-         import editor.trigger.ValueSource_Property;
+         import editor.trigger.ValueSource_EntityProperty;
          import editor.trigger.ValueTarget;
          import editor.trigger.ValueTarget_Null;
          import editor.trigger.ValueTarget_Variable;
-         import editor.trigger.ValueTarget_Property;
+         import editor.trigger.ValueTarget_EntityProperty;
 
          //private var mInputValues:Object;
 
@@ -1008,20 +1007,21 @@
             }
             else if (value_source is ValueSource_Variable)
             {
-               var validVariableIndexes:Array = null;
-               var space_type:int = (value_source as ValueSource_Variable).GetVariableSpaceType ();
-
-               if (space_type == ValueSpaceTypeDefine.ValueSpace_Input)
-               {
-                  var ownerFuncDeclaration:FunctionDeclaration = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration ();
-                  validVariableIndexes = ownerFuncDeclaration.GetInputVariableIndexesSatisfy (variable_def);
-               }
-
-               value_control = variable_def.CreateControlForVariableValueSource (value_source as ValueSource_Variable, validVariableIndexes)
+               //var validVariableIndexes:Array = null;
+               //var space_type:int = (value_source as ValueSource_Variable).GetVariableSpaceType ();
+               //
+               //if (space_type == ValueSpaceTypeDefine.ValueSpace_Input)
+               //{
+               //   var ownerFuncDeclaration:FunctionDeclaration = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration ();
+               //   validVariableIndexes = ownerFuncDeclaration.GetInputVariableIndexesSatisfy (variable_def);
+               //}
+               //
+               //value_control = variable_def.CreateControlForVariableValueSource (value_source as ValueSource_Variable, validVariableIndexes)
+               value_control = variable_def.CreateControlForVariableValueSource (value_source as ValueSource_Variable);
             }
-            else if (value_source is ValueSource_Property)
+            else if (value_source is ValueSource_EntityProperty)
             {
-               value_control = variable_def.CreateControlForPropertyValueSource (mCodeLibManager.GetScene (), value_source as ValueSource_Property);
+               value_control = variable_def.CreateControlForPropertyValueSource (mCodeLibManager.GetScene (), value_source as ValueSource_EntityProperty);
             }
 
             if (value_control != null)
@@ -1058,20 +1058,21 @@
                value_control = variable_def.CreateControlForNullValueTarget (value_target as ValueTarget_Null);
             else if (value_target is ValueTarget_Variable)
             {
-               var validVariableIndexes:Array = null;
-               var space_type:int = (value_target as ValueTarget_Variable).GetVariableSpaceType ();
-
-               if (space_type == ValueSpaceTypeDefine.ValueSpace_Output)
-               {
-                  var ownerFuncDeclaration:FunctionDeclaration = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration ();
-                  validVariableIndexes = ownerFuncDeclaration.GetOutputVariableIndexesSatisfiedBy (variable_def);
-               }
-
-               value_control = variable_def.CreateControlForVariableValueTarget (value_target as ValueTarget_Variable, validVariableIndexes);
+               //var validVariableIndexes:Array = null;
+               //var space_type:int = (value_target as ValueTarget_Variable).GetVariableSpaceType ();
+               //
+               //if (space_type == ValueSpaceTypeDefine.ValueSpace_Output)
+               //{
+               //   var ownerFuncDeclaration:FunctionDeclaration = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration ();
+               //   validVariableIndexes = ownerFuncDeclaration.GetOutputVariableIndexesSatisfiedBy (variable_def);
+               //}
+               //
+               //value_control = variable_def.CreateControlForVariableValueTarget (value_target as ValueTarget_Variable, validVariableIndexes);
+               value_control = variable_def.CreateControlForVariableValueTarget (value_target as ValueTarget_Variable);
             }
-            else if (value_target is ValueTarget_Property)
+            else if (value_target is ValueTarget_EntityProperty)
             {
-               value_control = variable_def.CreateControlForPropertyValueTarget (mCodeLibManager.GetScene (), value_target as ValueTarget_Property);
+               value_control = variable_def.CreateControlForPropertyValueTarget (mCodeLibManager.GetScene (), value_target as ValueTarget_EntityProperty);
             }
 
             if (value_control != null)
@@ -1123,9 +1124,9 @@
                {
                   variable_def.RetrieveVariableValueSourceFromControl (value_source as ValueSource_Variable, source_control);
                }
-               else if (value_source is ValueSource_Property)
+               else if (value_source is ValueSource_EntityProperty)
                {
-                  variable_def.RetrievePropertyValueSourceFromControl (mCodeLibManager.GetScene (), value_source as ValueSource_Property, source_control);
+                  variable_def.RetrievePropertyValueSourceFromControl (mCodeLibManager.GetScene (), value_source as ValueSource_EntityProperty, source_control);
 
                   if (clearContextMenus)
                   {
@@ -1161,9 +1162,9 @@
                {
                   variable_def.RetrieveVariableValueTargetFromControl (value_target as ValueTarget_Variable, target_control);
                }
-               else if (value_target is ValueTarget_Property)
+               else if (value_target is ValueTarget_EntityProperty)
                {
-                  variable_def.RetrievePropertyValueTargetFromControl (mCodeLibManager.GetScene (), value_target as ValueTarget_Property, target_control);
+                  variable_def.RetrievePropertyValueTargetFromControl (mCodeLibManager.GetScene (), value_target as ValueTarget_EntityProperty, target_control);
 
                   if (clearContextMenus)
                   {
@@ -1242,15 +1243,15 @@
 
             var value_type:int = variableDefinition.GetValueType ();
             var space_type:int;
-            if (valueSource is ValueSource_Property)
+            if (valueSource is ValueSource_EntityProperty)
             {
                //space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
-               space_type = ((valueSource as ValueSource_Property).GetPropertyValueSource () as ValueSource_Variable).GetVariableInstance ().GetSpaceType ();
+               space_type = ((valueSource as ValueSource_EntityProperty).GetPropertyValueSource () as ValueSource_Variable).GetVariableInstance ().GetSpaceType ();
 
                BuildContextMenuForValueSource (
                               (((sprite as Container).getChildAt (0) as Container).getChildAt (0)) as InteractiveObject,
                               variableDefinition.GetVariableDefinitionForEntityParameter (),
-                              (valueSource as ValueSource_Property).GetEntityValueSource (),
+                              (valueSource as ValueSource_EntityProperty).GetEntityValueSource (),
                               true
                               );
             }
@@ -1267,10 +1268,10 @@
             {
                AppendContextMenuItem (sprite, "from Direct Entity", isForTarget ? OnSelectValueSource_Direct_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_Direct_ForEntityPropertyOwner, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
-               if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
+               if (ownerFuncDefinition.GetInputVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Input Entity Variable", isForTarget ? OnSelectValueSource_InputVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_InputVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
 
-               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+               if (ownerFuncDefinition.GetLocalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Local Entity Variable", isForTarget ? OnSelectValueSource_LocalVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_LocalVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
 
                //AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntityPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Register);
@@ -1297,8 +1298,11 @@
 
                AppendContextMenuItem (sprite, "from Direct Value", OnSelectValueSource_Direct, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
-               if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
+               if (ownerFuncDefinition.GetInputVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Input Variable", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
+
+               if (ownerFuncDefinition.GetLocalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from Local Variable", OnSelectValueSource_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
 
                if (! mIsDesignIndependentCustomFunction)
                {
@@ -1325,9 +1329,6 @@
                   if (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Game Save Variable", OnSelectValueSource_GameSaveVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GameSave);
                }
-
-               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "from Local Variable", OnSelectValueSource_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             }
          }
 
@@ -1411,7 +1412,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultDirectValueSource ());
 
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
@@ -1420,7 +1421,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultDirectValueSource ());
 
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
@@ -1475,7 +1476,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (ownerFuncDefinition.GetInputVariableSpace ()));
 
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
@@ -1484,7 +1485,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (ownerFuncDefinition.GetInputVariableSpace ()));
 
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
@@ -1537,7 +1538,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetRegisterVariableSpace (variable_def.GetVariableDefinitionForEntityParameter ().GetValueType())));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1545,7 +1546,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (EditorContext.GetEditorApp ().GetWorld ().GetRegisterVariableSpace (variable_def.GetVariableDefinitionForEntityParameter ().GetValueType())));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1597,7 +1598,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1605,7 +1606,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1657,7 +1658,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1665,7 +1666,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetWorldVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1717,7 +1718,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1725,7 +1726,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1777,7 +1778,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetSessionVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1785,7 +1786,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetSessionVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1837,7 +1838,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetGlobalVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1845,7 +1846,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetGlobalVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1897,7 +1898,7 @@
                if (isForTarget)
                {
                   variable_def = func_declaration.GetOutputParamDefinitionAt (param_index);
-                  var propety_value_target:ValueTarget_Property = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_Property;
+                  var propety_value_target:ValueTarget_EntityProperty = mCurrentCallingLine.mCurrentValueTargets [param_index] as ValueTarget_EntityProperty;
                   propety_value_target.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ()));
                   CreateValueTargetControl (param_index, form_item, mCurrentCallingLine.mValueTargetControls);
                   BuildContextMenuForValueTarget (form_item, variable_def, propety_value_target);
@@ -1905,7 +1906,7 @@
                else
                {
                   variable_def = func_declaration.GetInputParamDefinitionAt (param_index);
-                  var propety_value_source:ValueSource_Property = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_Property;
+                  var propety_value_source:ValueSource_EntityProperty = mCurrentCallingLine.mCurrentValueSources [param_index] as ValueSource_EntityProperty;
                   propety_value_source.SetEntityValueSource (variable_def.GetVariableDefinitionForEntityParameter ().GetDefaultVariableValueSource (mCodeLibManager.GetScene ().GetWorld ().GetCommonSceneGlobalVariableSpace ()));
                   CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
                   BuildContextMenuForValueSource (form_item, variable_def, propety_value_source);
@@ -1988,15 +1989,15 @@
 
             var value_type:int = variableDefinition.GetValueType ();
             var space_type:int;
-            if (valueTarget is ValueTarget_Property)
+            if (valueTarget is ValueTarget_EntityProperty)
             {
                //space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
-               space_type = ((valueTarget as ValueTarget_Property).GetPropertyValueTarget () as ValueTarget_Variable).GetVariableInstance ().GetSpaceType ();
+               space_type = ((valueTarget as ValueTarget_EntityProperty).GetPropertyValueTarget () as ValueTarget_Variable).GetVariableInstance ().GetSpaceType ();
 
                BuildContextMenuForValueSource (
                               (((sprite as Container).getChildAt (0) as Container).getChildAt (0)) as InteractiveObject,
                               variableDefinition.GetVariableDefinitionForEntityParameter (),
-                              (valueTarget as ValueTarget_Property).GetEntityValueSource (),
+                              (valueTarget as ValueTarget_EntityProperty).GetEntityValueSource (),
                               true,
                               true
                               );
@@ -2014,16 +2015,19 @@
 
             AppendContextMenuItem (sprite, "to Nothing", OnSelectValueTarget_Null, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
-            if (ownerFuncDefinition.HasOutputsSatisfiedBy (variableDefinition))
+            if (ownerFuncDefinition.GetOutputVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                AppendContextMenuItem (sprite, "to Output Variables", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Output);
+
+            if (ownerFuncDefinition.GetLocalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+               AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
 
             if (! mIsDesignIndependentCustomFunction)
             {
                if (mCodeLibManager.GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "to Custom Entity Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_EntityProperties);
+                  AppendContextMenuItem (sprite, "to Entity Custom Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_EntityProperties);
 
                if (mCodeLibManager.GetScene ().GetWorld ().GetCommonCustomEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "to Custom Entity Property (Scene Common)", OnSelectValueTarget_CommonCustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties);
+                  AppendContextMenuItem (sprite, "to Entity Custom Property (Scene Common)", OnSelectValueTarget_CommonCustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties);
 
                //AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Register);
 
@@ -2042,9 +2046,6 @@
                if (mCodeLibManager.GetScene ().GetWorld ().GetGameSaveVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Game Save Variable", OnSelectValueTarget_GameSaveVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GameSave);
             }
-
-            if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
-               AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
          }
 
          private function OnResetValueTarget (event:ContextMenuEvent):void
@@ -2374,7 +2375,7 @@
       
          private function OnEditWorldVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), OnWorldVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), OnWorldVariablesEditingDialogClosed, mCodeLibManager);
          }
          
          private var mLastModifyTimesOfWorldVariables:int = -1;
@@ -2395,7 +2396,7 @@
       
          private function OnEditGameSaveVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this,  EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), OnGameSaveVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this,  EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), OnGameSaveVariablesEditingDialogClosed, mCodeLibManager);
          }
          
          private var mLastModifyTimesOfGameSaveVariables:int = -1;
@@ -2416,7 +2417,7 @@
       
          private function OnEditCommonGlobalVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), OnCommonGlobalVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), OnCommonGlobalVariablesEditingDialogClosed, mCodeLibManager);
          }
          
          private var mLastModifyTimesOfCommonGlobalVariables:int = -1;
@@ -2437,7 +2438,7 @@
       
          private function OnEditCommonEntityVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), OnCommonEntityVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), OnCommonEntityVariablesEditingDialogClosed, mCodeLibManager);
          }
          
          private var mLastModifyTimesOfCommonEntityVariables:int = -1;
@@ -2459,7 +2460,7 @@
          private function OnEditSessionVariables (event:Event = null):void
          {
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowSessionVariablesEditDialog (this);
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetSessionVariableSpace (), OnSessionVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetSessionVariableSpace (), OnSessionVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfSessionVariableSpace:int = -1;
@@ -2481,7 +2482,7 @@
          private function OnEditGlobalVariables ():void
          {
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowGlobalVariablesEditDialog (this);
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetGlobalVariableSpace (), OnGlobalVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetGlobalVariableSpace (), OnGlobalVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfGlobalVariableSpace:int = -1;
@@ -2503,7 +2504,7 @@
          private function OnEditEntityVariables ():void
          {
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowEntityVariablesEditDialog (this);
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetEntityVariableSpace (), OnEntityVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeLibManager.GetEntityVariableSpace (), OnEntityVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfEntityVariableSpace:int = -1;
@@ -2526,7 +2527,7 @@
          {
             mLastModifyTimesOfLocalVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ().GetNumModifiedTimes ();
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ());
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace (), OnLocalVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace (), OnLocalVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfLocalVariableSpace:int = -1;
@@ -2549,7 +2550,7 @@
          {
             mLastModifyTimesOfInputVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ().GetNumModifiedTimes ();
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowInputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ());
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace (), OnInputVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace (), OnInputVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfInputVariableSpace:int = -1;
@@ -2561,7 +2562,8 @@
                RetrieveCurrentCommandParameterValuesFromControls (true);
 
                var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
-               ownerFuncDefinition.SybchronizeDeclarationWithDefinition ();
+               //ownerFuncDefinition.SybchronizeDeclarationWithDefinition ();
+               ownerFuncDefinition.NotifyModified ();
 
                ValidateFunctionCallingLineDatas (ownerFuncDefinition.GetFunctionDeclaration ());
 
@@ -2579,7 +2581,7 @@
          {
             mLastModifyTimesOfOutputVariableSpace = mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ().GetNumModifiedTimes ();
             //EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().ShowOutputVariablesEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ());
-            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace (), OnOutputVariablesEditingDialogClosed);
+            EditorContext.ShowVariableSpaceEditDialog (this, mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace (), OnOutputVariablesEditingDialogClosed, mCodeLibManager);
          }
 
          private var mLastModifyTimesOfOutputVariableSpace:int = -1;
@@ -2591,8 +2593,8 @@
                RetrieveCurrentCommandParameterValuesFromControls (true);
 
                var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
-               ownerFuncDefinition.SybchronizeDeclarationWithDefinition ();
-               ownerFuncDefinition.GetFunctionDeclaration ().ParseAllCallingTextSegments ();
+               //ownerFuncDefinition.SybchronizeDeclarationWithDefinition ();
+               ownerFuncDefinition.NotifyModified ();
 
                ValidateFunctionCallingLineDatas (ownerFuncDefinition.GetFunctionDeclaration ());
 

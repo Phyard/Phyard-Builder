@@ -2,7 +2,6 @@ package editor.trigger {
    
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
-   import common.trigger.ValueTypeDefine;
    
    import common.ValueAdjuster;
    import common.CoordinateSystem;
@@ -62,7 +61,7 @@ package editor.trigger {
          
          if (mLastModifiedTimesOfFunctionDeclaration < mCustomfunctionDeclatation.GetNumModifiedTimes ())
          {
-            mLastModifiedTimesOfFunctionDeclaration = mCustomfunctionDeclatation.GetNumModifiedTimes ()
+            mLastModifiedTimesOfFunctionDeclaration = mCustomfunctionDeclatation.GetNumModifiedTimes ();
             
             var numInputs:int = mCustomfunctionDeclatation.GetNumInputs ();
             var numOutputs:int = mCustomfunctionDeclatation.GetNumOutputs ();

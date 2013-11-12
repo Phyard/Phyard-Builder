@@ -2,19 +2,16 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
       width="100%" height="100%"
       >
-   <mx:HBox height="100%" width="100%">
-      <mx:VBox width="168" height="100%">
-         <mx:HBox id="Box_Toolbar" width="100%" borderStyle="solid" borderThickness="1">
-            <mx:Button id="Button_AddCommmand" click="OnCreateNewVariable ();" toolTip="New Variable" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_add_with_drop_menu.png')" />
-            <mx:Spacer width="100%" />
-            <mx:Button id="Button_MoveUpCommmand" click="OnMoveUpVariable ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
-            <mx:Button id="Button_MoveDownCommmand" click="OnMoveDownVariable ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
-            <mx:Spacer width="100%" />
-            <mx:Button id="Button_DeleteCommmand" click="OnDeleteVariable ();" toolTip="Delete Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
-         </mx:HBox>
-         <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" width="100%" height="100%" change="OnChangeVariable ()"  labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false"/>
-      </mx:VBox>
-      <mx:ViewStack id="ViewStack_VariableProperties" creationPolicy="all" width="100%" height="100%" borderStyle="solid" borderThickness="1">
+      <mx:HBox id="Box_Toolbar" width="100%" borderStyle="solid" borderThickness="0">
+         <mx:Button id="Button_AddCommmand" click="OnCreateNewVariable ();" toolTip="New Variable" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_add_with_drop_menu.png')" />
+         <mx:Spacer width="16" />
+         <mx:Button id="Button_DeleteCommmand" click="OnDeleteVariable ();" toolTip="Delete Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
+         <mx:Spacer width="100%" />
+         <mx:Button id="Button_MoveUpCommmand" click="OnMoveUpVariable ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
+         <mx:Button id="Button_MoveDownCommmand" click="OnMoveDownVariable ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
+      </mx:HBox>
+      <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" change="OnChangeVariable ()" width="100%" height="100%" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false"/>
+      <mx:ViewStack id="ViewStack_VariableProperties" creationPolicy="all" width="100%" height="77" borderStyle="solid" borderThickness="1">
          <mx:VBox id="Box_BlankPanel" width="100%" height="100%">
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="3" />
@@ -23,11 +20,11 @@
          </mx:VBox>
          <mx:VBox id="Box_VariableProperties" width="100%" height="100%">
             <mx:Spacer height="3" />
-            <mx:RadioButtonGroup id="VariableType" enabled="false"/>
-            <!--mx:HBox width="100%" borderStyle="none" borderThickness="0">
+            <!--mx:RadioButtonGroup id="VariableType" enabled="false"/>
+            <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="16" />
                <mx:HBox width="67%" borderStyle="none" borderThickness="0">
-                  <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_BooleanType" value="Booelan" label="Boolean" />
+                  <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_BooleanType" value="Boolean" label="Boolean" />
                   <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_NumberType" value="Number" label="Number" selected="true" />
                </mx:HBox>
                <mx:RadioButton groupName="VariableType" enabled="false" width="33%" id="RadioButton_StringType" value="String" label="String" />
@@ -36,13 +33,13 @@
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="16" />
                <mx:RadioButton groupName="VariableType" enabled="false" width="67%" id="RadioButton_CCatType" value="CCat" label="Collision Category" />
-               <mx:RadioButton groupName="VariableType" enabled="false" width="33%" id="RadioButton_EntityType" value="Booelan" label="Entity" />
+               <mx:RadioButton groupName="VariableType" enabled="false" width="33%" id="RadioButton_EntityType" value="Entity" label="Entity" />
                <mx:Spacer width="6" />
             </mx:HBox-->
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="3" />
                <mx:Label width="35%" text="Name:" textAlign="right" />
-               <mx:TextInput width="65%" id="Text_Name" text="" change="OnNameChanged ();"/>
+               <mx:TextInput width="65%" id="Text_Name" text="" enter="OnConfirmVariableName ();" change="OnNameChanged ();"/>
                <mx:Spacer width="3" />
             </mx:HBox>
             <mx:ViewStack id="ViewStack_VariableSetting" creationPolicy="all" width="100%" height="100%">
@@ -72,6 +69,7 @@
                      <mx:Spacer width="3" />
                   </mx:HBox>
                </mx:VBox>
+               <!--
                <mx:VBox id="Box_CCatVariableSettingPanel" width="100%" height="100%">
                   <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                      <mx:Spacer width="3" />
@@ -120,24 +118,34 @@
                      <mx:Spacer width="3" />
                   </mx:HBox>
                </mx:VBox>
+               -->
+               <mx:VBox id="Box_NullValuePanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:Label width="65%" text="null" textAlign="left" />
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
             </mx:ViewStack>
          </mx:VBox>
       </mx:ViewStack>
-   </mx:HBox>
 
+   <!--
    <mx:XML id="CreateNewMenuData">
       <root>
-         <menuitem label="New Boolean Variable" data="Boolean"/>
-         <menuitem label="New Number Variable" data="Number"/>
-         <menuitem label="New String Variable" data="String"/>
-         <menuitem label="New Collision Category Variable" data="CCat" scene_data_dependent="true"/>
-         <menuitem label="New Entity Variable" data="Entity" scene_data_dependent="true"/>
-         <menuitem label="New Module Variable" data="Module" scene_data_dependent="true"/>
-         <menuitem label="New Sound Variable" data="Sound" scene_data_dependent="true"/>
-         <menuitem label="New Scene Variable" data="Scene" scene_data_dependent="true"/>
-         <menuitem label="New Array Variable" data="Array"/>
+         <menuitem label="New Boolean Variable" id="Boolean"/>
+         <menuitem label="New Number Variable" id="Number"/>
+         <menuitem label="New String Variable" id="String"/>
+         <menuitem label="New CCat Variable" id="CCat" scene_data_dependent="true"/>
+         <menuitem label="New Entity Variable" id="Entity" scene_data_dependent="true"/>
+         <menuitem label="New Module Variable" id="Module" scene_data_dependent="true"/>
+         <menuitem label="New Sound Variable" id="Sound" scene_data_dependent="true"/>
+         <menuitem label="New Scene Variable" id="Scene" scene_data_dependent="true"/>
+         <menuitem label="New Array Variable" id="Array"/>
       </root>
    </mx:XML>
+   -->
 
    <mx:Script>
         <![CDATA[
@@ -148,11 +156,18 @@
 
             import mx.controls.Menu;
             import mx.events.MenuEvent;
+            
+            import editor.world.World;
+
+            import editor.codelib.CodeLibManager;
 
             import editor.trigger.VariableSpace;
+            import editor.trigger.VariableSpaceClassInstance;
 
             import editor.trigger.VariableInstance;
+            
             import editor.trigger.VariableDefinition;
+            import editor.trigger.VariableDefinition_Custom;
             import editor.trigger.VariableDefinitionBoolean;
             import editor.trigger.VariableDefinitionNumber;
             import editor.trigger.VariableDefinitionString;
@@ -164,13 +179,20 @@
             import editor.trigger.VariableDefinitionArray;
             
             import common.trigger.ValueSpaceTypeDefine;
-            import common.trigger.ValueTypeDefine;
+            import common.trigger.ClassTypeDefine;
 
             [Bindable]
             private var mVariableListDataProvider:Object = [];
 
             private function OnInitPanel ():void
             {
+            }
+
+            private var mCodeLibManager:CodeLibManager = null;
+            
+            public function SetCodeLibManager (codeLibManager:CodeLibManager):void
+            {
+               mCodeLibManager = codeLibManager;
             }
 
             private var mVariableSpace:VariableSpace = null;
@@ -253,26 +275,58 @@
             private var mCreateNewVariableMenu:Menu = null;
             private function OnCreateNewVariable ():void
             {
+               if (mVariableSpace == null)
+                  return;
+               
                if (mCreateNewVariableMenu == null)
                {
-                  var isSceneDataDependent:Boolean = mVariableSpace != null
-                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_Session
-                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_World
-                                        && mVariableSpace.GetSpaceType () != ValueSpaceTypeDefine.ValueSpace_GameSave
-                                        ;
+                  var isAnySceneDataIndependent:Boolean = (
+                                           mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Session
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_World
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GameSave
+                                        );
+                  var isCurrentSceneDataDependent:Boolean = mCodeLibManager != null && (
+                                           mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Global
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Input
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Local
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Output
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_EntityProperties
+                                        || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_CustomType
+                                        );
 
-                  var xml:XML = <root />;
-                  for each (var menuItem:Object in CreateNewMenuData.menuitem)
-                  {
-                     if (isSceneDataDependent || menuItem.@["scene_data_dependent"] != "true")
-                     {
-                        xml.appendChild (menuItem);
-                     }
-                  }
+                  var xml:XML = CodeLibManager.GetTypesDataProviderForMenu (mCodeLibManager, isCurrentSceneDataDependent, isAnySceneDataIndependent);
+
+                  //// custom Types
+                  //if (isCurrentSceneDataDependent)
+                  //{
+                  //   var customTypesMenu:XML = mCodeLibManager.GetCustomTypesDataProvider ();
+                  //   if (customTypesMenu != null)
+                  //   {
+                  //      xml.appendChild (customTypesMenu);
+                  //   }
+                  //}
+                  //
+                  //// ...
+                  ////for each (var menuItem:Object in CreateNewMenuData.menuitem)
+                  ////{
+                  ////   if (isSceneDataDependent || menuItem.@["scene_data_dependent"] != "true")
+                  ////   {
+                  ////      xml.appendChild (menuItem);
+                  ////   }
+                  ////}
+                  //var coreClassesMenuData:XML = CodeLibManager.GetCoreTypesDataProvider ();
+                  //for each (var menuItem:Object in coreClassesMenuData.menuitem)
+                  //{
+                  //   if ((! isAnySceneDataIndependent) || menuItem.@["scene_data_dependent"] == false)
+                  //   {
+                  //      xml.appendChild (menuItem);
+                  //   }
+                  //}
                   
-                  mCreateNewVariableMenu = Menu.createMenu(Button_AddCommmand, xml, false);
-                  mCreateNewVariableMenu.labelField="@label";
-                  mCreateNewVariableMenu.addEventListener(MenuEvent.ITEM_CLICK, OnNewVariable);
+                  //...
+                  mCreateNewVariableMenu = Menu.createMenu (Button_AddCommmand, xml, false);
+                  mCreateNewVariableMenu.labelField = "@name";
+                  mCreateNewVariableMenu.addEventListener (MenuEvent.ITEM_CLICK, OnNewVariable);
                }
 
                var point:Point = Button_AddCommmand.localToGlobal (new Point (0, Button_AddCommmand.height));
@@ -284,46 +338,22 @@
             {
                if (mVariableSpace == null)
                   return;
-
+               
+               //>>fix bugs. Otherwise the one selected variable name may be forced changed by the new created one.
+               ConfirmChangeCurrentVariableName ();
+               mCurrentVariable = null;
+               //<<
+               
                var variableDefinition:VariableDefinition = null;
 
-               if (event.item.@data == "Boolean")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Boolean, "aBoolean")
-               }
-               else if (event.item.@data == "Number")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Number, "aNumber");
-               }
-               else if (event.item.@data == "String")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_String, "aString");
-               }
-               else if (event.item.@data == "CCat")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_CollisionCategory, "aCCat");
-               }
-               else if (event.item.@data == "Entity")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Entity, "anEntity");
-               }
-               else if (event.item.@data == "Module")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Module, "aModule");
-               }
-               else if (event.item.@data == "Sound")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Sound, "aSound");
-               }
-               else if (event.item.@data == "Scene")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Scene, "aScene");
-               }
-               else if (event.item.@data == "Array")
-               {
-                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Array, "anArray");
-               }
-
+               var valueType:int = event.item.@id;
+               if (valueType < 0)
+                  return;
+               
+               var classType:int = event.item.@type;
+               
+               variableDefinition = CodeLibManager.CreateVariableDefinition (mCodeLibManager, classType, valueType);
+               
                if (variableDefinition != null)
                {
                   var insert_index:int = List_Variables.selectedIndex + 1;
@@ -349,7 +379,7 @@
                if (selectedIndex < 0)
                   return;
 
-               mVariableSpace.DestroyVariableInstanceByIndex (selectedIndex);
+               mVariableSpace.DestroyVariableInstanceAtIndex (selectedIndex);
                List_Variables.dataProvider.removeItemAt (selectedIndex);
 
                if (selectedIndex >= List_Variables.dataProvider.length)
@@ -357,7 +387,9 @@
 
                if (selectedIndex >= 0)
                   List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex);
-
+               
+               mCurrentVariable = null;
+               
                OnChangeVariable ();
 
                UpdateInterface ();
@@ -376,7 +408,7 @@
                List_Variables.dataProvider.addItemAt (List_Variables.dataProvider.removeItemAt (selectedIndex), selectedIndex - 1);
                List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex - 1);
 
-               OnChangeVariable ();
+               //OnChangeVariable ();
 
                UpdateInterface ();
             }
@@ -394,21 +426,52 @@
                List_Variables.dataProvider.addItemAt (List_Variables.dataProvider.removeItemAt (selectedIndex), selectedIndex + 1);
                List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex + 1);
 
-               OnChangeVariable ();
+               //OnChangeVariable ();
 
                UpdateInterface ();
             }
 
         //===========================
-
+            
+            public function NotifyDialogClosing ():void
+            {
+               ConfirmChangeCurrentVariableName ();
+               
+               mCurrentVariable = null;
+            }
+            
+            private function OnConfirmVariableName ():void
+            {
+               // no need
+            }
+            
+            private var mCurrentVariable:VariableInstance = null;
+            private function ConfirmChangeCurrentVariableName ():void
+            {
+               if (mCurrentVariable != null)
+               {
+                  var oldName:String = mCurrentVariable.GetName ();
+                  mCurrentVariable.ChangeName (Text_Name.text);
+                  
+                  if (oldName != mCurrentVariable.GetName ())
+                  {
+                     mVariableSpace.NotifyModified ();
+                  }
+               }
+            }
+            
             public function OnChangeVariable ():void
             {
+               ConfirmChangeCurrentVariableName ();
+               
                var selectedIndex:int = List_Variables.selectedIndex;
 
                if (mVariableSpace == null || selectedIndex < 0)
                {
-                  VariableType.selectedValue = null;
+                  //VariableType.selectedValue = null;
                   ViewStack_VariableProperties.selectedChild = Box_BlankPanel;
+                  
+                  mCurrentVariable = null;
                }
                else
                {
@@ -438,6 +501,7 @@
                      Text_DefaultStringValue.text = (variableInstance.GetValueObject () as String);
                      ViewStack_VariableSetting.selectedChild = Box_StringVariableSettingPanel;
                   }
+                  /*
                   else if (variableDefinition is VariableDefinitionCollisionCategory)
                   {
                      //RadioButton_CCatType.selected = true;
@@ -468,13 +532,16 @@
                      //RadioButton_ArrayType.selected = true;
                      ViewStack_VariableSetting.selectedChild = Box_EntityArraySettingPanel;
                   }
+                  */
                   else
                   {
-                     VariableType.selectedValue = null;
-                     ViewStack_VariableProperties.selectedChild = Box_BlankPanel;
+                     //VariableType.selectedValue = null;
+                     ViewStack_VariableSetting.selectedChild = Box_NullValuePanel;
                   }
+                  
+                  mCurrentVariable = variableInstance;
                }
-
+               
                UpdateInterface ();
             }
 
@@ -484,20 +551,33 @@
             {
                if (mVariableSpace == null)
                   return;
-
-               var selectedIndex:int = List_Variables.selectedIndex;
-               if (selectedIndex < 0)
+               
+               if (mCurrentVariable == null)
                   return;
-
-               var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
-               var variableInstance:VariableInstance = item.mData;
-               variableInstance.GetVariableDefinition ().SetName (Text_Name.text);
-               var name:String = variableInstance.ToVariableDefinitionString ();
+               
+               var tempName:String = Text_Name.text;
+               if (tempName != mCurrentVariable.GetName ())
+               {
+                  var oldTempName:String = tempName;
+                  tempName = mCurrentVariable.GetVariableSpace ().ValidateVariableName (tempName);
+                  if (tempName != oldTempName && mCurrentVariable.GetName ().indexOf (oldTempName) == 0)
+                     tempName = mCurrentVariable.GetName ();
+               }
+               tempName = mCurrentVariable.ToVariableDefinitionString (tempName);
+               
+               SetCurrrentItemName (tempName);
+            }
+            
+            private function SetCurrrentItemName (name:String):void
+            {  
+               var selectedIndex:int = List_Variables.selectedIndex;
+               if (selectedIndex < 0) // should not
+                  return;
+               
+               var item:Object  = List_Variables.dataProvider.getItemAt (List_Variables.selectedIndex);
                item.mName = name;
                item.mDataTip = name;
                List_Variables.invalidateList ();
-
-               mVariableSpace.NotifyModified ();
             }
 
             public function OnBooleanVariableSettingChanged ():void

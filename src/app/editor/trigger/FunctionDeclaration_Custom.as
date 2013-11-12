@@ -9,9 +9,9 @@ package editor.trigger {
       public function FunctionDeclaration_Custom (name:String)
       {
          //super (id, name, description, inputDefinitions, outputDefinitions, showUpInApiMenu);
-         super (0, name, "", null, null, true);
+         super (0, name, "", true);
          
-         //ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
+         ParseAllCallingTextSegments ();
       }
       
       override public function GetType ():int
@@ -44,15 +44,15 @@ package editor.trigger {
          mDescription = description;
       }
       
-      public function SetInputParamDefinitions (inputDefinitions:Array):void
-      {
-         mInputParamDefinitions = inputDefinitions;
-      }
+      //public function SetInputParamDefinitions (inputDefinitions:Array):void
+      //{
+      //   mInputParamDefinitions = inputDefinitions;
+      //}
       
-      public function SetOutputParamDefinitions (outputDefinitions:Array):void
-      {
-         mOutputParamDefinitions = outputDefinitions;
-      }
+      //public function SetOutputParamDefinitions (outputDefinitions:Array):void
+      //{
+      //   mOutputParamDefinitions = outputDefinitions;
+      //}
       
    //======================
       
@@ -80,23 +80,32 @@ package editor.trigger {
          
          var i:int;
          
-         if (mInputParamDefinitions != null)
-         {
-            customFunctionDeclaration.mInputParamDefinitions = new Array (mInputParamDefinitions.length);
-            for (i = 0; i < mInputParamDefinitions.length; ++ i)
-            {
-               customFunctionDeclaration.mInputParamDefinitions [i] = (mInputParamDefinitions [i] as VariableDefinition).Clone ();
-            }
-         }
+         //if (mInputParamDefinitions != null)
+         //{
+         //   customFunctionDeclaration.mInputParamDefinitions = new Array (mInputParamDefinitions.length);
+         //   for (i = 0; i < mInputParamDefinitions.length; ++ i)
+         //   {
+         //      customFunctionDeclaration.mInputParamDefinitions [i] = (mInputParamDefinitions [i] as VariableDefinition).Clone ();
+         //   }
+         //}
+         //
+         //if (mOutputParamDefinitions != null)
+         //{
+         //   customFunctionDeclaration.mOutputParamDefinitions = new Array (mOutputParamDefinitions.length);
+         //   for (i = 0; i < mOutputParamDefinitions.length; ++ i)
+         //   {
+         //      customFunctionDeclaration.mOutputParamDefinitions [i] = (mOutputParamDefinitions [i] as VariableDefinition).Clone ();
+         //   }
+         //}
          
-         if (mOutputParamDefinitions != null)
-         {
-            customFunctionDeclaration.mOutputParamDefinitions = new Array (mOutputParamDefinitions.length);
-            for (i = 0; i < mOutputParamDefinitions.length; ++ i)
-            {
-               customFunctionDeclaration.mOutputParamDefinitions [i] = (mOutputParamDefinitions [i] as VariableDefinition).Clone ();
-            }
-         }
+         var inputParamDefinitions:Array = new Array (GetNumInputs ());
+         var outputParamDefinitions:Array = new Array (GetNumOutputs ());
+         for (i = mInputVariableSpace.GetNumVariableInstances () - 1; i >= 0; -- i)
+            inputParamDefinitions [i] = mInputVariableSpace.GetVariableInstanceAt (i).GetVariableDefinition ().Clone ();
+         for (i = mOutputVariableSpace.GetNumVariableInstances () - 1; i >= 0; -- i)
+            outputParamDefinitions [i] = mOutputVariableSpace.GetVariableInstanceAt (i).GetVariableDefinition ().Clone ();
+         customFunctionDeclaration.AddInputVariableFromDefinitions (inputParamDefinitions);
+         customFunctionDeclaration.AddOutputVariableFromDefinitions (outputParamDefinitions);
          
          return customFunctionDeclaration;
       }

@@ -63,12 +63,26 @@ package editor.image.vector
             borderThickness = -1;
          }
          
-         var visualHalfWidth:Number = rectangle.GetHalfWidth () + 0.5; // be consistent with player
+         var visualHalfWidth :Number = rectangle.GetHalfWidth  () + 0.5; // be consistent with player
          var visualHalfHeight:Number = rectangle.GetHalfHeight () + 0.5; // be consistent with player
+         
+         var cornerWidth:Number = rectangle.GetCornerEclipseWidth () + 1; // be consistent with player
+         if (cornerWidth > visualHalfWidth + visualHalfWidth)
+            cornerWidth = visualHalfWidth + visualHalfWidth;
+         var cornerHeight:Number = rectangle.GetCornerEclipseHeight () + 1; // be consistent with player
+         if (cornerHeight > visualHalfHeight + visualHalfHeight)
+            cornerHeight = visualHalfHeight + visualHalfHeight;
+         var isRoundCorner:Boolean = rectangle.IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
+         
+         // here these "be consistent with player" are not very consistent with player.
+         // see VectorShapeRectangleForPlaying for details.
          
          var rectSprite:Shape = new Shape ();
          GraphicsUtil.ClearAndDrawRect (rectSprite, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, 
-                                        borderColor, borderThickness, drawBg, filledColor, rectangle.IsRoundCorners (), false, 1.0, 
+                                        borderColor, borderThickness, drawBg, filledColor, 
+                                        rectangle.IsRoundJoint (), // IsRoundCorners (), 
+                                        isRoundCorner, cornerWidth, cornerHeight,
+                                        //false, 0, 0,
                                         bodyTextureModule == null ? null : bodyTextureModule.GetBitmapData (),
                                         bodyTextureTransform == null ? null : bodyTextureTransform.ToMatrix ());
 
@@ -76,7 +90,9 @@ package editor.image.vector
          {
             var blueShape:Shape = new Shape ();
             GraphicsUtil.ClearAndDrawRect (blueShape, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, 
-                                           0x0000FF, -1, true, 0x0000FF, rectangle.IsRoundCorners (), false, 1.0);
+                                           0x0000FF, -1, true, 0x0000FF, 
+                                           rectangle.IsRoundJoint () // IsRoundCorners ()
+                                           );
             blueShape.alpha = 0.5;
             
             var contianer:Sprite = new Sprite ();

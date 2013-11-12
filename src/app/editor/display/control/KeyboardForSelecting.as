@@ -208,6 +208,12 @@ package editor.display.control {
          //alpha = 0.3;
       }
       
+      override protected function measure ():void
+      {
+         measuredWidth = mKeyboardBitmap.width;
+         measuredHeight = mKeyboardBitmap.height;
+      }
+      
       private function OnAddedToStage (event:Event):void 
       {
          addEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);

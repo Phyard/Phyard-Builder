@@ -1,6 +1,6 @@
 package editor.trigger {
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    import common.DataFormat2;
    
@@ -42,18 +42,21 @@ package editor.trigger {
          if (vd is VariableDefinitionString)
          {
             var str:String = mValueObject as String;
-            var pattern:RegExp;
-            pattern  = /\\/g;
-            str = str.replace(pattern, "\\\\");
-            pattern = /"/g;
-            str = str.replace(pattern, "\\\"");
+            if (str != null)
+            {
+               var pattern:RegExp;
+               pattern  = /\\/g;
+               str = str.replace(pattern, "\\\\");
+               pattern = /"/g;
+               str = str.replace(pattern, "\\\"");
+            }
             
             return "\"" + str + "\"";
          }
          else if (vd is VariableDefinitionNumber)
          {
             var vdn:VariableDefinitionNumber = vd as VariableDefinitionNumber;
-            if (vdn.mIsColorValue)
+            if (vdn.IsColorValue ())
             {
                return DataFormat2.UInt2ColorString (uint (mValueObject));
             }
@@ -62,7 +65,7 @@ package editor.trigger {
          if (mValueObject.hasOwnProperty ("ToCodeString"))
             return mValueObject.ToCodeString ();
          
-         return  mValueObject.toString ();
+         return mValueObject.toString ();
       }
       
 //=============================================================
@@ -94,7 +97,7 @@ package editor.trigger {
             //   return new ValueSource_Direct (null);
             //}
             
-            if (valueType != ValueTypeDefine.ValueType_Number && valueType != ValueTypeDefine.ValueType_Boolean && valueType != ValueTypeDefine.ValueType_String && valueType != ValueTypeDefine.ValueType_Void)
+            if (valueType != CoreClassIds.ValueType_Number && valueType != CoreClassIds.ValueType_Boolean && valueType != CoreClassIds.ValueType_String && valueType != CoreClassIds.ValueType_Void)
             {
                return new ValueSource_Direct (null);
             }

@@ -98,7 +98,7 @@ package editor.trigger.entity {
 //   entity links
 //====================================================================
       
-      public function DrawEntityLinks (canvasSprite:Sprite, entityArray:Array):void
+      public function DrawLinks (canvasSprite:Sprite, entityArray:Array):void
       {
          if (entityArray == null)
             return;

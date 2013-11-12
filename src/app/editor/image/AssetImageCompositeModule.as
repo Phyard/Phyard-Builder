@@ -355,6 +355,7 @@ package editor.image {
          try
          {
             var newMoudle:AssetImageCompositeModule = GetAssetImageCompositeModuleManager ().CreateImageCompositeModule (null, true, false);
+            newMoudle.SetSettingFlags (GetSettingFlags ());
             
             var modulePartDefines:Array = DataFormat.ModuleInstances2Define (EditorContext.GetEditorApp ().GetWorld (), GetModuleInstanceManager (), GetAssetImageCompositeModuleManager ().IsSequencedModuleManager ());
             

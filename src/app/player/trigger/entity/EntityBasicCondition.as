@@ -4,12 +4,13 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;
-   import player.trigger.VariableInstance;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectMutable;
    import player.trigger.Parameter_Variable;
+   
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionDefine;
    import common.trigger.ValueDefine;
+   import common.trigger.CoreClassIds;
    
    import common.TriggerFormatHelper2;
    
@@ -39,7 +40,7 @@ package player.trigger.entity
                var codeSnippetDefine:CodeSnippetDefine = ((entityDefine.mFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
-               mConditionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetBoolFunctionDeclaration ());
+               mConditionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetBoolFunctionDeclaration ());
                mConditionDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
             }
          }
@@ -70,14 +71,22 @@ package player.trigger.entity
       // todo, seems it is ok to use parameters like that in contact event handling.
       // currently, ApplyNewDirectParameter and ReleaseDirectParameter are some not very efficient.
       
+      private var mValueTarget:Parameter_DirectMutable = Parameter_DirectMutable.CreateCoreClassDirectMutable (
+                                                            CoreClassIds.ValueType_Boolean,
+                                                            false
+                                                          ); 
+                                                         //new Parameter_DirectMutable (null);
+      
       public function RunBoolFunction ():Boolean
       {
-         var outputValueTarget:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (false, null);
+         //var outputValueTarget:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (false, null);
+         mValueTarget.mValueObject = false;
          
          // if (mConditionListDefinition != null) // should not be null
-         mConditionDefinition.DoCall (null, outputValueTarget);
+         mConditionDefinition.DoCall (null, mValueTarget); // outputValueTarget);
          
-         return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
+         //return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
+         return Boolean (mValueTarget.EvaluateValueObject ());
       }
       
    }

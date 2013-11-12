@@ -398,7 +398,7 @@ package editor.trigger.entity {
          return false;
       }
       
-      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      override public function DrawAssetLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          if (forceDraw || isExpanding)
          {
@@ -424,11 +424,11 @@ package editor.trigger.entity {
          {
             if (mInputEntitySelector is InputEntitySelector_Many)
             {
-               (mInputEntitySelector as InputEntitySelector_Many).DrawEntityLinks (canvasSprite, mInputEntities);
+               (mInputEntitySelector as InputEntitySelector_Many).DrawLinks (canvasSprite, mInputEntities);
             }
             else if (mInputEntitySelector is InputEntitySelector_Single)
             {
-               (mInputEntitySelector as InputEntitySelector_Single).DrawEntityLinkLine (canvasSprite, mInputEntities [0]);
+               (mInputEntitySelector as InputEntitySelector_Single).DrawLink (canvasSprite, mInputEntities [0]);
             }
          }
       }

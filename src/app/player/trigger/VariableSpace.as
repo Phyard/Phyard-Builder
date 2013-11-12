@@ -1,6 +1,7 @@
 
 package player.trigger
 {
+   import flash.utils.Dictionary;
    
    public class VariableSpace
    {
@@ -8,7 +9,9 @@ package player.trigger
       
       private var mVariableInstances:Array = null;
       
-      public function VariableSpace (numVariables:int = 0)
+      private var mVariableKeyMappings:Dictionary = null;
+      
+      public function VariableSpace (numVariables:int)
       {
          SetNumVariables (numVariables);
       }
@@ -28,6 +31,7 @@ package player.trigger
          return AppendMissedVariablesFor (null);
       }
       
+      // the cloned space doesn't hold detailed VariableInstance.
       public function AppendMissedVariablesFor (forVariableSpace:VariableSpace):VariableSpace
       {
          var fromIndex:int;
@@ -53,8 +57,8 @@ package player.trigger
          {
             var viSource:VariableInstance = (mVariableInstances [i] as VariableInstance);
             var viTarget:VariableInstance = (forVariableSpace.mVariableInstances [i] as VariableInstance);
-            
-            viSource.CloneFor (viTarget);
+
+            viSource.CloneForVariableInstance (viTarget);
          }
          
          return forVariableSpace;
@@ -83,22 +87,33 @@ package player.trigger
          }         
          
          
-         var vi:VariableInstance;
+         var vi:VariableInstance; //VariableInstance;
          if (numVariables > oldNumVariables) // need append
          {
             mVariableInstances.length = numVariables; // for c/java, more need to do
             
+            var lastVi:VariableInstance;
+            var fromIndex:int;
             if (oldNumVariables == 0)
             {
                mFirstVariableInstance = new VariableInstance ();
                mVariableInstances [0] = mFirstVariableInstance;
+               lastVi = mFirstVariableInstance;
+               fromIndex = 1;
+            }
+            else
+            {
+               lastVi = mVariableInstances [oldNumVariables - 1] as VariableInstance;
+               fromIndex = oldNumVariables;
             }
             
-            for (var i:int = (oldNumVariables == 0 ? 1 : oldNumVariables); i < numVariables; ++ i)
+            for (var i:int = fromIndex; i < numVariables; ++ i)
             {
                vi = new VariableInstance ();
                mVariableInstances [i] = vi;
-               (mVariableInstances [i-1] as VariableInstance).mNextVariableInstanceInSpace = vi;
+               //(mVariableInstances [i-1] as VariableInstance).mNextVariableInstanceInSpace = vi;
+               lastVi.mNextVariableInstanceInSpace = vi;
+               lastVi = vi;
             }
          }
          else if (numVariables < oldNumVariables) // need truncate
@@ -117,21 +132,47 @@ package player.trigger
          }
       }
       
-      public function GetVariableAt (index:int):VariableInstance
+      //public function GetVariableIndex (vi:VariableInstance):int
+      //{
+      //   return mVariableInstances == null ? -1 : mVariableInstances.indexOf (vi);
+      //}
+      
+      public function GetVariableByIndex (index:int):VariableInstance
       {
          if (index < 0 || mVariableInstances == null || index >= mVariableInstances.length)
-            return null;
+            return VariableInstanceConstant.kVoidVariableInstance; // null;
          
          return mVariableInstances [index];
+      }
+      
+      public function RegisterKeyValue (key:String, value:VariableInstance):void
+      {
+         if (mVariableKeyMappings == null)
+            mVariableKeyMappings = new Dictionary ();
+         
+         mVariableKeyMappings [key] = value;
+      }
+      
+      public function GetVariableByKey (key:String):VariableInstance
+      {
+         if (mVariableKeyMappings == null)
+            return VariableInstanceConstant.kVoidVariableInstance; // null;
+         
+         return mVariableKeyMappings [key] as VariableInstance;
       }
       
       public function GetValuesFromParameters (inputParamList:Parameter):void
       {
          var vi:VariableInstance = mFirstVariableInstance;
          
+         // same length. "vi != null" == "inputParamList != null"
          while (vi != null) // && inputParamList != null) // the missed value sources should be appended at init process.
          {
-            vi.SetValueObject (inputParamList.EvaluateValueObject ());
+            // before v2.05
+            //vi.SetValueObject (inputParamList.EvaluateValueObject ());
+            // since v2.05
+            CoreClasses.AssignValue (inputParamList.GetVariableInstance (), vi);
+            
             vi = vi.mNextVariableInstanceInSpace;
             inputParamList = inputParamList.mNextParameter;
          }
@@ -141,9 +182,14 @@ package player.trigger
       {
          var vi:VariableInstance = mFirstVariableInstance;
          
+         // same length. "vi != null" == "outputParamList != null"
          while (vi != null) // && outputParamList != null) // the missed value targets should be appended at init process.
          {
-            outputParamList.AssignValueObject (vi.GetValueObject ());
+            // before v2.05
+            //outputParamList.AssignValueObject (vi.GetValueObject ());
+            // since v2.05
+            CoreClasses.AssignValue (vi, outputParamList.GetVariableInstance ());
+            
             vi = vi.mNextVariableInstanceInSpace;
             outputParamList = outputParamList.mNextParameter;
          }

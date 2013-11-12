@@ -46,7 +46,10 @@ package player.trigger
          //mFunctionDefinition.DoCall (mInputValueSourceList, mReturnValueTargetList);
          //if (mBooleanReturnValueTarget.mBoolValue)
          
-         if (mInputValueSourceList.EvaluateValueObject () as Boolean)
+         // before v2.05
+         //if (mInputValueSourceList.EvaluateValueObject () as Boolean)
+         // since v2.05
+         if (CoreClasses.ToBoolean (mInputValueSourceList.GetVariableInstance ()))
          {
             mNextFunctionCalling = mNextFunctionCalling_True;
          }

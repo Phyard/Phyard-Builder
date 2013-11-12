@@ -4,76 +4,83 @@ package editor.trigger {
    import mx.controls.TextInput;
    import mx.controls.ComboBox;
    
+   import editor.world.World;
+   
    import editor.entity.Scene;
    
    import com.tapirgames.util.TextUtil;
    
    import editor.util.DataUtil;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.CoreClassIds;
    
-   public class VariableDefinitionNumber extends VariableDefinition
+   public class VariableDefinitionNumber extends VariableDefinition_Core
    {
       
    //========================================================================================================
    //
    //========================================================================================================
       
-      protected var mDefaultValue:Number = 0.0;
-      protected var mMinValue:Number = - Number.MAX_VALUE;
-      protected var mMaxValue:Number = Number.MAX_VALUE;
-      
-      internal var mIsColorValue:Boolean = false;
-      
-      protected var mValueLists:Array = null;
+      //protected var mDefaultValue:Number = 0.0;
+      //protected var mMinValue:Number = - Number.MAX_VALUE;
+      //protected var mMaxValue:Number = Number.MAX_VALUE;
+      //
+      //internal var mIsColorValue:Boolean = false;
+      //
+      //protected var mValueLists:Array = null;
       
       public function VariableDefinitionNumber (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Number, name, description, options);
+         super (World.GetCoreClassById (CoreClassIds.ValueType_Number), name, description, options);
          
-         if (options != null)
-         {
-            if (options.mMinValue != undefined)
-               mMinValue = Number (options.mMinValue);
-            if (options.mMaxValue != undefined)
-               mMaxValue = Number (options.mMaxValue);
-            if (options.mDefaultValue != undefined)
-               mDefaultValue = Number (options.mDefaultValue);
-            if (options.mIsColorValue != undefined)
-               mIsColorValue = Boolean (options.mIsColorValue);
-            if (options.mValueLists != undefined)
-               mValueLists = options.mValueLists as Array;
-            
-            if (mMinValue > mMaxValue)
-            {
-               var tempValue:Number = mMaxValue;
-               mMaxValue = mMinValue;
-               mMinValue = tempValue;
-            }
-         }
+         //if (options != null)
+         //{
+         //   if (options.mMinValue != undefined)
+         //      mMinValue = Number (options.mMinValue);
+         //   if (options.mMaxValue != undefined)
+         //      mMaxValue = Number (options.mMaxValue);
+         //   if (options.mDefaultValue != undefined)
+         //      mDefaultValue = Number (options.mDefaultValue);
+         //   if (options.mIsColorValue != undefined)
+         //      mIsColorValue = Boolean (options.mIsColorValue);
+         //   if (options.mValueLists != undefined)
+         //      mValueLists = options.mValueLists as Array;
+         //   
+         //   if (mMinValue > mMaxValue)
+         //   {
+         //      var tempValue:Number = mMaxValue;
+         //      mMaxValue = mMinValue;
+         //      mMinValue = tempValue;
+         //   }
+         //}
       }
       
-      override public function SetDefaultValue (valueObject:Object):void
-      {
-         mDefaultValue = Number (valueObject);
-      }
+      //override public function SetDefaultValue (valueObject:Object):void
+      //{
+      //   mDefaultValue = Number (valueObject);
+      //}
       
       //public function GetDefaultValue ():Number
       //{
       //   return mDefaultValue;
       //}
       
-      protected function ValidateValue (value:Number):Number
+      //protected function ValidateValue (value:Number):Number
+      //{
+      //   if (isNaN (value))
+      //      value = mDefaultValue;
+      //   
+      //   if (value < mMinValue)
+      //      value = mMinValue;
+      //   if (value > mMaxValue)
+      //      value = mMaxValue;
+      //   
+      //   return value;
+      //}
+      
+      public function IsColorValue ():Boolean
       {
-         if (isNaN (value))
-            value = mDefaultValue;
-         
-         if (value < mMinValue)
-            value = mMinValue;
-         if (value > mMaxValue)
-            value = mMaxValue;
-         
-         return value;
+         return mOptions.mIsColorValue;
       }
       
 //==============================================================================
@@ -82,32 +89,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var numberVariableDefinition:VariableDefinitionNumber = new VariableDefinitionNumber (mName, mDescription);
-         numberVariableDefinition.mMinValue = mMinValue;
-         numberVariableDefinition.mMaxValue = mMaxValue;
-         numberVariableDefinition.mDefaultValue = mDefaultValue;
-         numberVariableDefinition.mIsColorValue = mIsColorValue;
-         numberVariableDefinition.mValueLists = mValueLists;
-         
-         return numberVariableDefinition;
-      }
-      
-//==============================================================================
-// to override
-//==============================================================================
-      
-      override public function ValidateDirectValueObject (valueObject:Object):Object
-      {
-         var num:Number = Number (valueObject);;
-         if (isNaN (num))
-            num = 0.0;
-         
-         if (num < mMinValue)
-            num = mMinValue;
-         if (num > mMaxValue)
-            num = mMaxValue;
-         
-         return num;
+         return new VariableDefinitionNumber (mName, mDescription, mOptions);
       }
       
 //==============================================================================
@@ -116,19 +98,19 @@ package editor.trigger {
       
       override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         return new ValueSource_Direct (mDefaultValue);
+         return new ValueSource_Direct (mDefaultValueObject);
       }
       
       override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var directValue:Number = Number (valueSourceDirect.GetValueObject ());
          
-         if (mValueLists != null)
+         if (mOptions.mValueLists != null)
          {
             var combo_box:ComboBox = new ComboBox ();
             
-            combo_box.dataProvider = DataUtil.GetListWithDataInLabel (mValueLists);
-            combo_box.selectedIndex = DataUtil.SelectedValue2SelectedIndex (mValueLists, directValue);
+            combo_box.dataProvider = DataUtil.GetListWithDataInLabel (mOptions.mValueLists as Array);
+            combo_box.selectedIndex = DataUtil.SelectedValue2SelectedIndex (mOptions.mValueLists as Array, directValue);
             combo_box.rowCount = 11;
             
             return combo_box;
@@ -137,7 +119,7 @@ package editor.trigger {
          {
             var text_input:TextInput = new TextInput ();
             
-            if (mIsColorValue)
+            if (IsColorValue ())
             {
                var text:String = (int (directValue) & 0xFFFFFF).toString (16);
                while (text.length < 6)
@@ -156,9 +138,9 @@ package editor.trigger {
       
       override public function RetrieveDirectValueSourceFromControl (scene:Scene, valueSourceDirect:ValueSource_Direct, control:UIComponent/*, triggerEngine:TriggerEngine*/):ValueSource
       {
-         var value:Number = mDefaultValue;
+         var value:Number = mDefaultValueObject as Number;
          
-         if (mValueLists != null)
+         if (mOptions.mValueLists != null)
          {
             if (control is ComboBox)
             {
@@ -190,7 +172,7 @@ package editor.trigger {
                //   }
                //   else
                //   {
-               //      var vi:VariableInstance = triggerEngine.GetRegisterVariableSpace (ValueTypeDefine.ValueType_Number).GetVariableInstanceAt (value);
+               //      var vi:VariableInstance = triggerEngine.GetRegisterVariableSpace (CoreClassIds.ValueType_Number).GetVariableInstanceAt (value);
                //      return new ValueSource_Variable (vi);
                //   }
                //}
@@ -201,7 +183,8 @@ package editor.trigger {
             }
          }
          
-         value = ValidateValue (value);
+         //value = ValidateValue (value);
+         value = ValidateDirectValueObject (value) as Number;
          
          valueSourceDirect.SetValueObject (value);
          

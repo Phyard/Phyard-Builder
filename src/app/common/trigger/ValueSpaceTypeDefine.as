@@ -17,5 +17,6 @@ package common.trigger {
       public static const ValueSpace_CommonEntityProperties:int   = 0xA;
       public static const ValueSpace_World:int   = 0xB;
       public static const ValueSpace_GameSave:int   = 0xC; 
+      public static const ValueSpace_CustomType:int   = 0xD; 
    }
 }

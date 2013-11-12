@@ -446,9 +446,12 @@
       
       import editor.world.World;
       
+      import editor.undo.HistoryState;
+      
       import editor.EditorContext;
       
       import common.trigger.CoreEventIds;
+      import common.DataFormat;
       import common.WorldDefine;
       import common.SceneDefine;
       import common.ValueAdjuster;
@@ -746,18 +749,22 @@
          EditorContext.ShowModalDialog (NameSettingDialog, ConfirmCreateNewScene, {mName: "untitled"});
       }
       
-      private function ConfirmCreateNewScene (params:Object):void
+      private function ConfirmCreateNewScene (params:Object):editor.entity.Scene
       {
          var world:World = EditorContext.GetEditorApp ().GetWorld ();
          
          if (world == null)
-            return;
+            return null;
          
          var newIndex:int = world.CreateNewScene (null, params.mName == null ? "untitled" : params.mName, List_Scenes.selectedIndex);
          if (newIndex >= 0)
          {
             OnWorldChanged (newIndex);
+            
+            return world.GetSceneByIndex (newIndex);
          }
+         
+         return null;
       }
       
       private function OnCloneSelectedScene ():void
@@ -773,37 +780,93 @@
          
          if (scene != null)
          {
-            //EditorContext.ShowModalDialog (NameSettingDialog, ConfirmCloneSelectedScene, {mName: "(cloned) " + scene.GetName ()});
+            // 1st // EditorContext.ShowModalDialog (NameSettingDialog, ConfirmCloneSelectedScene, {mName: "(cloned) " + scene.GetName ()});
             
-            ConfirmCloneSelectedScene ({mName: "(cloned) " + scene.GetName ()});
+            // 2nd // ConfirmCloneSelectedScene ({mName: "(cloned) " + scene.GetName ()});
+            
+            CloneScene (scene, List_Scenes.selectedIndex, "clone of " + scene.GetName ());
          }
       }
       
-      private function ConfirmCloneSelectedScene (params:Object):void
-      {
-         var world:World = EditorContext.GetEditorApp ().GetWorld ();
-         
-         if (world == null)
+      private function CloneScene (scene:editor.entity.Scene, sceneIndex:int, newSceneName:String):void
+      {  
+         var historyState:HistoryState = EditorContext.GetEditorApp ().CreateSceneSnapshot (scene, null, null, false, true);
+         if (historyState == null)
+         {
             return;
+         }
+         
+         var newScene:editor.entity.Scene = ConfirmCreateNewScene({mName: newSceneName});
+         if (newScene == null)
+         {
+            return;
+         }
+         
+         // now the new scene is the current scene
+         
+         var succeeded:Boolean = false;
          
          try
          {
-            var worldDefine:WorldDefine = EditorContext.GetEditorApp ().OfflineExportCurrentScene (true);
-            var sceneDefine:SceneDefine = worldDefine.mSceneDefines [worldDefine.mCurrentSceneId];
-            sceneDefine.mName = params.mName;
-            
-            var newScenes:Array = EditorContext.GetEditorApp ().OfflineImportScenes ({mWorldDefine : worldDefine}, true);
-            var newScene:editor.entity.Scene = newScenes [0] as editor.entity.Scene;
-            
-            var newClonedSceneIndex:int = world.ChangeSceneIndex (newScene.GetSceneIndex (), List_Scenes.selectedIndex + 1);
-            
-            OnWorldChanged (newClonedSceneIndex);
+            var worldDefineForCloning:WorldDefine = EditorContext.GetEditorApp ().GetWorldDefineForSceneCloning (scene);
+            if(worldDefineForCloning != null)
+            {
+               EditorContext.GetEditorApp ().RestoreScene (GetSceneEditPanel (), historyState, null);
+               
+               GetSceneEditPanel ().CreateUndoPoint ("Cloning scene succeeded.");
+               
+               succeeded = true;
+            }
          }
          catch (error:Error)
          {
-            GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Clone scene failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetSceneEditPanel ().GetPanelWidth ()));
+            if (Capabilities.isDebugger)
+               throw error;
+            
+            succeeded = false;
+         }
+         
+         if (! succeeded)
+         {
+            OnDeleteCurrentScene ();
+            
+            var deltaIndex:int = sceneIndex - List_Scenes.selectedIndex;
+            if (deltaIndex != 0)
+            {
+               ChangeCurrentSceneIndex (deltaIndex);
+            }
+            
+            GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Failed to clone scene.", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetSceneEditPanel ().GetPanelWidth ()));
+            
+            return;
          }
       }
+      
+      //private function ConfirmCloneSelectedScene (params:Object):void
+      //{
+      //   var world:World = EditorContext.GetEditorApp ().GetWorld ();
+      //   
+      //   if (world == null)
+      //      return;
+      //   
+      //   try
+      //   {
+      //      var worldDefine:WorldDefine = EditorContext.GetEditorApp ().GetWorldDefineForSceneCloning ();
+      //      var sceneDefine:SceneDefine = worldDefine.mSceneDefines [worldDefine.mCurrentSceneId];
+      //      sceneDefine.mName = params.mName;
+      //      
+      //      var newScenes:Array = EditorContext.GetEditorApp ().OfflineImportScenes ({mWorldDefine : worldDefine}, true);
+      //      var newScene:editor.entity.Scene = newScenes [0] as editor.entity.Scene;
+      //      
+      //      var newClonedSceneIndex:int = world.ChangeSceneIndex (newScene.GetSceneIndex (), List_Scenes.selectedIndex + 1);
+      //      
+      //      OnWorldChanged (newClonedSceneIndex);
+      //   }
+      //   catch (error:Error)
+      //   {
+      //      GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Clone scene failed", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * GetSceneEditPanel ().GetPanelWidth ()));
+      //   }
+      //}
       
       private function ChangeCurrentSceneName (params:Object):void
       {

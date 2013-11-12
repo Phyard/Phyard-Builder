@@ -1,13 +1,19 @@
 <?xml version="1.0"?>
-<project name="CIEditor" basedir="." default="release-editor">
+<project name="CIEditor" basedir="." default="debug-editor">
 
-   <condition property="file.local.settings" value="LocalSettings.properties.Windows" else="LocalSettings.properties.Linux">
+   <condition property="file.local.properties" value="local.properties.Windows1" else="local.properties.Linux">
       <os family="windows" />
    </condition>
-   <property file="${basedir}/${file.local.settings}" />
+   
+   <property file="${basedir}/${file.local.properties}" />
+   <!-- if above file is not available, do nothing, so set default values -->
+   <condition property="Path.FlexSDK" value="D:/sdks/flex_sdk_3.5.0">
+      <not>  
+         <isset property="Path.FlexSDK"/>
+      </not>
+   </condition>
 
    <property name="dir.flexsdk"        value="${Path.FlexSDK}" />
-   <property name="dir.secureswf"        value="${Path.SecureSWF}" />
 
    <property name="editor-width" value="958" />
    <property name="editor-height" value="678" />
@@ -26,11 +32,13 @@
    <property name="dir.build.res"      value="${dir.build}/res" />
    <property name="dir.build.res-compiled"      value="${dir.build}/res-compiled" />
    <property name="dir.build.src"      value="${dir.build}/src" />
-   <property name="dir.release"        value="${basedir}/.release" />
-   <property name="dir.release.editor"        value="${basedir}/.release_editor" />
-   <property name="dir.release.unieditor"        value="${basedir}/.release_unieditor" />
-   <property name="dir.release.univiewer"        value="${basedir}/.release_univiewer" />
-   <property name="dir.release-for-test"        value="${basedir}/.test" />
+   
+   <property name="dir.release"        value="${basedir}/##release" />
+   
+   <property name="dir.output"        value="${basedir}/#output" />
+   <property name="dir.output.editor"        value="${dir.output}-editor" />
+   <property name="dir.output.unieditor"        value="${dir.output}-unieditor" />
+   <property name="dir.output.univiewer"        value="${dir.output}-univiewer" />
    
    <!-- -DForAir=true -->
    <condition property="program.as3compiler.nosuffix" value="${dir.flexsdk}/bin/amxmlc" else="${dir.flexsdk}/bin/mxmlc">
@@ -79,23 +87,11 @@
       </and>
    </condition>
 
-   <property name="program.secureSWF"        value="${dir.secureswf}/ssCLI" />
-   <condition property="program.secureSWF" value="${program.secureSWF}.exe">
-      <os family="windows" />
-   </condition>
-
-   <path id="java-class-path">
-      <fileset dir="${dir.third-party}/java_libs" includes="**/*.jar" />
-      <fileset dir="${dir.tools}/editor" includes="**/*.jar" />
-   </path>
-
-   <pathconvert property="string.java-class-path" refid="java-class-path"/>
-
-   <target name="clean">
+   <target name="cleanup">
       <delete dir="${dir.build}" quiet="true" />
    </target>
 
-   <target name="compile-resource" depends="clean">
+   <target name="compile-resource" depends="cleanup">
       <mkdir dir="${dir.build.res}" />
       <copy todir="${dir.build.res}" overwrite="true">
          <fileset dir="${dir.res}">
@@ -120,44 +116,10 @@
          <fileset dir="${dir.build.res-compiled}" />
       </copy>
       <copy todir="${dir.build.src}" overwrite="true">
-         <fileset dir="${dir.src}/app">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/helper_classes_as3">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/suit2d_loader_as3">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <!--
-         <fileset dir="${dir.external}/box2dflash">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         -->
-         <fileset dir="${dir.external}/box2d_as3_v210">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <!--
-         <fileset dir="${dir.external}/concave_polygon_decomposition">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         -->
-         <fileset dir="${dir.external}/concave_polygon_decomposition_as3_v210">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/box2dex">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/beziercurves">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/box2dpool">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-
-         <fileset dir="${dir.third-party}/mochi_api">
-            <exclude name="**/.svn/**"/>
-         </fileset>
+         <fileset dir="${dir.src}/app" />
+         <fileset dir="${dir.external}/helper_classes_as3" />
+         <fileset dir="${dir.external}/box2d_as3_v210" />
+         <fileset dir="${dir.external}/box2dex_v210" />
       </copy>
       <copy todir="${dir.build.src}/res" overwrite="true">
          <fileset dir="${dir.build.res-compiled}" />
@@ -166,9 +128,23 @@
 
    <!-- ============================================= editor =========================================================== -->
 
+   <target name="--move-swf">
+      <copy file="${--from-directory}/${--from-swf}" tofile="${--to-directory}/${--to-swf}" overwrite="true" />
+   </target>
+
+   <target name="--release-swf">
+      <mkdir dir="${--to-directory}" />
+      <delete file="${--to-directory}/${--from-swf}" quiet="true" />
+      <delete file="${--to-directory}/${--to-swf}" quiet="true" />
+      
+      <antcall target="--move-swf" />
+   </target>
+
+   <!-- ============================================= editor =========================================================== -->
+
    <target name="--compile-editor">
-      <delete dir="${dir.release.editor}" quiet="true" />
-      <mkdir dir="${dir.release.editor}" />
+      <delete dir="${dir.output.editor}" quiet="true" />
+      <mkdir dir="${dir.output.editor}" />
 
       <antcall target="--pre-compile" />
 
@@ -184,7 +160,7 @@
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <!--arg line="-define+=App::Default_Width,${##width}" /-->
          <!--arg line="-define+=App::Default_Height,${##height}" /-->
-         <arg line="-output=${dir.release.editor}/editor_unsecure.swf"/>
+         <arg line="-output=${dir.output.editor}/editor_unsecure.swf"/>
          <arg line="-default-background-color 0xFFFFFF"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
@@ -196,9 +172,11 @@
          <arg line="-locale=en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+         <!--
          <arg line="-library-path=${dir.third-party}/kongragate_api/KongregateAPI.swc" />
          <arg line="-library-path=${dir.third-party}/mindjolt_api/MindJoltAPI.swc" />
          <arg line="-library-path=${dir.third-party}/google_analytics/analytics.swc"/>
+         -->
 
          <arg line="${dir.build.src}/editor/Editor.mxml" />
       </exec>
@@ -225,28 +203,25 @@
          <param name="--height" value="${editor-height}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/editor.swf" quiet="true" />
-
-      <exec dir="${dir.release.editor}" executable="${dir.secureswf}/ssCLI">
-         <arg line="${dir.release.editor}/editor_unsecure.swf"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.release}"/>
-         <arg line="-wrap:3"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:on"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:on"/>
-      </exec>
-
-      <move file="${dir.release}/editor_unsecure.swf" tofile="${dir.release}/editor.swf"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output.editor}" />
+         <param name="--from-swf" value="editor_unsecure.swf" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="editor.swf" />
+         <param name="--wrap" value="3" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="on" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="on" />
+      </antcall>
    </target>
 
    <!-- ============================================= unieditor =========================================================== -->
 
    <target name="--compile-unieditor">
-      <delete dir="${dir.release.unieditor}" quiet="true" />
-      <mkdir dir="${dir.release.unieditor}" />
+      <delete dir="${dir.output.unieditor}" quiet="true" />
+      <mkdir dir="${dir.output.unieditor}" />
 
       <antcall target="--pre-compile" />
 
@@ -261,7 +236,7 @@
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <!--arg line="-define+=App::Default_Width,${##width}" /-->
          <!--arg line="-define+=App::Default_Height,${##height}" /-->
-         <arg line="-output=${dir.release.unieditor}/unieditor_unsecure.swf"/>
+         <arg line="-output=${dir.output.unieditor}/unieditor_unsecure.swf"/>
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
@@ -295,28 +270,25 @@
          <param name="--height" value="${editor-height}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/unieditor.swf" quiet="true" />
-
-      <exec dir="${dir.release.unieditor}" executable="${dir.secureswf}/ssCLI">
-         <arg line="${dir.release.unieditor}/unieditor_unsecure.swf"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.release.unieditor}"/>
-         <arg line="-wrap:0"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:off"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:off"/>
-      </exec>
-
-      <move file="${dir.release.unieditor}/unieditor_unsecure.swf" tofile="${dir.release}/unieditor.swf"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output.unieditor}" />
+         <param name="--from-swf" value="unieditor_unsecure.swf" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="unieditor.swf" />
+         <param name="--wrap" value="0" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="off" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="off" />
+      </antcall>
    </target>
 
     <!-- ============================================= univiewer =========================================================== -->
 
    <target name="--compile-univiewer">
-      <delete dir="${dir.release.univiewer}" quiet="true" />
-      <mkdir dir="${dir.release.univiewer}" />
+      <delete dir="${dir.output.univiewer}" quiet="true" />
+      <mkdir dir="${dir.output.univiewer}" />
 
       <antcall target="--pre-compile" />
 
@@ -331,7 +303,7 @@
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <!--arg line="-define+=App::Default_Width,${##width}" /-->
          <!--arg line="-define+=App::Default_Height,${##height}" /-->
-         <arg line="-output=${dir.release.univiewer}/univiewer_unsecure.swf"/>
+         <arg line="-output=${dir.output.univiewer}/univiewer_unsecure.swf"/>
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
@@ -365,28 +337,25 @@
          <param name="--height" value="${player-height}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/univiewer.swf" quiet="true" />
-
-      <exec dir="${dir.release.univiewer}" executable="${dir.secureswf}/ssCLI">
-         <arg line="${dir.release.univiewer}/univiewer_unsecure.swf"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.release.univiewer}"/>
-         <arg line="-wrap:0"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:off"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:off"/>
-      </exec>
-
-      <move file="${dir.release.univiewer}/univiewer_unsecure.swf" tofile="${dir.release}/univiewer.swf"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output.univiewer}" />
+         <param name="--from-swf" value="univiewer_unsecure.swf" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="univiewer.swf" />
+         <param name="--wrap" value="0" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="off" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="off" />
+      </antcall>
    </target>
 
    <!-- ============================================= plugins =========================================================== -->
 
    <target name="--compile-plugin">
-      <delete dir="${dir.release}.plugin.${--plugin-name}" quiet="true" />
-      <mkdir dir="${dir.release}.plugin.${--plugin-name}" />
+      <delete dir="${dir.output}-plugin-${--plugin-name}" quiet="true" />
+      <mkdir dir="${dir.output}-plugin-${--plugin-name}" />
 
       <antcall target="--pre-compile" />
 
@@ -407,7 +376,7 @@
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <!--arg line="-define+=App::Default_Width,${##width}" /-->
          <!--arg line="-define+=App::Default_Height,${##height}" /-->
-         <arg line="-output=${dir.release}.plugin.${--plugin-name}/${--plugin-name}_unsecure.swf"/>
+         <arg line="-output=${dir.output}-plugin-${--plugin-name}/${--plugin-name}_unsecure.swf"/>
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
@@ -443,21 +412,18 @@
          <param name="--plugin-name" value="${plugin-name}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/${plugin-name}.swf" quiet="true" />
-
-      <exec dir="${dir.release}.plugin.${plugin-name}" executable="${dir.secureswf}/ssCLI">
-         <arg line="${dir.release}.plugin.${plugin-name}/${plugin-name}_unsecure.swf"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.release}/${plugin-name}"/>
-         <arg line="-wrap:0"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:off"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:off"/>
-      </exec>
-
-      <move file="${dir.release}.plugin.${plugin-name}/${plugin-name}_unsecure.swf" tofile="${dir.release}/${plugin-name}.swf"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output}-plugin-${plugin-name}" />
+         <param name="--from-swf" value="${plugin-name}_unsecure.swf" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="${plugin-name}.swf" />
+         <param name="--wrap" value="0" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="off" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="off" />
+      </antcall>
    </target>
 
    <target name="debug-plugin-viewer">
@@ -511,8 +477,8 @@
    <!-- ============================================= libraries =========================================================== -->
 
    <target name="--compile-library">
-      <delete dir="${dir.release}.library.${--library-name}" quiet="true" />
-      <mkdir dir="${dir.release}.library.${--library-name}" />
+      <delete dir="${dir.output}-library-${--library-name}" quiet="true" />
+      <mkdir dir="${dir.output}-library-${--library-name}" />
 
       <antcall target="--pre-compile" />
 
@@ -530,7 +496,7 @@
          <arg line="-debug=${--debug}"/>
          <arg line="-source-path=${dir.build.src}" />
          <arg line="-include-classes=Main" />
-         <arg line="-output=${dir.release}.library.${library-name}/${library-name}_unsecure.swc"/>
+         <arg line="-output=${dir.output}-library-${library-name}/${library-name}_unsecure.swc"/>
          <arg line="-optimize=true" />
          <arg line="--target-player=10.0.0" />
          <arg line="-use-network" />
@@ -551,21 +517,18 @@
          <param name="--library-name" value="${library-name}" />
       </antcall>
 
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/${library-name}.swc" quiet="true" />
-
-      <exec dir="${dir.release}.library.${library-name}" executable="${dir.secureswf}/ssCLI">
-         <arg line="${dir.release}.library.${library-name}/${library-name}_unsecure.swc"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.release}/${library-name}"/>
-         <arg line="-wrap:0"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:off"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:off"/>
-      </exec>
-
-      <move file="${dir.release}.library.${library-name}/${library-name}_unsecure.swc" tofile="${dir.release}/${library-name}.swc"/>
+      <antcall target="--release-swf">
+         <param name="--from-directory" value="${dir.output}-library-${library-name}" />
+         <param name="--from-swf" value="${library-name}_unsecure.swc" />
+         <param name="--to-directory" value="${dir.release}" />
+         <param name="--to-swf" value="/${library-name}.swc" />
+         <param name="--wrap" value="0" />
+         <param name="--controlflow" value="0" />
+         <param name="--optimize" value="off" />
+         <param name="--slr" value="off" />
+         <param name="--rename" value="off" />
+         <param name="--safe" value="off" />
+      </antcall>
    </target>
 
    <target name="debug-library-ViewerWorld">
@@ -578,164 +541,6 @@
       <antcall target="release-library">
          <param name="library-name" value="ViewerWorld" />
       </antcall>
-   </target>
-   
-   <!-- ============================================= tests =========================================================== -->
-
-   <target name="--compile-test">
-      <delete dir="${dir.release-for-test}.${--test-name}" quiet="true" />
-      <mkdir dir="${dir.release-for-test}.${--test-name}" />
-
-      <antcall target="--pre-compile" />
-
-      <copy todir="${dir.build.src}" overwrite="true">
-         <fileset dir="${dir.src}/tests/${--test-name}">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-      </copy>
-
-      <exec dir="${dir.build.src}" executable="${program.as3compiler}">
-         <arg line="-debug=true"/>
-         <arg line="-default-script-limits 100 8"/>
-         <!-- two continious - is not allowed in comments, so use ## instead -->
-         <!--arg line="-define+=App::Default_Width,${##width}" /-->
-         <!--arg line="-define+=App::Default_Height,${##height}" /-->
-         <arg line="-output=${dir.release-for-test}.${--test-name}/${--test-name}_unsecure.swf"/>
-         <arg line="-default-background-color 0xDDDDA0"/>
-         <arg line="-default-frame-rate 30"/>
-         <arg line="-optimize=true" />
-         <arg line="--target-player=10.0.0" />
-         <arg line="-use-network" />
-         <!-- two continious - is not allowed in comments, so use ## instead -->
-         <!--arg line="-default-size ${##width} ${##height}" /-->
-         <arg line="-source-path=${dir.build.src}" />
-         <arg line="-locale=en_US" />
-         <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
-         <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
-
-         <arg line="Main.as" />
-      </exec>
-   </target>
-
-   <target name="test-gesture">
-      <antcall target="--compile-test">
-         <param name="--test-name" value="gesture" />
-      </antcall>
-   </target>
-
-   <!-- ####################### alchemy build ########################3 -->
-
-   <target name="--pre-compile-alchemy">
-      <delete dir="${dir.build.src}" quiet="true" />
-      <mkdir dir="${dir.build.src}" />
-      <copy todir="${dir.build.src}/game/${ant.project.name}" overwrite="true">
-         <fileset dir="${dir.build.res-compiled}" />
-      </copy>
-      <copy todir="${dir.build.src}" overwrite="true">
-         <fileset dir="${dir.src}/app">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/helper_classes_as3">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/suit2d_loader_as3">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/box2d_alchemy">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/concave_polygon_decomposition_as3_v210">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/box2dex">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/beziercurves">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-         <fileset dir="${dir.external}/box2dpool">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-
-         <fileset dir="${dir.third-party}/mochi_api">
-            <exclude name="**/.svn/**"/>
-         </fileset>
-      </copy>
-      <copy todir="${dir.build.src}/res" overwrite="true">
-         <fileset dir="${dir.build.res-compiled}" />
-      </copy>
-   </target>
-
-   <target name="--compile-editor-alchemy">
-      <delete dir="${dir.release.editor}" quiet="true" />
-      <mkdir dir="${dir.release.editor}" />
-
-      <antcall target="--pre-compile-alchemy" />
-
-      <condition property="is-debugging" value="true" else="false">
-         <istrue value="${--debug}"/>
-      </condition>
-
-      <exec dir="${dir.build.src}" executable="${program.as3compiler}">
-         <arg line="-debug=${--debug}"/>
-         <arg line="-default-script-limits 100 8"/>
-         <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
-         <arg line="-define+=App::Default_Width,${--width}" />
-         <arg line="-define+=App::Default_Height,${--height}" />
-         <arg line="-output=${dir.release.editor}/editor_unsecure.swf"/>
-         <arg line="-default-background-color 0xFFFFFF"/>
-         <arg line="-default-frame-rate 30"/>
-         <arg line="-optimize=true" />
-         <arg line="--target-player=10.0.0" />
-         <arg line="-use-network" />
-         <arg line="-default-size ${--width} ${--height}" />
-         <arg line="-source-path=${dir.build.src}" />
-         <arg line="-locale=en_US" />
-
-         <arg line="-library-path=${dir.build.src}/Box2D.swc" />
-
-         <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
-         <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
-         <arg line="-library-path=${dir.third-party}/kongragate_api/KongregateAPI.swc" />
-         <arg line="-library-path=${dir.third-party}/mindjolt_api/MindJoltAPI.swc" />
-         <arg line="-library-path=${dir.third-party}/google_analytics/analytics.swc"/>
-
-         <arg line="${dir.build.src}/Editor.mxml" />
-      </exec>
-   </target>
-
-   <target name="debug-editor-alchemy">
-      <antcall target="--compile-editor-alchemy">
-         <param name="--debug" value="true" />
-         <param name="--game-mode" value="" />
-         <param name="--width" value="${editor-width}" />
-         <param name="--height" value="${editor-height}" />
-      </antcall>
-   </target>
-
-   <target name="release-editor-alchemy" depends="compile-resource">
-      <antcall target="--compile-editor-alchemy">
-         <param name="--debug" value="false" />
-         <param name="--game-mode" value="" />
-         <param name="--width" value="${editor-width}" />
-         <param name="--height" value="${editor-height}" />
-      </antcall>
-
-      <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/editor.swf" quiet="true" />
-
-      <exec dir="${dir.release.editor}" executable="${dir.secureswf}/ssCLI">
-         <arg line="${dir.release.editor}/editor_unsecure.swf"/> <!-- here must inlcude the path on linux -->
-         <arg line="${dir.release}"/>
-         <arg line="-wrap:3"/>
-         <arg line="-controlflow:0"/>
-         <arg line="-optimize:off"/>
-         <arg line="-slr:on"/>
-         <arg line="-rename:off"/>
-         <arg line="-safe:on"/>
-      </exec>
-
-      <move file="${dir.release}/editor_unsecure.swf" tofile="${dir.release}/editor.swf"/>
    </target>
 
 </project>

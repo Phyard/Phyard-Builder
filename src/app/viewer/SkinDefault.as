@@ -1261,7 +1261,7 @@ package viewer {
          var bg:Sprite = new Sprite ();
          GraphicsUtil.DrawRect (bg, 0, 0, dialogWidth, dialogHeight, 
                                 0x606060, 5, true, 0xB0B0D0, //0x8080D0,
-                                false, true, 16);
+                                false, true, 16, 16);
             // shape:Object, x:Number, y:Number, w:Number, h:Number, 
             // borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, 
             // roundJoints:Boolean = false, roundCorners:Boolean = false, cornerRadius:Number = 1.0

@@ -3,7 +3,6 @@ package editor.world {
 
    import editor.trigger.*;
 
-   import common.trigger.ValueTypeDefine;
    import common.trigger.CoreEventIds;
 
    public class CoreEventDeclarationsForPlaying
@@ -338,13 +337,13 @@ package editor.world {
          return sEventDeclarations [event_id];
       }
 
-      public static function GetEventSettingById (event_id:int):FunctionDeclaration_EventHandler
-      {
-         if (event_id < 0 || event_id >= sEventDeclarations.length)
-            return null;
-
-         return sEventDeclarations [event_id];
-      }
+      //public static function GetEventSettingById (event_id:int):FunctionDeclaration_EventHandler
+      //{
+      //   if (event_id < 0 || event_id >= sEventDeclarations.length)
+      //      return null;
+      //
+      //   return sEventDeclarations [event_id];
+      //}
 
    }
 }

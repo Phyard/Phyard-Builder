@@ -4,15 +4,18 @@ package common.shape
    {
       public function VectorShapeRectangle ()
       {
-         SetRoundCorners (false); // <=> SetJointType (JointType_Moter);
+         //SetRoundCorners (false); // <=> SetJointType (JointType_Moter);
+         SetRoundJoint (false); // <=> SetJointType (JointType_Moter);
       }
       
-      public function IsRoundCorners ():Boolean
+      //public function IsRoundCorners ():Boolean
+      public function IsRoundJoint ():Boolean
       {
          return GetJointType () == JointType_Round;
       }
 
-      public function SetRoundCorners (round:Boolean):void
+      //public function SetRoundCorners (round:Boolean):void
+      public function SetRoundJoint (round:Boolean):void
       {
          SetJointType (round ? JointType_Round : JointType_Moter);
       }
@@ -40,6 +43,44 @@ package common.shape
       public function SetHalfHeight (halfHeight:Number):void
       {
          mHalfHeight = Math.abs (halfHeight);
+      }
+      
+      // corner
+      
+      protected var mCornerEclipseWidth:Number = 0.0;
+      protected var mCornerEclipseHeight:Number = 0.0;
+
+      public function GetCornerEclipseWidth ():Number
+      {
+         return mCornerEclipseWidth;
+      }
+
+      public function SetCornerEclipseWidth (ellipseWidth:Number):void
+      {
+         mCornerEclipseWidth = Math.abs (ellipseWidth);
+      }
+
+      public function GetCornerEclipseHeight ():Number
+      {
+         return mCornerEclipseHeight;
+      }
+
+      public function SetCornerEclipseHeight (ellipseHeight:Number):void
+      {
+         mCornerEclipseHeight = Math.abs (ellipseHeight);
+      }
+      
+      public function IsRoundCorner ():Boolean
+      {
+         return (mAttributeBits & Flag_RoundCorner) != 0;
+      }
+      
+      public function SetRoundCorner (roundCorner:Boolean):void
+      {
+         if (roundCorner)
+            mAttributeBits |= Flag_RoundCorner;
+         else
+            mAttributeBits &= ~Flag_RoundCorner;
       }
 
 //==============================================

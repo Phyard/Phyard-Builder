@@ -4,7 +4,7 @@
          try
          {
             var so:SharedObject = SharedObject.getLocal (filename);
-            
+
             so.clear ();
          }
          catch ( e:Error ) 
@@ -36,12 +36,13 @@
          {
             var so:SharedObject = SharedObject.getLocal (filename);
             so.data.mSavedData = savedData;
+            so.data.mInt = 5;
          
             var flushResult:String = so.flush (100 * 1000); // 100k
-            
+
             //trace ("so.data.mSavedData = " + so.data.mSavedData + ", flushResult = " + flushResult);
             
-            if ( flushResult == SharedObjectFlushStatus.PENDING )
+            if (flushResult == SharedObjectFlushStatus.PENDING)
             {
                // an inquery dialog will show up
                
@@ -49,7 +50,7 @@
                
             //   so.addEventListener( NetStatusEvent.NET_STATUS, OnFlushStatus );
             } 
-            else if ( flushResult == SharedObjectFlushStatus.FLUSHED ) 
+            else if (flushResult == SharedObjectFlushStatus.FLUSHED) 
             {
                // Saved successfully. Place any code here that you want to
                // execute after the data was successfully saved.

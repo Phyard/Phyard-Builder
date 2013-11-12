@@ -6,9 +6,11 @@ package player.entity {
    import player.world.World;
    import player.world.EntityList;
    import player.physics.PhysicsProxy;
+   
+   import player.trigger.CoreClasses;
 
    import player.trigger.Parameter;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_DirectConstant;
 
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
@@ -368,29 +370,45 @@ package player.entity {
          }
       }
 
+      public function GetCustomPropertyInstance (spaceId:int, propertyId:int):VariableInstance
+      {
+         //if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
+         //   return null;
+         //
+         //return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableByIndex (propertyId).GetValueObject ();
+
+         if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+            return mCommonCustomProeprtySpace.GetVariableByIndex (propertyId);
+         else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+            return mCustomProeprtySpace.GetVariableByIndex (propertyId);
+      }
+
       public function GetCustomProperty (spaceId:int, propertyId:int):Object
       {
          //if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
          //   return null;
          //
-         //return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId).GetValueObject ();
+         //return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableByIndex (propertyId).GetValueObject ();
 
          var vi:VariableInstance;
          
          if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
-            vi = mCommonCustomProeprtySpace.GetVariableAt (propertyId);
+            vi = mCommonCustomProeprtySpace.GetVariableByIndex (propertyId);
          else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
-            vi = mCustomProeprtySpace.GetVariableAt (propertyId);
+            vi = mCustomProeprtySpace.GetVariableByIndex (propertyId);
             
-         if (vi != null)
-         {
-            return vi.GetValueObject ();
-         }
+         //if (vi != null)
+         //{
+            return vi.GetValueObject (); // vi must be not null now. It may be VariableInstance.kVoidVariableInstance.
+         //}
 
-         if (propertyId < 0)
-            return null;
-
-         return vi == Global.GetDefaultEntityPropertyValue (spaceId, propertyId);
+         //if (propertyId < 0)
+         //   return null;
+         //
+         //return vi == Global.GetDefaultEntityPropertyValue (spaceId, propertyId);
+               // commented off at v2.05. 
+         
+         //return null;
       }
 
       public function SetCustomProperty (spaceId:int, propertyId:int, valueObject:Object):void
@@ -398,19 +416,20 @@ package player.entity {
          //if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
          //   return;
          //
-         //var vi:VariableInstance = (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId);
+         //var vi:VariableInstance = (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableByIndex (propertyId);
 
          var vi:VariableInstance;
          
          if (spaceId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
-            vi = mCommonCustomProeprtySpace.GetVariableAt (propertyId);
+            vi = mCommonCustomProeprtySpace.GetVariableByIndex (propertyId);
          else // if (spaceId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
-            vi = mCustomProeprtySpace.GetVariableAt (propertyId);
+            vi = mCustomProeprtySpace.GetVariableByIndex (propertyId);
          
-         if (vi != null)
-         {
-            vi.SetValueObject (valueObject);
-         }
+         //if (vi != null)
+         //{
+            vi.SetValueObject (valueObject); // vi must be not null now. It may be VariableInstance.kVoidVariableInstance
+                                             // VariableInstance.kVoidVariableInstance will reject value assigning silently.
+         //}
       }
 
 //====================================================================================================
@@ -418,7 +437,7 @@ package player.entity {
 //====================================================================================================
 
       // not safe for nest callings
-      //protected static var mEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, null);
+      //protected static var mEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (null, null);
       //protected static var mEventHandlerValueSourceList:Parameter = mEventHandlerValueSource0;
       
       private var mCreateEventHandlerList:ListElement_EventHandler = null;
@@ -476,7 +495,7 @@ package player.entity {
          var list_element:ListElement_EventHandler = mCreateEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -511,7 +530,7 @@ package player.entity {
          var list_element:ListElement_EventHandler = mInitializeEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -542,7 +561,7 @@ package player.entity {
          var  list_element:ListElement_EventHandler = mUpdateEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)
@@ -596,7 +615,7 @@ package player.entity {
          var list_element:ListElement_EventHandler = mDestroyEventHandlerList;
 
          //mEventHandlerValueSource0.mValueObject = this;
-         var valueSource0:Parameter_Direct = new Parameter_Direct (this, null);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, this, null);
 
          mWorld.IncStepStage ();
          while (list_element != null)

@@ -4,6 +4,7 @@ package common {
    import flash.utils.ByteArray;
    
    import editor.world.World;
+   import editor.world.CoreClasses;
    import editor.entity.Scene;
    import editor.entity.Entity;
    //import editor.entity.EntityCollisionCategory;
@@ -31,11 +32,11 @@ package common {
    import editor.trigger.ValueSource_Null;
    import editor.trigger.ValueSource_Direct;
    import editor.trigger.ValueSource_Variable;
-   import editor.trigger.ValueSource_Property;
+   import editor.trigger.ValueSource_EntityProperty;
    import editor.trigger.ValueTarget;
    import editor.trigger.ValueTarget_Null;
    import editor.trigger.ValueTarget_Variable;
-   import editor.trigger.ValueTarget_Property;
+   import editor.trigger.ValueTarget_EntityProperty;
    import editor.trigger.VariableSpace;
    import editor.trigger.VariableInstance;
    import editor.trigger.VariableSpace;
@@ -54,7 +55,9 @@ package common {
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueTargetTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.ClassTypeDefine;
+   import common.trigger.CoreClassIds;
+   import common.trigger.CoreClassDeclarations;
    
    import common.trigger.define.FunctionDefine;
    import common.trigger.define.CodeSnippetDefine;
@@ -63,14 +66,16 @@ package common {
    import common.trigger.define.ValueSourceDefine_Null;
    import common.trigger.define.ValueSourceDefine_Direct;
    import common.trigger.define.ValueSourceDefine_Variable;
-   import common.trigger.define.ValueSourceDefine_Property;
+   import common.trigger.define.ValueSourceDefine_ObjectProperty;
+   import common.trigger.define.ValueSourceDefine_EntityProperty;
    import common.trigger.define.ValueTargetDefine;
    import common.trigger.define.ValueTargetDefine_Null;
    import common.trigger.define.ValueTargetDefine_Variable;
-   import common.trigger.define.ValueTargetDefine_Property;
+   import common.trigger.define.ValueTargetDefine_ObjectProperty;
+   import common.trigger.define.ValueTargetDefine_EntityProperty;
    
    //import common.trigger.define.VariableSpaceDefine;
-   import common.trigger.define.VariableInstanceDefine;
+   import common.trigger.define.VariableDefine;
    
    import common.trigger.CoreFunctionIds;
    
@@ -166,11 +171,11 @@ package common {
          
          var value_source_defines:Array = new Array (num_inputs);
          for (i = 0; i < num_inputs; ++ i)
-            value_source_defines [i] = ValueSource2ValueSourceDefine (scene, funcCalling.GetInputValueSource (i), func_declaration.GetInputParamValueType (i));
+            value_source_defines [i] = ValueSource2ValueSourceDefine (scene, funcCalling.GetInputValueSource (i), func_declaration.GetInputParamClassType (i), func_declaration.GetInputParamValueType (i));
          
          var value_target_defines:Array = new Array (num_outputs);
          for (i = 0; i < num_outputs; ++ i)
-            value_target_defines [i] = ValueTarget2ValueTargetDefine (scene, funcCalling.GetOutputValueTarget (i), func_declaration.GetInputParamValueType (i));
+            value_target_defines [i] = ValueTarget2ValueTargetDefine (scene, funcCalling.GetOutputValueTarget (i));//, func_declaration.GetInputParamValueType (i));
          
          var func_calling_define:FunctionCallingDefine = new FunctionCallingDefine ();
          func_calling_define.mFunctionType = func_declaration.GetType ();
@@ -183,7 +188,7 @@ package common {
          return func_calling_define;
       }
       
-      public static function ValueSource2ValueSourceDefine (scene:Scene, valueSource:ValueSource, valueType:int):ValueSourceDefine
+      public static function ValueSource2ValueSourceDefine (scene:Scene, valueSource:ValueSource, classType:int, valueType:int):ValueSourceDefine
       {
          var value_source_define:ValueSourceDefine = null;
          
@@ -195,29 +200,36 @@ package common {
             
             try
             {
-               value_source_define = new ValueSourceDefine_Direct (valueType, ValidateDirectValueObject_Object2Define (scene, valueType, direct_source.GetValueObject ()));
+               value_source_define = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.ValidateDirectValueObject_Object2Define (scene, classType, valueType, direct_source.GetValueObject ()));
             }
             catch (err:Error)
             {
                trace (err.getStackTrace ());
             }
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variable_source:ValueSource_Variable = valueSource as ValueSource_Variable;
             
-            value_source_define = new ValueSourceDefine_Variable (variable_source.GetVariableSpaceType (), variable_source.GetVariableIndex ());
+            if (variable_source.GetPropertyIndex () < 0)
+               value_source_define = new ValueSourceDefine_Variable (variable_source.GetVariableSpaceType (), variable_source.GetVariableIndex ());
+            else
+               value_source_define = new ValueSourceDefine_ObjectProperty (variable_source.GetVariableSpaceType (), variable_source.GetVariableIndex (), variable_source.GetPropertyIndex ());
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            var property_source:ValueSource_Property = valueSource as ValueSource_Property;
+            var property_source:ValueSource_EntityProperty = valueSource as ValueSource_EntityProperty;
             
             // before v2.03
-            //value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+            //value_source_define = new ValueSourceDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), CoreClassIds.ValueType_Entity)
             //                                , 0, property_source.GetPropertyVariableIndex ());
             // from v2.03
-            value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
-                                            , property_source.GetPropertyVariableSpaceType (), property_source.GetPropertyVariableIndex ());
+            //value_source_define = new ValueSourceDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+            //                                , property_source.GetPropertyVariableSpaceType (), property_source.GetPropertyVariableIndex ());
+            // from v2.05
+            value_source_define = new ValueSourceDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_source.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+                                                                      , ValueSource2ValueSourceDefine (scene, property_source.GetPropertyValueSource (), classType, valueType) as ValueSourceDefine_Variable
+                                                                     );
          }
          
          if (value_source_define == null)
@@ -230,28 +242,35 @@ package common {
          return value_source_define;
       }
       
-      public static function ValueTarget2ValueTargetDefine (scene:Scene, valueTarget:ValueTarget, valueType:int):ValueTargetDefine
+      public static function ValueTarget2ValueTargetDefine (scene:Scene, valueTarget:ValueTarget):ValueTargetDefine
       {
          var value_target_define:ValueTargetDefine = null;
          
          var target_type:int = valueTarget.GetValueTargetType ();
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variable_target:ValueTarget_Variable = valueTarget as ValueTarget_Variable;
             
-            value_target_define = new ValueTargetDefine_Variable (variable_target.GetVariableSpaceType (), variable_target.GetVariableIndex ());
+            if (variable_target.GetPropertyIndex () < 0)
+               value_target_define = new ValueTargetDefine_Variable (variable_target.GetVariableSpaceType (), variable_target.GetVariableIndex ());
+            else
+               value_target_define = new ValueTargetDefine_ObjectProperty (variable_target.GetVariableSpaceType (), variable_target.GetVariableIndex (), variable_target.GetPropertyIndex ());
          }
-         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            var property_target:ValueTarget_Property = valueTarget as ValueTarget_Property;
+            var property_target:ValueTarget_EntityProperty = valueTarget as ValueTarget_EntityProperty;
             
             // before v2.03
-            //value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+            //value_target_define = new ValueTargetDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), CoreClassIds.ValueType_Entity)
             //                                , 0, property_target.GetPropertyVariableIndex ());
             // from v2.03
-            value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
-                                            , property_target.GetPropertyVariableSpaceType (), property_target.GetPropertyVariableIndex ());
+            //value_target_define = new ValueTargetDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+            //                                , property_target.GetPropertyVariableSpaceType (), property_target.GetPropertyVariableIndex ());
+            // since v2.05
+            value_target_define = new ValueTargetDefine_EntityProperty (ValueSource2ValueSourceDefine (scene, property_target.GetEntityValueSource (), ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+                                                                      , ValueTarget2ValueTargetDefine (scene, property_target.GetPropertyValueTarget ()) as ValueTargetDefine_Variable
+                                                                    );
          }
          
          if (value_target_define == null)
@@ -260,84 +279,6 @@ package common {
          }
          
          return value_target_define;
-      }
-      
-      // scene may be null for Scene Common variable spaces
-      private static function ValidateDirectValueObject_Object2Define (scene:Scene, valueType:int, valueObject:Object):Object
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return valueObject as Boolean;
-            case ValueTypeDefine.ValueType_Number:
-               return valueObject as Number;
-            case ValueTypeDefine.ValueType_String:
-              return valueObject as String;
-            case ValueTypeDefine.ValueType_Entity:
-            {
-               var entity:Entity = valueObject as Entity;
-               
-               if (entity == null)
-               {
-                  if (valueObject is World)
-                     return Define.EntityId_Ground;
-                  else
-                     return Define.EntityId_None;
-               }
-               else
-               {
-                  if (scene == null)
-                     return Define.EntityId_None;
-                  
-                  return scene.GetAssetCreationId (entity);
-               }
-            }
-            case ValueTypeDefine.ValueType_CollisionCategory:
-            {
-               var ccat:CollisionCategory = valueObject as CollisionCategory;
-               if (ccat == null || scene == null)
-                  return -1;
-               
-               return scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (ccat);
-            }
-            case ValueTypeDefine.ValueType_Module:
-            {
-               var module:AssetImageModule = valueObject as AssetImageModule;
-               if (module == null || scene == null)
-                  return -1;
-               
-               return scene.GetWorld ().GetImageModuleIndex (module);
-            }
-            case ValueTypeDefine.ValueType_Sound:
-            {
-               var sound:AssetSound = valueObject as AssetSound;
-               if (sound == null || scene == null)
-                  return -1;
-               
-               return scene.GetWorld ().GetSoundIndex (sound);
-            }
-            case ValueTypeDefine.ValueType_Scene:
-            {
-               var sceneValue:Scene = valueObject as Scene;
-               if (sceneValue == null || scene == null)
-                  return -1;
-               
-               return scene.GetWorld ().GetSceneIndex (sceneValue);
-            }
-            case ValueTypeDefine.ValueType_Array:
-               //if (valueObject == null)
-               //{
-                  return null;
-               //}
-               //else
-               //{
-               //   
-               //}
-            default:
-            {
-               throw new Error ("! wrong value");
-            }
-         }
       }
       
       public static function VariableSpace2VariableDefines (scene:Scene, variableSpace:VariableSpace, outputVariableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean = false):void
@@ -360,15 +301,18 @@ package common {
          {
             var variableInstance:VariableInstance = variableSpace.GetVariableInstanceAt (variableId);
             
-            var variableInstanceDefine:VariableInstanceDefine = new VariableInstanceDefine ();
+            var variableDefine:VariableDefine = new VariableDefine ();
             if (variablesHaveKey)
-               variableInstanceDefine.mKey = variableInstance.GetKey ();
-            variableInstanceDefine.mName = variableInstance.GetName ();
-            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), ValidateDirectValueObject_Object2Define (scene, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : ValueTypeDefine.GetDefaultDirectDefineValue (variableInstance.GetValueType ())));
+               variableDefine.mKey = variableInstance.GetKey ();
+            variableDefine.mName = variableInstance.GetName ();
+            //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), CoreClasses.ValidateDirectValueObject_Object2Define (scene, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (variableInstance.GetValueType ())));
+            variableDefine.mClassType = variableInstance.GetClassType (); // since v2.05
+            variableDefine.mValueType = variableInstance.GetValueType ();
+            variableDefine.mValueObject = CoreClasses.ValidateDirectValueObject_Object2Define (scene, variableInstance.GetClassType (), variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (variableInstance.GetValueType ()));
             
-            //spaceDefine.mVariableDefines [variableId] = variableInstanceDefine; // 1.52 only
+            //spaceDefine.mVariableDefines [variableId] = variableDefine; // 1.52 only
             
-            outputVariableDefines.push (variableInstanceDefine);
+            outputVariableDefines.push (variableDefine);
          }
          
          //return spaceDefine; // 1.52 only
@@ -378,21 +322,21 @@ package common {
 // define -> definition (editor)
 //==============================================================================================
       
-      public static function FunctionDefine2FunctionDefinition (scene:Scene, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true, localVariableSpace:VariableSpaceLocal = null):void
+      public static function FunctionDefine2FunctionDefinition (scene:Scene, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean, classRefIndex_CorrectionTable:Array, createCodeSnippet:Boolean = true, localVariableSpace:VariableSpaceLocal = null):void
       {
          if (createVariables)
          {
             //>> from v`1.53
             if (functionDefinition.GetFunctionDeclaration () is FunctionDeclaration_Custom)
             {
-               VariableDefines2VariableSpace (scene, functionDefine.mInputVariableDefines, functionDefinition.GetInputVariableSpace (), true, false);
+               VariableDefines2VariableSpace (scene, functionDefine.mInputVariableDefines, classRefIndex_CorrectionTable, functionDefinition.GetInputVariableSpace (), true, false);
                
-               VariableDefines2VariableSpace (scene, functionDefine.mOutputVariableDefines, functionDefinition.GetOutputVariableSpace (), false, false);
+               VariableDefines2VariableSpace (scene, functionDefine.mOutputVariableDefines, classRefIndex_CorrectionTable, functionDefinition.GetOutputVariableSpace (), false, false);
             }
             
             if (localVariableSpace == null)
             {
-               VariableDefines2VariableSpace (scene, functionDefine.mLocalVariableDefines, functionDefinition.GetLocalVariableSpace (), false, false);
+               VariableDefines2VariableSpace (scene, functionDefine.mLocalVariableDefines, classRefIndex_CorrectionTable, functionDefinition.GetLocalVariableSpace (), false, false);
             }
             //>> from v1.56
             else
@@ -481,7 +425,7 @@ package common {
                if (i >= funcCallingDefine.mNumInputs)
                   value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (/*editorWorld.GetTriggerEngine ()*/);
                else
-                  value_sources [i] = ValueSourceDefine2ValueSource (scene, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
+                  value_sources [i] = ValueSourceDefine2ValueSource (scene, inputValueSourceDefines [i], func_declaration.GetInputParamClassType (i), func_declaration.GetInputParamValueType (i), functionDefinition);
             }
             
             value_targets = new Array (funcCallingDefine.mNumOutputs);
@@ -490,7 +434,7 @@ package common {
                if (i >= funcCallingDefine.mNumOutputs)
                   value_targets [i] = func_declaration.GetOutputParamDefinitionAt (i).GetDefaultValueTarget ();
                else
-                  value_targets [i] = ValueTargetDefine2ValueTarget (scene, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
+                  value_targets [i] = ValueTargetDefine2ValueTarget (scene, outputValueTargetDefines [i], func_declaration.GetInputParamClassType (i), func_declaration.GetOutputParamValueType (i), functionDefinition);
             }
          }
          
@@ -500,7 +444,7 @@ package common {
          return func_calling;
       }
       
-      public static function ValueSourceDefine2ValueSource (scene:Scene, valueSourceDefine:ValueSourceDefine, valueType:int, functionDefinition:FunctionDefinition):ValueSource
+      public static function ValueSourceDefine2ValueSource (scene:Scene, valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, functionDefinition:FunctionDefinition, forPropertyOfEntity:Boolean = false):ValueSource
       {
          var value_source:ValueSource = null;
          
@@ -512,14 +456,14 @@ package common {
             
             try
             {
-               value_source = new ValueSource_Direct (ValidateDirectValueObject_Define2Object (scene, valueType, direct_source_define.mValueObject));
+               value_source = new ValueSource_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (scene, classType, valueType, direct_source_define.mValueObject));
             }
             catch (err:Error)
             {
                trace (err.getStackTrace ());
             }
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variable_source_define:ValueSourceDefine_Variable = valueSourceDefine as ValueSourceDefine_Variable;
             
@@ -527,7 +471,16 @@ package common {
             
             var variable_index:int = variable_source_define.mVariableIndex;
             
-            switch (variable_source_define.mSpaceType)
+            var variable_space_type:int = variable_source_define.mSpaceType;
+            
+            if (forPropertyOfEntity)
+            {
+               // ! important. In history, the value may be 0 for ValueSpaceTypeDefine.ValueSpace_EntityProperties
+               if (variable_space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+                  variable_space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+            }
+            
+            switch (variable_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
@@ -545,10 +498,13 @@ package common {
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
-                  var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
-                  if (variable_space != null)
+                  if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     variable_instance = variable_space.GetVariableInstanceAt (variable_index);
+                     var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
+                     if (variable_space != null)
+                     {
+                        variable_instance = variable_space.GetVariableInstanceAt (variable_index);
+                     }
                   }
                   
                   break;
@@ -561,33 +517,54 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Local:
                   variable_instance = functionDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
+               //>>> from v2.05
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  variable_instance = scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+                  variable_instance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               //<<<
                default:
                   break;
             }
-            
             
             if (variable_instance != null)
             {
                value_source = new ValueSource_Variable (variable_instance);
+               if (source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
+               {
+                  (value_source as ValueSource_Variable).SetPropertyIndex ((variable_source_define as ValueSourceDefine_ObjectProperty).mPropertyIndex);
+               }
+            }
+            else if (forPropertyOfEntity)
+            {
+               // make sure it is not null Variable source for property of entity
+               variable_instance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetNullVariableInstance ();
+               value_source = new ValueSource_Variable (variable_instance);
             }
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
+            var property_source_define:ValueSourceDefine_EntityProperty = valueSourceDefine as ValueSourceDefine_EntityProperty;
             
-            switch (property_source_define.mSpacePackageId)
-            {
-               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
-                  value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
-                                                   , new ValueSource_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
-                  break;
-               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
-               case 0: // for compability
-               default:
-                  value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
-                                                   , new ValueSource_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
-                  break;
-            }
+            //switch (property_source_define.mSpacePackageId)
+            //{
+            //   case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+            //      value_source = new ValueSource_EntityProperty (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+            //                                       , new ValueSource_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+            //      break;
+            //   case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+            //   case 0: // for compability, old versions use this value for ValueSpaceTypeDefine.ValueSpace_EntityProperties
+            //   default:
+            //      value_source = new ValueSource_EntityProperty (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+            //                                       , new ValueSource_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
+            //      break;
+            //}
+            
+            value_source = new ValueSource_EntityProperty (ValueSourceDefine2ValueSource (scene, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+                                                         , ValueSourceDefine2ValueSource (scene, property_source_define.mPropertyValueSourceDefine, classType, valueType, null, true) as ValueSource_Variable
+                                                      );
          }
          
          if (value_source == null)
@@ -600,13 +577,13 @@ package common {
          return value_source;
       }
       
-      public static function ValueTargetDefine2ValueTarget (scene:Scene, valueTargetDefine:ValueTargetDefine, valueType:int, functionDefinition:FunctionDefinition):ValueTarget
+      public static function ValueTargetDefine2ValueTarget (scene:Scene, valueTargetDefine:ValueTargetDefine, classType:int, valueType:int, functionDefinition:FunctionDefinition, forPropertyOfEntity:Boolean = false):ValueTarget
       {
          var value_target:ValueTarget = null;
          
          var target_type:int = valueTargetDefine.GetValueTargetType ();
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variable_target_define:ValueTargetDefine_Variable = valueTargetDefine as ValueTargetDefine_Variable;
             
@@ -614,7 +591,16 @@ package common {
             
             var variable_index:int = variable_target_define.mVariableIndex;
             
-            switch (variable_target_define.mSpaceType)
+            var variable_space_type:int = variable_target_define.mSpaceType;
+            
+            if (forPropertyOfEntity)
+            {
+               // ! important. In history, the value may be 0 for ValueSpaceTypeDefine.ValueSpace_EntityProperties
+               if (variable_space_type != ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+                  variable_space_type = ValueSpaceTypeDefine.ValueSpace_EntityProperties;
+            }
+            
+            switch (variable_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   variable_instance = scene.GetWorld ().GetWorldVariableSpace ().GetVariableInstanceAt (variable_index);
@@ -632,10 +618,13 @@ package common {
                   variable_instance = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
-                  var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
-                  if (variable_space != null)
+                  if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     variable_instance = variable_space.GetVariableInstanceAt (variable_index);
+                     var variable_space:VariableSpace = scene.GetWorld ().GetRegisterVariableSpace (valueType);
+                     if (variable_space != null)
+                     {
+                        variable_instance = variable_space.GetVariableInstanceAt (variable_index);
+                     }
                   }
                   
                   break;
@@ -648,6 +637,14 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Local:
                   variable_instance = functionDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
+               //>>> from v2.05
+               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+                  variable_instance = scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+                  variable_instance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
+               //<<<
                default:
                   break;
             }
@@ -655,25 +652,39 @@ package common {
             if (variable_instance != null)
             {
                value_target = new ValueTarget_Variable (variable_instance);
+               if (target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
+               {
+                  (value_target as ValueTarget_Variable).SetPropertyIndex ((variable_target_define as ValueTargetDefine_ObjectProperty).mPropertyIndex);
+               }
+            }
+            else if (forPropertyOfEntity)
+            {
+               // make sure it is not null Variable source for property of entity
+               variable_instance = scene.GetCodeLibManager ().GetEntityVariableSpace ().GetNullVariableInstance ();
+               value_target = new ValueTarget_Variable (variable_instance);
             }
          }
-         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
+            var property_target_define:ValueTargetDefine_EntityProperty = valueTargetDefine as ValueTargetDefine_EntityProperty;
             
-            switch (property_target_define.mSpacePackageId)
-            {
-               case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
-                  value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
-                                                   , new ValueTarget_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
-                  break;
-               case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
-               case 0: // for compability
-               default:
-                  value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
-                                                   , new ValueTarget_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
-                  break;
-            }
+            //switch (property_target_define.mSpacePackageId)
+            //{
+            //   case ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties:
+            //      value_target = new ValueTarget_EntityProperty (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+            //                                       , new ValueTarget_Variable (scene.GetWorld ().GetCommonCustomEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+            //      break;
+            //   case ValueSpaceTypeDefine.ValueSpace_EntityProperties:
+            //   case 0: // for compability
+            //   default:
+            //      value_target = new ValueTarget_EntityProperty (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+            //                                       , new ValueTarget_Variable (scene.GetCodeLibManager ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+            //      break;
+            //}
+
+            value_target = new ValueTarget_EntityProperty (ValueSourceDefine2ValueSource (scene, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, functionDefinition)
+                                                         , ValueTargetDefine2ValueTarget (scene, property_target_define.mPropertyValueTargetDefine, classType, valueType, null, true) as ValueTarget_Variable
+                                                       );
          }
          
          if (value_target == null)
@@ -684,94 +695,9 @@ package common {
          return value_target;
       }
       
-      // scene may be null for Scene Common Variable Spaces
-      private static function ValidateDirectValueObject_Define2Object (scene:Scene, valueType:int, valueObject:Object):Object
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return Boolean (valueObject);
-            case ValueTypeDefine.ValueType_Number:
-               return Number (valueObject);
-            case ValueTypeDefine.ValueType_String:
-               // "as String in commented off, otherwise value_object will be always null, bug?!
-               // re: add back  "as String", in xml -> define: String (valueSourceElement.@direct_value)
-               var text:String = valueObject as String
-               if (text == null)
-                  text = "";
-               return text;
-            case ValueTypeDefine.ValueType_Entity:
-            {
-               if (scene == null) // for Scene Common Variable Spaces
-                  return null;
-
-               var entityIndex:int = valueObject as int;
-               if (entityIndex < 0)
-               {
-                  if (entityIndex == Define.EntityId_Ground)
-                  {
-                     return scene.GetWorld ();
-                  }
-                  else // if (entityIndex == Define.EntityId_None)
-                  {
-                     return null;
-                  }
-               }
-               else
-               {
-                  return scene.GetAssetByCreationId (entityIndex);
-               }
-            }
-            case ValueTypeDefine.ValueType_CollisionCategory:
-            {
-               if (scene == null)
-                  return null;
-               
-               return scene.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (valueObject as int);
-            }
-            case ValueTypeDefine.ValueType_Module:
-            {
-               if (scene == null)
-                  return null;
-               
-               var moduleIndex:int = valueObject as int;
-               return scene.GetWorld ().GetImageModuleByIndex (moduleIndex);
-            }
-            case ValueTypeDefine.ValueType_Sound:
-            {
-               if (scene == null)
-                  return null;
-               
-               var soundIndex:int = valueObject as int;
-               return scene.GetWorld ().GetSoundByIndex (soundIndex);
-            }
-            case ValueTypeDefine.ValueType_Scene:
-            {
-               if (scene == null)
-                  return null;
-               
-               var sceneIndex:int = valueObject as int;
-               return scene.GetWorld ().GetSceneByIndex (sceneIndex);
-            }
-            case ValueTypeDefine.ValueType_Array:
-               //if (valueObject == null)
-               //{
-                  return null;
-               //}
-               //else
-               //{
-               //   
-               //}
-            default:
-            {
-               throw new Error ("!wrong balue");
-            }
-         }
-      }
-      
       //public static function VariableSpaceDefine2VariableSpace (scene:Scene, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void // v1.52 only
       // since v1.53, return a variableIndex_CorrectionTable
-      public static function VariableDefines2VariableSpace (scene:Scene, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false, overrideValueOnExisting:Boolean = true):Array
+      public static function VariableDefines2VariableSpace (scene:Scene, variableDefines:Array, classRefIndex_CorrectionTable:Array, variableSpace:VariableSpace, supportInitalValues:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false, overrideValueOnExisting:Boolean = true):Array
       {
          //>> v1.52 only
          //var numVariables:int = spaceDefine.mVariableDefines.length;
@@ -790,10 +716,10 @@ package common {
          
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
-            //var variableInstanceDefine:VariableInstanceDefine = spaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
-            var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
+            //var variableDefine:VariableDefine = spaceDefine.mVariableDefines [variableId] as VariableDefine; // v1.52 only
+            var variableDefine:VariableDefine = variableDefines [variableId] as VariableDefine;
 
-            var vi:VariableInstance = VariableDefine2VariableInstance (scene, variableInstanceDefine, variableSpace, supportInitalValues, avoidNameConflicting, variablesHaveKey, overrideValueOnExisting);
+            var vi:VariableInstance = VariableDefine2VariableInstance (scene, variableDefine, classRefIndex_CorrectionTable, variableSpace, supportInitalValues, avoidNameConflicting, variablesHaveKey, overrideValueOnExisting);
             
             variableIndex_CorrectionTable [variableId] = (vi == null ? - 1 : vi.GetIndex ());
          }
@@ -801,53 +727,34 @@ package common {
          return variableIndex_CorrectionTable;
       }
       
-      public static function VariableDefine2VariableInstance (scene:Scene, variableInstanceDefine:VariableInstanceDefine, variableSpace:VariableSpace, supportInitalValue:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false, overrideValueOnExisting:Boolean = true):VariableInstance
+      public static function VariableDefine2VariableInstance (scene:Scene, variableDefine:VariableDefine, classRefIndex_CorrectionTable:Array, variableSpace:VariableSpace, supportInitalValue:Boolean, avoidNameConflicting:Boolean, variablesHaveKey:Boolean = false, overrideValueOnExisting:Boolean = true):VariableInstance
       {
-         var directValueSourceDefine:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
+         //var directValueSourceDefine:ValueSourceDefine_Direct = variableDefine.mDirectValueSourceDefine;
          
-         var variableDefinition:VariableDefinition = null;
-         var valueObject:Object = supportInitalValue ? ValidateDirectValueObject_Define2Object (scene, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject) : null;
+         var valueObject:Object = supportInitalValue ? CoreClasses.ValidateDirectValueObject_Define2Object (scene, variableDefine.mClassType, variableDefine.mValueType, variableDefine.mValueObject) : null;
          
-         switch (directValueSourceDefine.mValueType)
+         var variableDefinition:VariableDefinition;
+         if (variableDefine.mClassType == ClassTypeDefine.ClassType_Custom)
          {
-            case ValueTypeDefine.ValueType_Boolean:
-               variableDefinition = new VariableDefinitionBoolean (variableInstanceDefine.mName);
-               break;
-            case ValueTypeDefine.ValueType_Number:
-               variableDefinition = new VariableDefinitionNumber (variableInstanceDefine.mName);
-               break;
-            case ValueTypeDefine.ValueType_String:
-               variableDefinition = new VariableDefinitionString (variableInstanceDefine.mName);
-               break;
-            case ValueTypeDefine.ValueType_Entity:
-               variableDefinition = new VariableDefinitionEntity (variableInstanceDefine.mName);
-               break;
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               variableDefinition = new VariableDefinitionCollisionCategory (variableInstanceDefine.mName);
-               break;
-            case ValueTypeDefine.ValueType_Module:
-               variableDefinition = new VariableDefinitionModule (variableInstanceDefine.mName);
-               break;
-            case ValueTypeDefine.ValueType_Sound:
-               variableDefinition = new VariableDefinitionSound (variableInstanceDefine.mName);
-               break;
-            case ValueTypeDefine.ValueType_Scene:
-               variableDefinition = new VariableDefinitionScene (variableInstanceDefine.mName);
-               break;
-            case ValueTypeDefine.ValueType_Array:
-               variableDefinition = new VariableDefinitionArray (variableInstanceDefine.mName);
-               break;
-            default:
+            var realClassId:int = (variableDefine.mValueType < 0 || classRefIndex_CorrectionTable == null) ? variableDefine.mValueType : classRefIndex_CorrectionTable [variableDefine.mValueType];
+            variableDefinition = scene.GetCodeLibManager ().CreateCustomVariableDefinition (realClassId, variableDefine.mName);
+            
+            if (variableDefinition == null)
             {
-               trace ("error!");
-               variableDefinition = new VariableDefinitionNumber ("!error");
-             }
+               variableDefinition = VariableDefinition.CreateCoreVariableDefinition (CoreClassIds.ValueType_Void, variableDefine.mName + " (custom type is removed)");
+            }
+         }
+         else
+         {
+            // may return Void but not null.
+            variableDefinition = VariableDefinition.CreateCoreVariableDefinition (variableDefine.mValueType, variableDefine.mName);
          }
          
-         if (variableDefinition != null)
-         {
+         // always not null now (since v2.05)
+         //if (variableDefinition != null)
+         //{
             var oldNum:int = variableSpace.GetNumVariableInstances ();
-            var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variablesHaveKey ? variableInstanceDefine.mKey : null, variableDefinition, avoidNameConflicting);
+            var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variablesHaveKey ? variableDefine.mKey : null, variableDefinition, avoidNameConflicting);
 
             if (oldNum != variableSpace.GetNumVariableInstances () || overrideValueOnExisting)
             {
@@ -855,9 +762,11 @@ package common {
             }
              
             return vi;
-         }
-         
-         return null;
+         //}
+         //else
+         //{
+         //   return null;
+         //}
       }
       
       // for ConvertRegisterVariablesToGlobalVariables
@@ -875,18 +784,25 @@ package common {
          
          if (registerVariableInstance.mCorrespondingGlobalVariable == null)
          {
-            var variableInstanceDefine:VariableInstanceDefine = new VariableInstanceDefine ();
-            variableInstanceDefine.mName = "Old " + registerVariableInstance.GetCodeStringAsRegisterVariable ();
-            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
-                                       registerVariableInstance.GetValueType (), 
-                                       ValidateDirectValueObject_Object2Define (
-                                             scene, registerVariableInstance.GetValueType (), 
-                                             ValueTypeDefine.GetDefaultDirectDefineValue (registerVariableInstance.GetValueType ())
-                                       )
-                                    );
+            var variableDefine:VariableDefine = new VariableDefine ();
+            variableDefine.mName = "Old " + registerVariableInstance.GetCodeStringAsRegisterVariable ();
+            //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
+            //                           registerVariableInstance.GetValueType (), 
+            //                           CoreClasses.ValidateDirectValueObject_Object2Define (
+            //                                 scene, registerVariableInstance.GetValueType (), 
+            //                                 CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (registerVariableInstance.GetValueType ())
+            //                           )
+            //                        );
+            variableDefine.mValueType = registerVariableInstance.GetValueType ();
+            variableDefine.mValueObject = CoreClasses.ValidateDirectValueObject_Object2Define (
+                                             scene,
+                                             ClassTypeDefine.ClassType_Core, // only core part of core types have register space.
+                                             registerVariableInstance.GetValueType (), 
+                                             CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (registerVariableInstance.GetValueType ())
+                                          );
             
             var newGlobalVariableInstance:VariableInstance = VariableDefine2VariableInstance (
-                                                                     scene, variableInstanceDefine, 
+                                                                     scene, variableDefine, null,
                                                                      scene.GetCodeLibManager ().GetGlobalVariableSpace (), true, false);
             if (newGlobalVariableInstance == null)
                registerVariableInstance.mCorrespondingGlobalVariable = scene.GetCodeLibManager ().GetGlobalVariableSpace ().GetNullVariableInstance ();
@@ -903,22 +819,23 @@ package common {
 // define -> byte array
 //==============================================================================================
       
-      public static function WriteFunctionDefineIntoBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, writeVariables:Boolean, customFunctionDefines:Array, writeLocalVariables:Boolean = true):void
+      //public static function WriteFunctionDefineIntoBinFile (binFile:ByteArray, functionDefine:FunctionDefine, writeParams:Boolean, writeVariables:Boolean, customFunctionDefines:Array, writeLocalVariables:Boolean = true):void
+      public static function WriteFunctionDefineIntoBinFile (binFile:ByteArray, functionDefine:FunctionDefine, writeParams:Boolean, writeLocalVariables:Boolean, customFunctionDefines:Array, supportCustomClasses:Boolean, customClassDefines:Array):void
       {
-         if (writeVariables)
-         {
-            if (hasParams)
+         //if (writeVariables)
+         //{
+            if (writeParams)
             {
-               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mInputVariableDefines, true, false);
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mInputVariableDefines, true, false, supportCustomClasses);
                
-               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mOutputVariableDefines, false, false);
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mOutputVariableDefines, false, false, supportCustomClasses);
             }
             
             if (writeLocalVariables)
             {
-               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mLocalVariableDefines, false, false);
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mLocalVariableDefines, false, false, supportCustomClasses);
             }
-         }
+         //}
          
          if (customFunctionDefines != null)
          {
@@ -942,6 +859,7 @@ package common {
          var func_id:int = funcCallingDefine.mFunctionId;
          
          var i:int;
+         var vd:VariableDefine;
          var num_inputs:int = funcCallingDefine.mNumInputs;
          var num_outputs:int = funcCallingDefine.mNumOutputs;
          var inputValueSourceDefines:Array = funcCallingDefine.mInputValueSourceDefines;
@@ -958,14 +876,18 @@ package common {
             var func_declaration:FunctionDeclaration = World.GetPlayerCoreFunctionDeclarationById (func_id);
             
             for (i = 0; i < num_inputs; ++ i)
-               WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
+               WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
             var variableDefines:Array = (customFunctionDefines [func_id] as FunctionDefine).mInputVariableDefines;
             
             for (i = 0; i < num_inputs; ++ i)
-               WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], (variableDefines [i] as VariableInstanceDefine).mDirectValueSourceDefine.mValueType, ValueTypeDefine.NumberTypeDetail_Double);
+            {
+               //WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], (variableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetail_Double);
+               vd = variableDefines [i] as VariableDefine;
+               WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], vd.mClassType, vd.mValueType, CoreClassIds.NumberTypeDetail_Double);
+            }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
          {
@@ -976,11 +898,20 @@ package common {
             WriteValueTargetDefinIntoBinFile (binFile, outputValueTargetDefines [i]);
       }
       
-      public static function WriteValueSourceDefinIntoBinFile (binFile:ByteArray, valueSourceDefine:ValueSourceDefine, valueType:int, numberDetail:int):void
+      public static function WriteValueSourceDefinIntoBinFile (binFile:ByteArray, valueSourceDefine:ValueSourceDefine, classType:int, valueType:int, numberDetail:int, forPropertyOfEntity:Boolean = false):void
       {
          // ValueSourceDefine_Direct.mValueType will not packed
          
          var source_type:int = valueSourceDefine.GetValueSourceType ();
+         
+         //>>from v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   if (source_type == 0) // or source_type != ValueSourceTypeDefine.ValueSource_ObjectProperty, only 2 possibilities
+         //      source_type = ValueSourceTypeDefine.ValueSource_Variable; // in history, source_type forPropertyOfEntity is alwasy 0. 
+         //}
+         //<<
          
          binFile.writeByte (source_type);
          
@@ -989,123 +920,89 @@ package common {
             var direct_source_define:ValueSourceDefine_Direct = valueSourceDefine as ValueSourceDefine_Direct;
             var value_object:Object = direct_source_define.mValueObject;
             
-            WriteDirectValueObjectIntoBinFile (binFile, valueType, numberDetail, direct_source_define.mValueObject);
+            CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, classType, valueType, numberDetail, direct_source_define.mValueObject);
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variable_source_define:ValueSourceDefine_Variable = valueSourceDefine as ValueSourceDefine_Variable;
             
             binFile.writeByte (variable_source_define.mSpaceType);
             binFile.writeShort (variable_source_define.mVariableIndex);
-         }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
-         {
-            var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
-            
-            WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double); // ValueTypeDefine.NumberTypeDetail_Double is useless
-            //binFile.writeShort (property_source_define.mSpacePackageId); // before v2.03
-            //>> from v2.03
-            binFile.writeByte (0);
-            binFile.writeByte (property_source_define.mSpacePackageId);
+            //>> from v2.05
+            if (source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
+            {
+               binFile.writeShort ((valueSourceDefine as ValueSourceDefine_ObjectProperty).mPropertyIndex);
+            }
             //<<
-            binFile.writeShort (property_source_define.mPropertyId);
+         }
+         else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
+         {
+            var property_source_define:ValueSourceDefine_EntityProperty = valueSourceDefine as ValueSourceDefine_EntityProperty;
+            
+            WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double); // CoreClassIds.NumberTypeDetail_Double is useless
+            
+            //>> before v2.05
+            ////binFile.writeShort (property_source_define.mSpacePackageId); // before v2.03
+            ////>> from v2.03
+            //binFile.writeByte (0);
+            //binFile.writeByte (property_source_define.mSpacePackageId);
+            ////<<
+            //binFile.writeShort (property_source_define.mPropertyId);
+            //<<
+            
+            //>>since v2.05
+            WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mPropertyValueSourceDefine, classType, valueType, CoreClassIds.NumberTypeDetail_Double, true); // CoreClassIds.NumberTypeDetail_Double is useless
+            //<<
          }
       }
       
-      public static function WriteValueTargetDefinIntoBinFile (binFile:ByteArray, valueTargetDefine:ValueTargetDefine):void
+      public static function WriteValueTargetDefinIntoBinFile (binFile:ByteArray, valueTargetDefine:ValueTargetDefine, forPropertyOfEntity:Boolean = false):void
       {
          var target_type:int = valueTargetDefine.GetValueTargetType ();
          
+         //>>from v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   if (target_type == 0) // or target_type != ValueTargetTypeDefine.ValueTarget_ObjectProperty, only 2 possibilities
+         //      target_type = ValueTargetTypeDefine.ValueTarget_Variable; // in history, target_type forPropertyOfEntity is alwasy 0. 
+         //}
+         //<<
+         
          binFile.writeByte (target_type);
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variable_target_define:ValueTargetDefine_Variable = valueTargetDefine as ValueTargetDefine_Variable;
             
             binFile.writeByte (variable_target_define.mSpaceType);
             binFile.writeShort (variable_target_define.mVariableIndex);
-         }
-         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
-         {
-            var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
-            
-            WriteValueSourceDefinIntoBinFile (binFile, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double); // ValueTypeDefine.NumberTypeDetail_Double is useless
-            //binFile.writeShort (property_target_define.mSpacePackageId); // before v2.03
-            //>> from v2.03
-            binFile.writeByte (0);
-            binFile.writeByte (property_target_define.mSpacePackageId);
-            //<<
-            binFile.writeShort (property_target_define.mPropertyId);
-         }
-      }
-      
-      private static function WriteDirectValueObjectIntoBinFile (binFile:ByteArray, valueType:int,  numberDetail:int, valueObject:Object):void
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               binFile.writeByte ((valueObject as Boolean) ? 1 : 0);
-               break;
-            case ValueTypeDefine.ValueType_Number:
-               switch (numberDetail)
-               {
-                  case ValueTypeDefine.NumberTypeDetail_Single:
-                     binFile.writeFloat (valueObject as Number);
-                     break;
-                  case ValueTypeDefine.NumberTypeDetail_Integer:
-                     binFile.writeInt (valueObject as Number);
-                     break;
-                  case ValueTypeDefine.NumberTypeDetail_Double:
-                  default:
-                     binFile.writeDouble (valueObject as Number);
-                     break;
-               }
-               
-               break;
-            case ValueTypeDefine.ValueType_String:
-               binFile.writeUTF (valueObject == null ? "" : valueObject as String);
-               break;
-            case ValueTypeDefine.ValueType_Entity:
-               binFile.writeInt (valueObject as int);
-               break;
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               binFile.writeInt (valueObject as int); // short is ok, in fact
-               break;
-            case ValueTypeDefine.ValueType_Module:
-               binFile.writeInt (valueObject as int); // short is ok, in fact
-               break;
-            case ValueTypeDefine.ValueType_Sound:
-               binFile.writeInt (valueObject as int); // short is ok, in fact
-               break;
-            case ValueTypeDefine.ValueType_Scene:
-               binFile.writeInt (valueObject as int); // short is ok, in fact
-               break;
-            case ValueTypeDefine.ValueType_Array:
-               //if (valueObject == null) 
-               //{
-                  binFile.writeByte (0);
-               //}
-               //else
-               //{
-               //   binFile.writeByte (1);
-               //   
-               //   var values:Array = valueObject as Array;
-               //   if (values.length > 1024)
-               //      throw new Error ("array i too length: " + values.length);
-               //   
-               //   binFile.writeShort (values.length);
-               //}
-               
-               break;
-            default:
+            //>> from v2.05
+            if (target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
             {
-               throw new Error ("! bad value");
+               binFile.writeShort ((valueTargetDefine as ValueTargetDefine_ObjectProperty).mPropertyIndex);
             }
+            //<<
+         }
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
+         {
+            var property_target_define:ValueTargetDefine_EntityProperty = valueTargetDefine as ValueTargetDefine_EntityProperty;
+            
+            WriteValueSourceDefinIntoBinFile (binFile, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double); // CoreClassIds.NumberTypeDetail_Double is useless
+            
+            ////binFile.writeShort (property_target_define.mSpacePackageId); // before v2.03
+            ////>> from v2.03
+            //binFile.writeByte (0);
+            //binFile.writeByte (property_target_define.mSpacePackageId);
+            ////<<
+            //binFile.writeShort (property_target_define.mPropertyId);
+            
+            WriteValueTargetDefinIntoBinFile (binFile, property_target_define.mPropertyValueTargetDefine, true);
          }
       }
       
       //public static function WriteVariableSpaceDefineIntoBinFile (binFile:ByteArray, variableSpaceDefine:VariableSpaceDefine):void // v1.52 only
-      public static function WriteVariableDefinesIntoBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
+      public static function WriteVariableDefinesIntoBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean, supportCustomClasses:Boolean):void
       {
          //>> v1.52 only
          //binFile.writeUTF (variableSpaceDefine.mName);
@@ -1118,17 +1015,21 @@ package common {
          
          for (var i:int = 0; i < numVariables; ++ i)
          {
-            //var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i]; // v1.52 only
-            var viDefine:VariableInstanceDefine = variableDefines [i];
+            //var variableDefine:VariableDefine = variableSpaceDefine.mVariableDefines [i]; // v1.52 only
+            var variableDefine:VariableDefine = variableDefines [i];
             
             if (variablesHaveKey)
-               binFile.writeUTF (viDefine.mKey == null ? "" : viDefine.mKey);
-            binFile.writeUTF (viDefine.mName);
-            binFile.writeShort (viDefine.mDirectValueSourceDefine.mValueType);
+               binFile.writeUTF (variableDefine.mKey == null ? "" : variableDefine.mKey);
+            binFile.writeUTF (variableDefine.mName);
+            //binFile.writeShort (variableDefine.mDirectValueSourceDefine.mValueType);
+            if (supportCustomClasses)
+               binFile.writeByte (variableDefine.mClassType);
+            binFile.writeShort (variableDefine.mValueType);
             
             if (supportInitalValues)
             {
-               WriteDirectValueObjectIntoBinFile (binFile, viDefine.mDirectValueSourceDefine.mValueType, ValueTypeDefine.NumberTypeDetail_Double, viDefine.mDirectValueSourceDefine.mValueObject);
+               //CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetail_Double, variableDefine.mDirectValueSourceDefine.mValueObject);
+               CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mClassType, variableDefine.mValueType, CoreClassIds.NumberTypeDetail_Double, variableDefine.mValueObject);
             }
          }
       }
@@ -1156,22 +1057,23 @@ package common {
          entityDefine.mInputConditionTargetValues = values;
       }
       
-      public static function Xml2FunctionDefine (functionElement:XML, functionDefine:FunctionDefine, parseParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array, convertLocalVariables:Boolean = true, codeSnippetElement:XML = null):void
+      //public static function Xml2FunctionDefine (functionElement:XML, functionDefine:FunctionDefine, parseParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array, convertLocalVariables:Boolean = true, codeSnippetElement:XML = null):void
+      public static function Xml2FunctionDefine (functionElement:XML, functionDefine:FunctionDefine, convertParams:Boolean, convertLocalVariables:Boolean, customFunctionDefines:Array, codeSnippetElement:XML, supportCustomClasses:Boolean, customClassDefines:Array):void
       {
-         if (convertVariables)
-         {
-            if (parseParams)
+         //if (convertVariables)
+         //{
+            if (convertParams)
             {
-               VariablesXml2Define (functionElement.InputParameters [0], functionDefine.mInputVariableDefines, true, false);
+               VariablesXml2Define (functionElement.InputParameters [0], functionDefine.mInputVariableDefines, true, false, supportCustomClasses);
                
-               VariablesXml2Define (functionElement.OutputParameters [0], functionDefine.mOutputVariableDefines, false, false);
+               VariablesXml2Define (functionElement.OutputParameters [0], functionDefine.mOutputVariableDefines, false, false, supportCustomClasses);
             }
             
             if (convertLocalVariables)
             {
-               VariablesXml2Define (functionElement.LocalVariables [0], functionDefine.mLocalVariableDefines, false, false);
+               VariablesXml2Define (functionElement.LocalVariables [0], functionDefine.mLocalVariableDefines, false, false, supportCustomClasses);
             }
-         }
+         //}
          
          if (customFunctionDefines != null)
          {
@@ -1207,19 +1109,24 @@ package common {
          
          var i:int;
          var value_source_defines:Array = new Array ();
+         var vd:VariableDefine;
          var elementValueSource:XML;
          i = 0;
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
             for each (elementValueSource in funcCallingElement.InputValueSources.ValueSource)
-               value_source_defines.push (Xml2ValueSourceDefine (elementValueSource, func_declaration.GetInputParamValueType (i ++)));
+               value_source_defines.push (Xml2ValueSourceDefine (elementValueSource, ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i ++)));
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
             var calledInputVariableDefines:Array = (customFunctionDefines [func_id] as FunctionDefine).mInputVariableDefines;
             
             for each (elementValueSource in funcCallingElement.InputValueSources.ValueSource)
-               value_source_defines.push (Xml2ValueSourceDefine (elementValueSource, (calledInputVariableDefines [i ++] as VariableInstanceDefine).mDirectValueSourceDefine.mValueType));
+            {
+               //value_source_defines.push (Xml2ValueSourceDefine (elementValueSource, (calledInputVariableDefines [i ++] as VariableDefine).mDirectValueSourceDefine.mValueType));
+               vd = calledInputVariableDefines [i ++] as VariableDefine;
+               value_source_defines.push (Xml2ValueSourceDefine (elementValueSource, vd.mClassType, vd.mValueType));
+            }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
          {
@@ -1232,14 +1139,21 @@ package common {
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
             for each (elementValueTarget in funcCallingElement.OutputValueTargets.ValueTarget)
-               value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget, func_declaration.GetOutputParamValueType (i ++)));
+            {
+               value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget));//, func_declaration.GetOutputParamValueType (i)));
+               ++ i;
+            }
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
             var calledOutputVariableDefines:Array = (customFunctionDefines [func_id] as FunctionDefine).mOutputVariableDefines;
             
             for each (elementValueTarget in funcCallingElement.OutputValueTargets.ValueTarget)
-               value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget, (calledOutputVariableDefines [i ++] as VariableInstanceDefine).mDirectValueSourceDefine.mValueType));
+            {
+               //value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget, (calledOutputVariableDefines [i ++] as VariableDefine).mDirectValueSourceDefine.mValueType));
+               value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget));//, (calledOutputVariableDefines [i] as VariableDefine).mValueType));
+               ++ i;
+            }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
          {
@@ -1258,31 +1172,63 @@ package common {
          return func_calling_define;
       }
       
-      public static function Xml2ValueSourceDefine (valueSourceElement:XML, valueType:int):ValueSourceDefine
+      public static function Xml2ValueSourceDefine (valueSourceElement:XML, classType:int, valueType:int, forPropertyOfEntity:Boolean = false):ValueSourceDefine
       {
          var value_source_define:ValueSourceDefine = null;
          
          var source_type:int = parseInt (valueSourceElement.@type);
          
+         //>>from v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   //if (source_type == 0)
+         //   source_type = ValueSourceTypeDefine.ValueSource_ObjectProperty; // the only possible
+         //}
+         //<<
+         
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
             try
             {
-               value_source_define = new ValueSourceDefine_Direct (valueType, ValidateDirectValueObject_Xml2Define (valueType, valueSourceElement.@direct_value));
+               value_source_define = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.ValidateDirectValueObject_Xml2Define (classType, valueType, valueSourceElement.@direct_value));
             }
             catch (err:Error)
             {
                trace (err.getStackTrace ());
             }
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
-            value_source_define = new ValueSourceDefine_Variable (parseInt (valueSourceElement.@variable_space), parseInt (valueSourceElement.@variable_index));
+            if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+               value_source_define = new ValueSourceDefine_Variable (parseInt (valueSourceElement.@variable_space), parseInt (valueSourceElement.@variable_index));
+            else
+               value_source_define = new ValueSourceDefine_ObjectProperty (parseInt (valueSourceElement.@variable_space), parseInt (valueSourceElement.@variable_index), parseInt (valueSourceElement.@object_property_index));
          }
-         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         else if (source_type == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            value_source_define = new ValueSourceDefine_Property (Xml2ValueSourceDefine (valueSourceElement.PropertyOwnerValueSource[0], ValueTypeDefine.ValueType_Entity)
-                                                                  , parseInt (valueSourceElement.@property_package_id), parseInt (valueSourceElement.@property_id));
+            //>> before v2.05
+            //value_source_define = new ValueSourceDefine_EntityProperty (Xml2ValueSourceDefine (valueSourceElement.PropertyOwnerValueSource[0], ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+            //                                                      , parseInt (valueSourceElement.@property_package_id), parseInt (valueSourceElement.@property_id));
+            //<<
+            
+            var propertyVariableValueSource:ValueSourceDefine_Variable;
+            
+            // for compability, non-object-property source still uses the old style
+            if (valueSourceElement.PropertyVariableValueSource == null || valueSourceElement.PropertyVariableValueSource.length () == 0)
+            {
+               //>> before v2.05
+               propertyVariableValueSource = new ValueSourceDefine_Variable (parseInt (valueSourceElement.@property_package_id), parseInt (valueSourceElement.@property_id));
+               //<<
+            }
+            else // new style for object property since c2.05
+            {
+               propertyVariableValueSource = Xml2ValueSourceDefine (valueSourceElement.PropertyVariableValueSource [0], classType, valueType, true) as ValueSourceDefine_Variable;
+            }
+            
+            value_source_define = new ValueSourceDefine_EntityProperty (Xml2ValueSourceDefine (valueSourceElement.PropertyOwnerValueSource[0], ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+                                                                      , propertyVariableValueSource
+                                                                   );
          }
          
          if (value_source_define == null)
@@ -1295,20 +1241,51 @@ package common {
          return value_source_define;
       }
       
-      public static function Xml2ValueTargetDefine (valueTargetElement:XML, valueType:int):ValueTargetDefine
+      public static function Xml2ValueTargetDefine (valueTargetElement:XML, forPropertyOfEntity:Boolean = false):ValueTargetDefine
       {
          var value_target_define:ValueTargetDefine = null;
          
          var target_type:int = parseInt (valueTargetElement.@type);
          
-         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         //>>from v2.05
+         // no needs
+         //if (forPropertyOfEntity)
+         //{
+         //   //if (target_type == 0)
+         //   target_type = ValueTargetTypeDefine.ValueTarget_ObjectProperty; // the only possible
+         //}
+         //<<
+         
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable || target_type == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
-            value_target_define = new ValueTargetDefine_Variable (parseInt (valueTargetElement.@variable_space), parseInt (valueTargetElement.@variable_index));
+            if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+               value_target_define = new ValueTargetDefine_Variable (parseInt (valueTargetElement.@variable_space), parseInt (valueTargetElement.@variable_index));
+            else
+               value_target_define = new ValueTargetDefine_ObjectProperty (parseInt (valueTargetElement.@variable_space), parseInt (valueTargetElement.@variable_index), parseInt (valueTargetElement.@object_property_index));
          }
-         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            value_target_define = new ValueTargetDefine_Property (Xml2ValueSourceDefine (valueTargetElement.PropertyOwnerValueSource[0], ValueTypeDefine.ValueType_Entity)
-                                                                  , parseInt (valueTargetElement.@property_package_id), parseInt (valueTargetElement.@property_id));
+            //value_target_define = new ValueTargetDefine_EntityProperty (Xml2ValueSourceDefine (valueTargetElement.PropertyOwnerValueSource[0],
+            //                                                          ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity),
+            //                                                      parseInt (valueTargetElement.@property_package_id), parseInt (valueTargetElement.@property_id));
+
+            var propertyVariableValueTarget:ValueTargetDefine_Variable;
+            
+            // for compability, non-object-property source still uses the old style
+            if (valueTargetElement.PropertyVariableValueTarget == null || valueTargetElement.PropertyVariableValueTarget.length () == 0)
+            {
+               //>> before v2.05
+               propertyVariableValueTarget = new ValueTargetDefine_Variable (parseInt (valueTargetElement.@property_package_id), parseInt (valueTargetElement.@property_id));
+               //<<
+            }
+            else // new style for object property since c2.05
+            {
+               propertyVariableValueTarget = Xml2ValueTargetDefine (valueTargetElement.PropertyVariableValueTarget [0], true) as ValueTargetDefine_Variable;
+            }
+
+            value_target_define = new ValueTargetDefine_EntityProperty (Xml2ValueSourceDefine (valueTargetElement.PropertyOwnerValueSource[0], ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity)
+                                                                      , propertyVariableValueTarget
+                                                                    );
          }
          
          if (value_target_define == null)
@@ -1319,47 +1296,8 @@ package common {
          return value_target_define;
       }
       
-      private static function ValidateDirectValueObject_Xml2Define (valueType:int, direct_value:String):Object
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return parseInt (String (direct_value)) != 0;
-            case ValueTypeDefine.ValueType_Number:
-               return parseFloat (String (direct_value));
-            case ValueTypeDefine.ValueType_String:
-               var text:String = String (direct_value); // valueSourceElement.@direct_value is not a string, ??? 
-               if (text == null)
-                  text = "";
-               return text;
-            case ValueTypeDefine.ValueType_Entity:
-               return parseInt (String (direct_value));
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               return parseInt (String (direct_value));
-            case ValueTypeDefine.ValueType_Module:
-               return parseInt (String (direct_value));
-            case ValueTypeDefine.ValueType_Sound:
-               return parseInt (String (direct_value));
-            case ValueTypeDefine.ValueType_Scene:
-               return parseInt (String (direct_value));
-            case ValueTypeDefine.ValueType_Array:
-               //if (direct_value == null) 
-               //{
-                  return null;
-               //}
-               //else 
-               //{
-               //   
-               //}
-            default:
-            {
-               throw new Error ("! wrong value");
-            }
-         }
-      }
-      
       //public static function VariableSpaceXml2Define (elementVariablePackage:XML):VariableSpaceDefine // v1.52 only
-      public static function VariablesXml2Define (elementVariablePackage:XML, outputVariableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean):void
+      public static function VariablesXml2Define (elementVariablePackage:XML, outputVariableDefines:Array, supportInitalValues:Boolean, variablesHaveKey:Boolean, supportCustomClasses:Boolean):void
       {
          //>> v1.52 only
          //var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
@@ -1372,17 +1310,21 @@ package common {
          
          for each (var element:XML in elementVariablePackage.Variable)
          {
-            var viDefine:VariableInstanceDefine = new VariableInstanceDefine ();
+            var variableDefine:VariableDefine = new VariableDefine ();
             
+            var classType:int = supportCustomClasses ? parseInt (element.@class_type) : ClassTypeDefine.ClassType_Core;
             var valueType:int = parseInt (element.@value_type);
             
             if (variablesHaveKey)
-               viDefine.mKey = element.@key;
-            viDefine.mName = element.@name;
-            viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (valueType, supportInitalValues ? ValidateDirectValueObject_Xml2Define (valueType, element.@initial_value) : ValueTypeDefine.GetDefaultDirectDefineValue (valueType));
-            
-            //variableSpaceDefine.mVariableDefines.push (viDefine); v1.52 only
-            outputVariableDefines.push (viDefine);
+               variableDefine.mKey = element.@key;
+            variableDefine.mName = element.@name;
+            //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (valueType, supportInitalValues ? CoreClasses.ValidateDirectValueObject_Xml2Define (valueType, element.@initial_value) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType));
+            variableDefine.mClassType = classType;
+            variableDefine.mValueType = valueType;
+            variableDefine.mValueObject = supportInitalValues ? CoreClasses.ValidateDirectValueObject_Xml2Define (classType, valueType, element.@initial_value) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
+
+            //variableSpaceDefine.mVariableDefines.push (variableDefine); v1.52 only
+            outputVariableDefines.push (variableDefine);
          }
          
          //return variableSpaceDefine; // v1.52 only
@@ -1400,7 +1342,6 @@ package common {
       
       public static function ShiftReferenceIndexesInCodeSnippetDefine (scene:Scene, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, correctionTables:Object):void // entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, functionRefIndex_CorrectionTable:Array, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
-
          var funcCallingDefine:FunctionCallingDefine;
          var i:int;
          var j:int;
@@ -1438,13 +1379,13 @@ package common {
                   var numInputs:int = funcCallingDefine.mNumInputs;
                   for (j = 0; j < numInputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamClassType (j), funcDclaration.GetInputParamValueType (j), correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   }
                   
                   var numOutputs:int = funcCallingDefine.mNumOutputs;
                   for (j = 0; j < numOutputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamClassType (j), funcDclaration.GetOutputParamValueType (j), correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
                   }
                //}
                //else
@@ -1454,7 +1395,7 @@ package common {
          }
       }
       
-      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, correctionTables:Object):void // entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
+      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, classType:int, valueType:int, correctionTables:Object):void // entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
          var valueSourceType:int = sourceDefine.GetValueSourceType ();
          
@@ -1462,53 +1403,72 @@ package common {
          {
             var directSourceDefine:ValueSourceDefine_Direct = sourceDefine as ValueSourceDefine_Direct;
             
-            if (valueType == ValueTypeDefine.ValueType_Entity)
+            if (classType == ClassTypeDefine.ClassType_Core)
             {
-               var entityIndex:int = int (directSourceDefine.mValueObject);
-               
-               if (entityIndex >= 0 && entityIndex < correctionTables.mEntityIndex_CorrectionTable.length)
-                  directSourceDefine.mValueObject = correctionTables.mEntityIndex_CorrectionTable [entityIndex]; // + entityIdShiftedValue;
-               else
-                  directSourceDefine.mValueObject = Define.EntityId_None;
-            }
-            else if (valueType == ValueTypeDefine.ValueType_CollisionCategory)
-            {
-               var ccatIndex:int = int (directSourceDefine.mValueObject);
-               
-               if (ccatIndex >= 0 && ccatIndex < correctionTables.mCcatRefIndex_CorrectionTable)
-                  directSourceDefine.mValueObject = correctionTables.mCcatRefIndex_CorrectionTable [ccatIndex];
-               else
-                  ccatIndex = Define.CCatId_Hidden;
-            }
-            else if (valueType == ValueTypeDefine.ValueType_Module)
-            {
-               var moduleIndex:int = int (directSourceDefine.mValueObject);
-               
-               if (ccatIndex >= 0 && ccatIndex < correctionTables.mImageModuleRefIndex_CorrectionTable.length)
-                  directSourceDefine.mValueObject = correctionTables.mImageModuleRefIndex_CorrectionTable [moduleIndex];
-               else
-                  directSourceDefine.mValueObject = -1;
-            }
-            else if (valueType == ValueTypeDefine.ValueType_Sound)
-            {
-               var soundIndex:int = int (directSourceDefine.mValueObject);
-               
-               if (soundIndex >= 0 && soundIndex < correctionTables.mSoundRefIndex_CorrectionTable.length)
-                  directSourceDefine.mValueObject = correctionTables.mSoundRefIndex_CorrectionTable [soundIndex];
-               else
-                  directSourceDefine.mValueObject = -1;
-            }
-            else if (valueType == ValueTypeDefine.ValueType_Scene)
-            {
-               var sceneIndex:int = int (directSourceDefine.mValueObject);
-               
-               if (sceneIndex >= 0 && sceneIndex < correctionTables.mSceneRefIndex_CorrectionTable.length)
-                  directSourceDefine.mValueObject = correctionTables.mSceneRefIndex_CorrectionTable [sceneIndex];
-               else
-                  directSourceDefine.mValueObject = -1;
+               if (valueType == CoreClassIds.ValueType_Entity)
+               {
+                  var entityIndex:int = int (directSourceDefine.mValueObject);
+                  
+                  if (entityIndex >= 0 && entityIndex < correctionTables.mEntityIndex_CorrectionTable.length)
+                     directSourceDefine.mValueObject = correctionTables.mEntityIndex_CorrectionTable [entityIndex]; // + entityIdShiftedValue;
+                  else
+                     directSourceDefine.mValueObject = Define.EntityId_None;
+               }
+               else if (valueType == CoreClassIds.ValueType_CollisionCategory)
+               {
+                  var ccatIndex:int = int (directSourceDefine.mValueObject);
+                  
+                  if (ccatIndex >= 0 && ccatIndex < correctionTables.mCcatRefIndex_CorrectionTable)
+                     directSourceDefine.mValueObject = correctionTables.mCcatRefIndex_CorrectionTable [ccatIndex];
+                  else
+                     ccatIndex = Define.CCatId_Hidden;
+               }
+               else if (valueType == CoreClassIds.ValueType_Module)
+               {
+                  var moduleIndex:int = int (directSourceDefine.mValueObject);
+                  
+                  if (ccatIndex >= 0 && ccatIndex < correctionTables.mImageModuleRefIndex_CorrectionTable.length)
+                     directSourceDefine.mValueObject = correctionTables.mImageModuleRefIndex_CorrectionTable [moduleIndex];
+                  else
+                     directSourceDefine.mValueObject = -1;
+               }
+               else if (valueType == CoreClassIds.ValueType_Sound)
+               {
+                  var soundIndex:int = int (directSourceDefine.mValueObject);
+                  
+                  if (soundIndex >= 0 && soundIndex < correctionTables.mSoundRefIndex_CorrectionTable.length)
+                     directSourceDefine.mValueObject = correctionTables.mSoundRefIndex_CorrectionTable [soundIndex];
+                  else
+                     directSourceDefine.mValueObject = -1;
+               }
+               else if (valueType == CoreClassIds.ValueType_Scene)
+               {
+                  var sceneIndex:int = int (directSourceDefine.mValueObject);
+                  
+                  if (sceneIndex >= 0 && sceneIndex < correctionTables.mSceneRefIndex_CorrectionTable.length)
+                     directSourceDefine.mValueObject = correctionTables.mSceneRefIndex_CorrectionTable [sceneIndex];
+                  else
+                     directSourceDefine.mValueObject = -1;
+               }
+               else if (valueType == CoreClassIds.ValueType_Class)
+               {
+                  if (directSourceDefine.mValueObject.mClassType == ClassTypeDefine.ClassType_Custom)
+                  {
+                     var classId:int = directSourceDefine.mValueObject.mValueType;
+                     if (classId >= 0 && classId < correctionTables.mClassRefIndex_CorrectionTable.length)
+                     {
+                        directSourceDefine.mValueObject.mValueType = correctionTables.mClassRefIndex_CorrectionTable [classId];
+                     }
+                     else
+                     {
+                        directSourceDefine.mValueObject.mClassType = ClassTypeDefine.ClassType_Core;
+                        directSourceDefine.mValueObject.mValueType = CoreClassIds.ValueType_Void;
+                     }
+                  }
+               }
             }
          }
-         else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Variable)
+         else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Variable || valueSourceType == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
             var variableSourceDefine:ValueSourceDefine_Variable = sourceDefine as ValueSourceDefine_Variable;
             
@@ -1535,32 +1495,32 @@ package common {
                }
             }
          }
-         else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Property)
+         else if (valueSourceType == ValueSourceTypeDefine.ValueSource_EntityProperty)
          {
-            var propertySourceDefine:ValueSourceDefine_Property = sourceDefine as ValueSourceDefine_Property;
+            var propertySourceDefine:ValueSourceDefine_EntityProperty = sourceDefine as ValueSourceDefine_EntityProperty;
             
-            var propertyId:int = propertySourceDefine.mPropertyId;
+            var propertyId:int = propertySourceDefine.mPropertyValueSourceDefine.mVariableIndex;
             if (propertyId >= 0)
             {
-               if (propertySourceDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               if (propertySourceDefine.mPropertyValueSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
                {
-                  propertySourceDefine.mPropertyId = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
+                  propertySourceDefine.mPropertyValueSourceDefine.mVariableIndex = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
                }
-               else // if (propertySourceDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               else // if (propertySourceDefine.mPropertyValueSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
                {
-                  propertySourceDefine.mPropertyId = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
+                  propertySourceDefine.mPropertyValueSourceDefine.mVariableIndex = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
                }
             }
             
-            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
          }
       }
       
-      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, correctionTables:Object):void // entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
+      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, classType:int, valueType:int, correctionTables:Object):void // entityIdShiftedValue:int, ccatRefIndex_CorrectionTable:Array, worldVariableShiftIndex:int, saveDataVariableShiftIndex:int, globalVariableShiftIndex:int, commonGlobalVariableShiftIndex:int, entityVariableShiftIndex:int, commonEntityVariableShiftIndex:int, sessionVariableShiftIndex:int, imageModuleRefIndex_CorrectionTable:Array, soundRefIndex_CorrectionTable:Array, sceneRefIndex_CorrectionTable:Array):void
       {
          var valueTargetType:int = targetDefine.GetValueTargetType ();
          
-         if (valueTargetType == ValueTargetTypeDefine.ValueTarget_Variable)
+         if (valueTargetType == ValueTargetTypeDefine.ValueTarget_Variable || valueTargetType == ValueTargetTypeDefine.ValueTarget_ObjectProperty)
          {
             var variableTargetDefine:ValueTargetDefine_Variable = targetDefine as ValueTargetDefine_Variable;
             
@@ -1587,24 +1547,24 @@ package common {
                }
             }
          }
-         else if (valueTargetType == ValueTargetTypeDefine.ValueTarget_Property)
+         else if (valueTargetType == ValueTargetTypeDefine.ValueTarget_EntityProperty)
          {
-            var propertyTargetDefine:ValueTargetDefine_Property = targetDefine as ValueTargetDefine_Property;
+            var propertyTargetDefine:ValueTargetDefine_EntityProperty = targetDefine as ValueTargetDefine_EntityProperty;
             
-            var propertyId:int = propertyTargetDefine.mPropertyId;
+            var propertyId:int = propertyTargetDefine.mPropertyValueTargetDefine.mVariableIndex;
             if (propertyId >= 0)
             {
-               if (propertyTargetDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
+               if (propertyTargetDefine.mPropertyValueTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties)
                {
-                  propertyTargetDefine.mPropertyId = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
+                  propertyTargetDefine.mPropertyValueTargetDefine.mVariableIndex = correctionTables.mCommonEntityVariableIndex_CorrectionTable [propertyId]; // + commonEntityVariableShiftIndex;
                }
-               else // if (propertyTargetDefine.mSpacePackageId == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
+               else // if (propertyTargetDefine.mPropertyValueTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_EntityProperties) or 0
                {
-                  propertyTargetDefine.mPropertyId = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
+                  propertyTargetDefine.mPropertyValueTargetDefine.mVariableIndex = correctionTables.mEntityVariableIndex_CorrectionTable [propertyId]; // + entityVariableShiftIndex;
                }
             }
             
-            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
+            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, correctionTables); // entityIdShiftedValue, ccatRefIndex_CorrectionTable, worldVariableShiftIndex, saveDataVariableShiftIndex, globalVariableShiftIndex, commonGlobalVariableShiftIndex, entityVariableShiftIndex, commonEntityVariableShiftIndex, sessionVariableShiftIndex, imageModuleRefIndex_CorrectionTable, soundRefIndex_CorrectionTable, sceneRefIndex_CorrectionTable);
          }
       }
    }

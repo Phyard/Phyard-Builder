@@ -1,3 +1,14 @@
+Please view the LICENSE or License.txt files in subfolders for details.
+Here is just a simple license overview:
+  /res: CC0 License (Public Domain)
+  /src: New BSD License
+  /external/helper_classes_as3: MIT License
+  /external/box2d_as3_v210: zlib License
+  /external/box2dflash: zlib License
+  /external/box2dex: zlib License
+
+-----------
+
 Prerequisited SDKS:
 1. Java SDK or JRE
 2. Ant

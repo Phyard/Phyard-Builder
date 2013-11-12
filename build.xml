@@ -4,8 +4,6 @@
    <condition property="file.local.properties" value="local.properties.Windows1" else="local.properties.Linux">
       <os family="windows" />
    </condition>
-
-   <property name="setting.ToEncryptSWFs"        value="false" />
    
    <property file="${basedir}/${file.local.properties}" />
    <!-- if above file is not available, do nothing, so set default values -->
@@ -14,14 +12,8 @@
          <isset property="Path.FlexSDK"/>
       </not>
    </condition>
-   <condition property="Path.SecureSWF" value="D:/softs/secureSWF/secureSWF">
-      <not>  
-         <isset property="Path.SecureSWF"/>
-      </not>
-   </condition>
 
    <property name="dir.flexsdk"        value="${Path.FlexSDK}" />
-   <property name="dir.secureswf"        value="${Path.SecureSWF}" />
 
    <property name="editor-width" value="958" />
    <property name="editor-height" value="678" />
@@ -95,28 +87,6 @@
       </and>
    </condition>
 
-   <property name="program.secureSWF.without.postsuffix"        value="${dir.secureswf}/ssCLI" />
-   <condition property="program.secureSWF" value="${program.secureSWF.without.postsuffix}.exe">
-      <os family="windows" />
-   </condition>
-   <condition property="program.secureSWF" value="${program.secureSWF.without.postsuffix}">
-      <not>
-         <os family="windows" />
-      </not>
-   </condition>
-
-   <!--
-   <available file="${program.secureSWF}" property="has.program.secureSWF"/>
-   -->
-
-   <!--
-   <path id="java-class-path">
-      <fileset dir="${dir.third-party}/java_libs" includes="**/*.jar" />
-   </path>
-
-   <pathconvert property="string.java-class-path" refid="java-class-path"/>
-   -->
-
    <target name="cleanup">
       <delete dir="${dir.build}" quiet="true" />
    </target>
@@ -158,27 +128,8 @@
 
    <!-- ============================================= editor =========================================================== -->
 
-   <target name="--encrypt-swf" if="${setting.ToEncryptSWFs}">
-      <mkdir dir="${--to-directory}" />
-      <delete file="${--to-directory}/${--from-swf}" quiet="true" />
-      <delete file="${--to-directory}/${--to-swf}" quiet="true" />
-
-      <exec dir="${--from-directory}" executable="${program.secureSWF}">
-         <arg line="${--from-directory}/${--from-swf}" /> <!-- here must inlcude the path on linux -->
-         <arg line="${--to-directory}"/>
-         <arg line="-wrap:${--wrap}"/>
-         <arg line="-controlflow:${--controlflow}"/>
-         <arg line="-optimize:${--optimize}"/>
-         <arg line="-slr:${--slr}"/>
-         <arg line="-rename:${--rename}"/>
-         <arg line="-safe:${--safe}"/>
-      </exec>
-
-      <move file="${--to-directory}/${--from-swf}" tofile="${--to-directory}/${--to-swf}"/>
-   </target>
-
-   <target name="--move-swf" unless="${setting.ToEncryptSWFs}">
-      <move file="${--from-directory}/${--from-swf}" tofile="${--to-directory}/${--to-swf}"/>
+   <target name="--move-swf">
+      <copy file="${--from-directory}/${--from-swf}" tofile="${--to-directory}/${--to-swf}" overwrite="true" />
    </target>
 
    <target name="--release-swf">
@@ -186,7 +137,6 @@
       <delete file="${--to-directory}/${--from-swf}" quiet="true" />
       <delete file="${--to-directory}/${--to-swf}" quiet="true" />
       
-      <antcall target="--encrypt-swf" />
       <antcall target="--move-swf" />
    </target>
 

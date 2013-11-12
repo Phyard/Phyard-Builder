@@ -1,4 +1,4 @@
-LocalSettings.properties*
+local.properties*
 !##release/editor.htm
 !#output-editor/editor.htm
 \##release/**/*

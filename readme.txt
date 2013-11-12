@@ -1,4 +1,4 @@
-Please view the LICENSE or License.txt files in subfolders for details.
+Please view the LICENSE or License.txt files in subfolders for detailed licenses.
 Here is just a simple license overview:
   /res: CC0 License (Public Domain)
   /src: New BSD License

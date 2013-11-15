@@ -392,6 +392,8 @@
    <mx:XML id="SceneSettingsMenuData">
       <root>
          <menuitem label="Change Current Scene Name ..." data="change_scene_name"/>
+         <menuitem label="Delete All Entities In Current Scene ..." data="clear_all"/>
+         <menuitem label="Reset Current Scene ..." data="reset_scene"/>
          
          <menuitem type="separator" data=""/>
          
@@ -409,12 +411,7 @@
          
          <menuitem type="separator" data=""/>
          
-         <menuitem label="Clear All Entities ..." data="clear_all"/>
-         <!--menuitem label="Reset Current Scene ..." data="reset_scene"/-->
-         
-         <menuitem type="separator" data=""/>
-         
-         <menuitem id="MenuItem_DeleteScene" label="Delete Current Scene" data="delete_current_scene" enabled="true"/>
+         <menuitem id="MenuItem_DeleteScene" label="Delete Current Scene ..." data="delete_current_scene" enabled="true"/>
       </root>
    </mx:XML>
 
@@ -990,33 +987,33 @@
       }
       
       // 
-      private var mClearOrResetSceneMenu:Menu = null;
+      private var mEditSceneMenu:Menu = null;
       
       private function OnClickEditSceneButton ():void
       {
-         if (mClearOrResetSceneMenu == null)
+         if (mEditSceneMenu == null)
          {
-            mClearOrResetSceneMenu = Menu.createMenu(Button_SceneEditMenu, SceneSettingsMenuData, false);
-            mClearOrResetSceneMenu.labelField="@label";
-            mClearOrResetSceneMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectClearOrResetSceneMenu);
+            mEditSceneMenu = Menu.createMenu(Button_SceneEditMenu, SceneSettingsMenuData, false);
+            mEditSceneMenu.labelField="@label";
+            mEditSceneMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectEditSceneMenu);
          }
          
          var point:Point = Button_SceneEditMenu.localToGlobal (new Point (0, Button_SceneEditMenu.height));
          
-         mClearOrResetSceneMenu.show(point.x, point.y);
+         mEditSceneMenu.show(point.x, point.y);
       }
       
-      private function OnSelectClearOrResetSceneMenu (event:MenuEvent):void
+      private function OnSelectEditSceneMenu (event:MenuEvent):void
       {
          var itemData:String = event.item.@data;
          if (itemData == "clear_all")
          {
-            EditorContext.ShowAlert ("Clear All Entities", "Do you want to clear all entities?", true, mCurrentSceneEditPanel.ClearAllEntities);
+            EditorContext.ShowAlert ("Clear All Entities", "Do you want to clear all entities? (Functions will not be deleted)", true, mCurrentSceneEditPanel.ClearAllEntities);
          }
-         //else if (itemData == "reset_scene")
-         //{
-         //   EditorContext.ShowAlert ("Reset Scene", "Do you want to reset current scene?", true, mCurrentSceneEditPanel.ResetScene);
-         //}
+         else if (itemData == "reset_scene")
+         {
+            EditorContext.ShowAlert ("Reset Scene", "Do you want to reset current scene? (All entities and functions will be deleted)", true, mCurrentSceneEditPanel.ResetScene);
+         }
          else if (itemData == "general")
          {
             mCurrentSceneEditPanel.ShowLevelRulesEditDialog ();

@@ -138,11 +138,6 @@ package editor.entity {
          super.DestroyAllAssets ();
       }
       
-      public function Reset ():void
-      {
-         // todo
-      }
-      
       override public function ToCodeString ():String
       {
          return "Scene#" + GetSceneIndex ();

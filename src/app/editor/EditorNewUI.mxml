@@ -353,13 +353,6 @@
       </root>
    </mx:XML>
 
-   <mx:XML id="NewDesignMenuData">
-      <root>
-         <menuitem label="Clear All Entities" data="clear_all"/>
-         <menuitem label="Clear All Entities and Reset Scene" data="clear_all_and_reset"/>
-      </root>
-   </mx:XML>
-
   <mx:Script><![CDATA[
       
       import mx.controls.Button;

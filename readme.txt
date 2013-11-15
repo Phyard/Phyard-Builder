@@ -16,7 +16,7 @@ Prerequisited SDKS:
 
 -----------
 
-Under the project top fodler, create a "local.properties.Windows" file 
+Under the project top folder, please create a "local.properties.Windows" file 
 for Windows OS or a "local.properties.Linux" file for other OSes. 
 Then add a line "Path.FlexSDK=<Path-To-Flex_SDK>" in this file. For example:
 
@@ -25,4 +25,4 @@ Then add a line "Path.FlexSDK=<Path-To-Flex_SDK>" in this file. For example:
 -----------
 
 Run "ant release-editor" to create a release editor file in ##release folder.
-Run "ant debug-editor" to create a release editor file in #output-editor folder.
+Run "ant debug-editor" to create a debug editor file in #output-editor folder.

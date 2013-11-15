@@ -849,7 +849,7 @@ package editor.entity.dialog {
       
       public function ResetScene ():void
       {
-         mScene.Reset ();
+         mScene.DestroyAllAssets ();
          
          OnAssetSelectionsChanged ();
           

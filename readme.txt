@@ -10,9 +10,11 @@ Here is just a simple license overview:
 -----------
 
 Prerequisited SDKS:
-1. Java SDK or JRE
-2. Ant
-3. Flex SDK 3.5.0 (doesn't test on newer versions)
+1. JRE (or JDK)
+2. Apache Ant
+3. Flex SDK 3.5.0 or 3.6a (not tested on newer versions)
+   For 3.5.0, the JRE must be x86 version. 
+   For 3.6a, both JRE x86 or x64 versions are ok.
 
 -----------
 

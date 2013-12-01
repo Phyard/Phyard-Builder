@@ -94,7 +94,8 @@ package editor.trigger {
       {
          if (mIndex < 0)
             return forTarget ? "void" : "null";
-         else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_EntityProperties)
+         else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_EntityProperties
+               || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_CustomType)
             return "[" + mIndex + ":\"" + GetName () + "\"]";
          else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Register)
             return mVariableSpace.GetCodeName () + "[" + mIndex + "]";

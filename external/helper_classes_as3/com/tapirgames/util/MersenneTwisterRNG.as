@@ -1,5 +1,14 @@
 package com.tapirgames.util {
    
+   // mt19937, http://en.wikipedia.org/wiki/Mersenne_twister
+   
+   // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/elicense.html
+   // Commercial Use of Mersenne Twister
+   // 2001/4/6
+   // Until 2001/4/6, MT had been distributed under GNU Public License, but after 2001/4/6, 
+   // we decided to let MT be used for any purpose, including commercial use. 
+   // 2002-versions mt19937ar.c, mt19937ar-cok.c are considered to be usable freely. 
+   
    // refs:
    // - http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/
    // - http://www.stephencalenderblog.com/?p=181

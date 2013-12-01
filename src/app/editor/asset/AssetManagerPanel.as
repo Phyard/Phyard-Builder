@@ -429,7 +429,10 @@ package editor.asset {
             }
          }
          
-         if (contextMenu == null || contextMenu.customItems) // may be null on some deviecs
+         // bug!!!
+         //if (contextMenu == null || contextMenu.customItems) // may be null on some devices
+         //   return;
+         if (contextMenu == null || contextMenu.customItems == null) // may be null on some devices
             return;
          
          if (shown)

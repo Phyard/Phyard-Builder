@@ -904,7 +904,7 @@ trace (segment.mIndex + "> start index: " + segment.mStartPoint.mIndex + ", end 
       private static function AngleDiffWithTranc (standardValue:Number, realValue:Number):Number
       {
          var diff:Number = Math.abs (realValue - standardValue);
-         if (diff > 5000)
+         if (diff > 5000) // ? why? forget. Maybe a mistake.
             return diff;
          
          if (diff >= 360)

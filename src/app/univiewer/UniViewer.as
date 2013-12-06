@@ -223,6 +223,8 @@ package univiewer
          {
             mViewer.OnContainerResized ();
          }
+         
+         UpdateInfoTextPosition ();
       }
 
       private function OnLoadViewerSwfProgress (event:ProgressEvent):void
@@ -262,6 +264,15 @@ package univiewer
          {
             mInfoTextField.visible = true;
             mInfoTextField.htmlText = infoText;
+            
+            UpdateInfoTextPosition ();
+         }
+      }
+      
+      private function UpdateInfoTextPosition ():void
+      {
+         if (mInfoTextField != null)
+         {
             //mInfoTextField.x = 0.5 * (App::Default_Width - mInfoTextField.width);
             //mInfoTextField.y = 0.5 * (App::Default_Height - mInfoTextField.height);
             mInfoTextField.x = 0.5 * (stage.stageWidth - mInfoTextField.width);

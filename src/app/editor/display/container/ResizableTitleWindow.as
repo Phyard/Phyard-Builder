@@ -54,9 +54,22 @@ package editor.display.container
          addEventListener (MouseEvent.ROLL_OUT, OnMouseOut);
 		}
 		
+		protected var mInPickingMode:Boolean = false;
+      
+      public function IsInPickingMode ():Boolean
+      {
+         return mInPickingMode;
+      }
+      
+      public function SetInPickingMode (inPicking:Boolean):void
+      {
+          mInPickingMode = inPicking;
+      }
+		
 		protected function CanBeSetAsCurrentFocusedTitleWindow ():Boolean
 		{
 		   return true;
+		   // for subclass with madel dialog style, override this return false.
 		}
 		
 		public function SetAsCurrentFocusedTitleWindow ():void
@@ -68,6 +81,7 @@ package editor.display.container
       }
 		
 		private var mFocused:Boolean = false;
+		
 		public function OnFocusChanged (focused:Boolean):void
 		{
 		   if (mFocused != focused)

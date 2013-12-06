@@ -75,69 +75,62 @@
          
          import editor.EditorContext;
 
-      // static functions
-         
-         public static function ShowCodeLibListDialog (OnItemPicked:Function = null):void
+      // static functions      
+      
+         public static function MakeSureCodeLibListDialogCreated ():Boolean
          {
             if (EditorContext.GetSingleton ().mCodeLibListDialog == null)
             {
                EditorContext.GetSingleton ().mCodeLibListDialog = new CodeLibListDialog ();
+               return true;
             }
             
-            EditorContext.GetSingleton ().mCodeLibListDialog.SetAsCurrentFocusedTitleWindow ();
+            return false;
+         }
+         
+         public static function ShowCodeLibListDialog ():void
+         {
+            var firstTime:Boolean = MakeSureCodeLibListDialogCreated ();
             
-            if (EditorContext.GetSingleton ().mCodeLibListDialog.parent != null) // OnItemPicked must be null
-            {
-               PopUpManager.bringToFront (EditorContext.GetSingleton ().mCodeLibListDialog);
-            }
-            else
-            {
-               PopUpManager.addPopUp (EditorContext.GetSingleton ().mCodeLibListDialog, EditorContext.GetEditorApp (), true || OnItemPicked != null);
-               PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
-            }
+            //EditorContext.GetSingleton ().OpenModelessDialog (EditorContext.GetSingleton ().mCodeLibListDialog, firstTime);
+            EditorContext.GetSingleton ().OnOpenModalDialog (EditorContext.GetSingleton ().mCodeLibListDialog, firstTime, false);
             
             //EditorContext.GetSingleton ().SetHasSettingDialogOpened (true); // bug: will prevent functions's setting dialog pop up
             EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCodeLibManager ());
-            
-            if (OnItemPicked != null)
-            {
-               EditorContext.GetSingleton ().mCodeLibListDialog.mInPickingMode = true;
-               
-               EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().EnterPickAssetIntent (OnItemPicked, EndPickingMode);
-            }
          }
          
          public static function HideCodeLibListDialog ():void
          {
             //EditorContext.GetSingleton ().SetHasSettingDialogOpened (false);
-            if (EditorContext.GetSingleton ().mCodeLibListDialog.mInPickingMode)
+            if (EditorContext.GetSingleton ().mCodeLibListDialog.IsInPickingMode ())
             {
-               EndPickingMode ();
+               EndPickingMode (true);
             }
             else
             {
-               PopUpManager.removePopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
+               //EditorContext.GetSingleton ().CloseModelessDialog (EditorContext.GetSingleton ().mCodeLibListDialog);
+               EditorContext.GetSingleton ().OnCloseModalDialog ();
             }
          }
          
          public static function StartPickingMode (OnItemPicked:Function):void
          {
-            if (EditorContext.GetSingleton ().mCodeLibListDialog != null)
-            {
-               PopUpManager.removePopUp (EditorContext.GetSingleton ().mCodeLibListDialog);
-            }
+            var firstTime:Boolean = MakeSureCodeLibListDialogCreated ();
             
-            ShowCodeLibListDialog (OnItemPicked);
+            EditorContext.OpenAssetPickingDialog (EditorContext.GetSingleton ().mCodeLibListDialog, firstTime, true);
+            
+            EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().SetCodeLibManager (EditorContext.GetEditorApp ().GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCodeLibManager ());
+            
+            EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().EnterPickAssetIntent (OnItemPicked, EndPickingMode);
          }
          
-         public static function EndPickingMode ():void
+         public static function EndPickingMode (forceClose:Boolean = false):void
          {
-            if (EditorContext.GetSingleton ().mCodeLibListDialog != null)
+            //if (EditorContext.GetSingleton ().mCodeLibListDialog != null)
+            if (EditorContext.GetSingleton ().mCodeLibListDialog.IsInPickingMode ())
             {
-               EditorContext.GetSingleton ().mCodeLibListDialog.mInPickingMode = false;
+               EditorContext.CloseAssetPickingDialog (forceClose); // must before the following line
                
-               PopUpManager.removePopUp(EditorContext.GetSingleton ().mCodeLibListDialog);
-            
                EditorContext.GetSingleton ().mCodeLibListDialog.GetCodeLibListPanel ().ExitPickAssetIntent ();
             }
          }
@@ -156,8 +149,6 @@
          
       //======================================================
       
-         internal var mInPickingMode:Boolean = false;
-         
          private function InitDialog ():void
          {
             // 
@@ -193,37 +184,37 @@
 
          private function OnEditSessionVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetSessionVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
+            EditorContext.OpenVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetSessionVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
          private function OnEditGlobalVariables ():void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetGlobalVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
+            EditorContext.OpenVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetGlobalVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
 
          private function OnEditEntityVariables ():void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetEntityVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
+            EditorContext.OpenVariableSpaceEditDialog (this, GetCodeLibListPanel ().GetCodeLibManager ().GetEntityVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
          private function OnEditCommonGlobalVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
+            EditorContext.OpenVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonSceneGlobalVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
 
          private function OnEditCommonEntityVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
+            EditorContext.OpenVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetCommonCustomEntityVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
          private function OnEditWorldVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
+            EditorContext.OpenVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetWorldVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
 
          private function OnEditGameSaveVariables (event:Event = null):void
          {
-            EditorContext.ShowVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
+            EditorContext.OpenVariableSpaceEditDialog (this, EditorContext.GetEditorApp ().GetWorld ().GetGameSaveVariableSpace (), null, GetCodeLibListPanel ().GetCodeLibManager ());
          }
          
      ]]>

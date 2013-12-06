@@ -180,6 +180,7 @@
          import mx.managers.PopUpManager;
          import mx.controls.Button;
          import mx.containers.Box;
+         import mx.core.IFlexDisplayObject;
          
          import editor.image.AssetImageCompositeModule;
          import editor.image.dialog.AssetImageCompositeModuleEditPanel;
@@ -191,25 +192,16 @@
          {
             var assetImageCompositeModuleEditDialog:AssetImageCompositeModuleEditDialog = assetImageCompositeModule.GetAssetImageCompositeModuleEditDialog ();
             
-            if (assetImageCompositeModuleEditDialog == null)
+            var firstTime:Boolean = assetImageCompositeModuleEditDialog == null;
+            if (firstTime)
             {
                assetImageCompositeModuleEditDialog = new AssetImageCompositeModuleEditDialog ();
                assetImageCompositeModuleEditDialog.SetUseLayoutForSequencedModule (assetImageCompositeModule.IsSequenced ());
             }
             
-            assetImageCompositeModuleEditDialog.SetAsCurrentFocusedTitleWindow ();
+            EditorContext.GetSingleton ().OpenModelessDialog (assetImageCompositeModuleEditDialog, firstTime);
             
-            if (assetImageCompositeModuleEditDialog.parent != null)
-            {
-               PopUpManager.bringToFront (assetImageCompositeModuleEditDialog);
-            }
-            else
-            {
-               PopUpManager.addPopUp (assetImageCompositeModuleEditDialog, EditorContext.GetEditorApp (), false);
-               PopUpManager.centerPopUp (assetImageCompositeModuleEditDialog);
-            }
-            
-            EditorContext.GetSingleton ().RegisterOtherPopupModelessDialog (assetImageCompositeModuleEditDialog);
+            //assetImageCompositeModuleEditDialog.SetAsCurrentFocusedTitleWindow ();
             
             assetImageCompositeModuleEditDialog.GetAssetImageCompositeModuleEditPanel ().SetAssetImageModuleInstanceManager (assetImageCompositeModule.GetModuleInstanceManager ());
             assetImageCompositeModuleEditDialog.GetAssetImageModuleInstanceListPanel ().SetAssetImageModuleInstanceManagerForListing (assetImageCompositeModule.GetModuleInstanceManagerForListing ());
@@ -237,9 +229,7 @@
          
          public function Hide ():void
          {
-            PopUpManager.removePopUp(this);
-            
-            EditorContext.GetSingleton ().UnregisterOtherPopupModelessDialog (this);
+            EditorContext.GetSingleton ().CloseModelessDialog (this);
          }
          
          public function GetAssetImageCompositeModuleEditPanel ():AssetImageCompositeModuleEditPanel
@@ -386,12 +376,12 @@
          
          private function OnClickPickModuleButton ():void
          {
-            AssetImageModuleListDialog.StartPickingMode (panelAssetImageCompositeModuleEditing.ChangeModuleForCurrentModuleInstacne);
+            AssetImageModuleListDialog.StartPickingMode (panelAssetImageCompositeModuleEditing.ChangeModuleForCurrentModuleInstacne, this);
          }
          
          private function OnClickPickTextureModuleButton ():void
          {
-            AssetImageModuleListDialog.StartPickingMode (panelAssetImageCompositeModuleEditing.ChangeTextureModuleForCurrentShapeModuleInstacne);
+            AssetImageModuleListDialog.StartPickingMode (panelAssetImageCompositeModuleEditing.ChangeTextureModuleForCurrentShapeModuleInstacne, this);
          }
          
          private function ChangeModuleInstanceProperties ():void

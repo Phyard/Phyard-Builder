@@ -315,21 +315,36 @@ package editor.asset {
       private var mContentMaskWidth :Number = 0;
       private var mContentMaskHeight:Number = 0;
       
-      protected function UpdateBackgroundAndContentMaskSprites ():void
+      private static var sBackgroundColor:uint = 0xFFFFFF;
+      private var mLastBackgroundColor:uint = 0xFFFFFF;
+      
+      public function GetSurroundingBackgroundColor ():uint
       {
-         if (parent.width != mContentMaskWidth || parent.height != mContentMaskHeight)
+         return sBackgroundColor;
+      }
+      
+      protected function UpdateBackgroundAndContentMaskSprites (changeColorOnly:Boolean = false):void
+      {
+         if (mContentMaskSprite == null)
+         {
+            mContentMaskSprite = new Shape ();
+            addChild (mContentMaskSprite);
+            this.mask = mContentMaskSprite;
+         }
+         
+         if (changeColorOnly)
+         {
+            if (mLastBackgroundColor != sBackgroundColor)
+            {
+               GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true, sBackgroundColor);
+            }
+         }
+         else if (parent.width != mContentMaskWidth || parent.height != mContentMaskHeight)
          {
             mContentMaskWidth  = parent.width;
             mContentMaskHeight = parent.height;
             
-            if (mContentMaskSprite == null)
-            {
-               mContentMaskSprite = new Shape ();
-               addChild (mContentMaskSprite);
-               mask = mContentMaskSprite;
-            }
-            
-            GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true, 0xFFFFFF);
+            GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true, sBackgroundColor);
             GraphicsUtil.ClearAndDrawRect (mContentMaskSprite, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true);
             
             if (mAssetManager != null)
@@ -337,6 +352,8 @@ package editor.asset {
                mAssetManager.OnViewportSizeChanged ();
             }
          }
+         
+         mLastBackgroundColor = sBackgroundColor;
       }
       
       protected function OnResize (event:Event):void 
@@ -371,6 +388,11 @@ package editor.asset {
          UpdateAssetLinkLines ();
          
          UpdateEffects ();
+         
+         if (sBackgroundColor != mLastBackgroundColor)
+         {
+            UpdateBackgroundAndContentMaskSprites (true);
+         }
       }
       
       protected function UpdateInternal (dt:Number):void
@@ -380,12 +402,6 @@ package editor.asset {
 //=====================================================================
 // context menu
 //=====================================================================
-      
-      // used in panel and assets
-      public function BuildContextMenuInternal (customMenuItemsStack:Array):void
-      {
-         // to override
-      }
       
       final private function BuildContextMenu ():void
       {
@@ -417,6 +433,46 @@ package editor.asset {
          }
       }
       
+      private var mChangeBackgroundColorMenuItem:ContextMenuItem = null;
+      
+      // used in panel and assets
+      public function BuildContextMenuInternal (customMenuItemsStack:Array):void
+      {
+         if (mChangeBackgroundColorMenuItem == null)
+         {
+            mChangeBackgroundColorMenuItem = new ContextMenuItem ("Change Panel Background Color (Globally) ...", true);
+            mChangeBackgroundColorMenuItem.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnChangeBackgroundColor);
+            
+            customMenuItemsStack.push (mChangeBackgroundColorMenuItem);
+         }
+         
+         // to override
+      }
+      
+      private function OnChangeBackgroundColor (event:ContextMenuEvent):void
+      {
+         EditorContext.OpenSettingsDialog (NameSettingDialog, 
+                                       ChangeBackgroundColor, 
+                                       {   mName: "0x" + sBackgroundColor.toString (16), 
+                                           mLabel: "New Background Color",
+                                           mTitle: "Change Background Color"
+                                       }
+                                       );
+      }
+      
+      private function ChangeBackgroundColor (params:Object):void
+      {
+         var colorText:String = params.mName;
+         if (colorText.length > 2 && colorText.substr (0, 2).toLowerCase() == "0x")
+         {
+            sBackgroundColor = parseInt (colorText.substr (2), 16);
+         }
+         else
+         {
+            sBackgroundColor = parseInt (colorText);
+         }
+      }
+      
       private var mMoveSelectionsAccuratelyMenuItem:ContextMenuItem = null;
       
       protected function SetMoveSelectionsAccuratelyMenuItemShown (shown:Boolean):void
@@ -440,7 +496,7 @@ package editor.asset {
             if (mMoveSelectionsAccuratelyMenuItem == null)
             {
                mMoveSelectionsAccuratelyMenuItem = new ContextMenuItem ("Move Selection(s) Accurately ...", true);
-               mMoveSelectionsAccuratelyMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnMoveSelectionsAccurately);
+               mMoveSelectionsAccuratelyMenuItem.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnMoveSelectionsAccurately);
             }
             
             if (contextMenu.customItems.indexOf (mMoveSelectionsAccuratelyMenuItem) < 0)
@@ -1042,15 +1098,15 @@ package editor.asset {
       
       public function SetGridCellSize (cellWidth:Number, cellHeight:Number):void
       {
-         if (cellWidth >= 10 && cellWidth <= 100)
+         if (cellWidth >= 8 && cellWidth <= 1024)
             mGridCellWidth = cellWidth;
-         if (cellHeight >= 10 && cellHeight <= 100)
+         if (cellHeight >= 8 && cellHeight <= 1024)
             mGridCellHeight = cellHeight;
       }
       
       protected function OnSetGridCellSize (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (AccurateMoveDialog, OnSetGridCellSizeDone, {mTitle: "Change Grid Cell Size", mLabelTextX: "Grid Cell Width:", mLabelTextY: "Grid Cell Height:", mX: mGridCellWidth, mY: mGridCellHeight});
+         EditorContext.OpenSettingsDialog (AccurateMoveDialog, OnSetGridCellSizeDone, {mTitle: "Change Grid Cell Size", mLabelTextX: "Grid Cell Width:", mLabelTextY: "Grid Cell Height:", mX: mGridCellWidth, mY: mGridCellHeight});
       }
       
       protected function OnSetGridCellSizeDone (params:Object):void
@@ -1450,8 +1506,8 @@ package editor.asset {
       
       private function OnMoveTransformRingAccurately (event:ContextMenuEvent):void
       {
-         //EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mIsMoveTo: true});
-         EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mLabelTextX: "Move Target X:", mLabelTextY: "Move Target Y:"});
+         //EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mIsMoveTo: true});
+         EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mLabelTextX: "Move Target X:", mLabelTextY: "Move Target Y:"});
       }
       
       private function MoveTransformRingAccurately (params:Object):void
@@ -1464,8 +1520,8 @@ package editor.asset {
       
       private function OnMoveTransformRingAccuratelyByOffset (event:ContextMenuEvent):void
       {
-         //EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mIsMoveTo: true});
-         EditorContext.ShowModalDialog (AccurateMoveDialog, MoveTransformRingAccuratelyByOffset, null);
+         //EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mIsMoveTo: true});
+         EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveTransformRingAccuratelyByOffset, null);
       }
       
       private function MoveTransformRingAccuratelyByOffset (params:Object):void
@@ -1479,7 +1535,7 @@ package editor.asset {
       
       private function OnMoveSelectionsAccurately (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (AccurateMoveDialog, MoveSelectionsAccurately, null);
+         EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveSelectionsAccurately, null);
       }
       
       private function MoveSelectionsAccurately (params:Object):void
@@ -1490,7 +1546,7 @@ package editor.asset {
       
       private function OnRotateSelectionsAccurately (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (AccurateRotateDialog, RotateSelectionsAccurately, null);
+         EditorContext.OpenSettingsDialog (AccurateRotateDialog, RotateSelectionsAccurately, null);
       }
       
       private function RotateSelectionsAccurately (params:Object):void
@@ -1502,7 +1558,7 @@ package editor.asset {
       
       private function OnRotateSelectionsAccurately_PositionsOnly (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (AccurateRotateDialog, RotateSelectionsAccurately_PositionsOnly, null);
+         EditorContext.OpenSettingsDialog (AccurateRotateDialog, RotateSelectionsAccurately_PositionsOnly, null);
       }
       
       private function RotateSelectionsAccurately_PositionsOnly (params:Object):void
@@ -1514,7 +1570,7 @@ package editor.asset {
       
       private function OnRotateSelectionsAccurately_WithoutPositions (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (AccurateRotateDialog, RotateSelectionsAccurately_WithoutPositions, null);
+         EditorContext.OpenSettingsDialog (AccurateRotateDialog, RotateSelectionsAccurately_WithoutPositions, null);
       }
       
       private function RotateSelectionsAccurately_WithoutPositions (params:Object):void
@@ -1526,7 +1582,7 @@ package editor.asset {
       
       private function OnScaleSelectionsAccurately (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (AccurateScaleDialog, ScaleSelectionsAccurately, null);
+         EditorContext.OpenSettingsDialog (AccurateScaleDialog, ScaleSelectionsAccurately, null);
       }
       
       private function ScaleSelectionsAccurately (params:Object):void
@@ -1538,7 +1594,7 @@ package editor.asset {
       
       private function OnScaleSelectionsAccurately_PositionsOnly (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (AccurateScaleDialog, ScaleSelectionsAccurately_PositionsOnly, null);
+         EditorContext.OpenSettingsDialog (AccurateScaleDialog, ScaleSelectionsAccurately_PositionsOnly, null);
       }
       
       private function ScaleSelectionsAccurately_PositionsOnly (params:Object):void
@@ -1550,7 +1606,7 @@ package editor.asset {
       
       private function OnScaleSelectionsAccurately_WithoutPositions (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (AccurateScaleDialog, ScaleSelectionsAccurately_WithoutPositions, null);
+         EditorContext.OpenSettingsDialog (AccurateScaleDialog, ScaleSelectionsAccurately_WithoutPositions, null);
       }
       
       private function ScaleSelectionsAccurately_WithoutPositions (params:Object):void

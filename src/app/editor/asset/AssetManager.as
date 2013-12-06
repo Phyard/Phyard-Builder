@@ -1650,8 +1650,10 @@ package editor.asset {
 // picking asset status
 //=====================================================================
       
+      
       public function NotifyPickingStatusChanged (inPicking:Boolean):void
       {
+         
          // some managers will override this
       }
 

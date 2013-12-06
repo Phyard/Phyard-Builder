@@ -72,7 +72,7 @@
          
          private function OnClickSaveButton():void 
          {
-             PopUpManager.removePopUp(this);
+             //PopUpManager.removePopUp(this);
              
              if (OnClose != null)
                OnClose ();
@@ -92,7 +92,7 @@
          
          private function OnClickCloseButton():void 
          {
-             PopUpManager.removePopUp(this);
+             //PopUpManager.removePopUp(this);
              
              if (OnClose != null)
                OnClose ();

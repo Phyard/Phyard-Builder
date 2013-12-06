@@ -1,6 +1,8 @@
 package editor {
    
    import flash.display.DisplayObject;
+   import flash.display.DisplayObjectContainer;
+   import flash.display.InteractiveObject;
    
    import flash.ui.ContextMenuItem;
    import flash.events.ContextMenuEvent;
@@ -64,6 +66,10 @@ package editor {
       {
          return EditorContext.sEditorApp;
       }
+            
+      // todo: use editor.context instead of context.editor
+      //       add editor.settings for static values
+      // it is best to untilizing the coming Property(Group) feature.
       
       internal static var sEditorContext:EditorContext = null; // lifecycle is the same as app.mWorld
       
@@ -140,79 +146,6 @@ package editor {
          SoundMixer.stopAll ();
       }
       
-   //=====================================================================
-   // modal dialog
-   //=====================================================================
-      
-      public static function ShowModalDialog (DialogClass:Class, onConfirmCallback:Function, initialParams:Object = null):void
-      {
-         if (GetSingleton ().HasSettingDialogOpened ())
-            return;
-         
-         GetSingleton ().OnOpenModalDialog ();
-         
-         var settingDialog:Object = new DialogClass ();
-         
-         if (settingDialog.hasOwnProperty ("SetValues"))
-            settingDialog.SetValues (initialParams);
-         
-         if (settingDialog.hasOwnProperty ("SetConfirmFunc"))
-            settingDialog.SetConfirmFunc (onConfirmCallback);
-         
-         settingDialog.SetCloseFunc (GetSingleton ().OnCloseModalDialog);
-         
-         PopUpManager.addPopUp (settingDialog as IFlexDisplayObject, sEditorApp, true);
-         PopUpManager.centerPopUp (settingDialog as IFlexDisplayObject);
-      }
-      
-      // "showYesNo == false" means showOk
-      public static function ShowAlert (title:String, question:String, showYesNo:Boolean = false, onYesHandler:Function = null):void
-      {
-         GetSingleton ().SetAlertOnYesCallback (onYesHandler);
-         
-         Alert.show(question, title, showYesNo ? (Alert.YES | Alert.NO) : Alert.OK, sEditorApp, OnCloseAlertDialog, null, Alert.NO);
-      }
-      
-      private static function OnCloseAlertDialog (event:CloseEvent):void 
-      {
-         var onYesHandler:Function = GetSingleton ().GetAlertOnYesCallback ();
-         GetSingleton ().SetAlertOnYesCallback (null);
-         
-         if (event.detail == Alert.YES)
-         {
-            onYesHandler ();
-         }
-      }
-      
-   //=====================================================================
-   // variable space edit dialog
-   //=====================================================================
-      
-      public static function ShowVariableSpaceEditDialog (parent:DisplayObject, variableSpace:VariableSpace, onCloseFunc:Function, codeLibManager:CodeLibManager = null, titlePrefix:String = null):void
-      {
-         if (GetSingleton ().mVariablesEditDialog == null)
-         {
-            GetSingleton ().mVariablesEditDialog = new VariablesEditDialog ();
-         }
-         
-         GetSingleton ().mVariablesEditDialog.SetTitle (titlePrefix == null ? variableSpace.GetSpaceName () : titlePrefix + variableSpace.GetSpaceName ());
-         GetSingleton ().mVariablesEditDialog.SetCloseFunc (onCloseFunc);
-         //GetSingleton ().mVariablesEditDialog.visible = false; // useless, when change to true first time, show-event will not triggered
-         
-         //GetSingleton ().mVariablesEditDialog.SetOptions ({mSupportEditingInitialValues: mSupportEditingInitialValue});
-         
-         //GetSingleton ().mVariablesEditDialog.SetVariableSpace (variableSpace);
-         
-         PopUpManager.addPopUp (GetSingleton ().mVariablesEditDialog, parent, true);
-         PopUpManager.centerPopUp (GetSingleton ().mVariablesEditDialog);
-         PopUpManager.bringToFront (GetSingleton ().mVariablesEditDialog);
-         
-         //GetSingleton ().mVariablesEditDialog.NotifyVariableSpaceModified ();
-         
-         GetSingleton ().mVariablesEditDialog.UpdateVariableSpace (variableSpace);
-         GetSingleton ().mVariablesEditDialog.SetCodeLibManager (codeLibManager);
-      }
-      
 //=====================================================================
 // non-static methods
 //=====================================================================
@@ -228,64 +161,469 @@ package editor {
       {
          StopAllSounds ();
          
-         if (mAssetImageModuleListDialog != null)
-            AssetImageModuleListDialog.HideAssetImageModuleListDialog ();
+         //if (mAssetImageModuleListDialog != null)
+         //   AssetImageModuleListDialog.HideAssetImageModuleListDialog ();
+         //
+         //if (mAssetSoundListDialog != null)
+         //   AssetSoundListDialog.HideAssetSoundListDialog ();
+         //
+         //if (mCollisionCategoryListDialog != null)
+         //   CollisionCategoryListDialog.HideCollisionCategoryListDialog ();
+         //
+         //if (mCodeLibListDialog != null)
+         //   CodeLibListDialog.HideCodeLibListDialog ();
+         //
+         //if (mVariablesEditDialog != null)
+         //   PopUpManager.removePopUp (mVariablesEditDialog);
          
-         if (mAssetSoundListDialog != null)
-            AssetSoundListDialog.HideAssetSoundListDialog ();
-         
-         if (mCollisionCategoryListDialog != null)
-            CollisionCategoryListDialog.HideCollisionCategoryListDialog ();
-         
-         if (mCodeLibListDialog != null)
-            CodeLibListDialog.HideCodeLibListDialog ();
-         
-         if (mVariablesEditDialog != null)
-            PopUpManager.removePopUp (mVariablesEditDialog);
-         
-         CloseOtherPopupModelessDialog ();
+         CloseAllVisibleModelessDialogs ();
       }
-      
+   
    //=====================================================================
-   // file name
+   // current module
    //=====================================================================
       
-      private var mDesignFilename:String  = null;
+      public var mCurrentAssetImageModule:AssetImageModule = null;
+   
+   //=====================================================================
+   // asset dialogs
+   //=====================================================================
       
-      public function SetRecommandDesignFilename (filename:String, appendTimePrefix:Boolean = false):void
+      public var mAssetImageModuleListDialog:AssetImageModuleListDialog = null;      
+      public var mAssetSoundListDialog:AssetSoundListDialog = null;
+      public var mCollisionCategoryListDialog:CollisionCategoryListDialog = null;
+      public var mCodeLibListDialog:CodeLibListDialog = null;
+      public var mVariablesEditDialog:VariablesEditDialog = null;
+   
+   //=====================================================================
+   // modeless dialogs
+   //=====================================================================
+      
+      // todo: disgard Flex Framwork, write a custom UI lib totally based on core AS3.
+      
+      // for the defects of Flex Framework. Dialog management will be difficult and ugly sometimes.
+      
+      // the current implementation will maker sure all modeless dialogs are under all modal dialogs.
+      
+      // currently, ccat and code lib dialog are modal style. It is best to make modeless style later.
+      // when changed them to modeless:
+      // 1. update them if they are opened when scene is switched.
+      // 2. when something changed in them, sync othe opened dialogs.
+      
+      private var mVisibleModelessDialogs:Array = new Array ();
+      
+      public function OpenModelessDialog (dialog:ResizableTitleWindow, centerDialog:Boolean):void
       {
-         if (appendTimePrefix)
+         if (dialog.parent != null)
          {
-            var date:Date = new Date ();
-            
-            mDesignFilename = "[" 
-               + date.getFullYear () + "-" 
-               + (date.getMonth () < 9 ? "0" + (date.getMonth () + 1) : (date.getMonth () + 1)) + "-"
-               + (date.getDate () < 10 ? "0" + date.getDate () : date.getDate ())
-               + " " + (date.getHours () < 10 ? "0" + date.getHours () : date.getHours ())
-               + "." + (date.getMinutes () < 10 ? "0" + date.getMinutes () : date.getMinutes ())
-               + "." + (date.getSeconds () < 10 ? "0" + date.getSeconds () : date.getSeconds ())
-               + "] " + filename;
+            PopUpManager.bringToFront (dialog);
          }
          else
          {
-            mDesignFilename = filename;
+            PopUpManager.addPopUp (dialog, EditorContext.GetEditorApp (), false);
+         }
+         
+         if (centerDialog)
+            PopUpManager.centerPopUp (dialog);
+         
+         dialog.SetAsCurrentFocusedTitleWindow ();
+         
+         var index:int = mVisibleModelessDialogs.indexOf (dialog);
+         if (index >= 0)
+         {
+            if (index == mVisibleModelessDialogs.length - 1)
+               return;
+            
+            mVisibleModelessDialogs.splice (index, 1);
+         }
+         mVisibleModelessDialogs.push (dialog);
+         
+//trace ("++ mNumVisibleModelessDialogs = " + mVisibleModelessDialogs.length + ", dialog.parent.numChildren = " + dialog.parent.numChildren);
+      }
+      
+      public function CloseModelessDialog (dialog:ResizableTitleWindow):void
+      {
+         var index:int = mVisibleModelessDialogs.indexOf (dialog);
+         if (index >= 0)
+         {
+            PopUpManager.removePopUp (dialog);
+            
+            mVisibleModelessDialogs.splice (index, 1);
+         }
+//trace ("-- mNumVisibleModelessDialogs = " + mVisibleModelessDialogs.length);
+      }
+      
+      private function CloseAllVisibleModelessDialogs ():void
+      {
+         for each (var dialog:IFlexDisplayObject in mVisibleModelessDialogs)
+         {
+            PopUpManager.removePopUp (dialog);
+         }
+         
+         mVisibleModelessDialogs.splice (0, mVisibleModelessDialogs.length);
+      }
+   
+   //=== current modeless panel 
+   
+      private var mCurrentFocusedTitleWindow:ResizableTitleWindow = null;
+      
+      public function SetCurrentFocusedTitleWindow (titleWindow:ResizableTitleWindow):void
+      {
+         if (mCurrentFocusedTitleWindow != titleWindow)
+         {
+            if (mCurrentFocusedTitleWindow != null)
+               mCurrentFocusedTitleWindow.OnFocusChanged (false);
+            
+            mCurrentFocusedTitleWindow = titleWindow;
+            
+            if (mCurrentFocusedTitleWindow != null)
+               mCurrentFocusedTitleWindow.OnFocusChanged (true);
+         }
+         
+         if (mCurrentFocusedTitleWindow == null)
+         {
+            if (GetEditorApp ().stage.focus == null || (! GetEditorApp ().contains (GetEditorApp ().stage.focus)))
+               GetEditorApp ().GetSceneEditDialog ().SetAsFocus ();
+         }
+         else
+         {
+            if (GetEditorApp ().stage.focus == null || (! mCurrentFocusedTitleWindow.contains (GetEditorApp ().stage.focus)))
+               GetEditorApp ().stage.focus = mCurrentFocusedTitleWindow; // todo: TitleWindow.GetDefaultFocusChild ()
+         }
+         
+         //var index:int = mVisibleModelessDialogs.indexOf (mCurrentFocusedTitleWindow));
+         //if (index >= 0) // should
+         //{
+         //   mVisibleModelessDialogs.splice (index, 1);
+         //   mVisibleModelessDialogs.push (mCurrentFocusedTitleWindow);
+         //}
+      }
+      
+      //public function GetTopModelessDialog ():ResizableTitleWindow
+      //{
+      //   if (mVisibleModelessDialogs.length == 0)
+      //      return 0;
+      //   
+      //   // should be mCurrentFocusedTitleWindow
+      //   return mVisibleModelessDialogs [mVisibleModelessDialogs.length - 1];
+      //}
+      
+   //=====================================================================
+   // modal dialog (settings / alerts / variable space / picking)
+   //=====================================================================
+      
+      private var mModalDialogStack:Array = new Array ();
+      private var mModalDialogLevels:int = 0;
+      
+      // baseWindow is only essential when:
+      // 1. the modal dialog is the first level modal dialog.
+      // 2. and the baseWindow can't be scene panel, it must be a modeless dialog.
+      // 3. and it is possible there will be a picking dialog opened on this first level dialog.
+      // 4. and the picking dialog will not close on done.
+      //
+      // now only picking dialog in module edit dialog satisfies all these.
+      //
+      public function OnOpenModalDialog (modalDialog:IFlexDisplayObject, centerDialog:Boolean, keepDialogOpenOnDone:Boolean, baseWindow:IFlexDisplayObject = null):void
+      {
+         var restoreIndex:int = -1;
+
+         if (modalDialog == null)
+         {
+            keepDialogOpenOnDone = false;
+         }
+         else
+         {
+            if (mVisibleModelessDialogs.indexOf (modalDialog) >= 0)
+            {
+               CloseModelessDialog (modalDialog as ResizableTitleWindow);
+            }
+         
+            if (keepDialogOpenOnDone)
+            {
+               // maybe the new dialog is a low level modal dialog.
+               for (restoreIndex = mModalDialogLevels - 1; restoreIndex >= 0; -- restoreIndex)
+               {
+                  if (mModalDialogStack [restoreIndex].mCurrentModalDialog == modalDialog)
+                     break;
+               }
+               
+               // restoreIndex == -1 means the new dialog will be restored as a modeless dialog.
+            }
+         }
+         
+         var modalDialogInfo:Object = {
+                     mCurrentModalDialog   : modalDialog,
+                     mKeepDialogOpenOnDone : keepDialogOpenOnDone,
+                     mDialogRestoreIndex   : restoreIndex, // valid when mKeepDialogOpenOnDone
+                     mBaseWindow           : baseWindow,
+                     mOldStageFocus        : GetEditorApp ().stage.focus
+                  };
+         
+         mModalDialogStack [mModalDialogLevels ++] = modalDialogInfo;
+         
+         if (modalDialog != null) // for alert, it is null
+         {
+            if (modalDialog.parent != null) // picking dialog
+               PopUpManager.removePopUp (modalDialog);
+            
+            PopUpManager.addPopUp (modalDialog, GetEditorApp (), true);
+            
+            if (centerDialog)
+               PopUpManager.centerPopUp (modalDialog);
+         }
+         
+         //SetHasSettingDialogOpened (true);
+         //StartSettingEntityProperties ();
+//if (modalDialog != null)
+//trace ("++ mModalDialogLevels = " + mModalDialogLevels + ", modalDialog.parent.numChildren = " + modalDialog.parent.numChildren);
+//else
+//trace ("++ mModalDialogLevels = " + mModalDialogLevels);
+      }
+      
+      public function OnCloseModalDialog (forceClose:Boolean = false):IFlexDisplayObject //checkCustomVariablesModifications:Boolean = false):void
+      {
+         var info:Object = null;
+         if (mModalDialogLevels > 0)
+         {
+            info = mModalDialogStack [0];
+         }
+         
+         var modalDialogInfo:Object = mModalDialogStack [-- mModalDialogLevels];
+         mModalDialogStack [mModalDialogLevels] = null;
+//trace ("-- mModalDialogLevels = " + mModalDialogLevels);
+//trace (new Error ().getStackTrace ());
+         
+         if (modalDialogInfo.mCurrentModalDialog != null && modalDialogInfo.mCurrentModalDialog.parent != null)
+         {
+            // this is must be an asset pick dialog.
+            
+            if ((! forceClose) && modalDialogInfo.mKeepDialogOpenOnDone)
+            {
+               if (modalDialogInfo.mDialogRestoreIndex < 0)
+               {
+                  PopUpManager.removePopUp (modalDialogInfo.mCurrentModalDialog);
+                  OpenModelessDialog (modalDialogInfo.mCurrentModalDialog, false);
+               }
+               
+               if (info != null)
+               {
+                  if (info.mBaseWindow != null) // it should be modeless dialog
+                  {
+                     //CloseModelessDialog (info.mBaseWindow);
+                     //OpenModelessDialog (info.mBaseWindow, false);
+                     PopUpManager.bringToFront (info.mBaseWindow);
+                     
+                     if (info.mBaseWindow is ResizableTitleWindow) // should
+                     {
+                        SetCurrentFocusedTitleWindow (null);
+                        (info.mBaseWindow as ResizableTitleWindow).SetAsCurrentFocusedTitleWindow ();
+                     }
+                  }
+               }
+
+               for (var index:int = modalDialogInfo.mDialogRestoreIndex + 1; index < mModalDialogLevels; ++ index)
+               {
+                  info = mModalDialogStack [index];
+                  // info.mCurrentModalDialog must not be null (alert dialog).
+                  //PopUpManager.removePopUp (info.mCurrentModalDialog);
+                  //PopUpManager.addPopUp (info.mCurrentModalDialog, GetEditorApp (), true);
+                  
+                  // thicky? yes!
+                  var dialogParent:DisplayObjectContainer = info.mCurrentModalDialog.parent;
+                  var transparentLayer:DisplayObject = dialogParent.getChildAt (dialogParent.getChildIndex (info.mCurrentModalDialog) - 1);
+                  dialogParent.removeChild (transparentLayer);
+                  dialogParent.addChild (transparentLayer);
+                  PopUpManager.bringToFront (info.mCurrentModalDialog);
+                  
+                  if (info.mCurrentModalDialog is ResizableTitleWindow)
+                  {
+                     SetCurrentFocusedTitleWindow (null);
+                     (info.mCurrentModalDialog as ResizableTitleWindow).SetAsCurrentFocusedTitleWindow ();
+                  }
+               }
+            }
+            else
+            {
+               PopUpManager.removePopUp (modalDialogInfo.mCurrentModalDialog);
+            }
+         }
+         
+         GetEditorApp ().stage.focus = modalDialogInfo.mOldStageFocus;
+         
+         //SetHasSettingDialogOpened (false);
+         
+         //if (checkCustomVariablesModifications)
+         //{
+         //   CancelSettingEntityProperties ();
+         //}
+         
+         return modalDialogInfo.mCurrentModalDialog;
+      }
+      
+   //================ picking ===============================================
+      
+      // to changed to non static
+      
+      // if oldTopPanel != null, it will be bring to top again when pick mode is exited.
+      public static function OpenAssetPickingDialog (pickPanel:ResizableTitleWindow, centerPickPanel:Boolean, closeDialogOnDone:Boolean, baseWindow:IFlexDisplayObject = null):void
+      {
+         pickPanel.SetInPickingMode (true);
+         GetSingleton ().OnOpenModalDialog (pickPanel, centerPickPanel, closeDialogOnDone, baseWindow);
+      }
+      
+      public static function CloseAssetPickingDialog (forceClose:Boolean = false):void
+      {
+         var pickPanel:ResizableTitleWindow = GetSingleton ().OnCloseModalDialog (forceClose) as ResizableTitleWindow;
+         pickPanel.SetInPickingMode (false);
+      }
+      
+   //================ settings ===============================================
+      
+      // to changed to non static
+      
+      public static function OpenSettingsDialog (DialogClass:Class, onConfirmCallback:Function, initialParams:Object = null):void
+      {
+         // will block fucntion setting dialog
+         //if (GetSingleton ().HasSettingDialogOpened ())
+         //   return;
+         
+         var settingDialog:Object = new DialogClass ();
+         
+         if (settingDialog.hasOwnProperty ("SetValues"))
+            settingDialog.SetValues (initialParams);
+         
+         if (settingDialog.hasOwnProperty ("SetConfirmFunc"))
+            settingDialog.SetConfirmFunc (onConfirmCallback);
+         
+         settingDialog.SetCloseFunc (CloseSettingsDialog);
+         
+         GetSingleton ().OnOpenModalDialog (settingDialog as IFlexDisplayObject, true, false);
+      }
+      
+      // the param is ignored now.
+      public static function CloseSettingsDialog (checkCustomVariablesModifications:Boolean = false):void
+      {
+         GetSingleton ().OnCloseModalDialog (); //checkCustomVariablesModifications);
+      }
+      
+   //================ alert ===============================================
+      
+      // to changed to non static
+            
+      // "showYesNo == false" means showOk
+      public static function OpenAlertDialog (title:String, question:String, showYesNo:Boolean = false, onYesHandler:Function = null):void
+      {
+         GetSingleton ().OnOpenModalDialog (null, true, false, null);
+         GetSingleton ().SetAlertOnYesCallback (onYesHandler);
+         Alert.show(question, title, showYesNo ? (Alert.YES | Alert.NO) : Alert.OK, GetEditorApp (), CloseAlertDialog, null, Alert.NO);
+      }
+      
+      private static function CloseAlertDialog (event:CloseEvent):void 
+      {
+         var onYesHandler:Function = GetSingleton ().GetAlertOnYesCallback ();
+         GetSingleton ().SetAlertOnYesCallback (null);
+         
+         GetSingleton ().OnCloseModalDialog (); //false); // must put before yes handler, for a new Context may be created there.
+         
+         if (event.detail == Alert.YES)
+         {
+            onYesHandler ();
          }
       }
       
-      public function GetRecommandDesignFilename ():String
+      private var mAlertOnYesCallback:Function = null;
+      
+      public function SetAlertOnYesCallback (callback:Function):void
       {
-         if (mDesignFilename == null)
+         mAlertOnYesCallback = callback;
+      }
+      
+      public function GetAlertOnYesCallback ():Function
+      {
+         return mAlertOnYesCallback;
+      }
+      
+   //================ variable space ===============================================
+      
+      // to changed to non static
+      
+      public static function OpenVariableSpaceEditDialog (parent:DisplayObject, variableSpace:VariableSpace, onCloseFunc:Function, codeLibManager:CodeLibManager = null, titlePrefix:String = null):void
+      {
+         if (GetSingleton ().mVariablesEditDialog == null)
          {
-            SetRecommandDesignFilename ("{design name}.phyardx");
+            GetSingleton ().mVariablesEditDialog = new VariablesEditDialog ();
          }
          
-         return mDesignFilename;
+         GetSingleton ().mVariablesEditDialog.SetTitle (titlePrefix == null ? variableSpace.GetSpaceName () : titlePrefix + variableSpace.GetSpaceName ());
+         GetSingleton ().mVariablesEditDialog.SetCloseFunc (CloseVariablesEditDialog);
+         GetSingleton ().SetOnVariiablesEditDialogClosed (onCloseFunc);
+         //GetSingleton ().mVariablesEditDialog.visible = false; // useless, when change to true first time, show-event will not triggered
+         
+         //GetSingleton ().mVariablesEditDialog.SetOptions ({mSupportEditingInitialValues: mSupportEditingInitialValue});
+         
+         //GetSingleton ().mVariablesEditDialog.SetVariableSpace (variableSpace);
+         
+         //PopUpManager.addPopUp (GetSingleton ().mVariablesEditDialog, parent, true);
+         //PopUpManager.centerPopUp (GetSingleton ().mVariablesEditDialog);
+         //PopUpManager.bringToFront (GetSingleton ().mVariablesEditDialog);
+         GetSingleton ().OnOpenModalDialog (GetSingleton ().mVariablesEditDialog, true, false, null);
+         
+         //GetSingleton ().mVariablesEditDialog.NotifyVariableSpaceModified ();
+         
+         GetSingleton ().mVariablesEditDialog.UpdateVariableSpace (variableSpace);
+         GetSingleton ().mVariablesEditDialog.SetCodeLibManager (codeLibManager);
+      }
+      
+      public static function CloseVariablesEditDialog ():void
+      {
+         var onClosed:Function = GetSingleton ().GetOnVariiablesEditDialogClosed ();
+         GetSingleton ().SetOnVariiablesEditDialogClosed (null);
+         if (onClosed != null)
+            onClosed ();
+         
+         GetSingleton ().OnCloseModalDialog (); //false);
+      }
+      
+      private var mOnVariiableEditDialogClosedFunc:Function = null;
+      
+      public function GetOnVariiablesEditDialogClosed ():Function
+      {
+         return mOnVariiableEditDialogClosedFunc;
+      }
+      
+      public function SetOnVariiablesEditDialogClosed (onClosed:Function ):void
+      {
+         mOnVariiableEditDialogClosedFunc = onClosed;
       }
       
    //=====================================================================
    //   key event
    //=====================================================================
+      
+      //private var mHasSettingDialogOpened:Boolean = false;
+      //
+      //public function SetHasSettingDialogOpened (opened:Boolean):void      
+      //{
+      //   mHasSettingDialogOpened = opened;
+      //}
+      
+      public function HasSettingDialogOpened ():Boolean
+      {
+         //return mHasSettingDialogOpened;
+         return mModalDialogLevels > 0;
+      }
+      
+      private var mHasInputFocused:Boolean = false;
+      
+      public function SetHasInputFocused (has:Boolean):void
+      {
+         mHasInputFocused = has;
+      }
+      
+      public function HasInputFocused ():Boolean
+      {
+         return mHasInputFocused;
+      }
       
       // this is the default
       public function OnKeyDownDefault (keyCode:int, ctrlDown:Boolean = false, shiftDown:Boolean = false):void
@@ -342,144 +680,6 @@ package editor {
                break;
          }
       }
-   //=====================================================================
-   //
-   //=====================================================================
-   
-      private var mCurrentFocusedTitleWindow:ResizableTitleWindow = null;
-      
-      public function SetCurrentFocusedTitleWindow (titleWindow:ResizableTitleWindow):void
-      {
-         if (mCurrentFocusedTitleWindow != titleWindow)
-         {
-            if (mCurrentFocusedTitleWindow != null)
-               mCurrentFocusedTitleWindow.OnFocusChanged (false);
-            
-            mCurrentFocusedTitleWindow = titleWindow;
-            
-            if (mCurrentFocusedTitleWindow != null)
-               mCurrentFocusedTitleWindow.OnFocusChanged (true);
-         }
-         
-         if (mCurrentFocusedTitleWindow == null)
-         {
-            if (GetEditorApp ().stage.focus == null || (! GetEditorApp ().contains (GetEditorApp ().stage.focus)))
-               GetEditorApp ().GetSceneEditDialog ().SetAsFocus ();
-         }
-         else
-         {
-            if (GetEditorApp ().stage.focus == null || (! mCurrentFocusedTitleWindow.contains (GetEditorApp ().stage.focus)))
-               GetEditorApp ().stage.focus = mCurrentFocusedTitleWindow; // todo: TitleWindow.GetDefaultFocusChild ()
-         }
-      }
-   
-   //=====================================================================
-   //
-   //=====================================================================
-      
-      public var mCurrentAssetImageModule:AssetImageModule = null;
-      
-      public var mAssetImageModuleListDialog:AssetImageModuleListDialog = null;      
-      public var mAssetSoundListDialog:AssetSoundListDialog = null;
-      public var mCollisionCategoryListDialog:CollisionCategoryListDialog = null;
-      public var mCodeLibListDialog:CodeLibListDialog = null;
-      public var mVariablesEditDialog:VariablesEditDialog = null;
-      
-      private var mOtherPopupModelessDialogs:Array = new Array ();
-      
-      public function RegisterOtherPopupModelessDialog (dialog:IFlexDisplayObject):void
-      {
-         if (mOtherPopupModelessDialogs.indexOf (dialog) < 0)
-         {
-            mOtherPopupModelessDialogs.push (dialog);
-         }
-      }
-      
-      public function UnregisterOtherPopupModelessDialog (dialog:IFlexDisplayObject):void
-      {
-         var index:int = mOtherPopupModelessDialogs.indexOf (dialog);
-         if (index >= 0)
-         {
-            mOtherPopupModelessDialogs.splice (index, 1);
-         }
-      }
-      
-      private function CloseOtherPopupModelessDialog ():void
-      {
-         for each (var dialog:IFlexDisplayObject in mOtherPopupModelessDialogs)
-         {
-            PopUpManager.removePopUp (dialog);
-         }
-      }
-      
-   //=====================================================================
-   //
-   //=====================================================================
-      
-      private var mHasSettingDialogOpened:Boolean = false;
-      
-      public function SetHasSettingDialogOpened (opened:Boolean):void
-      {
-         mHasSettingDialogOpened = opened;
-      }
-      
-      public function HasSettingDialogOpened ():Boolean
-      {
-         return mHasSettingDialogOpened;
-      }
-      
-      private var mHasInputFocused:Boolean = false;
-      
-      public function SetHasInputFocused (has:Boolean):void
-      {
-         mHasInputFocused = has;
-      }
-      
-      public function HasInputFocused ():Boolean
-      {
-         return mHasInputFocused;
-      }
-      
-      public function OnOpenModalDialog ():void
-      {
-         SetHasSettingDialogOpened (true);
-         EditorContext.GetSingleton ().StartSettingEntityProperties ();
-      }
-      
-      public function OnCloseModalDialog (checkCustomVariablesModifications:Boolean = false):void
-      {
-         SetHasSettingDialogOpened (false);
-         
-         GetEditorApp ().stage.focus = GetEditorApp ();
-         
-         if (checkCustomVariablesModifications)
-         {
-            EditorContext.GetSingleton ().CancelSettingEntityProperties ();
-         }
-      }
-      
-      private var mAlertOnYesCallback:Function = null;
-      
-      public function SetAlertOnYesCallback (callback:Function):void
-      {
-         mAlertOnYesCallback = callback;
-      }
-      
-      public function GetAlertOnYesCallback ():Function
-      {
-         return mAlertOnYesCallback;
-      }
-      
-   //=====================================================================
-   //
-   //=====================================================================
-      
-      //public var mSessionVariablesEditingDialogClosedCallBack:Function = null;
-      //public var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
-      //public var mEntityVariablesEditingDialogClosedCallBack:Function = null;
-      //public var mLocalVariablesEditingDialogClosedCallBack:Function = null;
-      //public var mInputVariablesEditingDialogClosedCallBack:Function = null;
-      //public var mOutputVariablesEditingDialogClosedCallBack:Function = null;
       
    //=====================================================================
    // todo: use defines instead so that the (static) copied snippet can be used across worlds.
@@ -536,22 +736,72 @@ package editor {
       }
       
    //=====================================================================
+   // file name
+   //=====================================================================
+      
+      private var mDesignFilename:String  = null;
+      
+      public function SetRecommandDesignFilename (filename:String, appendTimePrefix:Boolean = false):void
+      {
+         if (appendTimePrefix)
+         {
+            var date:Date = new Date ();
+            
+            mDesignFilename = "[" 
+               + date.getFullYear () + "-" 
+               + (date.getMonth () < 9 ? "0" + (date.getMonth () + 1) : (date.getMonth () + 1)) + "-"
+               + (date.getDate () < 10 ? "0" + date.getDate () : date.getDate ())
+               + " " + (date.getHours () < 10 ? "0" + date.getHours () : date.getHours ())
+               + "." + (date.getMinutes () < 10 ? "0" + date.getMinutes () : date.getMinutes ())
+               + "." + (date.getSeconds () < 10 ? "0" + date.getSeconds () : date.getSeconds ())
+               + "] " + filename;
+         }
+         else
+         {
+            mDesignFilename = filename;
+         }
+      }
+      
+      public function GetRecommandDesignFilename ():String
+      {
+         if (mDesignFilename == null)
+         {
+            SetRecommandDesignFilename ("{design name}.phyardx");
+         }
+         
+         return mDesignFilename;
+      }
+      
+   //=====================================================================
+   //
+   //=====================================================================
+      
+      //public var mSessionVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mEntityVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mLocalVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mInputVariablesEditingDialogClosedCallBack:Function = null;
+      //public var mOutputVariablesEditingDialogClosedCallBack:Function = null;
+      
+   //=====================================================================
    // hooks to detect if any variable definitions are changed
    //=====================================================================
+      
+      // to use new implementations
       
       //private var mLastSessionVariableSpaceModifiedTimes:int = 0;
       //private var mLastGlobalVariableSpaceModifiedTimes:int = 0;
       //private var mLastEntityVariableSpaceModifiedTimes:int = 0;
       
-      public function StartSettingEntityProperties ():void
-      {
-         //mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes ();
-         //mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
-         //mLastEntityVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
-      }
-      
-      public function CancelSettingEntityProperties ():void
-      {
+      //public function StartSettingEntityProperties ():void
+      //{
+      //   //mLastSessionVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes ();
+      //   //mLastGlobalVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+      //   //mLastEntityVariableSpaceModifiedTimes = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
+      //}
+      //
+      //public function CancelSettingEntityProperties ():void
+      //{
          /*
          var sessionVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
          var globalVariableSpaceModified:Boolean = EditorContext.GetEditorApp ().GetWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
@@ -584,7 +834,7 @@ package editor {
             GetEditorApp ().CreateSnapshotForCurrentScene (message);
          }
          */
-      }
+      //}
       
       
 

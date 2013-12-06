@@ -243,7 +243,7 @@
          {
             GetValues (mParams);
 
-            PopUpManager.removePopUp(this);
+            //PopUpManager.removePopUp(this);
 
             if (OnClose != null)
                OnClose ();
@@ -254,7 +254,7 @@
 
          private function OnClickCancelButton():void
          {
-             PopUpManager.removePopUp(this);
+             //PopUpManager.removePopUp(this);
 
              if (OnClose != null)
                OnClose ();

@@ -89,7 +89,7 @@
          
          private function OnClickOkButton():void 
          {
-            PopUpManager.removePopUp(this);
+            //PopUpManager.removePopUp(this);
             
             var valueX:Number = parseFloat (TextInput_MoveX.text);
             if ( isNaN (valueX) )
@@ -123,7 +123,7 @@
          
          private function OnClickCancelButton():void 
          {
-             PopUpManager.removePopUp(this);
+             //PopUpManager.removePopUp(this);
              
              if (OnClose != null)
                OnClose ();

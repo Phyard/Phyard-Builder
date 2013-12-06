@@ -71,6 +71,8 @@ package editor.image {
       
       override public function NotifyPickingStatusChanged (inPicking:Boolean):void
       {
+         super.NotifyPickingStatusChanged (inPicking);
+         
          mMenuItemCreateCompositeModule.enabled = ! inPicking;
          
          var numModules:int = GetNumAssets ();

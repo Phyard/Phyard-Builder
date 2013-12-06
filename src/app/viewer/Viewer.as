@@ -1958,7 +1958,7 @@ package viewer {
       private function RepaintFullScreenLayersWithBackgroundColor (newWidth:Number, newHeight:Number):void
       {
          var faddingColor:uint = mWorldDesignProperties == null ? mParamsFromContainer.mBackgroundColor : mWorldDesignProperties.GetBackgroundColor ();
-         var bgColor:uint = (mParamsFromEditor == null ? faddingColor : 0xFFFFFF);
+         var bgColor:uint = (mParamsFromEditor == null ? faddingColor : mParamsFromEditor.mBackgroundColor);
          GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, bgColor);
          GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, faddingColor);
       }

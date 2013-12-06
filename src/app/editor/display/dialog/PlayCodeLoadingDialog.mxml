@@ -51,7 +51,7 @@
          
          private function OnClickOkButton():void 
          {
-            PopUpManager.removePopUp(this);
+            //PopUpManager.removePopUp(this);
             
             var params:Object = new Object ();
             
@@ -67,7 +67,7 @@
          
          private function OnClickCancelButton():void 
          {
-             PopUpManager.removePopUp(this);
+             //PopUpManager.removePopUp(this);
              
              if (OnClose != null)
                OnClose ();

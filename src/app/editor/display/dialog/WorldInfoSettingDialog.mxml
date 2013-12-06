@@ -91,7 +91,7 @@
             mParams.mAuthorName = Text_AuthorName.text;
             mParams.mAuthorHomepage = Text_AuthorHomePage.text;
 
-            PopUpManager.removePopUp(this);
+            //PopUpManager.removePopUp(this);
 
             if (OnClose != null)
                OnClose ();
@@ -102,7 +102,7 @@
 
          private function OnClickCancelButton():void
          {
-             PopUpManager.removePopUp(this);
+             //PopUpManager.removePopUp(this);
 
              if (OnClose != null)
                OnClose ();

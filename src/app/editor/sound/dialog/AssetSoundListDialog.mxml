@@ -37,69 +37,59 @@
          
          import editor.EditorContext;
 
-      // static functions
-         
-         public static function ShowAssetSoundListDialog (OnSoundPicked:Function = null):void
+      // static functions    
+      
+         public static function MakeSureAssetSoundListDialogCreated ():Boolean
          {
             if (EditorContext.GetSingleton ().mAssetSoundListDialog == null)
             {
                EditorContext.GetSingleton ().mAssetSoundListDialog = new AssetSoundListDialog ();
                EditorContext.GetSingleton ().mAssetSoundListDialog.SetAllowedResizingModeBits (ResizingMode_Bottom);
+               return true;
             }
             
-            EditorContext.GetSingleton ().mAssetSoundListDialog.SetAsCurrentFocusedTitleWindow ();
+            return false;
+         }
+         
+         public static function ShowAssetSoundListDialog (OnSoundPicked:Function = null):void
+         {
+            var firstTime:Boolean = MakeSureAssetSoundListDialogCreated ();
             
-            if (EditorContext.GetSingleton ().mAssetSoundListDialog.parent != null) // OnSoundPicked must be null
-            {
-               PopUpManager.bringToFront (EditorContext.GetSingleton ().mAssetSoundListDialog);
-            }
-            else
-            {
-               PopUpManager.addPopUp (EditorContext.GetSingleton ().mAssetSoundListDialog, EditorContext.GetEditorApp (), OnSoundPicked != null);
-               PopUpManager.centerPopUp (EditorContext.GetSingleton ().mAssetSoundListDialog);
-            }
+            EditorContext.GetSingleton ().OpenModelessDialog (EditorContext.GetSingleton ().mAssetSoundListDialog, firstTime);
             
             EditorContext.GetSingleton ().mAssetSoundListDialog.GetAssetSoundListPanel ().SetAssetSoundManager (EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ());
-            
-            if (OnSoundPicked != null)
-            {
-               EditorContext.GetSingleton ().mAssetSoundListDialog.mInPickingMode = true;
-               
-               EditorContext.GetSingleton ().mAssetSoundListDialog.GetAssetSoundListPanel ().EnterPickAssetIntent (OnSoundPicked, EndPickingMode);
-            }
          }
          
          public static function HideAssetSoundListDialog ():void
          {
-            if (EditorContext.GetSingleton ().mAssetSoundListDialog.mInPickingMode)
+            if (EditorContext.GetSingleton ().mAssetSoundListDialog.IsInPickingMode ())
             {
-               EndPickingMode ();
+               EndPickingMode (true);
             }
             else
             {
-               PopUpManager.removePopUp (EditorContext.GetSingleton ().mAssetSoundListDialog);
+               EditorContext.GetSingleton ().CloseModelessDialog (EditorContext.GetSingleton ().mAssetSoundListDialog);
             }
-            
          }
          
          public static function StartPickingMode (OnSoundPicked:Function):void
          {
-            if (EditorContext.GetSingleton ().mAssetSoundListDialog != null)
-            {
-               PopUpManager.removePopUp (EditorContext.GetSingleton ().mAssetSoundListDialog);
-            }
+            var firstTime:Boolean = MakeSureAssetSoundListDialogCreated ();
             
-            ShowAssetSoundListDialog (OnSoundPicked);
+            EditorContext.OpenAssetPickingDialog (EditorContext.GetSingleton ().mAssetSoundListDialog, firstTime, true);
+            
+            EditorContext.GetSingleton ().mAssetSoundListDialog.GetAssetSoundListPanel ().SetAssetSoundManager (EditorContext.GetEditorApp ().GetWorld ().GetAssetSoundManager ());
+            
+            EditorContext.GetSingleton ().mAssetSoundListDialog.GetAssetSoundListPanel ().EnterPickAssetIntent (OnSoundPicked, EndPickingMode);
          }
          
-         public static function EndPickingMode ():void
+         public static function EndPickingMode (forceClose:Boolean = false):void
          {
-            if (EditorContext.GetSingleton ().mAssetSoundListDialog != null)
+            //if (EditorContext.GetSingleton ().mAssetSoundListDialog != null)
+            if (EditorContext.GetSingleton ().mAssetSoundListDialog.IsInPickingMode ())
             {
-               EditorContext.GetSingleton ().mAssetSoundListDialog.mInPickingMode = false;
+               EditorContext.CloseAssetPickingDialog (forceClose); // must before the following line
                
-               PopUpManager.removePopUp(EditorContext.GetSingleton ().mAssetSoundListDialog);
-            
                EditorContext.GetSingleton ().mAssetSoundListDialog.GetAssetSoundListPanel ().ExitPickAssetIntent ();
             }
          }
@@ -113,8 +103,6 @@
          
       //======================================================
       
-         internal var mInPickingMode:Boolean = false;
-         
          private function InitDialog ():void
          {
             SliderVolume.value = EditorContext.GetSoundVolume ();

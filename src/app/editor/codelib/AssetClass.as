@@ -247,7 +247,7 @@ package editor.codelib {
       
       private function OnContextMenuEvent_ChangeOrderID (event:ContextMenuEvent):void
       {
-         EditorContext.ShowModalDialog (NameSettingDialog, ConfirmChangeOrderID, 
+         EditorContext.OpenSettingsDialog (NameSettingDialog, ConfirmChangeOrderID, 
                                     {mName: "" + GetClassIndex (), 
                                      mLabel: "New Order ID",
                                      mTitle: "Change Type Order ID"});

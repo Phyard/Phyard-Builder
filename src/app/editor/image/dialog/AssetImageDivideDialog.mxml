@@ -54,24 +54,15 @@
          {
             var assetImageDivideDialog:AssetImageDivideDialog = assetImage.GetAssetImageDivideDialog ();
             
-            if (assetImageDivideDialog == null)
+            var firstTime:Boolean = assetImageDivideDialog == null;
+            if (firstTime)
             {
                assetImageDivideDialog = new AssetImageDivideDialog ();
             }
             
+            EditorContext.GetSingleton ().OpenModelessDialog (assetImageDivideDialog, firstTime);
+            
             assetImageDivideDialog.SetAsCurrentFocusedTitleWindow ();
-            
-            if (assetImageDivideDialog.parent != null)
-            {
-               PopUpManager.bringToFront (assetImageDivideDialog);
-            }
-            else
-            {
-               PopUpManager.addPopUp (assetImageDivideDialog, EditorContext.GetEditorApp (), false);
-               PopUpManager.centerPopUp (assetImageDivideDialog);
-            }
-            
-            EditorContext.GetSingleton ().RegisterOtherPopupModelessDialog (assetImageDivideDialog);
             
             assetImageDivideDialog.GetAssetImageDividePanel ().SetAssetImageDivisionManager (assetImage.GetAssetImageDivisionManager ());
             assetImage.SetAssetImageDivideDialog (assetImageDivideDialog);
@@ -79,8 +70,7 @@
          
          public function Hide ():void
          {
-            PopUpManager.removePopUp(this);
-            EditorContext.GetSingleton ().UnregisterOtherPopupModelessDialog (this);
+            EditorContext.GetSingleton ().CloseModelessDialog (this);
          }
          
          public function GetAssetImageDividePanel ():AssetImageDividePanel

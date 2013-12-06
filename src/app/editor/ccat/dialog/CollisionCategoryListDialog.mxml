@@ -34,7 +34,7 @@
          </mx:HBox>
          <mx:Spacer width="6"/>
          <mx:Label id="Label_CollisionCategoryName" text="Name:" textAlign="right"/>
-         <mx:TextInput id="Text_CollisionCategoryName" text="" width="200"/>
+         <mx:TextInput id="Text_CollisionCategoryName" text="" width="200" enter="stage.focus = panelCollisionCategoryList;" focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);"/>
          <mx:Spacer width="100%"/>
       </mx:HBox>
       <mx:VBox id="Box_CCatListing" width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
@@ -50,70 +50,62 @@
          
          import editor.EditorContext;
 
-      // static functions
-         
-         public static function ShowCollisionCategoryListDialog (OnCCatPicked:Function = null):void
+      // static functions         
+      
+         public static function MakeSureCollisionCategoryListDialogCreated ():Boolean
          {
             if (EditorContext.GetSingleton ().mCollisionCategoryListDialog == null)
             {
                EditorContext.GetSingleton ().mCollisionCategoryListDialog = new CollisionCategoryListDialog ();
+               return true;
             }
             
-            EditorContext.GetSingleton ().mCollisionCategoryListDialog.SetAsCurrentFocusedTitleWindow ();
+            return false;
+         }
+         
+         public static function ShowCollisionCategoryListDialog ():void
+         {
+            var firstTime:Boolean = MakeSureCollisionCategoryListDialogCreated ();
             
-            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.parent != null) // OnCCatPicked must be null
-            {
-               PopUpManager.bringToFront (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
-            }
-            else
-            {
-               PopUpManager.addPopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog, EditorContext.GetEditorApp (), true || OnCCatPicked != null);
-               PopUpManager.centerPopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
-            }
+            //EditorContext.GetSingleton ().OpenModelessDialog (EditorContext.GetSingleton ().mCollisionCategoryListDialog, firstTime);
+            EditorContext.GetSingleton ().OnOpenModalDialog (EditorContext.GetSingleton ().mCollisionCategoryListDialog, firstTime, false);
             
-            //EditorContext.GetSingleton ().SetHasSettingDialogOpened (true); // bug
+            //EditorContext.GetSingleton ().SetHasSettingDialogOpened (true); // bug 
             EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCollisionCategoryManager ());
-            
-            if (OnCCatPicked != null)
-            {
-               EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingMode = true;
-               
-               EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
-            }
          }
          
          public static function HideCollisionCategoryListDialog ():void
          {
             //EditorContext.GetSingleton ().SetHasSettingDialogOpened (false);
-            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingMode)
+            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.IsInPickingMode ())
             {
-               EndPickingMode ();
+               EndPickingMode (true);
             }
             else
             {
-               PopUpManager.removePopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
+               //EditorContext.GetSingleton ().CloseModelessDialog (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
+               EditorContext.GetSingleton ().OnCloseModalDialog ();
             }
-            
          }
          
          public static function StartPickingMode (OnCCatPicked:Function):void
          {
-            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog != null)
-            {
-               PopUpManager.removePopUp (EditorContext.GetSingleton ().mCollisionCategoryListDialog);
-            }
+            var firstTime:Boolean = EditorContext.GetSingleton ().mCollisionCategoryListDialog == null;
             
-            ShowCollisionCategoryListDialog (OnCCatPicked);
+            EditorContext.OpenAssetPickingDialog (EditorContext.GetSingleton ().mCollisionCategoryListDialog, firstTime, true);
+            
+            EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().SetCollisionCategoryManager (EditorContext.GetEditorApp ().GetSceneEditDialog ().GetCurrentSceneInEditing ().GetCollisionCategoryManager ());
+            
+            EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().EnterPickAssetIntent (OnCCatPicked, EndPickingMode);
          }
          
-         public static function EndPickingMode ():void
+         public static function EndPickingMode (forceClose:Boolean = false):void
          {
-            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog != null)
+            //if (EditorContext.GetSingleton ().mCollisionCategoryListDialog != null)
+            if (EditorContext.GetSingleton ().mCollisionCategoryListDialog.IsInPickingMode ())
             {
-               EditorContext.GetSingleton ().mCollisionCategoryListDialog.mInPickingMode = false;
+               EditorContext.CloseAssetPickingDialog (forceClose); // must before the following line
                
-               PopUpManager.removePopUp(EditorContext.GetSingleton ().mCollisionCategoryListDialog);
-            
                EditorContext.GetSingleton ().mCollisionCategoryListDialog.GetCollisionCategoryListPanel ().ExitPickAssetIntent ();
             }
          }
@@ -132,8 +124,6 @@
          
       //======================================================
       
-         internal var mInPickingMode:Boolean = false;
-         
          private function InitDialog ():void
          {
             panelCollisionCategoryList.mButtonCreateCollisionCategory = Button_CreateCollisionCategory;

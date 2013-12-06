@@ -91,7 +91,7 @@
          
          private function OnClickCloseButton():void 
          {
-             PopUpManager.removePopUp(this);
+             //PopUpManager.removePopUp(this);
              
              if (OnClose != null)
                OnClose ();

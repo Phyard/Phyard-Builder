@@ -178,6 +178,7 @@
          
          // ...
          
+         // if to restore this later, use EditorContext.ShowModelessDialog instead
          //PopUpManager.addPopUp (mSceneEditDialog, this, false);
          //PopUpManager.centerPopUp (mSceneEditDialog);
          
@@ -412,7 +413,7 @@
          
          else if (itemData == "reset_world")
          {
-            EditorContext.ShowAlert ("Reset World", "Do you want to reset world?", true, NewWorld);
+            EditorContext.OpenAlertDialog ("Reset World", "Do you want to reset world?", true, NewWorld);
          }
          
          else if (itemData == "about")
@@ -423,32 +424,32 @@
       
       private function OnStartOnlineLoading ():void
       {
-         EditorContext.ShowAlert ("Confirm Online Loading", "All your current works will be lost. Continue?", true, StartOnlineLoading);
+         EditorContext.OpenAlertDialog ("Confirm Online Loading", "All your current works will be lost. Continue?", true, StartOnlineLoading);
       }
       
       private function OnStartOfflineLoading ():void
       {
-         EditorContext.ShowAlert ("Confirm Offline Loading", "All your current works will be lost. Continue?", true, ConfirmOfflineLoading);
+         EditorContext.OpenAlertDialog ("Confirm Offline Loading", "All your current works will be lost. Continue?", true, ConfirmOfflineLoading);
       }
       
       private function ConfirmOfflineLoading ():void
       {
-         EditorContext.ShowModalDialog (WorldLoadingDialog, OfflineLoad);
+         EditorContext.OpenSettingsDialog (WorldLoadingDialog, OfflineLoad);
       }
       
       public function OnStartOfflineImporting ():void
       {
-         EditorContext.ShowModalDialog (WorldImportDialog, OfflineImport);
+         EditorContext.OpenSettingsDialog (WorldImportDialog, OfflineImport);
       }
       
       public function OnImportScenes ():void
       {
-         EditorContext.ShowModalDialog (WorldImportScenesDialog, OfflineImportScenes);
+         EditorContext.OpenSettingsDialog (WorldImportScenesDialog, OfflineImportScenes);
       }
       
       public function OnStartOnlineSaving ():void
       {
-         EditorContext.ShowModalDialog (WorldOnlineSavingDialog, OnlineSave);
+         EditorContext.OpenSettingsDialog (WorldOnlineSavingDialog, OnlineSave);
       }
       
       public function OnStartOfflineSaving ():void
@@ -456,7 +457,7 @@
          var offlineSaveData:Object = GetOfflineSaveData ();
          if (offlineSaveData != null)
          {
-            EditorContext.ShowModalDialog (WorldSavingDialog, null, offlineSaveData);
+            EditorContext.OpenSettingsDialog (WorldSavingDialog, null, offlineSaveData);
          }
       }
       
@@ -472,8 +473,8 @@
       
       public function OnClickConfigWorldButton ():void
       {
-         //EditorContext.ShowModalDialog (DesignInfoSettingDialog, SetWorldSettings, GetWorldSettings ());
-         EditorContext.ShowModalDialog (WorldInfoSettingDialog, SetWorldSettings, GetWorldSettings ());
+         //EditorContext.OpenSettingsDialog (DesignInfoSettingDialog, SetWorldSettings, GetWorldSettings ());
+         EditorContext.OpenSettingsDialog (WorldInfoSettingDialog, SetWorldSettings, GetWorldSettings ());
          
          // holy shit! Flex 3.5 mxmlc compiler will throw many 
          // "Error: 调用可能未定义的方法 GetWorld (通过 static 类型 editor:Editor 引用)",

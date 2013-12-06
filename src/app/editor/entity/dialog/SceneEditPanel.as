@@ -305,6 +305,8 @@ package editor.entity.dialog {
          menuItemSetGridCellSize.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnSetGridCellSize);
 
          customMenuItemsStack.push (menuItemSetGridCellSize);
+         
+         super.BuildContextMenuInternal (customMenuItemsStack);
       }
 
 //=====================================================================
@@ -872,7 +874,7 @@ package editor.entity.dialog {
          info.mIsPauseOnFocusLost = mScene.IsPauseOnFocusLost ();
          info.mIsCiRulesEnabled = mScene.IsCiRulesEnabled ();
          
-         EditorContext.ShowModalDialog (WorldLevelRulesSettingDialog, SetLevelRulesInfo, info);
+         EditorContext.OpenSettingsDialog (WorldLevelRulesSettingDialog, SetLevelRulesInfo, info);
       }
       
       private function SetLevelRulesInfo (info:Object):void
@@ -898,7 +900,7 @@ package editor.entity.dialog {
          info.mDefaultGravityAccelerationMagnitude = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (mScene.GetDefaultGravityAccelerationMagnitude ()), 6);
          info.mDefaultGravityAccelerationAngle = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_RotationDegrees (mScene.GetDefaultGravityAccelerationAngle ()), 6);
          
-         EditorContext.ShowModalDialog (WorldPhysicsSettingDialog, SetLevelPhysicsProperties, info);
+         EditorContext.OpenSettingsDialog (WorldPhysicsSettingDialog, SetLevelPhysicsProperties, info);
       }
       
       private function SetLevelPhysicsProperties (info:Object):void
@@ -925,7 +927,7 @@ package editor.entity.dialog {
          info.mOriginX = mScene.GetCoordinateSystem ().GetOriginX ();
          info.mOroginY = mScene.GetCoordinateSystem ().GetOriginY ();
          
-         EditorContext.ShowModalDialog (WorldCoordinateSystemSettingDialog, SetLevelCoordinateSystemInfo, info);
+         EditorContext.OpenSettingsDialog (WorldCoordinateSystemSettingDialog, SetLevelCoordinateSystemInfo, info);
       }
       
       private function SetLevelCoordinateSystemInfo (info:Object):void
@@ -962,7 +964,7 @@ package editor.entity.dialog {
          info.mViewportWidth = mScene.GetViewportWidth ();
          info.mViewportHeight = mScene.GetViewportHeight ();
          
-         EditorContext.ShowModalDialog (WorldAppearanceSettingDialog, SetLevelAppearanceInfo, info);
+         EditorContext.OpenSettingsDialog (WorldAppearanceSettingDialog, SetLevelAppearanceInfo, info);
       }
       
       private function SetLevelAppearanceInfo (info:Object):void
@@ -997,7 +999,7 @@ package editor.entity.dialog {
          
          info.mCameraRotatingEnabled = mScene.IsCameraRotatingEnabled ();
          
-         EditorContext.ShowModalDialog (ViewportSettingDialog, SetLevelViewportInfo, info);
+         EditorContext.OpenSettingsDialog (ViewportSettingDialog, SetLevelViewportInfo, info);
       }
       
       private function SetLevelViewportInfo (info:Object):void
@@ -1186,11 +1188,11 @@ package editor.entity.dialog {
                      values.mPreCodeSnippet  = timer_event_handler_withPrePostHandling.GetPreCodeSnippet  ().Clone (mScene, true, null);
                      values.mPostCodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ().Clone (mScene, true, null);
                      
-                     EditorContext.ShowModalDialog (LogicTimerEventHandlerWithPrePostHandlingEditDialog, ConfirmSettingEntityProperties, values);
+                     EditorContext.OpenSettingsDialog (LogicTimerEventHandlerWithPrePostHandlingEditDialog, ConfirmSettingEntityProperties, values);
                   }
                   else
                   {
-                     EditorContext.ShowModalDialog (LogicTimerEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+                     EditorContext.OpenSettingsDialog (LogicTimerEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                   }
                }
                else if (entity is EntityEventHandler_Keyboard)
@@ -1199,7 +1201,7 @@ package editor.entity.dialog {
                   
                   values.mKeyCodes = keyboard_event_handler.GetKeyCodes ();
                   
-                  EditorContext.ShowModalDialog (LogicKeyboardEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (LogicKeyboardEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_MouseGesture)
                {
@@ -1207,28 +1209,28 @@ package editor.entity.dialog {
                   
                   values.mGestureIDs = gesture_event_handler.GetGestureIDs ();
                   
-                  EditorContext.ShowModalDialog (LogicGestureEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (LogicGestureEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_Mouse)
                {
-                  EditorContext.ShowModalDialog (LogicMouseEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (LogicMouseEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_Contact)
                {
-                  EditorContext.ShowModalDialog (LogicShapeContactEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (LogicShapeContactEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_JointReachLimit)
                {
-                  EditorContext.ShowModalDialog (LogicJointReachLimitEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (LogicJointReachLimitEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_GameLostOrGotFocus)
                {
-                  EditorContext.ShowModalDialog (LogicGameLostOrGotFocusEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (LogicGameLostOrGotFocusEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                //else if (entity is EntityEventHandler_ModuleLoopToEnd)
                else
                {
-                  EditorContext.ShowModalDialog (LogicEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (LogicEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
             }
             else if (entity is EntityBasicCondition)
@@ -1241,7 +1243,7 @@ package editor.entity.dialog {
                values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
-               EditorContext.ShowModalDialog (LogicConditionEditDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (LogicConditionEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityAction)
             {
@@ -1253,7 +1255,7 @@ package editor.entity.dialog {
                values.mCodeSnippet  = action.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
-               EditorContext.ShowModalDialog (LogicActionEditDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (LogicActionEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityInputEntityScriptFilter)
             {
@@ -1264,7 +1266,7 @@ package editor.entity.dialog {
                values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
-               EditorContext.ShowModalDialog (LogicEntityFilterEditDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (LogicEntityFilterEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityInputEntityPairScriptFilter)
             {
@@ -1275,23 +1277,23 @@ package editor.entity.dialog {
                values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (mScene, true, null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mScene.GetCoordinateSystem ());
                
-               EditorContext.ShowModalDialog (LogicEntityPairFilterEditDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (LogicEntityPairFilterEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityConditionDoor)
             {
-               EditorContext.ShowModalDialog (LogicConditionDoorEditDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (LogicConditionDoorEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityTask)
             {
-               EditorContext.ShowModalDialog (LogicTaskEditDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (LogicTaskEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityInputEntityAssigner)
             {
-               EditorContext.ShowModalDialog (LogicEntityAssignerEditDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (LogicEntityAssignerEditDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityInputEntityPairAssigner)
             {
-               EditorContext.ShowModalDialog (LogicEntityPairAssignerEditDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (LogicEntityPairAssignerEditDialog, ConfirmSettingEntityProperties, values);
             }
          }
          else if (entity is EntityVectorShape)
@@ -1327,9 +1329,9 @@ package editor.entity.dialog {
                   values.mAppearanceTypeListSelectedIndex = (entity as EntityVectorShapeCircle).GetAppearanceType();
                   
                   if (Define.IsBombShape (values.mAiType))
-                     EditorContext.ShowModalDialog (ShapeCircleBombSettingDialog, ConfirmSettingEntityProperties, values);
+                     EditorContext.OpenSettingsDialog (ShapeCircleBombSettingDialog, ConfirmSettingEntityProperties, values);
                   else
-                     EditorContext.ShowModalDialog (ShapeCircleSettingDialog, ConfirmSettingEntityProperties, values);
+                     EditorContext.OpenSettingsDialog (ShapeCircleSettingDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityVectorShapeRectangle)
                {
@@ -1343,13 +1345,13 @@ package editor.entity.dialog {
                   values.mCornerEclipseHeight = (vectorShape as EntityVectorShapeRectangle).GetCornerEclipseHeight ();
                   
                   if (Define.IsBombShape (values.mAiType))
-                     EditorContext.ShowModalDialog (ShapeRectangleBombSettingDialog, ConfirmSettingEntityProperties, values);
+                     EditorContext.OpenSettingsDialog (ShapeRectangleBombSettingDialog, ConfirmSettingEntityProperties, values);
                   else
-                     EditorContext.ShowModalDialog (ShapeRectangleSettingDialog, ConfirmSettingEntityProperties, values);
+                     EditorContext.OpenSettingsDialog (ShapeRectangleSettingDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityVectorShapePolygon)
                {
-                  EditorContext.ShowModalDialog (ShapePolygonSettingDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (ShapePolygonSettingDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityVectorShapePolyline)
                {
@@ -1357,7 +1359,7 @@ package editor.entity.dialog {
                   values.mIsRoundEnds = (vectorShape as EntityVectorShapePolyline).IsRoundEnds ();
                   values.mIsClosed = (vectorShape as EntityVectorShapePolyline).IsClosed ();
                   
-                  EditorContext.ShowModalDialog (ShapePolylineSettingDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (ShapePolylineSettingDialog, ConfirmSettingEntityProperties, values);
                }
             }
             else // no physics entity
@@ -1398,11 +1400,11 @@ package editor.entity.dialog {
                      values.mMouseOverValues.mTransparency = moveOverShape.GetTransparency ();
                      values.mMouseOverValues.mBorderTransparency = moveOverShape.GetBorderTransparency ();
                      
-                     EditorContext.ShowModalDialog (ShapeTextButtonSettingDialog, ConfirmSettingEntityProperties, values);
+                     EditorContext.OpenSettingsDialog (ShapeTextButtonSettingDialog, ConfirmSettingEntityProperties, values);
                   }
                   else
                   {
-                     EditorContext.ShowModalDialog (ShapeTextSettingDialog, ConfirmSettingEntityProperties, values);
+                     EditorContext.OpenSettingsDialog (ShapeTextSettingDialog, ConfirmSettingEntityProperties, values);
                   }
                }
                else if (entity is EntityVectorShapeGravityController)
@@ -1420,7 +1422,7 @@ package editor.entity.dialog {
                   values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAcceleration ()), 6);
                   values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_RotationDegrees ((vectorShape as EntityVectorShapeGravityController).GetInitialGravityAngle ()), 6);
                   
-                  EditorContext.ShowModalDialog (ShapeGravityControllerSettingDialog, ConfirmSettingEntityProperties, values);
+                  EditorContext.OpenSettingsDialog (ShapeGravityControllerSettingDialog, ConfirmSettingEntityProperties, values);
                }
             }
          }
@@ -1434,7 +1436,7 @@ package editor.entity.dialog {
                
                values.mModule = (entity as EntityShapeImageModule).GetAssetImageModule ();
                
-               EditorContext.ShowModalDialog (ShapeImageModuleSettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (ShapeImageModuleSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityShapeImageModuleButton)
             {
@@ -1444,7 +1446,7 @@ package editor.entity.dialog {
                values.mModuleOver = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseOver ();
                values.mModuleDown = (entity as EntityShapeImageModuleButton).GetAssetImageModuleForMouseDown ();
                
-               EditorContext.ShowModalDialog (ShapeImageModuleButtonSettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (ShapeImageModuleButtonSettingDialog, ConfirmSettingEntityProperties, values);
             }
          }
          else if (entity is SubEntityJointAnchor)
@@ -1501,7 +1503,7 @@ package editor.entity.dialog {
                jointValues.mMaxMotorTorque = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_Torque (hinge.GetMaxMotorTorque ()), 6);
                //<<
                
-               EditorContext.ShowModalDialog (JointHingeSettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (JointHingeSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntitySliderAnchor)
             {
@@ -1518,7 +1520,7 @@ package editor.entity.dialog {
                jointValues.mMaxMotorForce = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_ForceMagnitude (slider.GetMaxMotorForce ()), 6);
                //<<
                
-               EditorContext.ShowModalDialog (JointSliderSettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (JointSliderSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntitySpringAnchor)
             {
@@ -1535,7 +1537,7 @@ package editor.entity.dialog {
                jointValues.mBreakExtendedLength = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_Length (spring.GetBreakExtendedLength ()), 6);
                //<<
                
-               EditorContext.ShowModalDialog (JointSpringSettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (JointSpringSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntityDistanceAnchor)
             {
@@ -1545,7 +1547,7 @@ package editor.entity.dialog {
                jointValues.mBreakDeltaLength = ValueAdjuster.Number2Precision (mScene.GetCoordinateSystem ().D2P_Length (distance.GetBreakDeltaLength ()), 6);
                //<<
                
-               EditorContext.ShowModalDialog (JointDistanceSettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (JointDistanceSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntityWeldAnchor)
             {
@@ -1553,13 +1555,13 @@ package editor.entity.dialog {
                
                var weld:EntityJointWeld = joint as EntityJointWeld;
                
-               EditorContext.ShowModalDialog (JointWeldSettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (JointWeldSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is SubEntityDummyAnchor)
             {
                var dummy:EntityJointDummy = joint as EntityJointDummy;
                
-               EditorContext.ShowModalDialog (JointDummySettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (JointDummySettingDialog, ConfirmSettingEntityProperties, values);
             }
          }
          else if (entity is EntityUtility)
@@ -1575,7 +1577,7 @@ package editor.entity.dialog {
                values.mFollowingStyle = camera.GetFollowingStyle ();
                //<<
                
-               EditorContext.ShowModalDialog (UtilityCameraSettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (UtilityCameraSettingDialog, ConfirmSettingEntityProperties, values);
             }
             else if (entity is EntityUtilityPowerSource)
             {
@@ -1624,7 +1626,7 @@ package editor.entity.dialog {
                }
                values.mPowerMagnitude = ValueAdjuster.Number2Precision (values.mPowerMagnitude, 6);
                
-               EditorContext.ShowModalDialog (UtilityPowerSourceSettingDialog, ConfirmSettingEntityProperties, values);
+               EditorContext.OpenSettingsDialog (UtilityPowerSourceSettingDialog, ConfirmSettingEntityProperties, values);
             }
          }
       }
@@ -2136,37 +2138,37 @@ package editor.entity.dialog {
       
       public function ShowBatchModifyEntityCommonPropertiesDialog ():void
       {
-         EditorContext.ShowModalDialog (BatchEntityCommonPropertyModifyDialog, OnBatchModifyEntityCommonProperties, null);
+         EditorContext.OpenSettingsDialog (BatchEntityCommonPropertyModifyDialog, OnBatchModifyEntityCommonProperties, null);
       }
       
       public function ShowBatchModifyShapePhysicsPropertiesDialog ():void
       {
-         EditorContext.ShowModalDialog (BatchShapePhysicsPropertiesModifyDialog, OnBatchModifyShapePhysicsProperties, {mScene: mScene});
+         EditorContext.OpenSettingsDialog (BatchShapePhysicsPropertiesModifyDialog, OnBatchModifyShapePhysicsProperties, {mScene: mScene});
       }
       
       public function ShowBatchModifyShapeAppearancePropertiesDialog ():void
       {
-         EditorContext.ShowModalDialog (BatchShapeAppearancePropertiesModifyDialog, OnBatchModifyShapeAppearanceProperties, null);
+         EditorContext.OpenSettingsDialog (BatchShapeAppearancePropertiesModifyDialog, OnBatchModifyShapeAppearanceProperties, null);
       }
       
       public function ShowBatchModifyShapeCirclePropertiesDialog ():void
       {
-         EditorContext.ShowModalDialog (BatchShapeCirclePropertiesModifyDialog, OnBatchModifyShapeCircleProperties, null);
+         EditorContext.OpenSettingsDialog (BatchShapeCirclePropertiesModifyDialog, OnBatchModifyShapeCircleProperties, null);
       }
       
       public function ShowBatchModifyShapeRectanglePropertiesDialog ():void
       {
-         EditorContext.ShowModalDialog (BatchShapeRectanglePropertiesModifyDialog, OnBatchModifyShapeRectangleProperties, null);
+         EditorContext.OpenSettingsDialog (BatchShapeRectanglePropertiesModifyDialog, OnBatchModifyShapeRectangleProperties, null);
       }
       
       public function ShowBatchModifyShapePolylinePropertiesDialog ():void
       {
-         EditorContext.ShowModalDialog (BatchShapePolylinePropertiesModifyDialog, OnBatchModifyShapePolylineProperties, null);
+         EditorContext.OpenSettingsDialog (BatchShapePolylinePropertiesModifyDialog, OnBatchModifyShapePolylineProperties, null);
       }
       
       public function ShowBatchModifyJointCollideConnectedsDialog ():void
       {
-         EditorContext.ShowModalDialog (BatchJointCollideConnectedsModifyDialog, OnBatchModifyJointCollideConnectedsProperty, null);
+         EditorContext.OpenSettingsDialog (BatchJointCollideConnectedsModifyDialog, OnBatchModifyJointCollideConnectedsProperty, null);
       }
       
       private function OnBatchModifyEntityCommonProperties (params:Object):void

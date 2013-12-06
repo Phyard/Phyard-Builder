@@ -286,11 +286,10 @@
                      <mx:Spacer width="2" />
                      <mx:Label id="Label_SelectedEntitiesInfos" text="" width="100%"/>
                      <mx:Spacer width="100%"/>
-                     <!--  focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);" -->
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Spacer width="2" />
                      <mx:Label id="Label_GoToEntity" text="Select Entity#" click="OnClickSelectEntityLabel (event);"/>
-                     <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnEnterEntityIDsToSelect ();"/>
+                     <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnEnterEntityIDsToSelect ();"  focusIn="EditorContext.GetSingleton ().SetHasInputFocused (true);" focusOut="EditorContext.GetSingleton ().SetHasInputFocused (false);"/>
                      <mx:Spacer width="2" />
                      <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                      <mx:Label id="Label_MouseDisplayPosition" text="" minWidth="100"/>
@@ -743,7 +742,7 @@
       
       private function OnCreateNewScene ():void
       {
-         EditorContext.ShowModalDialog (NameSettingDialog, ConfirmCreateNewScene, {mName: "untitled"});
+         EditorContext.OpenSettingsDialog (NameSettingDialog, ConfirmCreateNewScene, {mName: "untitled"});
       }
       
       private function ConfirmCreateNewScene (params:Object):editor.entity.Scene
@@ -777,7 +776,7 @@
          
          if (scene != null)
          {
-            // 1st // EditorContext.ShowModalDialog (NameSettingDialog, ConfirmCloneSelectedScene, {mName: "(cloned) " + scene.GetName ()});
+            // 1st // EditorContext.OpenSettingsDialog (NameSettingDialog, ConfirmCloneSelectedScene, {mName: "(cloned) " + scene.GetName ()});
             
             // 2nd // ConfirmCloneSelectedScene ({mName: "(cloned) " + scene.GetName ()});
             
@@ -916,7 +915,7 @@
       
       private function OnSceneListDoubleClicked (event:Event):void
       {
-         EditorContext.ShowModalDialog (NameSettingDialog, ConfirmMoveSceneIndex, 
+         EditorContext.OpenSettingsDialog (NameSettingDialog, ConfirmMoveSceneIndex, 
                                     {mName: "" + List_Scenes.selectedIndex, 
                                      mLabel: "Move To New Index",
                                      mTitle: "Change Scene Order"});
@@ -1008,11 +1007,11 @@
          var itemData:String = event.item.@data;
          if (itemData == "clear_all")
          {
-            EditorContext.ShowAlert ("Clear All Entities", "Do you want to clear all entities? (Functions will not be deleted)", true, mCurrentSceneEditPanel.ClearAllEntities);
+            EditorContext.OpenAlertDialog ("Clear All Entities", "Do you want to clear all entities? (Functions will not be deleted)", true, mCurrentSceneEditPanel.ClearAllEntities);
          }
          else if (itemData == "reset_scene")
          {
-            EditorContext.ShowAlert ("Reset Scene", "Do you want to reset current scene? (All entities and functions will be deleted)", true, mCurrentSceneEditPanel.ResetScene);
+            EditorContext.OpenAlertDialog ("Reset Scene", "Do you want to reset current scene? (All entities and functions will be deleted)", true, mCurrentSceneEditPanel.ResetScene);
          }
          else if (itemData == "general")
          {
@@ -1036,14 +1035,14 @@
          }
          else if (itemData == "delete_current_scene")
          {
-            EditorContext.ShowAlert ("Delete Current Scene", "This action is not restorable.\nDo you really want to delete current scene?", true, OnDeleteCurrentScene);
+            EditorContext.OpenAlertDialog ("Delete Current Scene", "This action is not restorable.\nDo you really want to delete current scene?", true, OnDeleteCurrentScene);
          }
          else if (itemData == "change_scene_name")
          {
             var scene:editor.entity.Scene = mCurrentSceneEditPanel.GetScene ();
             if (scene != null)
             {
-               EditorContext.ShowModalDialog (NameSettingDialog, ChangeCurrentSceneName, {mName: scene.GetName ()});
+               EditorContext.OpenSettingsDialog (NameSettingDialog, ChangeCurrentSceneName, {mName: scene.GetName ()});
             }
          }
          else if (itemData == "import")
@@ -1238,7 +1237,12 @@
          //scenePlayPanel.percentHeight = 100;
          //Box_ScenePlay.addChild (scenePlayPanel);
 
-         mCurrentScenePlayPanel.SetWorldViewerParams (EditorContext.GetEditorApp ().GetWorldBinaryData (), GetCurrentSceneInEditing ().GetSceneIndex (), mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 0xFFFFFF, OnClickStopCurrentSceneButton);            
+         mCurrentScenePlayPanel.SetWorldViewerParams (
+                                    EditorContext.GetEditorApp ().GetWorldBinaryData (), 
+                                    GetCurrentSceneInEditing ().GetSceneIndex (),
+                                    mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 
+                                    mCurrentSceneEditPanel.GetSurroundingBackgroundColor (), //0xFFFFFF, 
+                                    OnClickStopCurrentSceneButton);            
             
          mCurrentScenePlayPanel.SetDialogCallbacks ({
                                        UpdateInterface: UpdateInterfaceForPlaying, 

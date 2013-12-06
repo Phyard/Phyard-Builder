@@ -82,7 +82,7 @@
          
          private function OnClickOkButton():void 
          {
-            PopUpManager.removePopUp(this);
+            //PopUpManager.removePopUp(this);
             
             mInputValues.mLoadQuickSaveId = List_QuickSaves.selectedIndex;
             
@@ -95,7 +95,7 @@
          
          private function OnClickCancelButton():void 
          {
-             PopUpManager.removePopUp(this);
+             //PopUpManager.removePopUp(this);
              
              if (OnClose != null)
                OnClose (false);

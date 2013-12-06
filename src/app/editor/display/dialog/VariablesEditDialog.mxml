@@ -3,9 +3,9 @@
     title="Variables Setting" width="386" height="386"
     borderAlpha="0.77"
     showCloseButton="false"
-    mouseDown="PopUpManager.bringToFront (this);"
     >
     <!--
+    mouseDown="PopUpManager.bringToFront (this);"
     close="OnClickCloseButton ();"
     creationComplete="OnCreateCompete ();"
     show="OnShow ();"
@@ -102,7 +102,7 @@
 
          private function OnClickCloseButton():void
          {
-            PopUpManager.removePopUp (this);
+            //PopUpManager.removePopUp (this);
             
             theVariablesEditPanel.NotifyDialogClosing ();
             //SetVariableSpace (null);

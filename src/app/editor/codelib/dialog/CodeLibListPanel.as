@@ -258,8 +258,8 @@ package editor.codelib.dialog {
       
       private function OpenAssetSettingDialog ():void
       {
-         if (EditorContext.GetSingleton ().HasSettingDialogOpened ())
-            return;
+         //if (EditorContext.GetSingleton ().HasSettingDialogOpened ())
+         //   return;
          
          var selectedAssets:Array = mCodeLibManager.GetSelectedAssets ();
          if (selectedAssets == null || selectedAssets.length != 1)
@@ -279,13 +279,13 @@ package editor.codelib.dialog {
             values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (mCodeLibManager.GetScene (), true, null);
             (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mCodeLibManager.GetScene ().GetCoordinateSystem ());
             
-            EditorContext.ShowModalDialog (FunctionEditDialog, ConfirmSettingAssetProperties, values);
+            EditorContext.OpenSettingsDialog (FunctionEditDialog, ConfirmSettingAssetProperties, values);
          }
          else if (asset is AssetClass)
          {
             var aClass:AssetClass = asset as AssetClass;
             
-            EditorContext.ShowVariableSpaceEditDialog (this, aClass.GetCustomClass ().GetPropertyDefinitionSpace (), null, mCodeLibManager, "Edit Custom Type: ");
+            EditorContext.OpenVariableSpaceEditDialog (this, aClass.GetCustomClass ().GetPropertyDefinitionSpace (), null, mCodeLibManager, "Edit Custom Type: ");
          }
       }
       

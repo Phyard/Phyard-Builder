@@ -117,7 +117,7 @@
             mParams.mOriginX = NumericStepper_CoordinatesOriginX.value;
             mParams.mOroginY = NumericStepper_CoordinatesOriginY.value;
 
-            PopUpManager.removePopUp(this);
+            //PopUpManager.removePopUp(this);
 
             if (OnClose != null)
                OnClose ();
@@ -128,7 +128,7 @@
 
          private function OnClickCancelButton():void
          {
-             PopUpManager.removePopUp(this);
+             //PopUpManager.removePopUp(this);
 
              if (OnClose != null)
                OnClose ();

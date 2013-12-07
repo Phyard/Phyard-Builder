@@ -442,9 +442,9 @@ package editor.asset {
          {
             mChangeBackgroundColorMenuItem = new ContextMenuItem ("Change Panel Background Color (Globally) ...", true);
             mChangeBackgroundColorMenuItem.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnChangeBackgroundColor);
-            
-            customMenuItemsStack.push (mChangeBackgroundColorMenuItem);
          }
+
+         customMenuItemsStack.push (mChangeBackgroundColorMenuItem);
          
          // to override
       }

@@ -65,7 +65,11 @@ package player.trigger
       
       public function toString ():String
       {
-         return "{class: " + _mRealClassDefinition.GetName () + ", value: " + _mValueObject + "}";
+         //return "{class: " + _mRealClassDefinition.GetName () + ", value: " + _mValueObject + "}";
+         
+         // above one may enter dead loop.
+         
+         return "{class: " + _mRealClassDefinition.GetName () + ", value: " +_mRealClassDefinition.ToString ( _mValueObject) + "}";
       }
       
       public function CloneClassInstance ():ClassInstance

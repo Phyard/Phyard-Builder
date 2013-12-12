@@ -1319,7 +1319,7 @@ package player.design
          //CheckWorldBuildingStatus (); // now called in World.GetBuildingStatus ()
       }
       
-      public static function CheckWorldBuildingStatus ():void
+      public static function CheckWorldBuildingStatus ():int //void
       {
          var pending:Boolean = false;
          
@@ -1332,8 +1332,9 @@ package player.design
             
             if (status < 0)
             {
-               GetCurrentWorld ().SetBuildingStatus (-1);
-               return;
+               //GetCurrentWorld ().SetBuildingStatus (-1);
+               //return;
+               return -1;
             }
             
             if (status == 0)
@@ -1366,13 +1367,15 @@ package player.design
          
          if (pending)
          {
-            GetCurrentWorld ().SetBuildingStatus (0);
+            //GetCurrentWorld ().SetBuildingStatus (0);
+            return 0;
          }
          else
          {  
             //GetCurrentWorld ().UpdateImageModuleAppearances (); // bug for repainting module buttons
             
-            GetCurrentWorld ().SetBuildingStatus (1);
+            //GetCurrentWorld ().SetBuildingStatus (1);
+            return 1;
          }
       }
       

@@ -2016,7 +2016,7 @@
             AppendContextMenuItem (sprite, "to Nothing", OnSelectValueTarget_Null, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
 
             if (ownerFuncDefinition.GetOutputVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
-               AppendContextMenuItem (sprite, "to Output Variables", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Output);
+               AppendContextMenuItem (sprite, "to Output Variable", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Output);
 
             if (ownerFuncDefinition.GetLocalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);

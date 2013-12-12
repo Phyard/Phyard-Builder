@@ -45,9 +45,9 @@ package player.entity {
             if (entityDefine.mModuleIndexUp != undefined)
                SetModuleIndexUp (entityDefine.mModuleIndexUp);
             if (entityDefine.mModuleIndexOver != undefined)
-               SetModuleIndexOver (entityDefine.mModuleIndexOver);
+               SetModuleIndexOver (entityDefine.mModuleIndexOver, false);
             if (entityDefine.mModuleIndexDown != undefined)
-               SetModuleIndexDown (entityDefine.mModuleIndexDown);
+               SetModuleIndexDown (entityDefine.mModuleIndexDown, false);
          }
       }
       
@@ -150,7 +150,7 @@ package player.entity {
          return mModuleIndexOver;
       }
 
-      public function SetModuleIndexOver (moduleIndex:int):void
+      public function SetModuleIndexOver (moduleIndex:int, buildAppearanceNow:Boolean = true):void
       {
          if (mModuleIndexOver == moduleIndex)
          {
@@ -170,7 +170,7 @@ package player.entity {
             mModuleIndexOver = -1;
          }
          
-         if (mWorld.GetBuildingStatus () != 0)
+         if (buildAppearanceNow && mWorld.GetBuildingStatus () != 0)
          {
             RebuildAppearanceForOverState ();
          }
@@ -181,7 +181,7 @@ package player.entity {
          return mModuleIndexDown;
       }
 
-      public function SetModuleIndexDown (moduleIndex:int):void
+      public function SetModuleIndexDown (moduleIndex:int, buildAppearanceNow:Boolean = true):void
       {
          if (mModuleIndexDown == moduleIndex)
          {
@@ -201,7 +201,7 @@ package player.entity {
             mModuleIndexDown = -1;
          }
          
-         if (mWorld.GetBuildingStatus () != 0)
+         if (buildAppearanceNow && mWorld.GetBuildingStatus () != 0)
          {
             RebuildAppearanceForDownState ();
          }

@@ -273,16 +273,19 @@ package player.world {
       {
          if (mBuildingStatus == 0)
          {
-            Global.CheckWorldBuildingStatus ();
+            mBuildingStatus = Global.CheckWorldBuildingStatus ();
          }
+         
+         //if ((! mInitialized) && mBuildingStatus == 1)
+         //   return 0;
          
          return mBuildingStatus;
       }
       
-      public function SetBuildingStatus (status:int):void
-      {
-         mBuildingStatus = status; 
-      }
+      //public function SetBuildingStatus (status:int):void
+      //{
+      //   mBuildingStatus = status; 
+      //}
       
       //public function UpdateImageModuleAppearances ():void
       //{

@@ -724,7 +724,7 @@ package common {
          
          if (isLoaingFromStretch)
          {
-            //Global.CheckWorldBuildingStatus (); // bug! playerWorld.mInitialized == false now, so UpdateImageModuleAppearances will do nothing.
+            //Global.CheckWorldBuildingStatus (); // bug! playerWorld.mInitialized == false now, so UpdateImageModuleAppearances will do nothing.  // now called in World.GetBuildingStatus ()
          }
          else
          {

@@ -139,7 +139,7 @@ package viewer {
 
       public function Viewer (params:Object = null)
       {
-         trace ("Viewer params = " + params);
+         //trace ("Viewer params = " + params);
 
          if (params == null) // strange: flash auto instance this class when loading done. shit!
             return;

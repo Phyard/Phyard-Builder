@@ -2583,7 +2583,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
-                        new VariableDefinitionBoolean ("Is World Border?"),
+                        new VariableDefinitionBoolean ("Is Camera Entity?"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTextShapeEntity, shape_is_subtype_package, "Is Text Shape?", null, "IsTextShape",
@@ -2591,7 +2591,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
-                        new VariableDefinitionBoolean ("Is World Border?"),
+                        new VariableDefinitionBoolean ("Is Text Shape Entity?"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsModuleShapeEntity, shape_is_subtype_package, "Is Module Shape?", null, "IsModuleShape",
@@ -2599,7 +2599,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
-                        new VariableDefinitionBoolean ("Is World Border?"),
+                        new VariableDefinitionBoolean ("Is Module Shape Entity?"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsButtonShapeEntity, shape_is_subtype_package, "Is Button Shape?", null, "IsButtonShape",
@@ -2607,7 +2607,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
-                        new VariableDefinitionBoolean ("Is World Border?"),
+                        new VariableDefinitionBoolean ("Is Button Shape Entity?"),
                      ]
                   );
 

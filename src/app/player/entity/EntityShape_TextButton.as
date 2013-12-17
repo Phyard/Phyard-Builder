@@ -69,10 +69,7 @@ package player.entity {
          super.Create (createStageId, entityDefine, extraInfos);
          
          if (createStageId == 0)
-         {
-            SetTextColor_MouseOver (GetTextColor ());
-            SetFontSize_MouseOver (GetFontSize ());
-            
+         {  
             if (entityDefine.mUsingHandCursor != undefined)
                SetUsingHandCursor (entityDefine.mUsingHandCursor);
             
@@ -92,11 +89,51 @@ package player.entity {
                mBorderTransparency_MouseOver = entityDefine.mBorderTransparency_MouseOver;
             
             // not set in editor, set in Clone API
+            SetTextColor_MouseOver (GetTextColor ());
+            SetFontSize_MouseOver (GetFontSize ());
             if (entityDefine.mTextColor_MouseOver != undefined)
                SetTextColor_MouseOver (entityDefine.mTextColor_MouseOver);
             if (entityDefine.mFontSize_MouseOver != undefined)
                SetFontSize_MouseOver (entityDefine.mFontSize_MouseOver);
-
+            
+            //>>down state is not defined in editor yet, use over values instead
+            if (entityDefine.mDrawBorder_MouseDown != undefined)
+               mDrawBorder_MouseDown = entityDefine.mDrawBorder_MouseDown;
+            else
+               mDrawBorder_MouseDown = entityDefine.mDrawBorder_MouseOver;
+            if (entityDefine.mDrawBackground_MouseDown != undefined)
+               mDrawBackground_MouseDown = entityDefine.mDrawBackground_MouseDown;
+            else
+               mDrawBackground_MouseDown = entityDefine.mDrawBackground_MouseOver;
+            if (entityDefine.mBorderColor_MouseDown != undefined)
+               mBorderColor_MouseDown = entityDefine.mBorderColor_MouseDown;
+            else
+               mBorderColor_MouseDown = entityDefine.mBorderColor_MouseOver;
+            if (entityDefine.mBorderThickness_MouseDown != undefined)
+               mBorderThickness_MouseDown = mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mBorderThickness_MouseDown);
+            else
+               mBorderThickness_MouseDown = mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mBorderThickness_MouseOver);
+            if (entityDefine.mBackgroundColor_MouseDown != undefined)
+               mBackgroundColor_MouseDown = entityDefine.mBackgroundColor_MouseDown;
+            else
+               mBackgroundColor_MouseDown = entityDefine.mBackgroundColor_MouseOver;
+            if (entityDefine.mBackgroundTransparency_MouseDown != undefined)
+               mTransparency_MouseDown = entityDefine.mBackgroundTransparency_MouseDown;
+            else
+               mTransparency_MouseDown = entityDefine.mBackgroundTransparency_MouseOver;
+            if (entityDefine.mBorderTransparency_MouseDown != undefined)
+               mBorderTransparency_MouseDown = entityDefine.mBorderTransparency_MouseDown;
+            else
+               mBorderTransparency_MouseDown = entityDefine.mBorderTransparency_MouseOver;
+            //<<
+            
+            // not set in editor, set in Clone API
+            SetTextColor_MouseDown (GetTextColor ());
+            SetFontSize_MouseDown (GetFontSize ());
+            if (entityDefine.mTextColor_MouseDown != undefined)
+               SetTextColor_MouseDown (entityDefine.mTextColor_MouseDown);
+            if (entityDefine.mFontSize_MouseDown != undefined)
+               SetFontSize_MouseDown (entityDefine.mFontSize_MouseDown);
          }
       }
       
@@ -108,6 +145,7 @@ package player.entity {
          entityDefine.mFontSize_MouseOver = GetFontSize_MouseOver ();
          
          entityDefine.mUsingHandCursor = UsingHandCursor ();
+         
          entityDefine.mDrawBorder_MouseOver = mDrawBorder_MouseOver;
          entityDefine.mDrawBackground_MouseOver = mDrawBackground_MouseOver;
          entityDefine.mBorderColor_MouseOver = mBorderColor_MouseOver;
@@ -115,6 +153,14 @@ package player.entity {
          entityDefine.mBackgroundColor_MouseOver = mBackgroundColor_MouseOver;
          entityDefine.mBackgroundTransparency_MouseOver = mTransparency_MouseOver;
          entityDefine.mBorderTransparency_MouseOver = mBorderTransparency_MouseOver;
+         
+         entityDefine.mDrawBorder_MouseDown = mDrawBorder_MouseDown;
+         entityDefine.mDrawBackground_MouseDown = mDrawBackground_MouseDown;
+         entityDefine.mBorderColor_MouseDown = mBorderColor_MouseDown;
+         entityDefine.mBorderThickness_MouseDown = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness_MouseDown);
+         entityDefine.mBackgroundColor_MouseDown = mBackgroundColor_MouseDown;
+         entityDefine.mBackgroundTransparency_MouseDown = mTransparency_MouseDown;
+         entityDefine.mBorderTransparency_MouseDown = mBorderTransparency_MouseDown;
          
          entityDefine.mEntityType = Define.EntityType_ShapeTextButton;
          
@@ -207,6 +253,58 @@ package player.entity {
       }
       
 //=============================================================
+//   down (not defined in editor, initial values are clone from over state. Can be changed by API)
+//=============================================================
+      
+      private var mDrawBorder_MouseDown:Boolean = true;
+      private var mDrawBackground_MouseDown:Boolean =true;
+      private var mBorderColor_MouseDown:uint = 0x0;
+      private var mBorderThickness_MouseDown:Number = 2;
+      private var mBackgroundColor_MouseDown:uint = Define.ColorTextButtonBackground_MouseDown;
+      private var mTransparency_MouseDown:uint = 100;
+      private var mBorderTransparency_MouseDown:uint = 100;
+      
+      private var mTextColor_MouseDown:uint = 0x000000;
+      private var mFontSize_MouseDown:uint = 10;
+      
+      public function GetTextColor_MouseDown ():uint
+      {
+         return mTextColor_MouseDown;
+      }
+      
+      public function SetTextColor_MouseDown (color:uint):void
+      {
+         mTextColor_MouseDown = color;
+         
+         mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance ();
+      }
+      
+      public function GetFontSize_MouseDown ():uint
+      {
+         return mFontSize_MouseDown;
+      }
+      
+      public function SetFontSize_MouseDown (size:uint):void
+      {
+         mFontSize_MouseDown = size;
+         
+         mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance ();
+      }
+      
+      public function SetTextBackgroundColor_MouseDown (color:uint):void
+      {
+         mBackgroundColor_MouseDown = color;
+         
+         mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance ();
+      }
+      
+//=============================================================
 //   appearance
 //=============================================================
       
@@ -214,13 +312,13 @@ package player.entity {
       
       protected var mNormalSprite:Sprite = new Sprite ();
       
-      protected var mMouseOverSprite:Sprite = new Sprite ();
-      protected var mTextBitmap_MouseOver:Bitmap = new Bitmap ();
+      protected var mMouseOverSprite          :Sprite = new Sprite ();
+      protected var mTextBitmap_MouseOver     :Bitmap = new Bitmap ();
       protected var mBackgroundShape_MouseOver:Shape = new Shape ();
       protected var mBorderShape_MouseOver    :Shape = new Shape ();
       
-      protected var mMouseDownSprite:Sprite = new Sprite ();
-      protected var mTextBitmap_MouseDown:Bitmap = new Bitmap ();
+      protected var mMouseDownSprite          :Sprite = new Sprite ();
+      protected var mTextBitmap_MouseDown     :Bitmap = new Bitmap ();
       protected var mBackgroundShape_MouseDown:Shape = new Shape ();
       protected var mBorderShape_MouseDown    :Shape = new Shape ();
       
@@ -262,6 +360,8 @@ package player.entity {
          var fontSize_Backup:uint = mFontSize;
          try
          {
+            // over
+            
             mTextColor = mTextColor_MouseOver;
             mFontSize = mFontSize_MouseOver;
             
@@ -271,9 +371,16 @@ package player.entity {
             //mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap_MouseOver.width;
             //mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
             
+            // down
+            
+            mTextColor = mTextColor_MouseDown;
+            mFontSize = mFontSize_MouseDown;
+            
+            super.RebuildTextAppearance ();
+            
             mTextBitmap_MouseDown.bitmapData = mTextBitmap.bitmapData;
-            //mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseOver.width;
-            //mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseOver.height + 1;
+            //mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseDown.width;
+            //mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseDown.height + 1;
          }
          catch (error:Error)
          {
@@ -292,6 +399,7 @@ package player.entity {
          var displayWidth :Number = displayHalfWidth +  displayHalfWidth;
          var displayHeight:Number = displayHalfHeight +  displayHalfHeight;
          var displayBorderThickness_MouseOver:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness_MouseOver);
+         var displayBorderThickness_MouseDown:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness_MouseDown);
          
          var isRoundCorner:Boolean = IsRoundCorner () && (cornerWidth > 0) && (cornerHeight > 0);
          
@@ -323,16 +431,21 @@ package player.entity {
                   isRoundCorner, cornerWidth, cornerHeight
                );
          
+         mBackgroundShape_MouseOver.visible = mDrawBackground_MouseOver;
+         mBackgroundShape_MouseOver.alpha = mTransparency_MouseOver * 0.01;
+         mBorderShape_MouseOver.visible = mDrawBorder_MouseOver;
+         mBorderShape_MouseOver.alpha = mBorderTransparency_MouseOver * 0.01;
+
          GraphicsUtil.ClearAndDrawRect (
                   mBackgroundShape_MouseDown,
                   - displayHalfWidth,
                   - displayHalfHeight,
                   displayWidth,
                   displayHeight,
-                  mBorderColor_MouseOver,
+                  mBorderColor_MouseDown,
                   -1, // not draw border
                   true, // draw background
-                  mBackgroundColor_MouseOver,
+                  mBackgroundColor_MouseDown,
                   mIsRoundJoint && (! isRoundCorner), // mIsRoundCornors,
                   isRoundCorner, cornerWidth, cornerHeight
                );
@@ -343,19 +456,18 @@ package player.entity {
                   - displayHalfHeight,
                   displayWidth,
                   displayHeight,
-                  mBorderColor_MouseOver,
-                  displayBorderThickness_MouseOver, // draw border
+                  mBorderColor_MouseDown,
+                  displayBorderThickness_MouseDown, // draw border
                   false, // not draw background
                   0x0, // invald bg color
                   mIsRoundJoint && (! isRoundCorner), // mIsRoundCornors,
                   isRoundCorner, cornerWidth, cornerHeight
                );
          
-         mBackgroundShape_MouseOver.visible = mBackgroundShape_MouseDown.visible = mDrawBackground_MouseOver;
-         mBackgroundShape_MouseOver.alpha = mBackgroundShape_MouseDown.alpha = mTransparency_MouseOver * 0.01;
-         
-         mBorderShape_MouseOver.visible = mBorderShape_MouseDown.visible = mDrawBorder_MouseOver;
-         mBorderShape_MouseOver.alpha = mBorderShape_MouseDown.alpha = mBorderTransparency_MouseOver * 0.01;
+         mBackgroundShape_MouseDown.visible = mDrawBackground_MouseDown;
+         mBackgroundShape_MouseDown.alpha = mTransparency_MouseDown * 0.01;
+         mBorderShape_MouseDown.visible = mDrawBorder_MouseDown;
+         mBorderShape_MouseDown.alpha = mBorderTransparency_MouseDown * 0.01;
       }
    }
    

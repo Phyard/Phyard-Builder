@@ -575,6 +575,9 @@ package common.trigger {
       public static const ID_EntityText_SetSize_MouseOver:int                   = IdPool.CoreApiId_1573;
       public static const ID_EntityText_SetColor_MouseOver:int                  = IdPool.CoreApiId_1574;
       public static const ID_EntityText_SetColorByRGB_MouseOver:int             = IdPool.CoreApiId_1575;
+      public static const ID_EntityText_SetSize_MouseDown:int                   = IdPool.CoreApiId_1437;
+      public static const ID_EntityText_SetColor_MouseDown:int                  = IdPool.CoreApiId_1438;
+      public static const ID_EntityText_SetBackgroundColor_MouseDown:int        = IdPool.CoreApiId_1439;
 
    // game / entity / shape / circle
 

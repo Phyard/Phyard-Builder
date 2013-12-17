@@ -3412,7 +3412,8 @@ package editor.world {
                              new VariableDefinitionNumber ("Green"),
                              new VariableDefinitionNumber ("Blue"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseOver, shape_text_package, "Set Font Size For Mouse Over", null, null,
                      [
@@ -3434,6 +3435,28 @@ package editor.world {
                              new VariableDefinitionNumber ("Red For Mouse Over"),
                              new VariableDefinitionNumber ("Green For Mouse Over"),
                              new VariableDefinitionNumber ("Blue For Mouse Over"),
+                     ],
+                     null,
+                     false
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseDown, shape_text_package, "Set Font Size For Mouse Down", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("New Font Size For Mouse Down"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseDown, shape_text_package, "Set Text Color For Mouse Down", "@Set Text Color ($0, Color ($1)) For Mouse Down", null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("New Color For Mouse Down", null, {mIsColorValue: true}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown, shape_text_package, "Set Text Background Color For Mouse Down", "@Set Text Background Color ($0, Color ($1)) For Mouse Down", null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("New Color For Mouse Down", null, {mIsColorValue: true}),
                      ],
                      null
                   );

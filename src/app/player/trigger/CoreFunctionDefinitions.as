@@ -555,6 +555,9 @@ package player.trigger {
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetSize_MouseOver,                  SetTextDefaultSize_MouseOver);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetColor_MouseOver,                 SetTextDefaultColor_MouseOver);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetColorByRGB_MouseOver,            SetTextDefaultColorByRGB_MouseOver);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetSize_MouseDown,                  SetTextDefaultSize_MouseDown);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetColor_MouseDown,                 SetTextDefaultColor_MouseDown);
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown,       SetTextBackgroundColor_MouseDown);
 
       // game / entity / shape / circle
 
@@ -5647,6 +5650,42 @@ package player.trigger {
          var blue:int =  valueSource.EvaluateValueObject () as Number;
 
          entity_text.SetTextColor_MouseOver ((red << 16) | (green << 8) | (blue));
+      }
+
+      public static function SetTextDefaultSize_MouseDown (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var size:Number = Number (valueSource.EvaluateValueObject ());
+
+         entity_text.SetFontSize_MouseDown (size);
+      }
+
+      public static function SetTextDefaultColor_MouseDown (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+
+         entity_text.SetTextColor_MouseDown (color);
+      }
+      
+      public static function SetTextBackgroundColor_MouseDown (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+
+         entity_text.SetTextBackgroundColor_MouseDown (color);
       }
 
    //*******************************************************************

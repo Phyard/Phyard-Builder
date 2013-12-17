@@ -556,6 +556,10 @@ package common.trigger {
       public static const CoreApiId_1408:int = 1408; // entity.shape
       public static const CoreApiId_1409:int = 1409; // entity.shape
 
+      public static const CoreApiId_1437:int = 1437; // entity.shape.text
+      public static const CoreApiId_1438:int = 1438; // entity.shape.text
+      public static const CoreApiId_1439:int = 1439; // entity.shape.text
+
       public static const CoreApiId_1550:int = 1550; // entity.shape.text
       public static const CoreApiId_1551:int = 1551; // entity.shape.text
       public static const CoreApiId_1552:int = 1552; // entity.shape.text
@@ -596,7 +600,6 @@ package common.trigger {
       public static const CoreApiId_1587:int = 1587; // entity.shape.text
 
       public static const CoreApiId_1989:int = 1989; // joint
-
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint
 

@@ -77,6 +77,11 @@ package player.entity {
 //=============================================================
 //   
 //=============================================================
+
+      override protected function CanBeDisabled ():Boolean
+      {
+         return true;
+      }
       
       override public function SetEnabled (enabled:Boolean):void
       {

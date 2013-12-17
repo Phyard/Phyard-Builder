@@ -173,6 +173,8 @@ package editor.world {
       public static const sCanBeDisabledEntityClasses:Array = [
                   EntityEventHandler,
                   EntityUtilityPowerSource,
+                  EntityVectorShapeTextButton,
+                  EntityShapeImageModuleButton,
             ];
    }
 }

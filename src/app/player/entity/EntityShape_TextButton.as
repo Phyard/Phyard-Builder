@@ -135,6 +135,11 @@ package player.entity {
 //=============================================================
 //   
 //=============================================================
+
+      override protected function CanBeDisabled ():Boolean
+      {
+         return true;
+      }
       
       override public function SetEnabled (enabled:Boolean):void
       {
@@ -158,7 +163,7 @@ package player.entity {
       }
       
 //=============================================================
-//   
+//   over
 //=============================================================
       
       private var mDrawBorder_MouseOver:Boolean = true;

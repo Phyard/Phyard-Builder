@@ -279,6 +279,7 @@ package common {
       
       public static const ColorTextButtonBackground:uint = 0xFFA0FFA0;
       public static const ColorTextButtonBackground_MouseOver:uint = 0xFFA0A0FF;
+      public static const ColorTextButtonBackground_MouseDown:uint = 0xFFA0A0FF;
       public static const ColorTextButtonText:uint = 0x000000;
       public static const ColorTextButtonBorder:uint = 0x000000;
       

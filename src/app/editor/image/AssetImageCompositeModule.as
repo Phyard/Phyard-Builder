@@ -329,6 +329,7 @@ package editor.image {
       public function SetEditable (editable:Boolean):void
       {
          mMenuItemEditModule.enabled = editable;
+         mMenuItemCloneModule.enabled = editable;
       }
       
       protected var mMenuItemEditModule:ContextMenuItem = new ContextMenuItem("Edit ...");

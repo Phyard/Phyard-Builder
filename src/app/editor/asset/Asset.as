@@ -86,6 +86,11 @@ package editor.asset {
          return GetTypeName ();
       }
       
+      override public function toString ():String
+      {
+         return ToCodeString ();
+      }
+      
       override public function ToCodeString ():String
       {
          return "Asset#" + mCreationOrderId;

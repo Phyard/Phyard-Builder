@@ -411,6 +411,7 @@ package com.tapirgames.util
          }
          catch (error:Error)
          {
+            trace (error);
             mOnFailedCallback ("loadImageFromByteArray error: " + error.message);
          }
       }

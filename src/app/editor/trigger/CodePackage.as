@@ -5,6 +5,7 @@ package editor.trigger {
    
    public class CodePackage
    {
+      internal var mId:int;
       private var mName:String;
       
       private var mChildCodePackages:Array = new Array ();
@@ -30,6 +31,16 @@ package editor.trigger {
       public function GetName ():String
       {
          return mName;
+      }
+      
+      public function GetID ():int
+      {
+         return mId;
+      }
+      
+      public function SetID (id:int):void
+      {
+         mId = id;
       }
       
       public function Clear ():void
@@ -143,5 +154,27 @@ package editor.trigger {
       //{
       //   return mFunctionDeclarations;
       //}
+      
+      private static function ComparePackageById (package1:CodePackage, package2:CodePackage):Number
+      {
+         return package1.GetID () - package2.GetID ();
+      }
+      
+      private static function CompareClassById (class1:ClassDefinition, class2:ClassDefinition):Number
+      {
+         return class1.GetID () - class2.GetID ();
+      }
+      
+      private static function CompareFunctionById (function1:FunctionDeclaration, function2:FunctionDeclaration):Number
+      {
+         return function1.GetID () - function2.GetID ();
+      }
+      
+      public function UpdateElementOrders ():void 
+      {
+         mChildCodePackages.sort (ComparePackageById);
+         mFunctionDeclarations.sort (CompareFunctionById);
+         mClasses.sort (CompareClassById);
+      }
    }
 }

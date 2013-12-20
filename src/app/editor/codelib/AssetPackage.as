@@ -87,6 +87,8 @@ package editor.codelib {
       public function SetPackageIndex (packageId:int):void
       {
          mPackageId = packageId;
+         
+         mCodePackageData.SetID (mPackageId);
       }
       
       public function GetPackageIndex ():int

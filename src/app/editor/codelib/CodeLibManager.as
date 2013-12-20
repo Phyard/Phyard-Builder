@@ -737,6 +737,8 @@ package editor.codelib {
 
       private static function ConvertCodePackageToXML (codePackage:CodePackage, parentXml:XML, topCodePackages:Array, forFunctions:Boolean, allowSceneDependentClasses:Boolean = true):XML
       {
+         codePackage.UpdateElementOrders ();
+         
          var package_element:XML = <menuitem />;
          package_element.@name = codePackage.GetName ();
          
@@ -948,25 +950,77 @@ package editor.codelib {
 // context menu
 //=====================================================================
       
+      private static function CompareFuncByAssetY (asset1:Asset, asset2:Asset):Number
+      {
+         return asset1.GetPositionY () - asset2.GetPositionY ();
+      }
+      
       override public function BuildContextMenuInternal (customMenuItemsStack:Array):void
       {
-         /*
-         var menuItemLoadLocalSounds:ContextMenuItem = new ContextMenuItem("Load Local Sounds(s) ...", true);
-         //var menuItemCreateSound:ContextMenuItem = new ContextMenuItem("Create Blank Sound ...");
-         var menuItemDeleteSelecteds:ContextMenuItem = new ContextMenuItem("Delete Selected(s) ...", true);
+         var sortFunctionOrder:ContextMenuItem = new ContextMenuItem("Sort Function Orders By Y Coordinate", true);
+         var sortCustomTypeOrder:ContextMenuItem = new ContextMenuItem("Sort Class Orders By Y Coordinate", false);
+         var sortPackageOrder:ContextMenuItem = new ContextMenuItem("Sort Package Orders By Y Coordinate", false);
+         var sortAllOrder:ContextMenuItem = new ContextMenuItem("Sort All Orders By Y Coordinate", false);
          
-         menuItemLoadLocalSounds.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_LocalSounds);
-         //menuItemCreateSound.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_CreateSound);
-         menuItemDeleteSelecteds.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_DeleteSelectedAssets);
+         sortFunctionOrder.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_SortFunctionOrder);
+         sortCustomTypeOrder.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_SortCustomTypeOrder);
+         sortPackageOrder.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_SortPackageOrder);
+         sortAllOrder.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent_SortAllOrder);
 
-         customMenuItemsStack.push (menuItemLoadLocalSounds);
-         //customMenuItemsStack.push (menuItemCreateSound);
-         customMenuItemsStack.push (menuItemDeleteSelecteds);
-         */
+         customMenuItemsStack.push (sortFunctionOrder);
+         customMenuItemsStack.push (sortCustomTypeOrder);
+         customMenuItemsStack.push (sortPackageOrder);
+         customMenuItemsStack.push (sortAllOrder);
          
          super.BuildContextMenuInternal (customMenuItemsStack);
       }
       
+      private function OnContextMenuEvent_SortFunctionOrder (event:ContextMenuEvent):void
+      {
+         mFunctionAssets.sort (CompareFuncByAssetY);
+         
+         // ...
+         
+         UpdateFunctionIndexes ();
+         
+         SetChanged (true);
+         
+         UpdateFunctionAppearances ();
+      }
+      
+      
+      private function OnContextMenuEvent_SortCustomTypeOrder (event:ContextMenuEvent):void
+      {
+         mClassAssets.sort (CompareFuncByAssetY);
+         
+         // ...
+         
+         UpdateClassIndexes ();
+         
+         SetChanged (true);
+         
+         UpdateClassAppearances ();
+      }
+      
+      private function OnContextMenuEvent_SortPackageOrder (event:ContextMenuEvent):void
+      {
+         mPackageAssets.sort (CompareFuncByAssetY);
+         
+         // ...
+         
+         UpdatePackageIndexes ();
+         
+         SetChanged (true);
+         
+         UpdatePackageAppearances ();
+      }
+      
+      private function OnContextMenuEvent_SortAllOrder (event:ContextMenuEvent):void
+      {
+         OnContextMenuEvent_SortFunctionOrder (event);
+         OnContextMenuEvent_SortCustomTypeOrder (event);
+         OnContextMenuEvent_SortPackageOrder (event);
+      }
+      
    }
 }
-

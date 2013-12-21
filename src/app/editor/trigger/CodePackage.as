@@ -14,13 +14,17 @@ package editor.trigger {
       
       private var mFunctionDeclarations:Array = new Array (); // not including the ones in sub packages
       
-      public function CodePackage (name:String, parentCodePackage:CodePackage = null)
+      private var mSortElements:Boolean = false;
+      
+      public function CodePackage (name:String, parentCodePackage:CodePackage = null, sortElements:Boolean = false)
       {
          SetName (name);
          
          //mParentCodePackage = parentCodePackage;
          if (parentCodePackage != null)
             parentCodePackage.AddChildCodePackage (this);
+         
+         mSortElements = sortElements;
       }
       
       public function SetName (name:String):void
@@ -172,9 +176,12 @@ package editor.trigger {
       
       public function UpdateElementOrders ():void 
       {
-         mChildCodePackages.sort (ComparePackageById);
-         mFunctionDeclarations.sort (CompareFunctionById);
-         mClasses.sort (CompareClassById);
+         if (mSortElements)
+         {
+            mChildCodePackages.sort (ComparePackageById);
+            mFunctionDeclarations.sort (CompareFunctionById);
+            mClasses.sort (CompareClassById);
+         }
       }
    }
 }

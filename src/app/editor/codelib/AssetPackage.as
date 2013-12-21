@@ -74,7 +74,7 @@ package editor.codelib {
          
          mouseChildren = false;
          
-         mCodePackageData = new CodePackage (GetName ());
+         mCodePackageData = new CodePackage (GetName (), null, true);
       }
       
       override public function Destroy ():void

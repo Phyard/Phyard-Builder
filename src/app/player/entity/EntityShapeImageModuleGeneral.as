@@ -125,7 +125,8 @@ package player.entity {
       
       override protected function UpdateInternal (dt:Number):void
       {
-         mModuleInstance.Step (OnModuleReachesSequeunceEnd, OnModuleFrameChanged);
+         if (mModuleInstance != null)
+            mModuleInstance.Step (OnModuleReachesSequeunceEnd, OnModuleFrameChanged);
       }
       
 //=============================================================
@@ -147,7 +148,8 @@ package player.entity {
             while (mModuleSprite.numChildren > 0)
                mModuleSprite.removeChildAt (0);
             
-            mModuleInstance.RebuildAppearance (mModuleSprite, null);
+            if (mModuleInstance != null)
+               mModuleInstance.RebuildAppearance (mModuleSprite, null);
          }
          
          if (mNeedUpdateAppearanceProperties)

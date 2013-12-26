@@ -20,6 +20,7 @@ package com.tapirgames.util {
       public static const TextFlag_WordWrap:int   = 1 << 0;
       public static const TextFlag_Editable:int   = 1 << 1;
       public static const TextFlag_Selectable:int = 1 << 2;
+      public static const TextFlag_DontAllowCreatedAsBitmap:int = 1 << 3; // v2.05
       
       public static const TextFlag_AdaptiveBackgroundSize:int   = 1 << 0;
       public static const TextFlag_ClipText:int   = 1 << 1;

@@ -309,6 +309,20 @@ package editor.entity {
                   mFlags1 &= ~TextUtil.TextFlag_Selectable;
             }
             
+            public function IsDontAllowCreatedAsBitmap ():Boolean
+            {
+               //return mSelectable;
+               return (mFlags1 & TextUtil.TextFlag_DontAllowCreatedAsBitmap) == TextUtil.TextFlag_DontAllowCreatedAsBitmap;
+            }
+            
+            public function SetDontAllowCreatedAsBitmap (dontAllow:Boolean):void
+            {
+               if (dontAllow)
+                  mFlags1 |= TextUtil.TextFlag_DontAllowCreatedAsBitmap;
+               else
+                  mFlags1 &= ~TextUtil.TextFlag_DontAllowCreatedAsBitmap;
+            }
+            
             public function GetTextFormat ():int
             {
                return (mFlags1 & TextUtil.Mask_TextFormat) >> TextUtil.Shift_TextFormat;

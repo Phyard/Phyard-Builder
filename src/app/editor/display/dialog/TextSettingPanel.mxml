@@ -15,6 +15,7 @@
             <mx:CheckBox id="CheckBox_Editable" label="Editable" click="OnChangeEditable ();"/>
             <mx:CheckBox id="CheckBox_Selectable" label="Selectable" click="OnChangeSelectable ();"/>
             <mx:CheckBox id="CheckBox_ClipText" label="Clip Text"/>
+            <mx:CheckBox id="CheckBox_WillRotate" label="Will Rotate"/>
             <mx:Spacer width="100%"/>
          </mx:HBox>
          <mx:HBox width="650" verticalAlign="middle">
@@ -112,6 +113,9 @@
                
                CheckBox_Selectable.enabled = false;
                CheckBox_Selectable.selected = true;
+               
+               CheckBox_WillRotate.enabled = false;
+               CheckBox_WillRotate.selected = false;
             }
             else
             {
@@ -120,6 +124,8 @@
                Button_AlignBottom.enabled = true;
                
                CheckBox_Selectable.enabled = true;
+               
+               CheckBox_WillRotate.enabled = true;
             }
             
             OnChangeSelectable ();
@@ -130,11 +136,16 @@
             if (CheckBox_Selectable.selected || CheckBox_Editable.selected)
             {
                CheckBox_ClipText.enabled = true;
+               
+               CheckBox_WillRotate.enabled = false;
+               CheckBox_WillRotate.selected = false;
             }
             else
             {
                CheckBox_ClipText.enabled = false;
                CheckBox_ClipText.selected = false;
+               
+               CheckBox_WillRotate.enabled = true;
             }
          }
 
@@ -196,6 +207,7 @@
             CheckBox_WordWrap.selected = inputValues.mWordWrap;
             CheckBox_Editable.selected = inputValues.mEditable;
             CheckBox_Selectable.selected = inputValues.mSelectable;
+            CheckBox_WillRotate.selected = inputValues.mWillRotate;
             ColorPicker_TextColor.selectedColor = inputValues.mTextColor;
             CheckBox_AdaptiveBackgroundSize.selected = inputValues.mAdaptiveBackgroundSize;
             CheckBox_ClipText.selected = inputValues.mClipText;
@@ -234,6 +246,7 @@
             returnValues.mWordWrap = CheckBox_WordWrap.selected;
             returnValues.mEditable = CheckBox_Editable.selected;
             returnValues.mSelectable = CheckBox_Selectable.selected;
+            returnValues.mWillRotate = CheckBox_WillRotate.selected;
             returnValues.mTextColor = ColorPicker_TextColor.selectedColor;
             returnValues.mFontSize = mFontSizes [SelectList_FontSize.selectedIndex].label;
             returnValues.mIsBold = Button_Bold.selected;

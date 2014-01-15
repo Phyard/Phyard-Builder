@@ -200,7 +200,9 @@ package editor.image.dialog {
          if (mCurrentFrame < 0 || mCurrentFrame >= mNumFrames)
             return;
          
-         var moduleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().GetAssetByCreationId (mCurrentFrame) as AssetImageModuleInstance;
+         // bug
+         //var moduleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().GetAssetByCreationId (mCurrentFrame) as AssetImageModuleInstance;
+         var moduleInstance:AssetImageModuleInstance = mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().GetAssetByAppearanceId (mCurrentFrame) as AssetImageModuleInstance;
          mCurrentFrameDuration = moduleInstance.GetDuration ();
          mCurrentFrameStep = 0;
          

@@ -50,7 +50,7 @@ package editor.entity.dialog {
                                          mCurrentSceneId: currentSceneId, 
                                          GetViewportSize: GetViewportSize, 
                                          mStartRightNow: true, 
-                                         mMaskViewerField: maskFieldInPlaying,
+                                         mMaskViewerField: maskFieldInPlaying, 
                                          mBackgroundColor: surroudingBackgroundColor, 
                                          OnExitLevel: callbackStopPlaying
                                          }

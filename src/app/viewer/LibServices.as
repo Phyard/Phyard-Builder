@@ -1,5 +1,5 @@
 
-//   private function SubmitHighScore  (value:Number):void
+//   private function SubmitHighScore (value:Number):void
 //   {
 ////trace ("SubmitHighScore> " + value);
 //      if (mParamsFromContainer.ExternalSubmitKeyValue != null)
@@ -9,12 +9,21 @@
 //      }
 //   }
    
-   private function SubmitKeyValue  (key:String, value:Number):void
+   // the api name for designer should be changed to "SubmitKeyValueToHostWebsite"
+   private function SubmitKeyValue (key:String, value:Number):void
    {
 //trace ("SubmitKeyValue> " + key + " = " + value);
       if (mParamsFromContainer.ExternalSubmitKeyValue != null)
       {
          mParamsFromContainer.ExternalSubmitKeyValue (key, value);
-               // please see GamePackaer.OnlineAPI for detail.
+               // please see GamePackager.OnlineAPI for detail.
       }
    }
+   
+   private function SendGlobalSocketMessage (message:String):void
+   {
+      EmbedCallContainer ("SendGlobalSocketMessage", {message: message});
+   }
+   
+   
+   

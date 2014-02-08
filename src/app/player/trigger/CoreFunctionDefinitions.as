@@ -104,6 +104,8 @@ package player.trigger {
 
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
          RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_SubmitKeyValue_Number,               SubmitKeyValue_Number);
+         
+         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_SendGlobalSocketMessage,               SendGlobalSocketMessage);
 
       // string
 
@@ -893,6 +895,16 @@ package player.trigger {
          if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SubmitKeyValue)
          {
             Global.Viewer_mLibServices.SubmitKeyValue (key, value);
+         }
+      }
+      
+      public static function SendGlobalSocketMessage (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var message:String = valueSource.EvaluateValueObject () as String;
+
+         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SendGlobalSocketMessage)
+         {
+            Global.Viewer_mLibServices.SendGlobalSocketMessage (message);
          }
       }
 

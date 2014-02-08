@@ -13,6 +13,7 @@ package univiewer
    import flash.geom.Point;
    import flash.system.LoaderContext;
    import flash.system.ApplicationDomain;
+   import flash.system.Security;
    import flash.net.URLRequest;
    import flash.net.URLLoader;
    import flash.net.URLRequestMethod;
@@ -24,6 +25,7 @@ package univiewer
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
+   import flash.external.ExternalInterface;
 
    public dynamic class UniViewer extends Sprite
    {
@@ -42,6 +44,8 @@ package univiewer
       public function UniViewer ()
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage)
+         
+         //Security.allowDomain("*");
       }
 
       private var mUniViewerUrl:String;
@@ -54,6 +58,19 @@ package univiewer
 
          //
          SetInfoText ("Loading ... (" + StartLoadingPercent + "%)");
+         
+         //>> websockets
+         if (ExternalInterface.available)
+         {
+             try
+             {
+                ExternalInterface.addCallback("call", ContainerCallEmbed);
+             }
+             catch (error:Error)
+             {
+             }
+         }
+         //<<
 
          // init
 
@@ -201,6 +218,10 @@ package univiewer
          paramsFromUniViewer.SetLoadingText = SetInfoText;
          paramsFromUniViewer.GetViewportSize = GetViewportSize;
          paramsFromUniViewer.mBackgroundColor = 0xDDDDA0;
+         
+         //>> websockets
+         paramsFromUniViewer.EmbedCallContainer = EmbedCallContainer;
+         //<<
 
          var viewer:Sprite = (MainClass.Call as Function) ("NewViewer", {mParamsFromUniViewer: paramsFromUniViewer}) as Sprite;
          viewer.alpha = 0.0;
@@ -277,6 +298,30 @@ package univiewer
             //mInfoTextField.y = 0.5 * (App::Default_Height - mInfoTextField.height);
             mInfoTextField.x = 0.5 * (stage.stageWidth - mInfoTextField.width);
             mInfoTextField.y = 0.5 * (stage.stageHeight - mInfoTextField.height);
+         }
+      }
+      
+      // don't change this name, 
+      public function ContainerCallEmbed (funcName:String, params:Object):void
+      {
+         if (mViewer != null)
+         {
+            mViewer.ContainerCallEmbed (funcName, params);
+         }
+      }
+      
+      // don't change this name, 
+      public function EmbedCallContainer (funcName:String, params:Object):void
+      {
+         if (ExternalInterface.available)
+         {
+             try
+             {
+                ExternalInterface.call(funcName, params);
+             }
+             catch (error:Error)
+             {
+             }
          }
       }
    }

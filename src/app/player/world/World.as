@@ -92,6 +92,7 @@ package player.world {
       include "World_ContactEventHandling.as";
       include "World_KeyboardEventHandling.as";
       include "World_GestureEventHandling.as";
+      include "World_ServicesEventHandling.as";
       include "World_GeneralEventHandling.as";
       include "World_Misc.as";
 

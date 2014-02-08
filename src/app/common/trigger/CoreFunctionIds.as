@@ -85,6 +85,8 @@ package common.trigger {
 
       public static const ID_SubmitHighScore:int                = IdPool.CoreApiId_579; // from v2.03
       public static const ID_SubmitKeyValue_Number:int          = IdPool.CoreApiId_576; // from v2.03
+      
+      public static const ID_SendGlobalSocketMessage:int          = IdPool.CoreApiId_611; // from v2.06
 
    // string
 

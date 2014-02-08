@@ -1042,7 +1042,8 @@ package viewer {
          if (mWorldDesignProperties.OnSystemBackEvent == undefined)               mWorldDesignProperties.OnSystemBackEvent = DummyOnSystemBackEvent;      
          if (mWorldDesignProperties.HasRestartLevelRequest == undefined)          mWorldDesignProperties.HasRestartLevelRequest = DummyCallback_ReturnFalse;      
          if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)        mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;
-         if (mWorldDesignProperties.GetSceneSwitchingStyle == undefined)          mWorldDesignProperties.GetSceneSwitchingStyle = DummyGetSceneSwitchingStyle;      
+         if (mWorldDesignProperties.GetSceneSwitchingStyle == undefined)          mWorldDesignProperties.GetSceneSwitchingStyle = DummyGetSceneSwitchingStyle;
+         if (mWorldDesignProperties.OnGlobalSocketMessage == undefined)           mWorldDesignProperties.OnGlobalSocketMessage = DummyCallback;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -1058,7 +1059,7 @@ package viewer {
          mPreferredViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
       }
 
-      private function DummyCallback (param1:Object = null, param2:Object = null, param3:Object = null):void
+      private function DummyCallback (param1:Object = null, param2:Object = null, param3:Object = null, param4:Object = null, param5:Object = null, param6:Object = null, param7:Object = null):void
       {
       }
 
@@ -1209,6 +1210,7 @@ package viewer {
                mOldPlayerWorld = mPlayerWorld;
 
                // .
+               mWorldDesignProperties = null;
                mPlayerWorld = null;
             }
 
@@ -1282,7 +1284,8 @@ package viewer {
                               ClearCookie : ClearCookie
                   },
                   mLibService : {
-                              SubmitKeyValue: SubmitKeyValue
+                              SubmitKeyValue: SubmitKeyValue,
+                              SendGlobalSocketMessage: SendGlobalSocketMessage // v2.06
                   }
                };
             }
@@ -1616,7 +1619,9 @@ package viewer {
                   mWorldLayer.removeChild (mOldPlayerWorld as Sprite);
                
                mOldWorldDesignProperties.Destroy ();
+               
                mOldPlayerWorld = null;
+               mOldWorldDesignProperties = null;
             }
          }
       }
@@ -2560,6 +2565,31 @@ package viewer {
       public function SetOnPlayStatusChangedFunction (onPlayStatusChanged:Function):void
       {
          _onPlayStatusChanged = onPlayStatusChanged;
+      }
+      
+//===========================================================================
+// general "embed <-> containers"
+//===========================================================================
+      
+      // don't change the api name. 
+      public function ContainerCallEmbed (funcName:String, params:Object):void
+      {
+         if (funcName == "OnGlobalSocketMessage")
+         {
+            if (mWorldDesignProperties != null) // && mWorldDesignProperties.OnGlobalSocketMessage != null)
+            {
+               mWorldDesignProperties.OnGlobalSocketMessage (params.message);
+            }
+         }
+      }
+      
+      // for websocket, etc.
+      public function EmbedCallContainer (funcName:String, params:Object):void
+      {
+         if (mParamsFromContainer.EmbedCallContainer != null)
+         {
+            mParamsFromContainer.EmbedCallContainer (funcName, params);
+         }
       }
 
    }

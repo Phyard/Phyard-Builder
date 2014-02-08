@@ -57,14 +57,14 @@ package player.design
    
    public class Global
    {
-      public static var sTheGlobal:Global = null;
+      //public static var sTheGlobal:Global = null;
       
       public static var mCurrentWorld:World = null;
       
       public static var mWorldDefine:Object = null;
                   // currently for MergeScene purpose
       
-      // these variables are static, which mmeans there can only be one player instance running at the same time.
+      // these variables are static, which means there can only be one player instance running at the same time.
       
       public static var mRegisterVariableSpace_Boolean:VariableSpace;
       public static var mRegisterVariableSpace_String :VariableSpace;
@@ -137,18 +137,69 @@ package player.design
                //LoadGameSaveData:Function; // v2.03
                //ClearGameSaveData:Function; // v2.03
       public static var Viewer_mLibServices:Object; // v2.03
-               //WriteGameSaveData:Function; // v2.03
-      
+               //SubmitKeyValue:Function; // v2.0?
+               //SendGlobalSocketMessage  // v2.06
 //==============================================================================
-// temp for playing in editor.
+// 
+//==============================================================================
+   
+   private static var mDebugString:String = null;
+   public static function GetDebugString ():String
+   {
+      return mDebugString;
+   }
+   
+//==============================================================================
+// scenes
+//==============================================================================
+      
+      public static var mSceneLookupTableByKey:Dictionary = null;
+      
+      public static function GetSceneByKey (key:String):int
+      {
+         if (mSceneLookupTableByKey == null)
+         {
+            for (var i:int = 0; i < mWorldDefine.mSceneDefines.length; ++ i)
+            {
+               mSceneLookupTableByKey [(mWorldDefine.mSceneDefines [i] as SceneDefine).mKey] = i;
+            }
+         }
+         
+         var levelIndex:Object = mSceneLookupTableByKey [key];
+         return levelIndex == undefined ? -1 : int (levelIndex);
+      }
+      
+      public static function GetNumScenes ():int
+      {
+         return mWorldDefine == null ? 0 : mWorldDefine.mSceneDefines.length;
+      }
+      
+      public static function IsInvalidScene (levelIndex:int):Boolean
+      {
+         return isNaN (levelIndex) || levelIndex < 0 || levelIndex >= Global.GetNumScenes ();
+      }
+      
+      public static function GetSceneDefine (sceneIndex:int):SceneDefine
+      {
+         if (mWorldDefine == null)
+            return null;
+         
+         if (IsInvalidScene (sceneIndex))
+            return null;
+         
+         return mWorldDefine.mSceneDefines [sceneIndex] as SceneDefine;
+      }
+            
+//==============================================================================
+// temp for playing in editor. 
 //==============================================================================
 
-   // todo: in non-editing situations, for one-level game package, maybe only turning off sounds is ok enough.
+   // todo: in non-editing situations, for one-level game package, maybe only turning off sounds is ok enough. 
    // the params:Object parameter is reserved for this intention. 
    
    public static function OnViewerDestroyed (params:Object = null):void
    {
-      sTheGlobal = null;
+      //sTheGlobal = null;
       
       mSceneLookupTableByKey = null;
       mCurrentWorld = null;
@@ -481,53 +532,6 @@ package player.design
       return ci;
    }
    
-   private static var mDebugString:String = null;
-   public static function GetDebugString ():String
-   {
-      return mDebugString;
-   }
-   
-//==============================================================================
-// scenes
-//==============================================================================
-      
-      public static var mSceneLookupTableByKey:Dictionary = null;
-      
-      public static function GetSceneByKey (key:String):int
-      {
-         if (mSceneLookupTableByKey == null)
-         {
-            for (var i:int = 0; i < mWorldDefine.mSceneDefines.length; ++ i)
-            {
-               mSceneLookupTableByKey [(mWorldDefine.mSceneDefines [i] as SceneDefine).mKey] = i;
-            }
-         }
-         
-         var levelIndex:Object = mSceneLookupTableByKey [key];
-         return levelIndex == undefined ? -1 : int (levelIndex);
-      }
-      
-      public static function GetNumScenes ():int
-      {
-         return mWorldDefine == null ? 0 : mWorldDefine.mSceneDefines.length;
-      }
-      
-      public static function IsInvalidScene (levelIndex:int):Boolean
-      {
-         return isNaN (levelIndex) || levelIndex < 0 || levelIndex >= Global.GetNumScenes ();
-      }
-      
-      public static function GetSceneDefine (sceneIndex:int):SceneDefine
-      {
-         if (mWorldDefine == null)
-            return null;
-         
-         if (IsInvalidScene (sceneIndex))
-            return null;
-         
-         return mWorldDefine.mSceneDefines [sceneIndex] as SceneDefine;
-      }
-      
 //==============================================================================
 // static values
 //==============================================================================
@@ -535,9 +539,9 @@ package player.design
       public static function InitGlobalData (isRestartLevel:Boolean, dontReloadGlobalAssets:Boolean):void
       {
          //
-         sTheGlobal = new Global ();
+         //sTheGlobal = new Global ();
          
-         if (!dontReloadGlobalAssets)
+         if (! dontReloadGlobalAssets)
          {
             mSceneLookupTableByKey = null;
             
@@ -550,6 +554,7 @@ package player.design
          {
             mSessionVariableSpace = null;
          }
+         
          mGlobalVariableSpace = null;
          mCommonGlobalVariableSpace = null;
          mEntityVariableSpace = null;

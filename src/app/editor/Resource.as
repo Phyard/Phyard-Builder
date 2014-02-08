@@ -165,6 +165,11 @@ package editor {
       [Embed("../res/create/event_on_system_back.png")]
       public static const IconOnSystemBack:Class;
       
+      // network
+      
+      [Embed("../res/create/event_on_global_socket_message.png")]
+      public static const IconOnGlobalSocketMessage:Class;
+      
    // event id -> icon
       
       private static var sEventId2IconClass:Dictionary = null;
@@ -180,7 +185,7 @@ package editor {
             
             sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeRepainting] = IconOnWorldBeforeRepaintingEvent;
             
-            sEventId2IconClass [CoreEventIds.ID_OnEntityCreated] = IconOnEntityCteatedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityCreated    ] = IconOnEntityCteatedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityInitialized] = IconOnEntityInitilizedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityUpdated    ] = IconOnEntityUpdatedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityDestroyed  ] = IconOnEntityDestroyedEvent;
@@ -226,6 +231,8 @@ package editor {
             sEventId2IconClass [CoreEventIds.ID_OnMouseGesture   ] = IconOnMouseGesture;
             
             sEventId2IconClass [CoreEventIds.ID_OnSystemBack   ] = IconOnSystemBack;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnGlobalSocketMessage] = IconOnGlobalSocketMessage;
          }
          
          var iconClass:Class = sEventId2IconClass [eventId];

@@ -307,6 +307,13 @@ package editor.world {
                         new VariableDefinitionBoolean ("Already Handled?"),
                     ]);
 
+      // ...
+
+         RegisterEventDeclaration (CoreEventIds.ID_OnGlobalSocketMessage, "OnGlobalSocketMessage", "When global socket message comes",
+                    [
+                        new VariableDefinitionString ("Message"),
+                    ]);
+
       // event settings
 
          //Max Allowed Instances

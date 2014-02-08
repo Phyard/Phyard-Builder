@@ -31,6 +31,8 @@ package common {
       public var mShareSourceCode:Boolean = false;
       public var mPermitPublishing:Boolean = false;
       
+      public var mPreferences:Object = new Object (); // from v2.06
+      
       public var mSceneDefines:Array = new Array (); // for undo point or scene-exporting, except one scene, only key is stored for other scenes
       
       //>> moved into SceneDefine since v2.00

@@ -107,7 +107,10 @@ package player
                   
                   HasRestartLevelRequest : world.HasRestartLevelRequest, // from v2.03
                   GetDelayToLoadSceneIndex : world.GetDelayToLoadSceneIndex, // from v2.03
+                  
                   GetSceneSwitchingStyle : world.GetSceneSwitchingStyle, // from v2.04
+                  
+                  OnGlobalSocketMessage : world.OnGlobalSocketMessage, // from v2.06
                   
                   "" : null
                };

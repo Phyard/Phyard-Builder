@@ -99,7 +99,6 @@ package common.trigger {
                     [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                     ]);
-      }
 
        // ...
 
@@ -310,6 +309,15 @@ package common.trigger {
                     [
                         [CoreClassIds.ValueType_Boolean,      false],
                     ]);
+
+     // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnGlobalSocketMessage,
+                    [
+                        [CoreClassIds.ValueType_String,       null],
+                    ]);
+                    
+      }
 
 //===========================================================
 // util functions

@@ -315,6 +315,12 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_SendGlobalSocketMessage,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                     ],
+                     null
+                  );
 
       // string
 

@@ -160,6 +160,15 @@ package common {
             }
          }
          
+         // preferences (since v2.06)
+         
+         worldDefine.mPreferences.mAppBackgroundColor = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetSurroundingBackgroundColor ();
+         worldDefine.mPreferences.mViewportWidth = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellWidth ();
+         worldDefine.mPreferences.mViewportHeight = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellHeight ();
+         //ChangeBackgroundColor
+         //SetGridCellSize
+
+         
          // scenes
          
          var numScenes:int = editorWorld.GetNumScenes ();

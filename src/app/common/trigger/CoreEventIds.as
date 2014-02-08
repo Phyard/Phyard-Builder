@@ -102,6 +102,10 @@ package common.trigger {
    // system back
       
       public static const ID_OnSystemBack:int = IdPool.EventId_189;
+      
+   // design instance
+      
+      public static const ID_OnGlobalSocketMessage:int = IdPool.EventId_169;
 
    // ================================
    }

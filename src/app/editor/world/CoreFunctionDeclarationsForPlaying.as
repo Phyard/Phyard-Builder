@@ -406,6 +406,12 @@ package editor.world {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGlobalSocketMessage, services_package, "Send Global Socket Message", null, null,
+                     [
+                             new VariableDefinitionString ("Message To Send"),
+                     ],
+                     null
+                  );
 
       // string
 
@@ -2499,6 +2505,14 @@ package editor.world {
                              new VariableDefinitionNumber ("World Vector Y"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetScale, entity_common_package, "Get Entity Scale",  null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Current Scale"),
+                     ]
+                  );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed, entity_common_package, "Is Entity Destroyed", null, null,
                      [
@@ -3194,14 +3208,6 @@ package editor.world {
                              new VariableDefinitionBoolean ("Flip Velocity?"),
                      ],
                      null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetScale, shape_common_package, "Get Entity Scale",  null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Current Scale"),
-                     ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint, shape_common_package, "Scale Shape With Fixed Point", null, null,
                      [

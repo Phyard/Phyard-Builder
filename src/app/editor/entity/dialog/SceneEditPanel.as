@@ -280,6 +280,10 @@ package editor.entity.dialog {
                if (ctrlHold && shiftHold)
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnWorldBeforeRepainting), OnPutCreating, OnCreatingCancelled));
                break;
+            case 87: // W
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnGlobalSocketMessage), OnPutCreating, OnCreatingCancelled));
+               break;
             default:
             {
                handled = false;

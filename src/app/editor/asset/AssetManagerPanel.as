@@ -1096,6 +1096,16 @@ package editor.asset {
          }
       }
       
+      public function GetGridCellWidth ():int
+      {
+         return mGridCellWidth;
+      }
+      
+      public function GetGridCellHeight ():int
+      {
+         return mGridCellHeight;
+      }
+      
       public function SetGridCellSize (cellWidth:Number, cellHeight:Number):void
       {
          if (cellWidth >= 8 && cellWidth <= 1024)

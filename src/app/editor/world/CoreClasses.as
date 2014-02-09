@@ -334,7 +334,7 @@ package editor.world {
                if (ccat == null || scene == null)
                   return -1;
                
-               return scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (ccat);
+               return scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (ccat, true);
             }
             case CoreClassIds.ValueType_Module:
             {

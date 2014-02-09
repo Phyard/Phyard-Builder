@@ -184,6 +184,7 @@ package common {
       
       public static const DefaultCCatName:String = "Category";
       
+      public static const CCatId_None:int = -2;
       public static const CCatId_Hidden:int = -1;
       public static const MinCCatId:int = -1;
       

@@ -4,7 +4,7 @@ package common {
    import flash.utils.ByteArray;
    import flash.utils.Dictionary;
    
-   import player.design.Global;
+   import player.world.Global;
    import player.world.World;
    import player.entity.Entity;
    import player.world.CollisionCategory;

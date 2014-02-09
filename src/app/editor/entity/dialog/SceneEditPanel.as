@@ -1121,8 +1121,8 @@ package editor.entity.dialog {
       private function RetrieveShapePhysicsProperties (shape:EntityShape, values:Object):void
       {        
          values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
-         values.mCollisionCategoryListDataProvider = mScene.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
-         values.mCollisionCategoryListSelectedIndex = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
+         values.mCollisionCategoryListDataProvider = mScene.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider (false, false);
+         values.mCollisionCategoryListSelectedIndex = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (false, shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
          
          values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
          values.mIsSensor = shape.mIsSensor;

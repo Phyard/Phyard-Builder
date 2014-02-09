@@ -18,7 +18,7 @@ package player.entity {
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
 
-   import player.design.Global;
+   import player.world.Global;
 
    import common.trigger.CoreEventIds;
    import common.trigger.ValueSpaceTypeDefine;

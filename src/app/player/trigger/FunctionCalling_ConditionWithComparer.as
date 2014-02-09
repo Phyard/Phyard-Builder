@@ -1,7 +1,5 @@
 package player.trigger
 {
-   import player.design.Global;
-   
    import common.trigger.CoreFunctionIds;
    
    public class FunctionCalling_ConditionWithComparer extends FunctionCalling_Condition

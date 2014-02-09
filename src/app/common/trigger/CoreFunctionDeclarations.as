@@ -25,7 +25,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                         [CoreClassIds.ValueType_Array,       null],
                      ],
                      [
@@ -33,7 +33,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                         [CoreClassIds.ValueType_Array,       null],
                      ]
                   );
@@ -769,7 +769,7 @@ package common.trigger {
                      [
                         [CoreClassIds.ValueType_Array,       null],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      null
                   );
@@ -779,7 +779,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithEntity,
@@ -1971,7 +1971,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearVelocityMagnitude,       50.0],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0x0],
                         [CoreClassIds.ValueType_Boolean,       true],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
@@ -2053,32 +2053,32 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_Assign,
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign,
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SwapValues,
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_IsNull,
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -2086,7 +2086,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_ToString,
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -2094,8 +2094,8 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_Equals,
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -2103,15 +2103,15 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally,
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                         [CoreClassIds.ValueType_Boolean,       true],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetAsFriends,
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                         [CoreClassIds.ValueType_Boolean,       true],
                      ],
                      null
@@ -2715,13 +2715,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      null
                   );

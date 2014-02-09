@@ -20,7 +20,6 @@ package editor.entity.dialog {
    import viewer.Viewer;
    
    import player.world.World;
-   import player.design.Global;
    
    public class ScenePlayPanel extends UIComponent
    {

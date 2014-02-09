@@ -7,7 +7,7 @@ package player.trigger {
    import flash.system.System;
    import flash.utils.Dictionary;
 
-   import player.design.Global;
+   import player.world.Global;
 
    import player.world.*;
    import player.entity.*;

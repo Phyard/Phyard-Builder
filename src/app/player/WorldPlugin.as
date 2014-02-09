@@ -1,7 +1,7 @@
 package player
 {
    import player.world.World;
-   import player.design.Global;
+   import player.world.Global;
    
    import common.DataFormat2;
    import common.Version;

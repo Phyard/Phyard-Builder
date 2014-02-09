@@ -3,7 +3,7 @@ package player.trigger {
    import flash.utils.ByteArray;
    import flash.utils.Dictionary;
 
-   import player.design.Global;
+   import player.world.Global;
    import player.world.World;
    import player.world.CollisionCategory;
    
@@ -601,6 +601,7 @@ package player.trigger {
       
       // define -> instance
       
+      // playerWorld can be null.
       public static function ValidateInitialDirectValueObject_Define2Object (playerWorld:World, classType:int, valueType:int, valueObject:Object, extraInfos:Object = null):Object
       {
          if (classType != ClassTypeDefine.ClassType_Core)
@@ -643,7 +644,8 @@ package player.trigger {
                   return null;
                
                //var ccatIndex:int = valueObject as int; // before v2.05. bug: null -> 0
-               var ccatIndex:int = valueObject == null ? Define.CCatId_Hidden : (valueObject as int);
+               //var ccatIndex:int = valueObject == null ? Define.CCatId_Hidden : (valueObject as int); // 2.05
+               var ccatIndex:int = valueObject == null ? Define.CCatId_None : (valueObject as int); // since v2.06
                if (ccatIndex >= 0 && extraInfos != null)
                   ccatIndex += extraInfos.mBeinningCCatIndex;
                return playerWorld.GetCollisionCategoryById (ccatIndex);

@@ -8,7 +8,7 @@ package common {
    
    import player.WorldPlugin;
    
-   import player.design.Global;
+   import player.world.Global;
    import player.world.World;
 
    import player.entity.EntityBody;

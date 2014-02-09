@@ -30,8 +30,6 @@ package player.world {
    import player.physics.PhysicsProxyShape;
    import player.physics.PhysicsProxyJoint;
 
-   import player.design.Global;
-
    import player.entity.Entity;
    import player.entity.EntityVoid;
    import player.entity.EntityBody;
@@ -83,7 +81,6 @@ package player.world {
    {
    // includes
 
-      include "../trigger/CoreFunctionDefinitions_World.as";
       include "World_CameraAndView.as";
       include "World_SystemEventHandling.as";
       include "World_ParticleManager.as";

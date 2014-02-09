@@ -6,7 +6,7 @@ package player.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import player.design.Global;
+   import player.world.Global;
    import player.world.World;
    
    import player.physics.PhysicsProxyShape;

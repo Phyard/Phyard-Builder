@@ -1,6 +1,6 @@
 package player.trigger
 {
-   import player.design.Global;
+   import player.world.Global;
    
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.define.CodeSnippetDefine;

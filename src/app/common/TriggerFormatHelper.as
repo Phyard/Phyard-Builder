@@ -1421,7 +1421,10 @@ package common {
                   if (ccatIndex >= 0 && ccatIndex < correctionTables.mCcatRefIndex_CorrectionTable)
                      directSourceDefine.mValueObject = correctionTables.mCcatRefIndex_CorrectionTable [ccatIndex];
                   else
-                     ccatIndex = Define.CCatId_Hidden;
+                  {
+                     //ccatIndex = Define.CCatId_Hidden;
+                     ccatIndex = Define.CCatId_None; // since v2.06
+                  }
                }
                else if (valueType == CoreClassIds.ValueType_Module)
                {

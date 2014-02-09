@@ -43,7 +43,7 @@ package common.trigger {
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_CollisionCategory, 
                                    "CCat", // Class Name
-                                   Define.CCatId_Hidden,
+                                   Define.CCatId_None/*CCatId_Hidden*/,
                                    true);
                                    
          RegisterClassDeclatation (CoreClassIds.ValueType_Entity,               

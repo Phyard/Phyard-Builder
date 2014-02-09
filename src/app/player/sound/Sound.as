@@ -6,7 +6,7 @@ package player.sound
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
    
-   import player.design.Global;
+   import player.world.Global;
    
    import common.sound.SoundFile;
 

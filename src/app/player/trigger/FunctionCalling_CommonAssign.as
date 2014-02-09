@@ -1,6 +1,5 @@
 package player.trigger
 {
-   import player.design.Global;
    import player.trigger.CoreFunctionDefinitions;
    
    import common.trigger.CoreFunctionIds;

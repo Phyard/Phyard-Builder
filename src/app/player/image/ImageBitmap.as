@@ -18,7 +18,7 @@ package player.image
    
    import player.module.Module;
    
-   import player.design.Global;
+   import player.world.Global;
 
    public class ImageBitmap extends Module
    {

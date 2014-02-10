@@ -48,12 +48,13 @@ package player.trigger {
 
       public static var sCoreFunctionDefinitions:Array = new Array (IdPool.NumPlayerFunctions);
 
-      public static function Initialize (playerWorld:World):void
+      // 
+      public static function Initialize (/*playerWorld:World*/toClearRefs:Boolean):void
       {
          //if (Compile::Is_Debugging)
          //{
-            RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_ForDebug,                     ForDebug);
-            RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetDebugString,               GetDebugString);
+            RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_ForDebug,                     ForDebug);
+            RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetDebugString,               GetDebugString);
          //}
 
       // some specail
@@ -62,584 +63,585 @@ package player.trigger {
 
       // code flow
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Return,                        null);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_ReturnIfTrue,                  null);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_ReturnIfFalse,                 null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Return,                        null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_ReturnIfTrue,                  null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_ReturnIfFalse,                 null);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_StartIf,                       null);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Else,                          null);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EndIf,                         null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_StartIf,                       null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Else,                          null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EndIf,                         null);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_StartWhile,                    null);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Break,                         null);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Continue,                      null);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EndWhile,                      null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_StartWhile,                    null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Break,                         null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Continue,                      null);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EndWhile,                      null);
 
       // class common
          
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonAssign,                      null); // CommonAssign);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonEquals,                      CommonEquals);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CommonNewInstance,                 CommonNewInstance);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CommonAssign,                      null); // CommonAssign);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CommonEquals,                      CommonEquals);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CommonNewInstance,                 CommonNewInstance);
 
       // system / time
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetProgramMilliseconds,           GetProgramMilliseconds);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetCurrentDateTime,               GetCurrentDateTime);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetDay,                           GetDay);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetTimeZone,                      GetTimeZone);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_IsKeyHold,                        IsKeyHold);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_SetMouseVisible,                  SetMouseVisible);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_IsAccelerometerSupported,                  IsAccelerometerSupported);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetAcceleration,                     GetAccelerationVector);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_IsNativeApp,                     IsNativeApp);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_ExitApp,                     ExitApp);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetScreenResolution,         GetScreenResolution);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetScreenDPI,                GetScreenDPI);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetOsNameString,                GetOsNameString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_OpenURL,                     OpenURL);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CopyToClipboard,                     CopyToClipboard);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_GetLanguageCode,                     GetLanguageCode);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetProgramMilliseconds,           GetProgramMilliseconds);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetCurrentDateTime,               GetCurrentDateTime);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetDay,                           GetDay);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetTimeZone,                      GetTimeZone);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_IsKeyHold,                        IsKeyHold);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_SetMouseVisible,                  SetMouseVisible);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_IsAccelerometerSupported,                  IsAccelerometerSupported);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetAcceleration,                     GetAccelerationVector);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_IsNativeApp,                     IsNativeApp);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_ExitApp,                     ExitApp);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetScreenResolution,         GetScreenResolution);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetScreenDPI,                GetScreenDPI);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetOsNameString,                GetOsNameString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_OpenURL,                     OpenURL);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CopyToClipboard,                     CopyToClipboard);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_GetLanguageCode,                     GetLanguageCode);
 
       // services
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_SubmitKeyValue_Number,               SubmitKeyValue_Number);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_SubmitKeyValue_Number,               SubmitKeyValue_Number);
          
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_SendGlobalSocketMessage,               SendGlobalSocketMessage);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_SendGlobalSocketMessage,               SendGlobalSocketMessage);
 
       // string
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Assign,                      AssignString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_ConditionAssign,             ConditionAssignString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_SwapValues,                  SwapStringValues);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_IsNull,                      IsNullString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Equals,                      EqualsWith_Strings);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Add,                         AddTwoStrings);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_GetLength,                   GetStringLength);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_GetCharAt,                   StringCharAt);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_GetCharCodeAt,               StringCharCodeAt);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_CharCode2Char,               CharCode2Char);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_ToLowerCase,                 ToLowerCaseString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_ToUpperCase,                 ToUpperCaseString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_IndexOf,                     IndexOfSubstring);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_LastIndexOf,                 LastIndexOfSubstring);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Substring,                   Substring);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Split,                       SplitString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_String_Replace,                     ReplaceString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_Assign,                      AssignString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_ConditionAssign,             ConditionAssignString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_SwapValues,                  SwapStringValues);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_IsNull,                      IsNullString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_Equals,                      EqualsWith_Strings);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_Add,                         AddTwoStrings);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_GetLength,                   GetStringLength);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_GetCharAt,                   StringCharAt);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_GetCharCodeAt,               StringCharCodeAt);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_CharCode2Char,               CharCode2Char);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_ToLowerCase,                 ToLowerCaseString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_ToUpperCase,                 ToUpperCaseString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_IndexOf,                     IndexOfSubstring);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_LastIndexOf,                 LastIndexOfSubstring);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_Substring,                   Substring);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_Split,                       SplitString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_String_Replace,                     ReplaceString);
 
       // bool
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_Assign,                AssignBoolean);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_ConditionAssign,       ConditionAssignBoolean);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_SwapValues,    SwapBooleanValues);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_EqualsBoolean,         EqualsWith_Booleans);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Boolean_ToString,           BooleanToString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_Invert,                BooleanInvert);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_IsTrue,                IsTrue);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_IsFalse,               IsFalse);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_Assign,                AssignBoolean);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_ConditionAssign,       ConditionAssignBoolean);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_SwapValues,    SwapBooleanValues);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_EqualsBoolean,         EqualsWith_Booleans);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Boolean_ToString,           BooleanToString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_Invert,                BooleanInvert);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_IsTrue,                IsTrue);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_IsFalse,               IsFalse);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_LargerThan,            LargerThan);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_LessThan,              LessThan);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_LargerThan,            LargerThan);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_LessThan,              LessThan);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_And,               BoolAnd);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_Or,                BoolOr);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_Not,               BoolNot);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bool_Xor,               BoolXor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_And,               BoolAnd);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_Or,                BoolOr);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_Not,               BoolNot);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bool_Xor,               BoolXor);
 
       // array
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_Assign,               AssignArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_ConditionAssign,      ConditionAssignArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SwapValues,           SwapArrayValues);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_Equals,               EqualsWith_Arrays);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_ExactEquals,               ExactEqualsWith_Arrays);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_ToString,             ArrayToString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_Create,               CreateArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_IsNull,               IsNullArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetLength,               GetArrayLength);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetLength,               SetArrayLength);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SubArray,               SubArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_RemoveElements,               RemoveArrayElements);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_InsertElements,               InsertArrayElements);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_Concat,                       ConcatArrays);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SwapElements,                SwapArrayElements);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_Reverse,                     ReverseArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithBoolean,     SetArrayElement); // SetArrayElementWithBoolean);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsBoolean,       GetArrayElement); // GetArrayElementAsBoolean);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithNumber,      SetArrayElement); // SetArrayElementWithNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsNumber,        GetArrayElement); // GetArrayElementAsNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithString,      SetArrayElement); // SetArrayElementWithString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsString,        GetArrayElement); // GetArrayElementAsString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithCCat,        SetArrayElement); // SetArrayElementWithCCat);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsCCat,          GetArrayElement); // GetArrayElementAsCCat);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithEntity,      SetArrayElement); // SetArrayElementWithEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsEntity,        GetArrayElement); // GetArrayElementAsEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithModule,      SetArrayElement); // SetArrayElementWithModule);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsModule,        GetArrayElement); // GetArrayElementAsModule);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithSound,       SetArrayElement); // SetArrayElementWithSound);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsSound,         GetArrayElement); // GetArrayElementAsSound);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElementWithArray,       SetArrayElement); // SetArrayElementWithArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElementAsArray,         GetArrayElement); // GetArrayElementAsArray);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_SetElement,       SetArrayElement);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_GetElement,       GetArrayElement);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_IndexOf,                     IndexOfArrayElement);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Array_LastIndexOf,                 LastIndexOfArrayElement);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_Assign,               AssignArray);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_ConditionAssign,      ConditionAssignArray);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SwapValues,           SwapArrayValues);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_Equals,               EqualsWith_Arrays);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_ExactEquals,               ExactEqualsWith_Arrays);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_ToString,             ArrayToString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_Create,               CreateArray);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_IsNull,               IsNullArray);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetLength,               GetArrayLength);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetLength,               SetArrayLength);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SubArray,               SubArray);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_RemoveElements,               RemoveArrayElements);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_InsertElements,               InsertArrayElements);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_Concat,                       ConcatArrays);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SwapElements,                SwapArrayElements);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_Reverse,                     ReverseArray);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetElementWithBoolean,     SetArrayElement); // SetArrayElementWithBoolean);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetElementAsBoolean,       GetArrayElement); // GetArrayElementAsBoolean);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetElementWithNumber,      SetArrayElement); // SetArrayElementWithNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetElementAsNumber,        GetArrayElement); // GetArrayElementAsNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetElementWithString,      SetArrayElement); // SetArrayElementWithString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetElementAsString,        GetArrayElement); // GetArrayElementAsString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetElementWithCCat,        SetArrayElement); // SetArrayElementWithCCat);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetElementAsCCat,          GetArrayElement); // GetArrayElementAsCCat);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetElementWithEntity,      SetArrayElement); // SetArrayElementWithEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetElementAsEntity,        GetArrayElement); // GetArrayElementAsEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetElementWithModule,      SetArrayElement); // SetArrayElementWithModule);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetElementAsModule,        GetArrayElement); // GetArrayElementAsModule);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetElementWithSound,       SetArrayElement); // SetArrayElementWithSound);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetElementAsSound,         GetArrayElement); // GetArrayElementAsSound);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetElementWithArray,       SetArrayElement); // SetArrayElementWithArray);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetElementAsArray,         GetArrayElement); // GetArrayElementAsArray);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_SetElement,       SetArrayElement);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_GetElement,       GetArrayElement);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_IndexOf,                     IndexOfArrayElement);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Array_LastIndexOf,                 LastIndexOfArrayElement);
 
       // math ops
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Assign,               AssignNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ConditionAssign,      ConditionAssignNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_SwapValues,           SwapNumberValues);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Equals,               EqualsWith_Numbers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Assign,               AssignNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ConditionAssign,      ConditionAssignNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_SwapValues,           SwapNumberValues);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Equals,               EqualsWith_Numbers);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_IsNaN,               IsNaN);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_IsInfinity,          IsInfinity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_IsNaN,               IsNaN);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_IsInfinity,          IsInfinity);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ToString,             NumberToString);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ToExponential,      NumberToExponentialString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ToFixed,              NumberToFixedString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ToPrecision,          NumberToPrecisionString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ToStringByRadix,      NumberToStringByRadix);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ParseFloat,           ParseFloat);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ParseInteger,         ParseInteger);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ToString,             NumberToString);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ToExponential,      NumberToExponentialString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ToFixed,              NumberToFixedString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ToPrecision,          NumberToPrecisionString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ToStringByRadix,      NumberToStringByRadix);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ParseFloat,           ParseFloat);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ParseInteger,         ParseInteger);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Negative,                   NegativeNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Add,                        AddTwoNumbers);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Subtract,                   SubtractTwoNumbers);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Multiply,                   MultiplyTwoNumbers);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Divide,                     DivideTwoNumbers);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Modulo,                     ModuloTwoNumbers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Negative,                   NegativeNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Add,                        AddTwoNumbers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Subtract,                   SubtractTwoNumbers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Multiply,                   MultiplyTwoNumbers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Divide,                     DivideTwoNumbers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Modulo,                     ModuloTwoNumbers);
 
       // math / bitwise
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bitwise_ShiftLeft,             ShiftLeft);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bitwise_ShiftRight,            ShiftRight);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned,    ShiftRightUnsigned);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bitwise_ShiftLeft,             ShiftLeft);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bitwise_ShiftRight,            ShiftRight);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned,    ShiftRightUnsigned);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bitwise_And,                   BitwiseAnd);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bitwise_Or,                    BitwiseOr);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bitwise_Not,                   BitwiseNot);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Bitwise_Xor,                   BitwiseXor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bitwise_And,                   BitwiseAnd);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bitwise_Or,                    BitwiseOr);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bitwise_Not,                   BitwiseNot);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Bitwise_Xor,                   BitwiseXor);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_SinRadians,                SinRadian);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_CosRadians,                CosRadian);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_TanRadians,                TanRadian);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ArcSinRadians,             AsinRadian);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ArcCosRadians,             AcosRadian);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ArcTanRadians,             AtanRadian);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_ArcTan2Radians,            AtanRadianTwoNumbers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_SinRadians,                SinRadian);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_CosRadians,                CosRadian);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_TanRadians,                TanRadian);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ArcSinRadians,             AsinRadian);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ArcCosRadians,             AcosRadian);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ArcTanRadians,             AtanRadian);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_ArcTan2Radians,            AtanRadianTwoNumbers);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Random,                     RandomNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_RandomRange,                RandomNumberRange);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_RandomIntRange,             RandomIntegerRange);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Random,                     RandomNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_RandomRange,                RandomNumberRange);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_RandomIntRange,             RandomIntegerRange);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_RngCreate,                  RngCreate);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_RngSetSeed,                 RngSetSeed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_RngRandom,                  RngRandom);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_RngRandomRange,             RngRandomNumberRange);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_RngRandomIntRange,          RngRandomIntegerRange);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_RngCreate,                  RngCreate);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_RngSetSeed,                 RngSetSeed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_RngRandom,                  RngRandom);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_RngRandomRange,             RngRandomNumberRange);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_RngRandomIntRange,          RngRandomIntegerRange);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Degrees2Radians,             Degrees2Radians);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Radians2Degrees,             Radians2Degrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Number2RGB,                  Number2RGB);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_RGB2Number,                  RGB2Number);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_MillisecondsToMinutesSeconds,     MillisecondsToMinutesSeconds);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Degrees2Radians,             Degrees2Radians);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Radians2Degrees,             Radians2Degrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Number2RGB,                  Number2RGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_RGB2Number,                  RGB2Number);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_MillisecondsToMinutesSeconds,     MillisecondsToMinutesSeconds);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Inverse,                   InverseNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Max,                        MaxOfTwoNumbers);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Min,                        MinOfTwoNumbers);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Abs,                       AbsNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Sqrt,                      SqrtNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Ceil,                      CeilNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Floor,                     FloorNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Round,                     RoundNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Log,                       LogNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Exp,                       ExpNumber);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Power,                     Power);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Number_Clamp,                     Clamp);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Inverse,                   InverseNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Max,                        MaxOfTwoNumbers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Min,                        MinOfTwoNumbers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Abs,                       AbsNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Sqrt,                      SqrtNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Ceil,                      CeilNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Floor,                     FloorNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Round,                     RoundNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Log,                       LogNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Exp,                       ExpNumber);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Power,                     Power);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Number_Clamp,                     Clamp);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.Id_Math_LinearInterpolation,               LinearInterpolation);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.Id_Math_LinearInterpolationColor,          LinearInterpolationColor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.Id_Math_LinearInterpolation,               LinearInterpolation);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.Id_Math_LinearInterpolationColor,          LinearInterpolationColor);
 
       // game / design
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetLevelByIdOffset,           GetLevelByIdOffset);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetLevelId,           GetLevelId);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetLevelByKey,           GetLevelByKey);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetLevelKey,           GetLevelKey);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetCurrentLevel,           GetCurrentLevel);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_IsNullLevel,            IsNullLevel);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SceneEquals,            EqualsWith_Scenes);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_Scene2String,           SceneToString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_LoadLevel,              LoadLevel);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_MergeLevel,             MergeLevelIntoTheCurrentOne);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetLevelByIdOffset,           GetLevelByIdOffset);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetLevelId,           GetLevelId);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetLevelByKey,           GetLevelByKey);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetLevelKey,           GetLevelKey);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetCurrentLevel,           GetCurrentLevel);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_IsNullLevel,            IsNullLevel);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_SceneEquals,            EqualsWith_Scenes);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_Scene2String,           SceneToString);
          
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_WriteSaveData,          WriteSaveData);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_LoadSaveData,           LoadSaveData);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_ResetSaveData,          ResetSaveData);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_DeleteSaveData,          DeleteSaveData);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_WriteSaveData,          WriteSaveData);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_LoadSaveData,           LoadSaveData);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_ResetSaveData,          ResetSaveData);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_DeleteSaveData,          DeleteSaveData);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SetLevelPaused,            SetLevelPaused);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetPlaySpeedX,             GetPlaySpeedX);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SetPlaySpeedX,             SetPlaySpeedX);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetWorldScale,             GetWorldScale);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SetWorldScale,             SetWorldScale);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_SetLevelPaused,            SetLevelPaused);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetPlaySpeedX,             GetPlaySpeedX);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_SetPlaySpeedX,             SetPlaySpeedX);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetWorldScale,             GetWorldScale);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_SetWorldScale,             SetWorldScale);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetLevelMilliseconds,             GetLevelMilliseconds);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetLevelSteps,                    GetLevelSteps);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetMousePosition,                 GetWorldMousePosition);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_IsMouseButtonHold,                IsMouseButtonHold);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_GetNumEntitiesPlacedInEditor,     GetNumEntitiesPlacedInEditor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetLevelMilliseconds,             GetLevelMilliseconds);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetLevelSteps,                    GetLevelSteps);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetMousePosition,                 GetWorldMousePosition);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_IsMouseButtonHold,                IsMouseButtonHold);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_GetNumEntitiesPlacedInEditor,     GetNumEntitiesPlacedInEditor);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SetLevelStatus,                   SetLevelStatus);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_IsLevelSuccessed,                 IsLevelSuccessed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_IsLevelFailed,                    IsLevelFailed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_IsLevelUnfinished,                IsLevelUnfinished);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SetMouseGestureEnabled,                SetMouseGestureEnabled);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_SetLevelStatus,                   SetLevelStatus);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_IsLevelSuccessed,                 IsLevelSuccessed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_IsLevelFailed,                    IsLevelFailed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_IsLevelUnfinished,                IsLevelUnfinished);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_SetMouseGestureEnabled,                SetMouseGestureEnabled);
          
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SetLevelBooleanProperty,                SetLevelProperty_Boolean);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SetLevelNumberProperty,                SetLevelProperty_Number);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Design_SetLevelStringProperty,                SetLevelProperty_String);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_SetLevelBooleanProperty,                SetLevelProperty_Boolean);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_SetLevelNumberProperty,                SetLevelProperty_Number);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Design_SetLevelStringProperty,                SetLevelProperty_String);
 
       // game / world / appearance
       
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Level_GetFilledColor,         GetLevelFilledColor);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Level_SetFilledColor,         SetLevelFilledColor);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Level_GetFilledColorRGB,      GetLevelFilledColorRGB);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Level_SetFilledColorRGB,      SetLevelFilledColorRGB);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Level_GetBorderColor,         GetLevelBorderColor);         
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Level_SetBorderColor,         SetLevelBorderColor);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Level_GetBorderColorRGB,      GetLevelBorderColorRGB);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Level_SetBorderColorRGB,      SetLevelBorderColorRGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Level_GetFilledColor,         GetLevelFilledColor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Level_SetFilledColor,         SetLevelFilledColor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Level_GetFilledColorRGB,      GetLevelFilledColorRGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Level_SetFilledColorRGB,      SetLevelFilledColorRGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Level_GetBorderColor,         GetLevelBorderColor);         
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Level_SetBorderColor,         SetLevelBorderColor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Level_GetBorderColorRGB,      GetLevelBorderColorRGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Level_SetBorderColorRGB,      SetLevelBorderColorRGB);
 
       // game / world / physics
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_IsPhysicsEngineEnabled,          IsPhysicsEngineEnabled);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_SetPhysicsEngineEnabled,         SetPhysicsEngineEnabled);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetRealtimeFPS,                       GetRealtimeFPS);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetPreferredFpsAndStepTimeLangth,     GetPreferredFpsAndStepTimeLangth);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_SetPreferredFpsAndStepTimeLangth,     SetPreferredFpsAndStepTimeLangth);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,     SetWorldGravityAcceleration_Radians);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetGravityAcceleration_Vector,      GetWorldGravityAcceleration_Vector);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_IsPhysicsEngineEnabled,          IsPhysicsEngineEnabled);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_SetPhysicsEngineEnabled,         SetPhysicsEngineEnabled);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetRealtimeFPS,                       GetRealtimeFPS);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetPreferredFpsAndStepTimeLangth,     GetPreferredFpsAndStepTimeLangth);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_SetPreferredFpsAndStepTimeLangth,     SetPreferredFpsAndStepTimeLangth);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,     SetWorldGravityAcceleration_Radians);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetGravityAcceleration_Vector,      GetWorldGravityAcceleration_Vector);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_UpdateShapeContactStatusInfos,                   UpdateShapeContactStatusInfos);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_UpdateShapeContactStatusInfos,                   UpdateShapeContactStatusInfos);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint,                   GetPhysicsShapesAtPoint);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetFirstIncomingIntersectionWithLineSegment,         GetFirstIncomingIntersectionWithLineSegment);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment,         GetFirstOutcomingIntersectionWithLineSegment);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,         GetIntersectedShapesWithLineSegment);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint,                   GetPhysicsShapesAtPoint);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetFirstIncomingIntersectionWithLineSegment,         GetFirstIncomingIntersectionWithLineSegment);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment,         GetFirstOutcomingIntersectionWithLineSegment);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,         GetIntersectedShapesWithLineSegment);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetViewportSize,                           GetViewportSize);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetCameraRotationByDegrees,                GetCameraRotation_Degrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_FollowCameraWithShape,                       FollowCameraWithShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_FollowCameraCenterXWithShape,                FollowCameraCenterXWithShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,                FollowCameraCenterYWithShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_FollowCameraRotationWithShape,               FollowCameraRotationWithShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetViewportSize,                           GetViewportSize);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetCameraRotationByDegrees,                GetCameraRotation_Degrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_FollowCameraWithShape,                       FollowCameraWithShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_FollowCameraCenterXWithShape,                FollowCameraCenterXWithShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,                FollowCameraCenterYWithShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_FollowCameraRotationWithShape,               FollowCameraRotationWithShape);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn,                CameraFadeOutThenFadeIn);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn,                CameraFadeOutThenFadeIn);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_CallScript,                          CallScript);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_ConditionCallScript,                 ConditionCallScript);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_CallBoolFunction,                          CallBoolFunction);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_ConditionCallBoolFunction,                 ConditionCallBoolFunction);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_CallScriptMultiTimes,                    CallScriptMultiTimes);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes,              CallBoolFunctionMultiTimes);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_CallScript,                          CallScript);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_ConditionCallScript,                 ConditionCallScript);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_CallBoolFunction,                          CallBoolFunction);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_ConditionCallBoolFunction,                 ConditionCallBoolFunction);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_CallScriptMultiTimes,                    CallScriptMultiTimes);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes,              CallBoolFunctionMultiTimes);
 
       // game / world / create
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_CreateExplosion,                            CreateExplosion);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_CreateExplosion,                            CreateExplosion);
 
       // game / world / sound
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_PlaySound,                            PlaySound);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_StopSounds_InLevel,                   StopAllSounds_InLevel);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_StopSound_CrossLevels,                StopSound_CrossLevels);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_IsSoundEnabled,                       IsSoundEnabled);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_SetSoundEnabled,                      SetSoundEnabled);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_GetGlobalSoundVolume,                 GetGlobalSoundVolume);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_World_SetGlobalSoundVolume,                 SetGlobalSoundVolume);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_PlaySound,                            PlaySound);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_StopSounds_InLevel,                   StopAllSounds_InLevel);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_StopSound_CrossLevels,                StopSound_CrossLevels);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_IsSoundEnabled,                       IsSoundEnabled);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_SetSoundEnabled,                      SetSoundEnabled);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_GetGlobalSoundVolume,                 GetGlobalSoundVolume);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_World_SetGlobalSoundVolume,                 SetGlobalSoundVolume);
 
       // game / world / module
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Module_Assign,                   AssignModule);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Module_Equals,                   EqualsWith_Module);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Module_Assign,                   AssignModule);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Module_Equals,                   EqualsWith_Module);
 
       // game / collision category
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CCat_Assign,                                       AssignCollisionCategory);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CCat_ConditionAssign,                              ConditionAssignCollisionCategory);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CCat_SwapValues,                                   SwapCCatValues);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CCat_IsNull,                                       IsNullCCat);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CCat_Equals,                                       EqualsWith_CollisiontCategories);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CCat_ToString,                                     CollisionCategoryToString);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CCat_SetCollideInternally,                         SetCollisionCategoryCollideInternally);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_CCat_SetAsFriends,                                 SetCollisionCategoriesAsFriends);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CCat_Assign,                                       AssignCollisionCategory);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CCat_ConditionAssign,                              ConditionAssignCollisionCategory);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CCat_SwapValues,                                   SwapCCatValues);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CCat_IsNull,                                       IsNullCCat);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CCat_Equals,                                       EqualsWith_CollisiontCategories);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CCat_ToString,                                     CollisionCategoryToString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CCat_SetCollideInternally,                         SetCollisionCategoryCollideInternally);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_CCat_SetAsFriends,                                 SetCollisionCategoriesAsFriends);
 
       // game / entity
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_Assign,                      AssignEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_ConditionAssign,             ConditionAssignEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_SwapValues,                  SwapEntityValues);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsNull,                      IsNullEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_Equals,                      EqualsWith_Entities);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_Assign,                      AssignEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_ConditionAssign,             ConditionAssignEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_SwapValues,                  SwapEntityValues);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsNull,                      IsNullEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_Equals,                      EqualsWith_Entities);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_ToString,                    EntityToString);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_ToString,                    EntityToString);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_GetEntityId,                 GetEntityId);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_GetEntityByIdOffset,         GetAnotherEntityByIdOffset);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_GetEntityId,                 GetEntityId);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_GetEntityByIdOffset,         GetAnotherEntityByIdOffset);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_SetTaskStatus,                         SetEntityTaskStatus);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsTaskSuccessed,                       IsEntityTaskSuccessed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsTaskFailed,                          IsEntityTaskFailed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsTaskUnfinished,                      IsEntityTaskUnfinished);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_SetTaskStatus,                         SetEntityTaskStatus);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsTaskSuccessed,                       IsEntityTaskSuccessed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsTaskFailed,                          IsEntityTaskFailed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsTaskUnfinished,                      IsEntityTaskUnfinished);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsShapeEntity,                    IsShapeEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsJointEntity,                    IsJointEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsTriggerEntity,                  IsTriggerEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsShapeEntity,                    IsShapeEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsJointEntity,                    IsJointEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsTriggerEntity,                  IsTriggerEntity);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsVisible,                   IsEntityVisible);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_SetVisible,                  SetEntityVisible);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_GetAlpha,                    GetEntityAlpha);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_SetAlpha,                    SetEntityAlpha);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_AdjustAppearanceOrder,                    AdjustEntityAppearanceOrder);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_AdjustAppearanceOrderRelativeTo,          AdjustEntityAppearanceOrderRelativeTo);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsEnabled,                   IsEntityEnabled);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_SetEnabled,                  SetEntityEnabled);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsVisible,                   IsEntityVisible);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_SetVisible,                  SetEntityVisible);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_GetAlpha,                    GetEntityAlpha);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_SetAlpha,                    SetEntityAlpha);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_AdjustAppearanceOrder,                    AdjustEntityAppearanceOrder);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_AdjustAppearanceOrderRelativeTo,          AdjustEntityAppearanceOrderRelativeTo);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsEnabled,                   IsEntityEnabled);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_SetEnabled,                  SetEntityEnabled);
 
 
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_GetPosition,                 GetEntityPosition);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_SetPosition,                 SetEntityPosition);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_GetRotationByDegrees,        GetEntityRotationByDegrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_GetRotationByRadians,        GetEntityRotationByRadians);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians,        GetEntityAccumulatedRotationByDegrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsFlipped,        IsEntityFlipped);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_GetScale,        GetEntityScale);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_GetPosition,                 GetEntityPosition);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_SetPosition,                 SetEntityPosition);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_GetRotationByDegrees,        GetEntityRotationByDegrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_GetRotationByRadians,        GetEntityRotationByRadians);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians,        GetEntityAccumulatedRotationByDegrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsFlipped,        IsEntityFlipped);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_GetScale,        GetEntityScale);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,        WorldPoint2EntityLocalPoint);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,        EntityLocalPoint2WorldPoint);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_WorldVector2LocalVector,        WorldVector2EntityLocalVector);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_LocalVector2WorldVector,        EntityLocalVector2WorldVector);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,        WorldPoint2EntityLocalPoint);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,        EntityLocalPoint2WorldPoint);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_WorldVector2LocalVector,        WorldVector2EntityLocalVector);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_LocalVector2WorldVector,        EntityLocalVector2WorldVector);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsDestroyed,        IsEntityDestroyed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_Destroy,        DestroyEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsDestroyed,        IsEntityDestroyed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_Destroy,        DestroyEntity);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_Coincided,        AreTwoEntitiesCoincided);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_Coincided,        AreTwoEntitiesCoincided);
 
       // game / entity / shape
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsCircleShapeEntity,              IsCircleShapeEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsRectangleShapeEntity,           IsRectangleShapeEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsPolygonShapeEntity,             IsPolygonShapeEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsPolylineShapeEntity,            IsPolylineShapeEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsBombShapeEntity,               IsBombShapeEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntity,        IsWorldBorderEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsCameraEntity,        IsCameraEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsTextShapeEntity,     IsTextShapeEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsModuleShapeEntity,   IsModuleShapeEntity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_Entity_IsButtonShapeEntity,   IsButtonShapeEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsCircleShapeEntity,              IsCircleShapeEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsRectangleShapeEntity,           IsRectangleShapeEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsPolygonShapeEntity,             IsPolygonShapeEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsPolylineShapeEntity,            IsPolylineShapeEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsBombShapeEntity,               IsBombShapeEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntity,        IsWorldBorderEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsCameraEntity,        IsCameraEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsTextShapeEntity,     IsTextShapeEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsModuleShapeEntity,   IsModuleShapeEntity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_Entity_IsButtonShapeEntity,   IsButtonShapeEntity);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetOriginalCIType,           GetShapeOriginalCIType);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetOriginalCIType,           SetShapeOriginalCIType);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetCIType,                   GetShapeCIType);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetCIType,                   SetShapeCIType);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetBodyTexture,              GetBodyTexture);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetBodyTexture,              SetBodyTexture);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetFilledColor,              GetShapeFilledColor);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetFilledColor,              SetShapeFilledColor);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,           GetShapeFilledColorRGB);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,           SetShapeFilledColorRGB);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetFilledOpacity,            GetFilledOpacity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetFilledOpacity,            SetFilledOpacity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsShowBorder,                IsShapeShowBorder);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetShowBorder,               SetShapeShowBorder);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetBorderColor,              GetShapeBorderColor);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetBorderColor,              SetShapeBorderColor);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetBorderColorRGB,           GetShapeBorderColorRGB);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetBorderColorRGB,           SetShapeBorderColorRGB);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetBorderOpacity,            GetBorderOpacity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetBorderOpacity,            SetBorderOpacity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetCacheAsBitmap,            SetCacheAsBitmap);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetOriginalCIType,           GetShapeOriginalCIType);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetOriginalCIType,           SetShapeOriginalCIType);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetCIType,                   GetShapeCIType);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetCIType,                   SetShapeCIType);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetBodyTexture,              GetBodyTexture);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetBodyTexture,              SetBodyTexture);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetFilledColor,              GetShapeFilledColor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetFilledColor,              SetShapeFilledColor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,           GetShapeFilledColorRGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,           SetShapeFilledColorRGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetFilledOpacity,            GetFilledOpacity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetFilledOpacity,            SetFilledOpacity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsShowBorder,                IsShapeShowBorder);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetShowBorder,               SetShapeShowBorder);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetBorderColor,              GetShapeBorderColor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetBorderColor,              SetShapeBorderColor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetBorderColorRGB,           GetShapeBorderColorRGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetBorderColorRGB,           SetShapeBorderColorRGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetBorderOpacity,            GetBorderOpacity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetBorderOpacity,            SetBorderOpacity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetCacheAsBitmap,            SetCacheAsBitmap);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,            IsShapePhysicsEnabled);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetPhysicsEnabled,         SetShapePhysicsEnabled);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetCollisionCategory,        GetShapeCollisionCategory);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetCollisionCategory,        SetShapeCollisionCategory);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsSensor,                    IsSensorShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsStatic,                    IsStatic);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetStatic,                   SetStatic);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsRotationFixed,                  IsShapeRotationFixed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetRotationFixed,                 SetShapeRotationFixed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetSleeping,                 SetShapeSleeping);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,            IsShapePhysicsEnabled);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetPhysicsEnabled,         SetShapePhysicsEnabled);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetCollisionCategory,        GetShapeCollisionCategory);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetCollisionCategory,        SetShapeCollisionCategory);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsSensor,                    IsSensorShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsStatic,                    IsStatic);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetStatic,                   SetStatic);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsRotationFixed,                  IsShapeRotationFixed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetRotationFixed,                 SetShapeRotationFixed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetSleeping,                 SetShapeSleeping);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetLocalCentroid,                        GetLocalCentroid);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetWorldCentroid,                        GetWorldCentroid);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetMass,                        GetShapeMass);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetMass,                        SetShapeMass);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetInertia,                     GetShapeInertia);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetInertia,                     SetShapeInertia);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetDensity,                     GetShapeDensity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetDensity,                     SetShapeDensity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetLocalCentroid,                        GetLocalCentroid);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetWorldCentroid,                        GetWorldCentroid);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetMass,                        GetShapeMass);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetMass,                        SetShapeMass);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetInertia,                     GetShapeInertia);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetInertia,                     SetShapeInertia);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetDensity,                     GetShapeDensity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetDensity,                     SetShapeDensity);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetLinearVelocity,                        SetShapeLinearVelocity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetLinearVelocity,                        GetShapeLinearVelocity);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,       AddLinearImpulseByVelocityVector);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians,           SetAngularVelocityByRadians);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees,           SetAngularVelocityByDegrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetAngularVelocityByRadians,           GetAngularVelocityByRadians);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetAngularVelocityByDegrees,           GetAngularVelocityByDegrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByRadians,        ChangeAngularVelocityByRadians);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByDegrees,        ChangeAngularVelocityByDegrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetLinearVelocity,                        SetShapeLinearVelocity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetLinearVelocity,                        GetShapeLinearVelocity);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,       AddLinearImpulseByVelocityVector);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians,           SetAngularVelocityByRadians);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees,           SetAngularVelocityByDegrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetAngularVelocityByRadians,           GetAngularVelocityByRadians);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetAngularVelocityByDegrees,           GetAngularVelocityByDegrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByRadians,        ChangeAngularVelocityByRadians);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByDegrees,        ChangeAngularVelocityByDegrees);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ApplyStepForce,                        ApplyStepForceOnShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint,            ApplyStepForceAtLocalPointOnShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint,            ApplyStepForceAtWorldPointOnShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ApplyStepTorque,                       ApplyStepTorque);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ApplyStepForce,                        ApplyStepForceOnShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint,            ApplyStepForceAtLocalPointOnShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint,            ApplyStepForceAtWorldPointOnShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ApplyStepTorque,                       ApplyStepTorque);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ApplyLinearImpulse,                        ApplyLinearImpulseOnShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint,            ApplyLinearImpulseAtLocalPointOnShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint,            ApplyLinearImpulseAtWorldPointOnShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse,                       ApplyAngularImpulse);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ApplyLinearImpulse,                        ApplyLinearImpulseOnShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint,            ApplyLinearImpulseAtLocalPointOnShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint,            ApplyLinearImpulseAtWorldPointOnShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse,                       ApplyAngularImpulse);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_Translate,                      TranslateShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_TranslateTo,                    TranslateShapeTo);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint,                      RotateShapeAroundWorldPoint);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint,                    RotateShapeToAroundWorldPoint);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_FlipSelf,                       FlipShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,                   FlipShapeByWorldLinePoint);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,                    ScaleShapeWithFixedPoint);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_Translate,                      TranslateShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_TranslateTo,                    TranslateShapeTo);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint,                      RotateShapeAroundWorldPoint);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint,                    RotateShapeToAroundWorldPoint);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_FlipSelf,                       FlipShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,                   FlipShapeByWorldLinePoint);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,                    ScaleShapeWithFixedPoint);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetBrothers,                 GetBrothers);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsAttchedWith,               IsAttchedWith);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_AttachWith,                  AttachTwoShapes);
-		   RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,        DetachShapeThenAttachWithAnother);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_BreakupBrothers,             BreakupShapeBrothers);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_DestroyBrothers,             DestroyBrothers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetBrothers,                 GetBrothers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsAttchedWith,               IsAttchedWith);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_AttachWith,                  AttachTwoShapes);
+		   RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,        DetachShapeThenAttachWithAnother);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_BreakupBrothers,             BreakupShapeBrothers);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_DestroyBrothers,             DestroyBrothers);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_BreakAllJoints,                 BreakShapeJoints);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetAllSisters,                 GetAllSisters);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsConnectedWith,                 IsConnectedWith);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsConnectedWithGround,                 IsConnectedWithGround);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_BreakAllJoints,                 BreakShapeJoints);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetAllSisters,                 GetAllSisters);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsConnectedWith,                 IsConnectedWith);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsConnectedWithGround,                 IsConnectedWithGround);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetAllContactedShapes,             GetAllContactedShapes);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_IsContactedWith,                   IsContactedWith);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetAllContactedShapes,             GetAllContactedShapes);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_IsContactedWith,                   IsContactedWith);
 
       // game / entity / shape / text
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_GetText,                  GetTextFromTextComponent);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetText,                  SetTextForTextComponent);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_AppendText,               AppendTextToTextComponent);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_AppendNewLine,            AppendNewLineToTextComponent);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_GetText,                  GetTextFromTextComponent);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetText,                  SetTextForTextComponent);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_AppendText,               AppendTextToTextComponent);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_AppendNewLine,            AppendNewLineToTextComponent);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_GetHorizontalScrollPosition,                  GetHorizontalScrollPosition);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetHorizontalScrollPosition,                  SetHorizontalScrollPosition);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_GetVerticalScrollPosition,                  GetVerticalScrollPosition);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetVerticalScrollPosition,                  SetVerticalScrollPosition);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_GetMaxHorizontalScrollPosition,                GetMaxHorizontalScrollPosition);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_GetMaxVerticalScrollPosition,                  GetMaxVerticalScrollPosition);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_GetHorizontalScrollPosition,                  GetHorizontalScrollPosition);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetHorizontalScrollPosition,                  SetHorizontalScrollPosition);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_GetVerticalScrollPosition,                  GetVerticalScrollPosition);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetVerticalScrollPosition,                  SetVerticalScrollPosition);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_GetMaxHorizontalScrollPosition,                GetMaxHorizontalScrollPosition);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_GetMaxVerticalScrollPosition,                  GetMaxVerticalScrollPosition);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetSize,                  SetTextDefaultSize);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetColor,                 SetTextDefaultColor);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetColorByRGB,            SetTextDefaultColorByRGB);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetSize_MouseOver,                  SetTextDefaultSize_MouseOver);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetColor_MouseOver,                 SetTextDefaultColor_MouseOver);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetColorByRGB_MouseOver,            SetTextDefaultColorByRGB_MouseOver);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetSize_MouseDown,                  SetTextDefaultSize_MouseDown);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetColor_MouseDown,                 SetTextDefaultColor_MouseDown);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown,       SetTextBackgroundColor_MouseDown);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetSize,                  SetTextDefaultSize);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetColor,                 SetTextDefaultColor);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetColorByRGB,            SetTextDefaultColorByRGB);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetSize_MouseOver,                  SetTextDefaultSize_MouseOver);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetColor_MouseOver,                 SetTextDefaultColor_MouseOver);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetColorByRGB_MouseOver,            SetTextDefaultColorByRGB_MouseOver);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetSize_MouseDown,                  SetTextDefaultSize_MouseDown);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetColor_MouseDown,                 SetTextDefaultColor_MouseDown);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown,       SetTextBackgroundColor_MouseDown);
 
       // game / entity / shape / circle
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeCircle_GetRadius,            GetShapeCircleRadius);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeCircle_SetRadius,            SetShapeCircleRadius);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeCircle_GetRadius,            GetShapeCircleRadius);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeCircle_SetRadius,            SetShapeCircleRadius);
 
       // game / entity / shape / rectangle
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeRectangle_GetSize,            GetShapeRectangleSize);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeRectangle_SetSize,            SetShapeRectangleSize);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeRectangle_GetSize,            GetShapeRectangleSize);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeRectangle_SetSize,            SetShapeRectangleSize);
 
       // game / entity / shape / poly shapes
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_GetVertexCount,                    GetVertexCount);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_GetVertexCount,                    GetVertexCount);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition,            GetVertexLocalPosition);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition,            SetVertexLocalPosition);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition,            GetVertexWorldPosition);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition,            SetVertexWorldPosition);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_InsertVertexByLocalPosition,            InsertVertexByLocalPosition);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_InsertVertexByWorldPosition,            InsertVertexByWorldPosition);
-         //RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_DeleteVertexAt,            DeleteVertexAt);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPositions,            GetVertexLocalPositions);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPositions,            SetVertexLocalPositions);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPositions,            GetVertexWorldPositions);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPositions,            SetVertexWorldPositions);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition,            GetVertexLocalPosition);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition,            SetVertexLocalPosition);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition,            GetVertexWorldPosition);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition,            SetVertexWorldPosition);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_InsertVertexByLocalPosition,            InsertVertexByLocalPosition);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_InsertVertexByWorldPosition,            InsertVertexByWorldPosition);
+         //RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_DeleteVertexAt,            DeleteVertexAt);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPositions,            GetVertexLocalPositions);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPositions,            SetVertexLocalPositions);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPositions,            GetVertexWorldPositions);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPositions,            SetVertexWorldPositions);
 
       // game / entity / shape / thickness
       
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetBorderThickness,            GetShapeBorderThickness);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetBorderThickness,            SetShapeBorderThickness);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_GetCurveThickness,            GetCurveThickness);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShape_SetCurveThickness,            SetCurveThickness);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetBorderThickness,            GetShapeBorderThickness);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetBorderThickness,            SetShapeBorderThickness);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_GetCurveThickness,            GetCurveThickness);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShape_SetCurveThickness,            SetCurveThickness);
 
       // game / entity / shape / module
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeModule_GetModule,            GetShapeModule);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeModule_ChangeModule,            ChangeShapeModule);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeModuleButton_GetOverModule,            GetShapeModuleButton_OverState);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeModuleButton_ChangeOverModule,            ChangeShapeModuleButton_OverState);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeModuleButton_GetDownModule,            GetShapeModuleButton_DownState);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityShapeModuleButton_ChangeDownModule,            ChangeShapeModuleButton_DownState);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeModule_GetModule,            GetShapeModule);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeModule_ChangeModule,            ChangeShapeModule);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeModuleButton_GetOverModule,            GetShapeModuleButton_OverState);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeModuleButton_ChangeOverModule,            ChangeShapeModuleButton_OverState);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeModuleButton_GetDownModule,            GetShapeModuleButton_DownState);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityShapeModuleButton_ChangeDownModule,            ChangeShapeModuleButton_DownState);
 
       // game / entity / joint
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_GetJointConnectedShapes,                      GetJointConnectedShapes);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_GetJointConnectedShapes,                      GetJointConnectedShapes);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,                      SetJointMotorEnabled);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled,                     SetJointLimitsEnabled);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,                      SetJointMotorEnabled);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled,                     SetJointLimitsEnabled);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_GetHingeAngleByDegrees,                      GetHingeAngleByDegrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,                      GetHingeLimitsByDegrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,                      SetHingeLimitsByDegrees);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed,                      GetHingeMotorSpeed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed,                      SetHingeMotorSpeed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_GetHingeAngleByDegrees,                      GetHingeAngleByDegrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,                      GetHingeLimitsByDegrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,                      SetHingeLimitsByDegrees);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed,                      GetHingeMotorSpeed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed,                      SetHingeMotorSpeed);
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_GetSliderTranslation,                     GetSliderTranslation);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_GetSliderLimits,                     GetSliderLimits);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_SetSliderLimits,                     SetSliderLimits);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed,                     GetSliderMotorSpeed);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed,                     SetSliderMotorSpeed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_GetSliderTranslation,                     GetSliderTranslation);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_GetSliderLimits,                     GetSliderLimits);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_SetSliderLimits,                     SetSliderLimits);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed,                     GetSliderMotorSpeed);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed,                     SetSliderMotorSpeed);
 
       // game / entity / event handler
 
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityTrigger_ResetTimer,                           ResetTimer);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityTrigger_IsTimerPaused,                       IsTimerPaused);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,                      SetTimerPaused);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityTrigger_GetTimerInterval,                   GetTimerInterval);
-         RegisterCoreFunction (playerWorld, CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,                   SetTimerInterval);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityTrigger_ResetTimer,                           ResetTimer);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityTrigger_IsTimerPaused,                       IsTimerPaused);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,                      SetTimerPaused);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityTrigger_GetTimerInterval,                   GetTimerInterval);
+         RegisterCoreFunction (/*playerWorld:World*/toClearRefs, CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,                   SetTimerInterval);
 
       }
 
-      private static function RegisterCoreFunction (playerWorld:World, functionId:int, callback:Function):void
+      // core APIs should not be world dependent.
+      private static function RegisterCoreFunction (/*playerWorld:World*/toClearRefs:Boolean, functionId:int, callback:Function):void
       {
          if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return;
 
          var func_decl:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
 
-         sCoreFunctionDefinitions [functionId] = TriggerFormatHelper2.CreateCoreFunctionDefinition (playerWorld, sCoreFunctionDefinitions [functionId] as FunctionDefinition_Core, func_decl, callback);
+         sCoreFunctionDefinitions [functionId] = TriggerFormatHelper2.CreateCoreFunctionDefinition (/*playerWorld*/toClearRefs, sCoreFunctionDefinitions [functionId] as FunctionDefinition_Core, func_decl, callback);
       }
 
 //===========================================================

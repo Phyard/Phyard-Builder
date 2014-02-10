@@ -74,7 +74,9 @@ package common {
    
    public class TriggerFormatHelper2
    {
-      public static function BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld:World, variableSpace:VariableSpace, functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):VariableSpace
+      // playerWorld == null is for core APIs.
+      // toClearRefs is only meaningful when playerWorld == null.
+      public static function BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld:World, toClearRefs:Boolean, variableSpace:VariableSpace, functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):VariableSpace
       {
          var variableInstance:VariableInstance;
          var i:int;
@@ -250,19 +252,19 @@ package common {
       
       // coreFunction == null means this is the first time to create the function.
       // otherwise, means to reset initial ClassInstance for all sources and target to avoid memory leak and logic errors.
-      public static function CreateCoreFunctionDefinition (playerWorld:World, coreFunction:FunctionDefinition_Core, functionDeclaration:FunctionCoreBasicDefine, callback:Function):FunctionDefinition_Core
+      public static function CreateCoreFunctionDefinition (/*playerWorld:World*/toClearRefs:Boolean, coreFunction:FunctionDefinition_Core, functionDeclaration:FunctionCoreBasicDefine, callback:Function):FunctionDefinition_Core
       {
          if (coreFunction == null)
          {
             return new FunctionDefinition_Core (
-                        BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, true), 
-                        BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, false), 
+                        BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, toClearRefs, null, functionDeclaration, true), 
+                        BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, toClearRefs, null, functionDeclaration, false), 
                         callback);
          }
          else // to reset param values
          {
-            BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, coreFunction.GetInputVariableSpace (), functionDeclaration, true);
-            BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, coreFunction.GetOutputVariableSpace (), functionDeclaration, false);
+            BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, toClearRefs, coreFunction.GetInputVariableSpace (), functionDeclaration, true);
+            BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, toClearRefs, coreFunction.GetOutputVariableSpace (), functionDeclaration, false);
             
             return coreFunction;
          }
@@ -272,7 +274,7 @@ package common {
 // define -> definition (player)
 //==============================================================================================
       
-      // functionDefine must be null, functionDeclaration may be null (custom function) or non-null (predefined function, which is not core).
+      // functionDefine must not be null, functionDeclaration may be null (custom function) or non-null (predefined function, which is not core).
       // customClassIdShiftOffset is used for custom functions.
       public static function FunctionDefine2FunctionDefinition (playerWorld:World, functionDefine:FunctionDefine, functionDeclaration:FunctionCoreBasicDefine, customClassIdShiftOffset:int = 0):FunctionDefinition_Custom
       {
@@ -290,8 +292,8 @@ package common {
             // Currently, still create one for each instance.
             
             //costomFunction = new FunctionDefinition_Custom (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), numLocals);
-            inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, true);
-            outputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, false);
+            inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, false, null, functionDeclaration, true);
+            outputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, false, null, functionDeclaration, false);
          }
          else
          {

@@ -41,7 +41,7 @@ package player.trigger.entity
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
                mConditionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetBoolFunctionDeclaration ());
-               mConditionDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
+               mConditionDefinition.SetCodeSnippetDefine (mWorld, codeSnippetDefine, extraInfos);
             }
          }
       }

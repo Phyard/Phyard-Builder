@@ -53,7 +53,7 @@ package player.trigger.entity
                else
                   mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetEntityFilterFunctionDeclaration ());
                
-               mFilterDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
+               mFilterDefinition.SetCodeSnippetDefine (mWorld, codeSnippetDefine, extraInfos);
             }
          }
       }

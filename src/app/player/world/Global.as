@@ -55,6 +55,7 @@ package player.world
    
    // todo: merge this class with World
    
+   // not all data in this class are global. some are world related.
    public class Global
    {
       //public static var sTheGlobal:Global = null;
@@ -88,6 +89,7 @@ package player.world
       //public static var mEntityVariableSpaces:Array;
       public static var mEntityVariableSpace:VariableSpace;
       public static var mCommonEntityVariableSpace:VariableSpace;
+                  // consider scene mergings, the above two are also world related.
       
       public static var mCustomClassDefinitions:Array;
       
@@ -205,7 +207,7 @@ package player.world
       mCurrentWorld = null;
       mWorldDefine = null;
       
-      CoreFunctionDefinitions.Initialize (null);
+      CoreFunctionDefinitions.Initialize (/*null*/true);
       
       mRegisterVariableSpace_Boolean = null;
       mRegisterVariableSpace_String = null;
@@ -637,17 +639,17 @@ package player.world
             var classDef:ClassDefinition_Core = CoreClasses.GetCoreClassDefinition (classId);
             if (classDef.GetID () == classId)
             {
-               classDef.SetDefaultInitialValue (CoreClasses.ValidateInitialDirectValueObject_Define2Object (Global.GetCurrentWorld (), ClassTypeDefine.ClassType_Core, classId, coreDecl.GetDefaultDirectDefineValue ()));
+               classDef.SetDefaultInitialValue (CoreClasses.ValidateInitialDirectValueObject_Define2Object (/*Global.GetCurrentWorld ()*/null, ClassTypeDefine.ClassType_Core, classId, coreDecl.GetDefaultDirectDefineValue ()));
             }
          }
       }
       
       public static function CreateOrResetCoreFunctionDefinitions ():void
       {
-         if (mCurrentWorld == null)
-            throw new Error ();
+         //if (mCurrentWorld == null)
+         //   throw new Error ();
          
-         CoreFunctionDefinitions.Initialize (mCurrentWorld);
+         CoreFunctionDefinitions.Initialize (/*mCurrentWorld*/false);
       }
       
       protected static function CreateRegisterVariableSpace (initValueObject:Object, classDefinition:ClassDefinition):VariableSpace
@@ -696,7 +698,8 @@ package player.world
          }
       }
       
-      public static function InitWorldCustomVariables (worldVarialbeSpaceDefines:Array, gameSaveVarialbeSpaceDefines:Array):void
+      // playerWorld is only useful for switch or merge levels.
+      public static function InitWorldCustomVariables (playerWorld:World, worldVarialbeSpaceDefines:Array, gameSaveVarialbeSpaceDefines:Array):void
       {
          if (mWorldVariableSpace == null)
          {
@@ -704,7 +707,7 @@ package player.world
          }
          else // switch/restart level
          {
-            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mWorldVariableSpace, worldVarialbeSpaceDefines, true, false);            
+            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (/*mCurrentWorld*/playerWorld, mWorldVariableSpace, worldVarialbeSpaceDefines, true, false);          
          }
          
          if (mGameSaveVariableSpace == null)
@@ -715,12 +718,13 @@ package player.world
          }
          else // switch/restart level
          {
-            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mGameSaveVariableSpace, gameSaveVarialbeSpaceDefines, true, false);
+            TriggerFormatHelper2.ValidateVariableSpaceInitialValues (/*mCurrentWorld*/playerWorld, mGameSaveVariableSpace, gameSaveVarialbeSpaceDefines, true, false);
          }
       }
       
       //public static function InitSceneCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
-      public static function InitSceneCustomVariables (globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, 
+      public static function InitSceneCustomVariables (playerWorld:World, 
+                                                      globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, 
                                                       sessionVariableDefines:Array, sessionVariableIndexMappingTable:Array,  // sessionVariableDefines added from v1.57
                                                       isMerging:Boolean/* = false*/,
                                                       customClassIdShiftOffset:int):void // customClassIdShiftOffset added from v2.05
@@ -733,7 +737,7 @@ package player.world
          //
          //for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
          //{
-         //   mGlobalVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentWorld, globalVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
+         //   mGlobalVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (/*mCurrentWorld*/playerWorld, globalVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
          //}
          //
          //numSpaces = entityVarialbeSpaceDefines.length;
@@ -741,20 +745,21 @@ package player.world
          //
          //for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
          //{
-         //   mEntityVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentWorld, entityVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
+         //   mEntityVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (/*mCurrentWorld*/playerWorld, entityVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
          //}
          //<<
          
          if (mSessionVariableSpace == null) // load from stretch
          {
-            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, null, customClassIdShiftOffset, true);
+            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/playerWorld, sessionVariableDefines, null, customClassIdShiftOffset, true);
          }
          else // restart level or merge level
          {
             if (isMerging)
             {
                // todo: for session, should use the CreatePnlyOnNotExist policy.
-               mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines, mSessionVariableSpace, customClassIdShiftOffset, true, sessionVariableIndexMappingTable);
+               
+               mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/playerWorld, sessionVariableDefines, mSessionVariableSpace, customClassIdShiftOffset, true, sessionVariableIndexMappingTable);
             }
             else
             {
@@ -762,16 +767,16 @@ package player.world
                // nullify non-placed-in-editor entities and ccats
                // potiential decision: discard session variables since a later version, use Game_Data_Save API alikes instead. 
    
-               TriggerFormatHelper2.ValidateVariableSpaceInitialValues (mCurrentWorld, mSessionVariableSpace, sessionVariableDefines, false, true);
+               TriggerFormatHelper2.ValidateVariableSpaceInitialValues (/*mCurrentWorld*/playerWorld, mSessionVariableSpace, sessionVariableDefines, false, true);
             }
          }
          
-         mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines, isMerging ? mGlobalVariableSpace : null, customClassIdShiftOffset);
-         mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines, isMerging ? mEntityVariableSpace : null, customClassIdShiftOffset);
+         mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/playerWorld, globalVarialbeDefines, isMerging ? mGlobalVariableSpace : null, customClassIdShiftOffset);
+         mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/playerWorld, entityVarialbeDefines, isMerging ? mEntityVariableSpace : null, customClassIdShiftOffset);
          if (! isMerging)
          {
-            mCommonGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonGlobalVarialbeDefines, null, customClassIdShiftOffset);
-            mCommonEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, commonEntityVarialbeDefines, null, customClassIdShiftOffset);
+            mCommonGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/playerWorld, commonGlobalVarialbeDefines, null, customClassIdShiftOffset);
+            mCommonEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/playerWorld, commonEntityVarialbeDefines, null, customClassIdShiftOffset);
          }
       }
       
@@ -859,7 +864,7 @@ package player.world
       
       // custom classes
       
-      public static function InitCustomClassDefinitions (classDefines:Array, isMerging:Boolean):void
+      public static function InitCustomClassDefinitions (playerWorld:World, classDefines:Array, isMerging:Boolean):void
       {
          var numNewClasses:int = classDefines.length;
          var numOldClasses:int = mCustomClassDefinitions == null ? 0 : mCustomClassDefinitions.length;
@@ -890,7 +895,7 @@ package player.world
             customClass.SetParentClasses ([CoreClasses.kObjectClassDefinition]);
             
             classDefine = classDefines [classId] as ClassDefine;
-            customClass.SetPropertyVariableSpaceTemplate (TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, classDefine.mPropertyVariableDefines, null, numOldClasses));
+            customClass.SetPropertyVariableSpaceTemplate (TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/playerWorld, classDefine.mPropertyVariableDefines, null, numOldClasses));
          }
 
          for (classId = 0; classId < numNewClasses; ++ classId)
@@ -938,7 +943,7 @@ package player.world
       
       // custom functions
       
-      public static function CreateCustomFunctionDefinitions (functionDefines:Array, isMerging:Boolean, customClassIdShiftOffset:int):void
+      public static function CreateCustomFunctionDefinitions (playerWorld:World, functionDefines:Array, isMerging:Boolean, customClassIdShiftOffset:int):void
       {
          var numOldFunctions:int = mCustomFunctionDefinitions == null ? 0 : mCustomFunctionDefinitions.length;
          var numNewFunctions:int = functionDefines.length;
@@ -953,7 +958,7 @@ package player.world
          
          for (var functionId:int = 0; functionId < numNewFunctions; ++ functionId)
          {
-            mCustomFunctionDefinitions [numOldFunctions + functionId] = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mCurrentWorld, functionDefines [functionId] as FunctionDefine, null, customClassIdShiftOffset);
+            mCustomFunctionDefinitions [numOldFunctions + functionId] = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (/*mCurrentWorld*/playerWorld, functionDefines [functionId] as FunctionDefine, null, customClassIdShiftOffset);
          }
       }
       

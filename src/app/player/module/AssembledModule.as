@@ -9,7 +9,8 @@ package player.module {
 
    public class AssembledModule extends Module
    {
-   
+      // 
+      
       protected var mModuleParts:Array;
          // must NOT be null
       

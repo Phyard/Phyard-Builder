@@ -59,7 +59,7 @@ package player.trigger.entity
    
                   mPreEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mPreFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
                   mPreEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
-                  mPreEventHandlerDefinition.SetCodeSnippetDefine (preCodeSnippetDefine, extraInfos);
+                  mPreEventHandlerDefinition.SetCodeSnippetDefine (mWorld, preCodeSnippetDefine, extraInfos);
                }
                
                if (entityDefine.mPostFunctionDefine != undefined)
@@ -70,7 +70,7 @@ package player.trigger.entity
    
                   mPostEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mPostFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
                   mPostEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
-                  mPostEventHandlerDefinition.SetCodeSnippetDefine (postCodeSnippetDefine, extraInfos);
+                  mPostEventHandlerDefinition.SetCodeSnippetDefine (mWorld, postCodeSnippetDefine, extraInfos);
                }
             }
             //<<

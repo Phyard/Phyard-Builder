@@ -454,14 +454,14 @@ package common {
                extraInfos.mBeginningCustomClassIndex = oldNumCustomClasses;
             }
 
-            Global.InitCustomClassDefinitions (sceneDefine.mClassDefines, isMergingScene);
+            Global.InitCustomClassDefinitions (playerWorld, sceneDefine.mClassDefines, isMergingScene);
          }
 
       // init custom variables / correct entity refernce ids
 
          if (isLoaingFromStretch) // the following half is drawing feet for snakes // && (! worldDefine.mDontReloadGlobalAssets))
          {
-            Global.InitWorldCustomVariables (worldDefine.mWorldVariableDefines, worldDefine.mGameSaveVariableDefines);
+            Global.InitWorldCustomVariables (playerWorld, worldDefine.mWorldVariableDefines, worldDefine.mGameSaveVariableDefines);
          }
          
          // these are the default values for isLoaingFromStretch and cloning shape, not for isMergingScene
@@ -483,7 +483,7 @@ package common {
             
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines); // before v2.00
-            extraInfos.mSessionVariableMappingTable = Global.InitSceneCustomVariables (
+            extraInfos.mSessionVariableMappingTable = Global.InitSceneCustomVariables (playerWorld, 
                                         sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
                                         sceneDefine.mEntityPropertyDefines, worldDefine.mCommonEntityPropertyDefines, 
                                         sceneDefine.mSessionVariableDefines, extraInfos.mSessionVariableIdMappingTable,
@@ -567,7 +567,7 @@ package common {
                extraInfos.mBeginningCustomFunctionIndex = oldNumCustomFunctions;
             }
 
-            Global.CreateCustomFunctionDefinitions (sceneDefine.mFunctionDefines, isMergingScene, extraInfos.mBeginningCustomClassIndex);
+            Global.CreateCustomFunctionDefinitions (playerWorld, sceneDefine.mFunctionDefines, isMergingScene, extraInfos.mBeginningCustomClassIndex);
 
             var numFunctions:int = sceneDefine.mFunctionDefines.length;
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
@@ -578,7 +578,7 @@ package common {
 
                var customFunction:FunctionDefinition_Custom = Global.GetCustomFunctionDefinition (functionId + oldNumCustomFunctions);
                customFunction.SetDesignDependent (functionDefine.mDesignDependent); // useless
-               customFunction.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
+               customFunction.SetCodeSnippetDefine (playerWorld, codeSnippetDefine, extraInfos);
             }
          }
          else // Adjust Cloned Entities Z Order

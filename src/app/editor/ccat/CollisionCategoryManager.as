@@ -317,7 +317,7 @@ package editor.ccat {
          
          if (allowNoneCCat)
          {
-            list.push ({label: Define.CCatId_None + ":{Hidden Category}", mCategoryIndex:Define.CCatId_None});
+            list.push ({label: Define.CCatId_None + ":{null}", mCategoryIndex:Define.CCatId_None});
          }
          
          list.push ({label: Define.CCatId_Hidden + ":{Hidden Category}", mCategoryIndex:Define.CCatId_Hidden});

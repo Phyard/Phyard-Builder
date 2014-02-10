@@ -967,10 +967,12 @@ package player.entity {
          }
          else
          {
+            // will trigger repaint even if new and old values are same.
             mAppearanceObjectsContainer.x = newX;
             mAppearanceObjectsContainer.y = newY;
          }
 
+         // will not trigger repaint when new and old value are same.
          mAppearanceObjectsContainer.rotation = newR;
          
          //mAppearanceObjectsContainer.scaleX = mFlipped ? - mScale : mScale;

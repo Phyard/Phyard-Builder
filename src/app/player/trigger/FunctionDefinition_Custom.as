@@ -1,6 +1,6 @@
 package player.trigger
 {
-   import player.world.Global;
+   import player.world.World;
    
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.define.CodeSnippetDefine;
@@ -79,9 +79,9 @@ package player.trigger
       }
       //<<
       
-      public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine, extraInfos:Object):void
+      public function SetCodeSnippetDefine (playerWorld:World, codeSnippetDefine:CodeSnippetDefine, extraInfos:Object):void
       {
-         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, Global.GetCurrentWorld (), codeSnippetDefine, extraInfos);
+         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, /*Global.GetCurrentWorld ()*/playerWorld, codeSnippetDefine, extraInfos);
          mPrimaryFunctionInstance.SetAsCurrent ();
       }
       
